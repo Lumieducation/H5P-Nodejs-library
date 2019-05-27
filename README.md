@@ -7,7 +7,7 @@ Please note that this project is in a very early and experimental stage. If you 
 
 ## Status
 
-This library is still in development. You can check the progress and todos [here](https://github.com/orgs/Lumieducation/projects/9?card_filter_query=label%3A+editor). This readme will provide a how-to as soon as the editor works.
+This library is still in development. You can check the progress and todos [here](https://github.com/orgs/Lumieducation/projects/9?card_filter_query=label%3Ah5p-editor). This readme will provide a how-to as soon as the editor works.
 
 ### Adapters
 
