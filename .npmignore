@@ -1,0 +1,13 @@
+node_modules/
+examples/
+h5p/
+test/
+.github/
+.vscode/
+.editorconfig
+.prettierrc
+CODE-OF-CONDUCT.md
+jest.config.js
+babel.config.js
+.eslintrc.json
+__tests__
