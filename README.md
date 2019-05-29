@@ -1,8 +1,8 @@
-# H5P-Nodejs-library
+# H5P-Editor-Nodejs-library
 
 [![Build Status](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library.svg?branch=master)](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library)
 
-The H5P-Nodejs-library is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) for Nodejs.
+The H5P-Editor-Nodejs-library is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) for Nodejs.
 Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
 
 ## Status
