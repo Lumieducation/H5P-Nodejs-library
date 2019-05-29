@@ -1,23 +1,23 @@
-// const default_integration = require('./default_integration');
-const default_editor_integration = require('./default_editor_integration');
-const default_translation = require('./translations/en.json');
-const default_renderer = require('./renderers/default');
-const content_type_cache = require('./content_type_cache');
+const defaultEditorIntegration = require('./default_editor_integration');
+const defaultTranslation = require('./translations/en.json');
+const defaultRenderer = require('./renderers/default');
+const contentTypeCache = require('./content_type_cache');
 
 // const H5P = require('h5p-nodejs-library');
 
 class H5PEditor {
     constructor(
-        library_loader,
-        base_url = '/h5p',
-        ajax_path = '/ajaxPath?action='
+        libraryLoader,
+        baseUrl = '/h5p',
+        ajaxPath = '/ajaxPath?action='
     ) {
-        this.library_loader = library_loader;
-        // this.h5p = new H5P(library_loader);
-        this.renderer = default_renderer;
-        this.base_url = base_url;
-        this.translation = default_translation;
-        this.ajax_path = ajax_path;
+        this.libraryLoader = libraryLoader;
+        // this.h5p = new H5P(libraryLoader);
+        this.renderer = defaultRenderer;
+        this.baseUrl = baseUrl;
+        this.translation = defaultTranslation;
+        this.ajaxPath = ajaxPath;
+        this.contentTypeCache = contentTypeCache;
     }
 
     render() {
@@ -30,19 +30,19 @@ class H5PEditor {
         return Promise.resolve(this.renderer(model));
     }
 
-    use_renderer(renderer) {
+    useRenderer(renderer) {
         this.renderer = renderer;
         return this;
     }
 
-    set_ajax_path(ajax_path) {
-        this.ajax_path = ajax_path;
+    setAjaxPath(ajaxPath) {
+        this.ajax_path = ajaxPath;
         return this;
     }
 
-    content_type_cache() {
+    contentTypeCache() {
         return new Promise(resolve => {
-            resolve(content_type_cache);
+            resolve(this.contentTypeCache);
         });
     }
 
@@ -106,8 +106,8 @@ class H5PEditor {
         ].map(file => `${this.base_url}${file}`);
     }
 
-    _editor_integration() {
-        return Object.assign(default_editor_integration, {
+    _editorIntegration() {
+        return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajax_path,
             assets: {
                 css: [
@@ -175,7 +175,7 @@ class H5PEditor {
             l10n: {
                 H5P: this.translation
             },
-            editor: this._editor_integration()
+            editor: this._editorIntegration()
         };
     }
 }
