@@ -12,9 +12,10 @@
         "clean": "rm -rf build && rm -rf dist",
         "uninstall": "npm run clean && rm -rf node_modules",
         "build": "",
-        "lint": "./node_modules/.bin/eslint ./src",
-        "test": "./node_modules/.bin/jest",
-        "test:watch": "./node_modules/.bin/jest --watch"
+        "ci": "npm run lint",
+        "lint": "eslint ./src",
+        "test": "jest",
+        "test:watch": "jest --watch"
     },
     "author": "Jan Philip Schellenberg",
     "dependencies": {},
