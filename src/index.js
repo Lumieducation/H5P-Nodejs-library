@@ -1,7 +1,7 @@
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
-const contentTypeCache = require('./content_type_cache');
+const defaultContentTypeCache = require('./content_type_cache');
 
 // const H5P = require('h5p-nodejs-library');
 
@@ -17,7 +17,7 @@ class H5PEditor {
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
         this.ajaxPath = ajaxPath;
-        this.contentTypeCache = contentTypeCache;
+        this.defaultContentTypeCache = defaultContentTypeCache;
     }
 
     render() {
@@ -36,13 +36,13 @@ class H5PEditor {
     }
 
     setAjaxPath(ajaxPath) {
-        this.ajax_path = ajaxPath;
+        this.ajaxPath = ajaxPath;
         return this;
     }
 
     contentTypeCache() {
         return new Promise(resolve => {
-            resolve(this.contentTypeCache);
+            resolve(this.defaultContentTypeCache);
         });
     }
 
@@ -90,7 +90,7 @@ class H5PEditor {
             '/editor/scripts/h5peditor-pre-save.js',
             '/editor/ckeditor/ckeditor.js',
             '/editor/wp/h5p-editor.js'
-        ].map(file => `${this.base_url}${file}`);
+        ].map(file => `${this.baseUrl}${file}`);
     }
 
     _coreStyles() {
@@ -103,12 +103,12 @@ class H5PEditor {
             '/editor/styles/css/fonts.css',
             '/editor/styles/css/application.css',
             '/editor/styles/css/libs/zebra_datepicker.min.css'
-        ].map(file => `${this.base_url}${file}`);
+        ].map(file => `${this.baseUrl}${file}`);
     }
 
     _editorIntegration() {
         return Object.assign(defaultEditorIntegration, {
-            ajaxPath: this.ajax_path,
+            ajaxPath: this.ajaxPath,
             assets: {
                 css: [
                     '/core/styles/h5p.css',
@@ -119,7 +119,7 @@ class H5PEditor {
                     '/editor/styles/css/fonts.css',
                     '/editor/styles/css/application.css',
                     '/editor/styles/css/libs/zebra_datepicker.min.css'
-                ].map(asset => `${this.base_url}${asset}`),
+                ].map(asset => `${this.baseUrl}${asset}`),
                 js: [
                     '/core/js/jquery.js',
                     '/core/js/h5p.js',
@@ -161,14 +161,14 @@ class H5PEditor {
                     '/editor/scripts/h5peditor-metadata-changelog-widget.js',
                     '/editor/scripts/h5peditor-pre-save.js',
                     '/editor/ckeditor/ckeditor.js'
-                ].map(asset => `${this.base_url}${asset}`)
+                ].map(asset => `${this.baseUrl}${asset}`)
             }
         });
     }
 
     _integration() {
         return {
-            url: this.base_url,
+            url: this.baseUrl,
             postUserStatistics: false,
             saveFreq: false,
             hubIsEnabled: true,
