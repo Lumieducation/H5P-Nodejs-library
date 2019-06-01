@@ -40,13 +40,16 @@
                 }
             },
             "owner": "Joubel",
-            "installed": false,
-            "isUpToDate": false,
+            "installed": true,
+            "isUpToDate": true,
             "restricted": false,
-            "canInstall": true,
+            "canInstall": false,
             "categories": [],
             "keywords": ["accordion", "collapsible text"],
-            "example": "https://h5p.org/accordion"
+            "example": "https://h5p.org/accordion",
+            "localMajorVersion": 1,
+            "localMinorVersion": 0,
+            "localPatchVersion": 19
         },
         {
             "id": 2,
