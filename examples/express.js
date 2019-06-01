@@ -3,7 +3,17 @@ const path = require('path');
 const server = express();
 
 const H5PEditor = require('../src');
-const h5pEditor = new H5PEditor(() => {}, '/h5p', '/ajax?action=');
+const h5pEditor = new H5PEditor(
+    {
+        loadSemantics: (machineName, majorVersion, minorVersion) => {
+            return Promise.resolve(
+                require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
+            );
+        }
+    },
+    '/h5p',
+    '/ajax?action='
+);
 
 const h5p_route = '/h5p';
 
@@ -25,7 +35,12 @@ server.get('/ajax', (req, res) => {
             break;
 
         case 'libraries':
-            res.status(500).end('NOT IMPLEMENTED');
+            const { majorVersion, minorVersion, machineName } = req.query;
+            h5pEditor
+                .getLibraryData(machineName, majorVersion, minorVersion)
+                .then(library => {
+                    res.status(200).json(library);
+                });
             break;
 
         default:

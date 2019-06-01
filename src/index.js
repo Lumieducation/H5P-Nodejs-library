@@ -3,16 +3,9 @@ const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
 const defaultContentTypeCache = require('./content_type_cache');
 
-// const H5P = require('h5p-nodejs-library');
-
 class H5PEditor {
-    constructor(
-        libraryLoader,
-        baseUrl = '/h5p',
-        ajaxPath = '/ajaxPath?action='
-    ) {
-        this.libraryLoader = libraryLoader;
-        // this.h5p = new H5P(libraryLoader);
+    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=') {
+        this.storage = storage;
         this.renderer = defaultRenderer;
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
@@ -38,6 +31,26 @@ class H5PEditor {
     setAjaxPath(ajaxPath) {
         this.ajaxPath = ajaxPath;
         return this;
+    }
+
+    getLibraryData(machineName, majorVersion, minorVersion) {
+        return this.storage
+            .loadSemantics(machineName, majorVersion, minorVersion)
+            .then(semantics => {
+                return Promise.resolve({
+                    name: machineName,
+                    version: {
+                        major: majorVersion,
+                        minor: minorVersion
+                    },
+                    semantics,
+                    language: null,
+                    defaultLanguage: null,
+                    javascript: [],
+                    translations: [],
+                    languages: []
+                });
+            });
     }
 
     contentTypeCache() {
