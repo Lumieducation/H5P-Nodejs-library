@@ -1,3 +1,5 @@
+const H5P = require('h5p-nodejs-library');
+
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
@@ -6,6 +8,7 @@ const defaultContentTypeCache = require('./content_type_cache');
 class H5PEditor {
     constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=') {
         this.storage = storage;
+        this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
@@ -37,19 +40,32 @@ class H5PEditor {
         return this.storage
             .loadSemantics(machineName, majorVersion, minorVersion)
             .then(semantics => {
-                return Promise.resolve({
-                    name: machineName,
-                    version: {
-                        major: majorVersion,
-                        minor: minorVersion
-                    },
-                    semantics,
-                    language: null,
-                    defaultLanguage: null,
-                    javascript: [],
-                    translations: [],
-                    languages: []
-                });
+                return this.storage
+                    .loadLibrary(machineName, majorVersion, minorVersion)
+                    .then(library => {
+                        const assets = {
+                            scripts: [],
+                            styles: []
+                        };
+                        this.h5p._loadAssets(
+                            library.editorDependencies,
+                            assets
+                        );
+                        return Promise.resolve({
+                            name: machineName,
+                            version: {
+                                major: majorVersion,
+                                minor: minorVersion
+                            },
+                            semantics,
+                            language: null,
+                            defaultLanguage: null,
+                            javascript: assets.scripts,
+                            css: assets.styles,
+                            translations: [],
+                            languages: []
+                        });
+                    });
             });
     }
 
