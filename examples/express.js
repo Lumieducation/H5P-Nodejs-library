@@ -1,13 +1,18 @@
 const express = require('express');
 const path = require('path');
 const server = express();
-
+const bodyParser = require('body-parser');
 const H5PEditor = require('../src');
 const h5pEditor = new H5PEditor(
     {
         loadSemantics: (machineName, majorVersion, minorVersion) => {
             return Promise.resolve(
                 require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
+            );
+        },
+        loadLibrary: (machineName, majorVersion, minorVersion) => {
+            return Promise.resolve(
+                require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
             );
         }
     },
@@ -17,6 +22,12 @@ const h5pEditor = new H5PEditor(
 
 const h5p_route = '/h5p';
 
+server.use(bodyParser.json());
+server.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+);
 server.use(h5p_route, express.static(`${path.resolve('')}/h5p`));
 
 server.get('/', (req, res) => {
@@ -46,6 +57,17 @@ server.get('/ajax', (req, res) => {
         default:
             res.status(400).end();
             break;
+    }
+});
+
+server.post('/ajax', (req, res) => {
+    const { action } = req.query;
+    switch (action) {
+        case 'libraries':
+        default:
+            h5pEditor.getLibraryOverview(req.body.libraries).then(libraries => {
+                res.status(200).json(libraries);
+            });
     }
 });
 
