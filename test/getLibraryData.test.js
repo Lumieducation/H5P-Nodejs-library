@@ -4,10 +4,11 @@ describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
         const h5pEditor = new H5PEditor({
             loadSemantics: () => Promise.resolve([]),
-            loadLibrary: () =>
-                Promise.resolve({
+            loadLibrary: () => {
+                return {
                     editorDependencies: []
-                })
+                };
+            }
         });
 
         return expect(h5pEditor.getLibraryData('Foo', 1, 2)).resolves.toEqual({
@@ -36,10 +37,11 @@ describe('aggregating data from library folders for the editor', () => {
                     arbitrary: 'content'
                 });
             },
-            loadLibrary: () =>
-                Promise.resolve({
+            loadLibrary: () => {
+                return {
                     editorDependencies: []
-                })
+                };
+            }
         };
 
         return new H5PEditor(storage)
@@ -60,15 +62,21 @@ describe('aggregating data from library folders for the editor', () => {
             loadLibrary: machineName => {
                 switch (machineName) {
                     case 'H5PEditor.Test':
-                        return Promise.resolve({
+                        return {
+                            machineName: 'H5PEditor.test',
+                            majorVersion: 1,
+                            minorVersion: 0,
                             preloadedJs: [
                                 {
-                                    path: '/path/to/test.js'
+                                    path: 'path/to/test.js'
                                 }
                             ]
-                        });
+                        };
                     default:
-                        return Promise.resolve({
+                        return {
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 2,
                             editorDependencies: [
                                 {
                                     machineName: 'H5PEditor.Test',
@@ -76,7 +84,7 @@ describe('aggregating data from library folders for the editor', () => {
                                     minorVersion: 0
                                 }
                             ]
-                        });
+                        };
                 }
             }
         };
@@ -84,7 +92,9 @@ describe('aggregating data from library folders for the editor', () => {
         return new H5PEditor(storage)
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
-                expect(libraryData.javascript).toEqual(['/path/to/test.js']);
+                expect(libraryData.javascript).toEqual([
+                    '/h5p/libraries/H5PEditor.Test-1.0/path/to/test.js'
+                ]);
             });
     });
 });

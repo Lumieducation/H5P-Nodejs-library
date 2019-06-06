@@ -40,32 +40,31 @@ class H5PEditor {
         return this.storage
             .loadSemantics(machineName, majorVersion, minorVersion)
             .then(semantics => {
-                return this.storage
-                    .loadLibrary(machineName, majorVersion, minorVersion)
-                    .then(library => {
-                        const assets = {
-                            scripts: [],
-                            styles: []
-                        };
-                        this.h5p._loadAssets(
-                            library.editorDependencies,
-                            assets
-                        );
-                        return Promise.resolve({
-                            name: machineName,
-                            version: {
-                                major: majorVersion,
-                                minor: minorVersion
-                            },
-                            semantics,
-                            language: null,
-                            defaultLanguage: null,
-                            javascript: assets.scripts,
-                            css: assets.styles,
-                            translations: [],
-                            languages: []
-                        });
-                    });
+                const library = this.storage.loadLibrary(
+                    machineName,
+                    majorVersion,
+                    minorVersion
+                );
+
+                const assets = {
+                    scripts: [],
+                    styles: []
+                };
+                this.h5p._loadAssets(library.editorDependencies, assets);
+                return Promise.resolve({
+                    name: machineName,
+                    version: {
+                        major: majorVersion,
+                        minor: minorVersion
+                    },
+                    semantics,
+                    language: null,
+                    defaultLanguage: null,
+                    javascript: assets.scripts,
+                    css: assets.styles,
+                    translations: [],
+                    languages: []
+                });
             });
     }
 
