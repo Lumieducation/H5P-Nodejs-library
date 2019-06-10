@@ -3,16 +3,54 @@ const axios = require('axios');
 const merge = require('merge');
 const qs = require('qs');
 
+/**
+ * This class caches the information about the content types on the H5P Hub.
+ * 
+ * Get the content type information by calling get(). 
+ * The method updateIfNecessary() should be called regularly, e.g. through a cron-job.
+ * Use contentTypeCacheRefreshInterval in the H5PEditorConfig object to set how often
+ * the update should be performed. You can also use forceUpdate() if you want to bypass the 
+ * interval. 
+ */
 class ContentTypeCache {
-    constructor(config) {
+    /**
+     * 
+     * @param {H5PEditorConfig} config The configuration to use.
+     * @param {IStorage} storage The storage object.
+     */
+    constructor(config, storage) {
         this.config = config;
+        this.storage = storage;
     }
 
     /**
-     * The actual cache data.
+     * Checks if the interval between updates has been exceeded and updates the cache if necessary.
+     * @returns {boolean} true if cache was updated, false if not
      */
-    getCache() {
-        return this._fetchContentTypes();
+    async updateIfNecessary() {
+        const lastUpdate = await this.storage.load("contentTypeCacheUpdate");
+        const oldCache = await this.storage.load("contentTypeCache");
+        if (!lastUpdate || !oldCache || (Date.now()) - lastUpdate > this.config.contentTypeCacheRefreshInterval) {
+            await this.forceUpdate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Downloads the content type information from the H5P Hub and stores it in the storage object.
+     */
+    async forceUpdate() {
+        const cache = await this._fetchContentTypesFromHub();
+        await this.storage.save("contentTypeCache", cache);
+        await this.storage.save("contentTypeCacheUpdate", Date.now());
+    }
+
+    /**
+     * Returns the cache data.
+     */
+    async get() {
+        return this.storage.load("contentTypeCache");
     }
 
     /**
@@ -54,6 +92,7 @@ class ContentTypeCache {
     /**
      * @returns usage statistic
      */
+    // eslint-disable-next-line class-methods-use-this
     _compileUsageStatistics() {
         return {
             num_authors: 0, // number of active authors
@@ -64,7 +103,7 @@ class ContentTypeCache {
     /**
      * @returns {Array} content types
      */
-    async _fetchContentTypes() {
+    async _fetchContentTypesFromHub() {
         await this._registerOrGetUuid();
         let formData = this._compileRegistrationData();
         if (this.config.sendUsageStatistics) {
