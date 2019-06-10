@@ -41,7 +41,7 @@ class ContentTypeCache {
      * Downloads the content type information from the H5P Hub and stores it in the storage object.
      */
     async forceUpdate() {
-        const cache = await this._fetchContentTypesFromHub();
+        const cache = await this._downloadContentTypesFromHub();
         await this.storage.save("contentTypeCache", cache);
         await this.storage.save("contentTypeCacheUpdate", Date.now());
     }
@@ -54,6 +54,9 @@ class ContentTypeCache {
     }
 
     /**
+     * If the running site has already been registered at the H5P hub, this method will
+     * return the UUID of it. If it hasn't been registered yet, it will do so and store
+     * the UUID in the storage object.
      * @returns {string} uuid
      */
     async _registerOrGetUuid() {
@@ -74,7 +77,7 @@ class ContentTypeCache {
     }
 
     /**
-     * @returns registration data
+     * @returns An object with the registration data as required by the H5P Hub
      */
     _compileRegistrationData() {
         return {
@@ -90,7 +93,7 @@ class ContentTypeCache {
     }
 
     /**
-     * @returns usage statistic
+     * @returns An object with usage statistics as required by the H5P Hub
      */
     // eslint-disable-next-line class-methods-use-this
     _compileUsageStatistics() {
@@ -101,9 +104,11 @@ class ContentTypeCache {
     }
 
     /**
+     * Downloads information about available content types from the H5P Hub. This method will
+     * create a UUID to identify this site if required. 
      * @returns {Array} content types
      */
-    async _fetchContentTypesFromHub() {
+    async _downloadContentTypesFromHub() {
         await this._registerOrGetUuid();
         let formData = this._compileRegistrationData();
         if (this.config.sendUsageStatistics) {
@@ -122,6 +127,7 @@ class ContentTypeCache {
     }
 
     /**
+     * Creates an identifier for the running instance.
      * @returns {string} id
      */
     static _generateLocalId() {
