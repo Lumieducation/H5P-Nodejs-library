@@ -33,12 +33,26 @@ describe('registering the site at H5P Hub', () => {
 });
 
 describe('getting H5P Hub content types', () => {
+    it('should return an empty cache if it was not loaded yet', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+        const cache = new ContentTypeCache(config, storage);
+
+        const cached = await cache.get();
+        expect(cached).toBeUndefined();
+    });
     it('loads content type information from the H5P Hub', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const cache = new ContentTypeCache(config);
+        const cache = new ContentTypeCache(config, storage);
 
-        const cached = await cache.getCache();
+        let updated = await cache.updateIfNecessary();
+        expect(updated).toEqual(true);
+
+        const cached = await cache.get();
         expect(cached).toBeDefined();
+
+        updated = await cache.updateIfNecessary();        
+        expect(updated).toEqual(false);
     });
 });

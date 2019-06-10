@@ -39,6 +39,9 @@ class H5PEditorConfig {
          * Called to fetch information about the content types available at the H5P Hub.
          */
         this.hubContentTypesEndpoint = 'https://api.h5p.org/v1/content-types/';
+
+        /** Time after which the content type cache is considered to be outdated in milliseconds. */
+        this.contentTypeCacheRefreshInterval = 1 * 1000 * 60 * 60 * 24;
     }
 
     /**
@@ -62,13 +65,15 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("uuid");
         await this.loadSettingFromStorage("siteType");
         await this.loadSettingFromStorage("sendUsageStatistics");
-    }
+        await this.loadSettingFromStorage("contentTypeCacheRefreshInterval");
+      }
 
     async save() {
         await this.saveSettingToStorage("fetchingDisabled");
         await this.saveSettingToStorage("uuid");
         await this.saveSettingToStorage("siteType");
         await this.saveSettingToStorage("sendUsageStatistics");
+        await this.saveSettingToStorage("contentTypeCacheRefreshInterval");
     }
 }
 
