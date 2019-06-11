@@ -1,11 +1,29 @@
 const fs = require('fs-extra');
+const { crc32 } = require('crc');
+
 
 class Library {
     constructor(machineName, major, minor, patch) {
         this.machineName = machineName;
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
+        this.majorVersion = major;
+        this.minorVersion = minor;
+        this.patchVersion = patch;
+        this.id = undefined;
+        this.title = undefined;
+        this.runnable = undefined;
+        this.restricted = undefined;
+    }
+
+    /**
+     * 
+     * @param {Library} otherLibrary 
+     */
+    compare(otherLibrary) {
+        return this.title < otherLibrary.title || this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion;
+    }
+
+    getDirName() {
+        return `${this.machineName}-${this.majorVersion}.${this.minorVersion}`;
     }
 }
 
@@ -67,17 +85,32 @@ class FileLibraryManager {
 
     /**
      * Get a list of the current installed libraries
+     * @param {String[]} machineNames only return results for the machines names in the list
      * @returns An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library. 
      */
-    async getInstalled() {
+    async getInstalled(...machineNames) {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
         const libraryDirectories = await fs.readdir(this.config.libraryPath);
-        const libraries = libraryDirectories.filter(name => nameRegex.test(name))
+        let libraries = libraryDirectories
+            .filter(name => nameRegex.test(name))
             .map(name => {
                 const result = nameRegex.exec(name);
                 return new Library(result[1], result[2], result[3]);
+            })
+            .filter(lib => !machineNames || machineNames.length === 0 || machineNames.some(mn => mn === lib.machineName))
+            .map(async lib => {
+                const lib2 = lib;
+                const info = await this.loadLibrary(lib);
+                lib2.patchVersion = info.patchVersion;
+                lib2.id = info.libraryId;
+                lib2.restricted = false;
+                lib2.runnable = info.runnable;
+                lib2.title = info.title;
+                return lib2;
             });
+        libraries = (await Promise.all(libraries))
+            .sort((lib1, lib2) => lib1.compare(lib2));
 
         const returnObject = {};
         // eslint-disable-next-line no-restricted-syntax
@@ -94,12 +127,24 @@ class FileLibraryManager {
      * Is the library a patched version of an existing library?
      *
      * @param {Library} library
-     * @return boolean
-     *   TRUE if the library is a patched version of an existing library
-     *   FALSE otherwise
+     * @returns {boolean} TRUE if the library is a patched version of an existing library, FALSE otherwise
      */
-    isPatchedLibrary(library) {
-        // TODO: implement
+    async isPatchedLibrary(library) {
+        const wrappedLibraryInfos = await this.getInstalled(library.machineName);
+        if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
+            return false;
+        }
+        const libraryInfos = wrappedLibraryInfos[library.machineName];
+        for (let x = 0; x < libraryInfos.length; x += 1) {
+            if (libraryInfos[x].majorVersion === library.majorVersion
+                && libraryInfos[x].minorVersion === library.minorVersion) {
+                if (libraryInfos[x].patchVersion < library.patchVersion) {
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     /**
@@ -107,10 +152,14 @@ class FileLibraryManager {
      * If version number is not specified, the newest version will be returned.
      *
      * @param {Library} library Note that patch version is ignored.
-     * @returns {number} The id of the specified library or FALSE
+     * @returns {number} The id of the specified library or undefined
      */
-    getId(library) {
-        // TODO: Implement by returning CRC32 of folder path?
+    async getId(library) {
+        const libraryPath = this._getLibraryPath(library);
+        if (await fs.exists(libraryPath)) {
+            return crc32(libraryPath);
+        }
+        return undefined;
     }
 
     /**
@@ -119,14 +168,21 @@ class FileLibraryManager {
      * @param {Library} library
      * @return boolean
      */
-    libraryHasUpgrade(library) { }
+    async libraryHasUpgrade(library) {
+    }
 
     /**
      * 
      * @param {Library} library
-     * @returns {Promise<ILibrary>}
+     * @returns {Promise<ILibrary>} or undefined
      */
-    async loadLibrary(machineName, majorVersion, minorVersion) {
+    async loadLibrary(library) {
+        const libraryInfo = await fs.readJSON(this._getLibraryPath(library));
+        if (!libraryInfo) {
+            return undefined;
+        }
+        libraryInfo.libraryId = await this.getId(library);
+        return libraryInfo;
         /**
          *  * @return array|FALSE
            *   FALSE if the library does not exist.
@@ -178,6 +234,14 @@ class FileLibraryManager {
      */
     getLibraryConfig() {
         // TODO: find out what this does
+    }
+
+    /**
+     * 
+     * @param {Library} library 
+     */
+    _getLibraryPath(library) {
+        return `${this.config.libraryPath}/${library.getDirName()}/library.json`;
     }
 }
 
