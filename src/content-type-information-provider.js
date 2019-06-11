@@ -30,8 +30,33 @@ class ContentTypeInformationProvider {
         };
     }
 
-    addLocalLibraries(hubInfo) {
-        return hubInfo;
+    async addLocalLibraries(hubInfo) {
+        const localLibsWrapped = await this.libraryManager.getInstalled();
+        let localLibs = Object.keys(localLibsWrapped)
+            .map(machineName => localLibsWrapped[machineName][localLibsWrapped[machineName].length - 1])
+            .filter(lib => !hubInfo.some(hubLib => hubLib.machineName === lib.machineName))
+            .map(async localLib => {
+                return {
+                    id: localLib.id,
+                    machineName: localLib.machineName,
+                    title: localLib.title,
+                    description: '',
+                    majorVersion: localLib.majorVersion,
+                    minorVersion: localLib.minorVersion,
+                    patchVersion: localLib.patchVersion,
+                    localMajorVersion: localLib.majorVersion,
+                    localMinorVersion: localLib.minorVersion,
+                    localPatchVersion: localLib.patchVersion,
+                    canInstall: false,
+                    installed: true,
+                    isUpToDate: true,
+                    owner: '',
+                    restricted: localLib.restricted, // TODO: adapt to individual user
+                    icon: await this.libraryManager.libraryFileExists('icon.svg') ? this.libraryManager.getLibraryFileUrl('icon.svg') : undefined
+                }
+            });
+        localLibs = await Promise.all(localLibs);             
+        return hubInfo.concat(localLibs);
     }
 
     addUserAndInstallationSpecificInfo(hubInfo) {

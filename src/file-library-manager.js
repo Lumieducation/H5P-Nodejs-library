@@ -15,7 +15,7 @@ class Library {
     }
 
     /**
-     * 
+     * Compares by giving precedence to Title, then major version, then minor version 
      * @param {Library} otherLibrary 
      */
     compare(otherLibrary) {
@@ -225,6 +225,18 @@ class FileLibraryManager {
     getLibraryFileUrl() {
         // TODO: decide whether this should be put here
     }
+
+    /**
+    * Get URL to file in the specific library
+    * @param {Library} library
+    * @param {string} filename
+    * @return {boolean}
+    */
+    async libraryFileExists(library, filename) {
+        fs.pathExists(`${this._getLibraryPath(library)}/${filename}`);
+    }
+
+
 
     /**
      * Load config for libraries

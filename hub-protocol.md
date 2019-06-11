@@ -95,7 +95,7 @@ Add the following to the output:
 
 get latest library versions (only marked as runnable)
   - return { id, machineName, title, majorVersion, minorVersion, patchVersion, hasIcon, restricted }[]
-
+  
 getUserSpecificContentTypeCache
   - get full content type cache
   - set restricted property if necessary
