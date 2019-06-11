@@ -23,14 +23,18 @@ class ContentTypeCache {
         this.storage = storage;
     }
 
+    async isOutdated() {
+        const lastUpdate = await this.storage.load("contentTypeCacheUpdate");
+        return (!lastUpdate || (Date.now()) - lastUpdate > this.config.contentTypeCacheRefreshInterval)
+    }
+
     /**
      * Checks if the interval between updates has been exceeded and updates the cache if necessary.
      * @returns {boolean} true if cache was updated, false if not
      */
     async updateIfNecessary() {
-        const lastUpdate = await this.storage.load("contentTypeCacheUpdate");
         const oldCache = await this.storage.load("contentTypeCache");
-        if (!lastUpdate || !oldCache || (Date.now()) - lastUpdate > this.config.contentTypeCacheRefreshInterval) {
+        if (!oldCache || await this.isOutdated()) {
             await this.forceUpdate();
             return true;
         }
@@ -88,7 +92,7 @@ class ContentTypeCache {
             disabled: this.config.fetchingDisabled,
             local_id: ContentTypeCache._generateLocalId(),
             type: this.config.siteType,
-            core_api_version: this.config.coreApiVersion
+            core_api_version: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`
         };
     }
 

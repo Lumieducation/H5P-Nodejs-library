@@ -1,3 +1,5 @@
+const path = require('path');
+
 class H5PEditorConfig {
     /**
      * 
@@ -8,7 +10,7 @@ class H5PEditorConfig {
         this.platformName = 'H5P-Editor-NodeJs';
         this.platformVersion = '0.0';
         this.h5pVersion = '1.22';
-        this.coreApiVersion = '1.19';
+        this.coreApiVersion = { major: 1, minor: 19 };
 
         /**
          * Unclear.
@@ -42,6 +44,8 @@ class H5PEditorConfig {
 
         /** Time after which the content type cache is considered to be outdated in milliseconds. */
         this.contentTypeCacheRefreshInterval = 1 * 1000 * 60 * 60 * 24;
+
+        this.libraryPath = `${path.resolve('')}/h5p/libraries`;
     }
 
     /**
@@ -66,7 +70,7 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("siteType");
         await this.loadSettingFromStorage("sendUsageStatistics");
         await this.loadSettingFromStorage("contentTypeCacheRefreshInterval");
-      }
+    }
 
     async save() {
         await this.saveSettingToStorage("fetchingDisabled");
