@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 
 class Library {
     constructor(machineName, major, minor, patch) {
-        this.machineName = this.machineName;
+        this.machineName = machineName;
         this.major = major;
         this.minor = minor;
         this.patch = patch;
@@ -71,7 +71,23 @@ class FileLibraryManager {
      * values are arrays of Library objects, which represent the different versions installed of this library. 
      */
     async getInstalled() {
+        const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
+        const libraryDirectories = await fs.readdir(this.config.libraryPath);
+        const libraries = libraryDirectories.filter(name => nameRegex.test(name))
+            .map(name => {
+                const result = nameRegex.exec(name);
+                return new Library(result[1], result[2], result[3]);
+            });
 
+        const returnObject = {};
+        // eslint-disable-next-line no-restricted-syntax
+        for (const library of libraries) {
+            if (!returnObject[library.machineName]) {
+                returnObject[library.machineName] = [];
+            }
+            returnObject[library.machineName].push(library);
+        }
+        return returnObject;
     }
 
     /**
@@ -164,3 +180,5 @@ class FileLibraryManager {
         // TODO: find out what this does
     }
 }
+
+module.exports = FileLibraryManager;
