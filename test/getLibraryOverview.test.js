@@ -1,85 +1,47 @@
 const H5PEditor = require('../src');
 
-describe('getLibraryOverview: response', () => {
-    it('includes the uberName', done => {
-        const h5pEditor = new H5PEditor({
-            loadLibrary: () =>
-                Promise.resolve({
-                    machineName: 'H5P.Image',
-                    majorVersion: '1',
-                    minorVersion: '1'
-                })
-        });
+describe('getting overview about multiple libraries', () => {
 
-        h5pEditor.getLibraryOverview(['H5P.Image 1.1']).then(libraries => {
-            expect(libraries[0].uberName).toBe('H5P.Image-1.1');
-            done();
-        });
-    });
+    it('returns basic information about single library', () => {
+        return new H5PEditor({
+            loadLibrary: (machineName, majorVersion, minorVersion) => Promise.resolve({
+                machineName,
+                majorVersion,
+                minorVersion,
+                title: 'the title',
+                runnable: 'the runnable',
+            })
+        })
+            .getLibraryOverview(['Foo.Bar 4.2'])
 
-    it('includes the majorVersion', done => {
-        const h5pEditor = new H5PEditor({
-            loadLibrary: () =>
-                Promise.resolve({
-                    machineName: 'H5P.Image',
-                    majorVersion: '1',
-                    minorVersion: '1'
-                })
-        });
+            .then(libraries =>
+                expect(libraries).toEqual([
+                    {
+                        uberName: 'Foo.Bar-4.2',
+                        name: 'Foo.Bar',
+                        majorVersion: '4',
+                        minorVersion: '2',
+                        tutorialUrl: '',
+                        title: 'the title',
+                        runnable: 'the runnable',
+                        restricted: false,
+                        metadataSettings: null
+                    }
+                ]))
+    })
 
-        h5pEditor.getLibraryOverview(['H5P.Image 1.1']).then(libraries => {
-            expect(libraries[0].majorVersion).toBe('1');
-            done();
-        });
-    });
-
-    it('includes the minorVersion', done => {
-        const h5pEditor = new H5PEditor({
-            loadLibrary: () =>
-                Promise.resolve({
-                    machineName: 'H5P.Image',
-                    majorVersion: '1',
-                    minorVersion: '1'
-                })
-        });
-
-        h5pEditor.getLibraryOverview(['H5P.Image 1.1']).then(libraries => {
-            expect(libraries[0].minorVersion).toBe('1');
-            done();
-        });
-    });
-
-    it('includes the machineName as name', done => {
-        const h5pEditor = new H5PEditor({
-            loadLibrary: () =>
-                Promise.resolve({
-                    machineName: 'H5P.Image',
-                    majorVersion: '1',
-                    minorVersion: '1'
-                })
-        });
-
-        h5pEditor.getLibraryOverview(['H5P.Image 1.1']).then(libraries => {
-            expect(libraries[0].name).toBe('H5P.Image');
-            done();
-        });
-    });
-
-    it('resolves multiple libraries', done => {
-        const h5pEditor = new H5PEditor({
+    it('return information about multiple libraries', () => {
+        return new H5PEditor({
             loadLibrary: (machineName, majorVersion, minorVersion) =>
-                Promise.resolve({
-                    machineName,
-                    majorVersion,
-                    minorVersion
-                })
-        });
-
-        h5pEditor
+                Promise.resolve({ machineName, majorVersion, minorVersion })
+        })
             .getLibraryOverview(['H5P.Image 1.1', 'H5P.Video 1.5'])
+
             .then(libraries => {
-                expect(libraries.length).toBe(2);
-                done();
+                expect(libraries.map(l => l.uberName)).toEqual([
+                    'H5P.Image-1.1',
+                    'H5P.Video-1.5'
+                ]);
             });
     });
 });
