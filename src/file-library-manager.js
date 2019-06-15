@@ -22,6 +22,14 @@ class Library {
         return this.title < otherLibrary.title || this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion;
     }
 
+    /**
+     * Compares by giving precedence to Title, then major version, then minor version 
+     * @param {Library} otherLibrary 
+     */
+    compareVersions(otherLibrary) {
+        return this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion || this.patchVersion < otherLibrary.patchVersion;
+    }
+
     getDirName() {
         return `${this.machineName}-${this.majorVersion}.${this.minorVersion}`;
     }
@@ -169,6 +177,16 @@ class FileLibraryManager {
      * @return boolean
      */
     async libraryHasUpgrade(library) {
+        const wrappedLibraryInfos = await this.getInstalled(library.machineName);
+        if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName] || !wrappedLibraryInfos[library.machineName].length === 0) {
+            return false;
+        }
+        const allInstalledLibsOfMachineName = wrappedLibraryInfos[library.machineName].sort((a, b) => a.compareVersions(b));
+        const highestLocalLibVersion = allInstalledLibsOfMachineName[allInstalledLibsOfMachineName.length - 1];
+        if (highestLocalLibVersion.compareVersions(library) < 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

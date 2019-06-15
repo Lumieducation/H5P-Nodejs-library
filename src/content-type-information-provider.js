@@ -16,6 +16,7 @@ class ContentTypeInformationProvider {
     }
 
     async get() {
+        await this.contentTypeCache.updateIfNecessary();
         let cachedHubInfo = await this.contentTypeCache.get()
         cachedHubInfo = await this.addUserAndInstallationSpecificInfo(cachedHubInfo);
         cachedHubInfo = await this.addLocalLibraries(cachedHubInfo);
@@ -60,7 +61,34 @@ class ContentTypeInformationProvider {
         return hubInfo.concat(localLibs);
     }
 
+    /**
+     * 
+     * @param {any[]} hubInfo 
+     */
     async addUserAndInstallationSpecificInfo(hubInfo) {
+        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibs = Object.keys(localLibsWrapped)
+            .map(machineName => localLibsWrapped[machineName][localLibsWrapped[machineName].length - 1]);
+        await Promise.all(hubInfo.map(async hl => {
+            const hubLib = hl; // to avoid eslint from complaining about changing function parameters
+            const localLib = localLibs.find(l => l.machineName === hubLib.machineName);
+            if (!localLib) {
+                hubLib.installed = false;
+                hubLib.restricted = false;
+                hubLib.canInstall = this.user.canInstall;
+                hubLib.isUpToDate = true;
+            } else {
+                hubLib.id = localLib.id;
+                hubLib.installed = true;
+                hubLib.restricted = localLib.restricted && !this.user.canUseRestricted;
+                hubLib.canInstall = !localLib.restricted && this.user.canInstall;
+                hubLib.isUpToDate = await this.libraryManager.libraryHasUpgrade(hubLib);
+                hubLib.localMajorVersion = localLib.majorVersion;
+                hubLib.localMinorVersion = localLib.minorVersion;
+                hubLib.localPatchVersion = localLib.patchVersion;
+            }
+        }));
+
         return hubInfo;
     }
 }

@@ -1,16 +1,19 @@
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
-const defaultContentTypeCache = require('./content_type_cache');
+
+const ContentTypeCache = require('../src/content-type-cache');
+const ContentTypeInformationProvider = require('../src/content-type-information-provider');
 
 class H5PEditor {
-    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=') {
+    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', storage2, config, libraryManager, user) {
         this.storage = storage;
         this.renderer = defaultRenderer;
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
         this.ajaxPath = ajaxPath;
-        this.defaultContentTypeCache = defaultContentTypeCache;
+        this.contentTypeCache = new ContentTypeCache(config, storage2);
+        this.contentTypeProvider = new ContentTypeInformationProvider(this.contentTypeCache, storage2, libraryManager, config, user);
     }
 
     render() {
@@ -53,10 +56,8 @@ class H5PEditor {
             });
     }
 
-    contentTypeCache() {
-        return new Promise(resolve => {
-            resolve(this.defaultContentTypeCache);
-        });
+    getContentTypeCache() {
+        return this.contentTypeProvider.get();
     }
 
     _coreScripts() {
