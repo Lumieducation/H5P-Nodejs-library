@@ -10,3 +10,5 @@ class User {
         this.type = 'local';
     }
 }
+
+module.exports = User;

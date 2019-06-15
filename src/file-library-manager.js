@@ -223,6 +223,7 @@ class FileLibraryManager {
     * @return string URL to file
     */
     getLibraryFileUrl() {
+        return "";
         // TODO: decide whether this should be put here
     }
 
@@ -235,8 +236,6 @@ class FileLibraryManager {
     async libraryFileExists(library, filename) {
         fs.pathExists(`${this._getLibraryPath(library)}/${filename}`);
     }
-
-
 
     /**
      * Load config for libraries

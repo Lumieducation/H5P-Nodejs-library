@@ -17,8 +17,8 @@ class ContentTypeInformationProvider {
 
     async get() {
         let cachedHubInfo = await this.contentTypeCache.get()
-        cachedHubInfo = this.addUserAndInstallationSpecificInfo(cachedHubInfo);
-        cachedHubInfo = this.addLocalLibraries(cachedHubInfo);
+        cachedHubInfo = await this.addUserAndInstallationSpecificInfo(cachedHubInfo);
+        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo);
 
         return {
             outdated: await this.contentTypeCache.isOutdated(),
@@ -34,7 +34,8 @@ class ContentTypeInformationProvider {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         let localLibs = Object.keys(localLibsWrapped)
             .map(machineName => localLibsWrapped[machineName][localLibsWrapped[machineName].length - 1])
-            .filter(lib => !hubInfo.some(hubLib => hubLib.machineName === lib.machineName))
+            .filter(lib => !hubInfo.some(hubLib => hubLib.machineName === lib.machineName)
+                && lib.runnable)
             .map(async localLib => {
                 return {
                     id: localLib.id,
@@ -51,15 +52,17 @@ class ContentTypeInformationProvider {
                     installed: true,
                     isUpToDate: true,
                     owner: '',
-                    restricted: localLib.restricted, // TODO: adapt to individual user
-                    icon: await this.libraryManager.libraryFileExists('icon.svg') ? this.libraryManager.getLibraryFileUrl('icon.svg') : undefined
+                    restricted: localLib.restricted && !this.user.canUseRestricted,
+                    icon: await this.libraryManager.libraryFileExists(localLib, 'icon.svg') ? this.libraryManager.getLibraryFileUrl('icon.svg') : undefined
                 }
             });
-        localLibs = await Promise.all(localLibs);             
+        localLibs = await Promise.all(localLibs);
         return hubInfo.concat(localLibs);
     }
 
-    addUserAndInstallationSpecificInfo(hubInfo) {
+    async addUserAndInstallationSpecificInfo(hubInfo) {
         return hubInfo;
     }
 }
+
+module.exports = ContentTypeInformationProvider;

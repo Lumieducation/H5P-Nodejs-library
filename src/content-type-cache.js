@@ -127,7 +127,33 @@ class ContentTypeCache {
             throw new Error("Could not fetch content type information from the H5P Hub.");
         }
 
-        return response.data;
+        return response.data.contentTypes.map(ContentTypeCache.mapCacheEntryToLocalFormat);
+    }
+
+    static mapCacheEntryToLocalFormat(entry) {
+        return {
+            machineName: entry.id,
+            majorVersion: entry.version.major,
+            minorVersion: entry.version.minor,
+            patchVersion: entry.version.patch,
+            h5pMajorVersion: entry.coreApiVersionNeeded.major,
+            h5pMinorVersion: entry.coreApiVersionNeeded.minor,
+            title: entry.title,
+            summary: entry.summary,
+            description: entry.description,
+            icon: entry.icon,
+            createdAt: Date.parse(entry.createdAt),
+            updatedAt: Date.parse(entry.updatedAt),
+            isRecommended: entry.isRecommended,
+            popularity: entry.popularity,
+            screenshot: entry.screenshot,
+            license: entry.license,
+            owner: entry.owner,
+            example: entry.example,
+            tutorial: entry.tutorial || '',
+            keywords: entry.keywords || [],
+            categories: entry.categories || [],
+        };
     }
 
     /**
