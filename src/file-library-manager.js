@@ -1,7 +1,9 @@
 const fs = require('fs-extra');
 const { crc32 } = require('crc');
 
-
+/**
+ * Stores information about H5P libraries.
+ */
 class Library {
     constructor(machineName, major, minor, patch) {
         this.machineName = machineName;
@@ -15,7 +17,7 @@ class Library {
     }
 
     /**
-     * Compares by giving precedence to Title, then major version, then minor version 
+     * Compares libraries by giving precedence to title, then major version, then minor version 
      * @param {Library} otherLibrary 
      */
     compare(otherLibrary) {
@@ -23,25 +25,27 @@ class Library {
     }
 
     /**
-     * Compares by giving precedence to Title, then major version, then minor version 
+     * Compares libraries by giving precedence to major version, then minor version, then patch version. 
      * @param {Library} otherLibrary 
      */
     compareVersions(otherLibrary) {
         return this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion || this.patchVersion < otherLibrary.patchVersion;
     }
 
+    /**
+     * Returns the directory name that is used for this library (e.g. H5P.ExampleLibrary-1.0)
+     */
     getDirName() {
         return `${this.machineName}-${this.majorVersion}.${this.minorVersion}`;
     }
 }
 
 /**
- * This class manages library installation etc.
+ * This class manages library installations, enumerating installed libraries etc.
  */
 class FileLibraryManager {
     /**
-     * 
-     * @param {H5PEditorConfig} config 
+     * @param {H5PEditorConfig} config The configuration of the editor.
      */
     constructor(config) {
         this.config = config;
@@ -92,8 +96,8 @@ class FileLibraryManager {
     }
 
     /**
-     * Get a list of the current installed libraries
-     * @param {String[]} machineNames only return results for the machines names in the list
+     * Get a list of the currently installed libraries.
+     * @param {String[]?} machineNames (if supplied) only return results for the machines names in the list
      * @returns An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library. 
      */
@@ -117,11 +121,9 @@ class FileLibraryManager {
                 lib2.title = info.title;
                 return lib2;
             });
-        libraries = (await Promise.all(libraries))
-            .sort((lib1, lib2) => lib1.compare(lib2));
+        libraries = (await Promise.all(libraries)).sort((lib1, lib2) => lib1.compare(lib2));
 
         const returnObject = {};
-        // eslint-disable-next-line no-restricted-syntax
         for (const library of libraries) {
             if (!returnObject[library.machineName]) {
                 returnObject[library.machineName] = [];
@@ -133,9 +135,8 @@ class FileLibraryManager {
 
     /**
      * Is the library a patched version of an existing library?
-     *
-     * @param {Library} library
-     * @returns {boolean} TRUE if the library is a patched version of an existing library, FALSE otherwise
+     * @param {Library} library The library the check
+     * @returns {boolean} true if the library is a patched version of an existing library, false otherwise
      */
     async isPatchedLibrary(library) {
         const wrappedLibraryInfos = await this.getInstalled(library.machineName);
@@ -156,11 +157,10 @@ class FileLibraryManager {
     }
 
     /**
-     * Get id to an existing library.
+     * Get id to an existing installed library.
      * If version number is not specified, the newest version will be returned.
-     *
      * @param {Library} library Note that patch version is ignored.
-     * @returns {number} The id of the specified library or undefined
+     * @returns {number} The id of the specified library or undefined (if not installed).
      */
     async getId(library) {
         const libraryPath = this._getLibraryPath(library);
@@ -171,10 +171,9 @@ class FileLibraryManager {
     }
 
     /**
-     * Checks if the given library has a higher version.
-     *
-     * @param {Library} library
-     * @return boolean
+     * Checks if the given library has a higher version than the highest installed version.
+     * @param {Library} library to compare against the highest locally installed version.
+     * @returns {boolean} true if the passed library contains a version that is higher than the highest installed version, false otherwise
      */
     async libraryHasUpgrade(library) {
         const wrappedLibraryInfos = await this.getInstalled(library.machineName);
@@ -190,9 +189,9 @@ class FileLibraryManager {
     }
 
     /**
-     * 
-     * @param {Library} library
-     * @returns {Promise<ILibrary>} or undefined
+     * Returns the information about the library that is contained in library.json.
+     * @param {Library} library The library to get (machineName, majorVersion and minorVersion is enough)
+     * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
      */
     async loadLibrary(library) {
         const libraryInfo = await fs.readJSON(this._getLibraryPath(library));
@@ -236,20 +235,20 @@ class FileLibraryManager {
 
     /**
     * Get URL to file in the specific library
-    * @param string $libraryFolderName
-    * @param string $fileName
-    * @return string URL to file
+    * @param {Library} library
+    * @param {string} filename
+    * @returns {string} URL to file
     */
-    getLibraryFileUrl() {
+    getLibraryFileUrl(library, filename) {
         return "";
         // TODO: decide whether this should be put here
     }
 
     /**
-    * Get URL to file in the specific library
-    * @param {Library} library
+    * Check if the library contains a file
+    * @param {Library} library The library to check
     * @param {string} filename
-    * @return {boolean}
+    * @return {boolean} true if file exists in library, false otherwise
     */
     async libraryFileExists(library, filename) {
         fs.pathExists(`${this._getLibraryPath(library)}/${filename}`);
@@ -257,7 +256,6 @@ class FileLibraryManager {
 
     /**
      * Load config for libraries
-     *
      * @param array $libraries
      * @return array
      */
@@ -266,8 +264,9 @@ class FileLibraryManager {
     }
 
     /**
-     * 
+     * Gets the path of the file 'library.json' of the specified library.
      * @param {Library} library 
+     * @returns {string} the path to 'library.json'
      */
     _getLibraryPath(library) {
         return `${this.config.libraryPath}/${library.getDirName()}/library.json`;

@@ -1,3 +1,6 @@
+/**
+ * Stores objects in memory.
+ */
 class InMemoryStorage {
     constructor() {
         this._storage = {};

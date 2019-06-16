@@ -3,7 +3,7 @@ const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
 
 const ContentTypeCache = require('../src/content-type-cache');
-const ContentTypeInformationProvider = require('../src/content-type-information-provider');
+const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 
 class H5PEditor {
     constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', storage2, config, libraryManager, user) {
@@ -13,7 +13,7 @@ class H5PEditor {
         this.translation = defaultTranslation;
         this.ajaxPath = ajaxPath;
         this.contentTypeCache = new ContentTypeCache(config, storage2);
-        this.contentTypeProvider = new ContentTypeInformationProvider(this.contentTypeCache, storage2, libraryManager, config, user);
+        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, storage2, libraryManager, config, user);
     }
 
     render() {
@@ -57,7 +57,7 @@ class H5PEditor {
     }
 
     getContentTypeCache() {
-        return this.contentTypeProvider.get();
+        return this.contentTypeRepository.get();
     }
 
     _coreScripts() {

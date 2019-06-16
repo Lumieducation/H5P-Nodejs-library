@@ -23,6 +23,10 @@ class ContentTypeCache {
         this.storage = storage;
     }
 
+    /**
+     * Checks if the cache is not up to date anymore (update interval exceeded).
+     * @returns {boolean} true if cache is outdated, false if not
+     */
     async isOutdated() {
         const lastUpdate = await this.storage.load("contentTypeCacheUpdate");
         return (!lastUpdate || (Date.now()) - lastUpdate > this.config.contentTypeCacheRefreshInterval)
@@ -45,13 +49,15 @@ class ContentTypeCache {
      * Downloads the content type information from the H5P Hub and stores it in the storage object.
      */
     async forceUpdate() {
-        const cache = await this._downloadContentTypesFromHub();
+        const cache = (await this._downloadContentTypesFromHub())
+          .map(ContentTypeCache._convertCacheEntryToLocalFormat);
         await this.storage.save("contentTypeCache", cache);
         await this.storage.save("contentTypeCacheUpdate", Date.now());
     }
 
     /**
      * Returns the cache data.
+     * @returns Cached hub data in a format in which the version objects are flattened into the main object, 
      */
     async get() {
         return this.storage.load("contentTypeCache");
@@ -127,10 +133,14 @@ class ContentTypeCache {
             throw new Error("Could not fetch content type information from the H5P Hub.");
         }
 
-        return response.data.contentTypes.map(ContentTypeCache.mapCacheEntryToLocalFormat);
+        return response.data.contentTypes;
     }
 
-    static mapCacheEntryToLocalFormat(entry) {
+    /**
+     * Converts an entry from the H5P Hub into a format witch flattened versions and integer date values.
+     * @param {object} entry 
+     */
+    static _convertCacheEntryToLocalFormat(entry) {
         return {
             machineName: entry.id,
             majorVersion: entry.version.major,
@@ -146,7 +156,7 @@ class ContentTypeCache {
             updatedAt: Date.parse(entry.updatedAt),
             isRecommended: entry.isRecommended,
             popularity: entry.popularity,
-            screenshot: entry.screenshot,
+            screenshots: entry.screenshots,
             license: entry.license,
             owner: entry.owner,
             example: entry.example,

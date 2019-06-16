@@ -1,4 +1,13 @@
-class ContentTypeInformationProvider {
+/**
+ * This class provides access to information about content types that are either available at the H5P Hub
+ * or were installed locally. It is used by the editor to display the list of available content types. Technically
+ * it fulfills the same functionality as the "ContentTypeCache" in the original PHP implementation, but it has been
+ * renamed in the NodeJS version, as it provides more functionality than just caching the information from the Hub:
+ *   - it checks if the current user has the rights to update or install a content type
+ *   - it checks if a content type in the Hub is installed locally and is outdated locally
+ *   - it adds information about only locally installed content types
+ */
+class ContentTypeInformationRepository {
     /**
      * 
      * @param {ContentTypeCache} contentTypeCache 
@@ -15,6 +24,9 @@ class ContentTypeInformationProvider {
         this.user = user;
     }
 
+    /**
+     * Gets the information about available content types with all the extra information as listen in the class description.
+     */
     async get() {
         await this.contentTypeCache.updateIfNecessary();
         let cachedHubInfo = await this.contentTypeCache.get()
@@ -31,6 +43,12 @@ class ContentTypeInformationProvider {
         };
     }
 
+    /**
+     * 
+     * @param {any[]} hubInfo
+     * @returns {any[]} The original hub information as passed into the method with appended information about 
+     * locally installed libraries.  
+     */
     async addLocalLibraries(hubInfo) {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         let localLibs = Object.keys(localLibsWrapped)
@@ -62,8 +80,9 @@ class ContentTypeInformationProvider {
     }
 
     /**
-     * 
+     * Adds information about installation status, restriction, right to install and up-to-dateness.
      * @param {any[]} hubInfo 
+     * @returns {any[]} The hub information as passed into the method with added information. 
      */
     async addUserAndInstallationSpecificInfo(hubInfo) {
         const localLibsWrapped = await this.libraryManager.getInstalled();
@@ -93,4 +112,4 @@ class ContentTypeInformationProvider {
     }
 }
 
-module.exports = ContentTypeInformationProvider;
+module.exports = ContentTypeInformationRepository;

@@ -1,5 +1,5 @@
 /**
- * Example User Object
+ * Example user object
  */
 class User {
     constructor() {
