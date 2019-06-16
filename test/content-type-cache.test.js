@@ -1,6 +1,6 @@
 const ContentTypeCache = require('../src/content-type-cache');
 const H5PEditorConfig = require('../src/config');
-const InMemoryStorage = require('../src/in-memory-storage');
+const InMemoryStorage = require('./mockups/in-memory-storage');
 
 describe('registering the site at H5P Hub', () => {
     it('returns a uuid', async () => {

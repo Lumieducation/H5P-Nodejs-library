@@ -1,54 +1,17 @@
 const fs = require('fs-extra');
 const { crc32 } = require('crc');
 
-/**
- * Stores information about H5P libraries.
- */
-class Library {
-    constructor(machineName, major, minor, patch) {
-        this.machineName = machineName;
-        this.majorVersion = major;
-        this.minorVersion = minor;
-        this.patchVersion = patch;
-        this.id = undefined;
-        this.title = undefined;
-        this.runnable = undefined;
-        this.restricted = undefined;
-    }
-
-    /**
-     * Compares libraries by giving precedence to title, then major version, then minor version 
-     * @param {Library} otherLibrary 
-     */
-    compare(otherLibrary) {
-        return this.title < otherLibrary.title || this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion;
-    }
-
-    /**
-     * Compares libraries by giving precedence to major version, then minor version, then patch version. 
-     * @param {Library} otherLibrary 
-     */
-    compareVersions(otherLibrary) {
-        return this.majorVersion < otherLibrary.majorVersion || this.minorVersion < otherLibrary.minorVersion || this.patchVersion < otherLibrary.patchVersion;
-    }
-
-    /**
-     * Returns the directory name that is used for this library (e.g. H5P.ExampleLibrary-1.0)
-     */
-    getDirName() {
-        return `${this.machineName}-${this.majorVersion}.${this.minorVersion}`;
-    }
-}
+const Library = require('../../src/library');
 
 /**
  * This class manages library installations, enumerating installed libraries etc.
  */
 class FileLibraryManager {
     /**
-     * @param {H5PEditorConfig} config The configuration of the editor.
+     * @param {string} librariesDirectory The path of the directory in the file system at which libraries are stored.
      */
-    constructor(config) {
-        this.config = config;
+    constructor(librariesDirectory) {
+      this._librariesDirectory = librariesDirectory;
     }
 
     /**
@@ -103,7 +66,7 @@ class FileLibraryManager {
      */
     async getInstalled(...machineNames) {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
-        const libraryDirectories = await fs.readdir(this.config.libraryPath);
+        const libraryDirectories = await fs.readdir(this._librariesDirectory);
         let libraries = libraryDirectories
             .filter(name => nameRegex.test(name))
             .map(name => {
@@ -269,7 +232,7 @@ class FileLibraryManager {
      * @returns {string} the path to 'library.json'
      */
     _getLibraryPath(library) {
-        return `${this.config.libraryPath}/${library.getDirName()}/library.json`;
+        return `${this._librariesDirectory}/${library.getDirName()}/library.json`;
     }
 }
 

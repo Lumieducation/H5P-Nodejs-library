@@ -1,5 +1,7 @@
-const path = require('path');
-
+/**
+ * Stores configuration options and literals that are used throughout the system.
+ * Also loads and saves the configuration of changeable values (not all are) in the storage object.
+ */
 class H5PEditorConfig {
     /**
      * 
@@ -44,12 +46,10 @@ class H5PEditorConfig {
 
         /** Time after which the content type cache is considered to be outdated in milliseconds. */
         this.contentTypeCacheRefreshInterval = 1 * 1000 * 60 * 60 * 24;
-
-        this.libraryPath = `${path.resolve('')}/h5p/libraries`;
     }
 
     /**
-     * 
+     * Loads a settings from the storage interface.
      * @param {string} settingName 
      */
     async loadSettingFromStorage(settingName) {
@@ -57,13 +57,16 @@ class H5PEditorConfig {
     }
 
     /**
-     * 
+     * Saves a setting to the storage interface.
      * @param {string} settingName 
      */
     async saveSettingToStorage(settingName) {
         await this._storage.save(settingName, this[settingName]);
     }
 
+    /**
+     * Loads all changeable settings from storage. (Should be called when the system initializes.)
+     */
     async load() {
         await this.loadSettingFromStorage("fetchingDisabled");
         await this.loadSettingFromStorage("uuid");
@@ -72,6 +75,9 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("contentTypeCacheRefreshInterval");
     }
 
+    /**
+     * Saves all changeable settings to storage. (Should be called when a setting was changed.)
+     */
     async save() {
         await this.saveSettingToStorage("fetchingDisabled");
         await this.saveSettingToStorage("uuid");

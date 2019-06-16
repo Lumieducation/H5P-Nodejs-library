@@ -6,11 +6,16 @@ const qs = require('qs');
 /**
  * This class caches the information about the content types on the H5P Hub.
  * 
- * Get the content type information by calling get(). 
- * The method updateIfNecessary() should be called regularly, e.g. through a cron-job.
- * Use contentTypeCacheRefreshInterval in the H5PEditorConfig object to set how often
- * the update should be performed. You can also use forceUpdate() if you want to bypass the 
- * interval. 
+ * IT DOES NOT exactly correspond to the ContentTypeCache of the original PHP implementation,
+ * as it only caches the data (and converts it to a local format). It DOES NOT add information
+ * about locally installed libraries and user rights. ContentTypeInformationRepository is meant to do this. 
+ * 
+ * Usage:
+ * - Get the content type information by calling get(). 
+ * - The method updateIfNecessary() should be called regularly, e.g. through a cron-job.
+ * - Use contentTypeCacheRefreshInterval in the H5PEditorConfig object to set how often
+ *   the update should be performed. You can also use forceUpdate() if you want to bypass the 
+ *   interval. 
  */
 class ContentTypeCache {
     /**

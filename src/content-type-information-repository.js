@@ -101,7 +101,7 @@ class ContentTypeInformationRepository {
                 hubLib.installed = true;
                 hubLib.restricted = localLib.restricted && !this.user.canUseRestricted;
                 hubLib.canInstall = !localLib.restricted && this.user.canInstall;
-                hubLib.isUpToDate = await this.libraryManager.libraryHasUpgrade(hubLib);
+                hubLib.isUpToDate = !(await this.libraryManager.libraryHasUpgrade(hubLib));
                 hubLib.localMajorVersion = localLib.majorVersion;
                 hubLib.localMinorVersion = localLib.minorVersion;
                 hubLib.localPatchVersion = localLib.patchVersion;
