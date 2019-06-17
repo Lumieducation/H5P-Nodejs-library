@@ -24,8 +24,8 @@ class ContentTypeCache {
      * @param {IStorage} storage The storage object.
      */
     constructor(config, storage) {
-        this.config = config;
-        this.storage = storage;
+        this._config = config;
+        this._storage = storage;
     }
 
     /**
@@ -33,8 +33,8 @@ class ContentTypeCache {
      * @returns {boolean} true if cache is outdated, false if not
      */
     async isOutdated() {
-        const lastUpdate = await this.storage.load("contentTypeCacheUpdate");
-        return (!lastUpdate || (Date.now()) - lastUpdate > this.config.contentTypeCacheRefreshInterval)
+        const lastUpdate = await this._storage.load("contentTypeCacheUpdate");
+        return (!lastUpdate || (Date.now()) - lastUpdate > this._config.contentTypeCacheRefreshInterval)
     }
 
     /**
@@ -42,7 +42,7 @@ class ContentTypeCache {
      * @returns {boolean} true if cache was updated, false if not
      */
     async updateIfNecessary() {
-        const oldCache = await this.storage.load("contentTypeCache");
+        const oldCache = await this._storage.load("contentTypeCache");
         if (!oldCache || await this.isOutdated()) {
             await this.forceUpdate();
             return true;
@@ -56,8 +56,8 @@ class ContentTypeCache {
     async forceUpdate() {
         const cache = (await this._downloadContentTypesFromHub())
           .map(ContentTypeCache._convertCacheEntryToLocalFormat);
-        await this.storage.save("contentTypeCache", cache);
-        await this.storage.save("contentTypeCacheUpdate", Date.now());
+        await this._storage.save("contentTypeCache", cache);
+        await this._storage.save("contentTypeCacheUpdate", Date.now());
     }
 
     /**
@@ -65,7 +65,7 @@ class ContentTypeCache {
      * @returns Cached hub data in a format in which the version objects are flattened into the main object, 
      */
     async get() {
-        return this.storage.load("contentTypeCache");
+        return this._storage.load("contentTypeCache");
     }
 
     /**
@@ -75,10 +75,10 @@ class ContentTypeCache {
      * @returns {string} uuid
      */
     async _registerOrGetUuid() {
-        if (this.config.uuid) {
-            return this.config.uuid;
+        if (this._config.uuid) {
+            return this._config.uuid;
         }
-        const response = await axios.post(this.config.hubRegistrationEndpoint,
+        const response = await axios.post(this._config.hubRegistrationEndpoint,
             this._compileRegistrationData());
         if (response.status !== 200) {
             throw new Error(`Could not register this site at the H5P Hub. HTTP status ${response.status} ${response.statusText}`);
@@ -86,9 +86,9 @@ class ContentTypeCache {
         if (!response.data || !response.data.uuid) {
             throw new Error("Could not register this site at the H5P Hub.");
         }
-        this.config.uuid = response.data.uuid;
-        await this.config.save();
-        return this.config.uuid;
+        this._config.uuid = response.data.uuid;
+        await this._config.save();
+        return this._config.uuid;
     }
 
     /**
@@ -96,14 +96,14 @@ class ContentTypeCache {
      */
     _compileRegistrationData() {
         return {
-            uuid: this.config.uuid,
-            platform_name: this.config.platformName,
-            platform_version: this.config.platformVersion,
-            h5p_version: this.config.h5pVersion,
-            disabled: this.config.fetchingDisabled,
+            uuid: this._config.uuid,
+            platform_name: this._config.platformName,
+            platform_version: this._config.platformVersion,
+            h5p_version: this._config.h5pVersion,
+            disabled: this._config.fetchingDisabled,
             local_id: ContentTypeCache._generateLocalId(),
-            type: this.config.siteType,
-            core_api_version: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`
+            type: this._config.siteType,
+            core_api_version: `${this._config.coreApiVersion.major}.${this._config.coreApiVersion.minor}`
         };
     }
 
@@ -126,11 +126,11 @@ class ContentTypeCache {
     async _downloadContentTypesFromHub() {
         await this._registerOrGetUuid();
         let formData = this._compileRegistrationData();
-        if (this.config.sendUsageStatistics) {
+        if (this._config.sendUsageStatistics) {
             formData = merge.recursive(true, formData, this._compileUsageStatistics());
         }
 
-        const response = await axios.post(this.config.hubContentTypesEndpoint, qs.stringify(formData));
+        const response = await axios.post(this._config.hubContentTypesEndpoint, qs.stringify(formData));
         if (response.status !== 200) {
             throw new Error(`Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`);
         }

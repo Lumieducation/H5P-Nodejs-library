@@ -1,4 +1,4 @@
-const path = require('path');
+
 const MockAdapter = require('axios-mock-adapter');
 const axios = require('axios');
 
@@ -11,11 +11,11 @@ const User = require('./mockups/user');
 
 const axiosMock = new MockAdapter(axios);
 
-describe('basic file library manager functionality', () => {
-    it('returns the list of installed library in demo directory', async () => {
+describe('content type information repository', () => {
+    it('gets content types from hub', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/h5p/libraries`);
+        const libManager = new FileLibraryManager(`${__dirname}/data`);
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
@@ -25,6 +25,21 @@ describe('basic file library manager functionality', () => {
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
-        expect(content).toBeDefined();
+        expect(content.outdated).toBe(false);
+        expect(content.libraries.length).toEqual(require('./data/real-content-types.json').contentTypes.length);
+    });
+    it('doesn\'t fail if update wasn\'t called', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+        const libManager = new FileLibraryManager(`${__dirname}/data`);
+        const cache = new ContentTypeCache(config, storage);
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/real-content-types.json'));
+
+        const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
+        const content = await repository.get();
+        expect(content.outdated).toBe(false);
+        expect(content.libraries.length).toEqual(require('./data/real-content-types.json').contentTypes.length);
     });
 });

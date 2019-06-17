@@ -17,28 +17,31 @@ class ContentTypeInformationRepository {
      * @param {IUser} user 
      */
     constructor(contentTypeCache, storage, libraryManager, config, user) {
-        this.contentTypeCache = contentTypeCache;
-        this.storage = storage;
-        this.libraryManager = libraryManager;
-        this.config = config;
-        this.user = user;
+        this._contentTypeCache = contentTypeCache;
+        this._storage = storage;
+        this._libraryManager = libraryManager;
+        this._config = config;
+        this._user = user;
     }
 
     /**
      * Gets the information about available content types with all the extra information as listen in the class description.
      */
     async get() {
-        await this.contentTypeCache.updateIfNecessary();
-        let cachedHubInfo = await this.contentTypeCache.get()
-        cachedHubInfo = await this.addUserAndInstallationSpecificInfo(cachedHubInfo);
-        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo);
+        let cachedHubInfo = await this._contentTypeCache.get();
+        if(!cachedHubInfo) {
+           await this._contentTypeCache.updateIfNecessary();
+           cachedHubInfo = await this._contentTypeCache.get();
+        }
+        cachedHubInfo = await this._addUserAndInstallationSpecificInfo(cachedHubInfo);
+        cachedHubInfo = await this._addLocalLibraries(cachedHubInfo);
 
         return {
-            outdated: await this.contentTypeCache.isOutdated(),
+            outdated: await this._contentTypeCache.isOutdated(),
             libraries: cachedHubInfo,
-            user: this.user.type,
+            user: this._user.type,
             recentlyUsed: [], // TODO: store this somewhere
-            apiVersion: this.config.coreApiVersion,
+            apiVersion: this._config.coreApiVersion,
             details: null
         };
     }
@@ -49,8 +52,8 @@ class ContentTypeInformationRepository {
      * @returns {any[]} The original hub information as passed into the method with appended information about 
      * locally installed libraries.  
      */
-    async addLocalLibraries(hubInfo) {
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+    async _addLocalLibraries(hubInfo) {
+        const localLibsWrapped = await this._libraryManager.getInstalled();
         let localLibs = Object.keys(localLibsWrapped)
             .map(machineName => localLibsWrapped[machineName][localLibsWrapped[machineName].length - 1])
             .filter(lib => !hubInfo.some(hubLib => hubLib.machineName === lib.machineName)
@@ -71,8 +74,8 @@ class ContentTypeInformationRepository {
                     installed: true,
                     isUpToDate: true,
                     owner: '',
-                    restricted: localLib.restricted && !this.user.canUseRestricted,
-                    icon: await this.libraryManager.libraryFileExists(localLib, 'icon.svg') ? this.libraryManager.getLibraryFileUrl('icon.svg') : undefined
+                    restricted: localLib.restricted && !this._user.canUseRestricted,
+                    icon: await this._libraryManager.libraryFileExists(localLib, 'icon.svg') ? this._libraryManager.getLibraryFileUrl('icon.svg') : undefined
                 }
             });
         localLibs = await Promise.all(localLibs);
@@ -84,8 +87,8 @@ class ContentTypeInformationRepository {
      * @param {any[]} hubInfo 
      * @returns {any[]} The hub information as passed into the method with added information. 
      */
-    async addUserAndInstallationSpecificInfo(hubInfo) {
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+    async _addUserAndInstallationSpecificInfo(hubInfo) {
+        const localLibsWrapped = await this._libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped)
             .map(machineName => localLibsWrapped[machineName][localLibsWrapped[machineName].length - 1]);
         await Promise.all(hubInfo.map(async hl => {
@@ -94,14 +97,14 @@ class ContentTypeInformationRepository {
             if (!localLib) {
                 hubLib.installed = false;
                 hubLib.restricted = false;
-                hubLib.canInstall = this.user.canInstall;
+                hubLib.canInstall = this._user.canInstall;
                 hubLib.isUpToDate = true;
             } else {
                 hubLib.id = localLib.id;
                 hubLib.installed = true;
-                hubLib.restricted = localLib.restricted && !this.user.canUseRestricted;
-                hubLib.canInstall = !localLib.restricted && this.user.canInstall;
-                hubLib.isUpToDate = !(await this.libraryManager.libraryHasUpgrade(hubLib));
+                hubLib.restricted = localLib.restricted && !this._user.canUseRestricted;
+                hubLib.canInstall = !localLib.restricted && this._user.canInstall;
+                hubLib.isUpToDate = !(await this._libraryManager.libraryHasUpgrade(hubLib));
                 hubLib.localMajorVersion = localLib.majorVersion;
                 hubLib.localMinorVersion = localLib.minorVersion;
                 hubLib.localPatchVersion = localLib.patchVersion;
