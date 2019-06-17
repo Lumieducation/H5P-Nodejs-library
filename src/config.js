@@ -22,7 +22,7 @@ class H5PEditorConfig {
         /**
          * Used to identify the running instance when calling the H5P Hub.
          */
-        this.uuid = '80b421c0-7a12-49db-90cf-489845778690'; // TODO: revert to''
+        this.uuid = ''; // TODO: revert to''
 
         /**
          * Unclear.

@@ -29,6 +29,7 @@
     "devDependencies": {
         "@babel/core": "^7.4.4",
         "@babel/preset-env": "^7.4.4",
+        "axios-mock-adapter": "^1.16.0",
         "babel-jest": "^24.7.1",
         "eslint": "^5.16.0",
         "eslint-config-airbnb-base": "^13.1.0",

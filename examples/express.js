@@ -11,6 +11,7 @@ const server = express();
 
 const valueStorage = new InMemoryStorage();
 const config = new H5PEditorConfig(valueStorage);
+config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
 const libraryManager = new FileLibraryManager(`${path.resolve('')}/h5p/libraries`);
 const user = new User();
 

@@ -1,12 +1,19 @@
+const MockAdapter = require('axios-mock-adapter');
+const axios = require('axios');
+
 const ContentTypeCache = require('../src/content-type-cache');
 const H5PEditorConfig = require('../src/config');
 const InMemoryStorage = require('./mockups/in-memory-storage');
+
+const axiosMock = new MockAdapter(axios);
 
 describe('registering the site at H5P Hub', () => {
     it('returns a uuid', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
         const cache = new ContentTypeCache(config);
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
 
         const uuid = await cache._registerOrGetUuid();
         expect(uuid).toBeDefined();
@@ -45,6 +52,9 @@ describe('getting H5P Hub content types', () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
         const cache = new ContentTypeCache(config, storage);
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/real-content-types.json'));
 
         let updated = await cache.updateIfNecessary();
         expect(updated).toEqual(true);
