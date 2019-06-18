@@ -53,6 +53,44 @@ class H5PEditor {
             });
     }
 
+    getLibraryOverview(libraries) {
+        return Promise.all(
+            libraries.map(libraryName => {
+                const {
+                    machineName,
+                    majorVersion,
+                    minorVersion
+                } = this._parseLibraryString(libraryName);
+                return this.storage
+                    .loadLibrary(machineName, majorVersion, minorVersion)
+                    .then(library => {
+                        return {
+                            uberName: `${library.machineName}-${
+                                library.majorVersion
+                            }.${library.minorVersion}`,
+                            name: library.machineName,
+                            majorVersion: library.majorVersion,
+                            minorVersion: library.minorVersion,
+                            tutorialUrl: '',
+                            title: library.title,
+                            runnable: library.runnable,
+                            restricted: false,
+                            metadataSettings: null
+                        };
+                    });
+            })
+        );
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    _parseLibraryString(libraryName) {
+        return {
+            machineName: libraryName.split(' ')[0],
+            majorVersion: libraryName.split(' ')[1].split('.')[0],
+            minorVersion: libraryName.split(' ')[1].split('.')[1]
+        };
+    }
+
     contentTypeCache() {
         return new Promise(resolve => {
             resolve(this.defaultContentTypeCache);
