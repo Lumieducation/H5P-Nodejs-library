@@ -5,9 +5,9 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor({
             loadSemantics: () => Promise.resolve([]),
             loadLibrary: () => {
-                return {
+                return Promise.resolve({
                     editorDependencies: []
-                };
+                });
             }
         });
 
@@ -38,9 +38,9 @@ describe('aggregating data from library folders for the editor', () => {
                 });
             },
             loadLibrary: () => {
-                return {
+                return Promise.resolve({
                     editorDependencies: []
-                };
+                });
             }
         };
 
@@ -62,7 +62,7 @@ describe('aggregating data from library folders for the editor', () => {
             loadLibrary: machineName => {
                 switch (machineName) {
                     case 'H5PEditor.Test':
-                        return {
+                        return Promise.resolve({
                             machineName: 'H5PEditor.test',
                             majorVersion: 1,
                             minorVersion: 0,
@@ -71,9 +71,9 @@ describe('aggregating data from library folders for the editor', () => {
                                     path: 'path/to/test.js'
                                 }
                             ]
-                        };
+                        });
                     default:
-                        return {
+                        return Promise.resolve({
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 2,
@@ -84,7 +84,7 @@ describe('aggregating data from library folders for the editor', () => {
                                     minorVersion: 0
                                 }
                             ]
-                        };
+                        });
                 }
             }
         };
