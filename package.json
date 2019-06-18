@@ -19,7 +19,7 @@
     },
     "author": "Jan Philip Schellenberg",
     "dependencies": {
-        "h5p-nodejs-library": "^0.2.1"
+        "h5p-nodejs-library": "^0.3.0"
     },
     "devDependencies": {
         "@babel/core": "^7.4.4",
