@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
-
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
 const User = require('../test/mockups/user');
+const server = express();
+const bodyParser = require('body-parser');
 const H5PEditor = require('../src');
 
 const server = express();
@@ -21,6 +22,11 @@ const h5pEditor = new H5PEditor(
             return Promise.resolve(
                 require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
             );
+        },
+        loadLibrary: (machineName, majorVersion, minorVersion) => {
+            return Promise.resolve(
+                require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
+            );
         }
     },
     '/h5p',
@@ -33,7 +39,15 @@ const h5pEditor = new H5PEditor(
 
 const h5pRoute = '/h5p';
 
+server.use(bodyParser.json());
+server.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+);
+
 server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
+
 
 server.get('/', (req, res) => {
     h5pEditor.render().then(h5pEditorPage => {
@@ -62,6 +76,17 @@ server.get('/ajax', (req, res) => {
         default:
             res.status(400).end();
             break;
+    }
+});
+
+server.post('/ajax', (req, res) => {
+    const { action } = req.query;
+    switch (action) {
+        case 'libraries':
+        default:
+            h5pEditor.getLibraryOverview(req.body.libraries).then(libraries => {
+                res.status(200).json(libraries);
+            });
     }
 });
 
