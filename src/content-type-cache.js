@@ -30,7 +30,7 @@ class ContentTypeCache {
 
     /**
      * Checks if the cache is not up to date anymore (update interval exceeded).
-     * @returns {boolean} true if cache is outdated, false if not
+     * @returns {Promise<boolean>} true if cache is outdated, false if not
      */
     async isOutdated() {
         const lastUpdate = await this._storage.load("contentTypeCacheUpdate");
@@ -39,7 +39,7 @@ class ContentTypeCache {
 
     /**
      * Checks if the interval between updates has been exceeded and updates the cache if necessary.
-     * @returns {boolean} true if cache was updated, false if not
+     * @returns {Promise<boolean>} true if cache was updated, false if not
      */
     async updateIfNecessary() {
         const oldCache = await this._storage.load("contentTypeCache");
@@ -51,7 +51,7 @@ class ContentTypeCache {
 
     /**
      * Downloads the content type information from the H5P Hub and stores it in the storage object.
-     * @returns {boolean} true if update was done; false if it failed (e.g. because Hub was unreachable)
+     * @returns {Promise<boolean>} true if update was done; false if it failed (e.g. because Hub was unreachable)
      */
     async forceUpdate() {
         let cacheInHubFormat;
@@ -73,7 +73,7 @@ class ContentTypeCache {
 
     /**
      * Returns the cache data.
-     * @returns Cached hub data in a format in which the version objects are flattened into the main object, 
+     * @returns {Promise<any[]>} Cached hub data in a format in which the version objects are flattened into the main object, 
      */
     async get() {
         return this._storage.load("contentTypeCache");
@@ -83,7 +83,7 @@ class ContentTypeCache {
      * If the running site has already been registered at the H5P hub, this method will
      * return the UUID of it. If it hasn't been registered yet, it will do so and store
      * the UUID in the storage object.
-     * @returns {string} uuid
+     * @returns {Promise<string>} uuid
      */
     async _registerOrGetUuid() {
         if (this._config.uuid) {
@@ -132,7 +132,7 @@ class ContentTypeCache {
     /**
      * Downloads information about available content types from the H5P Hub. This method will
      * create a UUID to identify this site if required. 
-     * @returns {Array} content types
+     * @returns {Promise<any[]>} content types
      */
     async _downloadContentTypesFromHub() {
         await this._registerOrGetUuid();

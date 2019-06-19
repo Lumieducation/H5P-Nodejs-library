@@ -51,6 +51,7 @@ class H5PEditorConfig {
     /**
      * Loads a settings from the storage interface.
      * @param {string} settingName 
+     * @returns {Promise<any>} the value of the setting
      */
     async loadSettingFromStorage(settingName) {
         this[settingName] = (await this._storage.load(settingName)) || this[settingName];

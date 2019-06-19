@@ -25,7 +25,7 @@ class ContentTypeInformationRepository {
     }
 
     /**
-     * Gets the information about available content types with all the extra information as listen in the class description.
+     * Gets the information about available content types with all the extra information as listed in the class description.
      */
     async get() {
         let cachedHubInfo = await this._contentTypeCache.get();
@@ -49,7 +49,7 @@ class ContentTypeInformationRepository {
     /**
      * 
      * @param {any[]} hubInfo
-     * @returns {any[]} The original hub information as passed into the method with appended information about 
+     * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about 
      * locally installed libraries.  
      */
     async _addLocalLibraries(hubInfo) {
@@ -85,7 +85,7 @@ class ContentTypeInformationRepository {
     /**
      * Adds information about installation status, restriction, right to install and up-to-dateness.
      * @param {any[]} hubInfo 
-     * @returns {any[]} The hub information as passed into the method with added information. 
+     * @returns {Promise<any[]>} The hub information as passed into the method with added information. 
      */
     async _addUserAndInstallationSpecificInfo(hubInfo) {
         const localLibsWrapped = await this._libraryManager.getInstalled();

@@ -43,7 +43,6 @@ class FileLibraryManager {
      *   - language(optional): associative array containing:
      *     - languageCode: Translation in json format
      * @param bool $new
-     * @return
      */
     install() {
         // TODO: check how this is done in PHP version
@@ -61,7 +60,7 @@ class FileLibraryManager {
     /**
      * Get a list of the currently installed libraries.
      * @param {String[]?} machineNames (if supplied) only return results for the machines names in the list
-     * @returns An object which has properties with the existing library machine names. The properties'
+     * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library. 
      */
     async getInstalled(...machineNames) {
@@ -99,7 +98,7 @@ class FileLibraryManager {
     /**
      * Is the library a patched version of an existing library?
      * @param {Library} library The library the check
-     * @returns {boolean} true if the library is a patched version of an existing library, false otherwise
+     * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
      */
     async isPatchedLibrary(library) {
         const wrappedLibraryInfos = await this.getInstalled(library.machineName);
@@ -123,7 +122,7 @@ class FileLibraryManager {
      * Get id to an existing installed library.
      * If version number is not specified, the newest version will be returned.
      * @param {Library} library Note that patch version is ignored.
-     * @returns {number} The id of the specified library or undefined (if not installed).
+     * @returns {Promise<number>} The id of the specified library or undefined (if not installed).
      */
     async getId(library) {
         const libraryPath = this._getLibraryPath(library);
@@ -136,7 +135,7 @@ class FileLibraryManager {
     /**
      * Checks if the given library has a higher version than the highest installed version.
      * @param {Library} library to compare against the highest locally installed version.
-     * @returns {boolean} true if the passed library contains a version that is higher than the highest installed version, false otherwise
+     * @returns {Promise<boolean>} true if the passed library contains a version that is higher than the highest installed version, false otherwise
      */
     async libraryHasUpgrade(library) {
         const wrappedLibraryInfos = await this.getInstalled(library.machineName);
@@ -211,10 +210,10 @@ class FileLibraryManager {
     * Check if the library contains a file
     * @param {Library} library The library to check
     * @param {string} filename
-    * @return {boolean} true if file exists in library, false otherwise
+    * @return {Promise<boolean>} true if file exists in library, false otherwise
     */
-    async libraryFileExists(library, filename) {
-        fs.pathExists(`${this._getLibraryPath(library)}/${filename}`);
+    libraryFileExists(library, filename) {
+        return fs.pathExists(`${this._getLibraryPath(library)}/${filename}`);
     }
 
     /**
