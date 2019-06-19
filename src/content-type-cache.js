@@ -44,20 +44,31 @@ class ContentTypeCache {
     async updateIfNecessary() {
         const oldCache = await this._storage.load("contentTypeCache");
         if (!oldCache || await this.isOutdated()) {
-            await this.forceUpdate();
-            return true;
+            return this.forceUpdate();
         }
         return false;
     }
 
     /**
      * Downloads the content type information from the H5P Hub and stores it in the storage object.
+     * @returns {boolean} true if update was done; false if it failed (e.g. because Hub was unreachable)
      */
     async forceUpdate() {
-        const cache = (await this._downloadContentTypesFromHub())
-          .map(ContentTypeCache._convertCacheEntryToLocalFormat);
-        await this._storage.save("contentTypeCache", cache);
+        let cacheInHubFormat;
+        try {
+            cacheInHubFormat = await this._downloadContentTypesFromHub();
+            if (!cacheInHubFormat) {
+                return false;
+            }
+        }
+        catch (error) {
+            // TODO: Add error logging
+            return false;
+        }
+        const cacheInInternalFormat = cacheInHubFormat.map(ContentTypeCache._convertCacheEntryToLocalFormat);
+        await this._storage.save("contentTypeCache", cacheInInternalFormat);
         await this._storage.save("contentTypeCacheUpdate", Date.now());
+        return true;
     }
 
     /**

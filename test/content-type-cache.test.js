@@ -26,7 +26,7 @@ describe('registering the site at H5P Hub', () => {
         const cache = new ContentTypeCache(config);
 
         config.uuid = '';
-        config.hubRegistrationEndpoint = 'https://example.org';
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(408);
 
         let error;
         try {
@@ -65,4 +65,27 @@ describe('getting H5P Hub content types', () => {
         updated = await cache.updateIfNecessary();        
         expect(updated).toEqual(false);
     });
+    it("doesn't overwrite existing cache if it fails to load a new one", async () => {
+      const storage = new InMemoryStorage();
+      const config = new H5PEditorConfig(storage);
+      const cache = new ContentTypeCache(config, storage);
+
+      config.contentTypeCacheRefreshInterval = 1;
+
+      axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+      axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/real-content-types.json'));
+
+      const updated1 = await cache.updateIfNecessary();
+      expect(updated1).toEqual(true);
+      const cached1 = await cache.get();
+      expect(cached1).toBeDefined();
+      expect(cached1.length).toBeGreaterThan(10.0);
+
+      axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
+      
+      const updated2 = await cache.updateIfNecessary();
+      expect(updated2).toEqual(false);
+      const cached2 = await cache.get();       
+      expect(cached2).toMatchObject(cached1);
+  });
 });
