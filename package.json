@@ -37,7 +37,8 @@
         "eslint-config-prettier": "^4.2.0",
         "eslint-plugin-import": "^2.17.2",
         "eslint-plugin-jest": "^22.6.4",
-        "jest": "^24.7.1"
+        "jest": "^24.7.1",
+        "mockdate": "^2.0.3"
     },
     "main": "./src/index.js"
 }
