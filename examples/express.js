@@ -1,11 +1,11 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
+
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
 const User = require('../test/mockups/user');
-const server = express();
-const bodyParser = require('body-parser');
 const H5PEditor = require('../src');
 
 const server = express();
