@@ -54,7 +54,7 @@ describe('content type information repository', () => {
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
-        expect(content.libraries.length).toEqual(1);
+        expect(content.libraries.length).toEqual(2);
     });
 
     it('detects updates to local libraries', async () => {
@@ -68,7 +68,7 @@ describe('content type information repository', () => {
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
-        expect(content.libraries.length).toEqual(1);
+        expect(content.libraries.length).toEqual(2);
         expect(content.libraries[0].isUpToDate).toEqual(false);
     });
 });

@@ -4,6 +4,7 @@ mkdir -p "$base/tmp/core"
 mkdir -p "$base/tmp/editor"
 mkdir -p "$base/core"
 mkdir -p "$base/editor"
+mkdir -p "$base/libraries"
 
 rm -rf "$base/tmp"/*
 rm -rf "$base/core"/*
