@@ -77,7 +77,7 @@ class ContentTypeInformationRepository {
                     installed: true,
                     isUpToDate: true,
                     owner: '',
-                    restricted: localLib.restricted && !this._user.canUseRestricted,
+                    restricted: this._libraryIsRestricted(localLib) && !this._user.canUseRestricted,
                     icon: await this._libraryManager.libraryFileExists(localLib, 'icon.svg') ? this._libraryManager.getLibraryFileUrl('icon.svg') : undefined
                 }
             });
@@ -105,8 +105,8 @@ class ContentTypeInformationRepository {
             } else {
                 hubLib.id = localLib.id;
                 hubLib.installed = true;
-                hubLib.restricted = localLib.restricted && !this._user.canUseRestricted;
-                hubLib.canInstall = !localLib.restricted && this._user.canInstall;
+                hubLib.restricted = this._libraryIsRestricted(localLib) && !this._user.canUseRestricted;
+                hubLib.canInstall = !this._libraryIsRestricted(localLib) && this._user.canInstall;
                 hubLib.isUpToDate = !(await this._libraryManager.libraryHasUpgrade(hubLib));
                 hubLib.localMajorVersion = localLib.majorVersion;
                 hubLib.localMinorVersion = localLib.minorVersion;
@@ -115,6 +115,21 @@ class ContentTypeInformationRepository {
         }));
 
         return hubInfo;
+    }
+
+    /**
+     * Checks if the library is restricted e.g. because it is LRS dependent and the
+     * admin has restricted them or because it was set as restricted individually.
+     * @param {Library} library 
+     */
+    _libraryIsRestricted(library) {
+        if (this._config.enableLrsContentTypes) {
+            return library.restricted;
+        }
+        if (this._config.lrsContentTypes.some(contentType => contentType === library.machineName)) {
+            return true;
+        }
+        return library.restricted;
     }
 }
 

@@ -86,4 +86,25 @@ describe('content type information repository', () => {
         const content = await repository.get();
         expect(content.libraries.length).toEqual(2);
     });
+
+    it('sets LRS dependent content types to restricted', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const cache = new ContentTypeCache(config, storage);
+        const user = new User();
+
+        config.enableLrsContentTypes = false;
+        config.lrsContentTypes = ['H5P.Example1'];
+        user.canUseRestricted = false;
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
+
+        const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, user);
+        const content = await repository.get();
+        expect(content.libraries.length).toEqual(2);
+        expect(content.libraries.find(l => l.machineName === 'H5P.Example1').restricted).toEqual(true);
+        expect(content.libraries.find(l => l.machineName === 'H5P.Example3').restricted).toEqual(false);
+    });
 });
