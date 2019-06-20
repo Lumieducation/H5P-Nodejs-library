@@ -69,6 +69,21 @@ describe('content type information repository', () => {
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
         expect(content.libraries.length).toEqual(2);
+        expect(content.libraries[0].installed).toEqual(true);
         expect(content.libraries[0].isUpToDate).toEqual(false);
+    });
+
+    it('returns local libraries if H5P Hub is unreachable', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const cache = new ContentTypeCache(config, storage);
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
+
+        const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
+        const content = await repository.get();
+        expect(content.libraries.length).toEqual(2);
     });
 });

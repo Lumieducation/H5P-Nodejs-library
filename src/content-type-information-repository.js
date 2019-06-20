@@ -29,9 +29,12 @@ class ContentTypeInformationRepository {
      */
     async get() {
         let cachedHubInfo = await this._contentTypeCache.get();
-        if(!cachedHubInfo) {
-           await this._contentTypeCache.updateIfNecessary();
-           cachedHubInfo = await this._contentTypeCache.get();
+        if (!cachedHubInfo) { // try updating cache if it is empty for some reason
+            await this._contentTypeCache.updateIfNecessary();
+            cachedHubInfo = await this._contentTypeCache.get();
+        }
+        if (!cachedHubInfo) { // if the H5P Hub is unreachable use empty array (so that local libraries can be added)
+            cachedHubInfo = [];
         }
         cachedHubInfo = await this._addUserAndInstallationSpecificInfo(cachedHubInfo);
         cachedHubInfo = await this._addLocalLibraries(cachedHubInfo);
