@@ -40,12 +40,13 @@ class ContentTypeInformationRepository {
         cachedHubInfo = await this._addLocalLibraries(cachedHubInfo);
 
         return {
-            outdated: await this._contentTypeCache.isOutdated(),
+            outdated: (await this._contentTypeCache.isOutdated())
+                && (this._user.canInstallRecommended || this._user.canUpdateAndInstallLibraries),
             libraries: cachedHubInfo,
             user: this._user.type,
             recentlyUsed: [], // TODO: store this somewhere
             apiVersion: this._config.coreApiVersion,
-            details: null
+            details: null // TODO: implement this (= messages to user)
         };
     }
 
@@ -77,7 +78,7 @@ class ContentTypeInformationRepository {
                     installed: true,
                     isUpToDate: true,
                     owner: '',
-                    restricted: this._libraryIsRestricted(localLib) && !this._user.canUseRestricted,
+                    restricted: this._libraryIsRestricted(localLib) && !this._user.canCreateRestricted,
                     icon: await this._libraryManager.libraryFileExists(localLib, 'icon.svg') ? this._libraryManager.getLibraryFileUrl('icon.svg') : undefined
                 }
             });
@@ -99,14 +100,14 @@ class ContentTypeInformationRepository {
             const localLib = localLibs.find(l => l.machineName === hubLib.machineName);
             if (!localLib) {
                 hubLib.installed = false;
-                hubLib.restricted = false;
-                hubLib.canInstall = this._user.canInstall;
+                hubLib.restricted = !this._canInstallLibrary(hubLib);
+                hubLib.canInstall = this._canInstallLibrary(hubLib);
                 hubLib.isUpToDate = true;
             } else {
                 hubLib.id = localLib.id;
                 hubLib.installed = true;
-                hubLib.restricted = this._libraryIsRestricted(localLib) && !this._user.canUseRestricted;
-                hubLib.canInstall = !this._libraryIsRestricted(localLib) && this._user.canInstall;
+                hubLib.restricted = this._libraryIsRestricted(localLib) && !this._user.canCreateRestricted;
+                hubLib.canInstall = !this._libraryIsRestricted(localLib) && this._canInstallLibrary(hubLib);
                 hubLib.isUpToDate = !(await this._libraryManager.libraryHasUpgrade(hubLib));
                 hubLib.localMajorVersion = localLib.majorVersion;
                 hubLib.localMinorVersion = localLib.minorVersion;
@@ -130,6 +131,14 @@ class ContentTypeInformationRepository {
             return true;
         }
         return library.restricted;
+    }
+
+    /**
+     * Checks if users can install library due to their rights.
+     * @param {Library} library 
+     */
+    _canInstallLibrary(library) {
+        return this._user.canUpdateAndInstallLibraries || (library.isRecommended && this._user.canInstallRecommended);
     }
 }
 

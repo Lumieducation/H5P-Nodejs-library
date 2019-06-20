@@ -153,7 +153,7 @@ class ContentTypeCache {
     }
 
     /**
-     * Converts an entry from the H5P Hub into a format witch flattened versions and integer date values.
+     * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.
      * @param {object} entry 
      */
     static _convertCacheEntryToLocalFormat(entry) {

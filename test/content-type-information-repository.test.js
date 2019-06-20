@@ -96,7 +96,7 @@ describe('content type information repository', () => {
 
         config.enableLrsContentTypes = false;
         config.lrsContentTypes = ['H5P.Example1'];
-        user.canUseRestricted = false;
+        user.canCreateRestricted = false;
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);

@@ -5,8 +5,9 @@ class User {
     constructor() {
         this.id = '1';
         this.name = 'Firstname Surname';
-        this.canInstall = true;
-        this.canUseRestricted = true;
+        this.canInstallRecommended = true;
+        this.canUpdateAndInstallLibraries = true;
+        this.canCreateRestricted = true;
         this.type = 'local';
     }
 }
