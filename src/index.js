@@ -8,12 +8,19 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 
 class H5PEditor {
-    constructor(storage, urls = {
+    constructor(
+        storage,
+        urls = {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
             libraryUrl: '/h5p/editor',
             filesPath: ''
-        }, keyValueStorage, config, libraryManager, user) {
+        },
+        keyValueStorage,
+        config,
+        libraryManager,
+        user
+    ) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
@@ -24,7 +31,13 @@ class H5PEditor {
         this.filesPath = urls.filesPath;
         this.defaultContentTypeCache = defaultContentTypeCache;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
-        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, keyValueStorage, libraryManager, config, user);
+        this.contentTypeRepository = new ContentTypeInformationRepository(
+            this.contentTypeCache,
+            keyValueStorage,
+            libraryManager,
+            config,
+            user
+        );
     }
 
     render() {
