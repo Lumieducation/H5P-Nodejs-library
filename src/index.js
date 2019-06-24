@@ -6,13 +6,15 @@ const defaultRenderer = require('./renderers/default');
 const defaultContentTypeCache = require('./content_type_cache');
 
 class H5PEditor {
-    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=') {
+    constructor(storage, urls) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
-        this.baseUrl = baseUrl;
+        this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
-        this.ajaxPath = ajaxPath;
+        this.ajaxPath = urls.ajaxPath;
+        this.libraryUrl = urls.libraryUrl;
+        this.filesPath = urls.filesPath;
         this.defaultContentTypeCache = defaultContentTypeCache;
     }
 
@@ -176,6 +178,8 @@ class H5PEditor {
     _editorIntegration() {
         return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajaxPath,
+            libraryUrl: this.libraryUrl,
+            filesPath: this.filesPath,
             assets: {
                 css: [
                     '/core/styles/h5p.css',

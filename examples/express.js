@@ -16,8 +16,12 @@ const h5pEditor = new H5PEditor(
             );
         }
     },
-    '/h5p',
-    '/ajax?action='
+    {
+        baseUrl: '/h5p',
+        ajaxPath: '/ajax?action=',
+        libraryUrl: '/h5p/editor', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
+        filesPath: 'filesPath'
+    }
 );
 
 const h5p_route = '/h5p';
