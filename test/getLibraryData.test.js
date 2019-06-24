@@ -3,7 +3,12 @@ const H5PEditor = require('../src');
 describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
         const h5pEditor = new H5PEditor({
-            loadSemantics: () => Promise.resolve([])
+            loadSemantics: () => Promise.resolve([]),
+            loadLibrary: () => {
+                return Promise.resolve({
+                    editorDependencies: []
+                });
+            }
         });
 
         return expect(h5pEditor.getLibraryData('Foo', 1, 2)).resolves.toEqual({
@@ -16,6 +21,7 @@ describe('aggregating data from library folders for the editor', () => {
             language: null,
             defaultLanguage: null,
             javascript: [],
+            css: [],
             translations: [],
             languages: []
         });
@@ -30,6 +36,11 @@ describe('aggregating data from library folders for the editor', () => {
                     minorVersion,
                     arbitrary: 'content'
                 });
+            },
+            loadLibrary: () => {
+                return Promise.resolve({
+                    editorDependencies: []
+                });
             }
         };
 
@@ -42,6 +53,48 @@ describe('aggregating data from library folders for the editor', () => {
                     minorVersion: 2,
                     arbitrary: 'content'
                 });
+            });
+    });
+
+    it('includes the editor-dependencies in the javascript field', () => {
+        const storage = {
+            loadSemantics: () => Promise.resolve({}),
+            loadLibrary: machineName => {
+                switch (machineName) {
+                    case 'H5PEditor.Test':
+                        return Promise.resolve({
+                            machineName: 'H5PEditor.test',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'path/to/test.js'
+                                }
+                            ]
+                        });
+                    default:
+                        return Promise.resolve({
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 2,
+                            editorDependencies: [
+                                {
+                                    machineName: 'H5PEditor.Test',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                }
+            }
+        };
+
+        return new H5PEditor(storage)
+            .getLibraryData('Foo', 1, 2)
+            .then(libraryData => {
+                expect(libraryData.javascript).toEqual([
+                    '/h5p/libraries/H5PEditor.Test-1.0/path/to/test.js'
+                ]);
             });
     });
 });
