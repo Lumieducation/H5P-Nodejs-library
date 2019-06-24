@@ -1,8 +1,21 @@
 const express = require('express');
 const path = require('path');
-const server = express();
 const bodyParser = require('body-parser');
+
+const InMemoryStorage = require('../test/mockups/in-memory-storage');
+const H5PEditorConfig = require('../src/config');
+const FileLibraryManager = require('../test/mockups/file-library-manager');
+const User = require('../test/mockups/user');
 const H5PEditor = require('../src');
+
+const server = express();
+
+const valueStorage = new InMemoryStorage();
+const config = new H5PEditorConfig(valueStorage);
+config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
+const libraryManager = new FileLibraryManager(`${path.resolve('')}/h5p/libraries`);
+const user = new User();
+
 const h5pEditor = new H5PEditor(
     {
         loadSemantics: (machineName, majorVersion, minorVersion) => {
@@ -17,10 +30,14 @@ const h5pEditor = new H5PEditor(
         }
     },
     '/h5p',
-    '/ajax?action='
+    '/ajax?action=',
+    valueStorage,
+    config,
+    libraryManager,
+    user
 );
 
-const h5p_route = '/h5p';
+const h5pRoute = '/h5p';
 
 server.use(bodyParser.json());
 server.use(
@@ -28,11 +45,13 @@ server.use(
         extended: true
     })
 );
-server.use(h5p_route, express.static(`${path.resolve('')}/h5p`));
+
+server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
+
 
 server.get('/', (req, res) => {
-    h5pEditor.render().then(h5p_editor_page => {
-        res.end(h5p_editor_page);
+    h5pEditor.render().then(h5pEditorPage => {
+        res.end(h5pEditorPage);
     });
 });
 
@@ -40,8 +59,8 @@ server.get('/ajax', (req, res) => {
     const { action } = req.query;
     switch (action) {
         case 'content-type-cache':
-            h5pEditor.contentTypeCache().then(content_type_cache => {
-                res.status(200).json(content_type_cache);
+            h5pEditor.getContentTypeCache().then(contentTypeCache => {
+                res.status(200).json(contentTypeCache);
             });
             break;
 

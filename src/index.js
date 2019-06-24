@@ -3,17 +3,20 @@ const H5P = require('h5p-nodejs-library');
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
-const defaultContentTypeCache = require('./content_type_cache');
+
+const ContentTypeCache = require('../src/content-type-cache');
+const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 
 class H5PEditor {
-    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=') {
+    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', keyValueStorage, config, libraryManager, user) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
         this.ajaxPath = ajaxPath;
-        this.defaultContentTypeCache = defaultContentTypeCache;
+        this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
+        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, keyValueStorage, libraryManager, config, user);
     }
 
     render() {
@@ -69,6 +72,10 @@ class H5PEditor {
             });
     }
 
+    getContentTypeCache() {
+        return this.contentTypeRepository.get();
+    }
+
     getLibraryOverview(libraries) {
         return Promise.all(
             libraries.map(libraryName => {
@@ -105,12 +112,6 @@ class H5PEditor {
             majorVersion: libraryName.split(' ')[1].split('.')[0],
             minorVersion: libraryName.split(' ')[1].split('.')[1]
         };
-    }
-
-    contentTypeCache() {
-        return new Promise(resolve => {
-            resolve(this.defaultContentTypeCache);
-        });
     }
 
     _coreScripts() {
