@@ -29,7 +29,6 @@ class H5PEditor {
         this.ajaxPath = urls.ajaxPath;
         this.libraryUrl = urls.libraryUrl;
         this.filesPath = urls.filesPath;
-        this.defaultContentTypeCache = defaultContentTypeCache;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
