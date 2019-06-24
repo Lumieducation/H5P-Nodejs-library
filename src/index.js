@@ -6,7 +6,15 @@ const defaultRenderer = require('./renderers/default');
 const defaultContentTypeCache = require('./content_type_cache');
 
 class H5PEditor {
-    constructor(storage, urls) {
+    constructor(
+        storage,
+        urls = {
+            baseUrl: '/h5p',
+            ajaxPath: '/ajax?action=',
+            libraryUrl: '/h5p/editor',
+            filesPath: ''
+        }
+    ) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
