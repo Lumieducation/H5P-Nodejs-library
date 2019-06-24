@@ -8,15 +8,15 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 
 class H5PEditor {
-    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', storage2, config, libraryManager, user) {
+    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', keyValueStorage, config, libraryManager, user) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
         this.baseUrl = baseUrl;
         this.translation = defaultTranslation;
         this.ajaxPath = ajaxPath;
-        this.contentTypeCache = new ContentTypeCache(config, storage2);
-        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, storage2, libraryManager, config, user);
+        this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
+        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, keyValueStorage, libraryManager, config, user);
     }
 
     render() {
