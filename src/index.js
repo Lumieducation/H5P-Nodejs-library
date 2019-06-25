@@ -108,7 +108,7 @@ class H5PEditor {
                     .loadLibrary(machineName, majorVersion, minorVersion)
                     .then(library => {
                         return {
-                            uberName: `${library.machineName}-${
+                            uberName: `${library.machineName} ${
                                 library.majorVersion
                             }.${library.minorVersion}`,
                             name: library.machineName,
