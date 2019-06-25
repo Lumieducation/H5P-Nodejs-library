@@ -8,15 +8,35 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 
 class H5PEditor {
-    constructor(storage, baseUrl = '/h5p', ajaxPath = '/ajaxPath?action=', keyValueStorage, config, libraryManager, user) {
+    constructor(
+        storage,
+        urls = {
+            baseUrl: '/h5p',
+            ajaxPath: '/ajax?action=',
+            libraryUrl: '/h5p/editor',
+            filesPath: ''
+        },
+        keyValueStorage,
+        config,
+        libraryManager,
+        user
+    ) {
         this.storage = storage;
         this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
-        this.baseUrl = baseUrl;
+        this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
-        this.ajaxPath = ajaxPath;
+        this.ajaxPath = urls.ajaxPath;
+        this.libraryUrl = urls.libraryUrl;
+        this.filesPath = urls.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
-        this.contentTypeRepository = new ContentTypeInformationRepository(this.contentTypeCache, keyValueStorage, libraryManager, config, user);
+        this.contentTypeRepository = new ContentTypeInformationRepository(
+            this.contentTypeCache,
+            keyValueStorage,
+            libraryManager,
+            config,
+            user
+        );
     }
 
     render() {
@@ -177,6 +197,8 @@ class H5PEditor {
     _editorIntegration() {
         return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajaxPath,
+            libraryUrl: this.libraryUrl,
+            filesPath: this.filesPath,
             assets: {
                 css: [
                     '/core/styles/h5p.css',

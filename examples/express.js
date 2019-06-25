@@ -29,8 +29,12 @@ const h5pEditor = new H5PEditor(
             );
         }
     },
-    '/h5p',
-    '/ajax?action=',
+    {
+        baseUrl: '/h5p',
+        ajaxPath: '/ajax?action=',
+        libraryUrl: '/h5p/editor', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
+        filesPath: 'filesPath'
+    },
     valueStorage,
     config,
     libraryManager,
