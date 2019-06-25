@@ -71,7 +71,10 @@ class H5PEditor {
                             styles: []
                         };
                         return this.h5p
-                            ._loadAssets(library.editorDependencies, assets)
+                            ._loadAssets(
+                                library.editorDependencies || [],
+                                assets
+                            )
                             .then(() => {
                                 return Promise.resolve({
                                     name: machineName,
