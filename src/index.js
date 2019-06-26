@@ -99,6 +99,17 @@ class H5PEditor {
         return this.contentTypeRepository.get();
     }
 
+    saveContentFile(contentId, field, file) {
+        return new Promise(resolve => {
+            this.storage.saveContentFile(contentId, field, file).then(() => {
+                resolve({
+                    mine: file.mimetype,
+                    path: `${file.name}`
+                });
+            });
+        });
+    }
+
     getLibraryOverview(libraries) {
         return Promise.all(
             libraries.map(libraryName => {
