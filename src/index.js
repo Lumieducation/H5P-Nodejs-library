@@ -103,7 +103,7 @@ class H5PEditor {
         return new Promise(resolve => {
             this.storage.saveContentFile(contentId, field, file).then(() => {
                 resolve({
-                    mine: file.mimetype,
+                    mime: file.mimetype,
                     path: `${file.name}`
                 });
             });
