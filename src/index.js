@@ -13,7 +13,7 @@ class H5PEditor {
         urls = {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
-            libraryUrl: '/h5p/editor',
+            libraryUrl: '/h5p/editor/',
             filesPath: ''
         },
         keyValueStorage,

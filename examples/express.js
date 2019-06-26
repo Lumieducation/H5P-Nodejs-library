@@ -49,7 +49,7 @@ const h5pEditor = new H5PEditor(
     {
         baseUrl: '/h5p',
         ajaxPath: '/ajax?action=',
-        libraryUrl: '/h5p/editor', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
+        libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
         filesPath: '/h5p/tmp'
     },
     valueStorage,
