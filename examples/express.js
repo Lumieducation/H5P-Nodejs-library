@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-
+const fileUpload = require('express-fileupload');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
@@ -13,7 +15,9 @@ const server = express();
 const valueStorage = new InMemoryStorage();
 const config = new H5PEditorConfig(valueStorage);
 config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
-const libraryManager = new FileLibraryManager(`${path.resolve('')}/h5p/libraries`);
+const libraryManager = new FileLibraryManager(
+    `${path.resolve('')}/h5p/libraries`
+);
 const user = new User();
 
 const h5pEditor = new H5PEditor(
@@ -27,13 +31,26 @@ const h5pEditor = new H5PEditor(
             return Promise.resolve(
                 require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
             );
+        },
+        saveContentFile: (contentId, field, file) => {
+            return new Promise(resolve => {
+                const dir =
+                    contentId === '0'
+                        ? `${path.resolve('')}/h5p/tmp/`
+                        : `${path.resolve()}/h5p/content/${contentId}/content/`;
+                mkdirp(dir, mkdirp_error => {
+                    fs.writeFile(`${dir}${file.name}`, file.data, error => {
+                        resolve();
+                    });
+                });
+            });
         }
     },
     {
         baseUrl: '/h5p',
         ajaxPath: '/ajax?action=',
-        libraryUrl: '/h5p/editor', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
-        filesPath: 'filesPath'
+        libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
+        filesPath: '/h5p/tmp'
     },
     valueStorage,
     config,
@@ -49,9 +66,13 @@ server.use(
         extended: true
     })
 );
+server.use(
+    fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 }
+    })
+);
 
 server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
-
 
 server.get('/', (req, res) => {
     h5pEditor.render().then(h5pEditorPage => {
@@ -87,10 +108,24 @@ server.post('/ajax', (req, res) => {
     const { action } = req.query;
     switch (action) {
         case 'libraries':
-        default:
             h5pEditor.getLibraryOverview(req.body.libraries).then(libraries => {
                 res.status(200).json(libraries);
             });
+            break;
+        case 'files':
+            h5pEditor
+                .saveContentFile(
+                    req.body.contentId,
+                    JSON.parse(req.body.field),
+                    req.files.file
+                )
+                .then(response => {
+                    res.status(200).json(response);
+                });
+            break;
+        default:
+            res.status(500).end('NOT IMPLEMENTED');
+            break;
     }
 });
 

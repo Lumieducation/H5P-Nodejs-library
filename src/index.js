@@ -13,7 +13,7 @@ class H5PEditor {
         urls = {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
-            libraryUrl: '/h5p/editor',
+            libraryUrl: '/h5p/editor/',
             filesPath: ''
         },
         keyValueStorage,
@@ -97,6 +97,17 @@ class H5PEditor {
 
     getContentTypeCache() {
         return this.contentTypeRepository.get();
+    }
+
+    saveContentFile(contentId, field, file) {
+        return new Promise(resolve => {
+            this.storage.saveContentFile(contentId, field, file).then(() => {
+                resolve({
+                    mime: file.mimetype,
+                    path: `${file.name}`
+                });
+            });
+        });
     }
 
     getLibraryOverview(libraries) {
