@@ -44,6 +44,36 @@ const h5pEditor = new H5PEditor(
                     });
                 });
             });
+        },
+        loadLanguage: (machineName, majorVersion, minorVersion, language) => {
+            return new Promise(resolve => {
+                try {
+                    resolve(
+                        require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language/${language}.json`)
+                    );
+                } catch (error) {
+                    resolve(null);
+                }
+            });
+        },
+        listLanguages: (machineName, majorVersion, minorVersion) => {
+            return new Promise(resolve => {
+                try {
+                    fs.readdir(
+                        `${path.resolve()}/h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language`,
+                        (error, files) => {
+                            if (error) {
+                                return resolve([]);
+                            }
+                            resolve(
+                                files.map(file => file.replace('.json', ''))
+                            );
+                        }
+                    );
+                } catch (err) {
+                    resolve([]);
+                }
+            });
         }
     },
     {
@@ -82,6 +112,8 @@ server.get('/', (req, res) => {
 
 server.get('/ajax', (req, res) => {
     const { action } = req.query;
+    const { majorVersion, minorVersion, machineName, language } = req.query;
+
     switch (action) {
         case 'content-type-cache':
             h5pEditor.getContentTypeCache().then(contentTypeCache => {
@@ -90,9 +122,13 @@ server.get('/ajax', (req, res) => {
             break;
 
         case 'libraries':
-            const { majorVersion, minorVersion, machineName } = req.query;
             h5pEditor
-                .getLibraryData(machineName, majorVersion, minorVersion)
+                .getLibraryData(
+                    machineName,
+                    majorVersion,
+                    minorVersion,
+                    language
+                )
                 .then(library => {
                     res.status(200).json(library);
                 });

@@ -59,7 +59,7 @@ class H5PEditor {
         return this;
     }
 
-    getLibraryData(machineName, majorVersion, minorVersion) {
+    getLibraryData(machineName, majorVersion, minorVersion, language) {
         return this.storage
             .loadSemantics(machineName, majorVersion, minorVersion)
             .then(semantics => {
@@ -76,20 +76,37 @@ class H5PEditor {
                                 assets
                             )
                             .then(() => {
-                                return Promise.resolve({
-                                    name: machineName,
-                                    version: {
-                                        major: majorVersion,
-                                        minor: minorVersion
-                                    },
-                                    semantics,
-                                    language: null,
-                                    defaultLanguage: null,
-                                    javascript: assets.scripts,
-                                    css: assets.styles,
-                                    translations: [],
-                                    languages: []
-                                });
+                                return this.storage
+                                    .loadLanguage(
+                                        machineName,
+                                        majorVersion,
+                                        minorVersion,
+                                        language
+                                    )
+                                    .then(languageObject => {
+                                        return this.storage
+                                            .listLanguages(
+                                                machineName,
+                                                majorVersion,
+                                                minorVersion
+                                            )
+                                            .then(languages => {
+                                                return Promise.resolve({
+                                                    name: machineName,
+                                                    version: {
+                                                        major: majorVersion,
+                                                        minor: minorVersion
+                                                    },
+                                                    semantics,
+                                                    language: languageObject,
+                                                    defaultLanguage: null,
+                                                    javascript: assets.scripts,
+                                                    css: assets.styles,
+                                                    translations: [],
+                                                    languages
+                                                });
+                                            });
+                                    });
                             });
                     });
             });
