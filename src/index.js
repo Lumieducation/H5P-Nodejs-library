@@ -195,7 +195,8 @@ class H5PEditor {
                                     );
                                     assets.translations =
                                         assets.translations || {};
-                                    assets.translations[name] = translation;
+                                    assets.translations[name] =
+                                        translation || undefined;
                                 });
                         })
                     );
