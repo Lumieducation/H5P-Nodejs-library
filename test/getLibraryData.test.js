@@ -24,7 +24,7 @@ describe('aggregating data from library folders for the editor', () => {
             defaultLanguage: null,
             javascript: [],
             css: [],
-            translations: [],
+            translations: {},
             languages: []
         });
     });
@@ -154,10 +154,10 @@ describe('aggregating data from library folders for the editor', () => {
                 expect(libraryData.language).toEqual({
                     arbitrary: 'languageObject'
                 });
-                expect(loadLanguage.mock.calls[0][0]).toBe(machineName);
-                expect(loadLanguage.mock.calls[0][1]).toBe(majorVersion);
-                expect(loadLanguage.mock.calls[0][2]).toBe(minorVersion);
-                expect(loadLanguage.mock.calls[0][3]).toBe(language);
+                expect(loadLanguage.mock.calls[1][0]).toBe(machineName);
+                expect(loadLanguage.mock.calls[1][1]).toBe(majorVersion);
+                expect(loadLanguage.mock.calls[1][2]).toBe(minorVersion);
+                expect(loadLanguage.mock.calls[1][3]).toBe(language);
             });
     });
 
