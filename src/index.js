@@ -1,5 +1,3 @@
-const H5P = require('h5p-nodejs-library');
-
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
@@ -22,7 +20,6 @@ class H5PEditor {
         user
     ) {
         this.storage = storage;
-        this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
