@@ -18,6 +18,12 @@
         "global-require": "off",
         "import/no-dynamic-require": "off",
         "no-underscore-dangle": "off",
-        "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]
+        "no-restricted-syntax": [
+            "error",
+            "ForInStatement",
+            "LabeledStatement",
+            "WithStatement"
+        ],
+        "no-param-reassign": "off"
     }
 }

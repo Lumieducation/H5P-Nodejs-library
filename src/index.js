@@ -1,5 +1,3 @@
-const H5P = require('h5p-nodejs-library');
-
 const defaultEditorIntegration = require('./default_editor_integration');
 const defaultTranslation = require('./translations/en.json');
 const defaultRenderer = require('./renderers/default');
@@ -22,7 +20,6 @@ class H5PEditor {
         user
     ) {
         this.storage = storage;
-        this.h5p = new H5P(this.storage.loadLibrary);
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
@@ -70,44 +67,43 @@ class H5PEditor {
                             scripts: [],
                             styles: []
                         };
-                        return this.h5p
-                            ._loadAssets(
-                                library.editorDependencies || [],
-                                assets
-                            )
-                            .then(() => {
-                                return this.storage
-                                    .loadLanguage(
-                                        machineName,
-                                        majorVersion,
-                                        minorVersion,
-                                        language
-                                    )
-                                    .then(languageObject => {
-                                        return this.storage
-                                            .listLanguages(
-                                                machineName,
-                                                majorVersion,
-                                                minorVersion
-                                            )
-                                            .then(languages => {
-                                                return Promise.resolve({
-                                                    name: machineName,
-                                                    version: {
-                                                        major: majorVersion,
-                                                        minor: minorVersion
-                                                    },
-                                                    semantics,
-                                                    language: languageObject,
-                                                    defaultLanguage: null,
-                                                    javascript: assets.scripts,
-                                                    css: assets.styles,
-                                                    translations: [],
-                                                    languages
-                                                });
+                        return this._loadAssets(
+                            library.editorDependencies || [],
+                            assets
+                        ).then(() => {
+                            return this.storage
+                                .loadLanguage(
+                                    machineName,
+                                    majorVersion,
+                                    minorVersion,
+                                    language
+                                )
+                                .then(languageObject => {
+                                    return this.storage
+                                        .listLanguages(
+                                            machineName,
+                                            majorVersion,
+                                            minorVersion
+                                        )
+                                        .then(languages => {
+                                            return Promise.resolve({
+                                                name: machineName,
+                                                version: {
+                                                    major: majorVersion,
+                                                    minor: minorVersion
+                                                },
+                                                semantics,
+                                                language: languageObject,
+                                                defaultLanguage: null,
+                                                javascript: assets.scripts,
+                                                css: assets.styles,
+                                                translations:
+                                                    assets.translations || {},
+                                                languages
                                             });
-                                    });
-                            });
+                                        });
+                                });
+                        });
                     });
             });
     }
@@ -152,6 +148,58 @@ class H5PEditor {
                             metadataSettings: null
                         };
                     });
+            })
+        );
+    }
+
+    _loadAssets(dependencies, assets, language, loaded = {}) {
+        return Promise.all(
+            dependencies.map(dependency => {
+                const name = dependency.machineName;
+                const majVer = dependency.majorVersion;
+                const minVer = dependency.minorVersion;
+
+                const key = `${name}-${majVer}.${minVer}`;
+
+                if (key in loaded) return Promise.resolve();
+                loaded[key] = true;
+
+                return this.storage
+                    .loadLibrary(name, majVer, minVer)
+                    .then(lib =>
+                        this._loadAssets(
+                            lib.preloadedDependencies || [],
+                            assets,
+                            loaded
+                        ).then(() => {
+                            this.storage
+                                .loadLanguage(
+                                    name,
+                                    majVer,
+                                    minVer,
+                                    language || 'en'
+                                )
+                                .then(translation => {
+                                    const path = `${
+                                        this.baseUrl
+                                    }/libraries/${key}`;
+                                    (lib.preloadedCss || []).forEach(asset =>
+                                        assets.styles.push(
+                                            `${path}/${asset.path}`
+                                        )
+                                    );
+                                    (lib.preloadedJs || []).forEach(script =>
+                                        assets.scripts.push(
+                                            `${path}/${script.path}`
+                                        )
+                                    );
+                                    assets.translations =
+                                        assets.translations || {};
+                                    assets.translations[name] =
+                                        translation || undefined;
+                                });
+                        })
+                    );
             })
         );
     }
