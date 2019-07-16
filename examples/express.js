@@ -58,6 +58,19 @@ const h5pEditor = new H5PEditor(
                 });
             });
         },
+        loadH5PJson: contentId => {
+            const dir = `${path.resolve('')}/h5p/content/${contentId}`;
+
+            return Promise.resolve(require(`${dir}/h5p.json`));
+        },
+        loadContent: contentId => {
+            return new Promise(resolve => {
+                const dir = `${path.resolve(
+                    ''
+                )}/h5p/content/${contentId}/content`;
+                resolve(require(`${dir}/content.json`));
+            });
+        },
         saveContent: (contentId, content) => {
             return new Promise(resolve => {
                 const dir = `${path.resolve(
@@ -141,6 +154,17 @@ server.get('/', (req, res) => {
     h5pEditor.render().then(h5pEditorPage => {
         res.end(h5pEditorPage);
     });
+});
+
+server.get('/params', (req, res) => {
+    h5pEditor
+        .loadH5P(req.query.contentId)
+        .then(content => {
+            res.status(200).json(content);
+        })
+        .catch(error => {
+            res.status(404).end();
+        });
 });
 
 server.get('/ajax', (req, res) => {
