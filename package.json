@@ -40,7 +40,8 @@
         "express-fileupload": "^1.1.5",
         "jest": "^24.7.1",
         "mkdirp": "^0.5.1",
-        "mockdate": "^2.0.3"
+        "mockdate": "^2.0.3",
+        "shortid": "^2.2.14"
     },
     "main": "./src/index.js"
 }
