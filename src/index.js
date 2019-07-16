@@ -80,8 +80,9 @@ class H5PEditor {
                             styles: []
                         };
                         return this._loadAssets(
-                            library.editorDependencies || [],
+                            library.editorDependencies ||
                                 library.preloadedDependencies ||
+                                [],
                             assets,
                             language
                         ).then(() => {
@@ -202,7 +203,9 @@ class H5PEditor {
                     .loadLibrary(name, majVer, minVer)
                     .then(lib =>
                         this._loadAssets(
-                            lib.preloadedDependencies || [],
+                            lib.editorDependencies ||
+                                lib.preloadedDependencies ||
+                                [],
                             assets,
                             language,
                             loaded
