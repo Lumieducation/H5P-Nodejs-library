@@ -6,6 +6,7 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
+const shortid = require('shortid');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
 const User = require('../test/mockups/user');
 const H5PEditor = require('../src');
@@ -34,14 +35,43 @@ const h5pEditor = new H5PEditor(
         },
         saveContentFile: (contentId, field, file) => {
             return new Promise(resolve => {
-                const dir =
-                    contentId === '0'
-                        ? `${path.resolve('')}/h5p/tmp/`
-                        : `${path.resolve()}/h5p/content/${contentId}/content/`;
+                const dir = `${path.resolve()}/h5p/content/${contentId}/content/`;
                 mkdirp(dir, mkdirp_error => {
                     fs.writeFile(`${dir}${file.name}`, file.data, error => {
                         resolve();
                     });
+                });
+            });
+        },
+        saveH5P: (contentId, h5pJson) => {
+            return new Promise(resolve => {
+                const dir = `${path.resolve('')}/h5p/content/${contentId}/`;
+                mkdirp(dir, () => {
+                    fs.writeFile(
+                        `${dir}/h5p.json`,
+                        JSON.stringify(h5pJson),
+                        'utf8',
+                        () => {
+                            resolve();
+                        }
+                    );
+                });
+            });
+        },
+        saveContent: (contentId, content) => {
+            return new Promise(resolve => {
+                const dir = `${path.resolve(
+                    ''
+                )}/h5p/content/${contentId}/content`;
+                mkdirp(dir, () => {
+                    fs.writeFile(
+                        `${dir}/content.json`,
+                        JSON.stringify(content),
+                        'utf8',
+                        () => {
+                            resolve();
+                        }
+                    );
                 });
             });
         },
@@ -80,7 +110,7 @@ const h5pEditor = new H5PEditor(
         baseUrl: '/h5p',
         ajaxPath: '/ajax?action=',
         libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
-        filesPath: '/h5p/tmp'
+        filesPath: '/h5p/content'
     },
     valueStorage,
     config,
@@ -105,6 +135,9 @@ server.use(
 server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
 server.get('/', (req, res) => {
+    if (!req.query.contentId) {
+        return res.redirect(`?contentId=${shortid()}`);
+    }
     h5pEditor.render().then(h5pEditorPage => {
         res.end(h5pEditorPage);
     });
@@ -140,6 +173,19 @@ server.get('/ajax', (req, res) => {
     }
 });
 
+server.post('/', (req, res) => {
+    h5pEditor
+        .saveH5P(
+            req.query.contentId,
+            req.body.params.params,
+            req.body.params.metadata,
+            req.body.library
+        )
+        .then(() => {
+            res.status(200).end();
+        });
+});
+
 server.post('/ajax', (req, res) => {
     const { action } = req.query;
     switch (action) {
@@ -151,7 +197,9 @@ server.post('/ajax', (req, res) => {
         case 'files':
             h5pEditor
                 .saveContentFile(
-                    req.body.contentId,
+                    req.body.contentId === '0'
+                        ? req.query.contentId
+                        : req.body.contentId,
                     JSON.parse(req.body.field),
                     req.files.file
                 )

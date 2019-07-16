@@ -56,6 +56,18 @@ class H5PEditor {
         return this;
     }
 
+    saveH5P(contentId, content, metadata, library) {
+        return new Promise(resolve => {
+            this.storage.saveContent(contentId, content).then(() => {
+                this._generateH5PJSON(metadata, library).then(h5pJson => {
+                    this.storage.saveH5P(contentId, h5pJson).then(() => {
+                        resolve();
+                    });
+                });
+            });
+        });
+    }
+
     getLibraryData(machineName, majorVersion, minorVersion, language) {
         return this.storage
             .loadSemantics(machineName, majorVersion, minorVersion)
@@ -117,7 +129,7 @@ class H5PEditor {
             this.storage.saveContentFile(contentId, field, file).then(() => {
                 resolve({
                     mime: file.mimetype,
-                    path: `${file.name}`
+                    path: `${contentId}/content/${file.name}`
                 });
             });
         });
@@ -150,6 +162,26 @@ class H5PEditor {
                     });
             })
         );
+    }
+
+    _generateH5PJSON(metadata, _library) {
+        return new Promise(resolve => {
+            const lib = this._parseLibraryString(_library);
+            this.storage
+                .loadLibrary(
+                    lib.machineName,
+                    lib.majorVersion,
+                    lib.minorVersion
+                )
+                .then(library => {
+                    const h5pJson = Object.assign({}, metadata, {
+                        mainLibrary: library.machineName,
+                        preloadedDependencies: library.preloadedDependencies
+                    });
+
+                    resolve(h5pJson);
+                });
+        });
     }
 
     _loadAssets(dependencies, assets, language, loaded = {}) {
