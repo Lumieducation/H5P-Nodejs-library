@@ -40,7 +40,23 @@ var ns = H5PEditor;
         //   else {
         $upload.hide();
         if (h5peditor === undefined) {
-            h5peditor = new ns.Editor(library, $params.val(), $editor[0]);
+            $.ajax({
+                type: 'GET',
+                url: 'params' + window.location.search,
+                success: function(res) {
+                    h5peditor = new ns.Editor(
+                        res.library,
+                        JSON.stringify(res.params),
+                        $editor[0]
+                    );
+                    $create.show();
+                    // $type.change();
+                },
+                error: function(res) {
+                    h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
+                    $create.show();
+                }
+            });
         }
         $create.show();
         //   }
