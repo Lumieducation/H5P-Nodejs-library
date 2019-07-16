@@ -81,7 +81,9 @@ class H5PEditor {
                         };
                         return this._loadAssets(
                             library.editorDependencies || [],
-                            assets
+                                library.preloadedDependencies ||
+                            assets,
+                            language
                         ).then(() => {
                             return this.storage
                                 .loadLanguage(
@@ -202,6 +204,7 @@ class H5PEditor {
                         this._loadAssets(
                             lib.preloadedDependencies || [],
                             assets,
+                            language,
                             loaded
                         ).then(() => {
                             this.storage
