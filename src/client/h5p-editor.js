@@ -91,11 +91,16 @@ var ns = H5PEditor;
 
                     $.ajax({
                         type: 'POST',
-                        data: { params, library: h5peditor.getLibrary() },
+                        data: JSON.stringify({
+                            params,
+                            library: h5peditor.getLibrary()
+                        }),
                         success: function(res) {
                             console.log('success', res);
                         },
-                        dataType: 'application/json'
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
                     });
 
                     return event.preventDefault();
