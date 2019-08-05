@@ -68,6 +68,19 @@ class H5PEditor {
         });
     }
 
+    loadH5P(contentId) {
+        return new Promise(resolve => {
+            this.storage.loadH5PJson(contentId).then(h5pJson => {
+                this.storage.loadContent(contentId).then(content => {
+                    resolve({
+                        library: this._getUbernameFromH5pJson(h5pJson),
+                        params: content
+                    });
+                });
+            });
+        });
+    }
+
     getLibraryData(machineName, majorVersion, minorVersion, language) {
         return this.storage
             .loadSemantics(machineName, majorVersion, minorVersion)
@@ -179,12 +192,29 @@ class H5PEditor {
                 .then(library => {
                     const h5pJson = Object.assign({}, metadata, {
                         mainLibrary: library.machineName,
-                        preloadedDependencies: library.preloadedDependencies
+                        preloadedDependencies: [
+                            ...library.preloadedDependencies,
+                            {
+                                machineName: library.machineName,
+                                majorVersion: library.majorVersion,
+                                minorVersion: library.minorVersion
+                            }
+                        ]
                     });
 
                     resolve(h5pJson);
                 });
         });
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    _getUbernameFromH5pJson(h5pJson) {
+        const library = h5pJson.preloadedDependencies.filter(
+            dependency => dependency.machineName === h5pJson.mainLibrary
+        )[0];
+        return `${library.machineName} ${library.majorVersion}.${
+            library.minorVersion
+        }`;
     }
 
     _loadAssets(dependencies, assets, language, loaded = {}) {
