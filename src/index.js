@@ -1,5 +1,5 @@
-const defaultEditorIntegration = require('./default_editor_integration');
-const defaultTranslation = require('./translations/en.json');
+const defaultEditorIntegration = require('../assets/default_editor_integration');
+const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
 
 const ContentTypeCache = require('../src/content-type-cache');
