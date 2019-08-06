@@ -1,3 +1,6 @@
+require("babel-core/register");
+require("babel-polyfill");
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -5,11 +8,11 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
-const H5PEditorConfig = require('../src/config');
+const H5PEditorConfig = require('../build/config');
 const shortid = require('shortid');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
 const User = require('../test/mockups/user');
-const H5PEditor = require('../src');
+const H5PEditor = require('../build');
 
 const server = express();
 
