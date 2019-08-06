@@ -1,5 +1,5 @@
-require("babel-core/register");
-require("babel-polyfill");
+require('babel-core/register');
+require('babel-polyfill');
 
 const express = require('express');
 const path = require('path');
@@ -240,6 +240,10 @@ server.post('/ajax', (req, res) => {
     }
 });
 
-server.listen(process.env.PORT || 8080, () => {
-    console.log('server running at ', process.env.PORT || 8080);
-});
+if (process.env.NODE_ENV !== 'test') {
+    server.listen(process.env.PORT || 8080, () => {
+        console.log('server running at ', process.env.PORT || 8080);
+    });
+}
+
+module.exports = server;

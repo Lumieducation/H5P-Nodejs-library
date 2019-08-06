@@ -13,10 +13,11 @@
         "uninstall": "npm run clean && rm -rf node_modules",
         "build": "npx babel src --presets babel-preset-env --out-dir build",
         "build:watch": "npx babel src --watch --presets babel-preset-env --out-dir build",
-        "ci": "npm run lint && npm run test",
+        "ci": "npm run lint && npm run test && npm run test:integration",
         "lint": "eslint ./src",
         "test": "jest",
-        "test:watch": "jest --watch"
+        "test:watch": "jest --watch",
+        "test:integration": "node test/integration.js "
     },
     "author": "Jan Philip Schellenberg",
     "dependencies": {
@@ -26,6 +27,7 @@
         "express": "^4.16.4",
         "fs-extra": "^8.0.1",
         "merge": "^1.2.1",
+        "puppeteer": "^1.19.0",
         "qs": "^6.7.0"
     },
     "devDependencies": {
