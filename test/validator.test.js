@@ -89,7 +89,7 @@ describe('validating H5P files', () => {
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow("Invalid library name: <em>library!</em>");
     })
     
-    it('rejects files with library.json not conforming to chema', async () => {
+    it('rejects files with library.json not conforming to schema', async () => {
         const h5pFile = `${path.resolve('')  }/test/data/validator/invalid-library-json.h5p`
         const validator = new H5pPackageValidator(translationService, new H5PConfig());
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The library.json file of the library <em>H5P.GreetingCard-1.0/library.json</em> is invalid (<em>should have required property &#39;majorVersion&#39;</em>)");
@@ -114,10 +114,10 @@ describe('validating H5P files', () => {
     })
 
     it('rejects too high core API version requirements', async () => {
-        const h5pFile = `${path.resolve('')  }/test/data/validator/valid1.h5p`
+        const h5pFile = `${path.resolve('')  }/test/data/validator/invalid-core-version.h5p`
         const config = new H5PConfig();
         config.coreApiVersion.minor = 1;
         const validator = new H5pPackageValidator(translationService, config);
-        await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The system was unable to install the <em>H5P.Audio-1.3</em> component from the package, it requires a newer version of the H5P plugin. This site is currently running version <em>1.1</em>, whereas the required version is <em>1.19</em> or higher. You should consider upgrading and then try again.");
+        await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The system was unable to install the <em>H5P.GreetingCard-1.0</em> component from the package, it requires a newer version of the H5P plugin. This site is currently running version <em>1.1</em>, whereas the required version is <em>1.19</em> or higher. You should consider upgrading and then try again.");
     })
 });
