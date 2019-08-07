@@ -1,0 +1,198 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "library-schema.json",
+  "title": "library.json",
+  "description": "The metadata of an h5p library",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "",
+      "pattern": "^.{1,255}$"
+    },
+    "majorVersion": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 99999
+    },
+    "minorVersion": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 99999
+    },
+    "patchVersion": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 99999
+    },
+    "machineName": {
+      "type": "string",
+      "description": "",
+      "pattern": "^[\\w0-9\\-\\.]{1,255}$"
+    },
+    "runnable": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "author": {
+      "type": "string",
+      "description": "",
+      "pattern": "^.{1,255}$"
+    },
+    "license": {
+      "type": "string",
+      "description": "",
+      "pattern": "^(cc-by|cc-by-sa|cc-by-nd|cc-by-nc|cc-by-nc-sa|cc-by-nc-nd|pd|cr|MIT|GPL1|GPL2|GPL3|MPL|MPL2)$"
+    },
+    "description": {
+      "type": "string",
+      "description": "",
+      "pattern": "^.{1,}$"
+    },
+    "metadataSettings": {
+      "type": "object",
+      "properties": {
+        "disable": {
+          "type": "number",
+          "description": "",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "disableExtraTitleField": {
+          "type": "number",
+          "description": "",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "dynamicDependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "library-name-schema.json"
+      }
+    },
+    "preloadedDependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "library-name-schema.json"
+      }
+    },
+    "editorDependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "library-name-schema.json"
+      }
+    },
+    "preloadedJs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "",
+            "pattern": "^((\\\\|\\/)?[a-zA-Z_\\-\\s0-9\\.]+)+\\.js$"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    "preloadedCss": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "",
+            "pattern": "^((\\\\|\\/)?[a-zA-Z_\\-\\s0-9\\.]+)+\\.css$"
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    "dropLibraryCss": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "machineName": {
+            "type": "string",
+            "description": "",
+            "pattern": "^[\\w0-9\\-\\.]{1,255}$"
+          }
+        },
+        "required": [
+          "machineName"
+        ]
+      }
+    },
+    "w": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 9999
+    },
+    "h": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 9999
+    },
+    "embedTypes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "iframe",
+          "div"
+        ]
+      }
+    },
+    "fullscreen": {
+      "type": "number",
+      "description": "",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "coreApi": {
+      "type": "object",
+      "properties": {
+        "majorVersion": {
+          "type": "number",
+          "description": "",
+          "minimum": 0,
+          "maximum": 99999
+        },
+        "minorVersion": {
+          "type": "number",
+          "description": "",      
+          "minimum": 0,
+          "maximum": 99999    
+        }
+      },
+      "required": [
+        "majorVersion",
+        "minorVersion"
+      ]
+    }
+  },
+  "required": [
+    "title",
+    "majorVersion",
+    "minorVersion",
+    "patchVersion",
+    "machineName",
+    "runnable"
+  ]
+}

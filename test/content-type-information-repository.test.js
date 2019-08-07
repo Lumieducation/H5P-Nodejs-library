@@ -18,15 +18,15 @@ describe('content type information repository', () => {
         const libManager = new FileLibraryManager(`${path.resolve('')}/test/data`);
         const cache = new ContentTypeCache(config, storage);
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
-        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/real-content-types.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/real-content-types.json'));
 
         await cache.updateIfNecessary();
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
         expect(content.outdated).toBe(false);
-        expect(content.libraries.length).toEqual(require('./data/real-content-types.json').contentTypes.length);
+        expect(content.libraries.length).toEqual(require('./data/content-type-cache/real-content-types.json').contentTypes.length);
     });
     it('doesn\'t fail if update wasn\'t called', async () => {
         const storage = new InMemoryStorage();
@@ -34,13 +34,13 @@ describe('content type information repository', () => {
         const libManager = new FileLibraryManager(`${path.resolve('')}/test/data`);
         const cache = new ContentTypeCache(config, storage);
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
-        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/real-content-types.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/real-content-types.json'));
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
         expect(content.outdated).toBe(false);
-        expect(content.libraries.length).toEqual(require('./data/real-content-types.json').contentTypes.length);
+        expect(content.libraries.length).toEqual(require('./data/content-type-cache/real-content-types.json').contentTypes.length);
     });
 
     it('adds local libraries', async () => {
@@ -49,8 +49,8 @@ describe('content type information repository', () => {
         const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
         const cache = new ContentTypeCache(config, storage);
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
-        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/0-content-types.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/0-content-types.json'));
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
@@ -63,8 +63,8 @@ describe('content type information repository', () => {
         const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
         const cache = new ContentTypeCache(config, storage);
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
-        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/1-content-type.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/1-content-type.json'));
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
         const content = await repository.get();
@@ -79,7 +79,7 @@ describe('content type information repository', () => {
         const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
         const cache = new ContentTypeCache(config, storage);
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, new User());
@@ -98,7 +98,7 @@ describe('content type information repository', () => {
         config.lrsContentTypes = ['H5P.Example1'];
         user.canCreateRestricted = false;
 
-        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/registration.json'));
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
 
         const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, user);

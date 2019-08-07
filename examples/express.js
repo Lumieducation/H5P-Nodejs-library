@@ -165,7 +165,7 @@ server.get('/params', (req, res) => {
         .then(content => {
             res.status(200).json(content);
         })
-        .catch(error => {
+        .catch(() => {
             res.status(404).end();
         });
 });
@@ -232,6 +232,15 @@ server.post('/ajax', (req, res) => {
                 )
                 .then(response => {
                     res.status(200).json(response);
+                });
+            break;
+        case 'library-install':
+          // check if is post request
+          // check if editor token is valid
+          
+            h5pEditor.installLibrary(req.query.id)
+                .then(response => {
+                  res.status(200).json(response);
                 });
             break;
         default:

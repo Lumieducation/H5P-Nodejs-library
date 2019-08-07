@@ -1,0 +1,24 @@
+{
+  "missing-h5p-extension": "The file you uploaded is not a valid HTML5 Package (It does not have the .h5p file extension)",
+  "unable-to-unzip": "The file you uploaded is not a valid HTML5 Package (We are unable to unzip it)",
+  "file-size-too-large": "One of the files inside the package exceeds the maximum file size allowed. (%file %used &gt; %max)",
+  "total-size-too-large": "The total size of the unpacked files exceeds the maximum size allowed. (%used &gt; %max)",
+  "invalid-content-folder": "A valid content folder is missing",
+  "invalid-h5p-json-file": "A valid main h5p.json file is missing",
+  "not-in-whitelist": "File &quot;%filename&quot; not allowed. Only files with the following extensions are allowed: %files-allowed.",
+  "unable-to-read-package-file": "Unable to read file from the package: %fileName",
+  "unable-to-parse-package": "Unable to parse JSON from the package: %fileName",
+  "invalid-h5p-json-file-2": "The main h5p.json does not conform to the schema (%reason)",
+  "api-version-unsupported": "The system was unable to install the %component component from the package, it requires a newer version of the H5P plugin. This site is currently running version %current, whereas the required version is %required or higher. You should consider upgrading and then try again.",
+  "invalid-library-name": "Invalid library name: %name",
+  "invalid-library-json-file": "Could not find library.json file with valid json format for library %name",
+  "invalid-schema-library-json-file": "The library.json file of the library %name is invalid (%reason)",
+  "library-missing-file": "The file &quot;%file&quot; is missing from library: &quot;%name&quot;",
+  "invalid-semantics-json-file": "Invalid semantics.json file has been included in the library %name",
+  "invalid-language-file": "Invalid language file %file in library %library'",
+  "invalid-language-file-json": "The JSON of the language file %file in the library %library cannot be parsed",
+  "library-directory-name-mismatch": "Library directory name must match machineName or machineName-majorVersion.minorVersion (from library.json). (Directory: %directoryName , machineName: %machineName, majorVersion: %majorVersion, minorVersion: %minorVersion)",
+  "error-creating-temporary-directory": "Could not create temporary directory to unpack H5P package",
+  "corrupt-file": "The file %file could not be read from the H5P package. The package seems to be corrupt."
+
+}
