@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 const AdmZip = require('adm-zip');
 const path = require('path');
 
-const { ValidatorBuilder } = require('./validator-builder');
-const throwErrorsNow = require('./validator-builder').throwErrorsNowRule;
-const { formatBytes } = require('./string-formatter');
+const { ValidatorBuilder } = require('./helpers/validator-builder');
+const throwErrorsNow = require('./helpers/validator-builder').throwErrorsNowRule;
+const { formatBytes } = require('./helpers/string-formatter');
 
 /**
  * Performs checks if uploaded H5P packages or those from the H5P Hub are valid.
@@ -460,9 +460,9 @@ class H5pPackageValidator {
         }
 
         const jsonValidator = new Ajv();
-        const h5pJsonSchema = await fs.readJSON("src/h5p-schema.json");
-        const libraryNameSchema = await fs.readJSON("src/library-name-schema.json");
-        const librarySchema = await fs.readJSON("src/library-schema.json");
+        const h5pJsonSchema = await fs.readJSON("src/schemas/h5p-schema.json");
+        const libraryNameSchema = await fs.readJSON("src/schemas/library-name-schema.json");
+        const librarySchema = await fs.readJSON("src/schemas/library-schema.json");
         jsonValidator.addSchema([h5pJsonSchema, libraryNameSchema, librarySchema]);
         this._h5pMetadataValidator = jsonValidator.compile(h5pJsonSchema);
         this._libraryMetadataValidator = jsonValidator.compile(librarySchema);
