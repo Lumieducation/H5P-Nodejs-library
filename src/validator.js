@@ -70,7 +70,8 @@ class H5pPackageValidator {
             .addRule(this._libraryDirectoryMustHaveValidName(libraryName))
             .addRule(this._jsonMustBeParsable("semantics.json",
                 this._translationService.getTranslation("invalid-semantics-json-file", { "%name": libraryName }),
-                true))
+                true,
+                false))
             .addRule(this._jsonMustConformToSchema(`${libraryName}/library.json`,
                 this._libraryMetadataValidator,
                 "invalid-schema-library-json-file",
@@ -80,7 +81,6 @@ class H5pPackageValidator {
             .addRule(this._libraryMustHaveMatchingDirectoryName(libraryName))
             .addRule(this._libraryPreloadedFilesMustExist)
             .addRule(this._libraryLanguageFilesMustBeValid)
-            .addRule(throwErrorsNow)
             .validate(zipEntries, error);
     }
 
@@ -170,8 +170,8 @@ class H5pPackageValidator {
                 const lowercaseName = zipEntry.entryName.toLocaleLowerCase();
 
                 // Skip files that aren't matched by the filter and directories
-                if (filter(lowercaseName) 
-                    && !zipEntry.isDirectory 
+                if (filter(lowercaseName)
+                    && !zipEntry.isDirectory
                     && !H5pPackageValidator._isAllowedFileExtension(lowercaseName, whitelist)) {
                     error.addError(this._translationService.getTranslation("not-in-whitelist", {
                         "%filename": zipEntry.entryName,
@@ -253,9 +253,10 @@ class H5pPackageValidator {
      * @param {string} filename The path to the file.
      * @param {string} errorMessage An optional error message to use instead of the default
      * @param {boolean} skipIfNonExistent if true, the rule does not produce an error if the file doesn't exist. 
+     * @param {boolean} throwIfError if true, the rule will throw an error if the JSON file is not parsable, otherwise it will append the error message to the error object
      * @return The rule
      */
-    _jsonMustBeParsable = (filename, errorMessage = undefined, skipIfNonExistent = false) => {
+    _jsonMustBeParsable = (filename, errorMessage = undefined, skipIfNonExistent = false, throwIfError = true) => {
         /**
          * @param {IZipEntry[]} zipEntries The zip entries in the H5P package
          * @param {ValidationError} error The error object
@@ -273,7 +274,11 @@ class H5pPackageValidator {
                 this._tryParseJson(entry);
             }
             catch (jsonParseError) {
-                throw error.addError(errorMessage || jsonParseError.message);
+                if (throwIfError) {
+                    throw error.addError(errorMessage || jsonParseError.message);
+                } else {
+                    error.addError(errorMessage || jsonParseError.message);
+                }
             }
             return zipEntries;
         }
@@ -326,11 +331,7 @@ class H5pPackageValidator {
      */
     _librariesMustBeValid = async (zipEntries, error) => {
         const tld = H5pPackageValidator._getTopLevelDirectories(zipEntries);
-        for (const directory of tld) {
-            if (directory !== "content") {                
-                await this._validateLibrary(zipEntries, directory, error);
-            }
-        }
+        await Promise.all(tld.filter(d => d !== "content").map(directory => this._validateLibrary(zipEntries, directory, error)));
         return zipEntries;
     }
 
@@ -410,16 +411,12 @@ class H5pPackageValidator {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
-            for (const file of jsonData.preloadedJs) {
-                await this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error);
-            }
+            await Promise.all(jsonData.preloadedJs.map(file => this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
         }
 
         // check if all CSS files that must be preloaded are part of the package
         if (jsonData.preloadedCss) {
-            for (const file of jsonData.preloadedCss) {
-                await this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error);
-            }
+            await Promise.all(jsonData.preloadedCss.map(file => this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
         }
         return { zipEntries, jsonData };
     }
@@ -452,7 +449,7 @@ class H5pPackageValidator {
     /**
      * HELPER METHODS
      */
-    
+
     /**
      * Initializes the JSON schema validators _h5pMetaDataValidator and _libraryMetadataValidator.
      * Can be called multiple times, as it only creates new validators when it hasn't been called before.
