@@ -93,12 +93,14 @@ class H5PEditor {
                             styles: []
                         };
                         return this._loadAssets(
-                            library.editorDependencies ||
-                                library.preloadedDependencies ||
-                                [],
+                            library.preloadedDependencies || [],
                             assets,
                             language
-                        ).then(() => {
+                        ).then(() => this._loadAssets(
+                            library.editorDependencies || [],
+                            assets,
+                            language
+                        )).then(() => {
                             return this.storage
                                 .loadLanguage(
                                     machineName,
@@ -233,13 +235,16 @@ class H5PEditor {
                     .loadLibrary(name, majVer, minVer)
                     .then(lib =>
                         this._loadAssets(
-                            lib.editorDependencies ||
-                                lib.preloadedDependencies ||
-                                [],
+                            lib.preloadedDependencies || [],
                             assets,
                             language,
                             loaded
-                        ).then(() => {
+                        ).then(() => this._loadAssets(
+                            lib.editorDependencies || [],
+                            assets,
+                            language,
+                            loaded
+                        )).then(() => {
                             this.storage
                                 .loadLanguage(
                                     name,
