@@ -1,5 +1,6 @@
 module.exports = model => `<html>
 <head>
+<meta charset="UTF-8">
 <script> window.H5PIntegration = parent.H5PIntegration || ${JSON.stringify(
     model.integration,
     null,
