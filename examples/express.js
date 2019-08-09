@@ -10,7 +10,8 @@ const mkdirp = require('mkdirp');
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
 const shortid = require('shortid');
-const FileLibraryManager = require('../test/mockups/file-library-manager');
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
 const User = require('../test/mockups/user');
 const H5PEditor = require('../build');
 
@@ -19,9 +20,9 @@ const server = express();
 const valueStorage = new InMemoryStorage();
 const config = new H5PEditorConfig(valueStorage);
 config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
-const libraryManager = new FileLibraryManager(
+const libraryManager = new LibraryManager(new FileLibraryStorage(
     `${path.resolve('')}/h5p/libraries`
-);
+));
 const user = new User();
 
 const h5pEditor = new H5PEditor(
@@ -235,8 +236,7 @@ server.post('/ajax', (req, res) => {
                 });
             break;
         case 'library-install':
-          // check if is post request
-          // check if editor token is valid
+          // check if editor token is valid (argument 1, machine name is argument 2)
           
             h5pEditor.installLibrary(req.query.id)
                 .then(response => {

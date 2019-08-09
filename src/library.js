@@ -2,7 +2,7 @@
  * Stores information about H5P libraries.
  */
 class Library {
-  constructor(machineName, major, minor, patch) {
+  constructor(machineName, major, minor, patch, restricted = false) {
       this.machineName = machineName;
       this.majorVersion = major;
       this.minorVersion = minor;
@@ -10,7 +10,7 @@ class Library {
       this.id = undefined;
       this.title = undefined;
       this.runnable = undefined;
-      this.restricted = undefined;
+      this.restricted = restricted;
   }
 
   /**

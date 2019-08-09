@@ -4,7 +4,8 @@ const axios = require('axios');
 
 const InMemoryStorage = require('./mockups/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
-const FileLibraryManager = require('./mockups/file-library-manager');
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
 const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 const User = require('./mockups/user');
@@ -15,7 +16,7 @@ describe('content type information repository', () => {
     it('gets content types from hub', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data`));
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
@@ -31,7 +32,7 @@ describe('content type information repository', () => {
     it('doesn\'t fail if update wasn\'t called', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data`));
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
@@ -46,7 +47,7 @@ describe('content type information repository', () => {
     it('adds local libraries', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
@@ -60,7 +61,7 @@ describe('content type information repository', () => {
     it('detects updates to local libraries', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
@@ -76,7 +77,7 @@ describe('content type information repository', () => {
     it('returns local libraries if H5P Hub is unreachable', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
@@ -90,7 +91,7 @@ describe('content type information repository', () => {
     it('sets LRS dependent content types to restricted', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PEditorConfig(storage);
-        const libManager = new FileLibraryManager(`${path.resolve('')}/test/data/libraries`);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
         const cache = new ContentTypeCache(config, storage);
         const user = new User();
 
