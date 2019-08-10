@@ -120,4 +120,11 @@ describe('validating H5P files', () => {
         const validator = new H5pPackageValidator(translationService, config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The system was unable to install the <em>H5P.GreetingCard-1.0</em> component from the package, it requires a newer version of the H5P plugin. This site is currently running version <em>1.1</em>, whereas the required version is <em>1.19</em> or higher. You should consider upgrading and then try again.");
     })
+
+    it('detects errors in several libraries', async () => {
+        const h5pFile = `${path.resolve('')  }/test/data/validator/2-invalid-libraries.h5p`
+        const config = new H5PConfig();
+        const validator = new H5pPackageValidator(translationService, config);
+        await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The library.json file of the library <em>H5P.GreetingCard2-1.0/library.json</em> is invalid (<em>should have required property &#39;title&#39;</em>)\nInvalid language file <em>XXX!.json</em> in library <em>H5P.GreetingCard-1.0</em>'");
+    })
 });

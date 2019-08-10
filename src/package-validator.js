@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const AdmZip = require('adm-zip');
 const path = require('path');
 
-const { ValidatorBuilder } = require('./helpers/validator-builder');
+const { ValidationError, ValidatorBuilder } = require('./helpers/validator-builder');
 const throwErrorsNow = require('./helpers/validator-builder').throwErrorsNowRule;
 const { formatBytes } = require('./helpers/string-formatter');
 
@@ -66,22 +66,30 @@ class H5pPackageValidator {
      * @returns { semantics: any, hasIcon: boolean, language: any } the object from library.json with additional data from semantics.json, the language files and the icon.
      */
     _validateLibrary = async (zipEntries, libraryName, error) => {
-        return new ValidatorBuilder()
-            .addRule(this._libraryDirectoryMustHaveValidName(libraryName))
-            .addRule(this._jsonMustBeParsable("semantics.json",
-                this._translationService.getTranslation("invalid-semantics-json-file", { "%name": libraryName }),
-                true,
-                false))
-            .addRule(this._jsonMustConformToSchema(`${libraryName}/library.json`,
-                this._libraryMetadataValidator,
-                "invalid-schema-library-json-file",
-                this._translationService.getTranslation("invalid-library-json-file", { "%name": libraryName }),
-                true))
-            .addRule(this._mustBeCompatibleToCoreVersion)
-            .addRule(this._libraryMustHaveMatchingDirectoryName(libraryName))
-            .addRule(this._libraryPreloadedFilesMustExist)
-            .addRule(this._libraryLanguageFilesMustBeValid)
-            .validate(zipEntries, error);
+        try {
+            return await (new ValidatorBuilder()
+                .addRule(this._libraryDirectoryMustHaveValidName(libraryName))
+                .addRule(this._jsonMustBeParsable("semantics.json",
+                    this._translationService.getTranslation("invalid-semantics-json-file", { "%name": libraryName }),
+                    true,
+                    false))
+                .addRule(this._jsonMustConformToSchema(`${libraryName}/library.json`,
+                    this._libraryMetadataValidator,
+                    "invalid-schema-library-json-file",
+                    this._translationService.getTranslation("invalid-library-json-file", { "%name": libraryName }),
+                    true))
+                .addRule(this._mustBeCompatibleToCoreVersion)
+                .addRule(this._libraryMustHaveMatchingDirectoryName(libraryName))
+                .addRule(this._libraryPreloadedFilesMustExist)
+                .addRule(this._libraryLanguageFilesMustBeValid)
+                .validate(zipEntries, error));
+        } catch (e) {
+            if (e instanceof ValidationError) {
+                // Don't rethrow a ValidationError as other libraries can still be validated, too.
+                return false; 
+            }
+            throw e;
+        }
     }
 
     _libraryDirectoryNameRegex = /^[\w0-9\-.]{1,255}$/i;
@@ -434,7 +442,7 @@ class H5pPackageValidator {
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
         for (const languageFileEntry of zipEntries.filter(e => e.entryName.startsWith(languagePath) && !e.isDirectory)) {
             if (!languageFileRegex.test(languageFileEntry.name)) {
-                error.addError(this._translationService.getTranslation("invalid-language-file", { "%file": languageFileEntry, "%library": dirName }));
+                error.addError(this._translationService.getTranslation("invalid-language-file", { "%file": languageFileEntry.name, "%library": dirName }));
             }
             try {
                 this._tryParseJson(languageFileEntry);

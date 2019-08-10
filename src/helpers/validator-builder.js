@@ -118,7 +118,7 @@ class ValidatorBuilder {
      */
     async validate(data, error = new ValidationError()) {
         for (const rule of this._rules) {
-            // promises need to be called iteratively
+            // promises need to be called iteratively here as validation has to occur step by step
             // eslint-disable-next-line no-await-in-loop
             data = await rule(data, error);
         }
