@@ -60,32 +60,60 @@ describe('aggregating data from library folders for the editor', () => {
             });
     });
 
-    it('includes the editor-dependencies in the javascript field', () => {
+    it('includes assets of preloaded and editor dependencies', () => {
         const storage = {
             loadSemantics: () => Promise.resolve({}),
             loadLibrary: machineName => {
                 switch (machineName) {
-                    case 'H5PEditor.Test':
-                        return Promise.resolve({
-                            machineName: 'H5PEditor.test',
-                            majorVersion: 1,
-                            minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'path/to/test.js'
-                                }
-                            ]
-                        });
-                    default:
+                    case 'Foo':
                         return Promise.resolve({
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 2,
-                            editorDependencies: [
+                            preloadedDependencies: [
                                 {
-                                    machineName: 'H5PEditor.Test',
+                                    machineName: 'PreloadedDependency',
                                     majorVersion: 1,
                                     minorVersion: 0
+                                }
+                            ],
+                            editorDependencies: [
+                                {
+                                    machineName: 'EditorDependency',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                    case 'PreloadedDependency':
+                        return Promise.resolve({
+                            machineName: 'PreloadedDependency',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'some/script.js'
+                                }
+                            ],
+                            preloadedCss: [
+                                {
+                                    path: 'some/style.css'
+                                }
+                            ]
+                        });
+                    case 'EditorDependency':
+                        return Promise.resolve({
+                            machineName: 'EditorDependency',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'path/to/script.js'
+                                }
+                            ],
+                            preloadedCss: [
+                                {
+                                    path: 'path/to/style.css'
                                 }
                             ]
                         });
@@ -99,7 +127,94 @@ describe('aggregating data from library folders for the editor', () => {
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
                 expect(libraryData.javascript).toEqual([
-                    '/h5p/libraries/H5PEditor.Test-1.0/path/to/test.js'
+                    '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
+                    '/h5p/libraries/EditorDependency-1.0/path/to/script.js',
+                ]);
+                expect(libraryData.css).toEqual([
+                    '/h5p/libraries/PreloadedDependency-1.0/some/style.css',
+                    '/h5p/libraries/EditorDependency-1.0/path/to/style.css',
+                ]);
+            });
+    });
+
+    it('includes dependencies of dependencies in the javascript field', () => {
+        const storage = {
+            loadSemantics: () => Promise.resolve({}),
+            loadLibrary: machineName => {
+                switch (machineName) {
+                    case 'Foo':
+                        return Promise.resolve({
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 2,
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'Bar',
+                                    majorVersion: 1,
+                                    minorVersion: 3
+                                }
+                            ]
+                        });
+                    case 'Bar':
+                        return Promise.resolve({
+                            machineName: 'Bar',
+                            majorVersion: 1,
+                            minorVersion: 3,
+                            preloadedJs: [
+                                {
+                                    path: 'bar/script.js'
+                                }
+                            ],
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'PreloadedDependency',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ],
+                            editorDependencies: [
+                                {
+                                    machineName: 'EditorDependency',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                    case 'PreloadedDependency':
+                        return Promise.resolve({
+                            machineName: 'PreloadedDependency',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'some/script.js'
+                                }
+                            ]
+                        });
+                    case 'EditorDependency':
+                        return Promise.resolve({
+                            machineName: 'EditorDependency',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'path/to/script.js'
+                                }
+                            ]
+                        });
+                }
+            },
+            loadLanguage: () => Promise.resolve(null),
+            listLanguages: () => Promise.resolve([])
+        };
+
+        return new H5PEditor(storage)
+            .getLibraryData('Foo', 1, 2)
+            .then(libraryData => {
+                expect(libraryData.javascript).toEqual([
+                    '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
+                    '/h5p/libraries/EditorDependency-1.0/path/to/script.js',
+                    '/h5p/libraries/Bar-1.3/bar/script.js'
                 ]);
             });
     });
