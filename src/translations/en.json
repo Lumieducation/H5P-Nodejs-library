@@ -19,6 +19,8 @@
   "invalid-language-file-json": "The JSON of the language file %file in the library %library cannot be parsed",
   "library-directory-name-mismatch": "Library directory name must match machineName or machineName-majorVersion.minorVersion (from library.json). (Directory: %directoryName , machineName: %machineName, majorVersion: %majorVersion, minorVersion: %minorVersion)",
   "error-creating-temporary-directory": "Could not create temporary directory to unpack H5P package",
-  "corrupt-file": "The file %file could not be read from the H5P package. The package seems to be corrupt."
-
+  "corrupt-file": "The file %file could not be read from the H5P package. The package seems to be corrupt.",
+  "hub-install-no-content-type": "No content type was specified.",
+  "hub-install-invalid-content-type": "The chosen content type is invalid.",
+  "hub-install-denied": "You do not have permission to install content types. Contact the administrator of your site."
 }

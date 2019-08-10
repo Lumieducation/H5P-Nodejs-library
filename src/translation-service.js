@@ -7,11 +7,11 @@ class TranslationService {
     /**
      * Initializes the translation service
      * @param {[key: string]: string} fallbackLanguageStrings An object with key-value pairs that consist of ids and translation strings for the ids. The fallback strings will be used if a language string can't be found in the localization.
-     * @param {[key: string]: string} localLanguageStrings An object with key-value pairs that consist of ids and translation strings for the ids. 
+     * @param {[key: string]: string} localLanguageStrings (optional) An object with key-value pairs that consist of ids and translation strings for the ids. 
      */
     constructor(fallbackLanguageStrings, localLanguageStrings) {
         this._fallbackLanguageStrings = fallbackLanguageStrings;
-        this._localLanguageStrings = localLanguageStrings;
+        this._localLanguageStrings = localLanguageStrings || fallbackLanguageStrings;
 
         /**
         * Used to check if replacement keys conform to the required pattern.
