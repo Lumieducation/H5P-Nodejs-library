@@ -48,9 +48,9 @@ class H5pPackageValidator {
             .addRule(this._filterOutEntries((entry) => entry.name.endsWith("/")))
             .addRuleWhen(this._fileExtensionMustBeAllowed((name) => name.startsWith("content/"), this._contentExtensionWhitelist), checkContent)
             .addRuleWhen(this._fileExtensionMustBeAllowed((name) => name.includes("/") && !name.startsWith("content/"), this._libraryExtensionWhitelist), checkLibraries)
-            .addRuleWhen(this._fileMustExist("h5p.json", this._translationService.getTranslation("invalid-h5p-json-file")), checkContent)
+            .addRuleWhen(this._fileMustExist("h5p.json", this._translationService.getTranslation("invalid-h5p-json-file"), true), checkContent)
             .addRuleWhen(this._jsonMustConformToSchema("h5p.json", this._h5pMetadataValidator, "invalid-h5p-json-file-2"), checkContent)
-            .addRuleWhen(this._fileMustExist("content/content.json", this._translationService.getTranslation("invalid-content-folder")), checkContent)
+            .addRuleWhen(this._fileMustExist("content/content.json", this._translationService.getTranslation("invalid-content-folder"), true), checkContent)
             .addRuleWhen(this._jsonMustBeParsable("content/content.json"), checkContent)
             .addRule(throwErrorsNow)
             .addRuleWhen(this._filesMustBeReadable((filePath) => filePath.startsWith("content/")), checkContent)
@@ -86,7 +86,7 @@ class H5pPackageValidator {
         } catch (e) {
             if (e instanceof ValidationError) {
                 // Don't rethrow a ValidationError as other libraries can still be validated, too.
-                return false; 
+                return false;
             }
             throw e;
         }
@@ -196,9 +196,10 @@ class H5pPackageValidator {
      * Does NOT throw errors but appends them to the error object.
      * @param {string} filename The filename that must exist among the zip entries (path, not case-sensitive)
      * @param {string} errorMessage The error message that is used if the file does not exist
+     * @param {boolean} throwOnError If true, the rule will throw an error if the file does not exist. 
      * @returns the rule
      */
-    _fileMustExist = (filename, errorMessage) => {
+    _fileMustExist = (filename, errorMessage, throwOnError = false) => {
         /**
          * @param {IZipEntry[]} zipEntries The zip entries in the whole package
          * @param {ValidationError} error The error object
@@ -207,6 +208,9 @@ class H5pPackageValidator {
         return async (zipEntries, error) => {
             if (!zipEntries.find(e => e.entryName.toLocaleLowerCase() === filename.toLocaleLowerCase())) {
                 error.addError(errorMessage);
+                if (throwOnError) {
+                    throw error;
+                }
             }
             return zipEntries;
         }

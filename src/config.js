@@ -34,7 +34,7 @@ class H5PEditorConfig {
          * It is sent to the H5P Hub when registering there.
          * Not user-configurable and should not be changed by custom implementations.
          */
-        this.coreApiVersion = { major: 1, minor: 19 };
+        this.coreApiVersion = { major: 1, minor: 20 };
 
         /**
          * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
