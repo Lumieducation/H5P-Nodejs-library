@@ -82,60 +82,85 @@ class H5PEditor {
     }
 
     getLibraryData(machineName, majorVersion, minorVersion, language) {
-        return this.storage
-            .loadSemantics(machineName, majorVersion, minorVersion)
-            .then(semantics => {
-                return this.storage
-                    .loadLibrary(machineName, majorVersion, minorVersion)
-                    .then(library => {
-                        const assets = {
-                            scripts: [],
-                            styles: []
-                        };
-                        return this._loadAssets(
-                            library.preloadedDependencies || [],
-                            assets,
-                            language
-                        ).then(() => this._loadAssets(
-                            library.editorDependencies || [],
-                            assets,
-                            language
-                        )).then(() => {
-                            return this.storage
-                                .loadLanguage(
-                                    machineName,
-                                    majorVersion,
-                                    minorVersion,
-                                    language
-                                )
-                                .then(languageObject => {
-                                    return this.storage
-                                        .listLanguages(
-                                            machineName,
-                                            majorVersion,
-                                            minorVersion
-                                        )
-                                        .then(languages => {
-                                            return Promise.resolve({
-                                                name: machineName,
-                                                version: {
-                                                    major: majorVersion,
-                                                    minor: minorVersion
-                                                },
-                                                semantics,
-                                                language: languageObject,
-                                                defaultLanguage: null,
-                                                javascript: assets.scripts,
-                                                css: assets.styles,
-                                                translations:
-                                                    assets.translations || {},
-                                                languages
-                                            });
-                                        });
-                                });
-                        });
-                    });
-            });
+        return Promise.all([
+            this._loadAssets(machineName, majorVersion, minorVersion, language),
+            this.storage.loadSemantics(machineName, majorVersion, minorVersion),
+            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language),
+            this.storage.listLanguages(machineName, majorVersion, minorVersion)
+        ])
+            .then(([
+                assets,
+                semantics,
+                languageObject,
+                languages
+            ]) => ({
+                name: machineName,
+                version: {
+                    major: majorVersion,
+                    minor: minorVersion
+                },
+                semantics,
+                language: languageObject,
+                defaultLanguage: null,
+                javascript: assets.scripts,
+                css: assets.styles,
+                translations: assets.translations,
+                languages
+            }))
+    }
+
+    _loadAssets(machineName, majorVersion, minorVersion, language, loaded = {}) {
+        const key = `${machineName}-${majorVersion}.${minorVersion}`;
+        const path = `${this.baseUrl}/libraries/${key}`;
+
+        if (key in loaded) return Promise.resolve(null);
+        loaded[key] = true;
+
+        const assets = {
+            scripts: [],
+            styles: [],
+            translations: {}
+        };
+
+        return Promise.all([
+            this.storage.loadLibrary(machineName, majorVersion, minorVersion),
+            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language || 'en')
+        ])
+            .then(([library, translation]) =>
+                Promise.all([
+                    this._resolveDependencies(library.preloadedDependencies || [], language, loaded),
+                    this._resolveDependencies(library.editorDependencies || [], language, loaded)
+                ])
+                    .then(combinedDependencies => {
+
+                        combinedDependencies.forEach(dependencies =>
+                            dependencies.forEach(dependency => {
+                                dependency.scripts.forEach(script => assets.scripts.push(script));
+                                dependency.styles.forEach(script => assets.styles.push(script));
+                                Object.keys(dependency.translations).forEach(key => assets.translations[key] = dependency.translations[key]);
+                            }));
+
+                        (library.preloadedJs || []).forEach(script => assets.scripts.push(`${path}/${script.path}`));
+                        (library.preloadedCss || []).forEach(style => assets.styles.push(`${path}/${style.path}`));
+                        assets.translations[machineName] = translation || undefined;
+                    }))
+
+            .then(() => assets)
+    }
+
+    _resolveDependencies(originalDependencies, language, loaded) {
+        const dependencies = originalDependencies.slice();
+        const resolved = [];
+
+        const resolve = dependency => {
+            if (!dependency) return Promise.resolve(resolved)
+
+            return this._loadAssets(dependency.machineName, dependency.majorVersion, dependency.minorVersion, language, loaded)
+                .then(assets => assets ? resolved.push(assets) : null)
+                .then(() => resolve(dependencies.shift()))
+        }
+
+        return resolve(dependencies.shift())
     }
 
     getContentTypeCache() {
@@ -217,64 +242,6 @@ class H5PEditor {
         return `${library.machineName} ${library.majorVersion}.${
             library.minorVersion
         }`;
-    }
-
-    _loadAssets(dependencies, assets, language, loaded = {}) {
-        return Promise.all(
-            dependencies.map(dependency => {
-                const name = dependency.machineName;
-                const majVer = dependency.majorVersion;
-                const minVer = dependency.minorVersion;
-
-                const key = `${name}-${majVer}.${minVer}`;
-
-                if (key in loaded) return Promise.resolve();
-                loaded[key] = true;
-
-                return this.storage
-                    .loadLibrary(name, majVer, minVer)
-                    .then(lib =>
-                        this._loadAssets(
-                            lib.preloadedDependencies || [],
-                            assets,
-                            language,
-                            loaded
-                        ).then(() => this._loadAssets(
-                            lib.editorDependencies || [],
-                            assets,
-                            language,
-                            loaded
-                        )).then(() => {
-                            this.storage
-                                .loadLanguage(
-                                    name,
-                                    majVer,
-                                    minVer,
-                                    language || 'en'
-                                )
-                                .then(translation => {
-                                    const path = `${
-                                        this.baseUrl
-                                    }/libraries/${key}`;
-                                    (lib.preloadedCss || []).forEach(asset =>
-                                        assets.styles.push(
-                                            `${path}/${asset.path}`
-                                        )
-                                    );
-                                    (lib.preloadedJs || []).forEach(script =>
-                                        assets.scripts.push(
-                                            `${path}/${script.path}`
-                                        )
-                                    );
-                                    assets.translations =
-                                        assets.translations || {};
-                                    assets.translations[name] =
-                                        translation || undefined;
-                                });
-                        })
-                    );
-            })
-        );
     }
 
     // eslint-disable-next-line class-methods-use-this
