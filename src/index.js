@@ -135,9 +135,13 @@ class H5PEditor {
 
                         combinedDependencies.forEach(dependencies =>
                             dependencies.forEach(dependency => {
-                                dependency.scripts.forEach(script => assets.scripts.push(script));
-                                dependency.styles.forEach(script => assets.styles.push(script));
-                                Object.keys(dependency.translations).forEach(key => assets.translations[key] = dependency.translations[key]);
+                                dependency.scripts.forEach(script => 
+                                    assets.scripts.push(script));
+                                dependency.styles.forEach(script => 
+                                    assets.styles.push(script));
+                                Object.keys(dependency.translations).forEach(k => {
+                                    assets.translations[k] = dependency.translations[k]
+                                });
                             }));
 
                         (library.preloadedJs || []).forEach(script => assets.scripts.push(`${path}/${script.path}`));
