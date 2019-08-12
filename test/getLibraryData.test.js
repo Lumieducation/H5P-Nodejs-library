@@ -332,4 +332,104 @@ describe('aggregating data from library folders for the editor', () => {
                 expect(listLanguages.mock.calls[0][2]).toBe(minorVersion);
             });
     });
+
+    it('lists dependencies in correct order', () => {
+        const storage = {
+            loadSemantics: () => Promise.resolve({}),
+            loadLibrary: machineName => {
+                switch (machineName) {
+                    case 'Foo':
+                        return Promise.resolve({
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
+                                }
+                            ],
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'Bar',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                },
+                                {
+                                    machineName: 'Baz',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                    case 'Bar':
+                        return Promise.resolve({
+                            machineName: 'Bar',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
+                                }
+                            ],
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'Jaz',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                    case 'Baz':
+                        return Promise.resolve({
+                            machineName: 'Baz',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
+                                }
+                            ],
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'Jaz',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        });
+                    case 'Jaz':
+                        return new Promise(y => setTimeout(() => y({
+                            machineName: 'Bar',
+                            majorVersion: 1,
+                            minorVersion: 0,
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
+                                }
+                            ],
+                            preloadedDependencies: [
+                                {
+                                    machineName: 'Jaz',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ]
+                        }), 10));
+                }
+            },
+            loadLanguage: () => Promise.resolve(null),
+            listLanguages: () => Promise.resolve([])
+        };
+
+        return new H5PEditor(storage)
+            .getLibraryData('Foo', 1, 0)
+            .then(libraryData => {
+                expect(libraryData.javascript).toEqual([
+                    '/h5p/libraries/Jaz-1.0/script.js',
+                    '/h5p/libraries/Bar-1.0/script.js',
+                    '/h5p/libraries/Baz-1.0/script.js',
+                    '/h5p/libraries/Foo-1.0/script.js',
+                ]);
+            });
+    });
 });
