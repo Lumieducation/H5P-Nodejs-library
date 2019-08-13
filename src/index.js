@@ -1,3 +1,6 @@
+const https = require('https');
+const unzipper = require('unzipper');
+
 const defaultEditorIntegration = require('../assets/default_editor_integration');
 const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
@@ -34,6 +37,7 @@ class H5PEditor {
             config,
             user
         );
+        this.config = config;
     }
 
     render() {
@@ -255,6 +259,23 @@ class H5PEditor {
             majorVersion: libraryName.split(' ')[1].split('.')[0],
             minorVersion: libraryName.split(' ')[1].split('.')[1]
         };
+    }
+
+    installLibrary(id) {
+        return new Promise(y =>
+            https.get(this.config.hubContentTypesEndpoint + id, response => {
+                response.pipe(unzipper.Parse())
+                    .on('entry', entry => {
+                        const base = entry.path.split('/')[0];
+                        if (base === 'content' || base === 'h5p.json') {
+                            entry.autodrain();
+                            return;
+                        }
+
+                        this.storage.saveLibraryFile(entry.path, entry);
+                    })
+                    .on('close', y);
+            }));
     }
 
     _coreScripts() {

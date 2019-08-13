@@ -26,7 +26,8 @@
         "express": "^4.16.4",
         "fs-extra": "^8.0.1",
         "merge": "^1.2.1",
-        "qs": "^6.7.0"
+        "qs": "^6.7.0",
+        "unzipper": "^0.10.3"
     },
     "devDependencies": {
         "@babel/core": "^7.4.4",

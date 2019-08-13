@@ -120,6 +120,14 @@ const h5pEditor = new H5PEditor(
                     resolve([]);
                 }
             });
+        },
+        saveLibraryFile: (filePath, stream) => {
+            const fullPath = `h5p/libraries/${filePath}`;
+
+            return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
+                .then(() => new Promise(y =>
+                    stream.pipe(fs.createWriteStream(fullPath))
+                        .on('finish', y)))
         }
     },
     {
@@ -233,6 +241,13 @@ server.post('/ajax', (req, res) => {
                 .then(response => {
                     res.status(200).json(response);
                 });
+            break;
+        case 'library-install':
+            h5pEditor.installLibrary(req.query.id)
+                .then(() => h5pEditor.getContentTypeCache()
+                    .then(contentTypeCache => {
+                        res.status(200).json({ success: true, data: contentTypeCache });
+                    }))
             break;
         default:
             res.status(500).end('NOT IMPLEMENTED');
