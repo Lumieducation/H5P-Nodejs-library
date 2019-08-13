@@ -6,6 +6,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
+const fsextra = require('fs-extra');
 const mkdirp = require('mkdirp');
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
@@ -26,7 +27,7 @@ const start = async () => {
         `${path.resolve('')}/h5p/libraries`
     ));
     const user = new User();
-    const englishStrings = await fs.readJSON(`${path.resolve('')}/src/translations/en.json`);
+    const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
     const translationService = new TranslationService(englishStrings);
 
     const h5pEditor = new H5PEditor(
