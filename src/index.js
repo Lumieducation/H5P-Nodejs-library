@@ -80,6 +80,7 @@ class H5PEditor {
                 this.storage.loadContent(contentId).then(content => {
                     resolve({
                         library: this._getUbernameFromH5pJson(h5pJson),
+                        h5p: h5pJson,
                         params: content
                     });
                 });
@@ -285,19 +286,22 @@ class H5PEditor {
         const dataStream = new stream.PassThrough();
         dataStream.end(data);
 
-        return new Promise(y =>
+        const filesSaves = []
 
+        return new Promise(y =>
             dataStream.pipe(unzipper.Parse())
                 .on('entry', entry => {
                     const base = entry.path.split('/')[0];
 
                     if (base === 'content' || base === 'h5p.json') {
-                        this.storage.saveContentFile(contentId, entry.path, entry);
+                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
                     } else {
-                        this.storage.saveLibraryFile(entry.path, entry);
+                        filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
                     }
                 })
-                .on('close', y));
+                .on('close', y))
+            .then(() => Promise.all(filesSaves))
+            .then(() => contentId);
     }
 
     _coreScripts() {

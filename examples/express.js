@@ -130,7 +130,7 @@ const h5pEditor = new H5PEditor(
                         .on('finish', y)))
         },
         saveContentFile: (id, filePath, stream) => {
-            const fullPath = `examples/h5p/content/${id}/${filePath}`;
+            const fullPath = `h5p/content/${id}/${filePath}`;
 
             return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
                 .then(() => new Promise(y =>
@@ -263,7 +263,20 @@ server.post('/ajax', (req, res) => {
 
         case 'library-upload':
             h5pEditor.uploadPackage(req.files.h5p.data)
-                .then(() => res.status(200).json({ success: true }))
+                .then(contentId => Promise.all([
+                    h5pEditor.loadH5P(contentId),
+                    h5pEditor.getContentTypeCache()
+                ])
+
+                    .then(([content, contentTypes]) =>
+                        res.status(200).json({
+                            success: true,
+                            data: {
+                                h5p: content.h5p,
+                                content: content.params,
+                                contentTypes
+                            }
+                        })))
             break;
 
         default:
