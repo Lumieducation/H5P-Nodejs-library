@@ -1,5 +1,7 @@
 const https = require('https');
 const unzipper = require('unzipper');
+const stream = require('stream');
+const shortid = require('shortid');
 
 const defaultEditorIntegration = require('../assets/default_editor_integration');
 const defaultTranslation = require('../assets/translations/en.json');
@@ -139,9 +141,9 @@ class H5PEditor {
 
                         combinedDependencies.forEach(dependencies =>
                             dependencies.forEach(dependency => {
-                                dependency.scripts.forEach(script => 
+                                dependency.scripts.forEach(script =>
                                     assets.scripts.push(script));
-                                dependency.styles.forEach(script => 
+                                dependency.styles.forEach(script =>
                                     assets.styles.push(script));
                                 Object.keys(dependency.translations).forEach(k => {
                                     assets.translations[k] = dependency.translations[k]
@@ -200,7 +202,7 @@ class H5PEditor {
                         return {
                             uberName: `${library.machineName} ${
                                 library.majorVersion
-                            }.${library.minorVersion}`,
+                                }.${library.minorVersion}`,
                             name: library.machineName,
                             majorVersion: library.majorVersion,
                             minorVersion: library.minorVersion,
@@ -249,7 +251,7 @@ class H5PEditor {
         )[0];
         return `${library.machineName} ${library.majorVersion}.${
             library.minorVersion
-        }`;
+            }`;
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -276,6 +278,26 @@ class H5PEditor {
                     })
                     .on('close', y);
             }));
+    }
+
+    uploadPackage(data) {
+        const contentId = shortid();
+        const dataStream = new stream.PassThrough();
+        dataStream.end(data);
+
+        return new Promise(y =>
+
+            dataStream.pipe(unzipper.Parse())
+                .on('entry', entry => {
+                    const base = entry.path.split('/')[0];
+
+                    if (base === 'content' || base === 'h5p.json') {
+                        this.storage.saveContentFile(contentId, entry.path, entry);
+                    } else {
+                        this.storage.saveLibraryFile(entry.path, entry);
+                    }
+                })
+                .on('close', y));
     }
 
     _coreScripts() {

@@ -128,6 +128,14 @@ const h5pEditor = new H5PEditor(
                 .then(() => new Promise(y =>
                     stream.pipe(fs.createWriteStream(fullPath))
                         .on('finish', y)))
+        },
+        saveContentFile: (id, filePath, stream) => {
+            const fullPath = `examples/h5p/content/${id}/${filePath}`;
+
+            return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
+                .then(() => new Promise(y =>
+                    stream.pipe(fs.createWriteStream(fullPath))
+                        .on('finish', y)))
         }
     },
     {
@@ -224,11 +232,13 @@ server.post('/', (req, res) => {
 server.post('/ajax', (req, res) => {
     const { action } = req.query;
     switch (action) {
+
         case 'libraries':
             h5pEditor.getLibraryOverview(req.body.libraries).then(libraries => {
                 res.status(200).json(libraries);
             });
             break;
+
         case 'files':
             h5pEditor
                 .saveContentFile(
@@ -242,6 +252,7 @@ server.post('/ajax', (req, res) => {
                     res.status(200).json(response);
                 });
             break;
+
         case 'library-install':
             h5pEditor.installLibrary(req.query.id)
                 .then(() => h5pEditor.getContentTypeCache()
@@ -249,6 +260,12 @@ server.post('/ajax', (req, res) => {
                         res.status(200).json({ success: true, data: contentTypeCache });
                     }))
             break;
+
+        case 'library-upload':
+            h5pEditor.uploadPackage(req.files.h5p.data)
+                .then(() => res.status(200).json({ success: true }))
+            break;
+
         default:
             res.status(500).end('NOT IMPLEMENTED');
             break;
