@@ -26,7 +26,9 @@
         "express": "^4.16.4",
         "fs-extra": "^8.0.1",
         "merge": "^1.2.1",
-        "qs": "^6.7.0"
+        "qs": "^6.7.0",
+        "unzipper": "^0.10.3",
+        "shortid": "^2.2.14"
     },
     "devDependencies": {
         "@babel/core": "^7.4.4",
@@ -44,8 +46,7 @@
         "express-fileupload": "^1.1.5",
         "jest": "^24.7.1",
         "mkdirp": "^0.5.1",
-        "mockdate": "^2.0.3",
-        "shortid": "^2.2.14"
+        "mockdate": "^2.0.3"
     },
     "main": "./src/index.js"
 }

@@ -1,3 +1,8 @@
+const https = require('https');
+const unzipper = require('unzipper');
+const stream = require('stream');
+const shortid = require('shortid');
+
 const defaultEditorIntegration = require('../assets/default_editor_integration');
 const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
@@ -34,6 +39,7 @@ class H5PEditor {
             config,
             user
         );
+        this.config = config;
     }
 
     render() {
@@ -74,6 +80,7 @@ class H5PEditor {
                 this.storage.loadContent(contentId).then(content => {
                     resolve({
                         library: this._getUbernameFromH5pJson(h5pJson),
+                        h5p: h5pJson,
                         params: content
                     });
                 });
@@ -135,9 +142,9 @@ class H5PEditor {
 
                         combinedDependencies.forEach(dependencies =>
                             dependencies.forEach(dependency => {
-                                dependency.scripts.forEach(script => 
+                                dependency.scripts.forEach(script =>
                                     assets.scripts.push(script));
-                                dependency.styles.forEach(script => 
+                                dependency.styles.forEach(script =>
                                     assets.styles.push(script));
                                 Object.keys(dependency.translations).forEach(k => {
                                     assets.translations[k] = dependency.translations[k]
@@ -196,7 +203,7 @@ class H5PEditor {
                         return {
                             uberName: `${library.machineName} ${
                                 library.majorVersion
-                            }.${library.minorVersion}`,
+                                }.${library.minorVersion}`,
                             name: library.machineName,
                             majorVersion: library.majorVersion,
                             minorVersion: library.minorVersion,
@@ -245,7 +252,7 @@ class H5PEditor {
         )[0];
         return `${library.machineName} ${library.majorVersion}.${
             library.minorVersion
-        }`;
+            }`;
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -255,6 +262,46 @@ class H5PEditor {
             majorVersion: libraryName.split(' ')[1].split('.')[0],
             minorVersion: libraryName.split(' ')[1].split('.')[1]
         };
+    }
+
+    installLibrary(id) {
+        return new Promise(y =>
+            https.get(this.config.hubContentTypesEndpoint + id, response => {
+                response.pipe(unzipper.Parse())
+                    .on('entry', entry => {
+                        const base = entry.path.split('/')[0];
+                        if (base === 'content' || base === 'h5p.json') {
+                            entry.autodrain();
+                            return;
+                        }
+
+                        this.storage.saveLibraryFile(entry.path, entry);
+                    })
+                    .on('close', y);
+            }));
+    }
+
+    uploadPackage(data) {
+        const contentId = shortid();
+        const dataStream = new stream.PassThrough();
+        dataStream.end(data);
+
+        const filesSaves = []
+
+        return new Promise(y =>
+            dataStream.pipe(unzipper.Parse())
+                .on('entry', entry => {
+                    const base = entry.path.split('/')[0];
+
+                    if (base === 'content' || base === 'h5p.json') {
+                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
+                    } else {
+                        filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
+                    }
+                })
+                .on('close', y))
+            .then(() => Promise.all(filesSaves))
+            .then(() => contentId);
     }
 
     _coreScripts() {
