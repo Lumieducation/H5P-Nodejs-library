@@ -126,6 +126,22 @@ const start = async () => {
                         resolve([]);
                     }
                 });
+            },
+            saveLibraryFile: (filePath, stream) => {
+                const fullPath = `h5p/libraries/${filePath}`;
+
+                return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
+                    .then(() => new Promise(y =>
+                        stream.pipe(fs.createWriteStream(fullPath))
+                            .on('finish', y)))
+            },
+            saveContentFile: (id, filePath, stream) => {
+                const fullPath = `h5p/content/${id}/${filePath}`;
+
+                return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
+                    .then(() => new Promise(y =>
+                        stream.pipe(fs.createWriteStream(fullPath))
+                            .on('finish', y)))
             }
         },
         {
@@ -188,19 +204,6 @@ const start = async () => {
                 });
                 break;
 
-            case 'libraries':
-                h5pEditor
-                    .getLibraryData(
-                        machineName,
-                        majorVersion,
-                        minorVersion,
-                        language
-                    )
-                    .then(library => {
-                        res.status(200).json(library);
-                    });
-                break;
-
             default:
                 res.status(400).end();
                 break;
@@ -223,11 +226,13 @@ const start = async () => {
     server.post('/ajax', (req, res) => {
         const { action } = req.query;
         switch (action) {
+
             case 'libraries':
                 h5pEditor.getLibraryOverview(req.body.libraries).then(libraries => {
                     res.status(200).json(libraries);
                 });
                 break;
+
             case 'files':
                 h5pEditor
                     .saveContentFile(
@@ -241,14 +246,33 @@ const start = async () => {
                         res.status(200).json(response);
                     });
                 break;
-            case 'library-install':
-                // check if editor token is valid (argument 1, machine name is argument 2)
 
+            case 'library-install':
                 h5pEditor.installLibrary(req.query.id)
-                    .then(response => {
-                        res.status(200).json(response);
-                    });
+                    .then(() => h5pEditor.getContentTypeCache()
+                        .then(contentTypeCache => {
+                            res.status(200).json({ success: true, data: contentTypeCache });
+                        }))
                 break;
+
+            case 'library-upload':
+                h5pEditor.uploadPackage(req.files.h5p.data)
+                    .then(contentId => Promise.all([
+                        h5pEditor.loadH5P(contentId),
+                        h5pEditor.getContentTypeCache()
+                    ])
+
+                        .then(([content, contentTypes]) =>
+                            res.status(200).json({
+                                success: true,
+                                data: {
+                                    h5p: content.h5p,
+                                    content: content.params,
+                                    contentTypes
+                                }
+                            })))
+                break;
+
             default:
                 res.status(500).end('NOT IMPLEMENTED');
                 break;

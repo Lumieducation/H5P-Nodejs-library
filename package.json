@@ -34,7 +34,9 @@
         "express": "^4.17.1",
         "fs-extra": "^8.1.0",
         "merge": "^1.2.1",
-        "qs": "^6.7.0"
+        "qs": "^6.7.0",
+        "unzipper": "^0.10.3",
+        "shortid": "^2.2.14"
     },
     "devDependencies": {
         "@babel/cli": "^7.5.5",
@@ -51,8 +53,7 @@
         "express-fileupload": "^1.1.5",
         "jest": "^24.8.0",
         "mkdirp": "^0.5.1",
-        "mockdate": "^2.0.4",
-        "shortid": "^2.2.14"
+        "mockdate": "^2.0.4"
     },
     "main": "./src/index.js"
 }
