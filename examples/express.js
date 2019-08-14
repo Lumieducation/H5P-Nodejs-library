@@ -204,6 +204,19 @@ const start = async () => {
                 });
                 break;
 
+            case 'libraries':
+                h5pEditor
+                    .getLibraryData(
+                        machineName,
+                        majorVersion,
+                        minorVersion,
+                        language
+                    )
+                    .then(library => {
+                        res.status(200).json(library);
+                    });
+                break;
+
             default:
                 res.status(400).end();
                 break;
