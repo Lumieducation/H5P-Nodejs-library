@@ -26,17 +26,19 @@ const libraryManager = new FileLibraryManager(
 );
 const user = new User();
 
+const readJson = file => new Promise((y, n) =>
+    fs.readFile(file, 'utf8', (err, data) => {
+        if (err) return n(err);
+        y(JSON.parse(data));
+    }))
+
 const h5pEditor = new H5PEditor(
     {
         loadSemantics: (machineName, majorVersion, minorVersion) => {
-            return Promise.resolve(
-                require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
-            );
+            return readJson(`h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
         },
         loadLibrary: (machineName, majorVersion, minorVersion) => {
-            return Promise.resolve(
-                require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
-            );
+            return readJson(`h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
         },
         saveContentFile: (contentId, field, file) => {
             return new Promise(resolve => {
@@ -56,9 +58,7 @@ const h5pEditor = new H5PEditor(
                         `${dir}/h5p.json`,
                         JSON.stringify(h5pJson),
                         'utf8',
-                        () => {
-                            resolve();
-                        }
+                        resolve
                     );
                 });
             });
@@ -66,21 +66,14 @@ const h5pEditor = new H5PEditor(
         loadH5PJson: contentId => {
             const dir = `${path.resolve('')}/h5p/content/${contentId}`;
 
-            return Promise.resolve(require(`${dir}/h5p.json`));
+            return readJson(`${dir}/h5p.json`);
         },
         loadContent: contentId => {
-            return new Promise(resolve => {
-                const dir = `${path.resolve(
-                    ''
-                )}/h5p/content/${contentId}/content`;
-                resolve(require(`${dir}/content.json`));
-            });
+            return readJson(`h5p/content/${contentId}/content/content.json`);
         },
         saveContent: (contentId, content) => {
             return new Promise(resolve => {
-                const dir = `${path.resolve(
-                    ''
-                )}/h5p/content/${contentId}/content`;
+                const dir = `h5p/content/${contentId}/content`;
                 mkdirp(dir, () => {
                     fs.writeFile(
                         `${dir}/content.json`,
@@ -94,15 +87,8 @@ const h5pEditor = new H5PEditor(
             });
         },
         loadLanguage: (machineName, majorVersion, minorVersion, language) => {
-            return new Promise(resolve => {
-                try {
-                    resolve(
-                        require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language/${language}.json`)
-                    );
-                } catch (error) {
-                    resolve(null);
-                }
-            });
+            return readJson(`h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language/${language}.json`)
+                .catch(() => null)
         },
         listLanguages: (machineName, majorVersion, minorVersion) => {
             return new Promise(resolve => {
@@ -172,9 +158,8 @@ server.get('/', (req, res) => {
     if (!req.query.contentId) {
         res.redirect(`?contentId=${shortid()}`);
     }
-    h5pEditor.render().then(h5pEditorPage => {
-        res.end(h5pEditorPage);
-    });
+    h5pEditor.render(req.query.contentId)
+        .then(page => res.end(page));
 });
 
 server.get('/params', (req, res) => {
@@ -264,9 +249,9 @@ server.post('/ajax', (req, res) => {
             break;
 
         case 'library-upload':
-            h5pEditor.uploadPackage(req.files.h5p.data)
-                .then(contentId => Promise.all([
-                    h5pEditor.loadH5P(contentId),
+            h5pEditor.uploadPackage(req.query.contentId, req.files.h5p.data)
+                .then(() => Promise.all([
+                    h5pEditor.loadH5P(req.query.contentId),
                     h5pEditor.getContentTypeCache()
                 ])
 
@@ -275,7 +260,7 @@ server.post('/ajax', (req, res) => {
                             success: true,
                             data: {
                                 h5p: content.h5p,
-                                content: content.params,
+                                content: content.params.params,
                                 contentTypes
                             }
                         })))

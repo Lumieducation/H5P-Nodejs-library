@@ -14,6 +14,15 @@ ${model.scripts
     .join('\n    ')}
 </head>
 <body>
-<form method="post" enctype="multipart/form-data" id="h5p-content-form"><div id="post-body-content"><div class="h5p-create"><div class="h5p-editor"></div></div></div><input type="submit" name="submit" value="Create" class="button button-primary button-large"></form>
+
+<form method="post" enctype="multipart/form-data" id="h5p-content-form">
+    <div id="post-body-content">
+        <div class="h5p-create">
+            <div class="h5p-editor"></div>
+        </div>
+    </div>
+    <input type="submit" name="submit" value="Create" class="button button-primary button-large">
+</form>
+
 </body>
 </html>`;
