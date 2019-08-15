@@ -11,10 +11,10 @@ const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
-const H5PEditorConfig = require('../src/config');
+const H5PEditorConfig = require('../build/config');
 const FileLibraryManager = require('../test/mockups/file-library-manager');
 const User = require('../test/mockups/user');
-const H5PEditor = require('../src');
+const H5PEditor = require('../build');
 
 const server = express();
 
