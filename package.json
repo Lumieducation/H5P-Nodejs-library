@@ -13,7 +13,7 @@
         "uninstall": "npm run clean && rm -rf node_modules",
         "build": "npx babel src --presets babel-preset-env --out-dir build",
         "build:watch": "npx babel src --watch --presets babel-preset-env --out-dir build",
-        "ci": "npm run lint && npm run test && npm run test:integration",
+        "ci": "npm run lint && npm run build && npm run test && npm run test:integration",
         "lint": "eslint ./src",
         "test": "jest",
         "test:watch": "jest --watch",
