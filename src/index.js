@@ -42,11 +42,11 @@ class H5PEditor {
         this.config = config;
     }
 
-    render() {
+    render(contentId) {
         const model = {
             styles: this._coreStyles(),
             scripts: this._coreScripts(),
-            integration: this._integration()
+            integration: this._integration(contentId)
         };
 
         return Promise.resolve(this.renderer(model));
@@ -364,11 +364,11 @@ class H5PEditor {
         ].map(file => `${this.baseUrl}${file}`);
     }
 
-    _editorIntegration() {
+    _editorIntegration(contentId) {
         return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajaxPath,
             libraryUrl: this.libraryUrl,
-            filesPath: this.filesPath,
+            filesPath: this.filesPath + `/${contentId}/content`,
             assets: {
                 css: [
                     '/core/styles/h5p.css',
@@ -426,7 +426,7 @@ class H5PEditor {
         });
     }
 
-    _integration() {
+    _integration(contentId) {
         return {
             url: this.baseUrl,
             postUserStatistics: false,
@@ -435,7 +435,7 @@ class H5PEditor {
             l10n: {
                 H5P: this.translation
             },
-            editor: this._editorIntegration()
+            editor: this._editorIntegration(contentId)
         };
     }
 }

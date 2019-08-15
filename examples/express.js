@@ -172,9 +172,8 @@ server.get('/', (req, res) => {
     if (!req.query.contentId) {
         res.redirect(`?contentId=${shortid()}`);
     }
-    h5pEditor.render().then(h5pEditorPage => {
-        res.end(h5pEditorPage);
-    });
+    h5pEditor.render(req.query.contentId)
+        .then(page => res.end(page));
 });
 
 server.get('/params', (req, res) => {
