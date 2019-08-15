@@ -177,7 +177,7 @@ class H5PEditor {
             this.storage.saveContentFile(contentId, field, file).then(() => {
                 resolve({
                     mime: file.mimetype,
-                    path: `${contentId}/content/${file.name}`
+                    path: file.name
                 });
             });
         });
