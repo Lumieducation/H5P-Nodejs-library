@@ -308,7 +308,6 @@ class H5PEditor {
             '/core/js/h5p-action-bar.js',
             '/editor/scripts/h5p-hub-client.js',
             '/editor/scripts/h5peditor-editor.js',
-            '/editor/wp/h5p-editor.js',
             '/editor/scripts/h5peditor.js',
             '/editor/scripts/h5peditor-semantic-structure.js',
             '/editor/scripts/h5peditor-library-selector.js',
