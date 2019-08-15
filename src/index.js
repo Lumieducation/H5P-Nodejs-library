@@ -360,7 +360,7 @@ class H5PEditor {
         return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajaxPath,
             libraryUrl: this.libraryUrl,
-            filesPath: this.filesPath + `/${contentId}/content`,
+            filesPath: `${this.filesPath}/${contentId}/content`,
             assets: {
                 css: [
                     '/core/styles/h5p.css',
