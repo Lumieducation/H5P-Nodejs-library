@@ -294,7 +294,7 @@ class H5PEditor {
                     const base = entry.path.split('/')[0];
 
                     if (base === 'content' || base === 'h5p.json') {
-                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
+                        filesSaves.push(this.storage.saveContentFile2(contentId, entry.path, entry));
                     } else {
                         filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
                     }
