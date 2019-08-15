@@ -1,5 +1,5 @@
-const Library = require('./library');
-const FileLibraryStorage = require('./file-library-storage');
+const Library = require('./library'); // eslint-disable-line no-unused-vars
+const FileLibraryStorage = require('./file-library-storage'); // eslint-disable-line no-unused-vars
 
 /**
  * This class manages library installations, enumerating installed libraries etc.
@@ -120,58 +120,6 @@ class LibraryManager {
             }
         }
         return false;
-    }
-
-    /**
-     * Store data about a library
-     *
-     * Also fills in the libraryId in the libraryData object if the object is new
-     *
-     * @param object $libraryData
-     *   Associative array containing:
-     *   - libraryId: The id of the library if it is an existing library.
-     *   - title: The library's name
-     *   - machineName: The library machineName
-     *   - majorVersion: The library's majorVersion
-     *   - minorVersion: The library's minorVersion
-     *   - patchVersion: The library's patchVersion
-     *   - runnable: 1 if the library is a content type, 0 otherwise
-     *   - metadataSettings: Associative array containing:
-     *      - disable: 1 if the library should not support setting metadata (copyright etc)
-     *      - disableExtraTitleField: 1 if the library don't need the extra title field
-     *   - fullscreen(optional): 1 if the library supports fullscreen, 0 otherwise
-     *   - embedTypes(optional): list of supported embed types
-     *   - preloadedJs(optional): list of associative arrays containing:
-     *     - path: path to a js file relative to the library root folder
-     *   - preloadedCss(optional): list of associative arrays containing:
-     *     - path: path to css file relative to the library root folder
-     *   - dropLibraryCss(optional): list of associative arrays containing:
-     *     - machineName: machine name for the librarys that are to drop their css
-     *   - semantics(optional): Json describing the content structure for the library
-     *   - language(optional): associative array containing:
-     *     - languageCode: Translation in json format
-     * @param bool $new
-     */
-    install() {
-        // TODO: check how this is done in PHP version
-        // TODO: implement
-    }
-
-    /**
-     * Deletes the library from the disc and removes all references to it in the manager.
-     * @param {Library} library 
-     */
-    delete(library) {
-        // TODO: implement
-    }
-
-    /**
-     * Load config for libraries
-     * @param array $libraries
-     * @return array
-     */
-    getLibraryConfig() {
-        // TODO: find out what this does
     }
 }
 
