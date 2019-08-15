@@ -1,4 +1,3 @@
-const https = require('https');
 const unzipper = require('unzipper');
 const stream = require('stream');
 const shortid = require('shortid');
@@ -267,20 +266,7 @@ class H5PEditor {
     }
 
     installLibrary(id) {
-        return new Promise(y =>
-            https.get(this.config.hubContentTypesEndpoint + id, response => {
-                response.pipe(unzipper.Parse())
-                    .on('entry', entry => {
-                        const base = entry.path.split('/')[0];
-                        if (base === 'content' || base === 'h5p.json') {
-                            entry.autodrain();
-                            return;
-                        }
-
-                        this.storage.saveLibraryFile(entry.path, entry);
-                    })
-                    .on('close', y);
-            }));
+        return this.contentTypeRepository.install(id);
     }
 
     uploadPackage(data) {

@@ -1,4 +1,12 @@
+const axios = require('axios');
+const { withFile, withDir } = require('tmp-promise');
+const fs = require('fs-extra');
+const promisePipe = require('promisepipe');
+
 const H5pError = require("./helpers/h5p-error");
+const { ValidationError } = require('./helpers/validator-builder');
+const PackageValidator = require("./package-validator");
+const { extractPackage } = require("./package-extractor");
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
@@ -14,9 +22,9 @@ class ContentTypeInformationRepository {
      * 
      * @param {ContentTypeCache} contentTypeCache 
      * @param {IStorage} storage 
-     * @param {ILibraryManager} libraryManager 
+     * @param {LibraryManager} libraryManager 
      * @param {H5PEditorConfig} config 
-     * @param {IUser} user 
+     * @param {User} user 
      * @param {TranslationService} translationService
      */
     constructor(contentTypeCache, storage, libraryManager, config, user, translationService) {
@@ -56,8 +64,8 @@ class ContentTypeInformationRepository {
 
     /**
      * Installs a library from the H5P Hub
-     * @param {string} machineName The machine name of the library to install (must be listed in the Hub)
-     * @returns {boolean} true if the library was installed. Throws H5PError exceptions if there are errors.
+     * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
+     * @returns {Promise<boolean>} true if the library was installed. Throws H5PError exceptions if there are errors.
      */
     async install(machineName) {
         if (!machineName) {
@@ -73,7 +81,35 @@ class ContentTypeInformationRepository {
             throw new H5pError(this._translationService.getTranslation("hub-install-denied"));
         }
 
-        return true;
+        const response = await axios.get(this._config.hubContentTypesEndpoint + machineName, { responseType: 'stream' });
+
+        await withFile(async ({ path: tempPackagePath }) => {
+            const writeStream = fs.createWriteStream(tempPackagePath);
+            try {
+                await promisePipe(response.data, writeStream);
+            }
+            catch (error) {
+                throw new H5pError(this._translationService.getTranslation("hub-install-download-failed"));
+            }
+            const validator = new PackageValidator(this._translationService, this._config);
+            try {
+                await validator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an arror
+                await withDir(async ({ path: tempDirPath }) => {
+                    await extractPackage(tempPackagePath, tempDirPath, { includeLibraries: true });
+                    await this._libraryManager.installFromDirectory(tempPackagePath);
+                }, { unsafeCleanup: true });
+
+            } catch (error) {
+                if (error instanceof ValidationError) {
+                    throw new H5pError(error.message); // TODO: create AJAX response?
+                }
+                else {
+                    throw error;
+                }
+            }
+        }, { postfix: '.h5p' });
+
+        throw new Error("meh");
     }
 
     /**

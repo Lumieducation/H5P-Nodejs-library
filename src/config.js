@@ -109,7 +109,7 @@ class H5PEditorConfig {
         /**
          * The maximum allowed file size of all content and library files in an uploaded h5p package (in bytes).
          */
-        this.maxTotalSize = 64*1024*1024
+        this.maxTotalSize = 64*1024*1024;
     }
 
     /**

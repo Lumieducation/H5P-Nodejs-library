@@ -10,7 +10,7 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 const User = require('./mockups/user');
 const TranslationService = require('../src/translation-service');
-const H5pError = require('../src/helpers/h5p-error');
+const H5pError = require('../src/helpers/h5p-error'); // eslint-disable-line no-unused-vars
 
 const axiosMock = new MockAdapter(axios);
 
@@ -152,7 +152,24 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         user.canInstallRecommended = true;
         user.canUpdateAndInstallLibraries = false;
-        await expect(repository.install("H5P.Dialogcards")).resolves.toBe(true);
         await expect(repository.install("H5P.Blanks")).rejects.toThrow("hub-install-denied");
     });
+
+    it('install content types from the hub', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
+        const cache = new ContentTypeCache(config, storage);
+        const user = new User();
+
+        axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/real-content-types.json'));
+
+        await cache.updateIfNecessary();
+        const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, user, new TranslationService({
+        }));
+
+        axiosMock.restore(); // TOO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
+        await expect(repository.install("H5P.Blanks")).resolves.toEqual(true);
+    }, 30000);
 });
