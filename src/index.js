@@ -68,17 +68,18 @@ class H5PEditor {
     }
 
     loadH5P(contentId) {
-        return new Promise(resolve => {
-            this.storage.loadH5PJson(contentId).then(h5pJson => {
-                this.storage.loadContent(contentId).then(content => {
-                    resolve({
-                        library: this._getUbernameFromH5pJson(h5pJson),
-                        h5p: h5pJson,
-                        params: content
-                    });
-                });
-            });
-        });
+        return Promise.all([
+            this.storage.loadH5PJson(contentId),
+            this.storage.loadContent(contentId)
+        ])
+            .then(([h5pJson, content]) => ({
+                library: this._getUbernameFromH5pJson(h5pJson),
+                h5p: h5pJson,
+                params: {
+                    params: content,
+                    metadata: h5pJson
+                }
+            }))
     }
 
     getLibraryData(machineName, majorVersion, minorVersion, language) {

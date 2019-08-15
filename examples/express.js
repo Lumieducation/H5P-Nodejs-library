@@ -58,9 +58,7 @@ const h5pEditor = new H5PEditor(
                         `${dir}/h5p.json`,
                         JSON.stringify(h5pJson),
                         'utf8',
-                        () => {
-                            resolve();
-                        }
+                        resolve
                     );
                 });
             });
@@ -262,7 +260,7 @@ server.post('/ajax', (req, res) => {
                             success: true,
                             data: {
                                 h5p: content.h5p,
-                                content: content.params,
+                                content: content.params.params,
                                 contentTypes
                             }
                         })))
