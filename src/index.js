@@ -1,7 +1,6 @@
 const https = require('https');
 const unzipper = require('unzipper');
 const stream = require('stream');
-const shortid = require('shortid');
 
 const defaultEditorIntegration = require('../assets/default_editor_integration');
 const defaultTranslation = require('../assets/translations/en.json');
@@ -63,15 +62,9 @@ class H5PEditor {
     }
 
     saveH5P(contentId, content, metadata, library) {
-        return new Promise(resolve => {
-            this.storage.saveContent(contentId, content).then(() => {
-                this._generateH5PJSON(metadata, library).then(h5pJson => {
-                    this.storage.saveH5P(contentId, h5pJson).then(() => {
-                        resolve();
-                    });
-                });
-            });
-        });
+        return this.storage.saveContent(contentId, content)
+            .then(() => this._generateH5PJSON(metadata, library))
+            .then(h5pJson => this.storage.saveH5P(contentId, h5pJson))
     }
 
     loadH5P(contentId) {
@@ -281,8 +274,7 @@ class H5PEditor {
             }));
     }
 
-    uploadPackage(data) {
-        const contentId = shortid();
+    uploadPackage(contentId, data) {
         const dataStream = new stream.PassThrough();
         dataStream.end(data);
 
@@ -301,7 +293,6 @@ class H5PEditor {
                 })
                 .on('close', y))
             .then(() => Promise.all(filesSaves))
-            .then(() => contentId);
     }
 
     _coreScripts() {
