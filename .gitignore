@@ -16,3 +16,4 @@ microsoft.gpg
 node_modules
 
 test/data/hub-content/*
+test/tmp-*

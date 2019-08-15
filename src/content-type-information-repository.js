@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { withFile, withDir } = require('tmp-promise');
 const fs = require('fs-extra');
+const path = require('path');
 const promisePipe = require('promisepipe');
 
 const H5pError = require("./helpers/h5p-error");
@@ -96,7 +97,11 @@ class ContentTypeInformationRepository {
                 await validator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an arror
                 await withDir(async ({ path: tempDirPath }) => {
                     await extractPackage(tempPackagePath, tempDirPath, { includeLibraries: true });
-                    await this._libraryManager.installFromDirectory(tempPackagePath);
+                    const dirContent = await fs.readdir(tempDirPath);
+                    await Promise.all(dirContent.map(async dirEntry => {
+                        return this._libraryManager.installFromDirectory(dirEntry, path.join(tempDirPath, dirEntry));
+                    }));
+
                 }, { unsafeCleanup: true });
 
             } catch (error) {
@@ -109,7 +114,7 @@ class ContentTypeInformationRepository {
             }
         }, { postfix: '.h5p' });
 
-        throw new Error("meh");
+        return true;
     }
 
     /**
@@ -141,7 +146,7 @@ class ContentTypeInformationRepository {
                     isUpToDate: true,
                     owner: '',
                     restricted: this._libraryIsRestricted(localLib) && !this._user.canCreateRestricted,
-                    icon: await this._libraryManager.libraryFileExists(localLib, 'icon.svg') ? this._libraryManager.getLibraryFileUrl('icon.svg') : undefined
+                    icon: (await this._libraryManager.libraryFileExists(localLib, 'icon.svg')) ? this._libraryManager.getLibraryFileUrl(localLib, 'icon.svg') : undefined
                 }
             });
         localLibs = await Promise.all(localLibs);

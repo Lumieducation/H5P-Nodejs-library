@@ -27,14 +27,13 @@ class FileLibraryStorage {
         return libraryDirectories
             .filter(name => nameRegex.test(name))
             .map(name => {
-                const result = nameRegex.exec(name);
-                return new Library(result[1], result[2], result[3], false);
+                return Library.createFromName(name)
             })
             .filter(lib => !machineNames || machineNames.length === 0 || machineNames.some(mn => mn === lib.machineName));
     }
 
     async getId(library) {
-        const libraryPath = this._getLibraryPath(library);
+        const libraryPath = this._getLibraryJsonPath(library);
         if (await fs.exists(libraryPath)) {
             return crc32(libraryPath);
         }
@@ -57,7 +56,28 @@ class FileLibraryStorage {
     * @return {Promise<boolean>} true if file exists in library, false otherwise
     */
     async fileExists(library, filename) {
-        return fs.pathExists(path.join(this._getLibraryPath(library), filename));
+        return fs.pathExists(this._getFullPath(library, filename));
+    }
+
+    /**
+     * Installs a library from a temporary directory by copying the files from there.
+     * Throws an error if something unexpected happens and cleans up already copied files.
+     * @param {Library} library The library that is being installed
+     * @param {string} directory The path to the directory where the library files can be found (base directory that includes library.json)
+     * @returns {boolean} true if successful
+     */
+    async installFromDirectory(library, directory) {
+        await fs.ensureDir(this._getDirectoryPath(library));
+        try {
+            const dirContent = await fs.readdir(directory);
+            await Promise.all(dirContent.map(async dirEntry => {
+                return fs.copy(path.join(directory, dirEntry), this._getFullPath(library, dirEntry), { recursive: true });
+            }));
+            return true;
+        } catch (error) {
+            await fs.remove(this._getDirectoryPath(library));
+            throw error;
+        }
     }
 
     /**
@@ -65,8 +85,27 @@ class FileLibraryStorage {
      * @param {Library} library 
      * @returns {string} the path to 'library.json'
      */
-    _getLibraryPath(library) {
+    _getLibraryJsonPath(library) {
         return path.join(this._librariesDirectory, library.getDirName(), "library.json");
+    }
+
+    /**
+     * Gets the directory path of the specified library.
+     * @param {Library} library 
+     * @returns {string} the asbolute path to the directory
+     */
+    _getDirectoryPath(library) {
+        return path.join(this._librariesDirectory, library.getDirName());
+    }
+
+    /**
+     * Gets the path of any file of the specified library.
+     * @param {Library} library 
+     * @param {string} filename
+     * @returns {string} the absolute path to the file
+     */
+    _getFullPath(library, filename) {
+        return path.join(this._librariesDirectory, library.getDirName(), filename);
     }
 }
 

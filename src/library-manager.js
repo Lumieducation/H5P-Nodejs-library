@@ -123,11 +123,13 @@ class LibraryManager {
     }
 
     /**
-     * Store data about a library
-     * Also fills in the libraryId in the libraryData object if the object is new
+     * Installs a library from a temporary directory.
+     * @param {string} libraryName The library name with the format H5P.Example-1.0
+     * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
+     * @returns {boolean} true if successful
      */
-    installFromDirectory() {
-        
+    async installFromDirectory(libraryName, directory) {
+        return this._libraryStorage.installFromDirectory(Library.createFromName(libraryName), directory);
     }
 
     /**
@@ -147,6 +149,12 @@ class LibraryManager {
     /* getLibraryConfig() {
         
     } */
+
+    // eslint-disable-next-line class-methods-use-this
+    // eslint-disable-next-line no-unused-vars
+    getLibraryFileUrl(library, file) {
+        return "";
+    }
 }
 
 module.exports = LibraryManager;

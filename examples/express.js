@@ -1,6 +1,8 @@
+require("@babel/core");
 require("@babel/register");
 require("babel-polyfill");
 
+const os = require("os");
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -8,9 +10,10 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const fsextra = require('fs-extra');
 const mkdirp = require('mkdirp');
+const shortid = require('shortid');
+
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
-const shortid = require('shortid');
 const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
 const User = require('../test/mockups/user');
@@ -45,12 +48,12 @@ const start = async () => {
             saveContentFile: (contentId, field, file) => {
                 return new Promise(resolve => {
                     const dir = `${path.resolve()}/h5p/content/${contentId}/content/`;
-                    mkdirp(dir, mkdirp_error => {
-                        fs.writeFile(`${dir}${file.name}`, file.data, error => {
+                    mkdirp(dir, () => {
+                        fs.writeFile(`${dir}${file.name}`, file.data, () => {
                             resolve();
                         });
                     });
-                });
+                })
             },
             saveH5P: (contentId, h5pJson) => {
                 return new Promise(resolve => {
@@ -115,7 +118,7 @@ const start = async () => {
                             `${path.resolve()}/h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language`,
                             (error, files) => {
                                 if (error) {
-                                    return resolve([]);
+                                    resolve([]);
                                 }
                                 resolve(
                                     files.map(file => file.replace('.json', ''))
@@ -135,7 +138,7 @@ const start = async () => {
                         stream.pipe(fs.createWriteStream(fullPath))
                             .on('finish', y)))
             },
-            saveContentFile: (id, filePath, stream) => {
+            saveContentFile2: (id, filePath, stream) => {
                 const fullPath = `h5p/content/${id}/${filePath}`;
 
                 return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
@@ -175,7 +178,7 @@ const start = async () => {
 
     server.get('/', (req, res) => {
         if (!req.query.contentId) {
-            return res.redirect(`?contentId=${shortid()}`);
+            res.redirect(`?contentId=${shortid()}`);
         }
         h5pEditor.render().then(h5pEditorPage => {
             res.end(h5pEditorPage);
@@ -293,7 +296,7 @@ const start = async () => {
     });
 
     server.listen(process.env.PORT || 8080, () => {
-        console.log('server running at ', process.env.PORT || 8080);
+        console.log(`server running at http://${os.hostname()}:${process.env.PORT || 8080}`);
     });
 }
 
