@@ -4,7 +4,7 @@ const MockDate = require('mockdate');
 
 const ContentTypeCache = require('../src/content-type-cache');
 const H5PEditorConfig = require('../src/config');
-const InMemoryStorage = require('./mockups/in-memory-storage');
+const InMemoryStorage = require('../src/in-memory-storage');
 
 const axiosMock = new MockAdapter(axios);
 

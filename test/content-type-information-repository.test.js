@@ -2,7 +2,7 @@ const path = require('path');
 const MockAdapter = require('axios-mock-adapter');
 const axios = require('axios');
 
-const InMemoryStorage = require('./mockups/in-memory-storage');
+const InMemoryStorage = require('../src/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
 const FileLibraryManager = require('./mockups/file-library-manager');
 const ContentTypeCache = require('../src/content-type-cache');
