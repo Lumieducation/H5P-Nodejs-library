@@ -2,14 +2,22 @@ const fs = require('fs-extra');
 const InMemoryStorage = require('./in-memory-storage');
 
 /**
- * Reads key - value pairs from a JSON file and writes them back.
- * DO NOT initialize with regular constructor but use the static create(...) factory instead.
+ * Reads key-value pairs from a JSON file and writes them back.
+ * It is recommended to create it with the static create(...) factory instead of the sync constructor.
  */
 export default class JsonStorage extends InMemoryStorage {
-    constructor() {
+    /**
+     * Initializes the JsonStorage. It's advised to use the async static factory method create(...) instead.
+     * @param {string} file Path to the JSON file (must be read- and writable)
+     */
+    constructor(file) {
         super();
-        this._file = null;
-    }    
+
+        if (file) {
+            this._file = file;
+            this._storage = fs.readJSONSync(file);
+        }
+    }
 
     /**
     * Factory for a JsonStorage object that initializes the object.
