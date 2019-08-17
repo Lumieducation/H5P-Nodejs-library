@@ -29,8 +29,8 @@ const start = async () => {
 
     const readJson = file => new Promise((y, n) =>
         fs.readFile(file, 'utf8', (err, data) => {
-            if (err) n(err);
-            y(JSON.parse(data));
+            if (err) return n(err);
+            return y(JSON.parse(data));
         }))
 
     const h5pEditor = new H5PEditor(

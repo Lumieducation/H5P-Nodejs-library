@@ -86,7 +86,7 @@ class ContentTypeCache {
      * @returns {Promise<string>} uuid
      */
     async _registerOrGetUuid() {
-        if (this._config.uuid) {
+        if (this._config.uuid && this._config.uuid !== "") {
             return this._config.uuid;
         }
         const response = await axios.post(this._config.hubRegistrationEndpoint,
