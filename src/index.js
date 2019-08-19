@@ -21,7 +21,8 @@ class H5PEditor {
         keyValueStorage,
         config,
         libraryManager,
-        user
+        user,
+        translationService
     ) {
         this.storage = storage;
         this.renderer = defaultRenderer;
@@ -36,7 +37,8 @@ class H5PEditor {
             keyValueStorage,
             libraryManager,
             config,
-            user
+            user,
+            translationService
         );
         this.config = config;
     }

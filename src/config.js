@@ -34,7 +34,7 @@ class H5PEditorConfig {
          * It is sent to the H5P Hub when registering there.
          * Not user-configurable and should not be changed by custom implementations.
          */
-        this.coreApiVersion = { major: 1, minor: 19 };
+        this.coreApiVersion = { major: 1, minor: 23 };
 
         /**
          * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
@@ -89,6 +89,27 @@ class H5PEditorConfig {
          * Not user-configurable.
          */
         this.lrsContentTypes = ['H5P.Questionnaire', 'H5P.FreeTextQuestion'];
+
+                /**
+         * A list of file extensions allowed for content files. (Extensions separated by whitespaces)
+         */
+        this.contentWhitelist = 'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt';
+
+        /**
+         * A list of file extensions allowed for library files. 
+         * (All extensions allowed for content files are also automatically allowed for libraries).
+         */
+        this.libraryWhitelist = 'js css';
+
+        /**
+         * The maximum allowed file size of content and library files (in bytes).
+         */
+        this.maxFileSize = 16*1024*1024;
+
+        /**
+         * The maximum allowed file size of all content and library files in an uploaded h5p package (in bytes).
+         */
+        this.maxTotalSize = 64*1024*1024
     }
 
     /**
@@ -118,6 +139,11 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("sendUsageStatistics");
         await this.loadSettingFromStorage("contentTypeCacheRefreshInterval");
         await this.loadSettingFromStorage("enableLrsContentTypes");
+        await this.loadSettingFromStorage("contentWhitelist");
+        await this.loadSettingFromStorage("libraryWhitelist");
+        await this.loadSettingFromStorage("maxFileSize");
+        await this.loadSettingFromStorage("maxTotalSize");
+
     }
 
     /**
@@ -130,6 +156,10 @@ class H5PEditorConfig {
         await this.saveSettingToStorage("sendUsageStatistics");
         await this.saveSettingToStorage("contentTypeCacheRefreshInterval");
         await this.saveSettingToStorage("enableLrsContentTypes");
+        await this.saveSettingToStorage("contentWhitelist");
+        await this.saveSettingToStorage("libraryWhitelist");
+        await this.saveSettingToStorage("maxFileSize");
+        await this.saveSettingToStorage("maxTotalSize");
     }
 }
 
