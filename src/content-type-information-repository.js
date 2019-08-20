@@ -1,3 +1,5 @@
+const H5pError = require("./helpers/h5p-error");
+
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
  * or were installed locally. It is used by the editor to display the list of available content types. Technically
@@ -15,13 +17,15 @@ class ContentTypeInformationRepository {
      * @param {ILibraryManager} libraryManager 
      * @param {H5PEditorConfig} config 
      * @param {IUser} user 
+     * @param {TranslationService} translationService
      */
-    constructor(contentTypeCache, storage, libraryManager, config, user) {
+    constructor(contentTypeCache, storage, libraryManager, config, user, translationService) {
         this._contentTypeCache = contentTypeCache;
         this._storage = storage;
         this._libraryManager = libraryManager;
         this._config = config;
         this._user = user;
+        this._translationService = translationService;
     }
 
     /**
@@ -48,6 +52,28 @@ class ContentTypeInformationRepository {
             apiVersion: this._config.coreApiVersion,
             details: null // TODO: implement this (= messages to user)
         };
+    }
+
+    /**
+     * Installs a library from the H5P Hub
+     * @param {string} machineName The machine name of the library to install (must be listed in the Hub)
+     * @returns {boolean} true if the library was installed. Throws H5PError exceptions if there are errors.
+     */
+    async install(machineName) {
+        if (!machineName) {
+            throw new H5pError(this._translationService.getTranslation("hub-install-no-content-type"))
+        }
+
+        const localContentType = await this._contentTypeCache.get(machineName);
+        if (!localContentType || localContentType.length === 0) {
+            throw new H5pError(this._translationService.getTranslation("hub-install-invalid-content-type"));
+        }
+
+        if (!localContentType[0].canBeInstalledBy(this._user)) {
+            throw new H5pError(this._translationService.getTranslation("hub-install-denied"));
+        }
+
+        return true;
     }
 
     /**

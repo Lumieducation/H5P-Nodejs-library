@@ -1,4 +1,5 @@
 require("@babel/core");
+require("@babel/register");
 require("babel-polyfill");
 
 const os = require("os");
@@ -7,14 +8,17 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
+const fsextra = require('fs-extra');
 const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 
 const JsonStorage = require('../build/json-storage').default;
 const InMemoryStorage = require('../build/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
-const FileLibraryManager = require('../test/mockups/file-library-manager');
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
 const User = require('../test/mockups/user');
+const TranslationService = require('../src/translation-service');
 const H5PEditor = require('../build');
 
 const start = async () => {
@@ -24,13 +28,17 @@ const start = async () => {
     const jsonStorage = new JsonStorage(path.resolve('examples/config.json'));
     const config = new H5PEditorConfig(jsonStorage);
     await config.load();
-    const libraryManager = new FileLibraryManager(`${path.resolve('')}/h5p/libraries`);
+    const libraryManager = new LibraryManager(new FileLibraryStorage(
+        `${path.resolve('')}/h5p/libraries`
+    ));
     const user = new User();
+    const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
+    const translationService = new TranslationService(englishStrings);
 
     const readJson = file => new Promise((y, n) =>
         fs.readFile(file, 'utf8', (err, data) => {
             if (err) return n(err);
-            return y(JSON.parse(data));
+            y(JSON.parse(data));
         }))
 
     const h5pEditor = new H5PEditor(
@@ -136,7 +144,8 @@ const start = async () => {
         valueStorage,
         config,
         libraryManager,
-        user
+        user,
+        translationService
     );
 
     const h5pRoute = '/h5p';

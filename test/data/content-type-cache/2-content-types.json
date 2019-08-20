@@ -1,0 +1,100 @@
+{
+  "contentTypes": [
+    {
+      "id": "H5P.Example1",
+      "version": {
+        "major": 1,
+        "minor": 0,
+        "patch": 0
+      },
+      "coreApiVersionNeeded": {
+        "major": 1,
+        "minor": 5
+      },
+      "title": "Example 1",
+      "summary": "Example content type 1",
+      "description": "The description of content type 1",
+      "icon": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/cc.svg",
+      "createdAt": "2017-01-01T12:00:00+0000",
+      "updatedAt": "2018-01-01T12:00:00+0000",
+      "isRecommended": false,
+      "popularity": 1,
+      "screenshots": [
+        {
+          "url": "https://via.placeholder.com/200x150.png?text=Example+1+Screenshot+1",
+          "alt": "Screenshot 1"
+        },
+        {
+          "url": "https://via.placeholder.com/200x150.png?text=Example+2+Screenshot+2",
+          "alt": "Screenshot 2"
+        }
+      ],
+      "license": {
+        "id": "MIT",
+        "attributes": {
+          "useCommercially": true,
+          "modifiable": true,
+          "distributable": true,
+          "sublicensable": true,
+          "canHoldLiable": false,
+          "mustIncludeCopyright": true,
+          "mustIncludeLicense": true
+        }
+      },
+      "owner": "H5P NodeJs Implementation",
+      "example": "https://example.org",
+      "keywords": [
+        "example",
+        "demo"
+      ]
+    },
+    {
+      "id": "H5P.Example2",
+      "version": {
+        "major": 1,
+        "minor": 5,
+        "patch": 3
+      },
+      "coreApiVersionNeeded": {
+        "major": 1,
+        "minor": 6
+      },
+      "title": "Example 2",
+      "summary": "Example content type 2",
+      "description": "The description of content type 2",
+      "icon": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/check.svg",
+      "createdAt": "2017-03-01T12:00:00+0000",
+      "updatedAt": "2018-04-01T12:00:00+0000",
+      "isRecommended": false,
+      "popularity": 2,
+      "screenshots": [
+        {
+          "url": "https://via.placeholder.com/200x150.png?text=Example+2+Screenshot+1",
+          "alt": "Screenshot 1"
+        },
+        {
+          "url": "https://via.placeholder.com/200x150.png?text=Example+2+Screenshot+2",
+          "alt": "Screenshot 2"
+        }
+      ],
+      "license": {
+        "id": "MIT",
+        "attributes": {
+          "useCommercially": true,
+          "modifiable": true,
+          "distributable": true,
+          "sublicensable": true,
+          "canHoldLiable": false,
+          "mustIncludeCopyright": true,
+          "mustIncludeLicense": true
+        }
+      },
+      "owner": "H5P NodeJs Implementation",
+      "example": "https://example.org",
+      "keywords": [
+        "example",
+        "demo"
+      ]
+    }
+  ]
+}
