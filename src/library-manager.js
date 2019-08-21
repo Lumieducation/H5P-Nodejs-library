@@ -136,7 +136,7 @@ class LibraryManager {
     async installFromDirectory(directory, { restricted = false }) {
         const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
         let library = Library.createFromMetadata(libraryMetadata)
-        if (await this.getId(library)) { // Check if library is already installed.
+        if (await this.getId(library)) { // Check if library is already installed. Skip installation if it already exists and there is no patch for it.
             if (await this.isPatchedLibrary(library)) {
                 // TODO: upgrade library
             }
@@ -180,8 +180,7 @@ class LibraryManager {
         
     } */
 
-    // eslint-disable-next-line class-methods-use-this
-    // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line class-methods-use-this, no-unused-vars
     getLibraryFileUrl(library, file) {
         return "";
     }

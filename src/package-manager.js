@@ -26,11 +26,12 @@ export default class PackageManager {
         return this._processPackage(tempPackagePath, { installLibraries: true, copyContent: false });
     }
 
-    async addPackageLibrariesAndFiles(tempPackagePath) {
-        return this._processPackage(tempPackagePath, { installLibraries: true, copyContent: true });
+    async addPackageLibrariesAndFiles(tempPackagePath, user) {
+        return this._processPackage(tempPackagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user);
     }
 
-    async _processPackage(tempPackagePath, { installLibraries = false, copyContent = false }) {
+    async _processPackage(tempPackagePath, { installLibraries = false, copyContent = false }, user) {
+        let contentId;
         const packageValidator = new PackageValidator(this._translationService, this._config);
         try {
             await packageValidator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an error
@@ -53,9 +54,9 @@ export default class PackageManager {
                 // Copy content to the repository
                 if (copyContent) {
                     if (!this._contentManager) {
-                        throw new Error("PackageManger was initialized with a ContentManger, but you want to copy content from a package. Pass a ContentManager object to the the constructor!")
+                        throw new Error("PackageManager was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!")
                     }
-                    await this._contentManager.copyContentFromDirectory(tempDirPath);
+                    contentId = await this._contentManager.copyContentFromDirectory(tempDirPath, user);
                 }
             }
             catch (error) {
@@ -73,6 +74,8 @@ export default class PackageManager {
                 throw error;
             }
         }
+
+        return contentId;
     }
 
     static async _extractPackage(packagePath, directoryPath, { includeLibraries = false, includeContent = false, includeMetadata = false }) {

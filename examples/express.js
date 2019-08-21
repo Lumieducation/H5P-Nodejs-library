@@ -20,6 +20,7 @@ const FileLibraryStorage = require('../build/file-library-storage');
 const User = require('../test/mockups/user');
 const TranslationService = require('../build/translation-service');
 const H5PEditor = require('../build');
+const FileContentStorage = require('../build/file-content-storage').default;
 
 const start = async () => {
     const server = express();
@@ -33,7 +34,7 @@ const start = async () => {
     const user = new User();
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
     const translationService = new TranslationService(englishStrings);
-    const contentManager = new ContentManager();
+    const contentManager = new ContentManager(new FileContentStorage(`${path.resolve('')}/h5p/content`));
 
     const h5pEditor = new H5PEditor(
         {

@@ -1,6 +1,5 @@
 const { withFile } = require('tmp-promise');
 const promisePipe = require('promisepipe');
-const shortid = require('shortid');
 const fs = require('fs-extra');
 const stream = require('stream');
 
@@ -49,6 +48,7 @@ class H5PEditor {
         this.contentManager = contentManager;
         this.translationService = translationService;
         this.config = config;
+        this.user = user;
     }
 
     render() {
@@ -278,9 +278,9 @@ class H5PEditor {
     }
 
     async uploadPackage(data) {
-        const contentId = shortid();
+        let contentId;
         const dataStream = new stream.PassThrough();
-        dataStream.end(data); 
+        dataStream.end(data);
 
         await withFile(async ({ path: tempPackagePath }) => {
             const writeStream = fs.createWriteStream(tempPackagePath);
@@ -290,9 +290,8 @@ class H5PEditor {
             catch (error) {
                 throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
             }
-
             const packageManger = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
-            await packageManger.addPackageLibrariesAndFiles(tempPackagePath);
+            contentId = await packageManger.addPackageLibrariesAndFiles(tempPackagePath, this.user);
         }, { postfix: '.h5p', keep: false });
 
         return contentId;
