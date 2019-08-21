@@ -12,7 +12,8 @@ const fsextra = require('fs-extra');
 const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 
-const InMemoryStorage = require('../test/mockups/in-memory-storage');
+const JsonStorage = require('../build/json-storage').default;
+const InMemoryStorage = require('../build/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
 const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
@@ -24,8 +25,9 @@ const start = async () => {
     const server = express();
 
     const valueStorage = new InMemoryStorage();
-    const config = new H5PEditorConfig(valueStorage);
-    config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
+    const jsonStorage = new JsonStorage(path.resolve('examples/config.json'));
+    const config = new H5PEditorConfig(jsonStorage);
+    await config.load();
     const libraryManager = new LibraryManager(new FileLibraryStorage(
         `${path.resolve('')}/h5p/libraries`
     ));
@@ -105,7 +107,6 @@ const start = async () => {
                             (error, files) => {
                                 if (error) {
                                     resolve([]);
-
                                 }
                                 resolve(
                                     files.map(file => file.replace('.json', ''))
@@ -160,7 +161,7 @@ const start = async () => {
             limits: { fileSize: 50 * 1024 * 1024 }
         })
     );
-    
+
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
     server.get('/', (req, res) => {
@@ -280,7 +281,6 @@ const start = async () => {
                 break;
         }
     });
-
 
     server.listen(process.env.PORT || 8080, () => {
         console.log(`server running at http://${os.hostname()}:${process.env.PORT || 8080}`);
