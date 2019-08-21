@@ -176,6 +176,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
             axiosMock.restore(); // TOO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
             await expect(repository.install("H5P.Blanks")).resolves.toEqual(true);
+            const libs = await libManager.getInstalled();
+            expect(Object.keys(libs).length).toEqual(13); // TODO: must be adapted to changes in the Hub file
         }
         finally {
             await fs.remove(tmpDir);

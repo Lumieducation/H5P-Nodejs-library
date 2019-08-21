@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const { crc32 } = require('crc');
 const path = require('path');
+const promisePipe = require('promisepipe');
 
 const Library = require('./library');
 
@@ -32,6 +33,11 @@ class FileLibraryStorage {
             .filter(lib => !machineNames || machineNames.length === 0 || machineNames.some(mn => mn === lib.machineName));
     }
 
+    /**
+     * Returns the id of an installed library.
+     * @param {Library} library The library to get the id for
+     * @returns {any} the id or undefined if the library is not installed
+     */
     async getId(library) {
         const libraryPath = this._getLibraryJsonPath(library);
         if (await fs.exists(libraryPath)) {
@@ -60,24 +66,111 @@ class FileLibraryStorage {
     }
 
     /**
-     * Installs a library from a temporary directory by copying the files from there.
-     * Throws an error if something unexpected happens and cleans up already copied files.
-     * @param {Library} library The library that is being installed
-     * @param {string} directory The path to the directory where the library files can be found (base directory that includes library.json)
-     * @returns {boolean} true if successful
+     * Adds the metadata of the library to the repository.
+     * Throws errors if something goes wrong.
+     * @param {any} libraryMetadata The library metadata object (= content of library.json)
+     * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
+     * @returns {Library} The newly created library object to use when adding library files with addLibraryFile(...)
      */
-    async installFromDirectory(library, directory) {
-        await fs.ensureDir(this._getDirectoryPath(library));
+    async installLibrary(libraryMetadata, { restricted = false }) {
+        const library = new Library(libraryMetadata.machineName,
+            libraryMetadata.majorVersion,
+            libraryMetadata.minorVersion,
+            libraryMetadata.patchVersion,
+            restricted);
+
+        const libPath = this._getDirectoryPath(library);
+        if (await fs.pathExists(libPath)) {
+            throw new Error(`Library ${library.getDirName()} has already been installed.`);
+        }
         try {
-            const dirContent = await fs.readdir(directory);
-            await Promise.all(dirContent.map(async dirEntry => {
-                return fs.copy(path.join(directory, dirEntry), this._getFullPath(library, dirEntry), { recursive: true });
-            }));
-            return true;
-        } catch (error) {
-            await fs.remove(this._getDirectoryPath(library));
+            await fs.ensureDir(libPath);
+            await fs.writeJSON(this._getLibraryJsonPath(library), libraryMetadata);
+            library.id = await this.getId(library);
+            return library;
+        }
+        catch (error) {
+            await fs.remove(libPath);
             throw error;
         }
+    }
+
+    /**
+     * Removes the library and all its files from the repository.
+     * Throws errors if something went wrong.
+     * @param {Library} library The library to remove.
+     * @returns {boolean} true if successful
+     */
+    async removeLibrary(library) {
+        const libPath = this._getDirectoryPath(library);
+        if (!(await fs.pathExists(libPath))) {
+            throw new Error(`Library ${library.getDirName()} is not installed on the system.`);
+        }
+        await fs.remove(libPath);
+        return true;
+    }
+
+    /**
+     * Adds a library file to a library. The library metadata must have been installed with installLibrary first.
+     * Throws an error if something unexpected happens.
+     * @param {Library} library The library that is being installed
+     * @param {string} filename Filename of the file to add, relative to the library root
+     * @param {stream} stream The stream containing the file content
+     * @returns {Promise<boolean>} true if successful
+     */
+    async addLibraryFile(library, filename, stream) {
+        if (! await (this.getId(library))) {
+            throw new Error(`Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`);
+        }
+        const fullPath = this._getFullPath(library, filename);
+        await fs.ensureDir(path.dirname(fullPath));
+        const writeStream = fs.createWriteStream(fullPath);
+        await promisePipe(stream, writeStream);
+
+        return true;
+    }
+
+    /**
+     * Checks (as far as possible) if all necessary files are present for the library to run properly.
+     * @param {Library} library The library to check
+     * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
+     */
+    async checkConsistency(library) {
+        if (! await (this.getId(library))) {
+            throw new Error(`Error in library ${library.getDirName()}: not installed.`);
+        }
+
+        let metadata;
+        try {
+            metadata = JSON.parse(await this.getFileContentAsString(library, "library.json"));
+        }
+        catch (error) {
+            throw new Error(`Error in library ${library.getDirName()}: library.json not readable: ${error.message}.`);
+        }
+        if (metadata.preloadedJs) {
+            await this._checkFiles(library, metadata.preloadedJs.map(js => js.path));
+        }
+        if (metadata.preloadedCss) {
+            await this._checkFiles(library, metadata.preloadedCss.map(css => css.path));
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if all files in the list are present in the library.
+     * @param {Library} library The library to check
+     * @param {string[]} requiredFiles The files (relative paths in the library) that must be present
+     * @returns {Promise<boolean>} true if all dependencies are present. Throws an error if any are missing.
+     */
+    async _checkFiles(library, requiredFiles) {
+        const missingFiles = (await Promise.all(requiredFiles.map(async file => {
+            return { status: await this.fileExists(library, file), path: file };
+        }))).filter(file => !file.status).map(file => file.path);
+        if (missingFiles.length > 0) {
+            throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
+        }
+        return true;
     }
 
     /**

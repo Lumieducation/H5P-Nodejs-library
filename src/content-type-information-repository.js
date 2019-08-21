@@ -64,26 +64,31 @@ class ContentTypeInformationRepository {
     }
 
     /**
-     * Installs a library from the H5P Hub
+     * Installs a library from the H5P Hub.
+     * Throws H5PError exceptions if there are errors.
      * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
-     * @returns {Promise<boolean>} true if the library was installed. Throws H5PError exceptions if there are errors.
+     * @returns {Promise<boolean>} true if the library was installed. 
      */
     async install(machineName) {
         if (!machineName) {
             throw new H5pError(this._translationService.getTranslation("hub-install-no-content-type"))
         }
 
+        // Reject content types that are not listed in the hub
         const localContentType = await this._contentTypeCache.get(machineName);
         if (!localContentType || localContentType.length === 0) {
             throw new H5pError(this._translationService.getTranslation("hub-install-invalid-content-type"));
         }
 
+        // Reject installation of content types that the user has no permission to
         if (!localContentType[0].canBeInstalledBy(this._user)) {
             throw new H5pError(this._translationService.getTranslation("hub-install-denied"));
         }
 
+        // Download content type package from the Hub
         const response = await axios.get(this._config.hubContentTypesEndpoint + machineName, { responseType: 'stream' });
 
+        // withFile is supposed to clean up the temporary file after it has been used
         await withFile(async ({ path: tempPackagePath }) => {
             const writeStream = fs.createWriteStream(tempPackagePath);
             try {
@@ -92,15 +97,16 @@ class ContentTypeInformationRepository {
             catch (error) {
                 throw new H5pError(this._translationService.getTranslation("hub-install-download-failed"));
             }
-            const validator = new PackageValidator(this._translationService, this._config);
+            const packageValidator = new PackageValidator(this._translationService, this._config);
             try {
-                await validator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an arror
-                await withDir(async ({ path: tempDirPath }) => {
+                await packageValidator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an error
+                await withDir(async ({ path: tempDirPath }) => { // withDir cleans up the directory after it has been used
                     await extractPackage(tempPackagePath, tempDirPath, { includeLibraries: true });
+                    // install all libraries (= directories in temporary directory)
                     const dirContent = await fs.readdir(tempDirPath);
-                    await Promise.all(dirContent.map(async dirEntry => {
-                        return this._libraryManager.installFromDirectory(dirEntry, path.join(tempDirPath, dirEntry));
-                    }));
+                    await Promise.all(dirContent.map(async dirEntry =>
+                        this._libraryManager.installFromDirectory(path.join(tempDirPath, dirEntry), { restricted: false })
+                    ));
 
                 }, { unsafeCleanup: true });
 
@@ -112,7 +118,7 @@ class ContentTypeInformationRepository {
                     throw error;
                 }
             }
-        }, { postfix: '.h5p' });
+        }, { postfix: '.h5p', keep: false });
 
         return true;
     }

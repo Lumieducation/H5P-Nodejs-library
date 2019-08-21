@@ -1,3 +1,7 @@
+const fs = require('fs-extra');
+const glob = require('glob-promise');
+const path = require('path');
+
 const Library = require('./library');  // eslint-disable-line no-unused-vars
 const FileLibraryStorage = require('./file-library-storage');  // eslint-disable-line no-unused-vars
 
@@ -8,7 +12,7 @@ const FileLibraryStorage = require('./file-library-storage');  // eslint-disable
 class LibraryManager {
     /**
      * 
-     * @param {FileLibraryStorage} libraryStorage 
+     * @param {FileLibraryStorage} libraryStorage The library repository that persists library somewhere.
      */
     constructor(libraryStorage) {
         this._libraryStorage = libraryStorage;
@@ -123,13 +127,30 @@ class LibraryManager {
     }
 
     /**
-     * Installs a library from a temporary directory.
-     * @param {string} libraryName The library name with the format H5P.Example-1.0
+     * Installs a library from a temporary directory. 
+     * The method does not validate the library! It must be validated before calling this method!
+     * Throws an error if something went wrong and deletes the files already installed.
      * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
      * @returns {boolean} true if successful
      */
-    async installFromDirectory(libraryName, directory) {
-        return this._libraryStorage.installFromDirectory(Library.createFromName(libraryName), directory);
+    async installFromDirectory(directory, { restricted = false }) {
+        const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
+        const library = await this._libraryStorage.installLibrary(libraryMetadata, { restricted });
+
+        try {            
+            const files = await glob(`${directory}/**/*.*`);
+            await Promise.all(files.map(fileFullPath => {
+                const fileLocalPath = path.relative(directory, fileFullPath);
+                if(fileLocalPath === "library.json"){
+                    return Promise.resolve();
+                }
+                return this._libraryStorage.addLibraryFile(library, fileLocalPath, fs.createReadStream(fileFullPath));
+            }));
+            await this._libraryStorage.checkConsistency(library);
+        } catch (error) {
+            await this._libraryStorage.removeLibrary(library);
+            throw error;
+        }
     }
 
     /**
