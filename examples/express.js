@@ -14,10 +14,11 @@ const shortid = require('shortid');
 
 const InMemoryStorage = require('../test/mockups/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
-const LibraryManager = require('../src/library-manager');
-const FileLibraryStorage = require('../src/file-library-storage');
+const LibraryManager = require('../build/library-manager');
+const ContentManager = require('../build/content-manager').default;
+const FileLibraryStorage = require('../build/file-library-storage');
 const User = require('../test/mockups/user');
-const TranslationService = require('../src/translation-service');
+const TranslationService = require('../build/translation-service');
 const H5PEditor = require('../build');
 
 const start = async () => {
@@ -32,6 +33,7 @@ const start = async () => {
     const user = new User();
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
     const translationService = new TranslationService(englishStrings);
+    const contentManager = new ContentManager();
 
     const h5pEditor = new H5PEditor(
         {
@@ -156,6 +158,7 @@ const start = async () => {
         valueStorage,
         config,
         libraryManager,
+        contentManager,
         user,
         translationService
     );

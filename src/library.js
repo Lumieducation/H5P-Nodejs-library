@@ -50,7 +50,17 @@ class Library {
             throw new Error(`Library name ${libraryName} is invalid.`);
         }
 
-        return new Library(result[1], result[2], result[3], restricted)
+        return new Library(result[1], result[2], result[3], undefined, restricted)
+    }
+
+    /**
+     * Creates a library object from library metadata object (contents of library.json)
+     * @param {any} metadata The library metadata as in library.json
+     * @param {boolean} restricted true if the library is restricted 
+     * @returns {Library}
+     */
+    static createFromMetadata(metadata, restricted) {
+        return new Library(metadata.machineName, metadata.majorVersion, metadata.minorVersion, metadata.patchVersion, restricted);
     }
 }
 

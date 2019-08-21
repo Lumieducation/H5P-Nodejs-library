@@ -135,21 +135,30 @@ class LibraryManager {
      */
     async installFromDirectory(directory, { restricted = false }) {
         const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
-        const library = await this._libraryStorage.installLibrary(libraryMetadata, { restricted });
+        let library = Library.createFromMetadata(libraryMetadata)
+        if (await this.getId(library)) { // Check if library is already installed.
+            if (await this.isPatchedLibrary(library)) {
+                // TODO: upgrade library
+            }
+        }
+        else {
+            library = await this._libraryStorage.installLibrary(libraryMetadata, { restricted });
 
-        try {            
-            const files = await glob(`${directory}/**/*.*`);
-            await Promise.all(files.map(fileFullPath => {
-                const fileLocalPath = path.relative(directory, fileFullPath);
-                if(fileLocalPath === "library.json"){
-                    return Promise.resolve();
-                }
-                return this._libraryStorage.addLibraryFile(library, fileLocalPath, fs.createReadStream(fileFullPath));
-            }));
-            await this._libraryStorage.checkConsistency(library);
-        } catch (error) {
-            await this._libraryStorage.removeLibrary(library);
-            throw error;
+            try {
+                const files = await glob(`${directory}/**/*.*`);
+                await Promise.all(files.map(fileFullPath => {
+                    const fileLocalPath = path.relative(directory, fileFullPath);
+                    if (fileLocalPath === "library.json") {
+                        return Promise.resolve();
+                    }
+                    const readStream = fs.createReadStream(fileFullPath);
+                    return this._libraryStorage.addLibraryFile(library, fileLocalPath, readStream);
+                }));
+                await this._libraryStorage.checkConsistency(library);
+            } catch (error) {
+                await this._libraryStorage.removeLibrary(library);
+                throw error;
+            }
         }
     }
 

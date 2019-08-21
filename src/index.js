@@ -1,6 +1,8 @@
-const unzipper = require('unzipper');
-const stream = require('stream');
+const { withFile } = require('tmp-promise');
+const promisePipe = require('promisepipe');
 const shortid = require('shortid');
+const fs = require('fs-extra');
+const stream = require('stream');
 
 const defaultEditorIntegration = require('../assets/default_editor_integration');
 const defaultTranslation = require('../assets/translations/en.json');
@@ -8,6 +10,8 @@ const defaultRenderer = require('./renderers/default');
 
 const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
+const H5pError = require("./helpers/h5p-error");
+const PackageManager = require('./package-manager').default;
 
 class H5PEditor {
     constructor(
@@ -21,6 +25,7 @@ class H5PEditor {
         keyValueStorage,
         config,
         libraryManager,
+        contentManager,
         user,
         translationService
     ) {
@@ -40,6 +45,9 @@ class H5PEditor {
             user,
             translationService
         );
+        this.libraryManager = libraryManager;
+        this.contentManager = contentManager;
+        this.translationService = translationService;
         this.config = config;
     }
 
@@ -265,31 +273,29 @@ class H5PEditor {
         };
     }
 
-    installLibrary(id) {
+    async installLibrary(id) {
         return this.contentTypeRepository.install(id);
     }
 
-    uploadPackage(data) {
+    async uploadPackage(data) {
         const contentId = shortid();
         const dataStream = new stream.PassThrough();
-        dataStream.end(data);
+        dataStream.end(data); 
 
-        const filesSaves = []
+        await withFile(async ({ path: tempPackagePath }) => {
+            const writeStream = fs.createWriteStream(tempPackagePath);
+            try {
+                await promisePipe(dataStream, writeStream);
+            }
+            catch (error) {
+                throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
+            }
 
-        return new Promise(y =>
-            dataStream.pipe(unzipper.Parse())
-                .on('entry', entry => {
-                    const base = entry.path.split('/')[0];
+            const packageManger = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
+            await packageManger.addPackageLibrariesAndFiles(tempPackagePath);
+        }, { postfix: '.h5p', keep: false });
 
-                    if (base === 'content' || base === 'h5p.json') {
-                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
-                    } else {
-                        filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
-                    }
-                })
-                .on('close', y))
-            .then(() => Promise.all(filesSaves))
-            .then(() => contentId);
+        return contentId;
     }
 
     _coreScripts() {

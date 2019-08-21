@@ -1,13 +1,10 @@
 const axios = require('axios');
-const { withFile, withDir } = require('tmp-promise');
 const fs = require('fs-extra');
-const path = require('path');
+const { withFile } = require('tmp-promise');
 const promisePipe = require('promisepipe');
 
 const H5pError = require("./helpers/h5p-error");
-const { ValidationError } = require('./helpers/validator-builder');
-const PackageValidator = require("./package-validator");
-const { extractPackage } = require("./package-extractor");
+const PackageManager = require("./package-manager").default;
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
@@ -97,27 +94,10 @@ class ContentTypeInformationRepository {
             catch (error) {
                 throw new H5pError(this._translationService.getTranslation("hub-install-download-failed"));
             }
-            const packageValidator = new PackageValidator(this._translationService, this._config);
-            try {
-                await packageValidator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an error
-                await withDir(async ({ path: tempDirPath }) => { // withDir cleans up the directory after it has been used
-                    await extractPackage(tempPackagePath, tempDirPath, { includeLibraries: true });
-                    // install all libraries (= directories in temporary directory)
-                    const dirContent = await fs.readdir(tempDirPath);
-                    await Promise.all(dirContent.map(async dirEntry =>
-                        this._libraryManager.installFromDirectory(path.join(tempDirPath, dirEntry), { restricted: false })
-                    ));
 
-                }, { unsafeCleanup: true });
-
-            } catch (error) {
-                if (error instanceof ValidationError) {
-                    throw new H5pError(error.message); // TODO: create AJAX response?
-                }
-                else {
-                    throw error;
-                }
-            }
+            const packageManger = new PackageManager(this._libraryManager, this._translationService, this._config);
+            await packageManger.installLibrariesFromPackage(tempPackagePath);
+            
         }, { postfix: '.h5p', keep: false });
 
         return true;

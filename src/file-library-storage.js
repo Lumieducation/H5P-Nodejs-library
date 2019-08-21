@@ -118,7 +118,7 @@ class FileLibraryStorage {
      * @param {stream} stream The stream containing the file content
      * @returns {Promise<boolean>} true if successful
      */
-    async addLibraryFile(library, filename, stream) {
+    async addLibraryFile(library, filename, stream) {        
         if (! await (this.getId(library))) {
             throw new Error(`Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`);
         }

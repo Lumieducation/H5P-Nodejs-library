@@ -5,14 +5,14 @@ const fs = require('fs-extra');
 const shortid = require('shortid');
 
 const InMemoryStorage = require('./mockups/in-memory-storage');
-const H5PEditorConfig = require('../src/config');
-const LibraryManager = require('../src/library-manager');
-const FileLibraryStorage = require('../src/file-library-storage');
-const ContentTypeCache = require('../src/content-type-cache');
-const ContentTypeInformationRepository = require('../src/content-type-information-repository');
+const H5PEditorConfig = require('../build/config');
+const LibraryManager = require('../build/library-manager');
+const FileLibraryStorage = require('../build/file-library-storage');
+const ContentTypeCache = require('../build/content-type-cache');
+const ContentTypeInformationRepository = require('../build/content-type-information-repository');
 const User = require('./mockups/user');
-const TranslationService = require('../src/translation-service');
-const H5pError = require('../src/helpers/h5p-error'); // eslint-disable-line no-unused-vars
+const TranslationService = require('../build/translation-service');
+const H5pError = require('../build/helpers/h5p-error'); // eslint-disable-line no-unused-vars
 
 const axiosMock = new MockAdapter(axios);
 
@@ -175,9 +175,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             }));
 
             axiosMock.restore(); // TOO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
-            await expect(repository.install("H5P.Blanks")).resolves.toEqual(true);
+            await expect(repository.install("H5P.DragText")).resolves.toEqual(true);
             const libs = await libManager.getInstalled();
-            expect(Object.keys(libs).length).toEqual(13); // TODO: must be adapted to changes in the Hub file
+            expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
         }
         finally {
             await fs.remove(tmpDir);
