@@ -3,6 +3,8 @@ const axios = require('axios');
 const merge = require('merge');
 const qs = require('qs');
 
+const ContentType = require('./content-type');
+
 /**
  * This class caches the information about the content types on the H5P Hub.
  * 
@@ -73,10 +75,16 @@ class ContentTypeCache {
 
     /**
      * Returns the cache data.
-     * @returns {Promise<any[]>} Cached hub data in a format in which the version objects are flattened into the main object, 
+     * @param {string[]} machineNames (optional) The method only returns content type cache data for these machinen ames.
+     * @returns {Promise<ContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object, 
      */
-    async get() {
-        return this._storage.load("contentTypeCache");
+    async get(...machineNames) {
+        if (!machineNames || machineNames.length === 0) {
+            return this._storage.load("contentTypeCache");
+        }
+        return (await this._storage.load("contentTypeCache"))
+            .filter(contentType => machineNames
+                .some(machineName => machineName === contentType.machineName));
     }
 
     /**
@@ -86,7 +94,7 @@ class ContentTypeCache {
      * @returns {Promise<string>} uuid
      */
     async _registerOrGetUuid() {
-        if (this._config.uuid) {
+        if (this._config.uuid && this._config.uuid !== "") {
             return this._config.uuid;
         }
         const response = await axios.post(this._config.hubRegistrationEndpoint,
@@ -155,9 +163,10 @@ class ContentTypeCache {
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.
      * @param {object} entry 
+     * @returns {ContentType} the local content type object
      */
     static _convertCacheEntryToLocalFormat(entry) {
-        return {
+        return Object.assign(new ContentType(), {
             machineName: entry.id,
             majorVersion: entry.version.major,
             minorVersion: entry.version.minor,
@@ -179,7 +188,7 @@ class ContentTypeCache {
             tutorial: entry.tutorial || '',
             keywords: entry.keywords || [],
             categories: entry.categories || [],
-        };
+        });
     }
 
     /**
