@@ -175,14 +175,14 @@ class H5PEditor {
     }
 
     saveContentFile(contentId, field, file) {
-        return new Promise(resolve => {
-            this.storage.saveContentFile(contentId, field, file).then(() => {
-                resolve({
-                    mime: file.mimetype,
-                    path: file.name
-                });
-            });
-        });
+        const dataStream = new stream.PassThrough();
+        dataStream.end(file.data);
+
+        return this.storage.saveContentFile(contentId, `content/${file.name}`, dataStream)
+            .then(() => ({
+                mime: file.mimetype,
+                path: file.name
+            }))
     }
 
     getLibraryOverview(libraries) {
@@ -289,7 +289,7 @@ class H5PEditor {
                     const base = entry.path.split('/')[0];
 
                     if (base === 'content' || base === 'h5p.json') {
-                        filesSaves.push(this.storage.saveContentFile2(contentId, entry.path, entry));
+                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
                     } else {
                         filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
                     }

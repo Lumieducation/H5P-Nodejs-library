@@ -12,14 +12,14 @@ const fsextra = require('fs-extra');
 const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 
-const JsonStorage = require('../build/json-storage').default;
-const InMemoryStorage = require('../build/in-memory-storage');
-const H5PEditorConfig = require('../build/config');
+const JsonStorage = require('../src/json-storage').default;
+const InMemoryStorage = require('../src/in-memory-storage');
+const H5PEditorConfig = require('../src/config');
 const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
 const User = require('../test/mockups/user');
 const TranslationService = require('../src/translation-service');
-const H5PEditor = require('../build');
+const H5PEditor = require('../src');
 
 const start = async () => {
     const server = express();
@@ -48,16 +48,6 @@ const start = async () => {
             },
             loadLibrary: (machineName, majorVersion, minorVersion) => {
                 return readJson(`h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
-            },
-            saveContentFile: (contentId, field, file) => {
-                return new Promise(resolve => {
-                    const dir = `${path.resolve()}/h5p/content/${contentId}/content/`;
-                    mkdirp(dir, () => {
-                        fs.writeFile(`${dir}${file.name}`, file.data, () => {
-                            resolve();
-                        });
-                    });
-                });
             },
             saveH5P: (contentId, h5pJson) => {
                 return new Promise(resolve => {
@@ -126,7 +116,7 @@ const start = async () => {
                         stream.pipe(fs.createWriteStream(fullPath))
                             .on('finish', y)))
             },
-            saveContentFile2: (id, filePath, stream) => {
+            saveContentFile: (id, filePath, stream) => {
                 const fullPath = `h5p/content/${id}/${filePath}`;
 
                 return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
