@@ -14,7 +14,7 @@
         "build": "npx babel src --out-dir build",
         "build:watch": "npx babel src --watch --out-dir build",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
-        "ci": "npm run lint && npm run test",
+        "ci": "npm run lint && npm run build && npm run test",
         "lint": "eslint ./src",
         "test": "jest",
         "test:watch": "jest --watch"
