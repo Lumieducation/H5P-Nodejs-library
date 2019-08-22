@@ -5,7 +5,7 @@ const InMemoryStorage = require('./in-memory-storage');
  * Reads key-value pairs from a JSON file and writes them back.
  * It is recommended to create it with the static create(...) factory instead of the sync constructor.
  */
-export default class JsonStorage extends InMemoryStorage {
+class JsonStorage extends InMemoryStorage {
     /**
      * Initializes the JsonStorage. It's advised to use the async static factory method create(...) instead.
      * @param {string} file Path to the JSON file (must be read- and writable)
@@ -50,3 +50,5 @@ export default class JsonStorage extends InMemoryStorage {
         return returnValue;
     }
 }
+
+module.exports = JsonStorage;

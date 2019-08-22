@@ -1,4 +1,4 @@
-const H5PEditor = require('../src');
+const H5PEditor = require('..').Editor;
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
