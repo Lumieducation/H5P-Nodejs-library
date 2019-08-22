@@ -2,166 +2,47 @@ require("@babel/core");
 require("@babel/register");
 require("babel-polyfill");
 
-const os = require("os");
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
-const fs = require('fs');
 const fsextra = require('fs-extra');
-const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 
-const InMemoryStorage = require('../test/mockups/in-memory-storage');
+const JsonStorage = require('../build/json-storage').default;
+const InMemoryStorage = require('../build/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
 const LibraryManager = require('../build/library-manager');
-const ContentManager = require('../build/content-manager').default;
 const FileLibraryStorage = require('../build/file-library-storage');
 const User = require('../test/mockups/user');
 const TranslationService = require('../build/translation-service');
+const FileStorage = require('../build/file-storage');
 const H5PEditor = require('../build');
 const FileContentStorage = require('../build/file-content-storage').default;
+const ContentManager = require('../build/content-manager').default;
 
 const start = async () => {
     const server = express();
 
-    const valueStorage = new InMemoryStorage();
-    const config = new H5PEditorConfig(valueStorage);
-    config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
-    const libraryManager = new LibraryManager(new FileLibraryStorage(
-        `${path.resolve('')}/h5p/libraries`
-    ));
-    const user = new User();
+    const config = new H5PEditorConfig(new JsonStorage(path.resolve('examples/config.json')));
+    await config.load();
+
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
-    const translationService = new TranslationService(englishStrings);
-    const contentManager = new ContentManager(new FileContentStorage(`${path.resolve('')}/h5p/content`));
 
     const h5pEditor = new H5PEditor(
-        {
-            loadSemantics: (machineName, majorVersion, minorVersion) => {
-                return Promise.resolve(
-                    require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/semantics.json`)
-                );
-            },
-            loadLibrary: (machineName, majorVersion, minorVersion) => {
-                return Promise.resolve(
-                    require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/library.json`)
-                );
-            },
-            saveContentFile: (contentId, field, file) => {
-                return new Promise(resolve => {
-                    const dir = `${path.resolve()}/h5p/content/${contentId}/content/`;
-                    mkdirp(dir, () => {
-                        fs.writeFile(`${dir}${file.name}`, file.data, () => {
-                            resolve();
-                        });
-                    });
-                })
-            },
-            saveH5P: (contentId, h5pJson) => {
-                return new Promise(resolve => {
-                    const dir = `${path.resolve('')}/h5p/content/${contentId}/`;
-                    mkdirp(dir, () => {
-                        fs.writeFile(
-                            `${dir}/h5p.json`,
-                            JSON.stringify(h5pJson),
-                            'utf8',
-                            () => {
-                                resolve();
-                            }
-                        );
-                    });
-                });
-            },
-            loadH5PJson: contentId => {
-                const dir = `${path.resolve('')}/h5p/content/${contentId}`;
-
-                return Promise.resolve(require(`${dir}/h5p.json`));
-            },
-            loadContent: contentId => {
-                return new Promise(resolve => {
-                    const dir = `${path.resolve(
-                        ''
-                    )}/h5p/content/${contentId}/content`;
-                    resolve(require(`${dir}/content.json`));
-                });
-            },
-            saveContent: (contentId, content) => {
-                return new Promise(resolve => {
-                    const dir = `${path.resolve(
-                        ''
-                    )}/h5p/content/${contentId}/content`;
-                    mkdirp(dir, () => {
-                        fs.writeFile(
-                            `${dir}/content.json`,
-                            JSON.stringify(content),
-                            'utf8',
-                            () => {
-                                resolve();
-                            }
-                        );
-                    });
-                });
-            },
-            loadLanguage: (machineName, majorVersion, minorVersion, language) => {
-                return new Promise(resolve => {
-                    try {
-                        resolve(
-                            require(`../h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language/${language}.json`)
-                        );
-                    } catch (error) {
-                        resolve(null);
-                    }
-                });
-            },
-            listLanguages: (machineName, majorVersion, minorVersion) => {
-                return new Promise(resolve => {
-                    try {
-                        fs.readdir(
-                            `${path.resolve()}/h5p/libraries/${machineName}-${majorVersion}.${minorVersion}/language`,
-                            (error, files) => {
-                                if (error) {
-                                    resolve([]);
-                                }
-                                resolve(
-                                    files.map(file => file.replace('.json', ''))
-                                );
-                            }
-                        );
-                    } catch (err) {
-                        resolve([]);
-                    }
-                });
-            },
-            saveLibraryFile: (filePath, stream) => {
-                const fullPath = `h5p/libraries/${filePath}`;
-
-                return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
-                    .then(() => new Promise(y =>
-                        stream.pipe(fs.createWriteStream(fullPath))
-                            .on('finish', y)))
-            },
-            saveContentFile2: (id, filePath, stream) => {
-                const fullPath = `h5p/content/${id}/${filePath}`;
-
-                return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
-                    .then(() => new Promise(y =>
-                        stream.pipe(fs.createWriteStream(fullPath))
-                            .on('finish', y)))
-            }
-        },
+        new FileStorage(`${path.resolve()}/h5p`),
         {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
             libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
             filesPath: '/h5p/content'
         },
-        valueStorage,
-        config,
-        libraryManager,
-        contentManager,
-        user,
-        translationService
+        new InMemoryStorage(),
+        config,        
+        new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`)),
+        new ContentManager(new FileContentStorage(`${path.resolve('')}/h5p/content`)),
+        new User(),
+        new TranslationService(englishStrings)
     );
 
     const h5pRoute = '/h5p';
@@ -184,9 +65,8 @@ const start = async () => {
         if (!req.query.contentId) {
             res.redirect(`?contentId=${shortid()}`);
         }
-        h5pEditor.render().then(h5pEditorPage => {
-            res.end(h5pEditorPage);
-        });
+        h5pEditor.render(req.query.contentId)
+            .then(page => res.end(page));
     });
 
     server.get('/params', (req, res) => {
@@ -277,7 +157,7 @@ const start = async () => {
 
             case 'library-upload':
                 h5pEditor.uploadPackage(req.files.h5p.data)
-                    .then(contentId => Promise.all([
+                    .then((contentId) => Promise.all([
                         h5pEditor.loadH5P(contentId),
                         h5pEditor.getContentTypeCache()
                     ])
@@ -287,7 +167,7 @@ const start = async () => {
                                 success: true,
                                 data: {
                                     h5p: content.h5p,
-                                    content: content.params,
+                                    content: content.params.params,
                                     contentTypes
                                 }
                             })))
@@ -300,7 +180,7 @@ const start = async () => {
     });
 
     server.listen(process.env.PORT || 8080, () => {
-        console.log(`server running at http://${os.hostname()}:${process.env.PORT || 8080}`);
+        console.log(`server running at http://localhost:${process.env.PORT || 8080}`);
     });
 }
 

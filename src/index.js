@@ -51,11 +51,11 @@ class H5PEditor {
         this.user = user;
     }
 
-    render() {
+    render(contentId) {
         const model = {
             styles: this._coreStyles(),
             scripts: this._coreScripts(),
-            integration: this._integration()
+            integration: this._integration(contentId)
         };
 
         return Promise.resolve(this.renderer(model));
@@ -72,29 +72,24 @@ class H5PEditor {
     }
 
     saveH5P(contentId, content, metadata, library) {
-        return new Promise(resolve => {
-            this.storage.saveContent(contentId, content).then(() => {
-                this._generateH5PJSON(metadata, library).then(h5pJson => {
-                    this.storage.saveH5P(contentId, h5pJson).then(() => {
-                        resolve();
-                    });
-                });
-            });
-        });
+        return this.storage.saveContent(contentId, content)
+            .then(() => this._generateH5PJSON(metadata, library))
+            .then(h5pJson => this.storage.saveH5P(contentId, h5pJson))
     }
 
     loadH5P(contentId) {
-        return new Promise(resolve => {
-            this.storage.loadH5PJson(contentId).then(h5pJson => {
-                this.storage.loadContent(contentId).then(content => {
-                    resolve({
-                        library: this._getUbernameFromH5pJson(h5pJson),
-                        h5p: h5pJson,
-                        params: content
-                    });
-                });
-            });
-        });
+        return Promise.all([
+            this.storage.loadH5PJson(contentId),
+            this.storage.loadContent(contentId)
+        ])
+            .then(([h5pJson, content]) => ({
+                library: this._getUbernameFromH5pJson(h5pJson),
+                h5p: h5pJson,
+                params: {
+                    params: content,
+                    metadata: h5pJson
+                }
+            }))
     }
 
     getLibraryData(machineName, majorVersion, minorVersion, language) {
@@ -188,14 +183,14 @@ class H5PEditor {
     }
 
     saveContentFile(contentId, field, file) {
-        return new Promise(resolve => {
-            this.storage.saveContentFile(contentId, field, file).then(() => {
-                resolve({
-                    mime: file.mimetype,
-                    path: `${contentId}/content/${file.name}`
-                });
-            });
-        });
+        const dataStream = new stream.PassThrough();
+        dataStream.end(file.data);
+
+        return this.storage.saveContentFile(contentId, `content/${file.name}`, dataStream)
+            .then(() => ({
+                mime: file.mimetype,
+                path: file.name
+            }))
     }
 
     getLibraryOverview(libraries) {
@@ -309,7 +304,6 @@ class H5PEditor {
             '/core/js/h5p-action-bar.js',
             '/editor/scripts/h5p-hub-client.js',
             '/editor/scripts/h5peditor-editor.js',
-            '/editor/wp/h5p-editor.js',
             '/editor/scripts/h5peditor.js',
             '/editor/scripts/h5peditor-semantic-structure.js',
             '/editor/scripts/h5peditor-library-selector.js',
@@ -357,11 +351,11 @@ class H5PEditor {
         ].map(file => `${this.baseUrl}${file}`);
     }
 
-    _editorIntegration() {
+    _editorIntegration(contentId) {
         return Object.assign(defaultEditorIntegration, {
             ajaxPath: this.ajaxPath,
             libraryUrl: this.libraryUrl,
-            filesPath: this.filesPath,
+            filesPath: `${this.filesPath}/${contentId}/content`,
             assets: {
                 css: [
                     '/core/styles/h5p.css',
@@ -419,7 +413,7 @@ class H5PEditor {
         });
     }
 
-    _integration() {
+    _integration(contentId) {
         return {
             url: this.baseUrl,
             postUserStatistics: false,
@@ -428,7 +422,7 @@ class H5PEditor {
             l10n: {
                 H5P: this.translation
             },
-            editor: this._editorIntegration()
+            editor: this._editorIntegration(contentId)
         };
     }
 }

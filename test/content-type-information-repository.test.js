@@ -4,7 +4,7 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const shortid = require('shortid');
 
-const InMemoryStorage = require('./mockups/in-memory-storage');
+const InMemoryStorage = require('../build/in-memory-storage');
 const H5PEditorConfig = require('../build/config');
 const LibraryManager = require('../build/library-manager');
 const FileLibraryStorage = require('../build/file-library-storage');

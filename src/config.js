@@ -61,13 +61,13 @@ class H5PEditorConfig {
 
         /**
          * Called to register the running instance at the H5P Hub.
-         * Not user-configurable.
+         * User-configurable.
          */
         this.hubRegistrationEndpoint = 'https://api.h5p.org/v1/sites';
 
         /**
          * Called to fetch information about the content types available at the H5P Hub.
-         * Not user-configurable.
+         * User-configurable.
          */
         this.hubContentTypesEndpoint = 'https://api.h5p.org/v1/content-types/';
 
@@ -113,7 +113,7 @@ class H5PEditorConfig {
     }
 
     /**
-     * Loads a settings from the storage interface.
+     * Loads a settings from the storage interface. Uses the default value configured in this file if there is none in the configuration.
      * @param {string} settingName 
      * @returns {Promise<any>} the value of the setting
      */
@@ -137,6 +137,8 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("uuid");
         await this.loadSettingFromStorage("siteType");
         await this.loadSettingFromStorage("sendUsageStatistics");
+        await this.loadSettingFromStorage("hubRegistrationEndpoint");
+        await this.loadSettingFromStorage("hubContentTypesEndpoint");
         await this.loadSettingFromStorage("contentTypeCacheRefreshInterval");
         await this.loadSettingFromStorage("enableLrsContentTypes");
         await this.loadSettingFromStorage("contentWhitelist");
@@ -154,6 +156,8 @@ class H5PEditorConfig {
         await this.saveSettingToStorage("uuid");
         await this.saveSettingToStorage("siteType");
         await this.saveSettingToStorage("sendUsageStatistics");
+        await this.saveSettingToStorage("hubRegistrationEndpoint");
+        await this.saveSettingToStorage("hubContentTypesEndpoint");
         await this.saveSettingToStorage("contentTypeCacheRefreshInterval");
         await this.saveSettingToStorage("enableLrsContentTypes");
         await this.saveSettingToStorage("contentWhitelist");

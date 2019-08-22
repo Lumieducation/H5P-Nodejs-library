@@ -36,6 +36,7 @@
         "glob-promise": "^3.4.0",
         "merge": "^1.2.1",
         "promisepipe": "^3.0.0",
+        "mkdirp": "^0.5.1",
         "qs": "^6.7.0",
         "shortid": "^2.2.14",
         "tmp-promise": "^2.0.2",
@@ -56,7 +57,6 @@
         "eslint-plugin-jest": "^22.15.0",
         "express-fileupload": "^1.1.5",
         "jest": "^24.8.0",
-        "mkdirp": "^0.5.1",
         "mockdate": "^2.0.4"
     },
     "main": "./src/index.js"
