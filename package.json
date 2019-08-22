@@ -10,14 +10,14 @@
         "postinstall": "scripts/download-core.sh 1.22.0 && cp -r src/client h5p/editor/wp && npm run download:content",
         "start": "node ./examples/express",
         "clean": "rm -rf build && rm -rf dist",
-        "uninstall": "npm run clean && rm -rf node_modules",
+        "uninstall": "rm -rf test/data/hub-content && npm run clean && rm -rf node_modules",
         "build": "npx babel src --out-dir build",
         "build:watch": "npx babel src --watch --out-dir build",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
-        "ci": "npm run lint && npm run build && npm run test",
+        "ci": "npm run lint && npm run test",
         "lint": "eslint ./src",
-        "test": "jest",
-        "test:watch": "jest --watch"
+        "test": "npm run build && jest",
+        "test:watch": "npm run build && jest --watch"
     },
     "author": "Jan Philip Schellenberg",
     "dependencies": {

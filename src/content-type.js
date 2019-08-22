@@ -44,7 +44,7 @@ class ContentType {
     /**
      * Checks if a user can install this content type.
      * @param {User} user The user for who the method should check whether the content type can be installed.
-     * @¶eturns {boolean} true if the user can install it, false if not
+     * @returns {boolean} true if the user can install it, false if not
      */
     canBeInstalledBy(user) {
         return user.canUpdateAndInstallLibraries || (user.canInstallRecommended && this.isRecommended);

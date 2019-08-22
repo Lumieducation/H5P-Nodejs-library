@@ -4,8 +4,7 @@
  */
 class H5PEditorConfig {
     /**
-     * 
-     * @param {IStorage} storage 
+     * @param {IStorage} storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
      */
     constructor(storage) {
         this._storage = storage;

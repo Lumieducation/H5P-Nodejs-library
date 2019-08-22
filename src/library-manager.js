@@ -6,7 +6,8 @@ const Library = require('./library');  // eslint-disable-line no-unused-vars
 const FileLibraryStorage = require('./file-library-storage');  // eslint-disable-line no-unused-vars
 
 /**
- * This class manages library installations, enumerating installed libraries etc.
+ * This class manages library installations, enumerating installed libraries etc. 
+ * It is storage agnostic and can be re-used in all implementations/plugins.
  */
 
 class LibraryManager {
@@ -104,10 +105,10 @@ class LibraryManager {
     }
 
     /**
-       * Is the library a patched version of an existing library?
-       * @param {Library} library The library the check
-       * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
-       */
+     * Is the library a patched version of an existing library?
+     * @param {Library} library The library the check
+     * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
+     */
     async isPatchedLibrary(library) {
         const wrappedLibraryInfos = await this.getInstalled(library.machineName);
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
@@ -127,11 +128,11 @@ class LibraryManager {
     }
 
     /**
-     * Installs a library from a temporary directory. 
-     * The method does not validate the library! It must be validated before calling this method!
+     * Installs a library from a temporary directory. It does not delete the library files in the temporary directory.
+     * The method does NOT validate the library! It must be validated before calling this method!
      * Throws an error if something went wrong and deletes the files already installed.
      * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
-     * @returns {boolean} true if successful
+     * @returns {Promise<boolean>} true if successful
      */
     async installFromDirectory(directory, { restricted = false }) {
         const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
@@ -162,27 +163,9 @@ class LibraryManager {
         }
     }
 
-    /**
-     * Deletes the library from the disc and removes all references to it in the manager.
-     * @param {Library} library 
-     */
-    /* delete(library) {
-        // TODO: implement
-    } */
-
-    /**
-     * Load config for libraries
-     * TODO: find out what this does
-     * @param array $libraries
-     * @return array
-     */
-    /* getLibraryConfig() {
-        
-    } */
-
     // eslint-disable-next-line class-methods-use-this, no-unused-vars
     getLibraryFileUrl(library, file) {
-        return "";
+        return ""; // TODO: implement
     }
 }
 

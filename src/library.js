@@ -54,7 +54,7 @@ class Library {
     }
 
     /**
-     * Creates a library object from library metadata object (contents of library.json)
+     * Creates a library object from a library metadata object (contents of library.json).
      * @param {any} metadata The library metadata as in library.json
      * @param {boolean} restricted true if the library is restricted 
      * @returns {Library}

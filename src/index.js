@@ -268,10 +268,20 @@ class H5PEditor {
         };
     }
 
+    /**
+     * Installs a content type from the H5P Hub.
+     * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
+     * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
+     */
     async installLibrary(id) {
         return this.contentTypeRepository.install(id);
     }
 
+    /**
+     * Adds the contents of a package to the system.
+     * @param {*} data The data (format?)
+     * @returns {Promise<string>} the newly created content it 
+     */
     async uploadPackage(data) {
         let contentId;
         const dataStream = new stream.PassThrough();
@@ -286,7 +296,7 @@ class H5PEditor {
                 throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
             }
             const packageManger = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
-            contentId = await packageManger.addPackageLibrariesAndFiles(tempPackagePath, this.user);
+            contentId = await packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user);
         }, { postfix: '.h5p', keep: false });
 
         return contentId;

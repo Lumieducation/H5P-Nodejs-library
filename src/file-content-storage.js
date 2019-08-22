@@ -3,17 +3,23 @@ const fs = require('fs-extra');
 const path = require('path');
 const promisePipe = require('promisepipe');
 
+/**
+ * Persists content to the disk.
+ */
 export default class FileContentStorage {
+    /**
+     * @param {string} contentDirectory The absolute path to the directory where the content should be stored
+     */
     constructor(contentDirectory) {
         this._contentPath = contentDirectory;
     }
 
     /**
-     * Creates a content object in the repository. Add files to it later with addContentFile(...)
+     * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * @param {any} metadata The metadata of the content (= h5p.json)
      * @param {any} content the content object (= content/content.json)
      * @param {User} user The user who owns this object.
-     * @returns {string} The newly assigned content id
+     * @returns {Promise<string>} The newly assigned content id
      */
     // eslint-disable-next-line no-unused-vars
     async createContent(metadata, content, user) {
@@ -31,7 +37,7 @@ export default class FileContentStorage {
     }
 
     /**
-     * Adds a content file to an existing content object
+     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param {string} id The id of the content to add the file to
      * @param {string} filename The filename INSIDE the content folder
      * @param {Stream} stream A readable stream that contains the data
@@ -51,9 +57,11 @@ export default class FileContentStorage {
     }
 
     /**
-     * Deletes content from the repository
+     * Deletes content from the repository.
+     * Throws errors if something goes wrong.
      * @param {string} id The content id to delete.
      * @param {User} user The user who wants to delete the content
+     * @returns {Promise<void>}
      */
     // eslint-disable-next-line no-unused-vars
     async deleteContent(id, user) {
@@ -65,7 +73,7 @@ export default class FileContentStorage {
     }
 
     /**
-     * Generates a unique content id
+     * Generates a unique content id that hasn't been used in the system so far.
      * @returns {Promise<string>} A unique content id
      */
     async _generateContentId() {
@@ -78,7 +86,7 @@ export default class FileContentStorage {
             const p = path.join(this._contentPath, id);
             // eslint-disable-next-line no-await-in-loop
             exists = await fs.pathExists(p);
-        } while (exists && counter < 5);
+        } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
             throw new Error("Could not generate id for new content.");
         }

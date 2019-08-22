@@ -8,6 +8,9 @@ const H5pError = require("./helpers/h5p-error");
 const { ValidationError } = require('./helpers/validator-builder');
 const PackageValidator = require("./package-validator");
 
+/**
+ * Handles the installation of libraries and saving of content from a H5P package.
+ */
 export default class PackageManager {
     /**
      * @param {LibraryManager} libraryManager
@@ -22,22 +25,43 @@ export default class PackageManager {
         this._contentManager = contentManager;
     }
 
-    async installLibrariesFromPackage(tempPackagePath) {
-        return this._processPackage(tempPackagePath, { installLibraries: true, copyContent: false });
+    /**
+     * Installs all libraries from the package. Assumes that the user calling this has the permission to install libraries!
+     * Throws errors if something goes wrong.
+     * @param {string} packagePath The full path to the H5P package file on the local disk.
+     * @returns {Promise<void>}
+     */
+    async installLibrariesFromPackage(packagePath) {
+        return this._processPackage(packagePath, { installLibraries: true, copyContent: false });
     }
 
-    async addPackageLibrariesAndFiles(tempPackagePath, user) {
-        return this._processPackage(tempPackagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user);
+    /**
+     * Adds content from a H5P package to the system (e.g. when uploading a H5P file). Also installs the necessary libraries from the package if they are not already installed.
+     * Throws errors if something goes wrong.
+     * @param {string} packagePath The full path to the H5P package file on the local disk.
+     * @param {User} user The user who wants to upload the package.
+     * @returns {Promise<string>} the id of the newly created content
+     */
+    async addPackageLibrariesAndContent(packagePath, user) {
+        return this._processPackage(packagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user);
     }
 
-    async _processPackage(tempPackagePath, { installLibraries = false, copyContent = false }, user) {
+    /**
+     * Generic method to process a H5P package. Can install libraries and copy content.
+     * @param {string} packagePath The full path to the H5P package file on the local disk
+     * @param {boolean} installLibraries If true, try installing libraries from package. Defaults to false.
+     * @param {boolean} copyContent If true, try copying content from package. Defaults to false.
+     * @param {User} user (optional) the user who wants to copy content (only needed when copying content)
+     * @returns {Promise<string|undefined>} The id of the newly created content when content was copied or undefined otherwise.
+     */
+    async _processPackage(packagePath, { installLibraries = false, copyContent = false }, user) {
         let contentId;
         const packageValidator = new PackageValidator(this._translationService, this._config);
         try {
-            await packageValidator.validatePackage(tempPackagePath, false, true); // no need to check result as the validator throws an exception if there is an error
-            const { path: tempDirPath } = await dir();
+            await packageValidator.validatePackage(packagePath, false, true); // no need to check result as the validator throws an exception if there is an error
+            const { path: tempDirPath } = await dir(); // we don't use withDir here, to have better error handling (catch block below)
             try {
-                await PackageManager._extractPackage(tempPackagePath, tempDirPath, {
+                await PackageManager._extractPackage(packagePath, tempDirPath, {
                     includeLibraries: installLibraries,
                     includeContent: copyContent,
                     includeMetadata: copyContent
@@ -46,7 +70,7 @@ export default class PackageManager {
 
                 // install all libraries
                 if (installLibraries) {
-                    await Promise.all(dirContent.filter(e => e !== "h5p.json" && e !== "content").map(dirEntry =>
+                    await Promise.all(dirContent.filter(dirEntry => dirEntry !== "h5p.json" && dirEntry !== "content").map(dirEntry =>
                         this._libraryManager.installFromDirectory(path.join(tempDirPath, dirEntry), { restricted: false })
                     ));
                 }
@@ -60,9 +84,11 @@ export default class PackageManager {
                 }
             }
             catch (error) {
+                // otherwise finally swallows errors
                 throw error;
             }
             finally {
+                // clean up temporary files in any case
                 await fs.remove(tempDirPath);
             }
 
@@ -78,6 +104,15 @@ export default class PackageManager {
         return contentId;
     }
 
+    /**
+     * Extracts a H5P package to the specified directory.
+     * @param {string} packagePath The full path to the H5P package file on the local disk
+     * @param {string} directoryPath The full path of the directory to which the package should be extracted
+     * @param {boolean} includeLibraries If true, the library directories inside the package will be extracted.
+     * @param {boolean} includeContent If true, the content folder inside the package will be extracted.
+     * @param {boolean} includeMetadata If true, the h5p.json file inside the package will be extracted.
+     * @returns {Promise<void>}
+     */
     static async _extractPackage(packagePath, directoryPath, { includeLibraries = false, includeContent = false, includeMetadata = false }) {
         const zipFile = await yauzl.open(packagePath);
         await zipFile.walkEntries(async (entry) => {

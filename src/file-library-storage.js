@@ -20,7 +20,7 @@ class FileLibraryStorage {
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
      * @param  {...any} machineNames (optional) only return libraries that have these machine names
-     * @returns {Library[]} the libraries installed
+     * @returns {Promise<Library[]>} the libraries installed
      */
     async getInstalled(...machineNames) {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
@@ -36,7 +36,7 @@ class FileLibraryStorage {
     /**
      * Returns the id of an installed library.
      * @param {Library} library The library to get the id for
-     * @returns {any} the id or undefined if the library is not installed
+     * @returns {Promise<any>} the id or undefined if the library is not installed
      */
     async getId(library) {
         const libraryPath = this._getLibraryJsonPath(library);
@@ -49,7 +49,7 @@ class FileLibraryStorage {
     /**
      * Retrieves the content of a file in a library
      * @param {Library} library The library to look in
-     * @param {string} filename The path of the file (relative inside the library)
+     * @param {Promise<string>} filename The path of the file (relative inside the library)
      */
     async getFileContentAsString(library, filename) {
         return fs.readFile(path.join(this._librariesDirectory, library.getDirName(), filename), { encoding: "utf8" });
@@ -70,7 +70,7 @@ class FileLibraryStorage {
      * Throws errors if something goes wrong.
      * @param {any} libraryMetadata The library metadata object (= content of library.json)
      * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
-     * @returns {Library} The newly created library object to use when adding library files with addLibraryFile(...)
+     * @returns {Promise<Library>} The newly created library object to use when adding library files with addLibraryFile(...)
      */
     async installLibrary(libraryMetadata, { restricted = false }) {
         const library = new Library(libraryMetadata.machineName,
@@ -99,7 +99,7 @@ class FileLibraryStorage {
      * Removes the library and all its files from the repository.
      * Throws errors if something went wrong.
      * @param {Library} library The library to remove.
-     * @returns {boolean} true if successful
+     * @returns {Promise<void>}
      */
     async removeLibrary(library) {
         const libPath = this._getDirectoryPath(library);
@@ -107,11 +107,10 @@ class FileLibraryStorage {
             throw new Error(`Library ${library.getDirName()} is not installed on the system.`);
         }
         await fs.remove(libPath);
-        return true;
     }
 
     /**
-     * Adds a library file to a library. The library metadata must have been installed with installLibrary first.
+     * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
      * Throws an error if something unexpected happens.
      * @param {Library} library The library that is being installed
      * @param {string} filename Filename of the file to add, relative to the library root
