@@ -79,8 +79,8 @@ class H5PEditor {
 
                 collect[object[key]] = {
                     machineName: name,
-                    majorVersion: parseInt(major),
-                    minorVersion: parseInt(minor)
+                    majorVersion: parseInt(major, 10),
+                    minorVersion: parseInt(minor, 10)
                 };
             } else {
                 this._findLibraries(object[key], collect);
