@@ -65,8 +65,29 @@ class H5PEditor {
 
     saveH5P(contentId, content, metadata, library) {
         return this.storage.saveContent(contentId, content)
-            .then(() => this._generateH5PJSON(metadata, library))
+            .then(() => this._generateH5PJSON(metadata, library, this._findLibraries(content)))
             .then(h5pJson => this.storage.saveH5P(contentId, h5pJson))
+    }
+
+    _findLibraries(object, collect = {}) {
+        if (typeof object !== 'object') return collect;
+
+        Object.keys(object).forEach(key => {
+            if (key === 'library' && object[key].match(/\w \d+\.\d+/)) {
+                const [name, version] = object[key].split(' ');
+                const [major, minor] = version.split('.');
+
+                collect[object[key]] = {
+                    machineName: name,
+                    majorVersion: parseInt(major),
+                    minorVersion: parseInt(minor)
+                };
+            } else {
+                this._findLibraries(object[key], collect);
+            }
+        })
+
+        return Object.values(collect);
     }
 
     loadH5P(contentId) {
@@ -214,7 +235,7 @@ class H5PEditor {
         );
     }
 
-    _generateH5PJSON(metadata, _library) {
+    _generateH5PJSON(metadata, _library, contentDependencies = []) {
         return new Promise(resolve => {
             const lib = this._parseLibraryString(_library);
             this.storage
@@ -227,6 +248,7 @@ class H5PEditor {
                     const h5pJson = Object.assign({}, metadata, {
                         mainLibrary: library.machineName,
                         preloadedDependencies: [
+                            ...contentDependencies,
                             ...library.preloadedDependencies,
                             {
                                 machineName: library.machineName,
