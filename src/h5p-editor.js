@@ -73,7 +73,7 @@ class H5PEditor {
         if (typeof object !== 'object') return collect;
 
         Object.keys(object).forEach(key => {
-            if (key === 'library' && object[key].match(/\w \d+\.\d+/)) {
+            if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
                 const [name, version] = object[key].split(' ');
                 const [major, minor] = version.split('.');
 
