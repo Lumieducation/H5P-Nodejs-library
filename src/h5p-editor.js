@@ -6,8 +6,8 @@ const defaultEditorIntegration = require('../assets/default_editor_integration')
 const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
 
-const ContentTypeCache = require('../src/content-type-cache');
-const ContentTypeInformationRepository = require('../src/content-type-information-repository');
+const ContentTypeCache = require('./content-type-cache');
+const ContentTypeInformationRepository = require('./content-type-information-repository');
 
 class H5PEditor {
     constructor(
