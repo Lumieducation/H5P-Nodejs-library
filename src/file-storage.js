@@ -70,7 +70,7 @@ class FileStorage {
                     `${this._libraryFolder(machineName, majorVersion, minorVersion)}/language`,
                     (error, files) => {
                         if (error) {
-                            resolve([]);
+                            return resolve([]);
                         }
                         resolve(
                             files.map(file => file.replace('.json', ''))
