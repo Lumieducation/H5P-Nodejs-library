@@ -11,6 +11,7 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 const H5pError = require("./helpers/h5p-error");
 const PackageManager = require('./package-manager').default;
+const Library = require('./library');
 
 class H5PEditor {
     constructor(
@@ -92,12 +93,13 @@ class H5PEditor {
             }))
     }
 
-    getLibraryData(machineName, majorVersion, minorVersion, language) {
+    getLibraryData(machineName, majorVersion, minorVersion, language = 'en') {
+        const library = new Library(machineName, majorVersion, minorVersion);
         return Promise.all([
             this._loadAssets(machineName, majorVersion, minorVersion, language),
-            this.storage.loadSemantics(machineName, majorVersion, minorVersion),
-            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language),
-            this.storage.listLanguages(machineName, majorVersion, minorVersion)
+            this.libraryManager.loadSemantics(library),
+            this.libraryManager.loadLanguage(library, language),
+            this.libraryManager.listLanguages(library)
         ])
             .then(([
                 assets,
@@ -133,9 +135,11 @@ class H5PEditor {
             translations: {}
         };
 
+        const lib = new Library(machineName, majorVersion, minorVersion);
+
         return Promise.all([
-            this.storage.loadLibrary(machineName, majorVersion, minorVersion),
-            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language || 'en')
+            this.libraryManager.loadLibrary(lib),
+            this.libraryManager.loadLanguage(lib, language || 'en')
         ])
             .then(([library, translation]) =>
                 Promise.all([
@@ -201,8 +205,9 @@ class H5PEditor {
                     majorVersion,
                     minorVersion
                 } = this._parseLibraryString(libraryName);
-                return this.storage
-                    .loadLibrary(machineName, majorVersion, minorVersion)
+                const lib = new Library(machineName, majorVersion, minorVersion);
+                return this.libraryManager
+                    .loadLibrary(lib)
                     .then(library => {
                         return {
                             uberName: `${library.machineName} ${
@@ -224,13 +229,9 @@ class H5PEditor {
 
     _generateH5PJSON(metadata, _library) {
         return new Promise(resolve => {
-            const lib = this._parseLibraryString(_library);
-            this.storage
-                .loadLibrary(
-                    lib.machineName,
-                    lib.majorVersion,
-                    lib.minorVersion
-                )
+            const lib = Library.createFromName(_library);
+            this.libraryManager
+                .loadLibrary(lib)
                 .then(library => {
                     const h5pJson = Object.assign({}, metadata, {
                         mainLibrary: library.machineName,

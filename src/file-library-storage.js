@@ -39,7 +39,7 @@ class FileLibraryStorage {
      * @returns {Promise<any>} the id or undefined if the library is not installed
      */
     async getId(library) {
-        const libraryPath = this._getLibraryJsonPath(library);
+        const libraryPath = this._getFullPath(library, "library.json");
         if (await fs.exists(libraryPath)) {
             return crc32(libraryPath);
         }
@@ -47,12 +47,44 @@ class FileLibraryStorage {
     }
 
     /**
-     * Retrieves the content of a file in a library
-     * @param {Library} library The library to look in
-     * @param {Promise<string>} filename The path of the file (relative inside the library)
+     * Gets the parsed contents of a library file that is JSON.
+     * @param {Library} library 
+     * @param {string} file 
+     * @returns {Promise<any|undefined>} The content or undefined if there was an error
      */
-    async getFileContentAsString(library, filename) {
-        return fs.readFile(path.join(this._librariesDirectory, library.getDirName(), filename), { encoding: "utf8" });
+    async getJsonFile(library, file) {
+        try {
+            return fs.readJSON(path.join(this._librariesDirectory, library.getDirName(), file));
+        } catch {
+            return undefined;
+        }
+    }
+
+    /**
+     * Returns a readable stream of a library file's contents. 
+     * Throws an exception if the file does not exist.
+     * @param {Library} library library
+     * @param {string} filename the relative path inside the library
+     * @returns {Stream} a readable stream of the file's contents
+     */
+    async getFileStream(library, filename) {
+        if (!(await this.fileExists(library, filename))) {
+            throw new Error(`File ${filename} does not exist in library ${library.getDirName()}`);
+        }
+
+        return fs.createReadStream(path.join(this._librariesDirectory, library.getDirName(), filename));
+    }
+
+    /**
+     * Gets a list of installed language files for the library.
+     * @param {Library} library The library to get the languages for
+     * @returns {Promise<string[]>} The list of JSON files in the language folder
+     */
+    async getLanguageFiles(library) {
+        const files = await fs.readdir(this._getFullPath(library, "language"));
+        return files
+            .filter(file => path.extname(file) === ".json")
+            .map(file => path.basename(file, ".json"));
     }
 
     /**
@@ -85,7 +117,7 @@ class FileLibraryStorage {
         }
         try {
             await fs.ensureDir(libPath);
-            await fs.writeJSON(this._getLibraryJsonPath(library), libraryMetadata);
+            await fs.writeJSON(this._getFullPath(library, "library.json"), libraryMetadata);
             library.id = await this.getId(library);
             return library;
         }
@@ -117,7 +149,7 @@ class FileLibraryStorage {
      * @param {stream} stream The stream containing the file content
      * @returns {Promise<boolean>} true if successful
      */
-    async addLibraryFile(library, filename, stream) {        
+    async addLibraryFile(library, filename, stream) {
         if (! await (this.getId(library))) {
             throw new Error(`Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`);
         }
@@ -141,7 +173,7 @@ class FileLibraryStorage {
 
         let metadata;
         try {
-            metadata = JSON.parse(await this.getFileContentAsString(library, "library.json"));
+            metadata = await this.getJsonFile(library, "library.json");
         }
         catch (error) {
             throw new Error(`Error in library ${library.getDirName()}: library.json not readable: ${error.message}.`);
@@ -170,15 +202,6 @@ class FileLibraryStorage {
             throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
         }
         return true;
-    }
-
-    /**
-     * Gets the path of the file 'library.json' of the specified library.
-     * @param {Library} library 
-     * @returns {string} the path to 'library.json'
-     */
-    _getLibraryJsonPath(library) {
-        return path.join(this._librariesDirectory, library.getDirName(), "library.json");
     }
 
     /**

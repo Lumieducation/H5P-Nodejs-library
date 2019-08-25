@@ -11,15 +11,7 @@ function readJson(file) {
 class FileStorage {
     constructor(base) {
         this._base = base;
-    }
-
-    loadSemantics(machineName, majorVersion, minorVersion) {
-        return readJson(`${this._libraryFolder(machineName, majorVersion, minorVersion)}/semantics.json`)
-    }
-
-    loadLibrary(machineName, majorVersion, minorVersion) {
-        return readJson(`${this._libraryFolder(machineName, majorVersion, minorVersion)}/library.json`)
-    }
+    }    
 
     saveH5P(contentId, h5pJson) {
         return new Promise(resolve => {
@@ -56,40 +48,6 @@ class FileStorage {
                 );
             });
         });
-    }
-
-    loadLanguage(machineName, majorVersion, minorVersion, language) {
-        return readJson(`${this._libraryFolder(machineName, majorVersion, minorVersion)}/language/${language}.json`)
-            .catch(() => null)
-    }
-
-    listLanguages(machineName, majorVersion, minorVersion) {
-        return new Promise(resolve => {
-            try {
-                fs.readdir(
-                    `${this._libraryFolder(machineName, majorVersion, minorVersion)}/language`,
-                    (error, files) => {
-                        if (error) {
-                            resolve([]);
-                        }
-                        resolve(
-                            files.map(file => file.replace('.json', ''))
-                        );
-                    }
-                );
-            } catch (err) {
-                resolve([]);
-            }
-        });
-    }
-
-    saveLibraryFile(filePath, stream) {
-        const fullPath = `${this._base}/libraries/${filePath}`;
-
-        return new Promise(y => fs.mkdir(path.dirname(fullPath), { recursive: true }, y))
-            .then(() => new Promise(y =>
-                stream.pipe(fs.createWriteStream(fullPath))
-                    .on('finish', y)))
     }
 
     saveContentFile(id, filePath, stream) {

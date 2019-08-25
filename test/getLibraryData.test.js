@@ -2,7 +2,7 @@ const H5PEditor = require('../src');
 
 describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
-        const h5pEditor = new H5PEditor({
+        const h5pEditor = new H5PEditor(undefined, undefined, undefined, undefined, {
             loadSemantics: () => Promise.resolve([]),
             loadLibrary: () => {
                 return Promise.resolve({
@@ -31,11 +31,11 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('includes the semantics.json content', () => {
         const storage = {
-            loadSemantics: (machineName, majorVersion, minorVersion) => {
+            loadSemantics: (library) => {
                 return Promise.resolve({
-                    machineName,
-                    majorVersion,
-                    minorVersion,
+                    machineName: library.machineName,
+                    majorVersion: library.majorVersion,
+                    minorVersion: library.minorVersion,
                     arbitrary: 'content'
                 });
             },
@@ -48,7 +48,7 @@ describe('aggregating data from library folders for the editor', () => {
             listLanguages: () => Promise.resolve([])
         };
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
                 expect(libraryData.semantics).toEqual({
@@ -63,7 +63,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes assets of preloaded and editor dependencies', () => {
         const storage = {
             loadSemantics: () => Promise.resolve({}),
-            loadLibrary: machineName => {
+            loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -117,13 +117,15 @@ describe('aggregating data from library folders for the editor', () => {
                                 }
                             ]
                         });
+                    default:
+                        throw new Error('unspecified');
                 }
             },
             loadLanguage: () => Promise.resolve(null),
             listLanguages: () => Promise.resolve([])
         };
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
                 expect(libraryData.javascript).toEqual([
@@ -140,7 +142,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes dependencies of dependencies in the javascript field', () => {
         const storage = {
             loadSemantics: () => Promise.resolve({}),
-            loadLibrary: machineName => {
+            loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -202,13 +204,15 @@ describe('aggregating data from library folders for the editor', () => {
                                 }
                             ]
                         });
+                    default:
+                        throw new Error('unspecified');
                 }
             },
             loadLanguage: () => Promise.resolve(null),
             listLanguages: () => Promise.resolve([])
         };
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
                 expect(libraryData.javascript).toEqual([
@@ -226,7 +230,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         const storage = {
             loadSemantics: () => Promise.resolve({}),
-            loadLibrary: machineName => {
+            loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
@@ -263,16 +267,16 @@ describe('aggregating data from library folders for the editor', () => {
         const minorVersion = 2;
         const language = 'en';
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 2, language)
             .then(libraryData => {
                 expect(libraryData.language).toEqual({
                     arbitrary: 'languageObject'
                 });
-                expect(loadLanguage.mock.calls[1][0]).toBe(machineName);
-                expect(loadLanguage.mock.calls[1][1]).toBe(majorVersion);
-                expect(loadLanguage.mock.calls[1][2]).toBe(minorVersion);
-                expect(loadLanguage.mock.calls[1][3]).toBe(language);
+                expect(loadLanguage.mock.calls[1][0].machineName).toBe(machineName);
+                expect(loadLanguage.mock.calls[1][0].majorVersion).toBe(majorVersion);
+                expect(loadLanguage.mock.calls[1][0].minorVersion).toBe(minorVersion);
+                expect(loadLanguage.mock.calls[1][1]).toBe(language);
             });
     });
 
@@ -283,7 +287,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         const storage = {
             loadSemantics: () => Promise.resolve({}),
-            loadLibrary: machineName => {
+            loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
@@ -319,7 +323,7 @@ describe('aggregating data from library folders for the editor', () => {
         const majorVersion = 1;
         const minorVersion = 2;
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 2)
             .then(libraryData => {
                 expect(libraryData.languages).toEqual([
@@ -327,16 +331,16 @@ describe('aggregating data from library folders for the editor', () => {
                     'with',
                     'languages'
                 ]);
-                expect(listLanguages.mock.calls[0][0]).toBe(machineName);
-                expect(listLanguages.mock.calls[0][1]).toBe(majorVersion);
-                expect(listLanguages.mock.calls[0][2]).toBe(minorVersion);
+                expect(listLanguages.mock.calls[0][0].machineName).toBe(machineName);
+                expect(listLanguages.mock.calls[0][0].majorVersion).toBe(majorVersion);
+                expect(listLanguages.mock.calls[0][0].minorVersion).toBe(minorVersion);
             });
     });
 
     it('lists dependencies in correct order', () => {
         const storage = {
             loadSemantics: () => Promise.resolve({}),
-            loadLibrary: machineName => {
+            loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -415,13 +419,15 @@ describe('aggregating data from library folders for the editor', () => {
                                 }
                             ]
                         }), 10));
+                    default:
+                        throw new Error('unspecified');
                 }
             },
             loadLanguage: () => Promise.resolve(null),
             listLanguages: () => Promise.resolve([])
         };
 
-        return new H5PEditor(storage)
+        return new H5PEditor(undefined, undefined, undefined, undefined, storage)
             .getLibraryData('Foo', 1, 0)
             .then(libraryData => {
                 expect(libraryData.javascript).toEqual([

@@ -83,15 +83,13 @@ class LibraryManager {
      * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
      */
     async loadLibrary(library) {
-        let libraryMetadata;
         try {
-            const content = await this._libraryStorage.getFileContentAsString(library, "library.json");
-            libraryMetadata = JSON.parse(content);
+            const libraryMetadata = await this._libraryStorage.getJsonFile(library, "library.json");
             libraryMetadata.libraryId = await this.getId(library);
+            return libraryMetadata;
         } catch {
             return undefined;
         }
-        return libraryMetadata;
     }
 
     /**
@@ -166,6 +164,50 @@ class LibraryManager {
     // eslint-disable-next-line class-methods-use-this, no-unused-vars
     getLibraryFileUrl(library, file) {
         return ""; // TODO: implement
+    }
+
+    /**
+     * Gets a list of translations that exist for this library.
+     * @param {Library} library 
+     * @returns {Promise<string[]>} the language codes for translations of this library
+     */
+    async listLanguages(library) {
+        return this._libraryStorage.getLanguageFiles(library);
+
+    }
+
+    /**
+     * Gets the language file for the specified language.
+     * @param {Library} library 
+     * @param {string} language the language code
+     * @returns {Promise<any>} the decoded JSON data in the language file
+     */
+    async loadLanguage(library, language) {
+        try {
+            return await this._libraryStorage.getJsonFile(library, path.join("language", `${language}.json`));
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Returns a readable stream of a library file's contents. 
+     * Throws an exception if the file does not exist.
+     * @param {Library} library library
+     * @param {string} filename the relative path inside the library
+     * @returns {Stream} a readable stream of the file's contents
+     */
+    async getFileStream(library, file) {
+        return this._libraryStorage.getFileStream(library, file);
+    }
+
+    /**
+     * Returns the content of semantics.json for the specified library.
+     * @param {Library} library 
+     * @returns {Promise<any>} the content of semantics.json
+     */
+    async loadSemantics(library) {
+        return this._libraryStorage.getJsonFile(library, "semantics.json");
     }
 }
 
