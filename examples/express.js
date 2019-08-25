@@ -19,6 +19,7 @@ const FileStorage = require('../build/file-storage');
 const H5PEditor = require('../build');
 const FileContentStorage = require('../build/file-content-storage').default;
 const ContentManager = require('../build/content-manager').default;
+const Library = require('../build/library');
 
 const start = async () => {
     const server = express();
@@ -27,6 +28,7 @@ const start = async () => {
     await config.load();
 
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
+    const libraryManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`));
     const contentStorage = new FileContentStorage(`${path.resolve('')}/h5p/content`);
 
     const h5pEditor = new H5PEditor(
@@ -38,8 +40,8 @@ const start = async () => {
             filesPath: '/h5p/content'
         },
         new InMemoryStorage(),
-        config,        
-        new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`)),
+        config,
+        libraryManager,
         new ContentManager(contentStorage),
         new User(),
         new TranslationService(englishStrings)
@@ -58,6 +60,12 @@ const start = async () => {
             limits: { fileSize: 50 * 1024 * 1024 }
         })
     );
+
+    server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
+        console.log(`requested ${req.params.uberName}/${req.params.file}`);
+        const stream = await libraryManager.getFileStream(Library.createFromName(req.params.uberName), req.params.file);        
+        await require('promisepipe')(stream, (res.type(path.extname(req.params.file))));
+    });
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
