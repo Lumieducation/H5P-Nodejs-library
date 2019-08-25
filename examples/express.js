@@ -7,7 +7,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const fsextra = require('fs-extra');
-const shortid = require('shortid');
 
 const JsonStorage = require('../build/json-storage').default;
 const InMemoryStorage = require('../build/in-memory-storage');
@@ -28,6 +27,7 @@ const start = async () => {
     await config.load();
 
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
+    const contentStorage = new FileContentStorage(`${path.resolve('')}/h5p/content`);
 
     const h5pEditor = new H5PEditor(
         new FileStorage(`${path.resolve()}/h5p`),
@@ -40,7 +40,7 @@ const start = async () => {
         new InMemoryStorage(),
         config,        
         new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`)),
-        new ContentManager(new FileContentStorage(`${path.resolve('')}/h5p/content`)),
+        new ContentManager(contentStorage),
         new User(),
         new TranslationService(englishStrings)
     );
@@ -61,9 +61,9 @@ const start = async () => {
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
-    server.get('/', (req, res) => {
+    server.get('/', async (req, res) => {
         if (!req.query.contentId) {
-            res.redirect(`?contentId=${shortid()}`);
+            res.redirect(`?contentId=${await contentStorage.createContentId()}`);
         }
         h5pEditor.render(req.query.contentId)
             .then(page => res.end(page));
@@ -156,7 +156,7 @@ const start = async () => {
                 break;
 
             case 'library-upload':
-                h5pEditor.uploadPackage(req.files.h5p.data)
+                h5pEditor.uploadPackage(req.files.h5p.data, req.query.contentId)
                     .then((contentId) => Promise.all([
                         h5pEditor.loadH5P(contentId),
                         h5pEditor.getContentTypeCache()

@@ -40,10 +40,11 @@ export default class PackageManager {
      * Throws errors if something goes wrong.
      * @param {string} packagePath The full path to the H5P package file on the local disk.
      * @param {User} user The user who wants to upload the package.
-     * @returns {Promise<string>} the id of the newly created content
+     * @param {*} contentId (optional) the content id to use for the package
+     * @returns {Promise<*>} the id of the newly created content
      */
-    async addPackageLibrariesAndContent(packagePath, user) {
-        return this._processPackage(packagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user);
+    async addPackageLibrariesAndContent(packagePath, user, contentId) {
+        return this._processPackage(packagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user, contentId);
     }
 
     /**
@@ -52,10 +53,9 @@ export default class PackageManager {
      * @param {boolean} installLibraries If true, try installing libraries from package. Defaults to false.
      * @param {boolean} copyContent If true, try copying content from package. Defaults to false.
      * @param {User} user (optional) the user who wants to copy content (only needed when copying content)
-     * @returns {Promise<string|undefined>} The id of the newly created content when content was copied or undefined otherwise.
+     * @returns {Promise<*|undefined>} The id of the newly created content when content was copied or undefined otherwise.
      */
-    async _processPackage(packagePath, { installLibraries = false, copyContent = false }, user) {
-        let contentId;
+    async _processPackage(packagePath, { installLibraries = false, copyContent = false }, user, contentId) {
         const packageValidator = new PackageValidator(this._translationService, this._config);
         try {
             await packageValidator.validatePackage(packagePath, false, true); // no need to check result as the validator throws an exception if there is an error
@@ -80,7 +80,7 @@ export default class PackageManager {
                     if (!this._contentManager) {
                         throw new Error("PackageManager was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!")
                     }
-                    contentId = await this._contentManager.copyContentFromDirectory(tempDirPath, user);
+                    contentId = await this._contentManager.copyContentFromDirectory(tempDirPath, user, contentId);
                 }
             }
             catch (error) {

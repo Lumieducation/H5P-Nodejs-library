@@ -280,10 +280,10 @@ class H5PEditor {
     /**
      * Adds the contents of a package to the system.
      * @param {*} data The data (format?)
-     * @returns {Promise<string>} the newly created content it 
+     * @param {*} contentId (optional) the content id of the uploaded package
+     * @returns {Promise<string>} the newly created content it or the one passed to it
      */
-    async uploadPackage(data) {
-        let contentId;
+    async uploadPackage(data, contentId) {
         const dataStream = new stream.PassThrough();
         dataStream.end(data);
 
@@ -296,7 +296,7 @@ class H5PEditor {
                 throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
             }
             const packageManger = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
-            contentId = await packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user);
+            contentId = await packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
         }, { postfix: '.h5p', keep: false });
 
         return contentId;

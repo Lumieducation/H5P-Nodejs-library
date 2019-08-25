@@ -19,26 +19,27 @@ export default class ContentManager {
      * It does not check whether the user has permissions to save content.
      * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
      * @param {User} user The user who is adding the package.
-     * @returns {Promise<string>} The id of the content that was created.
+     * @param {*} contentId (optional) The content id to use for the package
+     * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
      */
-    async copyContentFromDirectory(packageDirectory, user) {
+    async copyContentFromDirectory(packageDirectory, user, contentId) {
         const metadata = await fs.readJSON(path.join(packageDirectory, "h5p.json"));
         const content = await fs.readJSON(path.join(packageDirectory, "content", "content.json"));
         const otherContentFiles = (await glob(path.join(packageDirectory, "content", "**/*.*")))
             .filter(file => path.relative(packageDirectory, file) !== "content.json");
 
-        const id = await this._contentStorage.createContent(metadata, content, user);
+        contentId = await this._contentStorage.createContent(metadata, content, user, contentId);
         try {
             await Promise.all(otherContentFiles.map(file => {
                 const readStream = fs.createReadStream(file);
                 const localPath = path.relative(path.join(packageDirectory, "content"), file);
-                return this._contentStorage.addContentFile(id, localPath, readStream);
+                return this._contentStorage.addContentFile(contentId, localPath, readStream);
             }));
         }
         catch (error) {
-            this._contentStorage.deleteContent(id);
+            this._contentStorage.deleteContent(contentId);
             throw error;
         }
-        return id;
+        return contentId;
     }
 }

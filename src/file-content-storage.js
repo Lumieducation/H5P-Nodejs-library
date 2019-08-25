@@ -1,4 +1,3 @@
-const shortid = require('shortid');
 const fs = require('fs-extra');
 const path = require('path');
 const promisePipe = require('promisepipe');
@@ -19,11 +18,14 @@ export default class FileContentStorage {
      * @param {any} metadata The metadata of the content (= h5p.json)
      * @param {any} content the content object (= content/content.json)
      * @param {User} user The user who owns this object.
+     * @param {*} id (optional) The content id to use
      * @returns {Promise<string>} The newly assigned content id
      */
     // eslint-disable-next-line no-unused-vars
-    async createContent(metadata, content, user) {
-        const id = await this._generateContentId();
+    async createContent(metadata, content, user, id) {
+        if (id === undefined || id === null) {
+            id = await this.createContentId();
+        }
         try {
             await fs.ensureDir(path.join(this._contentPath, id));
             await fs.ensureDir(path.join(this._contentPath, id, "content"));
@@ -74,16 +76,16 @@ export default class FileContentStorage {
 
     /**
      * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<string>} A unique content id
+     * @returns {Promise<*>} A unique content id
      */
-    async _generateContentId() {
+    async createContentId() {
         let counter = 0;
         let id;
         let exists = false;
         do {
-            id = shortid();
+            id = FileContentStorage._getRandomInt(1, 2**32);
             counter += 1;
-            const p = path.join(this._contentPath, id);
+            const p = path.join(this._contentPath, id.toString());
             // eslint-disable-next-line no-await-in-loop
             exists = await fs.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
@@ -91,5 +93,11 @@ export default class FileContentStorage {
             throw new Error("Could not generate id for new content.");
         }
         return id;
+    }
+
+    static _getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
