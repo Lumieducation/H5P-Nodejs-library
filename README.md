@@ -1,40 +1,61 @@
-# H5P-Editor-Nodejs-library
+# H5P-Editor
 
 [![Build Status](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library.svg?branch=master)](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library)
 
-The H5P-Editor-Nodejs-library is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) for Nodejs.
+This project is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) for Nodejs.
+
 Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
 
-## Status
+An example of how to integrate and use this library can be found in the [H5P-Demo](https://github.com/Lumieducation/H5P-Demo) project.
 
-This library is still in development. You can check the progress and todos [here](https://github.com/orgs/Lumieducation/projects/9?card_filter_query=label%3Ah5p-editor). This readme will provide a how-to as soon as the editor works.
+
+## Usage
+
+### Installation
+
+You can install the library with 
+
+```
+npm install h5p-editor
+```
+
+### Integration
+
+To integrate the H5P-Editor, please refer to the [example integration](https://github.com/Lumieducation/H5P-Demo/blob/master/express.js).
 
 ### Adapters
 
 We will provide adapters for express and meteor in the future. If you would like to see another adapter, please make a issue.
 
-## Development
+
+## Development & Testing
 
 ### Prerequisites
 
-Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/), and [`npm`](https://www.npmjs.com/get-npm) installed.
+Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed.
 
-### Installing
+### Installation
 
 ```
-$ git clone https://github.com/Lumieducation/h5p-editor-nodejs-library
-$ cd h5p-editor-nodejs-library
-$ npm install
-$ npm run build
-$ npm start
+git clone https://github.com/Lumieducation/h5p-editor-nodejs-library
+cd h5p-editor-nodejs-library
+npm install
 ```
 
-Open `http://localhost:8080/course-presentation` in your browser to see the course-presentation example.
+### Run Tests
+
+After installation, your can run the tests with
+
+```
+npm test
+```
 
 ## Contributing
 
 Lumi tries to improve education wherever it is possible by providing a software that connects teachers with their students. Every help is appreciated and welcome.
+
 Feel free to create pull requests.
+
 h5p-nodejs-library has adopted the code of conduct defined by the Contributor Covenant. It can be read in full [here](./CODE-OF-CONDUCT.md).
 
 ### Get in touch
