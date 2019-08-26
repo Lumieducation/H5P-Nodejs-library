@@ -62,9 +62,9 @@ const start = async () => {
     );
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
-        console.log(`requested ${req.params.uberName}/${req.params.file}`);
-        const stream = await libraryManager.getFileStream(Library.createFromName(req.params.uberName), req.params.file);        
-        await require('promisepipe')(stream, (res.type(path.extname(req.params.file))));
+        const stream = await libraryManager.getFileStream(Library.createFromName(req.params.uberName), req.params.file);
+        stream.on("end", () => { res.end(); req.next(); })
+        stream.pipe(res.type(path.basename(req.params.file)));
     });
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
