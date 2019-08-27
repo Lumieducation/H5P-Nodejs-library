@@ -20,7 +20,6 @@
         "adm-zip": "^0.4.13",
         "ajv": "^6.10.2",
         "axios": "^0.19.0",
-        "body-parser": "^1.19.0",
         "crc": "^3.8.0",
         "escape-html": "^1.0.3",
         "fs-extra": "^8.1.0",
@@ -35,9 +34,7 @@
         "eslint": "^6.1.0",
         "eslint-config-airbnb-base": "^13.2.0",
         "eslint-config-prettier": "^6.0.0",
-        "eslint-plugin-import": "^2.18.2",
         "eslint-plugin-jest": "^22.15.0",
-        "express-fileupload": "^1.1.5",
         "jest": "^24.8.0",
         "mockdate": "^2.0.4"
     },
