@@ -4,7 +4,6 @@
         "es6": true,
         "node": true
     },
-    "parser": "babel-eslint",
     "plugins": ["jest"],
     "extends": ["airbnb-base", "prettier", "plugin:jest/recommended"],
     "globals": {

@@ -83,7 +83,7 @@ class LibraryManager {
             const content = await this._libraryStorage.getFileContentAsString(library, "library.json");
             libraryMetadata = JSON.parse(content);
             libraryMetadata.libraryId = await this.getId(library);
-        } catch {
+        } catch (ignored) {
             return undefined;
         }
         return libraryMetadata;
