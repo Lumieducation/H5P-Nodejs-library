@@ -15,7 +15,6 @@ const Library = require('./library');
 
 class H5PEditor {
     constructor(
-        storage,
         urls = {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
@@ -29,7 +28,6 @@ class H5PEditor {
         user,
         translationService
     ) {
-        this.storage = storage;
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
@@ -72,16 +70,15 @@ class H5PEditor {
         return this;
     }
 
-    saveH5P(contentId, content, metadata, library) {
-        return this.storage.saveContent(contentId, content)
-            .then(() => this._generateH5PJSON(metadata, library))
-            .then(h5pJson => this.storage.saveH5P(contentId, h5pJson))
+    async saveH5P(contentId, content, metadata, library) {
+        const h5pJson = await this._generateH5PJSON(metadata, library);
+        return this.contentManager.createContent(h5pJson, content, undefined, contentId);
     }
 
     loadH5P(contentId) {
         return Promise.all([
-            this.storage.loadH5PJson(contentId),
-            this.storage.loadContent(contentId)
+            this.contentManager.loadH5PJson(contentId),
+            this.contentManager.loadContent(contentId)
         ])
             .then(([h5pJson, content]) => ({
                 library: this._getUbernameFromH5pJson(h5pJson),
@@ -190,7 +187,7 @@ class H5PEditor {
         const dataStream = new stream.PassThrough();
         dataStream.end(file.data);
 
-        return this.storage.saveContentFile(contentId, `content/${file.name}`, dataStream)
+        return this.contentManager.addContentFile(contentId, file.name, dataStream, undefined)
             .then(() => ({
                 mime: file.mimetype,
                 path: file.name
@@ -229,7 +226,7 @@ class H5PEditor {
 
     _generateH5PJSON(metadata, _library) {
         return new Promise(resolve => {
-            const lib = Library.createFromName(_library);
+            const lib = Library.createFromName(_library.replace(' ', '-'));
             this.libraryManager
                 .loadLibrary(lib)
                 .then(library => {

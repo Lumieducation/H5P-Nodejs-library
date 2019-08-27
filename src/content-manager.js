@@ -42,4 +42,32 @@ export default class ContentManager {
         }
         return contentId;
     }
+
+    /**
+     * Creates a content object in the repository. Add files to it later with addContentFile(...).
+     * @param {any} metadata The metadata of the content (= h5p.json)
+     * @param {any} content the content object (= content/content.json)
+     * @param {User} user The user who owns this object.
+     * @param {*} id (optional) The content id to use
+     * @returns {Promise<string>} The newly assigned content id
+     */
+    async createContent(metadata, content, user, id) {
+        return this._contentStorage.createContent(metadata, content, user, id);
+    }
+
+    async loadH5PJson(contentId) {
+        return this._contentStorage.getFileJson(contentId, 'h5p.json');
+    }
+
+    async loadContent(contentId) {
+        return this._contentStorage.getFileJson(contentId, 'content/content.json');
+    }
+
+    async addContentFile(id, filename, stream, user) {
+        return this._contentStorage.addContentFile(id, filename, stream, user);
+    }
+
+    async getContentFileStream(id, filename, user) {
+        return this._contentStorage.getContentFileStream(id, filename, user);
+    }
 }

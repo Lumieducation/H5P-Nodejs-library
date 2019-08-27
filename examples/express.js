@@ -15,7 +15,6 @@ const LibraryManager = require('../build/library-manager');
 const FileLibraryStorage = require('../build/file-library-storage');
 const User = require('../test/mockups/user');
 const TranslationService = require('../build/translation-service');
-const FileStorage = require('../build/file-storage');
 const H5PEditor = require('../build');
 const FileContentStorage = require('../build/file-content-storage').default;
 const ContentManager = require('../build/content-manager').default;
@@ -30,9 +29,9 @@ const start = async () => {
     const englishStrings = await fsextra.readJSON(`${path.resolve('')}/src/translations/en.json`);
     const libraryManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`));
     const contentStorage = new FileContentStorage(`${path.resolve('')}/h5p/content`);
+    const contentManager = new ContentManager(contentStorage);
 
     const h5pEditor = new H5PEditor(
-        new FileStorage(`${path.resolve()}/h5p`),
         {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
@@ -42,7 +41,7 @@ const start = async () => {
         new InMemoryStorage(),
         config,
         libraryManager,
-        new ContentManager(contentStorage),
+        contentManager,
         new User(),
         new TranslationService(englishStrings)
     );
@@ -63,9 +62,15 @@ const start = async () => {
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
         const stream = await libraryManager.getFileStream(Library.createFromName(req.params.uberName), req.params.file);
-        stream.on("end", () => { res.end(); req.next(); })
+        stream.on("end", () => { res.end(); })
         stream.pipe(res.type(path.basename(req.params.file)));
-    });
+    }); 
+
+    server.get(`${h5pRoute}/content/:id/content/:file(*)`, async (req, res) => {
+      const stream = await contentManager.getContentFileStream(req.params.id, req.params.file, null);
+      stream.on("end", () => { res.end(); })
+      stream.pipe(res.type(path.basename(req.params.file)));
+  }); 
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 

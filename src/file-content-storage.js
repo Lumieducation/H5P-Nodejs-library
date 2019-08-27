@@ -58,6 +58,11 @@ export default class FileContentStorage {
         await promisePipe(stream, writeStream);
     }
 
+    // eslint-disable-next-line no-unused-vars
+    async getContentFileStream(id, filename, user) {
+        return fs.createReadStream(path.join(this._contentPath, id, "content", filename));
+    }
+
     /**
      * Deletes content from the repository.
      * Throws errors if something goes wrong.
@@ -93,6 +98,10 @@ export default class FileContentStorage {
             throw new Error("Could not generate id for new content.");
         }
         return id;
+    }
+
+    async getFileJson(contentId, file) {
+        return fs.readJson(path.join(this._contentPath, contentId.toString(), file));
     }
 
     static _getRandomInt(min, max) {
