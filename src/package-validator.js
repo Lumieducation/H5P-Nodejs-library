@@ -28,6 +28,7 @@ class H5pPackageValidator {
         this._libraryExtensionWhitelist = this._config.libraryWhitelist.split(" ").concat(this._contentExtensionWhitelist);
         this._h5pMetadataValidator = undefined;
         this._libraryMetadataValidator = undefined;
+        this._libraryDirectoryNameRegex = /^[\w0-9\-.]{1,255}$/i;
     }
 
     /**
@@ -41,9 +42,9 @@ class H5pPackageValidator {
         await this._initializeJsonValidators();
 
         return new ValidatorBuilder()
-            .addRule(this._mustHaveH5pExtension)
-            .addRule(this._zipArchiveMustBeValid)
-            .addRule(this._fileSizeMustBeWithinLimits)
+            .addRule(this._mustHaveH5pExtension.bind(this))
+            .addRule(this._zipArchiveMustBeValid.bind(this))
+            .addRule(this._fileSizeMustBeWithinLimits.bind(this))
             .addRule(this._filterOutEntries((entry) => entry.name.startsWith(".") || entry.name.startsWith("_")))
             .addRule(this._filterOutEntries((entry) => entry.name.endsWith("/")))
             .addRuleWhen(this._fileExtensionMustBeAllowed((name) => name.startsWith("content/"), this._contentExtensionWhitelist), checkContent)
@@ -52,10 +53,10 @@ class H5pPackageValidator {
             .addRuleWhen(this._jsonMustConformToSchema("h5p.json", this._h5pMetadataValidator, "invalid-h5p-json-file-2"), checkContent)
             .addRuleWhen(this._fileMustExist("content/content.json", this._translationService.getTranslation("invalid-content-folder"), true), checkContent)
             .addRuleWhen(this._jsonMustBeParsable("content/content.json"), checkContent)
-            .addRule(throwErrorsNow)
+            .addRule(throwErrorsNow.bind(this))
             .addRuleWhen(this._filesMustBeReadable((filePath) => filePath.startsWith("content/")), checkContent)
-            .addRuleWhen(this._librariesMustBeValid, checkLibraries)
-            .addRule(throwErrorsNow)
+            .addRuleWhen(this._librariesMustBeValid.bind(this), checkLibraries)
+            .addRule(throwErrorsNow.bind(this))
             .validate(h5pFile);
     }
 
@@ -65,7 +66,7 @@ class H5pPackageValidator {
      * @param {string} libraryName The name of the library to check
      * @returns { semantics: any, hasIcon: boolean, language: any } the object from library.json with additional data from semantics.json, the language files and the icon.
      */
-    _validateLibrary = async (zipEntries, libraryName, error) => {
+    async _validateLibrary(zipEntries, libraryName, error) {
         try {
             return await (new ValidatorBuilder()
                 .addRule(this._libraryDirectoryMustHaveValidName(libraryName))
@@ -78,10 +79,10 @@ class H5pPackageValidator {
                     "invalid-schema-library-json-file",
                     this._translationService.getTranslation("invalid-library-json-file", { "%name": libraryName }),
                     true))
-                .addRule(this._mustBeCompatibleToCoreVersion)
+                .addRule(this._mustBeCompatibleToCoreVersion.bind(this))
                 .addRule(this._libraryMustHaveMatchingDirectoryName(libraryName))
-                .addRule(this._libraryPreloadedFilesMustExist)
-                .addRule(this._libraryLanguageFilesMustBeValid)
+                .addRule(this._libraryPreloadedFilesMustExist.bind(this))
+                .addRule(this._libraryLanguageFilesMustBeValid.bind(this))
                 .validate(zipEntries, error));
         } catch (e) {
             if (e instanceof ValidationError) {
@@ -91,8 +92,6 @@ class H5pPackageValidator {
             throw e;
         }
     }
-
-    _libraryDirectoryNameRegex = /^[\w0-9\-.]{1,255}$/i;
 
     /**
      * RULES METHODS
@@ -105,7 +104,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {string} Unchanged path to the h5p file
      */
-    _mustHaveH5pExtension = async (h5pFile, error) => {
+    async _mustHaveH5pExtension(h5pFile, error) {
         if (path.extname(h5pFile).toLocaleLowerCase() !== '.h5p') {
             throw error.addError(this._translationService.getTranslation("missing-h5p-extension"));
         }
@@ -119,7 +118,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {IZipEntry[]} The entries inside the zip archive
      */
-    _zipArchiveMustBeValid = async (h5pFile, error) => {
+    async _zipArchiveMustBeValid(h5pFile, error) {
         const zipArchive = H5pPackageValidator._openZipArchive(h5pFile);
         if (!zipArchive) {
             throw error.addError(this._translationService.getTranslation("unable-to-unzip"));
@@ -134,7 +133,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {IZipEntry[]} The unchanged zip entries
      */
-    _fileSizeMustBeWithinLimits = async (zipEntries, error) => {
+    async _fileSizeMustBeWithinLimits(zipEntries, error) {
         let totalFileSize = 0; // in bytes
         if (this._config.maxFileSize) {
             for (const entry of zipEntries) {
@@ -167,7 +166,7 @@ class H5pPackageValidator {
     * @param {string[]} whitelist The file extensions that are allowed for files that match the filter
     * @returns the rule
     */
-    _fileExtensionMustBeAllowed = (filter, whitelist) => {
+    _fileExtensionMustBeAllowed(filter, whitelist) {
         /**
          * @param {IZipEntry[]} zipEntries The zip entries
          * @param {ValidationError} error The error object
@@ -199,7 +198,8 @@ class H5pPackageValidator {
      * @param {boolean} throwOnError If true, the rule will throw an error if the file does not exist. 
      * @returns the rule
      */
-    _fileMustExist = (filename, errorMessage, throwOnError = false) => {
+    // eslint-disable-next-line class-methods-use-this
+    _fileMustExist(filename, errorMessage, throwOnError = false) {
         /**
          * @param {IZipEntry[]} zipEntries The zip entries in the whole package
          * @param {ValidationError} error The error object
@@ -226,7 +226,7 @@ class H5pPackageValidator {
      * @param {boolean} returnContent (optional) If true, the rule will return an object with { zipEntries, jsonData } where jsonData contains the parsed JSON of the file
      * @return The rule
      */
-    _jsonMustConformToSchema = (filename, schemaValidator, errorMessageId, jsonParseMessage, returnContent = false) => {
+    _jsonMustConformToSchema(filename, schemaValidator, errorMessageId, jsonParseMessage, returnContent = false) {
         /**
          * @param {IZipEntry[]} zipEntries
          * @param {ValidationError} error
@@ -268,7 +268,7 @@ class H5pPackageValidator {
      * @param {boolean} throwIfError if true, the rule will throw an error if the JSON file is not parsable, otherwise it will append the error message to the error object
      * @return The rule
      */
-    _jsonMustBeParsable = (filename, errorMessage = undefined, skipIfNonExistent = false, throwIfError = true) => {
+    _jsonMustBeParsable(filename, errorMessage = undefined, skipIfNonExistent = false, throwIfError = true) {
         /**
          * @param {IZipEntry[]} zipEntries The zip entries in the H5P package
          * @param {ValidationError} error The error object
@@ -302,7 +302,7 @@ class H5pPackageValidator {
      * @param {(path: string) => boolean} filter Returns true for files that should be readable.
      * @returns the rule
      */
-    _filesMustBeReadable = (filter) => {
+    _filesMustBeReadable(filter) {
         /**
         * @param {IZipEntry[]} zipEntries The zip entries in the H5P package
         * @param {ValidationError} error The error object
@@ -325,7 +325,8 @@ class H5pPackageValidator {
      * @param {(IZipEntry) => boolean} filter The filter. Filenames matched by this filter will be filtered out.
      * @returns the rule
      */
-    _filterOutEntries = (filter) => {
+    // eslint-disable-next-line class-methods-use-this
+    _filterOutEntries(filter) {
         /**
         * @param {IZipEntry[]} zipEntries The zip entries in the whole H5P package
         * @returns {IZipEntry[]} The zip entries without the filtered out entries
@@ -341,7 +342,7 @@ class H5pPackageValidator {
      * @param { ValidationError} error The error object to use
      * @returns {IZipEntry[]} The unchanged zip entries
      */
-    _librariesMustBeValid = async (zipEntries, error) => {
+    async _librariesMustBeValid(zipEntries, error) {
         const tld = H5pPackageValidator._getTopLevelDirectories(zipEntries);
         await Promise.all(tld.filter(d => d !== "content").map(directory => this._validateLibrary(zipEntries, directory, error)));
         return zipEntries;
@@ -352,7 +353,7 @@ class H5pPackageValidator {
      * @param {string} libraryName The name of the library (directory)
      * @returns the rule
      */
-    _libraryDirectoryMustHaveValidName = (libraryName) => {
+    _libraryDirectoryMustHaveValidName(libraryName) {
         /**
         * @param {IZipEntry[]} zipEntries The entries inside the h5p file
         * @param {ValidationError} error The error object to use
@@ -375,7 +376,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {zipEntries: ZipEntry[], jsonData: any} the unchanged data passed to the rule
      */
-    _mustBeCompatibleToCoreVersion = async ({ zipEntries, jsonData }, error) => {
+    async _mustBeCompatibleToCoreVersion({ zipEntries, jsonData }, error) {
         this._checkCoreVersion(jsonData, `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`, error);
         return { zipEntries, jsonData };
     }
@@ -387,7 +388,7 @@ class H5pPackageValidator {
      * @param {string} directoryName the name of the directory in the package this library is in
      * @returns the rule
      */
-    _libraryMustHaveMatchingDirectoryName = (directoryName) => {
+    _libraryMustHaveMatchingDirectoryName(directoryName) {
         /**
          * @param {ZipEntry[]} zipEntries zip entries in the package
          * @param {any} jsonData jsonData of the library.json file
@@ -419,7 +420,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {zipEntries: ZipEntry[], jsonData: any} the unchanged data passed to the rule
      */
-    _libraryPreloadedFilesMustExist = async ({ zipEntries, jsonData }, error) => {
+    async _libraryPreloadedFilesMustExist({ zipEntries, jsonData }, error) {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
@@ -440,7 +441,7 @@ class H5pPackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {zipEntries: ZipEntry[], jsonData: any} the unchanged data passed to the rule
      */
-    _libraryLanguageFilesMustBeValid = async ({ zipEntries, jsonData }, error) => {
+    async _libraryLanguageFilesMustBeValid({ zipEntries, jsonData }, error) {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         const languagePath = path.join(dirName, "language/");
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
@@ -451,7 +452,7 @@ class H5pPackageValidator {
             try {
                 this._tryParseJson(languageFileEntry);
             }
-            catch {
+            catch (ignored) {
                 error.addError(this._translationService.getTranslation("invalid-language-file-json", { "%file": languageFileEntry.name, "%library": dirName }));
             }
         }
@@ -489,7 +490,7 @@ class H5pPackageValidator {
         try {
             return new AdmZip(file);
         }
-        catch {
+        catch (ignored) {
             return undefined;
         }
     }
@@ -517,18 +518,19 @@ class H5pPackageValidator {
      * @param {AdmZip.IZipEntry} entry The entry to read
      * @returns {Object} The read JSON
      */
-    _tryParseJson = (entry) => {
+    _tryParseJson(entry) {
         let content;
         try {
             content = entry.getData().toString('utf8');
         }
-        catch {
+        catch (ignored) {
             throw new Error(this._translationService.getTranslation("unable-to-read-package-file", { "%fileName": entry.entryName }));
         }
+
         try {
             return JSON.parse(content);
         }
-        catch {
+        catch (ignored) {
             throw new Error(this._translationService.getTranslation("unable-to-parse-package", { "%fileName": entry.entryName }));
         }
     }

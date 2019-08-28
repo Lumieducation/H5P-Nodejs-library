@@ -4,9 +4,8 @@
         "es6": true,
         "node": true
     },
-    "parser": "babel-eslint",
     "plugins": ["jest"],
-    "extends": ["airbnb-base", "prettier", "plugin:jest/recommended"],
+    "extends": ["prettier", "plugin:jest/recommended"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -17,7 +16,6 @@
     },
     "rules": {
         "global-require": "off",
-        "import/no-dynamic-require": "off",
         "no-underscore-dangle": "off",
         "no-restricted-syntax": [
             "error",
@@ -25,7 +23,6 @@
             "LabeledStatement",
             "WithStatement"
         ],
-        "no-param-reassign": "off",
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": ["test/**.js", "examples/**.js"]}]
+        "no-param-reassign": "off"
     }
 }

@@ -8,7 +8,7 @@ const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
 const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
-const User = require('./mockups/user');
+const User = require('../src/user');
 const TranslationService = require('../src/translation-service');
 const H5pError = require('../src/helpers/h5p-error');
 

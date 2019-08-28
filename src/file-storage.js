@@ -71,6 +71,7 @@ class FileStorage {
                     (error, files) => {
                         if (error) {
                             resolve([]);
+                            return;
                         }
                         resolve(
                             files.map(file => file.replace('.json', ''))
