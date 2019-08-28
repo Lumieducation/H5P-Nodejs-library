@@ -278,7 +278,7 @@ class H5PEditor {
     /**
      * Adds the contents of a package to the system.
      * @param {*} data The data (format?)
-     * @param {*} contentId (optional) the content id of the uploaded package
+     * @param {number} contentId (optional) the content id of the uploaded package
      * @returns {Promise<string>} the newly created content it or the one passed to it
      */
     async uploadPackage(data, contentId) {

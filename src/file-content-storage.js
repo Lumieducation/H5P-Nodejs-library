@@ -18,7 +18,7 @@ export default class FileContentStorage {
      * @param {any} metadata The metadata of the content (= h5p.json)
      * @param {any} content the content object (= content/content.json)
      * @param {User} user The user who owns this object.
-     * @param {*} id (optional) The content id to use
+     * @param {number} id (optional) The content id to use
      * @returns {Promise<string>} The newly assigned content id
      */
     // eslint-disable-next-line no-unused-vars
@@ -40,7 +40,7 @@ export default class FileContentStorage {
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param {string} id The id of the content to add the file to
+     * @param {number} id The id of the content to add the file to
      * @param {string} filename The filename INSIDE the content folder
      * @param {Stream} stream A readable stream that contains the data
      * @param {User} user The user who owns this object
@@ -58,15 +58,22 @@ export default class FileContentStorage {
         await promisePipe(stream, writeStream);
     }
 
+    /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
+     * @param {number} id the id of the content object that the file is attached to
+     * @param {string} filename the filename of the file to get (without preciding "content/" directory)
+     * @param {User} user the user who wants to retrieve the content file
+     * @returns {Stream}
+     */
     // eslint-disable-next-line no-unused-vars
-    async getContentFileStream(id, filename, user) {
+    getContentFileStream(id, filename, user) {
         return fs.createReadStream(path.join(this._contentPath, id, "content", filename));
     }
 
     /**
      * Deletes content from the repository.
      * Throws errors if something goes wrong.
-     * @param {string} id The content id to delete.
+     * @param {number} id The content id to delete.
      * @param {User} user The user who wants to delete the content
      * @returns {Promise<void>}
      */
@@ -81,7 +88,7 @@ export default class FileContentStorage {
 
     /**
      * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<*>} A unique content id
+     * @returns {Promise<number>} A unique content id
      */
     async createContentId() {
         let counter = 0;
@@ -100,10 +107,22 @@ export default class FileContentStorage {
         return id;
     }
 
-    async getFileJson(contentId, file) {
-        return fs.readJson(path.join(this._contentPath, contentId.toString(), file));
+    /**
+     * Returns the decoded JSON data inside a file
+     * @param {id} id The id of the content object that the file is attached to
+     * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
+     * @returns {Promise<any>}
+     */
+    async getFileJson(id, file) {
+        return fs.readJson(path.join(this._contentPath, id.toString(), file));
     }
 
+    /**
+     * Returns a random integer
+     * @param {number} min The minimum
+     * @param {number} max The maximum
+     * @returns {number} a random integer
+     */
     static _getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
