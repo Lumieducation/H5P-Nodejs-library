@@ -7,10 +7,10 @@ const defaultEditorIntegration = require('../assets/default_editor_integration')
 const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
 
-const ContentTypeCache = require('../src/content-type-cache');
-const ContentTypeInformationRepository = require('../src/content-type-information-repository');
+const ContentTypeCache = require('./content-type-cache');
+const ContentTypeInformationRepository = require('./content-type-information-repository');
 const H5pError = require("./helpers/h5p-error");
-const PackageManager = require('./package-manager').default;
+const PackageManager = require('./package-manager');
 const Library = require('./library');
 
 class H5PEditor {
@@ -71,8 +71,29 @@ class H5PEditor {
     }
 
     async saveH5P(contentId, content, metadata, library) {
-        const h5pJson = await this._generateH5PJSON(metadata, library);
+        const h5pJson = await this._generateH5PJSON(metadata, library, this._findLibraries(content));
         return this.contentManager.createContent(h5pJson, content, undefined, contentId);
+    }
+
+    _findLibraries(object, collect = {}) {
+        if (typeof object !== 'object') return collect;
+
+        Object.keys(object).forEach(key => {
+            if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
+                const [name, version] = object[key].split(' ');
+                const [major, minor] = version.split('.');
+
+                collect[object[key]] = {
+                    machineName: name,
+                    majorVersion: parseInt(major, 10),
+                    minorVersion: parseInt(minor, 10)
+                };
+            } else {
+                this._findLibraries(object[key], collect);
+            }
+        })
+
+        return Object.values(collect);
     }
 
     loadH5P(contentId) {
@@ -224,7 +245,7 @@ class H5PEditor {
         );
     }
 
-    _generateH5PJSON(metadata, _library) {
+    _generateH5PJSON(metadata, _library, contentDependencies = []) {
         return new Promise(resolve => {
             const lib = Library.createFromName(_library.replace(' ', '-'));
             this.libraryManager
@@ -233,6 +254,7 @@ class H5PEditor {
                     const h5pJson = Object.assign({}, metadata, {
                         mainLibrary: library.machineName,
                         preloadedDependencies: [
+                            ...contentDependencies,
                             ...library.preloadedDependencies,
                             {
                                 machineName: library.machineName,

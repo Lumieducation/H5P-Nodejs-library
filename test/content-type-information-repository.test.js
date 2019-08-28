@@ -4,15 +4,15 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const shortid = require('shortid');
 
-const InMemoryStorage = require('../build/in-memory-storage');
-const H5PEditorConfig = require('../build/config');
-const LibraryManager = require('../build/library-manager');
-const FileLibraryStorage = require('../build/file-library-storage');
-const ContentTypeCache = require('../build/content-type-cache');
-const ContentTypeInformationRepository = require('../build/content-type-information-repository');
-const User = require('./mockups/user');
-const TranslationService = require('../build/translation-service');
-const H5pError = require('../build/helpers/h5p-error'); // eslint-disable-line no-unused-vars
+const InMemoryStorage = require('../src/in-memory-storage');
+const H5PEditorConfig = require('../src/config');
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
+const ContentTypeCache = require('../src/content-type-cache');
+const ContentTypeInformationRepository = require('../src/content-type-information-repository');
+const User = require('../src/user');
+const TranslationService = require('../src/translation-service');
+const H5pError = require('../src/helpers/h5p-error');// eslint-disable-line no-unused-vars
 
 const axiosMock = new MockAdapter(axios);
 

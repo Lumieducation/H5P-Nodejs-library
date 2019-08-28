@@ -1,8 +1,8 @@
 const path = require('path');
 
-const H5PEditor = require('../build');
-const LibraryManager = require('../build/library-manager');
-const FileLibraryStorage = require('../build/file-library-storage');
+const H5PEditor = require('..').Editor;
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {

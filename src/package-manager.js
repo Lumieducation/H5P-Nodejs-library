@@ -11,7 +11,7 @@ const PackageValidator = require("./package-validator");
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
  */
-export default class PackageManager {
+class PackageManager {
     /**
      * @param {LibraryManager} libraryManager
      * @param {TranslationService} translationService 
@@ -40,8 +40,8 @@ export default class PackageManager {
      * Throws errors if something goes wrong.
      * @param {string} packagePath The full path to the H5P package file on the local disk.
      * @param {User} user The user who wants to upload the package.
-     * @param {*} contentId (optional) the content id to use for the package
-     * @returns {Promise<*>} the id of the newly created content
+     * @param {number} contentId (optional) the content id to use for the package
+     * @returns {Promise<number>} the id of the newly created content
      */
     async addPackageLibrariesAndContent(packagePath, user, contentId) {
         return this._processPackage(packagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user, contentId);
@@ -53,7 +53,7 @@ export default class PackageManager {
      * @param {boolean} installLibraries If true, try installing libraries from package. Defaults to false.
      * @param {boolean} copyContent If true, try copying content from package. Defaults to false.
      * @param {User} user (optional) the user who wants to copy content (only needed when copying content)
-     * @returns {Promise<*|undefined>} The id of the newly created content when content was copied or undefined otherwise.
+     * @returns {Promise<number|undefined>} The id of the newly created content when content was copied or undefined otherwise.
      */
     async _processPackage(packagePath, { installLibraries = false, copyContent = false }, user, contentId) {
         const packageValidator = new PackageValidator(this._translationService, this._config);
@@ -129,3 +129,5 @@ export default class PackageManager {
         })
     }
 }
+
+module.exports = PackageManager;

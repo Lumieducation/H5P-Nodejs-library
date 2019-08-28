@@ -1,4 +1,4 @@
-const H5PEditor = require('../src');
+const H5PEditor = require('..').Editor;
 
 describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {

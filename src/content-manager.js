@@ -6,7 +6,7 @@ const glob = require('glob-promise');
  * The ContentManager takes care of saving content and dependent files. It only contains storage-agnostic functionality and
  * depends on a ContentStorage object to do the actual persistence.
  */
-export default class ContentManager {
+class ContentManager {
     /**
      * @param {FileContentStorage} contentStorage The storage object
      */
@@ -96,3 +96,5 @@ export default class ContentManager {
         return this._contentStorage.getContentFileStream(contentId, filename, user);
     }
 }
+
+module.exports = ContentManager;

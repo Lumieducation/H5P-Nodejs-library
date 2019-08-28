@@ -5,7 +5,7 @@ const promisePipe = require('promisepipe');
 /**
  * Persists content to the disk.
  */
-export default class FileContentStorage {
+class FileContentStorage {
     /**
      * @param {string} contentDirectory The absolute path to the directory where the content should be stored
      */
@@ -27,12 +27,12 @@ export default class FileContentStorage {
             id = await this.createContentId();
         }
         try {
-            await fs.ensureDir(path.join(this._contentPath, id));
-            await fs.ensureDir(path.join(this._contentPath, id, "content"));
-            await fs.writeJSON(path.join(this._contentPath, id, "h5p.json"), metadata);
-            await fs.writeJSON(path.join(this._contentPath, id, "content", "content.json"), content);
+            await fs.ensureDir(path.join(this._contentPath, id.toString()));
+            await fs.ensureDir(path.join(this._contentPath, id.toString(), "content"));
+            await fs.writeJSON(path.join(this._contentPath, id.toString(), "h5p.json"), metadata);
+            await fs.writeJSON(path.join(this._contentPath, id.toString(), "content", "content.json"), content);
         } catch (error) {
-            await fs.remove(path.join(this._contentPath, id));
+            await fs.remove(path.join(this._contentPath, id.toString()));
             throw new Error(`Could not create content: ${error.message}`);
         }
         return id;
@@ -48,11 +48,11 @@ export default class FileContentStorage {
      */
     // eslint-disable-next-line no-unused-vars
     async addContentFile(id, filename, stream, user) {
-        if (!(await fs.pathExists(path.join(this._contentPath, id)))) {
+        if (!(await fs.pathExists(path.join(this._contentPath, id.toString())))) {
             throw new Error(`Cannot add file ${filename} to content with id ${id}: Content with this id does not exist.`);
         }
 
-        const fullPath = path.join(this._contentPath, id, "content", filename);
+        const fullPath = path.join(this._contentPath, id.toString(), "content", filename);
         await fs.ensureDir(path.dirname(fullPath));
         const writeStream = fs.createWriteStream(fullPath);
         await promisePipe(stream, writeStream);
@@ -67,7 +67,7 @@ export default class FileContentStorage {
      */
     // eslint-disable-next-line no-unused-vars
     getContentFileStream(id, filename, user) {
-        return fs.createReadStream(path.join(this._contentPath, id, "content", filename));
+        return fs.createReadStream(path.join(this._contentPath, id.toString(), "content", filename));
     }
 
     /**
@@ -79,11 +79,11 @@ export default class FileContentStorage {
      */
     // eslint-disable-next-line no-unused-vars
     async deleteContent(id, user) {
-        if (!(await fs.pathExists(path.join(this._contentPath, id)))) {
+        if (!(await fs.pathExists(path.join(this._contentPath, id.toString())))) {
             throw new Error(`Cannot delete content with id ${id}: It does not exist.`);
         }
 
-        await fs.remove(path.join(this._contentPath, id));
+        await fs.remove(path.join(this._contentPath, id.toString()));
     }
 
     /**
@@ -129,3 +129,5 @@ export default class FileContentStorage {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
+
+module.exports = FileContentStorage;

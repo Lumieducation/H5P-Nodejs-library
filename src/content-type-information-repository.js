@@ -4,7 +4,7 @@ const { withFile } = require('tmp-promise');
 const promisePipe = require('promisepipe');
 
 const H5pError = require("./helpers/h5p-error");
-const PackageManager = require("./package-manager").default;
+const PackageManager = require("./package-manager");
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub

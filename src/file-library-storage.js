@@ -55,7 +55,7 @@ class FileLibraryStorage {
     async getJsonFile(library, file) {
         try {
             return fs.readJSON(path.join(this._librariesDirectory, library.getDirName(), file));
-        } catch {
+        } catch (ignored) {
             return undefined;
         }
     }

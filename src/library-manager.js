@@ -87,7 +87,7 @@ class LibraryManager {
             const libraryMetadata = await this._libraryStorage.getJsonFile(library, "library.json");
             libraryMetadata.libraryId = await this.getId(library);
             return libraryMetadata;
-        } catch {
+        } catch (ignored) {
             return undefined;
         }
     }
@@ -185,7 +185,7 @@ class LibraryManager {
     async loadLanguage(library, language) {
         try {
             return await this._libraryStorage.getJsonFile(library, path.join("language", `${language}.json`));
-        } catch {
+        } catch (ignored) {
             return null;
         }
     }

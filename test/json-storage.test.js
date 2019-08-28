@@ -1,8 +1,8 @@
-import * as path from 'path';
-import * as fs from 'fs-extra';
+const path = require('path');
+const fs = require('fs-extra');
 
-import JsonStorage from '../src/json-storage';
-import Config from '../src/config';
+const JsonStorage = require('../src/json-storage');
+const Config = require('../src/config');
 
 describe('JSON storage of configuration', () => {
     it('loads JSON valid files', async () => {

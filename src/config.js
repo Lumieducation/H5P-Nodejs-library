@@ -144,7 +144,7 @@ class H5PEditorConfig {
         await this.loadSettingFromStorage("libraryWhitelist");
         await this.loadSettingFromStorage("maxFileSize");
         await this.loadSettingFromStorage("maxTotalSize");
-
+        return this
     }
 
     /**
