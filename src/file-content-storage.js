@@ -19,7 +19,7 @@ class FileContentStorage {
      * @param {any} content the content object (= content/content.json)
      * @param {User} user The user who owns this object.
      * @param {number} id (optional) The content id to use
-     * @returns {Promise<string>} The newly assigned content id
+     * @returns {Promise<number>} The newly assigned content id
      */
     // eslint-disable-next-line no-unused-vars
     async createContent(metadata, content, user, id) {

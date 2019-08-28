@@ -78,7 +78,7 @@ class FileLibraryStorage {
     /**
      * Gets a list of installed language files for the library.
      * @param {Library} library The library to get the languages for
-     * @returns {Promise<string[]>} The list of JSON files in the language folder
+     * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
      */
     async getLanguageFiles(library) {
         const files = await fs.readdir(this._getFullPath(library, "language"));
