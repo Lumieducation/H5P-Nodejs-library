@@ -121,16 +121,6 @@ const libraryStorage = {
     }
 
     /**
-     * Gets the parsed contents of a library file that is JSON.
-     * @param {Library} library 
-     * @param {string} file 
-     * @returns {Promise<any|undefined>} The content or undefined if there was an error
-     */
-    async getJsonFile(library, file) {
-        return Promise.resolve({/** the contents of the JSON file **/})
-    }
-
-    /**
      * Returns a readable stream of a library file's contents. 
      * Throws an exception if the file does not exist.
      * @param {Library} library library
@@ -194,15 +184,6 @@ const libraryStorage = {
          * (starting with library folder e.g. 'Foo-1.2')
          * and resolve(true) when done **/);
     }
-    
-    /**
-     * Checks (as far as possible) if all necessary files are present for the library to run properly.
-     * @param {Library} library The library to check
-     * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
-     */
-    async checkConsistency(library) {
-        return Promise.resolve(true);
-    }
 }
 ```
 
@@ -252,7 +233,7 @@ const libraryStorage = {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
      * @param {number} id the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (without preciding "content/" directory)
+     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
@@ -279,16 +260,6 @@ const libraryStorage = {
      */
     async createContentId() {
         return Promise.resolve(/** unique content id goes here **/)
-    }
-
-    /**
-     * Returns the decoded JSON data inside a file
-     * @param {id} id The id of the content object that the file is attached to
-     * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
-     * @returns {Promise<any>}
-     */
-    async getFileJson(id, file) {
-        return Promise.resolve({/** data inside file **/})
     }
 }
 ```

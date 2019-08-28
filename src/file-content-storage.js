@@ -59,15 +59,15 @@ class FileContentStorage {
     }
 
     /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param {number} id the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (without preciding "content/" directory)
+     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
     // eslint-disable-next-line no-unused-vars
     getContentFileStream(id, filename, user) {
-        return fs.createReadStream(path.join(this._contentPath, id.toString(), "content", filename));
+        return fs.createReadStream(path.join(this._contentPath, id.toString(), filename));
     }
 
     /**
@@ -105,16 +105,6 @@ class FileContentStorage {
             throw new Error("Could not generate id for new content.");
         }
         return id;
-    }
-
-    /**
-     * Returns the decoded JSON data inside a file
-     * @param {id} id The id of the content object that the file is attached to
-     * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
-     * @returns {Promise<any>}
-     */
-    async getFileJson(id, file) {
-        return fs.readJson(path.join(this._contentPath, id.toString(), file));
     }
 
     /**

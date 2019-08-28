@@ -2,6 +2,8 @@ const fs = require('fs-extra');
 const path = require('path');
 const glob = require('glob-promise');
 
+const { streamToString } = require('./helpers/stream-helpers');
+
 /**
  * The ContentManager takes care of saving content and dependent files. It only contains storage-agnostic functionality and
  * depends on a ContentStorage object to do the actual persistence.
@@ -58,19 +60,21 @@ class ContentManager {
     /**
      * Returns the metadata (=contents of h5p.json) of a piece of content.
      * @param {number} contentId the content id
+     * @param {User} user The user who wants to access the content
      * @returns {Promise<any>}
      */
-    async loadH5PJson(contentId) {
-        return this._contentStorage.getFileJson(contentId, 'h5p.json');
+    async loadH5PJson(contentId, user) {
+        return this._getFileJson(contentId, 'h5p.json', user);
     }
 
     /**
      * Returns the content object (=contents of content/content.json) of a piece of content.
      * @param {number} contentId the content id
+     * @param {User} user The user who wants to access the content
      * @returns {Promise<any>}
      */
-    async loadContent(contentId) {
-        return this._contentStorage.getFileJson(contentId, 'content/content.json');
+    async loadContent(contentId, user) {
+        return this._getFileJson(contentId, 'content/content.json', user);
     }
 
     /**
@@ -88,12 +92,25 @@ class ContentManager {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
      * @param {number} contentId the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (without preciding "content/" directory)
+     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
     getContentFileStream(contentId, filename, user) {
         return this._contentStorage.getContentFileStream(contentId, filename, user);
+    }
+
+    /**
+     * Returns the decoded JSON data inside a file
+     * @param {number} contentId The id of the content object that the file is attached to
+     * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
+     * @param {User} user The user who wants to acces this object
+     * @returns {Promise<any>}
+     */
+    async _getFileJson(contentId, file, user) {
+        const stream = this._contentStorage.getContentFileStream(contentId, file, user);
+        const jsonString = await streamToString(stream);
+        return JSON.parse(jsonString);
     }
 }
 

@@ -47,20 +47,6 @@ class FileLibraryStorage {
     }
 
     /**
-     * Gets the parsed contents of a library file that is JSON.
-     * @param {Library} library 
-     * @param {string} file 
-     * @returns {Promise<any|undefined>} The content or undefined if there was an error
-     */
-    async getJsonFile(library, file) {
-        try {
-            return fs.readJSON(path.join(this._librariesDirectory, library.getDirName(), file));
-        } catch (ignored) {
-            return undefined;
-        }
-    }
-
-    /**
      * Returns a readable stream of a library file's contents. 
      * Throws an exception if the file does not exist.
      * @param {Library} library library
@@ -158,49 +144,6 @@ class FileLibraryStorage {
         const writeStream = fs.createWriteStream(fullPath);
         await promisePipe(stream, writeStream);
 
-        return true;
-    }
-
-    /**
-     * Checks (as far as possible) if all necessary files are present for the library to run properly.
-     * @param {Library} library The library to check
-     * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
-     */
-    async checkConsistency(library) {
-        if (! await (this.getId(library))) {
-            throw new Error(`Error in library ${library.getDirName()}: not installed.`);
-        }
-
-        let metadata;
-        try {
-            metadata = await this.getJsonFile(library, "library.json");
-        }
-        catch (error) {
-            throw new Error(`Error in library ${library.getDirName()}: library.json not readable: ${error.message}.`);
-        }
-        if (metadata.preloadedJs) {
-            await this._checkFiles(library, metadata.preloadedJs.map(js => js.path));
-        }
-        if (metadata.preloadedCss) {
-            await this._checkFiles(library, metadata.preloadedCss.map(css => css.path));
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if all files in the list are present in the library.
-     * @param {Library} library The library to check
-     * @param {string[]} requiredFiles The files (relative paths in the library) that must be present
-     * @returns {Promise<boolean>} true if all dependencies are present. Throws an error if any are missing.
-     */
-    async _checkFiles(library, requiredFiles) {
-        const missingFiles = (await Promise.all(requiredFiles.map(async file => {
-            return { status: await this.fileExists(library, file), path: file };
-        }))).filter(file => !file.status).map(file => file.path);
-        if (missingFiles.length > 0) {
-            throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
-        }
         return true;
     }
 

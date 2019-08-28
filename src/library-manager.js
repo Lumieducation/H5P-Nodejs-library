@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const glob = require('glob-promise');
 const path = require('path');
 
+const { streamToString } = require('./helpers/stream-helpers');
 const Library = require('./library');  // eslint-disable-line no-unused-vars
 const FileLibraryStorage = require('./file-library-storage');  // eslint-disable-line no-unused-vars
 
@@ -84,7 +85,7 @@ class LibraryManager {
      */
     async loadLibrary(library) {
         try {
-            const libraryMetadata = await this._libraryStorage.getJsonFile(library, "library.json");
+            const libraryMetadata = await this._getJsonFile(library, "library.json");
             libraryMetadata.libraryId = await this.getId(library);
             return libraryMetadata;
         } catch (ignored) {
@@ -153,7 +154,7 @@ class LibraryManager {
                     const readStream = fs.createReadStream(fileFullPath);
                     return this._libraryStorage.addLibraryFile(library, fileLocalPath, readStream);
                 }));
-                await this._libraryStorage.checkConsistency(library);
+                await this._checkConsistency(library);
             } catch (error) {
                 await this._libraryStorage.removeLibrary(library);
                 throw error;
@@ -184,7 +185,7 @@ class LibraryManager {
      */
     async loadLanguage(library, language) {
         try {
-            return await this._libraryStorage.getJsonFile(library, path.join("language", `${language}.json`));
+            return await this._getJsonFile(library, path.join("language", `${language}.json`));
         } catch (ignored) {
             return null;
         }
@@ -207,7 +208,62 @@ class LibraryManager {
      * @returns {Promise<any>} the content of semantics.json
      */
     async loadSemantics(library) {
-        return this._libraryStorage.getJsonFile(library, "semantics.json");
+        return this._getJsonFile(library, "semantics.json");
+    }
+
+    /**
+     * Gets the parsed contents of a library file that is JSON.
+     * @param {Library} library 
+     * @param {string} file 
+     * @returns {Promise<any|undefined>} The content or undefined if there was an error
+     */
+    async _getJsonFile(library, file) {
+        const stream = await this._libraryStorage.getFileStream(library, file);
+        const jsonString = await streamToString(stream);
+        return JSON.parse(jsonString);
+    }
+
+    /**
+     * Checks (as far as possible) if all necessary files are present for the library to run properly.
+     * @param {Library} library The library to check
+     * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
+     */
+    async _checkConsistency(library) {
+        if (! await (this._libraryStorage.getId(library))) {
+            throw new Error(`Error in library ${library.getDirName()}: not installed.`);
+        }
+
+        let metadata;
+        try {
+            metadata = await this._getJsonFile(library, "library.json");
+        }
+        catch (error) {
+            throw new Error(`Error in library ${library.getDirName()}: library.json not readable: ${error.message}.`);
+        }
+        if (metadata.preloadedJs) {
+            await this._checkFiles(library, metadata.preloadedJs.map(js => js.path));
+        }
+        if (metadata.preloadedCss) {
+            await this._checkFiles(library, metadata.preloadedCss.map(css => css.path));
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if all files in the list are present in the library.
+     * @param {Library} library The library to check
+     * @param {string[]} requiredFiles The files (relative paths in the library) that must be present
+     * @returns {Promise<boolean>} true if all dependencies are present. Throws an error if any are missing.
+     */
+    async _checkFiles(library, requiredFiles) {
+        const missingFiles = (await Promise.all(requiredFiles.map(async file => {
+            return { status: await this._libraryStorage.fileExists(library, file), path: file };
+        }))).filter(file => !file.status).map(file => file.path);
+        if (missingFiles.length > 0) {
+            throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
+        }
+        return true;
     }
 }
 
