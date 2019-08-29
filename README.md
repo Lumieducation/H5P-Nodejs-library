@@ -202,7 +202,7 @@ The `contentStorage` provides information about installed content and creates it
 It must implement the following interface
 
 ```js
-const libraryStorage = {
+const contentStorage = {
     /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * @param {any} metadata The metadata of the content (= h5p.json)

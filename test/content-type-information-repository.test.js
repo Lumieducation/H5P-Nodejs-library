@@ -12,7 +12,6 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 const User = require('../src/user');
 const TranslationService = require('../src/translation-service');
-const H5pError = require('../src/helpers/h5p-error');// eslint-disable-line no-unused-vars
 
 const axiosMock = new MockAdapter(axios);
 

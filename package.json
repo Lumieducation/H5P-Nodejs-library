@@ -39,7 +39,8 @@
         "eslint-plugin-jest": "^22.15.0",
         "jest": "^24.8.0",
         "mockdate": "^2.0.4",
-        "shortid": "^2.2.14"
+        "shortid": "^2.2.14",
+        "stream-mock": "^2.0.5"
     },
     "main": "./src/index.js"
 }
