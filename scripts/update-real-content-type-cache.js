@@ -6,9 +6,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const H5PEditorConfig = require('../build/config');
-const InMemoryStorage = require('../build/in-memory-storage');
-const ContentTypeCache = require('../build/content-type-cache');
+const H5PEditorConfig = require('../src/config');
+const InMemoryStorage = require('../src/in-memory-storage');
+const ContentTypeCache = require('../src/content-type-cache');
 
 const start = async () => {
     const keyValueStorage = new InMemoryStorage();
