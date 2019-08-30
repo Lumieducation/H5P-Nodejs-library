@@ -7,7 +7,7 @@
         "url": "https://github.com/Lumieducation/H5P-Editor-Nodejs-library"
     },
     "scripts": {
-        "postinstall": "npm run download:content",
+        "postinstall": "npm run download:content ; npm run download:content-type-cache",
         "uninstall": "rm -rf node_modules",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:content-type-cache": "node scripts/update-real-content-type-cache.js",
