@@ -153,7 +153,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         user.canInstallRecommended = true;
         user.canUpdateAndInstallLibraries = false;
-        await expect(repository.install("H5P.Blanks")).rejects.toThrow("hub-install-denied");
+        await expect(repository.install("H5P.ImageHotspotQuestion")).rejects.toThrow("hub-install-denied");
     });
 
     it('install content types from the hub', async () => {

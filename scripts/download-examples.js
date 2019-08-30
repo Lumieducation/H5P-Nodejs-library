@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
@@ -25,7 +27,8 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
         machineNames
             .filter(machineName => {
                 if (fs.pathExistsSync(path.join(directoryPath, `${machineName}.h5p`))) {
-                    console.log(`${machineName}.h5p has already been downloaded. Skipping!`);
+                    downloadsFinished += 1;
+                    console.log(`${downloadsFinished}/${machineNames.length} ${machineName}.h5p has already been downloaded. Skipping!`);
                     return false;
                 }
                 return true;
@@ -40,6 +43,10 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
                     })
                     response.data.pipe(file);
                 })
+            }).catch(error => {
+                downloadsFinished += 1;
+                console.error(`${downloadsFinished}/${machineNames.length} Error downloading ${contentType}: ${error.response.status} ${error.response.statusText}`);
+                return Promise.resolve();
             })
             ));
 }

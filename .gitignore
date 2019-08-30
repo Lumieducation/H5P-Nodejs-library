@@ -16,5 +16,6 @@ microsoft.gpg
 # Dependency directory
 node_modules
 
+# Downloaded and generated files
 test/data/hub-content/*
 test/tmp-*
