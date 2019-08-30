@@ -15,6 +15,7 @@ class FileContentStorage {
 
     /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
+     * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
      * @param {any} metadata The metadata of the content (= h5p.json)
      * @param {any} content the content object (= content/content.json)
      * @param {User} user The user who owns this object.

@@ -10,6 +10,7 @@
         "postinstall": "npm run download:content",
         "uninstall": "rm -rf node_modules",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
+        "clear": "rm -rf test/data/hub-content",
         "ci": "npm run lint && npm run test",
         "lint": "eslint ./src",
         "test": "jest",
@@ -33,6 +34,7 @@
         "yauzl-promise": "^2.1.3"
     },
     "devDependencies": {
+        "@types/jest": "^24.0.18",
         "axios-mock-adapter": "^1.17.0",
         "eslint": "^6.1.0",
         "eslint-config-prettier": "^6.0.0",
