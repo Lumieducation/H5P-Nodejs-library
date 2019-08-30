@@ -15,4 +15,6 @@ microsoft.gpg
 # Dependency directory
 node_modules
 
+# Downloaded and generated files
 test/data/hub-content/*
+real-content-types.json
