@@ -9,6 +9,8 @@ const defaultRenderer = require('./renderers/default');
 
 const ContentTypeCache = require('./content-type-cache');
 const ContentTypeInformationRepository = require('./content-type-information-repository');
+const LibraryManager = require('./library-manager');
+const ContentManager = require('./content-manager');
 const H5pError = require("./helpers/h5p-error");
 const PackageManager = require('./package-manager');
 const Library = require('./library');
@@ -23,8 +25,8 @@ class H5PEditor {
         },
         keyValueStorage,
         config,
-        libraryManager,
-        contentManager,
+        libraryStorage,
+        contentStorage,
         user,
         translationService
     ) {
@@ -35,19 +37,20 @@ class H5PEditor {
         this.libraryUrl = urls.libraryUrl;
         this.filesPath = urls.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
+        this.libraryManager = new LibraryManager(libraryStorage);
+        this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             keyValueStorage,
-            libraryManager,
+            this.libraryManager,
             config,
             user,
             translationService
         );
-        this.libraryManager = libraryManager;
-        this.contentManager = contentManager;
         this.translationService = translationService;
         this.config = config;
         this.user = user;
+        this.packageManager = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
     }
 
     render(contentId) {
@@ -271,7 +274,7 @@ class H5PEditor {
 
     // eslint-disable-next-line class-methods-use-this
     _getUbernameFromH5pJson(h5pJson) {
-        const library = h5pJson.preloadedDependencies.filter(
+        const library = (h5pJson.preloadedDependencies || []).filter(
             dependency => dependency.machineName === h5pJson.mainLibrary
         )[0];
         return `${library.machineName} ${library.majorVersion}.${
@@ -314,9 +317,8 @@ class H5PEditor {
             }
             catch (error) {
                 throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
-            }
-            const packageManger = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
-            contentId = await packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
+            }            
+            contentId = await this.packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
         }, { postfix: '.h5p', keep: false });
 
         return contentId;

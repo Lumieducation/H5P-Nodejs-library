@@ -33,8 +33,8 @@ const h5pEditor = new H5PEditor.Editor(
         urls,
         keyValueStorage,
         config,
-        new H5PEditor.LibraryManager(libraryStorage),
-        new H5PEditor.ContentManager(contentStorage),
+        new H5PEditor.FileLibraryStorage("/path/to/library/directory"),
+        new H5PEditor.FileContentStorage("/path/to/content/storage/directory"),
         user,
         translationService);
 ```

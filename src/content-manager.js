@@ -112,6 +112,14 @@ class ContentManager {
         const jsonString = await streamToString(stream);
         return JSON.parse(jsonString);
     }
+
+    /**
+     * Generates a unique content id that hasn't been used in the system so far.
+     * @returns {Promise<number>} A unique content id
+     */
+    async createContentId() {
+        return this._contentStorage.createContentId();
+    }
 }
 
 module.exports = ContentManager;
