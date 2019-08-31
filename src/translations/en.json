@@ -22,5 +22,7 @@
   "corrupt-file": "The file %file could not be read from the H5P package. The package seems to be corrupt.",
   "hub-install-no-content-type": "No content type was specified.",
   "hub-install-invalid-content-type": "The chosen content type is invalid.",
-  "hub-install-denied": "You do not have permission to install content types. Contact the administrator of your site."
+  "hub-install-denied": "You do not have permission to install content types. Contact the administrator of your site.",
+  "hub-install-download-failed": "Could not download package from the Hub to temporary file.",
+  "upload-package-failed-tmp": "Could not save uploaded package to temporary file."
 }

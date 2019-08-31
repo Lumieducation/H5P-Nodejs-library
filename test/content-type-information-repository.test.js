@@ -1,6 +1,8 @@
 const path = require('path');
 const MockAdapter = require('axios-mock-adapter');
 const axios = require('axios');
+const fs = require('fs-extra');
+const shortid = require('shortid');
 
 const InMemoryStorage = require('../src/in-memory-storage');
 const H5PEditorConfig = require('../src/config');
@@ -10,7 +12,6 @@ const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
 const User = require('../src/user');
 const TranslationService = require('../src/translation-service');
-const H5pError = require('../src/helpers/h5p-error');
 
 const axiosMock = new MockAdapter(axios);
 
@@ -152,7 +153,33 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         user.canInstallRecommended = true;
         user.canUpdateAndInstallLibraries = false;
-        await expect(repository.install("H5P.Dialogcards")).resolves.toBe(true);
         await expect(repository.install("H5P.ImageHotspotQuestion")).rejects.toThrow("hub-install-denied");
     });
+
+    it('install content types from the hub', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PEditorConfig(storage);
+
+        const tmpDir = `${path.resolve('')}/test/tmp-${shortid()}`;
+        try {
+            const libManager = new LibraryManager(new FileLibraryStorage(tmpDir));
+            const cache = new ContentTypeCache(config, storage);
+            const user = new User();
+
+            axiosMock.onPost(config.hubRegistrationEndpoint).reply(200, require('./data/content-type-cache/registration.json'));
+            axiosMock.onPost(config.hubContentTypesEndpoint).reply(200, require('./data/content-type-cache/real-content-types.json'));
+
+            await cache.updateIfNecessary();
+            const repository = new ContentTypeInformationRepository(cache, storage, libManager, config, user, new TranslationService({
+            }));
+
+            axiosMock.restore(); // TOO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
+            await expect(repository.install("H5P.DragText")).resolves.toEqual(true);
+            const libs = await libManager.getInstalled();
+            expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
+        }
+        finally {
+            await fs.remove(tmpDir);
+        }
+    }, 30000);
 });

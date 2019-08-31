@@ -1,5 +1,6 @@
 /**
- * Stores objects in memory.
+ * Stores objects in memory. It can store any key-value pairs.
+ * This is just a placeholder for a proper storage implementation.
  */
 class InMemoryStorage {
     constructor() {

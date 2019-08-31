@@ -23,18 +23,18 @@ npm install h5p-editor
 After installation, you can import the library with
 
 ```js
-const H5PPlayer = require('h5p-player');
+const H5PEditor = require('h5p-editor');
 ```
 
 and instantiate the Editor with
 
 ```js
 const h5pEditor = new H5PEditor.Editor(
-        storage,
         urls,
         keyValueStorage,
         config,
-        new H5PEditor.LibraryManager(libraryStorage),
+        new H5PEditor.FileLibraryStorage("/path/to/library/directory"),
+        new H5PEditor.FileContentStorage("/path/to/content/storage/directory"),
         user,
         translationService);
 ```
@@ -55,75 +55,7 @@ h5pEditor.useRenderer(model => /** HTML string **/);
 
 ### Constructor Arguments
 
-The constructor arguments are used to provide data store services and HTTP paths to the Editor.
-
-#### storage
-
-The `storage` object provides methods to load and save library- and content-related information.
-
-It must implement the following interface:
-
-```js
-const storage = {
-    loadSemantics(machineName, majorVersion, minorVersion) {
-        return Promise.resolve({/** content of semantics.json **/})
-    }
-
-    loadLibrary(machineName, majorVersion, minorVersion) {
-        return Promise.resolve({/** content of library.json **/})
-    }
-
-    saveH5P(contentId, h5pJson) {
-        return new Promise(resolve =>
-            /** save information in h5pJson into h5p.json 
-              * of contentId and resolve() when done **/);
-    }
-
-    loadH5PJson(contentId) {
-        return Promise.resolve({/** content of h5p.json of contentId **/})
-    }
-
-    loadContent(contentId) {
-        return Promise.resolve({/** content of content.json of contentId **/})
-    }
-
-    saveContent(contentId, content) {
-        return new Promise(resolve =>
-            /** save information in content into content.json 
-              * of contentId and resolve() when done **/);
-    }
-
-    loadLanguage(machineName, majorVersion, minorVersion, language) {
-        return Promise.resolve({/** content of ${language}.json of given library **/})
-    }
-
-    listLanguages(machineName, majorVersion, minorVersion) {
-        return Promise.resolve([/** names of supported languages **/])
-    }
-
-    saveLibraryFile(filePath, stream) {
-        return new Promise(resolve =>
-            /** save data in stream into file with filePath 
-              * (starting with library folder e.g. 'Foo-1.2')
-              * and resolve() when done **/);
-    }
-
-    saveContentFile(contentId, filePath, stream) {
-        return new Promise(resolve =>
-            /** save data in stream into file with filePath 
-              * relative to content with contentId
-              * and resolve() when done **/);
-    }
-}
-```
-
-##### Available implementation
-
-To store all information as files in folders under `./h5p` you can use
-
-```js
-const storage = new H5PEditor.FileStorage('h5p');
-```
+The constructor arguments are used to provide data storage services and HTTP paths to the Editor.
 
 #### urls
 
@@ -140,7 +72,7 @@ const urls = {
 
 #### keyValueStore
 
-The `keyValueStore` object is used by the `ContentTypeCache` to store information about Content Types.
+The `keyValueStore` object is used by the `ContentTypeCache` to persist information about Content Types. It must be able to store arbitrary nested objects.
 
 It must implement the following interface:
 
@@ -163,7 +95,7 @@ An object holding all configuration parameters as properties. You can find the d
 
 #### libraryStorage
 
-The `libraryStorage` provides information about installed libraries.
+The `libraryStorage` provides information about installed libraries and installs them.
 
 It must implement the following interface
 
@@ -172,10 +104,10 @@ const libraryStorage = {
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
      * @param  {...any} machineNames (optional) only return libraries that have these machine names
-     * @returns {Library[]} the libraries installed
+     * @returns {Promise<Library[]>} the libraries installed
      */
     async getInstalled(...machineNames) {
-        return [/** Library instances of installed libraries **/]
+        return Promise.resolve([/** Library instances of installed libraries **/])
     }
 
     /**
@@ -189,12 +121,23 @@ const libraryStorage = {
     }
 
     /**
-     * Retrieves the content of a file in a library
-     * @param {Library} library The library to look in
-     * @param {string} filename The path of the file (relative inside the library)
+     * Returns a readable stream of a library file's contents. 
+     * Throws an exception if the file does not exist.
+     * @param {Library} library library
+     * @param {string} filename the relative path inside the library
+     * @returns {Stream} a readable stream of the file's contents
      */
-    async getFileContentAsString(library, filename) {
-        return Promise.resolve(/** file content **/)
+    async getFileStream(library, filename) {
+        return Promise.resolve(fs.createReadStream(/** location of library file on local disk **/))
+    }
+
+     /**
+     * Gets a list of installed language files for the library.
+     * @param {Library} library The library to get the languages for
+     * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
+     */
+    async getLanguageFiles(library) {
+        return Promise.resolve([/** array of translations for this library (without .json ending)**/])
     }
 
     /**
@@ -206,6 +149,41 @@ const libraryStorage = {
     async fileExists(library, filename) {
         return Promise.resolve(true)
     }
+
+    /**
+     * Adds the metadata of the library to the repository.
+     * Throws errors if something goes wrong.
+     * @param {any} libraryMetadata The library metadata object (= content of library.json)
+     * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
+     * @returns {Promise<Library>} The newly created library object to use when adding library files with addLibraryFile(...)
+     */
+    async installLibrary(libraryMetadata, { restricted = false }) {
+        return Promise.resolve(new Library(/** data about the library **/))
+    }
+
+    /**
+     * Removes the library and all its files from the repository.
+     * Throws errors if something went wrong.
+     * @param {Library} library The library to remove.
+     * @returns {Promise<void>}
+     */
+    async removeLibrary(library) {
+        return
+    }
+
+    /**
+     * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
+     * Throws an error if something unexpected happens.
+     * @param {Library} library The library that is being installed
+     * @param {string} filename Filename of the file to add, relative to the library root
+     * @param {stream} stream The stream containing the file content
+     * @returns {Promise<boolean>} true if successful
+     */
+    async addLibraryFile(library, filename, stream) {
+        /** save data in stream into file with filePath 
+         * (starting with library folder e.g. 'Foo-1.2')
+         * and resolve(true) when done **/);
+    }
 }
 ```
 
@@ -215,6 +193,83 @@ If you store all library information as files in folders under `./h5p/libraries`
 
 ```js
 const libraryStorage = new H5PEditor.FileLibraryStorage(`h5p/libraries`);
+```
+
+#### contentStorage
+
+The `contentStorage` provides information about installed content and creates it.
+
+It must implement the following interface
+
+```js
+const contentStorage = {
+    /**
+     * Creates a content object in the repository. Add files to it later with addContentFile(...).
+     * @param {any} metadata The metadata of the content (= h5p.json)
+     * @param {any} content the content object (= content/content.json)
+     * @param {User} user The user who owns this object.
+     * @param {number} id (optional) The content id to use
+     * @returns {Promise<number>} The newly assigned content id
+     */
+    async createContent(metadata, content, user, id) {
+        /** Check if user has write permission and store the information received in the parameters 
+         * to the database / disk **/
+        return Promise.resolve(/** id of content object (typically received from database) **/)
+    }
+
+    /**
+     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
+     * @param {number} id The id of the content to add the file to
+     * @param {string} filename The filename INSIDE the content folder
+     * @param {Stream} stream A readable stream that contains the data
+     * @param {User} user The user who owns this object
+     * @returns {Promise<void>}
+     */
+    async addContentFile(id, filename, stream, user) {
+        /** Check if the user has write permission and store the file **/ 
+        return Promise.resolve()
+    }
+
+    /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
+     * @param {number} id the id of the content object that the file is attached to
+     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param {User} user the user who wants to retrieve the content file
+     * @returns {Stream}
+     */
+    getContentFileStream(id, filename, user) {
+        /** Check if the user has read permission for the content type and return a stream **/
+        return fs.CreateReadStream(/** location of content file on local disk **/)
+    }
+
+    /**
+     * Deletes content from the repository.
+     * Throws errors if something goes wrong.
+     * @param {number} id The content id to delete.
+     * @param {User} user The user who wants to delete the content
+     * @returns {Promise<void>}
+     */
+    async deleteContent(id, user) {
+        /** Check if user has write permission to content and delte the content and all dependent files. **/
+        return Promise.resolve()
+    }
+
+     /**
+     * Generates a unique content id that hasn't been used in the system so far.
+     * @returns {Promise<number>} A unique content id
+     */
+    async createContentId() {
+        return Promise.resolve(/** unique content id goes here **/)
+    }
+}
+```
+
+##### Available implementation
+
+If you store all library information as files in folders under `./h5p/content` you can use
+
+```js
+const contentStorage = new H5PEditor.FileContentStorage(`h5p/content`);
 ```
 
 #### user

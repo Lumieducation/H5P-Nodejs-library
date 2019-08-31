@@ -6,6 +6,7 @@ npm-debug.log*
 # Compiled files
 build
 h5p
+coverage
 
 # vscode
 .vscode
@@ -17,4 +18,4 @@ node_modules
 
 # Downloaded and generated files
 test/data/hub-content/*
-real-content-types.json
+test/tmp-*

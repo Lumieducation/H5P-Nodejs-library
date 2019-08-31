@@ -1,4 +1,10 @@
+const axios = require('axios');
+const fs = require('fs-extra');
+const { withFile } = require('tmp-promise');
+const promisePipe = require('promisepipe');
+
 const H5pError = require("./helpers/h5p-error");
+const PackageManager = require("./package-manager");
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
@@ -14,9 +20,9 @@ class ContentTypeInformationRepository {
      * 
      * @param {ContentTypeCache} contentTypeCache 
      * @param {IStorage} storage 
-     * @param {ILibraryManager} libraryManager 
+     * @param {LibraryManager} libraryManager 
      * @param {H5PEditorConfig} config 
-     * @param {IUser} user 
+     * @param {User} user 
      * @param {TranslationService} translationService
      */
     constructor(contentTypeCache, storage, libraryManager, config, user, translationService) {
@@ -55,23 +61,44 @@ class ContentTypeInformationRepository {
     }
 
     /**
-     * Installs a library from the H5P Hub
-     * @param {string} machineName The machine name of the library to install (must be listed in the Hub)
-     * @returns {boolean} true if the library was installed. Throws H5PError exceptions if there are errors.
+     * Installs a library from the H5P Hub.
+     * Throws H5PError exceptions if there are errors.
+     * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
+     * @returns {Promise<boolean>} true if the library was installed. 
      */
     async install(machineName) {
         if (!machineName) {
             throw new H5pError(this._translationService.getTranslation("hub-install-no-content-type"))
         }
 
+        // Reject content types that are not listed in the hub
         const localContentType = await this._contentTypeCache.get(machineName);
         if (!localContentType || localContentType.length === 0) {
             throw new H5pError(this._translationService.getTranslation("hub-install-invalid-content-type"));
         }
 
+        // Reject installation of content types that the user has no permission to
         if (!localContentType[0].canBeInstalledBy(this._user)) {
             throw new H5pError(this._translationService.getTranslation("hub-install-denied"));
         }
+
+        // Download content type package from the Hub
+        const response = await axios.get(this._config.hubContentTypesEndpoint + machineName, { responseType: 'stream' });
+
+        // withFile is supposed to clean up the temporary file after it has been used
+        await withFile(async ({ path: tempPackagePath }) => {
+            const writeStream = fs.createWriteStream(tempPackagePath);
+            try {
+                await promisePipe(response.data, writeStream);
+            }
+            catch (error) {
+                throw new H5pError(this._translationService.getTranslation("hub-install-download-failed"));
+            }
+
+            const packageManger = new PackageManager(this._libraryManager, this._translationService, this._config);
+            await packageManger.installLibrariesFromPackage(tempPackagePath);
+            
+        }, { postfix: '.h5p', keep: false });
 
         return true;
     }
@@ -105,7 +132,7 @@ class ContentTypeInformationRepository {
                     isUpToDate: true,
                     owner: '',
                     restricted: this._libraryIsRestricted(localLib) && !this._user.canCreateRestricted,
-                    icon: await this._libraryManager.libraryFileExists(localLib, 'icon.svg') ? this._libraryManager.getLibraryFileUrl('icon.svg') : undefined
+                    icon: (await this._libraryManager.libraryFileExists(localLib, 'icon.svg')) ? this._libraryManager.getLibraryFileUrl(localLib, 'icon.svg') : undefined
                 }
             });
         localLibs = await Promise.all(localLibs);

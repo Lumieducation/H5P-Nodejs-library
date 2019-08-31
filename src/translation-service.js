@@ -1,7 +1,7 @@
 const escapeHtml = require('escape-html');
 
 /**
- * Allows other components to get localizations of string literals
+ * Allows other components to get localizations of string literals.
  */
 class TranslationService {
     /**

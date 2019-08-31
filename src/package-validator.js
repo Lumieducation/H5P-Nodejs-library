@@ -6,6 +6,7 @@ const path = require('path');
 const { ValidationError, ValidatorBuilder } = require('./helpers/validator-builder');
 const throwErrorsNow = require('./helpers/validator-builder').throwErrorsNowRule;
 const { formatBytes } = require('./helpers/string-formatter');
+const { getTopLevelDirectories } = require('./helpers/adm-zip-helpers');
 
 /**
  * Performs checks if uploaded H5P packages or those from the H5P Hub are valid.
@@ -36,7 +37,7 @@ class H5pPackageValidator {
      * @param {string} h5pFile Path to H5P file to validate
      * @param {boolean} checkContent If true, the method will check if the content in the package conforms to the standard
      * @param {boolean} checkLibraries If true, the method will check if the libraries in the package conform to the standard
-     * @returns {boolean} true if the package is valid. Will throw Errors with the error in Error.message if there is a validation error. 
+     * @returns {any} true if the package is valid. Will throw Errors with the error in Error.message if there is a validation error. 
      */
     async validatePackage(h5pFile, checkContent = true, checkLibraries = true) {
         await this._initializeJsonValidators();
@@ -57,6 +58,7 @@ class H5pPackageValidator {
             .addRuleWhen(this._filesMustBeReadable((filePath) => filePath.startsWith("content/")), checkContent)
             .addRuleWhen(this._librariesMustBeValid.bind(this), checkLibraries)
             .addRule(throwErrorsNow.bind(this))
+            .addRule(this._returnTrue)
             .validate(h5pFile);
     }
 
@@ -96,6 +98,13 @@ class H5pPackageValidator {
     /**
      * RULES METHODS
      */
+
+    /**
+     * A rule that always returns true.
+     */
+    async _returnTrue() {
+        return true;
+    }
 
     /**
      * Checks if the package file ends with .h5p.
@@ -343,7 +352,7 @@ class H5pPackageValidator {
      * @returns {IZipEntry[]} The unchanged zip entries
      */
     async _librariesMustBeValid(zipEntries, error) {
-        const tld = H5pPackageValidator._getTopLevelDirectories(zipEntries);
+        const tld = getTopLevelDirectories(zipEntries);
         await Promise.all(tld.filter(d => d !== "content").map(directory => this._validateLibrary(zipEntries, directory, error)));
         return zipEntries;
     }
@@ -473,9 +482,9 @@ class H5pPackageValidator {
         }
 
         const jsonValidator = new Ajv();
-        const h5pJsonSchema = await fs.readJSON("src/schemas/h5p-schema.json");
-        const libraryNameSchema = await fs.readJSON("src/schemas/library-name-schema.json");
-        const librarySchema = await fs.readJSON("src/schemas/library-schema.json");
+        const h5pJsonSchema = require('./schemas/h5p-schema.json');
+        const libraryNameSchema = require('./schemas/library-name-schema.json');
+        const librarySchema = require('./schemas/library-schema.json');
         jsonValidator.addSchema([h5pJsonSchema, libraryNameSchema, librarySchema]);
         this._h5pMetadataValidator = jsonValidator.compile(h5pJsonSchema);
         this._libraryMetadataValidator = jsonValidator.compile(librarySchema);
@@ -556,21 +565,6 @@ class H5pPackageValidator {
             }));
         }
         return true;
-    }
-
-    /**
-     * Returns a list of top-level directories in the zip file
-     * @param {IZipEntry[]} zipEntries 
-     * @returns {string[]} list of top-level directories
-     */
-    static _getTopLevelDirectories(zipEntries) {
-        return Object.keys(zipEntries.reduce((directorySet, entry) => {
-            const split = entry.entryName.split("/");
-            if (split.length > 1) {
-                directorySet[split[0]] = true;
-            }
-            return directorySet;
-        }, {}));
     }
 }
 

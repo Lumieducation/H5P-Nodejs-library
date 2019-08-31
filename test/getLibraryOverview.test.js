@@ -1,29 +1,23 @@
+const path = require('path');
+
 const H5PEditor = require('..').Editor;
+const LibraryManager = require('../src/library-manager');
+const FileLibraryStorage = require('../src/file-library-storage');
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
-        return new H5PEditor({
-            loadLibrary: (machineName, majorVersion, minorVersion) =>
-                Promise.resolve({
-                    machineName,
-                    majorVersion,
-                    minorVersion,
-                    title: 'the title',
-                    runnable: 'the runnable'
-                })
-        })
-            .getLibraryOverview(['Foo.Bar 4.2'])
-
+        return new H5PEditor({}, null, null, new FileLibraryStorage(path.resolve("test/data/libraries")))
+            .getLibraryOverview(['H5P.Example1 1.1'])
             .then(libraries =>
                 expect(libraries).toEqual([
                     {
-                        uberName: 'Foo.Bar 4.2',
-                        name: 'Foo.Bar',
-                        majorVersion: '4',
-                        minorVersion: '2',
+                        uberName: 'H5P.Example1 1.1',
+                        name: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1,
                         tutorialUrl: '',
-                        title: 'the title',
-                        runnable: 'the runnable',
+                        title: 'Example 1',
+                        runnable: 1,
                         restricted: false,
                         metadataSettings: null
                     }
@@ -32,16 +26,13 @@ describe('getting overview about multiple libraries', () => {
     });
 
     it('return information about multiple libraries', () => {
-        return new H5PEditor({
-            loadLibrary: (machineName, majorVersion, minorVersion) =>
-                Promise.resolve({ machineName, majorVersion, minorVersion })
-        })
-            .getLibraryOverview(['H5P.Image 1.1', 'H5P.Video 1.5'])
+        return new H5PEditor({}, null, null, new FileLibraryStorage(path.resolve("test/data/libraries")))
+            .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])
 
             .then(libraries => {
                 expect(libraries.map(l => l.uberName)).toEqual([
-                    'H5P.Image 1.1',
-                    'H5P.Video 1.5'
+                    'H5P.Example1 1.1',
+                    'H5P.Example3 2.1'
                 ]);
             });
     });

@@ -1,5 +1,6 @@
-const https = require('https');
-const unzipper = require('unzipper');
+const { withFile } = require('tmp-promise');
+const promisePipe = require('promisepipe');
+const fs = require('fs-extra');
 const stream = require('stream');
 
 const defaultEditorIntegration = require('../assets/default_editor_integration');
@@ -8,10 +9,14 @@ const defaultRenderer = require('./renderers/default');
 
 const ContentTypeCache = require('./content-type-cache');
 const ContentTypeInformationRepository = require('./content-type-information-repository');
+const LibraryManager = require('./library-manager');
+const ContentManager = require('./content-manager');
+const H5pError = require("./helpers/h5p-error");
+const PackageManager = require('./package-manager');
+const Library = require('./library');
 
 class H5PEditor {
     constructor(
-        storage,
         urls = {
             baseUrl: '/h5p',
             ajaxPath: '/ajax?action=',
@@ -20,11 +25,11 @@ class H5PEditor {
         },
         keyValueStorage,
         config,
-        libraryManager,
+        libraryStorage,
+        contentStorage,
         user,
         translationService
     ) {
-        this.storage = storage;
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
         this.translation = defaultTranslation;
@@ -32,15 +37,20 @@ class H5PEditor {
         this.libraryUrl = urls.libraryUrl;
         this.filesPath = urls.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
+        this.libraryManager = new LibraryManager(libraryStorage);
+        this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             keyValueStorage,
-            libraryManager,
+            this.libraryManager,
             config,
             user,
             translationService
         );
+        this.translationService = translationService;
         this.config = config;
+        this.user = user;
+        this.packageManager = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
     }
 
     render(contentId) {
@@ -63,10 +73,9 @@ class H5PEditor {
         return this;
     }
 
-    saveH5P(contentId, content, metadata, library) {
-        return this.storage.saveContent(contentId, content)
-            .then(() => this._generateH5PJSON(metadata, library, this._findLibraries(content)))
-            .then(h5pJson => this.storage.saveH5P(contentId, h5pJson))
+    async saveH5P(contentId, content, metadata, library) {
+        const h5pJson = await this._generateH5PJSON(metadata, library, this._findLibraries(content));
+        return this.contentManager.createContent(h5pJson, content, undefined, contentId);
     }
 
     _findLibraries(object, collect = {}) {
@@ -92,8 +101,8 @@ class H5PEditor {
 
     loadH5P(contentId) {
         return Promise.all([
-            this.storage.loadH5PJson(contentId),
-            this.storage.loadContent(contentId)
+            this.contentManager.loadH5PJson(contentId),
+            this.contentManager.loadContent(contentId)
         ])
             .then(([h5pJson, content]) => ({
                 library: this._getUbernameFromH5pJson(h5pJson),
@@ -105,12 +114,13 @@ class H5PEditor {
             }))
     }
 
-    getLibraryData(machineName, majorVersion, minorVersion, language) {
+    getLibraryData(machineName, majorVersion, minorVersion, language = 'en') {
+        const library = new Library(machineName, majorVersion, minorVersion);
         return Promise.all([
             this._loadAssets(machineName, majorVersion, minorVersion, language),
-            this.storage.loadSemantics(machineName, majorVersion, minorVersion),
-            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language),
-            this.storage.listLanguages(machineName, majorVersion, minorVersion)
+            this.libraryManager.loadSemantics(library),
+            this.libraryManager.loadLanguage(library, language),
+            this.libraryManager.listLanguages(library)
         ])
             .then(([
                 assets,
@@ -146,9 +156,11 @@ class H5PEditor {
             translations: {}
         };
 
+        const lib = new Library(machineName, majorVersion, minorVersion);
+
         return Promise.all([
-            this.storage.loadLibrary(machineName, majorVersion, minorVersion),
-            this.storage.loadLanguage(machineName, majorVersion, minorVersion, language || 'en')
+            this.libraryManager.loadLibrary(lib),
+            this.libraryManager.loadLanguage(lib, language || 'en')
         ])
             .then(([library, translation]) =>
                 Promise.all([
@@ -199,7 +211,7 @@ class H5PEditor {
         const dataStream = new stream.PassThrough();
         dataStream.end(file.data);
 
-        return this.storage.saveContentFile(contentId, `content/${file.name}`, dataStream)
+        return this.contentManager.addContentFile(contentId, file.name, dataStream, undefined)
             .then(() => ({
                 mime: file.mimetype,
                 path: file.name
@@ -214,8 +226,9 @@ class H5PEditor {
                     majorVersion,
                     minorVersion
                 } = this._parseLibraryString(libraryName);
-                return this.storage
-                    .loadLibrary(machineName, majorVersion, minorVersion)
+                const lib = new Library(machineName, majorVersion, minorVersion);
+                return this.libraryManager
+                    .loadLibrary(lib)
                     .then(library => {
                         return {
                             uberName: `${library.machineName} ${
@@ -237,13 +250,9 @@ class H5PEditor {
 
     _generateH5PJSON(metadata, _library, contentDependencies = []) {
         return new Promise(resolve => {
-            const lib = this._parseLibraryString(_library);
-            this.storage
-                .loadLibrary(
-                    lib.machineName,
-                    lib.majorVersion,
-                    lib.minorVersion
-                )
+            const lib = Library.createFromName(_library.replace(' ', '-'));
+            this.libraryManager
+                .loadLibrary(lib)
                 .then(library => {
                     const h5pJson = Object.assign({}, metadata, {
                         mainLibrary: library.machineName,
@@ -265,7 +274,7 @@ class H5PEditor {
 
     // eslint-disable-next-line class-methods-use-this
     _getUbernameFromH5pJson(h5pJson) {
-        const library = h5pJson.preloadedDependencies.filter(
+        const library = (h5pJson.preloadedDependencies || []).filter(
             dependency => dependency.machineName === h5pJson.mainLibrary
         )[0];
         return `${library.machineName} ${library.majorVersion}.${
@@ -282,42 +291,37 @@ class H5PEditor {
         };
     }
 
-    installLibrary(id) {
-        return new Promise(y =>
-            https.get(this.config.hubContentTypesEndpoint + id, response => {
-                response.pipe(unzipper.Parse())
-                    .on('entry', entry => {
-                        const base = entry.path.split('/')[0];
-                        if (base === 'content' || base === 'h5p.json') {
-                            entry.autodrain();
-                            return;
-                        }
-
-                        this.storage.saveLibraryFile(entry.path, entry);
-                    })
-                    .on('close', y);
-            }));
+    /**
+     * Installs a content type from the H5P Hub.
+     * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
+     * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
+     */
+    async installLibrary(id) {
+        return this.contentTypeRepository.install(id);
     }
 
-    uploadPackage(contentId, data) {
+    /**
+     * Adds the contents of a package to the system.
+     * @param {*} data The data (format?)
+     * @param {number} contentId (optional) the content id of the uploaded package
+     * @returns {Promise<string>} the newly created content it or the one passed to it
+     */
+    async uploadPackage(data, contentId) {
         const dataStream = new stream.PassThrough();
         dataStream.end(data);
 
-        const filesSaves = []
+        await withFile(async ({ path: tempPackagePath }) => {
+            const writeStream = fs.createWriteStream(tempPackagePath);
+            try {
+                await promisePipe(dataStream, writeStream);
+            }
+            catch (error) {
+                throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
+            }            
+            contentId = await this.packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
+        }, { postfix: '.h5p', keep: false });
 
-        return new Promise(y =>
-            dataStream.pipe(unzipper.Parse())
-                .on('entry', entry => {
-                    const base = entry.path.split('/')[0];
-
-                    if (base === 'content' || base === 'h5p.json') {
-                        filesSaves.push(this.storage.saveContentFile(contentId, entry.path, entry));
-                    } else {
-                        filesSaves.push(this.storage.saveLibraryFile(entry.path, entry));
-                    }
-                })
-                .on('close', y))
-            .then(() => Promise.all(filesSaves))
+        return contentId;
     }
 
     _coreScripts() {
