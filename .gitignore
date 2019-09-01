@@ -19,3 +19,4 @@ node_modules
 # Downloaded and generated files
 test/data/hub-content/*
 test/tmp-*
+test/data/content-type-cache/real-content-types.json
