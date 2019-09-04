@@ -16,6 +16,9 @@ const { getTopLevelDirectories } = require('./helpers/adm-zip-helpers');
  * an upgrade (done in ll. 968 - 1032 of h5p.classes.php). This is not done because it would require enumerating 
  * all installed libraries and this is not possible in the extractor without introducing a dependency to the
  * core.
+ * 
+ * REMARK: Note that the validator operates on zip files and thus has to use slashes (/) in paths regardless of the 
+ * operating system!
  */
 class H5pPackageValidator {
     /**
@@ -433,12 +436,12 @@ class H5pPackageValidator {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
-            await Promise.all(jsonData.preloadedJs.map(file => this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
+            await Promise.all(jsonData.preloadedJs.map(file => this._fileMustExist(H5pPackageValidator.pathJoin(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
         }
 
         // check if all CSS files that must be preloaded are part of the package
         if (jsonData.preloadedCss) {
-            await Promise.all(jsonData.preloadedCss.map(file => this._fileMustExist(path.join(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
+            await Promise.all(jsonData.preloadedCss.map(file => this._fileMustExist(H5pPackageValidator.pathJoin(dirName, file.path), this._translationService.getTranslation("library-missing-file", { "%file": file.path, "%name": dirName }))(zipEntries, error)));
         }
         return { zipEntries, jsonData };
     }
@@ -452,7 +455,7 @@ class H5pPackageValidator {
      */
     async _libraryLanguageFilesMustBeValid({ zipEntries, jsonData }, error) {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
-        const languagePath = path.join(dirName, "language/");
+        const languagePath = H5pPackageValidator.pathJoin(dirName, "language/");
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
         for (const languageFileEntry of zipEntries.filter(e => e.entryName.startsWith(languagePath) && !e.isDirectory)) {
             if (!languageFileRegex.test(languageFileEntry.name)) {
@@ -565,6 +568,19 @@ class H5pPackageValidator {
             }));
         }
         return true;
+    }
+
+    /**
+     * Similar to path.join(...) but uses slashes (/) as separators regardless of OS.
+     * We have to use slashes when dealing with zip files as the specification for zips require them. If the program
+     * runs on windows path.join(...) uses backslashes \ which don't work for zip files.
+     * @param {...string[]} parts The parts of the path to join
+     * @returns {string} the full path
+     */
+    static pathJoin(...parts) {
+        const separator = '/';
+        var replace = new RegExp(separator + '{1,}', 'g');
+        return parts.join(separator).replace(replace, separator);
     }
 }
 

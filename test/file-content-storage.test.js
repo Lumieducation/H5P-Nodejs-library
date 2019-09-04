@@ -15,7 +15,7 @@ describe("FileContentStorage (repository that saves content objects to a local d
     })
 
     it("throws an error if the passed path is not writable", async () => {
-        const storage = new FileContentStorage('/not-writable');
+        const storage = new FileContentStorage('/*:%illegal-path');
         await expect(storage.createContent({}, {}, {})).rejects.toBeInstanceOf(Error);
     })
 
