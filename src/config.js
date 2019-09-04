@@ -48,7 +48,9 @@ class H5PEditorConfig {
         this.uuid = ''; // TODO: revert to''
 
         /**
-         * Unclear. Taken over from PHP implementation.
+         * Indicates on what kind of network the site is running. Can be "local", "network" or "internet".
+         * TODO: This value should not be user-configurable, but has to be determined by the system on startup. 
+         * (If possible.)
          */
         this.siteType = 'local';
 
