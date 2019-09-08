@@ -128,6 +128,26 @@ class FileLibraryStorage {
     }
 
     /**
+     * Updates the library metadata.      
+     * This is necessary when updating to a new patch version. 
+     * You also need to call clearLibraryFiles(...) to remove all old files during the update process and addLibraryFile(...) 
+     * to add the files of the patch.
+     * @param {Library} library the library object (containing the id of the library)
+     * @param {any} libraryMetadata the new library metadata
+     * @returns {Promise<Library>} The updated library object
+     */
+    async updateLibrary(library, libraryMetadata) {
+        const libPath = this._getDirectoryPath(library);
+        if (!await fs.pathExists(libPath)) {
+            throw new Error(`Library ${library.getDirName()} can't be updated as it hasn't been installed yet.`);
+        }
+        await fs.writeJSON(this._getFullPath(library, "library.json"), libraryMetadata);
+        const newLibrary = Library.createFromMetadata(libraryMetadata);
+        newLibrary.id = await this.getId(newLibrary);
+        return newLibrary;
+    }
+
+    /**
      * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
      * Throws an error if something unexpected happens.
      * @param {Library} library The library that is being installed
@@ -145,6 +165,20 @@ class FileLibraryStorage {
         await promisePipe(stream, writeStream);
 
         return true;
+    }
+
+    /**
+     * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
+     * @param {Library} library the library whose files should be deleted
+     * @returns {Promise<void>}
+     */
+    async clearLibraryFiles(library){
+        if (! await (this.getId(library))) {
+            throw new Error(`Can't clear library ${library.getDirName()} because the library has not been installed.`);
+        }
+        const fullLibraryPath = this._getDirectoryPath(library);
+        const directoryEntries = (await fs.readdir(fullLibraryPath)).filter(entry => entry !== "library.json");
+        await Promise.all(directoryEntries.map(entry => fs.remove(this._getFullPath(library, entry))));
     }
 
     /**

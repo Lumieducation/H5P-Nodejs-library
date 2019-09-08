@@ -27,8 +27,8 @@ describe('basic package manager functionality', () => {
             const installedLibraries = await libraryManager.getInstalled();
             expect(installedLibraries["H5P.GreetingCard"]).toBeDefined();
             expect(installedLibraries["H5P.GreetingCard"].length).toEqual(1);
-            expect(installedLibraries["H5P.GreetingCard"][0].majorVersion).toEqual("1");
-            expect(installedLibraries["H5P.GreetingCard"][0].minorVersion).toEqual("0");
+            expect(installedLibraries["H5P.GreetingCard"][0].majorVersion).toEqual(1);
+            expect(installedLibraries["H5P.GreetingCard"][0].minorVersion).toEqual(0);
         }, { keep: false, unsafeCleanup: true });
     });
 

@@ -1,0 +1,21 @@
+{
+  "title": "Example 1",
+  "description": "The description of content type 1",
+  "majorVersion": 1,
+  "minorVersion": 1,
+  "patchVersion": 2,
+  "runnable": 1,
+  "author": "H5P NodeJs Implementation",
+  "license": "MIT",
+  "machineName": "H5P.Example1",
+  "preloadedJs": [
+    {
+      "path": "greetingcard.js"
+    }
+  ],
+  "preloadedCss": [
+    {
+      "path": "greetingcard.css"
+    }
+  ]
+}
