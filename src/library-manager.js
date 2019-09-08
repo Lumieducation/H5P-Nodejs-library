@@ -168,11 +168,6 @@ class LibraryManager {
         }
     }
 
-    // eslint-disable-next-line class-methods-use-this, no-unused-vars
-    getLibraryFileUrl(library, file) {
-        return ""; // TODO: implement
-    }
-
     /**
      * Gets a list of translations that exist for this library.
      * @param {Library} library 
