@@ -37,13 +37,13 @@ describe('basic file library manager functionality', () => {
 
             // prepare by installing library version 1.1.4 (has missing .js file)
             await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.4 (missing js file)'), { restricted: false }))
-            .rejects.toThrow('Error(s) in library H5P.Example1-1.1:\ngreetingcard.js is missing.');
+                .rejects.toThrow('Error(s) in library H5P.Example1-1.1:\ngreetingcard.js is missing.');
 
             // check if library version 1.1.2 is NOT installed
             const installedLibraries = await libManager.getInstalled("H5P.Example1");
             expect(installedLibraries["H5P.Example1"]).toEqual(undefined);
 
-            // make sure there is not trace of the library left
+            // make sure there is no trace of the library left
             expect((await fs.readdir(tempDirPath))).toEqual([]);
         }, { keep: false, unsafeCleanup: true });
     });
@@ -67,6 +67,46 @@ describe('basic file library manager functionality', () => {
 
             // try installing library version 1.1.2 again (should fail)
             await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.2'), { restricted: false })).resolves.toEqual(false);
+        }, { keep: false, unsafeCleanup: true });
+    });
+
+
+    it("installs patches", async () => {
+        await withDir(async ({ path: tempDirPath }) => {
+            const libManager = new LibraryManager(new FileLibraryStorage(tempDirPath));
+
+            // prepare by installing library version 1.1.1
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.1'), { restricted: false })).resolves.toEqual(true);
+
+            // try installing library version 1.1.2 (should success)
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.2'), { restricted: false })).resolves.toEqual(true);
+
+            // check if library version 1.1.2 is now installed 
+            const installedLibraries = await libManager.getInstalled("H5P.Example1");
+            expect(installedLibraries["H5P.Example1"].length).toEqual(1);
+            expect(installedLibraries["H5P.Example1"][0].majorVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][0].minorVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][0].patchVersion).toBe(2);
+        }, { keep: false, unsafeCleanup: true });
+    });
+
+    it("doesn't leave behind broken libraries if a patch fails", async () => {
+        await withDir(async ({ path: tempDirPath }) => {
+            const libManager = new LibraryManager(new FileLibraryStorage(tempDirPath));
+
+            // prepare by installing library version 1.1.1
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.1'), { restricted: false })).resolves.toEqual(true);
+
+            // try installing library version 1.1.4 (should fail)
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.4 (missing js file)'), { restricted: false }))
+                .rejects.toThrow("Error(s) in library H5P.Example1-1.1:\ngreetingcard.js is missing.");
+
+            // check that library version 1.1.4 is NOT installed           
+            const installedLibraries = await libManager.getInstalled("H5P.Example1");
+            expect(installedLibraries["H5P.Example1"]).toEqual(undefined);
+
+            // make sure there is no trace of the library left
+            expect((await fs.readdir(tempDirPath))).toEqual([]);
         }, { keep: false, unsafeCleanup: true });
     });
 });
