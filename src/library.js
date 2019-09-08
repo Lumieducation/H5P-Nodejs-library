@@ -50,7 +50,7 @@ class Library {
             throw new Error(`Library name ${libraryName} is invalid.`);
         }
 
-        return new Library(result[1], result[2], result[3], undefined, restricted)
+        return new Library(result[1], Number.parseInt(result[2]), Number.parseInt(result[3]), undefined, restricted)
     }
 
     /**

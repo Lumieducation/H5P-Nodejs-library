@@ -131,14 +131,18 @@ class LibraryManager {
      * The method does NOT validate the library! It must be validated before calling this method!
      * Throws an error if something went wrong and deletes the files already installed.
      * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
-     * @returns {Promise<boolean>} true if successful
+     * @returns {Promise<boolean>} true if successful, false if the library was not installed (without having encountered an error)
      */
     async installFromDirectory(directory, { restricted = false }) {
         const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
         let library = Library.createFromMetadata(libraryMetadata)
-        if (await this.getId(library)) { // Check if library is already installed. Skip installation if it already exists and there is no patch for it.
+        if (await this.getId(library)) { // Check if library is already installed. 
             if (await this.isPatchedLibrary(library)) {
                 // TODO: upgrade library
+            }
+            else {
+                // Skip installation of library if it has already been installed and the library is no patch for it.
+                return false;
             }
         }
         else {
@@ -159,6 +163,8 @@ class LibraryManager {
                 await this._libraryStorage.removeLibrary(library);
                 throw error;
             }
+
+            return true;
         }
     }
 
@@ -261,7 +267,9 @@ class LibraryManager {
             return { status: await this._libraryStorage.fileExists(library, file), path: file };
         }))).filter(file => !file.status).map(file => file.path);
         if (missingFiles.length > 0) {
-            throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
+            let message = `Error(s) in library ${library.getDirName()}:\n`;
+            message += missingFiles.map(file => `${file} is missing.`).join("\n");
+            throw new Error(message);
         }
         return true;
     }
