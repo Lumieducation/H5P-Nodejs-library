@@ -70,6 +70,27 @@ describe('basic file library manager functionality', () => {
         }, { keep: false, unsafeCleanup: true });
     });
 
+    it("installs new versions (increase in major/minor version) side-by-side to existing libraries of same machine name", async () => {
+        await withDir(async ({ path: tempDirPath }) => {
+            const libManager = new LibraryManager(new FileLibraryStorage(tempDirPath));
+
+            // prepare by installing library version 1.1.1
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.1.1'), { restricted: false })).resolves.toEqual(true);
+
+            // try installing library version 1.2.0 (should success)
+            await expect(libManager.installFromDirectory(path.resolve('test/data/patches/H5P.Example1-1.2.0'), { restricted: false })).resolves.toEqual(true);
+
+            // check if library version 1.1.2  and 1.2.0 are now installed 
+            const installedLibraries = await libManager.getInstalled("H5P.Example1");
+            expect(installedLibraries["H5P.Example1"].length).toEqual(2);
+            expect(installedLibraries["H5P.Example1"][0].majorVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][0].minorVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][0].patchVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][1].majorVersion).toBe(1);
+            expect(installedLibraries["H5P.Example1"][1].minorVersion).toBe(2);
+            expect(installedLibraries["H5P.Example1"][1].patchVersion).toBe(0);
+        }, { keep: false, unsafeCleanup: true });
+    });
 
     it("installs patches", async () => {
         await withDir(async ({ path: tempDirPath }) => {
