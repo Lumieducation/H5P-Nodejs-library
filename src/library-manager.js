@@ -127,44 +127,32 @@ class LibraryManager {
     }
 
     /**
-     * Installs a library from a temporary directory. It does not delete the library files in the temporary directory.
+     * Installs or updates a library from a temporary directory. 
+     * It does not delete the library files in the temporary directory.
      * The method does NOT validate the library! It must be validated before calling this method!
      * Throws an error if something went wrong and deletes the files already installed.
      * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
-     * @returns {Promise<boolean>} true if successful
+     * @returns {Promise<boolean>} true if successful, false if the library was not installed (without having encountered an error, e.g. because there already is a newer patch version installed)
      */
     async installFromDirectory(directory, { restricted = false }) {
         const libraryMetadata = await fs.readJSON(`${directory}/library.json`);
         let library = Library.createFromMetadata(libraryMetadata)
-        if (await this.getId(library)) { // Check if library is already installed. Skip installation if it already exists and there is no patch for it.
+        if (await this.getId(library)) { // Check if library is already installed. 
             if (await this.isPatchedLibrary(library)) {
-                // TODO: upgrade library
+                // Update the library if it is only a patch of an existing library
+                await this._updateLibrary(library, libraryMetadata, directory);
+                return true;
+            }
+            else {
+                // Skip installation of library if it has already been installed and the library is no patch for it.
+                return false;
             }
         }
         else {
-            library = await this._libraryStorage.installLibrary(libraryMetadata, { restricted });
-
-            try {
-                const files = await glob(`${directory}/**/*.*`);
-                await Promise.all(files.map(fileFullPath => {
-                    const fileLocalPath = path.relative(directory, fileFullPath);
-                    if (fileLocalPath === "library.json") {
-                        return Promise.resolve();
-                    }
-                    const readStream = fs.createReadStream(fileFullPath);
-                    return this._libraryStorage.addLibraryFile(library, fileLocalPath, readStream);
-                }));
-                await this._checkConsistency(library);
-            } catch (error) {
-                await this._libraryStorage.removeLibrary(library);
-                throw error;
-            }
+            // Install the library if it hasn't been installed before (treat different major/minor versions the same as a new library)
+            library = await this._installLibrary(directory, library, libraryMetadata, restricted);
+            return true;
         }
-    }
-
-    // eslint-disable-next-line class-methods-use-this, no-unused-vars
-    getLibraryFileUrl(library, file) {
-        return ""; // TODO: implement
     }
 
     /**
@@ -209,6 +197,69 @@ class LibraryManager {
      */
     async loadSemantics(library) {
         return this._getJsonFile(library, "semantics.json");
+    }
+
+    /**
+     * Updates the library to a new version. 
+     * REMOVES THE LIBRARY IF THERE IS AN ERROR!!!
+     * @param {number} installedLibraryId The id of the installed library
+     * @param {string} filesDirectory the path of the directory containing the library files to update to
+     * @param {Library} libraryInfo the library object
+     * @param {any} libraryMetadata the library metadata (library.json)
+     * @param {boolean} restricted true if the library can only be installed with a special permission
+     */
+    async _updateLibrary(libraryInfo, libraryMetadata, filesDirectory) {
+        try {
+            await this._libraryStorage.updateLibrary(libraryInfo, libraryMetadata);
+            await this._libraryStorage.clearLibraryFiles(libraryInfo);
+            await this._copyLibraryFiles(filesDirectory, libraryInfo);
+            await this._checkConsistency(libraryInfo);
+        }
+        catch (error) {
+            await this._libraryStorage.removeLibrary(libraryInfo);
+            throw error;
+        }
+    }
+
+    /**
+     * Installs a library and rolls back changes if the library installation failed.
+     * Throws errors if something went wrong.
+     * @param {string} fromDirectory the local directory to install from
+     * @param {Library} libraryInfo the library object
+     * @param {any} libraryMetadata the library metadata
+     * @param {boolean} restricted true if the library can only be installed with a special permission
+     * @returns {Library} the libray object (containing - among others - the id of the newly installed library)
+     */
+    async _installLibrary(fromDirectory, libraryInfo, libraryMetadata, restricted) {
+        libraryInfo = await this._libraryStorage.installLibrary(libraryMetadata, { restricted });
+        try {
+            await this._copyLibraryFiles(fromDirectory, libraryInfo);
+            await this._checkConsistency(libraryInfo);
+        }
+        catch (error) {
+            await this._libraryStorage.removeLibrary(libraryInfo);
+            throw error;
+        }
+        return libraryInfo;
+    }
+
+    /**
+     * Copies all library files from a directory (excludes library.json) to the storage.
+     * Throws errors if something went wrong.
+     * @param {string} fromDirectory The directory to copy from
+     * @param {Library} libraryInfo the library object
+     * @returns {Promise<void>}
+     */
+    async _copyLibraryFiles(fromDirectory, libraryInfo) {
+        const files = await glob(`${fromDirectory}/**/*.*`);
+        await Promise.all(files.map(fileFullPath => {
+            const fileLocalPath = path.relative(fromDirectory, fileFullPath);
+            if (fileLocalPath === "library.json") {
+                return Promise.resolve();
+            }
+            const readStream = fs.createReadStream(fileFullPath);
+            return this._libraryStorage.addLibraryFile(libraryInfo, fileLocalPath, readStream);
+        }));
     }
 
     /**
@@ -261,7 +312,9 @@ class LibraryManager {
             return { status: await this._libraryStorage.fileExists(library, file), path: file };
         }))).filter(file => !file.status).map(file => file.path);
         if (missingFiles.length > 0) {
-            throw new Error(missingFiles.reduce((message, file) => `${message}${file} is missing.\n`, `Error in library ${library.getDirName()}:\n`));
+            let message = `Error(s) in library ${library.getDirName()}:\n`;
+            message += missingFiles.map(file => `${file} is missing.`).join("\n");
+            throw new Error(message);
         }
         return true;
     }

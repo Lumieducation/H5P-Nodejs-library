@@ -1,0 +1,13 @@
+{
+  "semantics":[
+    {
+      "label":"Grußbotschaft",
+      "default":"Hallo, Welt!",
+      "description":"Die Grußbotschaft, die dem Nutzer gezeigt wird."
+    },
+    {
+      "label":"Kartenbild",
+      "description":"Bild, das optional auf der Karte gezeigt wird. Ohne ein solches wird nur Text auf der Karte gezeigt."
+    }
+  ]
+}
