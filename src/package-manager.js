@@ -116,9 +116,11 @@ class PackageManager {
     static async _extractPackage(packagePath, directoryPath, { includeLibraries = false, includeContent = false, includeMetadata = false }) {
         const zipFile = await yauzl.open(packagePath);
         await zipFile.walkEntries(async (entry) => {
-            if ((includeContent && entry.fileName.startsWith("content/"))
-                || (includeLibraries && entry.fileName.includes("/") && !entry.fileName.startsWith("content/"))
-                || (includeMetadata && entry.fileName === "h5p.json")) {
+            const basename = path.basename(entry.fileName);
+            if (!basename.startsWith(".") && !basename.startsWith("_")
+                && ((includeContent && entry.fileName.startsWith("content/"))
+                    || (includeLibraries && entry.fileName.includes("/") && !entry.fileName.startsWith("content/"))
+                    || (includeMetadata && entry.fileName === "h5p.json"))) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.fileName);
 
