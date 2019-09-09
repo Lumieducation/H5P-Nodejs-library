@@ -318,7 +318,7 @@ class H5PEditor {
             catch (error) {
                 throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
             }            
-            contentId = await this.packageManger.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
+            contentId = await this.packageManager.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
         }, { postfix: '.h5p', keep: false });
 
         return contentId;
