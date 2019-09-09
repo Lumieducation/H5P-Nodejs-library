@@ -125,6 +125,6 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve('')  }/test/data/validator/2-invalid-libraries.h5p`
         const config = new H5PConfig();
         const validator = new H5pPackageValidator(translationService, config);
-        await expect(validator.validatePackage(h5pFile)).rejects.toThrow("The library.json file of the library <em>H5P.GreetingCard2-1.0/library.json</em> is invalid (<em>should have required property &#39;title&#39;</em>)\nInvalid language file <em>XXX!.json</em> in library <em>H5P.GreetingCard-1.0</em>'");
+        await expect(validator.validatePackage(h5pFile)).rejects.toThrow("Invalid language file <em>XXX!.json</em> in library <em>H5P.GreetingCard-1.0</em>'\nThe library.json file of the library <em>H5P.GreetingCard2-1.0/library.json</em> is invalid (<em>should have required property &#39;title&#39;</em>)");
     })
 });
