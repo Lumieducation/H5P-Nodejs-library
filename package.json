@@ -1,6 +1,6 @@
 {
     "name": "h5p-editor",
-    "version": "v0.0.2",
+    "version": "v0.0.3",
     "description": "The H5P-Editor-Nodejs-library is a port of the H5P-Editor-PHP-library for Nodejs.",
     "repository": {
         "type": "git",
