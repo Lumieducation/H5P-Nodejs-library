@@ -7,21 +7,21 @@ const ContentType = require('./content-type');
 
 /**
  * This class caches the information about the content types on the H5P Hub.
- * 
+ *
  * IT DOES NOT exactly correspond to the ContentTypeCache of the original PHP implementation,
  * as it only caches the data (and converts it to a local format). It DOES NOT add information
- * about locally installed libraries and user rights. ContentTypeInformationRepository is meant to do this. 
- * 
+ * about locally installed libraries and user rights. ContentTypeInformationRepository is meant to do this.
+ *
  * Usage:
- * - Get the content type information by calling get(). 
+ * - Get the content type information by calling get().
  * - The method updateIfNecessary() should be called regularly, e.g. through a cron-job.
  * - Use contentTypeCacheRefreshInterval in the H5PEditorConfig object to set how often
- *   the update should be performed. You can also use forceUpdate() if you want to bypass the 
- *   interval. 
+ *   the update should be performed. You can also use forceUpdate() if you want to bypass the
+ *   interval.
  */
 class ContentTypeCache {
     /**
-     * 
+     *
      * @param {H5PEditorConfig} config The configuration to use.
      * @param {IStorage} storage The storage object.
      */
@@ -35,8 +35,12 @@ class ContentTypeCache {
      * @returns {Promise<boolean>} true if cache is outdated, false if not
      */
     async isOutdated() {
-        const lastUpdate = await this._storage.load("contentTypeCacheUpdate");
-        return (!lastUpdate || (Date.now()) - lastUpdate > this._config.contentTypeCacheRefreshInterval)
+        const lastUpdate = await this._storage.load('contentTypeCacheUpdate');
+        return (
+            !lastUpdate ||
+            Date.now() - lastUpdate >
+                this._config.contentTypeCacheRefreshInterval
+        );
     }
 
     /**
@@ -44,8 +48,8 @@ class ContentTypeCache {
      * @returns {Promise<boolean>} true if cache was updated, false if not
      */
     async updateIfNecessary() {
-        const oldCache = await this._storage.load("contentTypeCache");
-        if (!oldCache || await this.isOutdated()) {
+        const oldCache = await this._storage.load('contentTypeCache');
+        if (!oldCache || (await this.isOutdated())) {
             return this.forceUpdate();
         }
         return false;
@@ -62,29 +66,33 @@ class ContentTypeCache {
             if (!cacheInHubFormat) {
                 return false;
             }
-        }
-        catch (error) {
+        } catch (error) {
             // TODO: Add error logging
             return false;
         }
-        const cacheInInternalFormat = cacheInHubFormat.map(ContentTypeCache._convertCacheEntryToLocalFormat);
-        await this._storage.save("contentTypeCache", cacheInInternalFormat);
-        await this._storage.save("contentTypeCacheUpdate", Date.now());
+        const cacheInInternalFormat = cacheInHubFormat.map(
+            ContentTypeCache._convertCacheEntryToLocalFormat
+        );
+        await this._storage.save('contentTypeCache', cacheInInternalFormat);
+        await this._storage.save('contentTypeCacheUpdate', Date.now());
         return true;
     }
 
     /**
      * Returns the cache data.
      * @param {string[]} machineNames (optional) The method only returns content type cache data for these machinen ames.
-     * @returns {Promise<ContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object, 
+     * @returns {Promise<ContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
     async get(...machineNames) {
         if (!machineNames || machineNames.length === 0) {
-            return this._storage.load("contentTypeCache");
+            return this._storage.load('contentTypeCache');
         }
-        return (await this._storage.load("contentTypeCache"))
-            .filter(contentType => machineNames
-                .some(machineName => machineName === contentType.machineName));
+        return (await this._storage.load('contentTypeCache')).filter(
+            contentType =>
+                machineNames.some(
+                    machineName => machineName === contentType.machineName
+                )
+        );
     }
 
     /**
@@ -94,16 +102,20 @@ class ContentTypeCache {
      * @returns {Promise<string>} uuid
      */
     async _registerOrGetUuid() {
-        if (this._config.uuid && this._config.uuid !== "") {
+        if (this._config.uuid && this._config.uuid !== '') {
             return this._config.uuid;
         }
-        const response = await axios.post(this._config.hubRegistrationEndpoint,
-            this._compileRegistrationData());
+        const response = await axios.post(
+            this._config.hubRegistrationEndpoint,
+            this._compileRegistrationData()
+        );
         if (response.status !== 200) {
-            throw new Error(`Could not register this site at the H5P Hub. HTTP status ${response.status} ${response.statusText}`);
+            throw new Error(
+                `Could not register this site at the H5P Hub. HTTP status ${response.status} ${response.statusText}`
+            );
         }
         if (!response.data || !response.data.uuid) {
-            throw new Error("Could not register this site at the H5P Hub.");
+            throw new Error('Could not register this site at the H5P Hub.');
         }
         this._config.uuid = response.data.uuid;
         await this._config.save();
@@ -139,22 +151,33 @@ class ContentTypeCache {
 
     /**
      * Downloads information about available content types from the H5P Hub. This method will
-     * create a UUID to identify this site if required. 
+     * create a UUID to identify this site if required.
      * @returns {Promise<any[]>} content types
      */
     async _downloadContentTypesFromHub() {
         await this._registerOrGetUuid();
         let formData = this._compileRegistrationData();
         if (this._config.sendUsageStatistics) {
-            formData = merge.recursive(true, formData, this._compileUsageStatistics());
+            formData = merge.recursive(
+                true,
+                formData,
+                this._compileUsageStatistics()
+            );
         }
 
-        const response = await axios.post(this._config.hubContentTypesEndpoint, qs.stringify(formData));
+        const response = await axios.post(
+            this._config.hubContentTypesEndpoint,
+            qs.stringify(formData)
+        );
         if (response.status !== 200) {
-            throw new Error(`Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`);
+            throw new Error(
+                `Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`
+            );
         }
         if (!response.data) {
-            throw new Error("Could not fetch content type information from the H5P Hub.");
+            throw new Error(
+                'Could not fetch content type information from the H5P Hub.'
+            );
         }
 
         return response.data.contentTypes;
@@ -162,7 +185,7 @@ class ContentTypeCache {
 
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.
-     * @param {object} entry 
+     * @param {object} entry
      * @returns {ContentType} the local content type object
      */
     static _convertCacheEntryToLocalFormat(entry) {
@@ -187,7 +210,7 @@ class ContentTypeCache {
             example: entry.example,
             tutorial: entry.tutorial || '',
             keywords: entry.keywords || [],
-            categories: entry.categories || [],
+            categories: entry.categories || []
         });
     }
 

@@ -25,20 +25,40 @@ class ContentManager {
      * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
      */
     async copyContentFromDirectory(packageDirectory, user, contentId) {
-        const metadata = await fs.readJSON(path.join(packageDirectory, "h5p.json"));
-        const content = await fs.readJSON(path.join(packageDirectory, "content", "content.json"));
-        const otherContentFiles = (await glob(path.join(packageDirectory, "content", "**/*.*")))
-            .filter(file => path.relative(packageDirectory, file) !== "content.json");
+        const metadata = await fs.readJSON(
+            path.join(packageDirectory, 'h5p.json')
+        );
+        const content = await fs.readJSON(
+            path.join(packageDirectory, 'content', 'content.json')
+        );
+        const otherContentFiles = (await glob(
+            path.join(packageDirectory, 'content', '**/*.*')
+        )).filter(
+            file => path.relative(packageDirectory, file) !== 'content.json'
+        );
 
-        contentId = await this._contentStorage.createContent(metadata, content, user, contentId);
+        contentId = await this._contentStorage.createContent(
+            metadata,
+            content,
+            user,
+            contentId
+        );
         try {
-            await Promise.all(otherContentFiles.map(file => {
-                const readStream = fs.createReadStream(file);
-                const localPath = path.relative(path.join(packageDirectory, "content"), file);
-                return this._contentStorage.addContentFile(contentId, localPath, readStream);
-            }));
-        }
-        catch (error) {
+            await Promise.all(
+                otherContentFiles.map(file => {
+                    const readStream = fs.createReadStream(file);
+                    const localPath = path.relative(
+                        path.join(packageDirectory, 'content'),
+                        file
+                    );
+                    return this._contentStorage.addContentFile(
+                        contentId,
+                        localPath,
+                        readStream
+                    );
+                })
+            );
+        } catch (error) {
             this._contentStorage.deleteContent(contentId);
             throw error;
         }
@@ -54,7 +74,12 @@ class ContentManager {
      * @returns {Promise<string>} The newly assigned content id
      */
     async createContent(metadata, content, user, contentId) {
-        return this._contentStorage.createContent(metadata, content, user, contentId);
+        return this._contentStorage.createContent(
+            metadata,
+            content,
+            user,
+            contentId
+        );
     }
 
     /**
@@ -86,7 +111,12 @@ class ContentManager {
      * @returns {Promise<void>}
      */
     async addContentFile(contentId, filename, stream, user) {
-        return this._contentStorage.addContentFile(contentId, filename, stream, user);
+        return this._contentStorage.addContentFile(
+            contentId,
+            filename,
+            stream,
+            user
+        );
     }
 
     /**
@@ -97,7 +127,11 @@ class ContentManager {
      * @returns {Stream}
      */
     getContentFileStream(contentId, filename, user) {
-        return this._contentStorage.getContentFileStream(contentId, filename, user);
+        return this._contentStorage.getContentFileStream(
+            contentId,
+            filename,
+            user
+        );
     }
 
     /**
@@ -108,7 +142,11 @@ class ContentManager {
      * @returns {Promise<any>}
      */
     async _getFileJson(contentId, file, user) {
-        const stream = this._contentStorage.getContentFileStream(contentId, file, user);
+        const stream = this._contentStorage.getContentFileStream(
+            contentId,
+            file,
+            user
+        );
         const jsonString = await streamToString(stream);
         return JSON.parse(jsonString);
     }

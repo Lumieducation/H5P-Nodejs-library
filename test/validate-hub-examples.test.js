@@ -11,17 +11,29 @@ describe('validate H5P files from the Hub', () => {
     try {
         files = fs.readdirSync(directory);
     } catch {
-        throw new Error("The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!");
+        throw new Error(
+            "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
+        );
     }
 
-    for (const file of files.filter(f => f.endsWith(".h5p"))) {
+    for (const file of files.filter(f => f.endsWith('.h5p'))) {
         it(`${file}`, async () => {
-            const englishStrings = await fs.readJSON(`${path.resolve('')}/src/translations/en.json`);
-            const translationService = new TranslationService(englishStrings, englishStrings);
+            const englishStrings = await fs.readJSON(
+                `${path.resolve('')}/src/translations/en.json`
+            );
+            const translationService = new TranslationService(
+                englishStrings,
+                englishStrings
+            );
             const config = new H5PConfig();
-            config.contentWhitelist += " html";
-            const validator = new H5pPackageValidator(translationService, config);
-            await expect(validator.validatePackage(`${directory}/${file}`)).resolves.toBeDefined();
+            config.contentWhitelist += ' html';
+            const validator = new H5pPackageValidator(
+                translationService,
+                config
+            );
+            await expect(
+                validator.validatePackage(`${directory}/${file}`)
+            ).resolves.toBeDefined();
         });
     }
-})
+});

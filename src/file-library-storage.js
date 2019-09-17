@@ -28,9 +28,14 @@ class FileLibraryStorage {
         return libraryDirectories
             .filter(name => nameRegex.test(name))
             .map(name => {
-                return Library.createFromName(name)
+                return Library.createFromName(name);
             })
-            .filter(lib => !machineNames || machineNames.length === 0 || machineNames.some(mn => mn === lib.machineName));
+            .filter(
+                lib =>
+                    !machineNames ||
+                    machineNames.length === 0 ||
+                    machineNames.some(mn => mn === lib.machineName)
+            );
     }
 
     /**
@@ -39,7 +44,7 @@ class FileLibraryStorage {
      * @returns {Promise<any>} the id or undefined if the library is not installed
      */
     async getId(library) {
-        const libraryPath = this._getFullPath(library, "library.json");
+        const libraryPath = this._getFullPath(library, 'library.json');
         if (await fs.exists(libraryPath)) {
             return crc32(libraryPath);
         }
@@ -47,7 +52,7 @@ class FileLibraryStorage {
     }
 
     /**
-     * Returns a readable stream of a library file's contents. 
+     * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param {Library} library library
      * @param {string} filename the relative path inside the library
@@ -55,10 +60,14 @@ class FileLibraryStorage {
      */
     async getFileStream(library, filename) {
         if (!(await this.fileExists(library, filename))) {
-            throw new Error(`File ${filename} does not exist in library ${library.getDirName()}`);
+            throw new Error(
+                `File ${filename} does not exist in library ${library.getDirName()}`
+            );
         }
 
-        return fs.createReadStream(path.join(this._librariesDirectory, library.getDirName(), filename));
+        return fs.createReadStream(
+            path.join(this._librariesDirectory, library.getDirName(), filename)
+        );
     }
 
     /**
@@ -67,18 +76,18 @@ class FileLibraryStorage {
      * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
      */
     async getLanguageFiles(library) {
-        const files = await fs.readdir(this._getFullPath(library, "language"));
+        const files = await fs.readdir(this._getFullPath(library, 'language'));
         return files
-            .filter(file => path.extname(file) === ".json")
-            .map(file => path.basename(file, ".json"));
+            .filter(file => path.extname(file) === '.json')
+            .map(file => path.basename(file, '.json'));
     }
 
     /**
-    * Check if the library contains a file
-    * @param {Library} library The library to check
-    * @param {string} filename
-    * @return {Promise<boolean>} true if file exists in library, false otherwise
-    */
+     * Check if the library contains a file
+     * @param {Library} library The library to check
+     * @param {string} filename
+     * @return {Promise<boolean>} true if file exists in library, false otherwise
+     */
     async fileExists(library, filename) {
         return fs.pathExists(this._getFullPath(library, filename));
     }
@@ -91,23 +100,29 @@ class FileLibraryStorage {
      * @returns {Promise<Library>} The newly created library object to use when adding library files with addLibraryFile(...)
      */
     async installLibrary(libraryMetadata, { restricted = false }) {
-        const library = new Library(libraryMetadata.machineName,
+        const library = new Library(
+            libraryMetadata.machineName,
             libraryMetadata.majorVersion,
             libraryMetadata.minorVersion,
             libraryMetadata.patchVersion,
-            restricted);
+            restricted
+        );
 
         const libPath = this._getDirectoryPath(library);
         if (await fs.pathExists(libPath)) {
-            throw new Error(`Library ${library.getDirName()} has already been installed.`);
+            throw new Error(
+                `Library ${library.getDirName()} has already been installed.`
+            );
         }
         try {
             await fs.ensureDir(libPath);
-            await fs.writeJSON(this._getFullPath(library, "library.json"), libraryMetadata);
+            await fs.writeJSON(
+                this._getFullPath(library, 'library.json'),
+                libraryMetadata
+            );
             library.id = await this.getId(library);
             return library;
-        }
-        catch (error) {
+        } catch (error) {
             await fs.remove(libPath);
             throw error;
         }
@@ -122,15 +137,17 @@ class FileLibraryStorage {
     async removeLibrary(library) {
         const libPath = this._getDirectoryPath(library);
         if (!(await fs.pathExists(libPath))) {
-            throw new Error(`Library ${library.getDirName()} is not installed on the system.`);
+            throw new Error(
+                `Library ${library.getDirName()} is not installed on the system.`
+            );
         }
         await fs.remove(libPath);
     }
 
     /**
-     * Updates the library metadata.      
-     * This is necessary when updating to a new patch version. 
-     * You also need to call clearLibraryFiles(...) to remove all old files during the update process and addLibraryFile(...) 
+     * Updates the library metadata.
+     * This is necessary when updating to a new patch version.
+     * You also need to call clearLibraryFiles(...) to remove all old files during the update process and addLibraryFile(...)
      * to add the files of the patch.
      * @param {Library} library the library object (containing the id of the library)
      * @param {any} libraryMetadata the new library metadata
@@ -138,10 +155,15 @@ class FileLibraryStorage {
      */
     async updateLibrary(library, libraryMetadata) {
         const libPath = this._getDirectoryPath(library);
-        if (!await fs.pathExists(libPath)) {
-            throw new Error(`Library ${library.getDirName()} can't be updated as it hasn't been installed yet.`);
+        if (!(await fs.pathExists(libPath))) {
+            throw new Error(
+                `Library ${library.getDirName()} can't be updated as it hasn't been installed yet.`
+            );
         }
-        await fs.writeJSON(this._getFullPath(library, "library.json"), libraryMetadata);
+        await fs.writeJSON(
+            this._getFullPath(library, 'library.json'),
+            libraryMetadata
+        );
         const newLibrary = Library.createFromMetadata(libraryMetadata);
         newLibrary.id = await this.getId(newLibrary);
         return newLibrary;
@@ -156,8 +178,10 @@ class FileLibraryStorage {
      * @returns {Promise<boolean>} true if successful
      */
     async addLibraryFile(library, filename, stream) {
-        if (! await (this.getId(library))) {
-            throw new Error(`Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`);
+        if (!(await this.getId(library))) {
+            throw new Error(
+                `Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`
+            );
         }
         const fullPath = this._getFullPath(library, filename);
         await fs.ensureDir(path.dirname(fullPath));
@@ -172,18 +196,26 @@ class FileLibraryStorage {
      * @param {Library} library the library whose files should be deleted
      * @returns {Promise<void>}
      */
-    async clearLibraryFiles(library){
-        if (! await (this.getId(library))) {
-            throw new Error(`Can't clear library ${library.getDirName()} because the library has not been installed.`);
+    async clearLibraryFiles(library) {
+        if (!(await this.getId(library))) {
+            throw new Error(
+                `Can't clear library ${library.getDirName()} because the library has not been installed.`
+            );
         }
         const fullLibraryPath = this._getDirectoryPath(library);
-        const directoryEntries = (await fs.readdir(fullLibraryPath)).filter(entry => entry !== "library.json");
-        await Promise.all(directoryEntries.map(entry => fs.remove(this._getFullPath(library, entry))));
+        const directoryEntries = (await fs.readdir(fullLibraryPath)).filter(
+            entry => entry !== 'library.json'
+        );
+        await Promise.all(
+            directoryEntries.map(entry =>
+                fs.remove(this._getFullPath(library, entry))
+            )
+        );
     }
 
     /**
      * Gets the directory path of the specified library.
-     * @param {Library} library 
+     * @param {Library} library
      * @returns {string} the asbolute path to the directory
      */
     _getDirectoryPath(library) {
@@ -192,12 +224,16 @@ class FileLibraryStorage {
 
     /**
      * Gets the path of any file of the specified library.
-     * @param {Library} library 
+     * @param {Library} library
      * @param {string} filename
      * @returns {string} the absolute path to the file
      */
     _getFullPath(library, filename) {
-        return path.join(this._librariesDirectory, library.getDirName(), filename);
+        return path.join(
+            this._librariesDirectory,
+            library.getDirName(),
+            filename
+        );
     }
 }
 

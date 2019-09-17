@@ -12,10 +12,12 @@
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "clear": "rm -rf test/data/hub-content",
         "download:content-type-cache": "node scripts/update-real-content-type-cache.js",
-        "ci": "npm run lint && npm run test",
+        "ci": "npm run lint && npm run format:check && npm run test",
         "lint": "eslint ./src",
         "test": "jest",
-        "test:watch": "jest --watch"
+        "test:watch": "jest --watch",
+        "format:check": "prettier --check \"{src,test}/**/*.js\"",
+        "format": "prettier --write \"{src,test}/**/*.js\""
     },
     "author": "Jan Philip Schellenberg",
     "dependencies": {
@@ -42,6 +44,7 @@
         "eslint-plugin-jest": "^22.15.0",
         "jest": "^24.8.0",
         "mockdate": "^2.0.4",
+        "prettier": "^1.18.2",
         "shortid": "^2.2.14",
         "stream-mock": "^2.0.5"
     },
