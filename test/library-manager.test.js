@@ -130,4 +130,18 @@ describe('basic file library manager functionality', () => {
             expect((await fs.readdir(tempDirPath))).toEqual([]);
         }, { keep: false, unsafeCleanup: true });
     });
+
+     it('returns the list of installed library in demo directory', async () => {
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
+
+        const testLibrary = {
+            machineName: 'test',
+            majorVersion: 1,
+            minorVersion: 2
+        }
+
+        const url = libManager.getLibraryFileUrl(testLibrary, 'test.png');
+
+        expect(url).toEqual('test-1.2/test.png');
+    });
 });

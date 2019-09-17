@@ -200,6 +200,20 @@ class LibraryManager {
     }
 
     /**
+     * Returns an URL where the requested file can be accessed.
+     * @param {Library} library 
+     * @param {string} filename
+     * @returns {string} the url
+     */
+    getLibraryFileUrl(library, filename) {
+        try {
+            return `${library.machineName}-${library.majorVersion}.${library.minorVersion}/${filename}`;
+        } catch(error) {
+            return undefined;
+        }
+    }
+
+    /**
      * Updates the library to a new version. 
      * REMOVES THE LIBRARY IF THERE IS AN ERROR!!!
      * @param {number} installedLibraryId The id of the installed library
