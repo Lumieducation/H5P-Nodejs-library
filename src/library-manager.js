@@ -161,8 +161,7 @@ class LibraryManager {
      * @returns {Promise<string[]>} the language codes for translations of this library
      */
     async listLanguages(library) {
-        return this._libraryStorage.getLanguageFiles(library);
-
+        return this._libraryStorage.getLanguageFiles(library).catch(error => [])
     }
 
     /**

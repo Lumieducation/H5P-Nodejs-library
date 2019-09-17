@@ -5,6 +5,8 @@ const { withDir } = require('tmp-promise');
 const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
 
+const Library = require('../src/library');
+
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
         const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
@@ -130,4 +132,15 @@ describe('basic file library manager functionality', () => {
             expect((await fs.readdir(tempDirPath))).toEqual([]);
         }, { keep: false, unsafeCleanup: true });
     });
+
+});
+
+describe('listLanguages()', () => {
+    it("returns an empty array if the language folder does not exist", async () => {
+        const libManager = new LibraryManager(new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`));
+
+        const library = new Library('H5P.Example2', 1, 2, 0);
+
+        await expect(libManager.listLanguages(library)).resolves.toEqual([]);
+    })
 });
