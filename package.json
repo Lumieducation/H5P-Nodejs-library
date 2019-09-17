@@ -17,7 +17,19 @@
         "test": "jest",
         "test:watch": "jest --watch"
     },
-    "author": "Jan Philip Schellenberg",
+    "contributors": [
+        {
+            "name": "Sebastian Rettig"
+        },
+        {
+            "name": "Nikolas Martens"
+        },
+        {
+            "name": "Jan Philip Schellenberg",
+            "email": "jps@Lumi.education",
+            "url": "http://Lumi.education"
+        }
+    ],
     "dependencies": {
         "ajv": "^6.10.2",
         "axios": "^0.19.0",
