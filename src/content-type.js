@@ -2,7 +2,7 @@ class ContentType {
     constructor() {
         this.machineName = undefined;
         this.majorVersion = undefined;
-        this.minorVersion = undefined
+        this.minorVersion = undefined;
         this.patchVersion = undefined;
         this.h5pMajorVersion = undefined;
         this.h5pMinorVersion = undefined;
@@ -29,7 +29,10 @@ class ContentType {
      * @returns {boolean} true if the user can install it, false if not
      */
     canBeInstalledBy(user) {
-        return user.canUpdateAndInstallLibraries || (user.canInstallRecommended && this.isRecommended);
+        return (
+            user.canUpdateAndInstallLibraries ||
+            (user.canInstallRecommended && this.isRecommended)
+        );
     }
 }
 

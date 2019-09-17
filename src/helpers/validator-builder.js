@@ -7,7 +7,7 @@
  */
 class ValidationError extends Error {
     /**
-     * @param {string} message The first error message  
+     * @param {string} message The first error message
      */
     constructor(message) {
         super(message);
@@ -16,16 +16,15 @@ class ValidationError extends Error {
         if (message) {
             this.addError(message);
         }
-
     }
 
     /**
      * Adds a message to the object. You can add as many messages as you want.
-     * @param {*} message 
+     * @param {*} message
      */
     addError(message) {
         this._errors.push(message);
-        this.message = this.getErrors().join("\n");
+        this.message = this.getErrors().join('\n');
         return this;
     }
 
@@ -39,7 +38,7 @@ class ValidationError extends Error {
 
     /**
      * True if any errors were added to the error.
-     * @returns {boolean} 
+     * @returns {boolean}
      */
     hasErrors() {
         return this._errors.length > 0;
@@ -53,25 +52,24 @@ class ValidationError extends Error {
  * @returns {any} the unchanged data object
  */
 function throwErrorsNowRule(data, error) {
-    if (error.hasErrors())
-        throw error;
+    if (error.hasErrors()) throw error;
     return data;
 }
 
 /**
  * A ValidatorBuilder can be used to chain validation rules by calling addRule(...) multiple times
  * and by starting the validation by calling validate(...). The ValidatorBuilder then calls
- * each rule in the order they were added. 
+ * each rule in the order they were added.
  *
- * Each validation rule is a function that requires two parameters: 
+ * Each validation rule is a function that requires two parameters:
  *   - a content object
  *   - an error object
- * 
+ *
  * The content object contains the content that should be validated. Typically this content object
  * is also returned by the validation rule as it is passed on as the first paramter to the next rule.
  * In some cases rules can return a different (or mutated) content object if transformations are
- * necessary. 
- * 
+ * necessary.
+ *
  * The error object is of type ValidationError and is used to report back errors to the caller of
  * validate. (Every call to validate should be wrapped in a try-catch block). To cover cases
  * in which the validation process doesn't have to be interrupted if there is a validation error
@@ -97,11 +95,11 @@ class ValidatorBuilder {
     }
 
     /**
-     * Adds a rule to the validator if the condition is met. 
+     * Adds a rule to the validator if the condition is met.
      * Chain this method together to create complex validators.
      * @param {(content: any, error: ValidationError) => any} rule rule to add
      * @param {boolean} condition the condition (rule is added if it is true)
-     * @returns {ValidatorBuilder} 
+     * @returns {ValidatorBuilder}
      */
     addRuleWhen(rule, condition) {
         if (condition) {

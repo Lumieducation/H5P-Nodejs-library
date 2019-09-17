@@ -11,7 +11,7 @@ const ContentTypeCache = require('./content-type-cache');
 const ContentTypeInformationRepository = require('./content-type-information-repository');
 const LibraryManager = require('./library-manager');
 const ContentManager = require('./content-manager');
-const H5pError = require("./helpers/h5p-error");
+const H5pError = require('./helpers/h5p-error');
 const PackageManager = require('./package-manager');
 const Library = require('./library');
 
@@ -50,7 +50,12 @@ class H5PEditor {
         this.translationService = translationService;
         this.config = config;
         this.user = user;
-        this.packageManager = new PackageManager(this.libraryManager, this.translationService, this.config, this.contentManager);
+        this.packageManager = new PackageManager(
+            this.libraryManager,
+            this.translationService,
+            this.config,
+            this.contentManager
+        );
     }
 
     render(contentId) {
@@ -74,8 +79,17 @@ class H5PEditor {
     }
 
     async saveH5P(contentId, content, metadata, library) {
-        const h5pJson = await this._generateH5PJSON(metadata, library, this._findLibraries(content));
-        return this.contentManager.createContent(h5pJson, content, undefined, contentId);
+        const h5pJson = await this._generateH5PJSON(
+            metadata,
+            library,
+            this._findLibraries(content)
+        );
+        return this.contentManager.createContent(
+            h5pJson,
+            content,
+            undefined,
+            contentId
+        );
     }
 
     _findLibraries(object, collect = {}) {
@@ -94,7 +108,7 @@ class H5PEditor {
             } else {
                 this._findLibraries(object[key], collect);
             }
-        })
+        });
 
         return Object.values(collect);
     }
@@ -103,15 +117,14 @@ class H5PEditor {
         return Promise.all([
             this.contentManager.loadH5PJson(contentId),
             this.contentManager.loadContent(contentId)
-        ])
-            .then(([h5pJson, content]) => ({
-                library: this._getUbernameFromH5pJson(h5pJson),
-                h5p: h5pJson,
-                params: {
-                    params: content,
-                    metadata: h5pJson
-                }
-            }))
+        ]).then(([h5pJson, content]) => ({
+            library: this._getUbernameFromH5pJson(h5pJson),
+            h5p: h5pJson,
+            params: {
+                params: content,
+                metadata: h5pJson
+            }
+        }));
     }
 
     getLibraryData(machineName, majorVersion, minorVersion, language = 'en') {
@@ -121,29 +134,29 @@ class H5PEditor {
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library)
-        ])
-            .then(([
-                assets,
-                semantics,
-                languageObject,
-                languages
-            ]) => ({
-                name: machineName,
-                version: {
-                    major: majorVersion,
-                    minor: minorVersion
-                },
-                semantics,
-                language: languageObject,
-                defaultLanguage: null,
-                javascript: assets.scripts,
-                css: assets.styles,
-                translations: assets.translations,
-                languages
-            }))
+        ]).then(([assets, semantics, languageObject, languages]) => ({
+            name: machineName,
+            version: {
+                major: majorVersion,
+                minor: minorVersion
+            },
+            semantics,
+            language: languageObject,
+            defaultLanguage: null,
+            javascript: assets.scripts,
+            css: assets.styles,
+            translations: assets.translations,
+            languages
+        }));
     }
 
-    _loadAssets(machineName, majorVersion, minorVersion, language, loaded = {}) {
+    _loadAssets(
+        machineName,
+        majorVersion,
+        minorVersion,
+        language,
+        loaded = {}
+    ) {
         const key = `${machineName}-${majorVersion}.${minorVersion}`;
         const path = `${this.baseUrl}/libraries/${key}`;
 
@@ -164,28 +177,43 @@ class H5PEditor {
         ])
             .then(([library, translation]) =>
                 Promise.all([
-                    this._resolveDependencies(library.preloadedDependencies || [], language, loaded),
-                    this._resolveDependencies(library.editorDependencies || [], language, loaded)
-                ])
-                    .then(combinedDependencies => {
+                    this._resolveDependencies(
+                        library.preloadedDependencies || [],
+                        language,
+                        loaded
+                    ),
+                    this._resolveDependencies(
+                        library.editorDependencies || [],
+                        language,
+                        loaded
+                    )
+                ]).then(combinedDependencies => {
+                    combinedDependencies.forEach(dependencies =>
+                        dependencies.forEach(dependency => {
+                            dependency.scripts.forEach(script =>
+                                assets.scripts.push(script)
+                            );
+                            dependency.styles.forEach(script =>
+                                assets.styles.push(script)
+                            );
+                            Object.keys(dependency.translations).forEach(k => {
+                                assets.translations[k] =
+                                    dependency.translations[k];
+                            });
+                        })
+                    );
 
-                        combinedDependencies.forEach(dependencies =>
-                            dependencies.forEach(dependency => {
-                                dependency.scripts.forEach(script =>
-                                    assets.scripts.push(script));
-                                dependency.styles.forEach(script =>
-                                    assets.styles.push(script));
-                                Object.keys(dependency.translations).forEach(k => {
-                                    assets.translations[k] = dependency.translations[k]
-                                });
-                            }));
+                    (library.preloadedJs || []).forEach(script =>
+                        assets.scripts.push(`${path}/${script.path}`)
+                    );
+                    (library.preloadedCss || []).forEach(style =>
+                        assets.styles.push(`${path}/${style.path}`)
+                    );
+                    assets.translations[machineName] = translation || undefined;
+                })
+            )
 
-                        (library.preloadedJs || []).forEach(script => assets.scripts.push(`${path}/${script.path}`));
-                        (library.preloadedCss || []).forEach(style => assets.styles.push(`${path}/${style.path}`));
-                        assets.translations[machineName] = translation || undefined;
-                    }))
-
-            .then(() => assets)
+            .then(() => assets);
     }
 
     _resolveDependencies(originalDependencies, language, loaded) {
@@ -193,14 +221,20 @@ class H5PEditor {
         const resolved = [];
 
         const resolve = dependency => {
-            if (!dependency) return Promise.resolve(resolved)
+            if (!dependency) return Promise.resolve(resolved);
 
-            return this._loadAssets(dependency.machineName, dependency.majorVersion, dependency.minorVersion, language, loaded)
-                .then(assets => assets ? resolved.push(assets) : null)
-                .then(() => resolve(dependencies.shift()))
-        }
+            return this._loadAssets(
+                dependency.machineName,
+                dependency.majorVersion,
+                dependency.minorVersion,
+                language,
+                loaded
+            )
+                .then(assets => (assets ? resolved.push(assets) : null))
+                .then(() => resolve(dependencies.shift()));
+        };
 
-        return resolve(dependencies.shift())
+        return resolve(dependencies.shift());
     }
 
     getContentTypeCache() {
@@ -211,11 +245,12 @@ class H5PEditor {
         const dataStream = new stream.PassThrough();
         dataStream.end(file.data);
 
-        return this.contentManager.addContentFile(contentId, file.name, dataStream, undefined)
+        return this.contentManager
+            .addContentFile(contentId, file.name, dataStream, undefined)
             .then(() => ({
                 mime: file.mimetype,
                 path: file.name
-            }))
+            }));
     }
 
     getLibraryOverview(libraries) {
@@ -226,24 +261,24 @@ class H5PEditor {
                     majorVersion,
                     minorVersion
                 } = this._parseLibraryString(libraryName);
-                const lib = new Library(machineName, majorVersion, minorVersion);
-                return this.libraryManager
-                    .loadLibrary(lib)
-                    .then(library => {
-                        return {
-                            uberName: `${library.machineName} ${
-                                library.majorVersion
-                                }.${library.minorVersion}`,
-                            name: library.machineName,
-                            majorVersion: library.majorVersion,
-                            minorVersion: library.minorVersion,
-                            tutorialUrl: '',
-                            title: library.title,
-                            runnable: library.runnable,
-                            restricted: false,
-                            metadataSettings: null
-                        };
-                    });
+                const lib = new Library(
+                    machineName,
+                    majorVersion,
+                    minorVersion
+                );
+                return this.libraryManager.loadLibrary(lib).then(library => {
+                    return {
+                        uberName: `${library.machineName} ${library.majorVersion}.${library.minorVersion}`,
+                        name: library.machineName,
+                        majorVersion: library.majorVersion,
+                        minorVersion: library.minorVersion,
+                        tutorialUrl: '',
+                        title: library.title,
+                        runnable: library.runnable,
+                        restricted: false,
+                        metadataSettings: null
+                    };
+                });
             })
         );
     }
@@ -251,24 +286,22 @@ class H5PEditor {
     _generateH5PJSON(metadata, _library, contentDependencies = []) {
         return new Promise(resolve => {
             const lib = Library.createFromName(_library.replace(' ', '-'));
-            this.libraryManager
-                .loadLibrary(lib)
-                .then(library => {
-                    const h5pJson = Object.assign({}, metadata, {
-                        mainLibrary: library.machineName,
-                        preloadedDependencies: [
-                            ...contentDependencies,
-                            ...library.preloadedDependencies,
-                            {
-                                machineName: library.machineName,
-                                majorVersion: library.majorVersion,
-                                minorVersion: library.minorVersion
-                            }
-                        ]
-                    });
-
-                    resolve(h5pJson);
+            this.libraryManager.loadLibrary(lib).then(library => {
+                const h5pJson = Object.assign({}, metadata, {
+                    mainLibrary: library.machineName,
+                    preloadedDependencies: [
+                        ...contentDependencies,
+                        ...library.preloadedDependencies,
+                        {
+                            machineName: library.machineName,
+                            majorVersion: library.majorVersion,
+                            minorVersion: library.minorVersion
+                        }
+                    ]
                 });
+
+                resolve(h5pJson);
+            });
         });
     }
 
@@ -277,9 +310,7 @@ class H5PEditor {
         const library = (h5pJson.preloadedDependencies || []).filter(
             dependency => dependency.machineName === h5pJson.mainLibrary
         )[0];
-        return `${library.machineName} ${library.majorVersion}.${
-            library.minorVersion
-            }`;
+        return `${library.machineName} ${library.majorVersion}.${library.minorVersion}`;
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -310,16 +341,26 @@ class H5PEditor {
         const dataStream = new stream.PassThrough();
         dataStream.end(data);
 
-        await withFile(async ({ path: tempPackagePath }) => {
-            const writeStream = fs.createWriteStream(tempPackagePath);
-            try {
-                await promisePipe(dataStream, writeStream);
-            }
-            catch (error) {
-                throw new H5pError(this.translationService.getTranslation("upload-package-failed-tmp"));
-            }            
-            contentId = await this.packageManager.addPackageLibrariesAndContent(tempPackagePath, this.user, contentId);
-        }, { postfix: '.h5p', keep: false });
+        await withFile(
+            async ({ path: tempPackagePath }) => {
+                const writeStream = fs.createWriteStream(tempPackagePath);
+                try {
+                    await promisePipe(dataStream, writeStream);
+                } catch (error) {
+                    throw new H5pError(
+                        this.translationService.getTranslation(
+                            'upload-package-failed-tmp'
+                        )
+                    );
+                }
+                contentId = await this.packageManager.addPackageLibrariesAndContent(
+                    tempPackagePath,
+                    this.user,
+                    contentId
+                );
+            },
+            { postfix: '.h5p', keep: false }
+        );
 
         return contentId;
     }
