@@ -13,7 +13,7 @@
         "clear": "rm -rf test/data/hub-content",
         "download:content-type-cache": "node scripts/update-real-content-type-cache.js",
         "ci": "npm run lint && npm run format:check && npm run test",
-        "lint": "eslint ./src",
+        "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
         "test": "jest",
         "test:watch": "jest --watch",
         "format:check": "prettier --check \"{src,test}/**/*.js\"",
@@ -48,7 +48,10 @@
         "mockdate": "^2.0.4",
         "prettier": "^1.18.2",
         "shortid": "^2.2.14",
-        "stream-mock": "^2.0.5"
+        "stream-mock": "^2.0.5",
+        "tslint": "^5.20.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "tslint-config-prettier": "^1.18.0"
     },
     "main": "./src/index.js"
 }
