@@ -16,6 +16,8 @@ const PackageManager = require('./package-manager');
 const Library = require('./library');
 
 class H5PEditor {
+    public render: (contentId: number) => Promise<string>;
+    
     constructor(
         urls = {
             baseUrl: '/h5p',
