@@ -5,20 +5,14 @@
         "tslint-config-prettier"
     ],
     "rules": {
-        "function-name": false,
-        "import-name": [false],
-        "ordered-imports": [false],
-        "object-literal-sort-keys": false,
-        "no-submodule-imports": [false],
-        "no-implicit-dependencies": false,
-        "strict-boolean-expressions": false,
-        "no-increment-decrement": false,
-        "no-empty-interface": true,
-        "no-eval": false,
-        "prefer-for-of": false,
-        "forin": false,
-        "no-var-requires": false,
-        "variable-name": [true, "ban-keywords", "check-format"],
-        "no-console": true
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "variable-declaration",
+            "property-declaration",
+            "member-variable-declaration",
+            "arrow-parameter"
+        ]
     }
 }
