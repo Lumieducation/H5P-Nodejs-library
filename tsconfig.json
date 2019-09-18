@@ -11,5 +11,5 @@
         "baseUrl": "./",
         "outDir": "./build"
     },
-    "files": ["src/h5p-editor.ts"]
+    "files": ["src/**/*"]
 }
