@@ -1,7 +1,14 @@
 /**
  * Example user object
  */
-class User {
+export default class User {
+    private id: string;
+    private name: string;
+    private canInstallRecommended: boolean;
+    private canUpdateAndInstallLibraries: boolean;
+    private canCreateRestricted: boolean;
+    private type: 'local';
+
     constructor() {
         this.id = '1';
         this.name = 'Firstname Surname';
@@ -11,5 +18,3 @@ class User {
         this.type = 'local';
     }
 }
-
-module.exports = User;
