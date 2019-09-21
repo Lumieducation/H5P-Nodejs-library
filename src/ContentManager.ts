@@ -17,19 +17,32 @@ export default class ContentManager {
     /**
      * @param {FileContentStorage} contentStorage The storage object
      */
-
-    private contentStorage: IContentStorage;
-
     constructor(contentStorage: IContentStorage) {
         this.contentStorage = contentStorage;
     }
 
+    private contentStorage: IContentStorage;
+
     /**
-     * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<number>} A unique content id
+     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
+     * @param {number} contentId The id of the content to add the file to
+     * @param {string} filename The filename INSIDE the content folder
+     * @param {Stream} stream A readable stream that contains the data
+     * @param {User} user The user who owns this object
+     * @returns {Promise<void>}
      */
-    public async createContentId(): Promise<ContentId> {
-        return this.contentStorage.createContentId();
+    public async addContentFile(
+        contentId: ContentId,
+        filename: string,
+        stream: Stream,
+        user: User
+    ): Promise<void> {
+        return this.contentStorage.addContentFile(
+            contentId,
+            filename,
+            stream,
+            user
+        );
     }
 
     /**
@@ -55,38 +68,11 @@ export default class ContentManager {
     }
 
     /**
-     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param {number} contentId The id of the content to add the file to
-     * @param {string} filename The filename INSIDE the content folder
-     * @param {Stream} stream A readable stream that contains the data
-     * @param {User} user The user who owns this object
-     * @returns {Promise<void>}
+     * Generates a unique content id that hasn't been used in the system so far.
+     * @returns {Promise<number>} A unique content id
      */
-    public async addContentFile(
-        contentId: ContentId,
-        filename: string,
-        stream: Stream,
-        user: User
-    ): Promise<void> {
-        return this.contentStorage.addContentFile(
-            contentId,
-            filename,
-            stream,
-            user
-        );
-    }
-
-    /**
-     * Returns the metadata (=contents of h5p.json) of a piece of content.
-     * @param {number} contentId the content id
-     * @param {User} user The user who wants to access the content
-     * @returns {Promise<any>}
-     */
-    public async loadH5PJson(
-        contentId: ContentId,
-        user: User
-    ): Promise<IH5PJson> {
-        return this.getFileJson(contentId, 'h5p.json', user);
+    public async createContentId(): Promise<ContentId> {
+        return this.contentStorage.createContentId();
     }
 
     /**
@@ -100,6 +86,19 @@ export default class ContentManager {
         user: User
     ): Promise<IContentJson> {
         return this.getFileJson(contentId, 'content/content.json', user);
+    }
+
+    /**
+     * Returns the metadata (=contents of h5p.json) of a piece of content.
+     * @param {number} contentId the content id
+     * @param {User} user The user who wants to access the content
+     * @returns {Promise<any>}
+     */
+    public async loadH5PJson(
+        contentId: ContentId,
+        user: User
+    ): Promise<IH5PJson> {
+        return this.getFileJson(contentId, 'h5p.json', user);
     }
 
     /**
