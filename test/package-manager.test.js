@@ -10,8 +10,8 @@ const FileLibraryStorage = require('../src/file-library-storage');
 const ContentManager = require('../src/content-manager');
 const LibraryManager = require('../src/library-manager');
 const TranslationService = require('../src/translation-service');
-const H5PConfig = require('../src/config');
-const User = require('../src/user');
+const H5PConfig = require('../src/EditorConfig');
+const User = require('../src/User');
 
 describe('basic package manager functionality', () => {
     it('installs libraries', async () => {

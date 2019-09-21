@@ -1,5 +1,5 @@
-const H5PEditorConfig = require('../src/config');
-const InMemoryStorage = require('../src/in-memory-storage');
+const H5PEditorConfig = require('../src/EditorConfig');
+const InMemoryStorage = require('../src/InMemoryStorage');
 
 describe('loading configuration data from storage', () => {
     it("doesn't overwrite defaults if storage is empty", async () => {

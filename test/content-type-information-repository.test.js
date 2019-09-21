@@ -4,13 +4,13 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const shortid = require('shortid');
 
-const InMemoryStorage = require('../src/in-memory-storage');
-const H5PEditorConfig = require('../src/config');
+const InMemoryStorage = require('../src/InMemoryStorage');
+const H5PEditorConfig = require('../src/EditorConfig');
 const LibraryManager = require('../src/library-manager');
 const FileLibraryStorage = require('../src/file-library-storage');
 const ContentTypeCache = require('../src/content-type-cache');
 const ContentTypeInformationRepository = require('../src/content-type-information-repository');
-const User = require('../src/user');
+const User = require('../src/User');
 const TranslationService = require('../src/translation-service');
 
 const axiosMock = new MockAdapter(axios);

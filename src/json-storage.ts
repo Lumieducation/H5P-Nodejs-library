@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-const InMemoryStorage = require('./in-memory-storage');
+const InMemoryStorage = require('./InMemoryStorage');
 
 /**
  * Reads key-value pairs from a JSON file and writes them back.

@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const H5pPackageValidator = require('../src/package-validator');
-const H5PConfig = require('../src/config');
+const H5PConfig = require('../src/EditorConfig');
 const TranslationService = require('../src/translation-service');
 
 describe('validating H5P files', () => {

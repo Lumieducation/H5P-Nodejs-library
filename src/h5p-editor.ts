@@ -7,7 +7,7 @@ const defaultEditorIntegration = require('../assets/default_editor_integration')
 const defaultTranslation = require('../assets/translations/en.json');
 const defaultRenderer = require('./renderers/default');
 
-const ContentTypeCache = require('./content-type-cache');
+const ContentTypeCache = require('./ContentTypeCache');
 const ContentTypeInformationRepository = require('./content-type-information-repository');
 const LibraryManager = require('./library-manager');
 const ContentManager = require('./content-manager');

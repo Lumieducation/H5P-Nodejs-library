@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 
 const JsonStorage = require('../src/json-storage');
-const Config = require('../src/config');
+const Config = require('../src/EditorConfig');
 
 describe('JSON storage of configuration', () => {
     it('loads JSON valid files', async () => {
