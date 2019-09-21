@@ -1,9 +1,55 @@
-import { IDependency, IMetadata } from './types';
+import { IDependency, ILibraryJson } from './types';
 
 /**
  * Stores information about H5P libraries.
  */
 export default class Library implements IDependency {
+    constructor(
+        machineName: string,
+        majorVersion: number,
+        minorVersion: number,
+        patchVersion?: number,
+        restricted: boolean = false
+    ) {
+        this.machineName = machineName;
+        this.majorVersion = majorVersion;
+        this.minorVersion = minorVersion;
+        this.patchVersion = patchVersion;
+        this.id = undefined;
+        this.title = undefined;
+        this.runnable = undefined;
+        this.restricted = restricted;
+    }
+
+    public id: number;
+    public machineName: string;
+    public majorVersion: number;
+    public minorVersion: number;
+    public patchVersion: number;
+    public preloadedDependencies: IDependency[];
+    public runnable: boolean;
+    public title: string;
+
+    private restricted: boolean;
+
+    /**
+     * Creates a library object from a library metadata object (contents of library.json).
+     * @param {any} metadata The library metadata as in library.json
+     * @param {boolean} restricted true if the library is restricted
+     * @returns {Library}
+     */
+    public static createFromMetadata(
+        metadata: ILibraryJson,
+        restricted?: boolean
+    ): Library {
+        return new Library(
+            metadata.machineName,
+            metadata.majorVersion,
+            metadata.minorVersion,
+            metadata.patchVersion,
+            restricted
+        );
+    }
     /**
      * Creates a library object from a library name
      * @param {string} libraryName The library name in a format H5P.Example-1.0
@@ -28,53 +74,6 @@ export default class Library implements IDependency {
             undefined,
             restricted
         );
-    }
-
-    /**
-     * Creates a library object from a library metadata object (contents of library.json).
-     * @param {any} metadata The library metadata as in library.json
-     * @param {boolean} restricted true if the library is restricted
-     * @returns {Library}
-     */
-    public static createFromMetadata(
-        metadata: IMetadata,
-        restricted?: boolean
-    ): Library {
-        return new Library(
-            metadata.machineName,
-            metadata.majorVersion,
-            metadata.minorVersion,
-            metadata.patchVersion,
-            restricted
-        );
-    }
-
-    public machineName: string;
-    public majorVersion: number;
-    public minorVersion: number;
-    public patchVersion: number;
-    public preloadedDependencies: IDependency[];
-
-    private id: string;
-    private title: string;
-    private runnable: boolean;
-    private restricted: boolean;
-
-    constructor(
-        machineName: string,
-        majorVersion: number,
-        minorVersion: number,
-        patchVersion?: number,
-        restricted: boolean = false
-    ) {
-        this.machineName = machineName;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minorVersion;
-        this.patchVersion = patchVersion;
-        this.id = undefined;
-        this.title = undefined;
-        this.runnable = undefined;
-        this.restricted = restricted;
     }
 
     /**
