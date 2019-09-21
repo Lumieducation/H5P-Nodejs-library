@@ -46,6 +46,60 @@ export default class ContentManager {
     }
 
     /**
+     * Adds content from a H5P package (in a temporary directory) to the installation.
+     * It does not check whether the user has permissions to save content.
+     * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
+     * @param {User} user The user who is adding the package.
+     * @param {number} contentId (optional) The content id to use for the package
+     * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
+     */
+    public async copyContentFromDirectory(
+        packageDirectory: string,
+        user: User,
+        contentId: ContentId
+    ): Promise<ContentId> {
+        const metadata: IH5PJson = await fsExtra.readJSON(
+            path.join(packageDirectory, 'h5p.json')
+        );
+        const content: IContentJson = await fsExtra.readJSON(
+            path.join(packageDirectory, 'content', 'content.json')
+        );
+        const otherContentFiles: string[] = (await globPromise(
+            path.join(packageDirectory, 'content', '**/*.*')
+        )).filter(
+            (file: string) =>
+                path.relative(packageDirectory, file) !== 'content.json'
+        );
+
+        const newContentId: ContentId = await this.contentStorage.createContent(
+            metadata,
+            content,
+            user,
+            contentId
+        );
+        try {
+            await Promise.all(
+                otherContentFiles.map((file: string) => {
+                    const readStream: Stream = fsExtra.createReadStream(file);
+                    const localPath: string = path.relative(
+                        path.join(packageDirectory, 'content'),
+                        file
+                    );
+                    return this.contentStorage.addContentFile(
+                        contentId,
+                        localPath,
+                        readStream
+                    );
+                })
+            );
+        } catch (error) {
+            this.contentStorage.deleteContent(contentId);
+            throw error;
+        }
+        return newContentId;
+    }
+
+    /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * @param {any} metadata The metadata of the content (= h5p.json)
      * @param {any} content the content object (= content/content.json)
@@ -99,60 +153,6 @@ export default class ContentManager {
         user: User
     ): Promise<IH5PJson> {
         return this.getFileJson(contentId, 'h5p.json', user);
-    }
-
-    /**
-     * Adds content from a H5P package (in a temporary directory) to the installation.
-     * It does not check whether the user has permissions to save content.
-     * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
-     * @param {User} user The user who is adding the package.
-     * @param {number} contentId (optional) The content id to use for the package
-     * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
-     */
-    private async copyContentFromDirectory(
-        packageDirectory: string,
-        user: User,
-        contentId: ContentId
-    ): Promise<ContentId> {
-        const metadata: IH5PJson = await fsExtra.readJSON(
-            path.join(packageDirectory, 'h5p.json')
-        );
-        const content: IContentJson = await fsExtra.readJSON(
-            path.join(packageDirectory, 'content', 'content.json')
-        );
-        const otherContentFiles: string[] = (await globPromise(
-            path.join(packageDirectory, 'content', '**/*.*')
-        )).filter(
-            (file: string) =>
-                path.relative(packageDirectory, file) !== 'content.json'
-        );
-
-        const newContentId: ContentId = await this.contentStorage.createContent(
-            metadata,
-            content,
-            user,
-            contentId
-        );
-        try {
-            await Promise.all(
-                otherContentFiles.map((file: string) => {
-                    const readStream: Stream = fsExtra.createReadStream(file);
-                    const localPath: string = path.relative(
-                        path.join(packageDirectory, 'content'),
-                        file
-                    );
-                    return this.contentStorage.addContentFile(
-                        contentId,
-                        localPath,
-                        readStream
-                    );
-                })
-            );
-        } catch (error) {
-            this.contentStorage.deleteContent(contentId);
-            throw error;
-        }
-        return newContentId;
     }
 
     /**
