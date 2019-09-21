@@ -23,10 +23,10 @@
                     "private-static-field",
                     "public-instance-field",
                     "private-instance-field",
-                    "public-instance-method",
-                    "private-instance-method",
                     "public-static-method",
-                    "private-static-method"
+                    "private-static-method",
+                    "public-instance-method",
+                    "private-instance-method"
                 ],
                 "alphabetize": true
             }
