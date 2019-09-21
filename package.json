@@ -11,7 +11,7 @@
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "clear": "rm -rf test/data/hub-content",
-        "download:content-type-cache": "node scripts/update-real-content-type-cache.js",
+        "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "ci": "npm run lint && npm run format:check && npm run test",
         "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
         "test": "jest",
@@ -49,6 +49,7 @@
         "prettier": "^1.18.2",
         "shortid": "^2.2.14",
         "stream-mock": "^2.0.5",
+        "ts-node": "^8.4.1",
         "tslint": "^5.20.0",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-config-prettier": "^1.18.0"

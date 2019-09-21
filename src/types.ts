@@ -66,21 +66,66 @@ export interface ILibraryData {
     translations: object;
 }
 
+export interface IUser {
+    id: string;
+    name: string;
+    canInstallRecommended: boolean;
+    canUpdateAndInstallLibraries: boolean;
+    canCreateRestricted: boolean;
+    type: string;
+}
+
 export interface IContentStorage {
     createContent(metadata, content, user, contentId): Promise<ContentId>;
     addContentFile(
         contentId: ContentId,
         localPath: string,
         readStream: Stream,
-        user?: User
+        user?: IUser
     ): Promise<void>;
     deleteContent(contentId: ContentId): void;
     createContentId(): Promise<ContentId>;
     getContentFileStream(
         contentId: ContentId,
         file: string,
-        user: User
+        user: IUser
     ): Stream;
 }
 
 export interface IContentJson {}
+
+/**
+ * Persists any complex object to some storage.
+ */
+export interface IKeyValueStorage {
+    /**
+     * Loads a value from the storage
+     * @param key The key whose value should be returned.
+     * @returns the value or undefined
+     */
+    load(key: string): Promise<any>;
+
+    /**
+     * Save a value to the storage.
+     * @param key The key for which the value should be stored.
+     * @param value The value to store.
+     */
+    save(key: string, value: any): Promise<any>;
+}
+
+export interface IRegistrationData {
+    core_api_version: string;
+    disabled: number;
+    h5p_version: string;
+    local_id: string;
+    platform_name: string;
+    platform_version: string;
+    type: 'local' | 'network' | 'internet';
+    uuid: string;
+}
+
+export interface IUsageStatistics {
+    num_authors: number;
+    libraries: any;
+}
+

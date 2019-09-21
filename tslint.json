@@ -9,7 +9,6 @@
             true,
             "call-signature",
             "parameter",
-            "variable-declaration",
             "property-declaration",
             "member-variable-declaration",
             "arrow-parameter"
