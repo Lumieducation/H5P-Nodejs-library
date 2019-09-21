@@ -1,4 +1,5 @@
 import { Stream } from 'stream';
+import Library from './Library';
 
 export type ContentId = string;
 
@@ -64,6 +65,8 @@ export interface ILibraryData {
     };
     javascript: string[];
     translations: object;
+    preloadedJs: IJS[];
+    preloadedCss: ICSS[];
 }
 
 export interface IUser {
@@ -76,15 +79,15 @@ export interface IUser {
 }
 
 export interface IContentStorage {
-    createContent(metadata, content, user, contentId): Promise<ContentId>;
     addContentFile(
         contentId: ContentId,
         localPath: string,
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
-    deleteContent(contentId: ContentId): void;
+    createContent(metadata, content, user, contentId): Promise<ContentId>;
     createContentId(): Promise<ContentId>;
+    deleteContent(contentId: ContentId): void;
     getContentFileStream(
         contentId: ContentId,
         file: string,
@@ -92,8 +95,37 @@ export interface IContentStorage {
     ): Stream;
 }
 
+export interface ILibraryStorage {
+    getId(library: Library): Promise<number>;
+    getInstalled(machineNames?: string[]): Promise<Library[]>;
+    getLanguageFiles(library: Library): Promise<string[]>;
+    getFileStream(library: Library, file: string): Promise<Stream>;
+    updateLibrary(
+        library: Library,
+        libraryMetadata: ILibraryJson
+    ): Promise<any>;
+    clearLibraryFiles(library: Library): Promise<any>;
+    removeLibrary(library: Library): Promise<any>;
+    fileExists(library: Library, filename: string): Promise<boolean>;
+    installLibrary(
+        libraryData: ILibraryJson,
+        restricted: boolean
+    ): Promise<Library>;
+    addLibraryFile(
+        library: Library,
+        fileLocalPath: string,
+        readStream: Stream
+    ): Promise<void>;
+}
+
 export interface IContentJson {}
 
+export interface ISemantics {}
+
+export interface ILibraryJson extends IDependency, Library {
+    libraryId: number;
+    patchVersion: number;
+}
 /**
  * Persists any complex object to some storage.
  */
@@ -128,4 +160,3 @@ export interface IUsageStatistics {
     num_authors: number;
     libraries: any;
 }
-
