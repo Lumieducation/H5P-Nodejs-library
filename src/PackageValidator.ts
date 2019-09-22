@@ -1,8 +1,8 @@
-import ajv from 'ajv';
-import path from 'path';
+import * as ajv from 'ajv';
+import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
-import yauzlPromise from 'yauzl-promise';
+import * as yauzlPromise from 'yauzl-promise';
 
 import EditorConfig from './EditorConfig';
 import { formatBytes } from './helpers/StringFormatter';
@@ -142,9 +142,9 @@ export default class PackageValidator {
         await this.initializeJsonValidators();
 
         return new ValidatorBuilder()
-            .addRule(this.mustHaveH5pExtension.bind(this))
-            .addRule(this.zipArchiveMustBeValid.bind(this))
-            .addRule(this.fileSizeMustBeWithinLimits.bind(this))
+            .addRule(this.mustHaveH5pExtension)
+            .addRule(this.zipArchiveMustBeValid)
+            .addRule(this.fileSizeMustBeWithinLimits)
             .addRule(
                 this.filterOutEntries(
                     entry =>
@@ -199,15 +199,15 @@ export default class PackageValidator {
                 this.jsonMustBeParsable('content/content.json'),
                 checkContent
             )
-            .addRule(throwErrorsNowRule.bind(this))
+            .addRule(throwErrorsNowRule)
             .addRuleWhen(
                 this.filesMustBeReadable(filePath =>
                     filePath.startsWith('content/')
                 ),
                 checkContent
             )
-            .addRuleWhen(this.librariesMustBeValid.bind(this), checkLibraries)
-            .addRule(throwErrorsNowRule.bind(this))
+            .addRuleWhen(this.librariesMustBeValid, checkLibraries)
+            .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
             .validate(h5pFile);
     }
@@ -344,10 +344,10 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<yauzlPromise.Entry[]>} The unchanged zip entries
      */
-    private async fileSizeMustBeWithinLimits(
+    private fileSizeMustBeWithinLimits = async (
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
-    ): Promise<yauzlPromise.Entry[]> {
+    ): Promise<yauzlPromise.Entry[]> => {
         let totalFileSize = 0; // in bytes
         if (this.config.maxFileSize) {
             for (const entry of zipEntries) {
@@ -378,7 +378,7 @@ export default class PackageValidator {
             );
         }
         return zipEntries;
-    }
+    };
 
     /**
      * Factory for a rule that tries reading the files that are matched by the filter.
@@ -581,10 +581,10 @@ export default class PackageValidator {
      * @param { ValidationError} error The error object to use
      * @returns {Promise<yauzlPromise.Entry[]>} The unchanged zip entries
      */
-    private async librariesMustBeValid(
+    private librariesMustBeValid = async (
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
-    ): Promise<yauzlPromise.Entry[]> {
+    ): Promise<yauzlPromise.Entry[]> => {
         const topLevelDirectories = PackageValidator.getTopLevelDirectories(
             zipEntries
         );
@@ -596,7 +596,7 @@ export default class PackageValidator {
                 )
         );
         return zipEntries;
-    }
+    };
 
     /**
      * Factory for a rule that checks if library's directory conforms to naming standards
@@ -632,13 +632,13 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
-    private async libraryLanguageFilesMustBeValid(
+    private libraryLanguageFilesMustBeValid = async (
         {
             zipEntries,
             jsonData
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
-    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> {
+    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         const languagePath = PackageValidator.pathJoin(dirName, 'language/');
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
@@ -668,7 +668,7 @@ export default class PackageValidator {
             }
         }
         return { zipEntries, jsonData };
-    }
+    };
 
     /**
      * Factory for a check that makes sure that the directory name of the library matches the name in
@@ -732,13 +732,13 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
-    private async libraryPreloadedFilesMustExist(
+    private libraryPreloadedFilesMustExist = async (
         {
             zipEntries,
             jsonData
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
-    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> {
+    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
@@ -770,7 +770,7 @@ export default class PackageValidator {
             );
         }
         return { zipEntries, jsonData };
-    }
+    };
 
     /**
      * Checks if a library is compatible to the core version running.
@@ -780,20 +780,20 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
-    private async mustBeCompatibleToCoreVersion(
+    private mustBeCompatibleToCoreVersion = async (
         {
             zipEntries,
             jsonData
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
-    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> {
+    ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
         this.checkCoreVersion(
             jsonData,
             `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`,
             error
         );
         return { zipEntries, jsonData };
-    }
+    };
 
     /**
      * Checks if the package file ends with .h5p.
@@ -802,17 +802,17 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<string>} Unchanged path to the h5p file
      */
-    private async mustHaveH5pExtension(
+    private mustHaveH5pExtension = async (
         h5pFile: string,
         error: ValidationError
-    ): Promise<string> {
+    ): Promise<string> => {
         if (path.extname(h5pFile).toLocaleLowerCase() !== '.h5p') {
             throw error.addError(
                 this.translationService.getTranslation('missing-h5p-extension')
             );
         }
         return h5pFile;
-    }
+    };
 
     /**
      * A rule that always returns true.
@@ -896,10 +896,10 @@ export default class PackageValidator {
                         true
                     )
                 )
-                .addRule(this.mustBeCompatibleToCoreVersion.bind(this))
+                .addRule(this.mustBeCompatibleToCoreVersion)
                 .addRule(this.libraryMustHaveMatchingDirectoryName(libraryName))
-                .addRule(this.libraryPreloadedFilesMustExist.bind(this))
-                .addRule(this.libraryLanguageFilesMustBeValid.bind(this))
+                .addRule(this.libraryPreloadedFilesMustExist)
+                .addRule(this.libraryLanguageFilesMustBeValid)
                 .validate(zipEntries, error);
         } catch (e) {
             if (e instanceof ValidationError) {
@@ -918,10 +918,10 @@ export default class PackageValidator {
      * @param {ValidationError} error The error object to use
      * @returns {Promise<yauzlPromise.Entry[]>} The entries inside the zip archive
      */
-    private async zipArchiveMustBeValid(
+    private zipArchiveMustBeValid = async (
         h5pFile: string,
         error: ValidationError
-    ): Promise<yauzlPromise.Entry[]> {
+    ): Promise<yauzlPromise.Entry[]> => {
         const zipArchive = await PackageValidator.openZipArchive(h5pFile);
         if (!zipArchive) {
             throw error.addError(
@@ -929,5 +929,5 @@ export default class PackageValidator {
             );
         }
         return zipArchive.readEntries();
-    }
+    };
 }

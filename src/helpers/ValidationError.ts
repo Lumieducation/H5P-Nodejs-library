@@ -5,12 +5,14 @@
  * stopped right away. In this case the ValidationError is created, messages are added to it
  * and it is thrown later.
  */
-export default class ValidationError extends Error {    
+export default class ValidationError extends Error {
     /**
      * @param {string} message The first error message
      */
     constructor(message?: string) {
-        super(message);
+        if (message) {
+            super(message);
+        }
 
         this.errors = [];
         if (message) {
@@ -24,7 +26,7 @@ export default class ValidationError extends Error {
      * Adds a message to the object. You can add as many messages as you want.
      * @param {*} message
      */
-    public addError(message: any) : ValidationError {
+    public addError(message: any): ValidationError {
         this.errors.push(message);
         this.message = this.getErrors().join('\n');
         return this;

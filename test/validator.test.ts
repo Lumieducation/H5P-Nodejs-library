@@ -1,5 +1,5 @@
-import fsExtra from 'fs-extra';
-import path from 'path';
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
 
 import EditorConfig from '../src/EditorConfig';
 import PackageValidator from '../src/PackageValidator';

@@ -1,4 +1,4 @@
-import ValidationError from "./ValidationError";
+import ValidationError from './ValidationError';
 
 /**
  * A ValidatorBuilder can be used to chain validation rules by calling addRule(...) multiple times
@@ -23,7 +23,7 @@ import ValidationError from "./ValidationError";
  * passed to it (it should not create a new error object because there might be other messages
  * in the error object already).
  */
-export class ValidatorBuilder {    
+export class ValidatorBuilder {
     constructor() {
         this.rules = [];
     }
@@ -36,7 +36,9 @@ export class ValidatorBuilder {
      * @param {(content: any, error: ValidationError) => any} rule rule to add
      * @returns {ValidatorBuilder}
      */
-    public addRule(rule: (content: any, error: ValidationError) => any): ValidatorBuilder {
+    public addRule(
+        rule: (content: any, error: ValidationError) => any
+    ): ValidatorBuilder {
         this.rules.push(rule);
         return this;
     }
@@ -48,7 +50,10 @@ export class ValidatorBuilder {
      * @param {boolean} condition the condition (rule is added if it is true)
      * @returns {ValidatorBuilder}
      */
-    public addRuleWhen(rule: (content: any, error: ValidationError) => any, condition: boolean): ValidatorBuilder {
+    public addRuleWhen(
+        rule: (content: any, error: ValidationError) => any,
+        condition: boolean
+    ): ValidatorBuilder {
         if (condition) {
             return this.addRule(rule);
         }
@@ -61,7 +66,10 @@ export class ValidatorBuilder {
      * @param {ValidationError} error an optional error object. A new one is created if none is passed in here.
      * @returns {Promise<any>} Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
      */
-    public async validate(data: any, error: ValidationError = new ValidationError()): Promise<any> {
+    public async validate(
+        data: any,
+        error: ValidationError = new ValidationError()
+    ): Promise<any> {
         let returnValue = data;
         for (const rule of this.rules) {
             // promises need to be called iteratively here as validation has to occur step by step
@@ -79,6 +87,8 @@ export class ValidatorBuilder {
  * @returns {any} the unchanged data object
  */
 export function throwErrorsNowRule(data: any, error: ValidationError): any {
-    if (error.hasErrors()) throw error;
+    if (error.hasErrors()) {
+        throw error;
+    }
     return data;
 }
