@@ -10,8 +10,7 @@
             "call-signature",
             "parameter",
             "property-declaration",
-            "member-variable-declaration",
-            "arrow-parameter"
+            "member-variable-declaration"
         ],
         "member-ordering": [
             true,

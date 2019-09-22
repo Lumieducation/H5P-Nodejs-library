@@ -1,37 +1,28 @@
-const escapeHtml = require('escape-html');
+import escapeHtml from 'escape-html';
+
+import { ITranslationService } from './types';
 
 /**
  * Allows other components to get localizations of string literals.
  */
-class TranslationService {
+export default class TranslationService implements ITranslationService {
     /**
      * Initializes the translation service
      * @param {[key: string]: string} fallbackLanguageStrings An object with key-value pairs that consist of ids and translation strings for the ids. The fallback strings will be used if a language string can't be found in the localization.
      * @param {[key: string]: string} localLanguageStrings (optional) An object with key-value pairs that consist of ids and translation strings for the ids.
      */
-    constructor(fallbackLanguageStrings, localLanguageStrings) {
-        this._fallbackLanguageStrings = fallbackLanguageStrings;
-        this._localLanguageStrings =
+    constructor(
+        private fallbackLanguageStrings: { [key: string]: string },
+        private localLanguageStrings?: { [key: string]: string }
+    ) {
+        this.localLanguageStrings =
             localLanguageStrings || fallbackLanguageStrings;
-
-        /**
-         * Used to check if replacement keys conform to the required pattern.
-         */
-        this._replacementKeyRegex = /(!|@|%)[a-z0-9-]+/i;
     }
 
     /**
-     * Returns a localized language string. Falls back to the neutral language if a language string is not present in the localization.
-     * @param {string} id The id of the language string to get.
-     * @returns {string} The localized language string or an empty string if there is no localization and fallback value.
+     * Used to check if replacement keys conform to the required pattern.
      */
-    _getLiteral(id) {
-        return (
-            this._localLanguageStrings[id] ||
-            this._fallbackLanguageStrings[id] ||
-            ''
-        );
-    }
+    private replacementKeyRegex: RegExp = /(!|@|%)[a-z0-9-]+/i;
 
     /**
      * Gets the literal for the identifier and performs replacements of placeholders / variables.
@@ -44,14 +35,17 @@ class TranslationService {
      *    - %variable escape text to HTML and theme as a placeholder for user-submitted content
      * @returns The literal translated into the language used by the user and with replacements.
      */
-    getTranslation(id, replacements = {}) {
-        let literal = this._getLiteral(id);
+    public getTranslation(
+        id: string,
+        replacements: { [key: string]: string } = {}
+    ): string {
+        let literal = this.getLiteral(id);
         if (literal === '') return '';
 
-        // eslint-disable-next-line guard-for-in, no-restricted-syntax
+        // tslint:disable-next-line: forin
         for (const replacementKey in replacements) {
             // skip keys that don't can't be replaced with regex
-            if (!this._replacementKeyRegex.test(replacementKey)) {
+            if (!this.replacementKeyRegex.test(replacementKey)) {
                 throw new Error(
                     `The replacement key ${replacementKey} is malformed. A replacement key must start with one of these characters:!@%`
                 );
@@ -79,6 +73,17 @@ class TranslationService {
         }
         return literal;
     }
-}
 
-module.exports = TranslationService;
+    /**
+     * Returns a localized language string. Falls back to the neutral language if a language string is not present in the localization.
+     * @param {string} id The id of the language string to get.
+     * @returns {string} The localized language string or an empty string if there is no localization and fallback value.
+     */
+    private getLiteral(id: string): string {
+        return (
+            this.localLanguageStrings[id] ||
+            this.fallbackLanguageStrings[id] ||
+            ''
+        );
+    }
+}

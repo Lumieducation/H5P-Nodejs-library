@@ -39,7 +39,9 @@
     },
     "devDependencies": {
         "@types/jest": "^24.0.18",
+        "@types/stream-buffers": "^3.0.3",
         "@types/yargs": "^13.0.2",
+        "@types/yauzl-promise": "^2.1.0",
         "axios-mock-adapter": "^1.17.0",
         "eslint": "^6.1.0",
         "eslint-config-prettier": "^6.0.0",

@@ -6,7 +6,7 @@ import yauzlPromise from 'yauzl-promise';
 
 import h5pError from './helpers/h5p-error';
 import { ValidationError } from './helpers/validator-builder';
-import PackageValidator from './package-validator';
+import PackageValidator from './PackageValidator';
 
 import ContentManager from './ContentManager';
 import LibraryManager from './LibraryManager';

@@ -1,60 +1,4 @@
-/**
- * A ValidationError is an error object that is thrown when the validation of an object
- * failed and can't be continued. ValidationError can also be used to store error messages
- * if the error that occurred during validation doesn't mean that the validation has to be
- * stopped right away. In this case the ValidationError is created, messages are added to it
- * and it is thrown later.
- */
-class ValidationError extends Error {
-    /**
-     * @param {string} message The first error message
-     */
-    constructor(message) {
-        super(message);
-
-        this._errors = [];
-        if (message) {
-            this.addError(message);
-        }
-    }
-
-    /**
-     * Adds a message to the object. You can add as many messages as you want.
-     * @param {*} message
-     */
-    addError(message) {
-        this._errors.push(message);
-        this.message = this.getErrors().join('\n');
-        return this;
-    }
-
-    /**
-     * Returns the messages added by addError(...).
-     * @returns {string[]} the messages
-     */
-    getErrors() {
-        return this._errors;
-    }
-
-    /**
-     * True if any errors were added to the error.
-     * @returns {boolean}
-     */
-    hasErrors() {
-        return this._errors.length > 0;
-    }
-}
-
-/**
- * This rule throws the ValidationError object passed to it if there are any messages in it.
- * @param {any} data The data (ignored by this rule)
- * @param {ValidationError} error The error to throw if there are any
- * @returns {any} the unchanged data object
- */
-function throwErrorsNowRule(data, error) {
-    if (error.hasErrors()) throw error;
-    return data;
-}
+import ValidationError from "./ValidationError";
 
 /**
  * A ValidatorBuilder can be used to chain validation rules by calling addRule(...) multiple times
@@ -79,18 +23,21 @@ function throwErrorsNowRule(data, error) {
  * passed to it (it should not create a new error object because there might be other messages
  * in the error object already).
  */
-class ValidatorBuilder {
+export class ValidatorBuilder {    
     constructor() {
-        this._rules = [];
+        this.rules = [];
     }
+
+    // tslint:disable-next-line: prefer-array-literal
+    private rules: Array<(content: any, error: ValidationError) => any>;
 
     /**
      * Adds a rule to the validator. Chain this method together to create complex validators.
      * @param {(content: any, error: ValidationError) => any} rule rule to add
      * @returns {ValidatorBuilder}
      */
-    addRule(rule) {
-        this._rules.push(rule);
+    public addRule(rule: (content: any, error: ValidationError) => any): ValidatorBuilder {
+        this.rules.push(rule);
         return this;
     }
 
@@ -101,7 +48,7 @@ class ValidatorBuilder {
      * @param {boolean} condition the condition (rule is added if it is true)
      * @returns {ValidatorBuilder}
      */
-    addRuleWhen(rule, condition) {
+    public addRuleWhen(rule: (content: any, error: ValidationError) => any, condition: boolean): ValidatorBuilder {
         if (condition) {
             return this.addRule(rule);
         }
@@ -112,20 +59,26 @@ class ValidatorBuilder {
      * Executes the validation.
      * @param {any} data The data to validate. This parameters is passed to the first rule as the first parameter.
      * @param {ValidationError} error an optional error object. A new one is created if none is passed in here.
-     * @returns {any} Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
+     * @returns {Promise<any>} Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
      */
-    async validate(data, error = new ValidationError()) {
-        for (const rule of this._rules) {
+    public async validate(data: any, error: ValidationError = new ValidationError()): Promise<any> {
+        let returnValue = data;
+        for (const rule of this.rules) {
             // promises need to be called iteratively here as validation has to occur step by step
             // eslint-disable-next-line no-await-in-loop
-            data = await rule(data, error);
+            returnValue = await rule(returnValue, error);
         }
-        return data;
+        return returnValue;
     }
 }
 
-module.exports = {
-    ValidatorBuilder,
-    ValidationError,
-    throwErrorsNowRule
-};
+/**
+ * This rule throws the ValidationError object passed to it if there are any messages in it.
+ * @param {any} data The data (ignored by this rule)
+ * @param {ValidationError} error The error to throw if there are any
+ * @returns {any} the unchanged data object
+ */
+export function throwErrorsNowRule(data: any, error: ValidationError): any {
+    if (error.hasErrors()) throw error;
+    return data;
+}
