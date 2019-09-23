@@ -21,28 +21,28 @@ export interface IMetadata extends IDependency {
 }
 
 export interface IH5PJson extends IDependency {
-    title: string;
     language: string;
-    mainLibrary: string;
     license: string;
+    mainLibrary: string;
+    title: string;
 }
 
 export interface IIntegration {
-    postUserStatistics: boolean;
-    ajaxPath: string;
     ajax: {
-        setFinished: string;
         contentUserData: string;
+        setFinished: string;
     };
-    saveFreq: number;
-    user: {
-        name: string;
-        mail: string;
-    };
+    ajaxPath: string;
     editor?: IEditorIntegration;
     hubIsEnabled: boolean;
     l10n: object;
+    postUserStatistics: boolean;
+    saveFreq: number;
     url: string;
+    user: {
+        mail: string;
+        name: string;
+    };
 }
 
 export interface IEditorIntegration { }
@@ -58,15 +58,29 @@ export interface IJS {
 export interface ILibraryData {
     css: string[];
     defaultLanguage: 'string';
+    javascript: string[];
+    language: any;
     name: string;
+    preloadedCss?: ICSS[];
+    preloadedJs?: IJS[];
+    semantics: any;
+    translations: object;
     version: {
         major: number;
         minor: number;
     };
-    javascript: string[];
-    translations: object;
-    preloadedJs: IJS[];
-    preloadedCss: ICSS[];
+}
+
+export interface ILibraryInfo {
+    majorVersion: number;
+    metadataSettings: any;
+    minorVersion: number;
+    name: string;
+    restricted: boolean;
+    runnable: boolean;
+    title: string;
+    tutorialUrl: string;
+    uberName: string;
 }
 
 export interface IUser {
@@ -112,9 +126,12 @@ export interface IContentJson { }
 
 export interface ISemantics { }
 
-export interface ILibraryJson extends IDependency, Library {
+export interface ILibraryJson extends Library {
+    editorDependencies: IDependency[];
     libraryId: number;
     patchVersion: number;
+    preloadedCss: ICSS[];
+    preloadedJs: IJS[];
 }
 /**
  * Persists any complex object to some storage.
@@ -168,3 +185,12 @@ export interface ITranslationService {
         replacements?: { [key: string]: string }
     ): string;
 }
+
+export interface IURLConfig {
+    ajaxPath: string;
+    baseUrl: string;
+    filesPath: string;
+    libraryUrl: string;
+}
+
+export interface IContent {}
