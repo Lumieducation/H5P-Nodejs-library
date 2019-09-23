@@ -1,9 +1,9 @@
 import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
-import path from 'path';
+import * as globPromise from 'glob-promise';
+import * as path from 'path';
 import { Stream } from 'stream';
 
-import { streamToString } from './helpers/stream-helpers';
+import { streamToString } from './helpers/StreamHelpers';
 
 import {
     ContentId,
@@ -134,6 +134,25 @@ export default class ContentManager {
     }
 
     /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * @param {number} contentId the id of the content object that the file is attached to
+     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param {IUser} user the user who wants to retrieve the content file
+     * @returns {Stream}
+     */
+    public getContentFileStream(
+        contentId: ContentId,
+        filename: string,
+        user: IUser
+    ): Stream {
+        return this.contentStorage.getContentFileStream(
+            contentId,
+            filename,
+            user
+        );
+    }
+
+    /**
      * Returns the content object (=contents of content/content.json) of a piece of content.
      * @param {number} contentId the content id
      * @param {IUser} user The user who wants to access the content
@@ -157,25 +176,6 @@ export default class ContentManager {
         user: IUser
     ): Promise<IH5PJson> {
         return this.getFileJson(contentId, 'h5p.json', user);
-    }
-
-    /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of conent
-     * @param {number} contentId the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
-     * @param {IUser} user the user who wants to retrieve the content file
-     * @returns {Stream}
-     */
-    private getContentFileStream(
-        contentId: ContentId,
-        filename: string,
-        user: IUser
-    ): Stream {
-        return this.contentStorage.getContentFileStream(
-            contentId,
-            filename,
-            user
-        );
     }
 
     /**

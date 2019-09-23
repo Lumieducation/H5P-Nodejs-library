@@ -3,6 +3,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
         "experimentalDecorators": true,
         "removeComments": false,
         "noImplicitAny": false,

@@ -95,7 +95,7 @@ export default class PackageManager {
     public async addPackageLibrariesAndContent(
         packagePath: string,
         user: IUser,
-        contentId: ContentId
+        contentId?: ContentId
     ): Promise<ContentId> {
         return this.processPackage(
             packagePath,

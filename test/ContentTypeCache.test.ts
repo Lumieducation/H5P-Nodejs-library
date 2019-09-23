@@ -1,39 +1,39 @@
-const MockAdapter = require('axios-mock-adapter');
-const axios = require('axios');
-const MockDate = require('mockdate');
+import axios from 'axios';
+import axiosMockAdapter from 'axios-mock-adapter';
+import mockdate from 'mockdate';
 
-const ContentTypeCache = require('../src/ContentTypeCache');
-const H5PEditorConfig = require('../src/EditorConfig');
-const InMemoryStorage = require('../src/InMemoryStorage');
+import ContentTypeCache from '../src/ContentTypeCache';
+import EditorConfig from '../src/EditorConfig';
+import InMemoryStorage from '../src/InMemoryStorage';
 
-const axiosMock = new MockAdapter(axios);
+const axiosMock = new axiosMockAdapter(axios);
 
 describe('registering the site at H5P Hub', () => {
     it('returns a uuid', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
-        const cache = new ContentTypeCache(config);
+        const config = new EditorConfig(storage);
+        const cache = new ContentTypeCache(config, undefined);
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
             .reply(200, require('./data/content-type-cache/registration.json'));
 
-        const uuid = await cache._registerOrGetUuid();
+        const uuid = await cache.registerOrGetUuid();
         expect(uuid).toBeDefined();
         expect(config.uuid).toEqual(uuid);
     });
 
     it('fails with an error when URL is unreachable', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
-        const cache = new ContentTypeCache(config);
+        const config = new EditorConfig(storage);
+        const cache = new ContentTypeCache(config, undefined);
 
         config.uuid = '';
         axiosMock.onPost(config.hubRegistrationEndpoint).reply(408);
 
         let error;
         try {
-            await cache._registerOrGetUuid();
+            await cache.registerOrGetUuid();
         } catch (e) {
             error = e;
         }
@@ -44,7 +44,7 @@ describe('registering the site at H5P Hub', () => {
 describe('getting H5P Hub content types', () => {
     it('should return an empty cache if it was not loaded yet', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         const cached = await cache.get();
@@ -52,7 +52,7 @@ describe('getting H5P Hub content types', () => {
     });
     it('loads content type information from the H5P Hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock
@@ -76,7 +76,7 @@ describe('getting H5P Hub content types', () => {
     });
     it("doesn't overwrite existing cache if it fails to load a new one", async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         config.contentTypeCacheRefreshInterval = 1;
@@ -106,7 +106,7 @@ describe('getting H5P Hub content types', () => {
     });
     it('detects outdated state', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         config.contentTypeCacheRefreshInterval = 100;
@@ -124,8 +124,8 @@ describe('getting H5P Hub content types', () => {
         expect(await cache.isOutdated()).toEqual(true);
         await cache.updateIfNecessary();
         expect(await cache.isOutdated()).toEqual(false);
-        MockDate.set(Date.now() + 200);
+        mockdate.set(Date.now() + 200);
         expect(await cache.isOutdated()).toEqual(true);
-        MockDate.reset();
+        mockdate.reset();
     });
 });

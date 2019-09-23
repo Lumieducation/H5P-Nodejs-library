@@ -1,24 +1,24 @@
-const { withDir } = require('tmp-promise');
-const path = require('path');
-const fs = require('fs-extra');
-const { BufferWritableMock } = require('stream-mock');
-const promisePipe = require('promisepipe');
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
+import promisepipe from 'promisepipe';
+import { BufferWritableMock } from 'stream-mock';
+import { withDir } from 'tmp-promise';
 
-const PackageManager = require('../src/package-manager');
-const FileContentyStorage = require('../src/file-content-storage');
-const FileLibraryStorage = require('../src/file-library-storage');
-const ContentManager = require('../src/content-manager');
-const LibraryManager = require('../src/library-manager');
-const TranslationService = require('../src/translation-service');
-const H5PConfig = require('../src/EditorConfig');
-const User = require('../src/User');
+import ContentManager from '../src/ContentManager';
+import EditorConfig from '../src/EditorConfig';
+import FileContentyStorage from '../src/file-content-storage';
+import FileLibraryStorage from '../src/file-library-storage';
+import LibraryManager from '../src/LibraryManager';
+import PackageManager from '../src/PackageManager';
+import TranslationService from '../src/TranslationService';
+import User from '../src/User';
 
 describe('basic package manager functionality', () => {
     it('installs libraries', async () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fs.ensureDir(libraryDir);
+                await fsExtra.ensureDir(libraryDir);
 
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
@@ -26,7 +26,7 @@ describe('basic package manager functionality', () => {
                 const packageManager = new PackageManager(
                     libraryManager,
                     new TranslationService({}),
-                    new H5PConfig()
+                    new EditorConfig(null)
                 );
                 await packageManager.installLibrariesFromPackage(
                     path.resolve('test/data/validator/valid2.h5p')
@@ -54,8 +54,8 @@ describe('basic package manager functionality', () => {
             async ({ path: tmpDirPath }) => {
                 const contentDir = path.join(tmpDirPath, 'content');
                 const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fs.ensureDir(contentDir);
-                await fs.ensureDir(libraryDir);
+                await fsExtra.ensureDir(contentDir);
+                await fsExtra.ensureDir(libraryDir);
 
                 const user = new User();
                 user.canUpdateAndInstallLibraries = true;
@@ -69,7 +69,7 @@ describe('basic package manager functionality', () => {
                 const packageManager = new PackageManager(
                     libraryManager,
                     new TranslationService({}),
-                    new H5PConfig(),
+                    new EditorConfig(null),
                     contentManager
                 );
                 const contentId = await packageManager.addPackageLibrariesAndContent(
@@ -92,7 +92,7 @@ describe('basic package manager functionality', () => {
 
                 // Check if content (content/content.json) was added correctly
                 expect(
-                    (await contentManager.loadContent(contentId, user)).greeting
+                    ((await contentManager.loadContent(contentId, user)) as any).greeting
                 ).toEqual('Hello world!');
                 const fileStream = contentManager.getContentFileStream(
                     contentId,
@@ -105,7 +105,7 @@ describe('basic package manager functionality', () => {
                 const mockWriteStream = new BufferWritableMock();
                 const onFinish = jest.fn();
                 mockWriteStream.on('finish', onFinish);
-                await promisePipe(fileStream, mockWriteStream);
+                await promisepipe(fileStream, mockWriteStream);
                 expect(onFinish).toHaveBeenCalled();
             },
             { keep: false, unsafeCleanup: true }

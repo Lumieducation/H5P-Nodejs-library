@@ -22,6 +22,19 @@ import { IKeyValueStorage, IRegistrationData, IUsageStatistics } from './types';
  *   interval.
  */
 export default class ContentTypeCache {
+
+    /**
+     *
+     * @param {EditorConfig} config The configuration to use.
+     * @param {IStorage} storage The storage object.
+     */
+    constructor(config: EditorConfig, storage: IKeyValueStorage) {
+        this.config = config;
+        this.storage = storage;
+    }
+
+    private config: EditorConfig;
+    private storage: IKeyValueStorage;
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.
      * @param entry the entry as received from H5P Hub
@@ -61,42 +74,38 @@ export default class ContentTypeCache {
         return crc32(__dirname);
     }
 
-    private config: EditorConfig;
-    private storage: IKeyValueStorage;
-
     /**
-     *
-     * @param {EditorConfig} config The configuration to use.
-     * @param {IStorage} storage The storage object.
+     * Downloads information about available content types from the H5P Hub. This method will
+     * create a UUID to identify this site if required.
+     * @returns content types
      */
-    constructor(config: EditorConfig, storage: IKeyValueStorage) {
-        this.config = config;
-        this.storage = storage;
-    }
-
-    /**
-     * Checks if the cache is not up to date anymore (update interval exceeded).
-     * @returns {Promise<boolean>} true if cache is outdated, false if not
-     */
-    public async isOutdated(): Promise<boolean> {
-        const lastUpdate = await this.storage.load('contentTypeCacheUpdate');
-        return (
-            !lastUpdate ||
-            Date.now() - lastUpdate >
-                this.config.contentTypeCacheRefreshInterval
-        );
-    }
-
-    /**
-     * Checks if the interval between updates has been exceeded and updates the cache if necessary.
-     * @returns {Promise<boolean>} true if cache was updated, false if not
-     */
-    public async updateIfNecessary(): Promise<boolean> {
-        const oldCache = await this.storage.load('contentTypeCache');
-        if (!oldCache || (await this.isOutdated())) {
-            return this.forceUpdate();
+    public async downloadContentTypesFromHub(): Promise<any[]> {
+        await this.registerOrGetUuid();
+        let formData = this.compileRegistrationData();
+        if (this.config.sendUsageStatistics) {
+            formData = merge.recursive(
+                true,
+                formData,
+                this.compileUsageStatistics()
+            );
         }
-        return false;
+
+        const response = await axios.post(
+            this.config.hubContentTypesEndpoint,
+            qs.stringify(formData)
+        );
+        if (response.status !== 200) {
+            throw new Error(
+                `Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`
+            );
+        }
+        if (!response.data) {
+            throw new Error(
+                'Could not fetch content type information from the H5P Hub.'
+            );
+        }
+
+        return response.data.contentTypes;
     }
 
     /**
@@ -141,37 +150,16 @@ export default class ContentTypeCache {
     }
 
     /**
-     * Downloads information about available content types from the H5P Hub. This method will
-     * create a UUID to identify this site if required.
-     * @returns content types
+     * Checks if the cache is not up to date anymore (update interval exceeded).
+     * @returns {Promise<boolean>} true if cache is outdated, false if not
      */
-    public async downloadContentTypesFromHub(): Promise<any[]> {
-        await this.registerOrGetUuid();
-        let formData = this.compileRegistrationData();
-        if (this.config.sendUsageStatistics) {
-            formData = merge.recursive(
-                true,
-                formData,
-                this.compileUsageStatistics()
-            );
-        }
-
-        const response = await axios.post(
-            this.config.hubContentTypesEndpoint,
-            qs.stringify(formData)
+    public async isOutdated(): Promise<boolean> {
+        const lastUpdate = await this.storage.load('contentTypeCacheUpdate');
+        return (
+            !lastUpdate ||
+            Date.now() - lastUpdate >
+                this.config.contentTypeCacheRefreshInterval
         );
-        if (response.status !== 200) {
-            throw new Error(
-                `Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`
-            );
-        }
-        if (!response.data) {
-            throw new Error(
-                'Could not fetch content type information from the H5P Hub.'
-            );
-        }
-
-        return response.data.contentTypes;
     }
 
     /**
@@ -180,7 +168,7 @@ export default class ContentTypeCache {
      * the UUID in the storage object.
      * @returns uuid
      */
-    private async registerOrGetUuid(): Promise<string> {
+    public async registerOrGetUuid(): Promise<string> {
         if (this.config.uuid && this.config.uuid !== '') {
             return this.config.uuid;
         }
@@ -199,6 +187,18 @@ export default class ContentTypeCache {
         this.config.uuid = response.data.uuid;
         await this.config.save();
         return this.config.uuid;
+    }
+
+    /**
+     * Checks if the interval between updates has been exceeded and updates the cache if necessary.
+     * @returns {Promise<boolean>} true if cache was updated, false if not
+     */
+    public async updateIfNecessary(): Promise<boolean> {
+        const oldCache = await this.storage.load('contentTypeCache');
+        if (!oldCache || (await this.isOutdated())) {
+            return this.forceUpdate();
+        }
+        return false;
     }
 
     /**

@@ -1,4 +1,4 @@
-const TranslationService = require('../src/translation-service');
+import TranslationService from '../src/TranslationService';
 
 describe('translation / localization service', () => {
     const fallbackLiterals = {

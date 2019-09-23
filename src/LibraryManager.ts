@@ -2,7 +2,7 @@ import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
 
-import { streamToString } from './helpers/stream-helpers';
+import { streamToString } from './helpers/StreamHelpers';
 
 import {
     ICSS,
@@ -63,7 +63,7 @@ export default class LibraryManager {
      * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library.
      */
-    public async getInstalled(machineNames: string[]): Promise<any> {
+    public async getInstalled(machineNames?: string[]): Promise<any> {
         let libraries = await this.libraryStorage.getInstalled(machineNames);
         libraries = (await Promise.all(
             libraries.map(async (oldLib: Library) => {

@@ -1,15 +1,15 @@
-const fs = require('fs-extra');
-const path = require('path');
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
 
-const H5pPackageValidator = require('../src/PackageValidator');
-const H5PConfig = require('../src/EditorConfig');
-const TranslationService = require('../src/translation-service');
+import EditorConfig from '../src/EditorConfig';
+import PackageValidator from '../src/PackageValidator';
+import TranslationService from '../src/TranslationService';
 
 describe('validate H5P files from the Hub', () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
     let files;
     try {
-        files = fs.readdirSync(directory);
+        files = fsExtra.readdirSync(directory);
     } catch {
         throw new Error(
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
@@ -18,16 +18,16 @@ describe('validate H5P files from the Hub', () => {
 
     for (const file of files.filter(f => f.endsWith('.h5p'))) {
         it(`${file}`, async () => {
-            const englishStrings = await fs.readJSON(
+            const englishStrings = await fsExtra.readJSON(
                 `${path.resolve('')}/src/translations/en.json`
             );
             const translationService = new TranslationService(
                 englishStrings,
                 englishStrings
             );
-            const config = new H5PConfig();
+            const config = new EditorConfig(null);
             config.contentWhitelist += ' html';
-            const validator = new H5pPackageValidator(
+            const validator = new PackageValidator(
                 translationService,
                 config
             );
