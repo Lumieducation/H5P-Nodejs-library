@@ -136,12 +136,13 @@ export default class LibraryManager {
             return false;
         }
         const libraryInfos = wrappedLibraryInfos[library.machineName];
-        for (const x of libraryInfos) {
+
+        for (const lib of libraryInfos) {
             if (
-                libraryInfos[x].majorVersion === library.majorVersion &&
-                libraryInfos[x].minorVersion === library.minorVersion
+                lib.majorVersion === library.majorVersion &&
+                lib.minorVersion === library.minorVersion
             ) {
-                if (libraryInfos[x].patchVersion < library.patchVersion) {
+                if (lib.patchVersion < library.patchVersion) {
                     return true;
                 }
                 break;
