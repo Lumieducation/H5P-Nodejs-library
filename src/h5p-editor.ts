@@ -11,7 +11,7 @@ const ContentTypeCache = require('./ContentTypeCache');
 const ContentTypeInformationRepository = require('./content-type-information-repository');
 const LibraryManager = require('./library-manager');
 const ContentManager = require('./content-manager');
-const H5pError = require('./helpers/h5p-error');
+const H5pError = require('./helpers/H5pError');
 const PackageManager = require('./package-manager');
 const Library = require('./library');
 

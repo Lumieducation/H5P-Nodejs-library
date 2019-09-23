@@ -1,11 +1,11 @@
 module.exports = {
-    JsonStorage: require('./src/json-storage'),
+    JsonStorage: require('./src/JsonStorage'),
     InMemoryStorage: require('./src/InMemoryStorage'),
     Config: require('./src/EditorConfig'),
     FileLibraryStorage: require('./src/file-library-storage'),
     FileContentStorage: require('./src/file-content-storage'),
     User: require('./src/User'),
-    TranslationService: require('./src/translation-service'),
+    TranslationService: require('./src/TranslationService'),
     Editor: require('./src/h5p-editor'),
     englishStrings: require('./src/translations/en.json'),
     Library: require('./src/library'),

@@ -4,7 +4,7 @@ import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
-import h5pError from './helpers/h5p-error';
+import h5pError from './helpers/H5pError';
 import { ValidationError } from './helpers/validator-builder';
 import PackageValidator from './PackageValidator';
 

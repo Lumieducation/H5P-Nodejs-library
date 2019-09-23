@@ -1,42 +1,36 @@
-const fs = require('fs-extra');
-const InMemoryStorage = require('./InMemoryStorage');
+import * as fsExtra from 'fs-extra';
+
+import InMemoryStorage from './InMemoryStorage';
 
 /**
  * Reads key-value pairs from a JSON file and writes them back.
  * It is recommended to create it with the static create(...) factory instead of the sync constructor.
  */
-class JsonStorage extends InMemoryStorage {
+export default class JsonStorage extends InMemoryStorage {
     /**
      * Initializes the JsonStorage. It's advised to use the async static factory method create(...) instead.
      * @param {string} file Path to the JSON file (must be read- and writable)
      */
-    constructor(file) {
+    constructor(file?: string) {
         super();
 
         if (file) {
-            this._file = file;
-            this._storage = fs.readJSONSync(file);
+            this.file = file;
+            this.storage = fsExtra.readJSONSync(file);
         }
     }
+
+    private file: string;
 
     /**
      * Factory for a JsonStorage object that initializes the object.
      * Throws errors is something is wrong with the file (not accessible / can't be parsed).
      * @param {string} file Path to the JSON file (must be read- and writeable)
      */
-    static async create(file) {
+    public static async create(file: string): Promise<JsonStorage> {
         const storage = new JsonStorage();
-        await storage._initialize(file);
+        await storage.initialize(file);
         return storage;
-    }
-
-    /**
-     * Initializes the storage by loading the JSON file.
-     * @param {string} file Path to the JSON file (must be read- and writeable)
-     */
-    async _initialize(file) {
-        this._storage = await fs.readJSON(file);
-        this._file = file;
     }
 
     /**
@@ -44,11 +38,18 @@ class JsonStorage extends InMemoryStorage {
      * @param {string} key
      * @param {*} value
      */
-    async save(key, value) {
+    public async save(key: string, value: any): Promise<any> {
         const returnValue = await super.save(key, value);
-        await fs.writeJSON(this._file, this._storage);
+        await fsExtra.writeJSON(this.file, this.storage);
         return returnValue;
     }
-}
 
-module.exports = JsonStorage;
+    /**
+     * Initializes the storage by loading the JSON file.
+     * @param {string} file Path to the JSON file (must be read- and writeable)
+     */
+    private async initialize(file: string): Promise<void> {
+        this.storage = await fsExtra.readJSON(file);
+        this.file = file;
+    }
+}

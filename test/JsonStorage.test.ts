@@ -1,15 +1,15 @@
-const path = require('path');
-const fs = require('fs-extra');
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
-const JsonStorage = require('../src/json-storage');
-const Config = require('../src/EditorConfig');
+import EditorConfig from '../src/EditorConfig';
+import JsonStorage from '../src/JsonStorage';
 
 describe('JSON storage of configuration', () => {
     it('loads JSON valid files', async () => {
         const storage = await JsonStorage.create(
             path.resolve('test/data/configuration/valid-config.json')
         );
-        const config = new Config(storage);
+        const config = new EditorConfig(storage);
         await config.load();
         expect(config.hubRegistrationEndpoint).toBe('https://customhub');
         expect(config.hubContentTypesEndpoint).toBe(

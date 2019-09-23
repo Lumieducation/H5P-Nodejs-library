@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const { withFile } = require('tmp-promise');
 const promisePipe = require('promisepipe');
 
-const H5pError = require('./helpers/h5p-error');
+const H5pError = require('./helpers/H5pError');
 const PackageManager = require('./package-manager');
 
 /**
