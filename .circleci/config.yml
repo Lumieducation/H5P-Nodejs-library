@@ -1,0 +1,14 @@
+version: 2 # use CircleCI 2.0
+  docker-image: 
+    - image: circleci/node:10.16.3
+
+jobs:
+    install:
+      steps:
+        - run: npm ci
+    build:
+      steps:
+        - run: npm run build
+    lint: 
+      steps:
+        - run: npm run lint
