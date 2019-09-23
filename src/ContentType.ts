@@ -1,6 +1,10 @@
-import User from './User';
+import { IUser } from './types';
 
 export default class ContentType {
+    constructor(init?: Partial<ContentType>) {
+        Object.assign(this, init);
+    }
+    
     public categories: string[];
     public createdAt: number;
     public description: string;
@@ -23,16 +27,12 @@ export default class ContentType {
     public tutorial: string;
     public updatedAt: number;
 
-    constructor(init?: Partial<ContentType>) {
-        Object.assign(this, init);
-    }
-
     /**
      * Checks if a user can install this content type.
      * @param {User} user The user for who the method should check whether the content type can be installed.
      * @returns {boolean} true if the user can install it, false if not
      */
-    public canBeInstalledBy(user: User): boolean {
+    public canBeInstalledBy(user: IUser): boolean {
         return (
             user.canUpdateAndInstallLibraries ||
             (user.canInstallRecommended && this.isRecommended)

@@ -1,10 +1,16 @@
-const axios = require('axios');
-const fs = require('fs-extra');
-const { withFile } = require('tmp-promise');
-const promisePipe = require('promisepipe');
+import axios from 'axios';
+import * as fsExtra from 'fs-extra';
+import promisepipe from 'promisepipe';
+import { withFile } from 'tmp-promise';
 
-const H5pError = require('./helpers/H5pError');
-const PackageManager = require('./package-manager');
+
+import ContentTypeCache from './ContentTypeCache';
+import EditorConfig from './EditorConfig';
+import H5pError from './helpers/H5pError';
+import Library from './Library';
+import LibraryManager from './LibraryManager';
+import PackageManager from './PackageManager';
+import { IKeyValueStorage, ITranslationService, IUser } from './types';
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
@@ -15,7 +21,7 @@ const PackageManager = require('./package-manager');
  *   - it checks if a content type in the Hub is installed locally and is outdated locally
  *   - it adds information about only locally installed content types
  */
-class ContentTypeInformationRepository {
+export default class ContentTypeInformationRepository {
     /**
      *
      * @param {ContentTypeCache} contentTypeCache
@@ -26,50 +32,43 @@ class ContentTypeInformationRepository {
      * @param {TranslationService} translationService
      */
     constructor(
-        contentTypeCache,
-        storage,
-        libraryManager,
-        config,
-        user,
-        translationService
-    ) {
-        this._contentTypeCache = contentTypeCache;
-        this._storage = storage;
-        this._libraryManager = libraryManager;
-        this._config = config;
-        this._user = user;
-        this._translationService = translationService;
-    }
+        private contentTypeCache: ContentTypeCache,
+        private storage: IKeyValueStorage,
+        private libraryManager: LibraryManager,
+        private config: EditorConfig,
+        private user: IUser,
+        private translationService: ITranslationService
+    ) { }
 
     /**
      * Gets the information about available content types with all the extra information as listed in the class description.
      */
-    async get() {
-        let cachedHubInfo = await this._contentTypeCache.get();
+    public async get(): Promise<any> {
+        let cachedHubInfo = await this.contentTypeCache.get();
         if (!cachedHubInfo) {
             // try updating cache if it is empty for some reason
-            await this._contentTypeCache.updateIfNecessary();
-            cachedHubInfo = await this._contentTypeCache.get();
+            await this.contentTypeCache.updateIfNecessary();
+            cachedHubInfo = await this.contentTypeCache.get();
         }
         if (!cachedHubInfo) {
             // if the H5P Hub is unreachable use empty array (so that local libraries can be added)
             cachedHubInfo = [];
         }
-        cachedHubInfo = await this._addUserAndInstallationSpecificInfo(
+        cachedHubInfo = await this.addUserAndInstallationSpecificInfo(
             cachedHubInfo
         );
-        cachedHubInfo = await this._addLocalLibraries(cachedHubInfo);
+        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo);
 
         return {
-            outdated:
-                (await this._contentTypeCache.isOutdated()) &&
-                (this._user.canInstallRecommended ||
-                    this._user.canUpdateAndInstallLibraries),
+            apiVersion: this.config.coreApiVersion,
+            details: null, // TODO: implement this (= messages to user)
             libraries: cachedHubInfo,
-            user: this._user.type,
+            outdated:
+                (await this.contentTypeCache.isOutdated()) &&
+                (this.user.canInstallRecommended ||
+                    this.user.canUpdateAndInstallLibraries),
             recentlyUsed: [], // TODO: store this somewhere
-            apiVersion: this._config.coreApiVersion,
-            details: null // TODO: implement this (= messages to user)
+            user: this.user.type
         };
     }
 
@@ -79,56 +78,56 @@ class ContentTypeInformationRepository {
      * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
      * @returns {Promise<boolean>} true if the library was installed.
      */
-    async install(machineName) {
+    public async install(machineName: string): Promise<boolean> {
         if (!machineName) {
             throw new H5pError(
-                this._translationService.getTranslation(
+                this.translationService.getTranslation(
                     'hub-install-no-content-type'
                 )
             );
         }
 
         // Reject content types that are not listed in the hub
-        const localContentType = await this._contentTypeCache.get(machineName);
+        const localContentType = await this.contentTypeCache.get(machineName);
         if (!localContentType || localContentType.length === 0) {
             throw new H5pError(
-                this._translationService.getTranslation(
+                this.translationService.getTranslation(
                     'hub-install-invalid-content-type'
                 )
             );
         }
 
         // Reject installation of content types that the user has no permission to
-        if (!localContentType[0].canBeInstalledBy(this._user)) {
+        if (!localContentType[0].canBeInstalledBy(this.user)) {
             throw new H5pError(
-                this._translationService.getTranslation('hub-install-denied')
+                this.translationService.getTranslation('hub-install-denied')
             );
         }
 
         // Download content type package from the Hub
         const response = await axios.get(
-            this._config.hubContentTypesEndpoint + machineName,
+            this.config.hubContentTypesEndpoint + machineName,
             { responseType: 'stream' }
         );
 
         // withFile is supposed to clean up the temporary file after it has been used
         await withFile(
             async ({ path: tempPackagePath }) => {
-                const writeStream = fs.createWriteStream(tempPackagePath);
+                const writeStream = fsExtra.createWriteStream(tempPackagePath);
                 try {
-                    await promisePipe(response.data, writeStream);
+                    await promisepipe(response.data, writeStream);
                 } catch (error) {
                     throw new H5pError(
-                        this._translationService.getTranslation(
+                        this.translationService.getTranslation(
                             'hub-install-download-failed'
                         )
                     );
                 }
 
                 const packageManger = new PackageManager(
-                    this._libraryManager,
-                    this._translationService,
-                    this._config
+                    this.libraryManager,
+                    this.translationService,
+                    this.config
                 );
                 await packageManger.installLibrariesFromPackage(
                     tempPackagePath
@@ -146,13 +145,13 @@ class ContentTypeInformationRepository {
      * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about
      * locally installed libraries.
      */
-    async _addLocalLibraries(hubInfo) {
-        const localLibsWrapped = await this._libraryManager.getInstalled();
-        let localLibs = Object.keys(localLibsWrapped)
+    private async addLocalLibraries(hubInfo: any[]): Promise<any[]> {
+        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibs = Object.keys(localLibsWrapped)
             .map(
                 machineName =>
                     localLibsWrapped[machineName][
-                        localLibsWrapped[machineName].length - 1
+                    localLibsWrapped[machineName].length - 1
                     ]
             )
             .filter(
@@ -163,36 +162,36 @@ class ContentTypeInformationRepository {
             )
             .map(async localLib => {
                 return {
-                    id: localLib.id,
-                    machineName: localLib.machineName,
-                    title: localLib.title,
-                    description: '',
-                    majorVersion: localLib.majorVersion,
-                    minorVersion: localLib.minorVersion,
-                    patchVersion: localLib.patchVersion,
-                    localMajorVersion: localLib.majorVersion,
-                    localMinorVersion: localLib.minorVersion,
-                    localPatchVersion: localLib.patchVersion,
                     canInstall: false,
-                    installed: true,
-                    isUpToDate: true,
-                    owner: '',
-                    restricted:
-                        this._libraryIsRestricted(localLib) &&
-                        !this._user.canCreateRestricted,
-                    icon: (await this._libraryManager.libraryFileExists(
+                    description: '',
+                    icon: (await this.libraryManager.libraryFileExists(
                         localLib,
                         'icon.svg'
                     ))
-                        ? this._libraryManager.getLibraryFileUrl(
-                              localLib,
-                              'icon.svg'
-                          )
-                        : undefined
+                        ? undefined // this.libraryManager.getLibraryFileUrl(
+                        //  localLib,
+                        //  'icon.svg'
+                        // )
+                        : undefined,
+                    id: localLib.id,
+                    installed: true,
+                    isUpToDate: true,
+                    localMajorVersion: localLib.majorVersion,
+                    localMinorVersion: localLib.minorVersion,
+                    localPatchVersion: localLib.patchVersion,
+                    machineName: localLib.machineName,
+                    majorVersion: localLib.majorVersion,
+                    minorVersion: localLib.minorVersion,
+                    owner: '',
+                    patchVersion: localLib.patchVersion,
+                    restricted:
+                        this.libraryIsRestricted(localLib) &&
+                        !this.user.canCreateRestricted,
+                    title: localLib.title,
                 };
             });
-        localLibs = await Promise.all(localLibs);
-        return hubInfo.concat(localLibs);
+        const finalLocalLibs = await Promise.all(localLibs);
+        return hubInfo.concat(finalLocalLibs);
     }
 
     /**
@@ -200,12 +199,12 @@ class ContentTypeInformationRepository {
      * @param {any[]} hubInfo
      * @returns {Promise<any[]>} The hub information as passed into the method with added information.
      */
-    async _addUserAndInstallationSpecificInfo(hubInfo) {
-        const localLibsWrapped = await this._libraryManager.getInstalled();
+    private async addUserAndInstallationSpecificInfo(hubInfo: any[]): Promise<any[]> {
+        const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped).map(
             machineName =>
                 localLibsWrapped[machineName][
-                    localLibsWrapped[machineName].length - 1
+                localLibsWrapped[machineName].length - 1
                 ]
         );
         await Promise.all(
@@ -216,19 +215,19 @@ class ContentTypeInformationRepository {
                 );
                 if (!localLib) {
                     hubLib.installed = false;
-                    hubLib.restricted = !this._canInstallLibrary(hubLib);
-                    hubLib.canInstall = this._canInstallLibrary(hubLib);
+                    hubLib.restricted = !this.canInstallLibrary(hubLib);
+                    hubLib.canInstall = this.canInstallLibrary(hubLib);
                     hubLib.isUpToDate = true;
                 } else {
                     hubLib.id = localLib.id;
                     hubLib.installed = true;
                     hubLib.restricted =
-                        this._libraryIsRestricted(localLib) &&
-                        !this._user.canCreateRestricted;
+                        this.libraryIsRestricted(localLib) &&
+                        !this.user.canCreateRestricted;
                     hubLib.canInstall =
-                        !this._libraryIsRestricted(localLib) &&
-                        this._canInstallLibrary(hubLib);
-                    hubLib.isUpToDate = !(await this._libraryManager.libraryHasUpgrade(
+                        !this.libraryIsRestricted(localLib) &&
+                        this.canInstallLibrary(hubLib);
+                    hubLib.isUpToDate = !(await this.libraryManager.libraryHasUpgrade(
                         hubLib
                     ));
                     hubLib.localMajorVersion = localLib.majorVersion;
@@ -242,16 +241,27 @@ class ContentTypeInformationRepository {
     }
 
     /**
+     * Checks if users can install library due to their rights.
+     * @param {Library} library
+     */
+    private canInstallLibrary(library: any): boolean {
+        return (
+            this.user.canUpdateAndInstallLibraries ||
+            (library.isRecommended && this.user.canInstallRecommended)
+        );
+    }
+
+    /**
      * Checks if the library is restricted e.g. because it is LRS dependent and the
      * admin has restricted them or because it was set as restricted individually.
      * @param {Library} library
      */
-    _libraryIsRestricted(library) {
-        if (this._config.enableLrsContentTypes) {
+    private libraryIsRestricted(library: Library): boolean {
+        if (this.config.enableLrsContentTypes) {
             return library.restricted;
         }
         if (
-            this._config.lrsContentTypes.some(
+            this.config.lrsContentTypes.some(
                 contentType => contentType === library.machineName
             )
         ) {
@@ -259,17 +269,4 @@ class ContentTypeInformationRepository {
         }
         return library.restricted;
     }
-
-    /**
-     * Checks if users can install library due to their rights.
-     * @param {Library} library
-     */
-    _canInstallLibrary(library) {
-        return (
-            this._user.canUpdateAndInstallLibraries ||
-            (library.isRecommended && this._user.canInstallRecommended)
-        );
-    }
 }
-
-module.exports = ContentTypeInformationRepository;

@@ -27,10 +27,9 @@ export default class Library implements IDependency {
     public minorVersion: number;
     public patchVersion: number;
     public preloadedDependencies: IDependency[];
+    public restricted: boolean;
     public runnable: boolean;
     public title: string;
-
-    private restricted: boolean;
 
     /**
      * Creates a library object from a library metadata object (contents of library.json).
