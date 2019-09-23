@@ -45,7 +45,15 @@ export interface IIntegration {
     };
 }
 
-export interface IEditorIntegration { }
+export interface IEditorIntegration {
+    ajaxPath: string;
+    assets: {
+        css: string[];
+        js: string[];
+    };
+    filesPath: string;
+    libraryUrl: string;
+}
 
 export interface ICSS {
     path: string;
@@ -99,7 +107,12 @@ export interface IContentStorage {
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
-    createContent(metadata: any, content: any, user: IUser, contentId?: ContentId): Promise<ContentId>;
+    createContent(
+        metadata: any,
+        content: any,
+        user: IUser,
+        contentId?: ContentId
+    ): Promise<ContentId>;
     createContentId(): Promise<ContentId>;
     deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
     getContentFileStream(
@@ -110,21 +123,34 @@ export interface IContentStorage {
 }
 
 export interface ILibraryStorage {
-    addLibraryFile(library: Library, fileLocalPath: string, readStream: Stream): Promise<boolean>;
+    addLibraryFile(
+        library: Library,
+        fileLocalPath: string,
+        readStream: Stream
+    ): Promise<boolean>;
     clearLibraryFiles(library: Library): Promise<any>;
     fileExists(library: Library, filename: string): Promise<boolean>;
     getFileStream(library: Library, file: string): Promise<Stream>;
     getId(library: Library): Promise<number>;
     getInstalled(...machineNames: string[]): Promise<Library[]>;
     getLanguageFiles(library: Library): Promise<string[]>;
-    installLibrary(libraryData: ILibraryJson, restricted: boolean): Promise<Library>;
+    installLibrary(
+        libraryData: ILibraryJson,
+        restricted: boolean
+    ): Promise<Library>;
     removeLibrary(library: Library): Promise<any>;
-    updateLibrary(library: Library, libraryMetadata: ILibraryJson): Promise<any>;
+    updateLibrary(
+        library: Library,
+        libraryMetadata: ILibraryJson
+    ): Promise<any>;
 }
 
-export interface IContentJson { }
+export type Content = any;
 
-export interface ISemantics { }
+export interface ISemantic {
+    label: string;
+    name: string;
+}
 
 export interface ILibraryJson extends Library {
     editorDependencies: IDependency[];
@@ -187,10 +213,8 @@ export interface ITranslationService {
 }
 
 export interface IURLConfig {
-    ajaxPath: string;
-    baseUrl: string;
-    filesPath: string;
-    libraryUrl: string;
+    ajaxPath?: string;
+    baseUrl?: string;
+    filesPath?: string;
+    libraryUrl?: string;
 }
-
-export interface IContent {}
