@@ -20,9 +20,9 @@ describe('FileContentStorage (repository that saves content objects to a local d
 
     it('throws an error if the passed path is not writable', async () => {
         const storage = new FileContentStorage('/*:%illegal-path');
-        await expect(storage.createContent({}, {}, new User())).rejects.toBeInstanceOf(
-            Error
-        );
+        await expect(
+            storage.createContent({}, {}, new User())
+        ).rejects.toBeInstanceOf(Error);
     });
 
     it('throws an error if you add content to non-existent contentId', async () => {
@@ -64,7 +64,9 @@ describe('FileContentStorage (repository that saves content objects to a local d
         await withDir(
             async ({ path: tempDirPath }) => {
                 const storage = new FileContentStorage(tempDirPath);
-                await expect(storage.deleteContent(1, new User())).rejects.toEqual(
+                await expect(
+                    storage.deleteContent("1", new User())
+                ).rejects.toEqual(
                     new Error(
                         'Cannot delete content with id 1: It does not exist.'
                     )

@@ -101,7 +101,7 @@ export interface ILibraryStorage {
     fileExists(library: Library, filename: string): Promise<boolean>;
     getFileStream(library: Library, file: string): Promise<Stream>;
     getId(library: Library): Promise<number>;
-    getInstalled(machineNames?: string[]): Promise<Library[]>;
+    getInstalled(...machineNames: string[]): Promise<Library[]>;
     getLanguageFiles(library: Library): Promise<string[]>;
     installLibrary(libraryData: ILibraryJson, restricted: boolean): Promise<Library>;
     removeLibrary(library: Library): Promise<any>;
