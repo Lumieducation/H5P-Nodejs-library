@@ -10,7 +10,8 @@
         "allowJs": true,
         "sourceMap": true,
         "baseUrl": "./",
-        "outDir": "./build"
+        "outDir": "./build",
+        "resolveJsonModule": true
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"]
