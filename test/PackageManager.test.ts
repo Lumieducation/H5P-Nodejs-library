@@ -92,7 +92,8 @@ describe('basic package manager functionality', () => {
 
                 // Check if content (content/content.json) was added correctly
                 expect(
-                    ((await contentManager.loadContent(contentId, user)) as any).greeting
+                    ((await contentManager.loadContent(contentId, user)) as any)
+                        .greeting
                 ).toEqual('Hello world!');
                 const fileStream = contentManager.getContentFileStream(
                     contentId,

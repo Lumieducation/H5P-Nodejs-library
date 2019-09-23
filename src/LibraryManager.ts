@@ -10,7 +10,7 @@ import {
     ILibraryData,
     ILibraryJson,
     ILibraryStorage,
-    ISemantics
+    ISemantic
 } from './types';
 
 import Library from './Library';
@@ -66,7 +66,7 @@ export default class LibraryManager {
     public async getInstalled(machineNames?: string[]): Promise<any> {
         let libraries = await this.libraryStorage.getInstalled(...machineNames);
         libraries = (await Promise.all(
-            libraries.map(async (oldLib: Library) => {
+            libraries.map(async oldLib => {
                 const newLib = oldLib;
                 const info = await this.loadLibrary(oldLib);
                 newLib.patchVersion = info.patchVersion;
@@ -75,7 +75,7 @@ export default class LibraryManager {
                 newLib.title = info.title;
                 return newLib;
             })
-        )).sort((lib1: Library, lib2: Library) => lib1.compare(lib2));
+        )).sort((lib1, lib2) => lib1.compare(lib2));
 
         const returnObject = {};
         for (const library of libraries) {
@@ -129,7 +129,7 @@ export default class LibraryManager {
      * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
      */
     public async isPatchedLibrary(library: Library): Promise<boolean> {
-        const wrappedLibraryInfos: Library[] = await this.getInstalled([
+        const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
@@ -248,7 +248,7 @@ export default class LibraryManager {
      * @param {Library} library
      * @returns {Promise<any>} the content of semantics.json
      */
-    public async loadSemantics(library: Library): Promise<ISemantics> {
+    public async loadSemantics(library: Library): Promise<ISemantic[]> {
         return this.getJsonFile(library, 'semantics.json');
     }
 

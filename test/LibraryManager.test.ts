@@ -12,7 +12,7 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
 
-        const libraryObject = await libManager.getInstalled();
+        const libraryObject = await libManager.getInstalled([]);
         expect(Object.keys(libraryObject).length).toEqual(
             (await fsExtra.readdir('test/data/libraries')).length
         );
@@ -203,9 +203,9 @@ describe('basic file library manager functionality', () => {
                 ).resolves.toEqual(true);
 
                 // check if library version 1.1.2 is now installed
-                const installedLibraries = await libManager.getInstalled(
-                    ['H5P.Example1']
-                );
+                const installedLibraries = await libManager.getInstalled([
+                    'H5P.Example1'
+                ]);
                 expect(installedLibraries['H5P.Example1'].length).toEqual(1);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
                     1
@@ -249,9 +249,9 @@ describe('basic file library manager functionality', () => {
                 );
 
                 // check that library version 1.1.3 is NOT installed
-                const installedLibraries = await libManager.getInstalled(
-                    ['H5P.Example1']
-                );
+                const installedLibraries = await libManager.getInstalled([
+                    'H5P.Example1'
+                ]);
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
                 // make sure there is no trace of the library left

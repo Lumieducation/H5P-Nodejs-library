@@ -1,8 +1,7 @@
-const path = require('path');
-
-const H5PEditor = require('..').Editor;
-const LibraryManager = require('../src/library-manager');
-const FileLibraryStorage = require('../src/file-library-storage');
+import path from 'path';
+import FileLibraryStorage from '../src/FileLibraryStorage';
+import H5PEditor from '../src/H5PEditor';
+import LibraryManager from '../src/LibraryManager';
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
@@ -10,7 +9,10 @@ describe('getting overview about multiple libraries', () => {
             {},
             null,
             null,
-            new FileLibraryStorage(path.resolve('test/data/libraries'))
+            new FileLibraryStorage(path.resolve('test/data/libraries')),
+            null,
+            null,
+            null
         )
             .getLibraryOverview(['H5P.Example1 1.1'])
             .then(libraries =>
@@ -35,7 +37,10 @@ describe('getting overview about multiple libraries', () => {
             {},
             null,
             null,
-            new FileLibraryStorage(path.resolve('test/data/libraries'))
+            new FileLibraryStorage(path.resolve('test/data/libraries')),
+            null,
+            null,
+            null
         )
             .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])
 

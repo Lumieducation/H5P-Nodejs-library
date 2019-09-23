@@ -23,9 +23,9 @@ import TranslationService from './TranslationService';
 import EditorConfig from './EditorConfig';
 
 import {
+    Content,
     ContentId,
     IAssets,
-    IContent,
     IContentStorage,
     IDependency,
     IEditorIntegration,
@@ -121,6 +121,7 @@ export default class H5PEditor {
         ]).then(([assets, semantics, languageObject, languages]) => ({
             languages,
             semantics,
+            // tslint:disable-next-line: object-literal-sort-keys
             css: assets.styles,
             defaultLanguage: null,
             language: languageObject,
@@ -183,7 +184,7 @@ export default class H5PEditor {
         library: string;
         params: {
             metadata: IH5PJson;
-            params: IContent;
+            params: Content;
         };
     }> {
         return Promise.all([
@@ -227,7 +228,7 @@ export default class H5PEditor {
 
     public async saveH5P(
         contentId: ContentId,
-        content: IContent,
+        content: Content,
         metadata: IMetadata,
         libraryName: string
     ): Promise<ContentId> {

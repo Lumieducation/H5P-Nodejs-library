@@ -1,16 +1,9 @@
-import { IUser } from "./types";
+import { IUser } from './types';
 
 /**
  * Example user object
  */
 export default class User implements IUser {
-    public id: string;
-    public name: string;
-    public canInstallRecommended: boolean;
-    public canUpdateAndInstallLibraries: boolean;
-    public canCreateRestricted: boolean;
-    public type: 'local';
-
     constructor() {
         this.id = '1';
         this.name = 'Firstname Surname';
@@ -19,4 +12,11 @@ export default class User implements IUser {
         this.canCreateRestricted = true;
         this.type = 'local';
     }
+
+    public canCreateRestricted: boolean;
+    public canInstallRecommended: boolean;
+    public canUpdateAndInstallLibraries: boolean;
+    public id: string;
+    public name: string;
+    public type: 'local';
 }

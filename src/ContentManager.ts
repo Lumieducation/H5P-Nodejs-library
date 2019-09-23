@@ -5,13 +5,7 @@ import { Stream } from 'stream';
 
 import { streamToString } from './helpers/StreamHelpers';
 
-import {
-    ContentId,
-    IContentJson,
-    IContentStorage,
-    IH5PJson,
-    IUser
-} from './types';
+import { Content, ContentId, IContentStorage, IH5PJson, IUser } from './types';
 
 /**
  * The ContentManager takes care of saving content and dependent files. It only contains storage-agnostic functionality and
@@ -60,12 +54,12 @@ export default class ContentManager {
     public async copyContentFromDirectory(
         packageDirectory: string,
         user: IUser,
-        contentId: ContentId
+        contentId?: ContentId
     ): Promise<ContentId> {
         const metadata: IH5PJson = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
-        const content: IContentJson = await fsExtra.readJSON(
+        const content: Content = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (await globPromise(
@@ -90,14 +84,14 @@ export default class ContentManager {
                         file
                     );
                     return this.contentStorage.addContentFile(
-                        contentId,
+                        newContentId,
                         localPath,
                         readStream
                     );
                 })
             );
         } catch (error) {
-            await this.contentStorage.deleteContent(contentId);
+            await this.contentStorage.deleteContent(newContentId);
             throw error;
         }
         return newContentId;
@@ -113,7 +107,7 @@ export default class ContentManager {
      */
     public async createContent(
         metadata: IH5PJson,
-        content: IContentJson,
+        content: Content,
         user: IUser,
         contentId: ContentId
     ): Promise<ContentId> {
@@ -161,7 +155,7 @@ export default class ContentManager {
     public async loadContent(
         contentId: ContentId,
         user: IUser
-    ): Promise<IContentJson> {
+    ): Promise<Content> {
         return this.getFileJson(contentId, 'content/content.json', user);
     }
 

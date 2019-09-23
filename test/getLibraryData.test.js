@@ -1,8 +1,8 @@
-const H5PEditor = require('..').Editor;
+import H5PEditor from '../src/H5PEditor';
 
 describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
-        const h5pEditor = new H5PEditor();
+        const h5pEditor = new H5PEditor({}, null, null, null, null, null, null);
         h5pEditor.libraryManager = {
             loadSemantics: () => Promise.resolve([]),
             loadLibrary: () => {

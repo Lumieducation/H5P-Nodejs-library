@@ -6,7 +6,7 @@ module.exports = {
     FileContentStorage: require('./src/FileContentStorage'),
     User: require('./src/User'),
     TranslationService: require('./src/TranslationService'),
-    Editor: require('./src/h5p-editor'),
+    Editor: require('./src/H5PEditor'),
     englishStrings: require('./src/translations/en.json'),
-    Library: require('./src/Library'),
-}
+    Library: require('./src/Library')
+};
