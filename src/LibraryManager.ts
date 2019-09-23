@@ -64,7 +64,7 @@ export default class LibraryManager {
      * values are arrays of Library objects, which represent the different versions installed of this library.
      */
     public async getInstalled(machineNames?: string[]): Promise<any> {
-        let libraries = await this.libraryStorage.getInstalled(machineNames);
+        let libraries = await this.libraryStorage.getInstalled(...machineNames);
         libraries = (await Promise.all(
             libraries.map(async (oldLib: Library) => {
                 const newLib = oldLib;
@@ -339,7 +339,7 @@ export default class LibraryManager {
                     fileFullPath
                 );
                 if (fileLocalPath === 'library.json') {
-                    return Promise.resolve();
+                    return Promise.resolve(true);
                 }
                 const readStream: Stream = fsExtra.createReadStream(
                     fileFullPath
