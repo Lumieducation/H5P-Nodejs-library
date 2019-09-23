@@ -1,4 +1,4 @@
-import * as ajv from 'ajv';
+import ajv from 'ajv';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';

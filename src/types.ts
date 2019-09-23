@@ -45,7 +45,7 @@ export interface IIntegration {
     url: string;
 }
 
-export interface IEditorIntegration {}
+export interface IEditorIntegration { }
 
 export interface ICSS {
     path: string;
@@ -70,11 +70,11 @@ export interface ILibraryData {
 }
 
 export interface IUser {
-    id: string;
-    name: string;
+    canCreateRestricted: boolean;
     canInstallRecommended: boolean;
     canUpdateAndInstallLibraries: boolean;
-    canCreateRestricted: boolean;
+    id: string;
+    name: string;
     type: string;
 }
 
@@ -85,9 +85,9 @@ export interface IContentStorage {
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
-    createContent(metadata, content, user, contentId): Promise<ContentId>;
+    createContent(metadata: any, content: any, user: IUser, contentId?: ContentId): Promise<ContentId>;
     createContentId(): Promise<ContentId>;
-    deleteContent(contentId: ContentId): void;
+    deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
     getContentFileStream(
         contentId: ContentId,
         file: string,
@@ -96,31 +96,21 @@ export interface IContentStorage {
 }
 
 export interface ILibraryStorage {
+    addLibraryFile(library: Library, fileLocalPath: string, readStream: Stream): Promise<boolean>;
+    clearLibraryFiles(library: Library): Promise<any>;
+    fileExists(library: Library, filename: string): Promise<boolean>;
+    getFileStream(library: Library, file: string): Promise<Stream>;
     getId(library: Library): Promise<number>;
     getInstalled(machineNames?: string[]): Promise<Library[]>;
     getLanguageFiles(library: Library): Promise<string[]>;
-    getFileStream(library: Library, file: string): Promise<Stream>;
-    updateLibrary(
-        library: Library,
-        libraryMetadata: ILibraryJson
-    ): Promise<any>;
-    clearLibraryFiles(library: Library): Promise<any>;
+    installLibrary(libraryData: ILibraryJson, restricted: boolean): Promise<Library>;
     removeLibrary(library: Library): Promise<any>;
-    fileExists(library: Library, filename: string): Promise<boolean>;
-    installLibrary(
-        libraryData: ILibraryJson,
-        restricted: boolean
-    ): Promise<Library>;
-    addLibraryFile(
-        library: Library,
-        fileLocalPath: string,
-        readStream: Stream
-    ): Promise<void>;
+    updateLibrary(library: Library, libraryMetadata: ILibraryJson): Promise<any>;
 }
 
-export interface IContentJson {}
+export interface IContentJson { }
 
-export interface ISemantics {}
+export interface ISemantics { }
 
 export interface ILibraryJson extends IDependency, Library {
     libraryId: number;
@@ -157,8 +147,8 @@ export interface IRegistrationData {
 }
 
 export interface IUsageStatistics {
-    num_authors: number;
     libraries: any;
+    num_authors: number;
 }
 
 export interface ITranslationService {

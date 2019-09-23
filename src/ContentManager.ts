@@ -1,5 +1,5 @@
 import fsExtra from 'fs-extra';
-import * as globPromise from 'glob-promise';
+import globPromise from 'glob-promise';
 import * as path from 'path';
 import { Stream } from 'stream';
 
@@ -97,7 +97,7 @@ export default class ContentManager {
                 })
             );
         } catch (error) {
-            this.contentStorage.deleteContent(contentId);
+            await this.contentStorage.deleteContent(contentId);
             throw error;
         }
         return newContentId;

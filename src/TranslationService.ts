@@ -1,4 +1,4 @@
-import * as escapeHtml from 'escape-html';
+import escapeHtml from 'escape-html';
 
 import { ITranslationService } from './types';
 

@@ -4,15 +4,14 @@ import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
-import h5pError from './helpers/H5pError';
-import { ValidationError } from './helpers/validator-builder';
+import ContentManager from './ContentManager';
+import EditorConfig from './EditorConfig';
+import H5pError from './helpers/H5pError';
+import ValidationError from './helpers/ValidationError';
+import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
 
-import ContentManager from './ContentManager';
-import LibraryManager from './LibraryManager';
-import H5PConfig from './EditorConfig';
-
-import { ContentId, IUser } from './types';
+import { ContentId, ITranslationService, IUser } from './types';
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
  */
@@ -20,13 +19,13 @@ export default class PackageManager {
     /**
      * @param {LibraryManager} libraryManager
      * @param {TranslationService} translationService
-     * @param {H5PConfig} config
+     * @param {EditorConfig} config
      * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageManger to copy content from a package (e.g. Upload option in the editor)
      */
     constructor(
         libraryManager: LibraryManager,
-        translationService: TranslationService,
-        config: H5PConfig,
+        translationService: ITranslationService,
+        config: EditorConfig,
         contentManager: ContentManager = null
     ) {
         this.libraryManager = libraryManager;
@@ -35,10 +34,10 @@ export default class PackageManager {
         this.contentManager = contentManager;
     }
 
-    private config: H5PConfig;
+    private config: EditorConfig;
     private contentManager: ContentManager;
     private libraryManager: LibraryManager;
-    private translationService: TranslationService;
+    private translationService: ITranslationService;
 
     /**
      * Extracts a H5P package to the specified directory.
@@ -196,7 +195,7 @@ export default class PackageManager {
             }
         } catch (error) {
             if (error instanceof ValidationError) {
-                throw new h5pError(error.message); // TODO: create AJAX response?
+                throw new H5pError(error.message); // TODO: create AJAX response?
             } else {
                 throw error;
             }

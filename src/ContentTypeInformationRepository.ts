@@ -3,7 +3,6 @@ import * as fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
 
-
 import ContentTypeCache from './ContentTypeCache';
 import EditorConfig from './EditorConfig';
 import H5pError from './helpers/H5pError';

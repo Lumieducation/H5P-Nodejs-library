@@ -1,24 +1,24 @@
-const path = require('path');
-const MockAdapter = require('axios-mock-adapter');
-const axios = require('axios');
-const fs = require('fs-extra');
-const shortid = require('shortid');
+import axios from 'axios';
+import axiosMockAdapter from 'axios-mock-adapter';
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
+import shortid from 'shortid';
 
-const InMemoryStorage = require('../src/InMemoryStorage');
-const H5PEditorConfig = require('../src/EditorConfig');
-const LibraryManager = require('../src/library-manager');
-const FileLibraryStorage = require('../src/file-library-storage');
-const ContentTypeCache = require('../src/content-type-cache');
-const ContentTypeInformationRepository = require('../src/content-type-information-repository');
-const User = require('../src/User');
-const TranslationService = require('../src/translation-service');
+import ContentTypeCache from '../src/ContentTypeCache';
+import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
+import EditorConfig from '../src/EditorConfig';
+import FileLibraryStorage from '../src/FileLibraryStorage';
+import InMemoryStorage from '../src/InMemoryStorage';
+import LibraryManager from '../src/LibraryManager';
+import TranslationService from '../src/TranslationService';
+import User from '../src/User';
 
-const axiosMock = new MockAdapter(axios);
+const axiosMock = new axiosMockAdapter(axios);
 
 describe('Content type information repository (= connection to H5P Hub)', () => {
     it('gets content types from hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data`)
         );
@@ -53,7 +53,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
     });
     it("doesn't fail if update wasn't called", async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data`)
         );
@@ -87,7 +87,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('adds local libraries', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -117,7 +117,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('detects updates to local libraries', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -149,7 +149,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('returns local libraries if H5P Hub is unreachable', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -174,7 +174,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('sets LRS dependent content types to restricted', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -212,7 +212,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install rejects invalid machine names', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -242,7 +242,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     'hub-install-invalid-content-type'
             })
         );
-        await expect(repository.install()).rejects.toThrow(
+        await expect(repository.install(undefined)).rejects.toThrow(
             'hub-install-no-content-type'
         );
         await expect(repository.install('asd')).rejects.toThrow(
@@ -252,7 +252,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install rejects unauthorized users', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -297,7 +297,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install content types from the hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new H5PEditorConfig(storage);
+        const config = new EditorConfig(storage);
 
         const tmpDir = `${path.resolve('')}/test/tmp-${shortid()}`;
         try {
@@ -337,7 +337,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             const libs = await libManager.getInstalled();
             expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
         } finally {
-            await fs.remove(tmpDir);
+            await fsExtra.remove(tmpDir);
         }
     }, 30000);
 });

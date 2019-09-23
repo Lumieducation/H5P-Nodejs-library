@@ -6,8 +6,8 @@ import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
 import EditorConfig from '../src/EditorConfig';
-import FileContentyStorage from '../src/file-content-storage';
-import FileLibraryStorage from '../src/file-library-storage';
+import FileContentStorage from '../src/FileContentStorage';
+import FileLibraryStorage from '../src/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageManager from '../src/PackageManager';
 import TranslationService from '../src/TranslationService';
@@ -61,7 +61,7 @@ describe('basic package manager functionality', () => {
                 user.canUpdateAndInstallLibraries = true;
 
                 const contentManager = new ContentManager(
-                    new FileContentyStorage(contentDir)
+                    new FileContentStorage(contentDir)
                 );
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
