@@ -41,8 +41,10 @@ var ns = H5PEditor;
         $upload.hide();
         if (h5peditor === undefined) {
             $.ajax({
-                type: 'GET',
-                url: 'params' + window.location.search,
+                error: function(res) {
+                    h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
+                    $create.show();
+                },
                 success: function(res) {
                     h5peditor = new ns.Editor(
                         res.library,
@@ -52,10 +54,8 @@ var ns = H5PEditor;
                     $create.show();
                     // $type.change();
                 },
-                error: function(res) {
-                    h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
-                    $create.show();
-                }
+                type: 'GET',
+                url: 'params' + window.location.search
             });
         }
         $create.show();
@@ -90,17 +90,14 @@ var ns = H5PEditor;
                     $params.val(JSON.stringify(params));
 
                     $.ajax({
-                        type: 'POST',
                         data: JSON.stringify({
-                            params,
-                            library: h5peditor.getLibrary()
+                            library: h5peditor.getLibrary(),
+                            params
                         }),
-                        success: function(res) {
-                            console.log('success', res);
-                        },
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        type: 'POST'
                     });
 
                     return event.preventDefault();
