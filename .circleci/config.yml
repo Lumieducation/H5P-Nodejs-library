@@ -1,0 +1,77 @@
+version: 2
+jobs:
+    install:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+    build:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run build
+    lint:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run lint
+    format:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run format:check
+    unit-tests:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run test
+workflows:
+    version: 2
+    h5peditor:
+        jobs:
+            - install
+            - build:
+                  requires:
+                      - install
+            - lint
+            - format
+            - unit-tests
