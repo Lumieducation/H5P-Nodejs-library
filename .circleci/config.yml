@@ -51,7 +51,7 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run format:check
-    jest-tests:
+    unit-tests:
         docker:
             - image: circleci/node:10-browsers-legacy
         steps:
@@ -72,3 +72,6 @@ workflows:
             - build:
                   requires:
                       - install
+            - lint
+            - format
+            - unit-tests
