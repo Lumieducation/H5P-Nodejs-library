@@ -1,12 +1,12 @@
 module.exports = {
-    JsonStorage: require('./src/JsonStorage'),
-    InMemoryStorage: require('./src/InMemoryStorage'),
-    Config: require('./src/EditorConfig'),
-    FileLibraryStorage: require('./src/FileLibraryStorage'),
-    FileContentStorage: require('./src/FileContentStorage'),
-    User: require('./src/User'),
-    TranslationService: require('./src/TranslationService'),
-    Editor: require('./src/H5PEditor'),
-    englishStrings: require('./src/translations/en.json'),
-    Library: require('./src/Library')
+    JsonStorage: require('./build/src/JsonStorage'),
+    InMemoryStorage: require('./build/src/InMemoryStorage'),
+    Config: require('./build/src/EditorConfig'),
+    FileLibraryStorage: require('./build/src/FileLibraryStorage'),
+    FileContentStorage: require('./build/src/FileContentStorage'),
+    User: require('./build/src/User'),
+    TranslationService: require('./build/src/TranslationService'),
+    Editor: require('./build/src/H5PEditor'),
+    englishStrings: require('./build/src/translations/en.json'),
+    Library: require('./build/src/Library')
 };
