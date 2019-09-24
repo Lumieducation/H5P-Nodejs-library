@@ -68,6 +68,7 @@ export interface ILibraryData {
     defaultLanguage: 'string';
     javascript: string[];
     language: any;
+    languages: string[];
     name: string;
     preloadedCss?: ICSS[];
     preloadedJs?: IJS[];

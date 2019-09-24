@@ -83,6 +83,8 @@ export default class H5PEditor {
         );
     }
 
+    public libraryManager: LibraryManager;
+
     private ajaxPath: string;
     private baseUrl: string;
     private config: EditorConfig;
@@ -90,7 +92,6 @@ export default class H5PEditor {
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
-    private libraryManager: LibraryManager;
     private libraryUrl: string;
     private packageManager: PackageManager;
     private renderer: any;
