@@ -6,7 +6,12 @@ const FileLibraryStorage = require('../src/file-library-storage');
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
-        return new H5PEditor({}, null, null, new FileLibraryStorage(path.resolve("test/data/libraries")))
+        return new H5PEditor(
+            {},
+            null,
+            null,
+            new FileLibraryStorage(path.resolve('test/data/libraries'))
+        )
             .getLibraryOverview(['H5P.Example1 1.1'])
             .then(libraries =>
                 expect(libraries).toEqual([
@@ -26,7 +31,12 @@ describe('getting overview about multiple libraries', () => {
     });
 
     it('return information about multiple libraries', () => {
-        return new H5PEditor({}, null, null, new FileLibraryStorage(path.resolve("test/data/libraries")))
+        return new H5PEditor(
+            {},
+            null,
+            null,
+            new FileLibraryStorage(path.resolve('test/data/libraries'))
+        )
             .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])
 
             .then(libraries => {

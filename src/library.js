@@ -14,19 +14,27 @@ class Library {
     }
 
     /**
-     * Compares libraries by giving precedence to title, then major version, then minor version 
-     * @param {Library} otherLibrary 
+     * Compares libraries by giving precedence to title, then major version, then minor version
+     * @param {Library} otherLibrary
      */
     compare(otherLibrary) {
-        return this.title.localeCompare(otherLibrary.title) || this.majorVersion - otherLibrary.majorVersion || this.minorVersion - otherLibrary.minorVersion;
+        return (
+            this.title.localeCompare(otherLibrary.title) ||
+            this.majorVersion - otherLibrary.majorVersion ||
+            this.minorVersion - otherLibrary.minorVersion
+        );
     }
 
     /**
-     * Compares libraries by giving precedence to major version, then minor version, then patch version. 
-     * @param {Library} otherLibrary 
+     * Compares libraries by giving precedence to major version, then minor version, then patch version.
+     * @param {Library} otherLibrary
      */
     compareVersions(otherLibrary) {
-        return this.majorVersion - otherLibrary.majorVersion || this.minorVersion - otherLibrary.minorVersion || this.patchVersion - otherLibrary.patchVersion;
+        return (
+            this.majorVersion - otherLibrary.majorVersion ||
+            this.minorVersion - otherLibrary.minorVersion ||
+            this.patchVersion - otherLibrary.patchVersion
+        );
     }
 
     /**
@@ -39,7 +47,7 @@ class Library {
     /**
      * Creates a library object from a library name
      * @param {string} libraryName The library name in a format H5P.Example-1.0
-     * @param {boolean} restricted true if the library is restricted 
+     * @param {boolean} restricted true if the library is restricted
      * @returns {Library}
      */
     static createFromName(libraryName, restricted) {
@@ -50,17 +58,29 @@ class Library {
             throw new Error(`Library name ${libraryName} is invalid.`);
         }
 
-        return new Library(result[1], Number.parseInt(result[2]), Number.parseInt(result[3]), undefined, restricted)
+        return new Library(
+            result[1],
+            Number.parseInt(result[2]),
+            Number.parseInt(result[3]),
+            undefined,
+            restricted
+        );
     }
 
     /**
      * Creates a library object from a library metadata object (contents of library.json).
      * @param {any} metadata The library metadata as in library.json
-     * @param {boolean} restricted true if the library is restricted 
+     * @param {boolean} restricted true if the library is restricted
      * @returns {Library}
      */
     static createFromMetadata(metadata, restricted) {
-        return new Library(metadata.machineName, metadata.majorVersion, metadata.minorVersion, metadata.patchVersion, restricted);
+        return new Library(
+            metadata.machineName,
+            metadata.majorVersion,
+            metadata.minorVersion,
+            metadata.patchVersion,
+            restricted
+        );
     }
 }
 

@@ -4,9 +4,9 @@ const fs = require('fs-extra');
 const promisePipe = require('promisepipe');
 const { dir } = require('tmp-promise');
 
-const H5pError = require("./helpers/h5p-error");
+const H5pError = require('./helpers/h5p-error');
 const { ValidationError } = require('./helpers/validator-builder');
-const PackageValidator = require("./package-validator");
+const PackageValidator = require('./package-validator');
 
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
@@ -14,11 +14,16 @@ const PackageValidator = require("./package-validator");
 class PackageManager {
     /**
      * @param {LibraryManager} libraryManager
-     * @param {TranslationService} translationService 
-     * @param {H5PConfig} config 
+     * @param {TranslationService} translationService
+     * @param {H5PConfig} config
      * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageManger to copy content from a package (e.g. Upload option in the editor)
      */
-    constructor(libraryManager, translationService, config, contentManager = null) {
+    constructor(
+        libraryManager,
+        translationService,
+        config,
+        contentManager = null
+    ) {
         this._libraryManager = libraryManager;
         this._translationService = translationService;
         this._config = config;
@@ -32,7 +37,10 @@ class PackageManager {
      * @returns {Promise<void>}
      */
     async installLibrariesFromPackage(packagePath) {
-        return this._processPackage(packagePath, { installLibraries: true, copyContent: false });
+        return this._processPackage(packagePath, {
+            installLibraries: true,
+            copyContent: false
+        });
     }
 
     /**
@@ -44,7 +52,15 @@ class PackageManager {
      * @returns {Promise<number>} the id of the newly created content
      */
     async addPackageLibrariesAndContent(packagePath, user, contentId) {
-        return this._processPackage(packagePath, { installLibraries: user.canUpdateAndInstallLibraries, copyContent: true }, user, contentId);
+        return this._processPackage(
+            packagePath,
+            {
+                installLibraries: user.canUpdateAndInstallLibraries,
+                copyContent: true
+            },
+            user,
+            contentId
+        );
     }
 
     /**
@@ -55,8 +71,16 @@ class PackageManager {
      * @param {User} user (optional) the user who wants to copy content (only needed when copying content)
      * @returns {Promise<number|undefined>} The id of the newly created content when content was copied or undefined otherwise.
      */
-    async _processPackage(packagePath, { installLibraries = false, copyContent = false }, user, contentId) {
-        const packageValidator = new PackageValidator(this._translationService, this._config);
+    async _processPackage(
+        packagePath,
+        { installLibraries = false, copyContent = false },
+        user,
+        contentId
+    ) {
+        const packageValidator = new PackageValidator(
+            this._translationService,
+            this._config
+        );
         try {
             await packageValidator.validatePackage(packagePath, false, true); // no need to check result as the validator throws an exception if there is an error
             const { path: tempDirPath } = await dir(); // we don't use withDir here, to have better error handling (catch block below)
@@ -70,33 +94,46 @@ class PackageManager {
 
                 // install all libraries
                 if (installLibraries) {
-                    await Promise.all(dirContent.filter(dirEntry => dirEntry !== "h5p.json" && dirEntry !== "content").map(dirEntry =>
-                        this._libraryManager.installFromDirectory(path.join(tempDirPath, dirEntry), { restricted: false })
-                    ));
+                    await Promise.all(
+                        dirContent
+                            .filter(
+                                dirEntry =>
+                                    dirEntry !== 'h5p.json' &&
+                                    dirEntry !== 'content'
+                            )
+                            .map(dirEntry =>
+                                this._libraryManager.installFromDirectory(
+                                    path.join(tempDirPath, dirEntry),
+                                    { restricted: false }
+                                )
+                            )
+                    );
                 }
 
                 // Copy content to the repository
                 if (copyContent) {
                     if (!this._contentManager) {
-                        throw new Error("PackageManager was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!")
+                        throw new Error(
+                            'PackageManager was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
+                        );
                     }
-                    contentId = await this._contentManager.copyContentFromDirectory(tempDirPath, user, contentId);
+                    contentId = await this._contentManager.copyContentFromDirectory(
+                        tempDirPath,
+                        user,
+                        contentId
+                    );
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 // otherwise finally swallows errors
                 throw error;
-            }
-            finally {
+            } finally {
                 // clean up temporary files in any case
                 await fs.remove(tempDirPath);
             }
-
         } catch (error) {
             if (error instanceof ValidationError) {
                 throw new H5pError(error.message); // TODO: create AJAX response?
-            }
-            else {
+            } else {
                 throw error;
             }
         }
@@ -113,14 +150,27 @@ class PackageManager {
      * @param {boolean} includeMetadata If true, the h5p.json file inside the package will be extracted.
      * @returns {Promise<void>}
      */
-    static async _extractPackage(packagePath, directoryPath, { includeLibraries = false, includeContent = false, includeMetadata = false }) {
+    static async _extractPackage(
+        packagePath,
+        directoryPath,
+        {
+            includeLibraries = false,
+            includeContent = false,
+            includeMetadata = false
+        }
+    ) {
         const zipFile = await yauzl.open(packagePath);
-        await zipFile.walkEntries(async (entry) => {
+        await zipFile.walkEntries(async entry => {
             const basename = path.basename(entry.fileName);
-            if (!basename.startsWith(".") && !basename.startsWith("_")
-                && ((includeContent && entry.fileName.startsWith("content/"))
-                    || (includeLibraries && entry.fileName.includes("/") && !entry.fileName.startsWith("content/"))
-                    || (includeMetadata && entry.fileName === "h5p.json"))) {
+            if (
+                !basename.startsWith('.') &&
+                !basename.startsWith('_') &&
+                ((includeContent && entry.fileName.startsWith('content/')) ||
+                    (includeLibraries &&
+                        entry.fileName.includes('/') &&
+                        !entry.fileName.startsWith('content/')) ||
+                    (includeMetadata && entry.fileName === 'h5p.json'))
+            ) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.fileName);
 
@@ -128,7 +178,7 @@ class PackageManager {
                 const writeStream = fs.createWriteStream(writePath);
                 await promisePipe(readStream, writeStream);
             }
-        })
+        });
     }
 }
 
