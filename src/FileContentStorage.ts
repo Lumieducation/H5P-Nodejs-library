@@ -179,7 +179,7 @@ export default class FileContentStorage implements IContentStorage {
             path.join(contentDirectoryPath, '**', '*.*'),
             {
                 ignore: [path.join(contentDirectoryPath, 'content.json')],
-                nodir: true                
+                nodir: true
             }
         );
         return absolutePaths.map(p => path.relative(contentDirectoryPath, p));

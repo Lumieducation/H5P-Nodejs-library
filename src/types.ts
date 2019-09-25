@@ -1,6 +1,6 @@
+import { ReadStream } from 'fs';
 import { Stream } from 'stream';
 import Library from './Library';
-import { ReadStream } from 'fs';
 
 export type ContentId = string;
 

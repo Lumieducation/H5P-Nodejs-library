@@ -1,9 +1,9 @@
 import fsExtra from 'fs-extra';
 import { withDir } from 'tmp-promise';
 
+import { Readable } from 'stream';
 import FileContentStorage from '../src/FileContentStorage';
 import User from '../src/User';
-import { Readable } from 'stream';
 
 describe('FileContentStorage (repository that saves content objects to a local directory)', () => {
     it('assigns a new id for new content', async () => {
@@ -85,7 +85,9 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const id = await storage.createContent({}, {}, user);
                 await expect(storage.contentExists(id)).resolves.toEqual(true);
                 const unusedId = await storage.createContentId();
-                await expect(storage.contentExists(unusedId)).resolves.toEqual(false);
+                await expect(storage.contentExists(unusedId)).resolves.toEqual(
+                    false
+                );
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -98,13 +100,17 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const storage = new FileContentStorage(tempDirPath);
                 const id = await storage.createContent({}, {}, user);
                 const stream1 = new Readable();
-                stream1._read = () => { return }
-                stream1.push("dummy");
+                stream1._read = () => {
+                    return;
+                };
+                stream1.push('dummy');
                 stream1.push(null);
                 await storage.addContentFile(id, 'file1.txt', stream1, user);
                 const stream2 = new Readable();
-                stream2._read = () => { return }
-                stream2.push("dummy");
+                stream2._read = () => {
+                    return;
+                };
+                stream2.push('dummy');
                 stream2.push(null);
                 await storage.addContentFile(id, 'file2.txt', stream2, user);
                 const files = await storage.getContentFiles(id, user);

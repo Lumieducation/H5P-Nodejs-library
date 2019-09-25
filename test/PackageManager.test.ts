@@ -2,7 +2,8 @@ import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
-import { withDir } from 'tmp-promise';
+import { withDir, withFile } from 'tmp-promise';
+import yauzlPromise from 'yauzl-promise';
 
 import ContentManager from '../src/ContentManager';
 import EditorConfig from '../src/EditorConfig';
@@ -108,6 +109,78 @@ describe('basic package manager functionality', () => {
                 mockWriteStream.on('finish', onFinish);
                 await promisepipe(fileStream, mockWriteStream);
                 expect(onFinish).toHaveBeenCalled();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+    it('creates h5p packages', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                const contentDir = path.join(tmpDirPath, 'content');
+                const libraryDir = path.join(tmpDirPath, 'libraries');
+                await fsExtra.ensureDir(contentDir);
+                await fsExtra.ensureDir(libraryDir);
+
+                const user = new User();
+                user.canUpdateAndInstallLibraries = true;
+
+                const contentManager = new ContentManager(
+                    new FileContentStorage(contentDir)
+                );
+                const libraryManager = new LibraryManager(
+                    new FileLibraryStorage(libraryDir)
+                );
+                const packageManager = new PackageManager(
+                    libraryManager,
+                    new TranslationService({}),
+                    new EditorConfig(null),
+                    contentManager
+                );
+                const contentId = await packageManager.addPackageLibrariesAndContent(
+                    path.resolve('test/data/validator/valid2.h5p'),
+                    user
+                );
+
+                await withFile(
+                    async fileResult => {
+                        const writeStream = fsExtra.createWriteStream(
+                            fileResult.path
+                        );
+                        await packageManager.createPackage(
+                            contentId,
+                            writeStream,
+                            user
+                        );
+                        await new Promise(async (resolve, reject) => {
+                            const whenStreamClosed = jest.fn();
+                            writeStream.on('close', whenStreamClosed);
+                            writeStream.on('close', async () => {
+                                expect(whenStreamClosed).toBeCalled();
+
+                                const oldZipFile = await yauzlPromise.open(
+                                    path.resolve(
+                                        'test/data/validator/valid2.h5p'
+                                    )
+                                );
+                                const oldEntries = (await oldZipFile.readEntries())
+                                    .map(e => e.fileName)
+                                    .sort();
+
+                                const newZipFile = await yauzlPromise.open(
+                                    fileResult.path
+                                );
+                                const newEntries = (await newZipFile.readEntries())
+                                    .map(e => e.fileName)
+                                    .sort();
+
+                                expect(newEntries).toMatchObject(oldEntries);
+
+                                resolve();
+                            });
+                        });
+                    },
+                    { postfix: '.h5p', keep: false }
+                );
             },
             { keep: false, unsafeCleanup: true }
         );
