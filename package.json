@@ -20,7 +20,20 @@
         "format:check": "prettier --check \"{src,test}/**/*.js\"",
         "format": "prettier --write \"{src,test}/**/*.js\""
     },
-    "author": "Jan Philip Schellenberg",
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        },
+        {
+            "name": "Nikolas Martens"
+        },
+        {
+            "name": "Jan Philip Schellenberg",
+            "email": "jps@Lumi.education",
+            "url": "http://Lumi.education"
+        }
+    ],
     "dependencies": {
         "ajv": "^6.10.2",
         "axios": "^0.19.0",
