@@ -1,3 +1,4 @@
+import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import * as path from 'path';
@@ -5,7 +6,14 @@ import { Stream } from 'stream';
 
 import { streamToString } from './helpers/StreamHelpers';
 
-import { Content, ContentId, IContentStorage, IH5PJson, IUser } from './types';
+import {
+    Content,
+    ContentId,
+    IContentStorage,
+    IH5PJson,
+    IUser,
+    Permission
+} from './types';
 
 /**
  * The ContentManager takes care of saving content and dependent files. It only contains storage-agnostic functionality and
@@ -41,6 +49,15 @@ export default class ContentManager {
             stream,
             user
         );
+    }
+
+    /**
+     * Checks if a piece of content exists.
+     * @param contentId the content to check
+     * @returns true if the piece of content exists
+     */
+    public async contentExists(contentId: ContentId): Promise<boolean> {
+        return this.contentStorage.contentExists(contentId);
     }
 
     /**
@@ -127,6 +144,13 @@ export default class ContentManager {
         return this.contentStorage.createContentId();
     }
 
+    public async getContentFiles(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<string[]> {
+        return this.contentStorage.getContentFiles(contentId, user);
+    }
+
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param {number} contentId the id of the content object that the file is attached to
@@ -138,12 +162,25 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): Stream {
+    ): ReadStream {
         return this.contentStorage.getContentFileStream(
             contentId,
             filename,
             user
         );
+    }
+
+    /**
+     * Returns an array of permissions a user has on a piece of content.
+     * @param contentId the content to check
+     * @param user the user who wants to access the piece of content
+     * @returns an array of permissions
+     */
+    public async getUserPermissions(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<Permission[]> {
+        return this.contentStorage.getUserPermissions(contentId, user);
     }
 
     /**

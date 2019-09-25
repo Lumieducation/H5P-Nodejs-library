@@ -1,7 +1,16 @@
 import { Stream } from 'stream';
 import Library from './Library';
+import { ReadStream } from 'fs';
 
 export type ContentId = string;
+
+export enum Permission {
+    Delete,
+    Download,
+    Edit,
+    Embed,
+    View
+}
 
 export interface IAssets {
     scripts: string[];
@@ -108,6 +117,7 @@ export interface IContentStorage {
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
+    contentExists(contentId: ContentId): Promise<boolean>;
     createContent(
         metadata: any,
         content: any,
@@ -116,11 +126,16 @@ export interface IContentStorage {
     ): Promise<ContentId>;
     createContentId(): Promise<ContentId>;
     deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
+    getContentFiles(contentId: ContentId, user: IUser): Promise<string[]>;
     getContentFileStream(
         contentId: ContentId,
         file: string,
         user: IUser
-    ): Stream;
+    ): ReadStream;
+    getUserPermissions(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<Permission[]>;
 }
 
 export interface ILibraryStorage {

@@ -111,7 +111,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async getId(library: Library): Promise<any> {
         const libraryPath = this.getFullPath(library, 'library.json');
-        if (await fsExtra.exists(libraryPath)) {
+        if (await fsExtra.pathExists(libraryPath)) {
             return crc32(libraryPath);
         }
         return undefined;
