@@ -8,7 +8,7 @@
     },
     "scripts": {
         "build": "./node_modules/.bin/tsc",
-        "postinstall": "npm run download:content-type-cache && npm run download:content",
+        "prepare": "npm run download:content-type-cache && npm run download:content",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "clear": "rm -rf test/data/hub-content",
