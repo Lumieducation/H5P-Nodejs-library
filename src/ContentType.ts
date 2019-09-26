@@ -4,7 +4,7 @@ export default class ContentType {
     constructor(init?: Partial<ContentType>) {
         Object.assign(this, init);
     }
-    
+
     public categories: string[];
     public createdAt: number;
     public description: string;

@@ -1,4 +1,3 @@
-
 import { crc32 } from 'crc';
 import fsExtra from 'fs-extra';
 import path from 'path';
@@ -30,7 +29,11 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {Stream} stream The stream containing the file content
      * @returns {Promise<boolean>} true if successful
      */
-    public async addLibraryFile(library: Library, filename: string, stream: Stream): Promise<boolean> {
+    public async addLibraryFile(
+        library: Library,
+        filename: string,
+        stream: Stream
+    ): Promise<boolean> {
         if (!(await this.getId(library))) {
             throw new Error(
                 `Can't add file ${filename} to library ${library.getDirName()} because the library metadata has not been installed.`
@@ -56,9 +59,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
             );
         }
         const fullLibraryPath = this.getDirectoryPath(library);
-        const directoryEntries = (await fsExtra.readdir(fullLibraryPath)).filter(
-            entry => entry !== 'library.json'
-        );
+        const directoryEntries = (await fsExtra.readdir(
+            fullLibraryPath
+        )).filter(entry => entry !== 'library.json');
         await Promise.all(
             directoryEntries.map(entry =>
                 fsExtra.remove(this.getFullPath(library, entry))
@@ -72,7 +75,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename
      * @return {Promise<boolean>} true if file exists in library, false otherwise
      */
-    public async fileExists(library: Library, filename: string): Promise<boolean> {
+    public async fileExists(
+        library: Library,
+        filename: string
+    ): Promise<boolean> {
         return fsExtra.pathExists(this.getFullPath(library, filename));
     }
 
@@ -83,7 +89,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename the relative path inside the library
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
-    public async getFileStream(library: Library, filename: string): Promise<Stream> {
+    public async getFileStream(
+        library: Library,
+        filename: string
+    ): Promise<Stream> {
         if (!(await this.fileExists(library, filename))) {
             throw new Error(
                 `File ${filename} does not exist in library ${library.getDirName()}`
@@ -115,7 +124,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async getInstalled(...machineNames: any[]): Promise<Library[]> {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
-        const libraryDirectories = await fsExtra.readdir(this.librariesDirectory);
+        const libraryDirectories = await fsExtra.readdir(
+            this.librariesDirectory
+        );
         return libraryDirectories
             .filter(name => nameRegex.test(name))
             .map(name => {
@@ -135,7 +146,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguageFiles(library: Library): Promise<string[]> {
-        const files = await fsExtra.readdir(this.getFullPath(library, 'language'));
+        const files = await fsExtra.readdir(
+            this.getFullPath(library, 'language')
+        );
         return files
             .filter(file => path.extname(file) === '.json')
             .map(file => path.basename(file, '.json'));
@@ -148,7 +161,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
      * @returns {Promise<Library>} The newly created library object to use when adding library files with addLibraryFile(...)
      */
-    public async installLibrary(libraryMetadata: any, restricted: boolean = false): Promise<Library> {
+    public async installLibrary(
+        libraryMetadata: any,
+        restricted: boolean = false
+    ): Promise<Library> {
         const library = new Library(
             libraryMetadata.machineName,
             libraryMetadata.majorVersion,
@@ -202,7 +218,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {any} libraryMetadata the new library metadata
      * @returns {Promise<Library>} The updated library object
      */
-    public async updateLibrary(library: Library, libraryMetadata: any): Promise<Library> {
+    public async updateLibrary(
+        library: Library,
+        libraryMetadata: any
+    ): Promise<Library> {
         const libPath = this.getDirectoryPath(library);
         if (!(await fsExtra.pathExists(libPath))) {
             throw new Error(

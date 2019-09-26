@@ -22,7 +22,6 @@ import { IKeyValueStorage, IRegistrationData, IUsageStatistics } from './types';
  *   interval.
  */
 export default class ContentTypeCache {
-
     /**
      *
      * @param {EditorConfig} config The configuration to use.
@@ -226,5 +225,5 @@ export default class ContentTypeCache {
             libraries: {}, // TODO: add library information here
             num_authors: 0 // number of active authors
         };
-    }    
+    }
 }
