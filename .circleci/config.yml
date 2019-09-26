@@ -64,6 +64,19 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run test
+    player-e2e-test:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run test:e2e:player
 workflows:
     version: 2
     h5peditor:
@@ -75,3 +88,4 @@ workflows:
             - lint
             - format
             - unit-tests
+            - player-e2e-test
