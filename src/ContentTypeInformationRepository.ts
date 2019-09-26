@@ -37,7 +37,7 @@ export default class ContentTypeInformationRepository {
         private config: EditorConfig,
         private user: IUser,
         private translationService: ITranslationService
-    ) { }
+    ) {}
 
     /**
      * Gets the information about available content types with all the extra information as listed in the class description.
@@ -150,7 +150,7 @@ export default class ContentTypeInformationRepository {
             .map(
                 machineName =>
                     localLibsWrapped[machineName][
-                    localLibsWrapped[machineName].length - 1
+                        localLibsWrapped[machineName].length - 1
                     ]
             )
             .filter(
@@ -168,10 +168,10 @@ export default class ContentTypeInformationRepository {
                         'icon.svg'
                     ))
                         ? undefined // this.libraryManager.getLibraryFileUrl(
-                        //  localLib,
-                        //  'icon.svg'
-                        // )
-                        : undefined,
+                        : //  localLib,
+                          //  'icon.svg'
+                          // )
+                          undefined,
                     id: localLib.id,
                     installed: true,
                     isUpToDate: true,
@@ -186,7 +186,7 @@ export default class ContentTypeInformationRepository {
                     restricted:
                         this.libraryIsRestricted(localLib) &&
                         !this.user.canCreateRestricted,
-                    title: localLib.title,
+                    title: localLib.title
                 };
             });
         const finalLocalLibs = await Promise.all(localLibs);
@@ -198,12 +198,14 @@ export default class ContentTypeInformationRepository {
      * @param {any[]} hubInfo
      * @returns {Promise<any[]>} The hub information as passed into the method with added information.
      */
-    private async addUserAndInstallationSpecificInfo(hubInfo: any[]): Promise<any[]> {
+    private async addUserAndInstallationSpecificInfo(
+        hubInfo: any[]
+    ): Promise<any[]> {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped).map(
             machineName =>
                 localLibsWrapped[machineName][
-                localLibsWrapped[machineName].length - 1
+                    localLibsWrapped[machineName].length - 1
                 ]
         );
         await Promise.all(

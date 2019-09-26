@@ -1,4 +1,4 @@
-import { IKeyValueStorage } from "./types";
+import { IKeyValueStorage } from './types';
 
 /**
  * Stores objects in memory. It can store any key-value pairs.
@@ -6,7 +6,7 @@ import { IKeyValueStorage } from "./types";
  */
 export default class InMemoryStorage implements IKeyValueStorage {
     protected storage: any;
-    
+
     constructor() {
         this.storage = {};
     }
@@ -15,7 +15,7 @@ export default class InMemoryStorage implements IKeyValueStorage {
         return this.storage[key];
     }
 
-    public async save(key: string, value: any) : Promise<void> {
+    public async save(key: string, value: any): Promise<void> {
         this.storage[key] = value;
     }
 }
