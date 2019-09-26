@@ -220,3 +220,8 @@ export interface IURLConfig {
     filesPath?: string;
     libraryUrl?: string;
 }
+export type ILibraryLoader = (
+    machineName: string,
+    majorVersion: number,
+    minorVersion: number
+) => ILibraryJson;

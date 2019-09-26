@@ -5,17 +5,22 @@ import {
     IH5PJson,
     IIntegration,
     ILibraryJson,
-    IURLConfig
+    ILibraryLoader
 } from './types';
 
-// tslint:disable-next-line: import-name
-import defaultTranslation from './assets/translations/en.player.json';
 import player from './renderers/player';
+// tslint:disable-next-line: import-name
+import defaultTranslation from './translations/en.player.json';
 
 export default class H5PPlayer {
     constructor(
         libraryLoader: ILibraryLoader,
-        urls: IURLConfig,
+        urls: {
+            baseUrl?: string;
+            libraryUrl?: string;
+            scriptUrl?: string;
+            stylesUrl?: string;
+        },
         integration: IIntegration,
         content: any,
         customScripts: string = ''
@@ -48,11 +53,16 @@ export default class H5PPlayer {
     private integration: IIntegration;
     private libraryLoader: ILibraryLoader;
     private libraryUrl: string;
-    private renderer: IRenderer;
+    private renderer: any;
     private scriptUrl: string;
     private stylesUrl: string;
     private translation: any;
-    private urls: IURLConfig;
+    private urls: {
+        baseUrl?: string;
+        libraryUrl?: string;
+        scriptUrl?: string;
+        stylesUrl?: string;
+    };
 
     public render(
         contentId: ContentId,
@@ -68,7 +78,8 @@ export default class H5PPlayer {
                 h5pObject
             ),
             scripts: this.coreScripts(),
-            styles: this.coreStyles()
+            styles: this.coreStyles(),
+            translations: {}
         };
 
         const libraries = {};
