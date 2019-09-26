@@ -169,6 +169,7 @@ export interface ISemantic {
 }
 
 export interface ILibraryJson extends Library {
+    dynamicDependencies: IDependency[];
     editorDependencies: IDependency[];
     libraryId: number;
     patchVersion: number;

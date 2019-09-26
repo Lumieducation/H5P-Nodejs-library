@@ -260,6 +260,53 @@ describe('basic file library manager functionality', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('determines dependencies of libraries', async () => {
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(path.resolve('test/data/library-dependency'))
+        );
+
+        expect(
+            (await libManager.getDependencies(new Library('Lib1', 1, 0), {
+                editor: true,
+                preloaded: true
+            }))
+                .map(d => d.getDirName())
+                .sort()
+        ).toMatchObject([
+            'Lib1-1.0',
+            'Lib2-1.0',
+            'Lib3-1.0',
+            'Lib4-1.0',
+            'Lib5-1.0'
+        ]);
+
+        expect(
+            (await libManager.getDependencies(new Library('Lib1', 1, 0), {
+                preloaded: true
+            }))
+                .map(d => d.getDirName())
+                .sort()
+        ).toMatchObject(['Lib1-1.0', 'Lib2-1.0', 'Lib3-1.0', 'Lib5-1.0']);
+
+        expect(
+            (await libManager.getDependencies(new Library('Lib4', 1, 0), {
+                editor: true,
+                preloaded: true
+            }))
+                .map(d => d.getDirName())
+                .sort()
+        ).toMatchObject(['Lib4-1.0', 'Lib5-1.0']);
+
+        expect(
+            (await libManager.getDependencies(new Library('Lib5', 1, 0), {
+                editor: true,
+                preloaded: true
+            }))
+                .map(d => d.getDirName())
+                .sort()
+        ).toMatchObject(['Lib5-1.0']);
+    });
 });
 
 describe('listLanguages()', () => {
