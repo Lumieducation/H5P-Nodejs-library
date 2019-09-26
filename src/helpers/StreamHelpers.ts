@@ -1,4 +1,4 @@
-import { Stream } from "stream";
+import { Stream } from 'stream';
 
 /**
  * Returns the contents of a stream as a string
