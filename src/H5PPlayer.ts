@@ -34,11 +34,11 @@ export default class H5PPlayer {
         this.customScripts = customScripts;
 
         this.urls = {
-            ...urls,
             baseUrl: '/h5p',
             libraryUrl: `/h5p/libraries`,
             scriptUrl: `/h5p/core/js`,
-            stylesUrl: `/h5p/core/styles`
+            stylesUrl: `/h5p/core/styles`,
+            ...urls
         };
 
         this.baseUrl = this.urls.baseUrl;
@@ -63,6 +63,59 @@ export default class H5PPlayer {
         scriptUrl?: string;
         stylesUrl?: string;
     };
+
+    public coreScripts(): string[] {
+        return [
+            'jquery.js',
+            'h5p.js',
+            'h5p-event-dispatcher.js',
+            'h5p-x-api-event.js',
+            'h5p-x-api.js',
+            'h5p-content-type.js',
+            'h5p-confirmation-dialog.js',
+            'h5p-action-bar.js'
+        ].map(file => `${this.scriptUrl}/${file}`);
+    }
+
+    public coreStyles(): string[] {
+        return ['h5p.css', 'h5p-confirmation-dialog.css'].map(
+            file => `${this.stylesUrl}/${file}`
+        );
+    }
+
+    public generateIntegration(
+        contentId: ContentId,
+        contentObject: any,
+        h5pObject: IH5PJson
+    ): IIntegration {
+        // see https://h5p.org/creating-your-own-h5p-plugin
+        return {
+            ...this.integration,
+            contents: {
+                [`cid-${contentId}`]: {
+                    ...this.content,
+                    contentUrl: `${this.baseUrl}/content/${contentId}/content`,
+                    displayOptions: {
+                        copy: false,
+                        copyright: false,
+                        embed: false,
+                        export: false,
+                        frame: false,
+                        icon: false
+                    },
+                    fullScreen: false,
+                    jsonContent: JSON.stringify(contentObject),
+                    library: this.mainLibraryString(h5pObject)
+                }
+            },
+            l10n: {
+                H5P: this.translation
+            },
+            postUserStatistics: false,
+            saveFreq: 0,
+            url: this.baseUrl
+        };
+    }
 
     public render(
         contentId: ContentId,
@@ -99,59 +152,6 @@ export default class H5PPlayer {
     public useRenderer(renderer: any): H5PPlayer {
         this.renderer = renderer;
         return this;
-    }
-
-    private coreScripts(): string[] {
-        return [
-            'jquery.js',
-            'h5p.js',
-            'h5p-event-dispatcher.js',
-            'h5p-x-api-event.js',
-            'h5p-x-api.js',
-            'h5p-content-type.js',
-            'h5p-confirmation-dialog.js',
-            'h5p-action-bar.js'
-        ].map(file => `${this.scriptUrl}/${file}`);
-    }
-
-    private coreStyles(): string[] {
-        return ['h5p.css', 'h5p-confirmation-dialog.css'].map(
-            file => `${this.stylesUrl}/${file}`
-        );
-    }
-
-    private generateIntegration(
-        contentId: ContentId,
-        contentObject: any,
-        h5pObject: IH5PJson
-    ): IIntegration {
-        // see https://h5p.org/creating-your-own-h5p-plugin
-        return {
-            ...this.integration,
-            contents: {
-                [`cid-${contentId}`]: {
-                    ...this.content,
-                    contentUrl: `${this.baseUrl}/content/${contentId}/content`,
-                    displayOptions: {
-                        copy: false,
-                        copyright: false,
-                        embed: false,
-                        export: false,
-                        frame: false,
-                        icon: false
-                    },
-                    fullScreen: false,
-                    jsonContent: JSON.stringify(contentObject),
-                    library: this.mainLibraryString(h5pObject)
-                }
-            },
-            l10n: {
-                H5P: this.translation
-            },
-            postUserStatistics: false,
-            saveFreq: 0,
-            url: this.baseUrl
-        };
     }
 
     private loadAssets(
