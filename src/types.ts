@@ -33,6 +33,7 @@ export interface IIntegration {
         setFinished: string;
     };
     ajaxPath: string;
+    contents?: any;
     editor?: IEditorIntegration;
     hubIsEnabled: boolean;
     l10n: object;
