@@ -17,8 +17,8 @@
         "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
         "test": "jest",
         "test:watch": "jest --watch",
-        "format:check": "prettier --check \"{src,test}/**/*.js\"",
-        "format": "prettier --write \"{src,test}/**/*.js\""
+        "format:check": "prettier --check \"{src,test}/**/*.ts\"",
+        "format": "prettier --write \"{src,test}/**/*.ts\""
     },
     "contributors": [
         {

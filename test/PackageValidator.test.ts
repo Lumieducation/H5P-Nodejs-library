@@ -6,7 +6,7 @@ import PackageValidator from '../src/PackageValidator';
 import TranslationService from '../src/TranslationService';
 
 describe('validating H5P files', () => {
-    let translationService : TranslationService;
+    let translationService: TranslationService;
 
     beforeEach(async () => {
         const englishStrings = await fsExtra.readJSON(

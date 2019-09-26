@@ -27,10 +27,7 @@ describe('validate H5P files from the Hub', () => {
             );
             const config = new EditorConfig(null);
             config.contentWhitelist += ' html';
-            const validator = new PackageValidator(
-                translationService,
-                config
-            );
+            const validator = new PackageValidator(translationService, config);
             await expect(
                 validator.validatePackage(`${directory}/${file}`)
             ).resolves.toBeDefined();

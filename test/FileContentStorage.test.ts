@@ -65,7 +65,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
             async ({ path: tempDirPath }) => {
                 const storage = new FileContentStorage(tempDirPath);
                 await expect(
-                    storage.deleteContent("1", new User())
+                    storage.deleteContent('1', new User())
                 ).rejects.toEqual(
                     new Error(
                         'Cannot delete content with id 1: It does not exist.'
