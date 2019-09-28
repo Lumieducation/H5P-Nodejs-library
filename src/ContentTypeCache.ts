@@ -219,7 +219,6 @@ export default class ContentTypeCache {
     /**
      * @returns An object with usage statistics as required by the H5P Hub
      */
-    // eslint-disable-next-line class-methods-use-this
     private compileUsageStatistics(): IUsageStatistics {
         return {
             libraries: {}, // TODO: add library information here

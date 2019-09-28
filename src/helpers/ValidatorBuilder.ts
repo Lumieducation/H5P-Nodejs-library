@@ -73,7 +73,6 @@ export class ValidatorBuilder {
         let returnValue = data;
         for (const rule of this.rules) {
             // promises need to be called iteratively here as validation has to occur step by step
-            // eslint-disable-next-line no-await-in-loop
             returnValue = await rule(returnValue, error);
         }
         return returnValue;

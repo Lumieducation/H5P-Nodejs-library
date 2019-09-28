@@ -8,5 +8,4 @@ test/
 .prettierrc
 CODE-OF-CONDUCT.md
 jest.config.js
-.eslintrc.json
 __tests__
