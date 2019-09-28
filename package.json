@@ -62,7 +62,7 @@
         "eslint-config-prettier": "6.3.0",
         "eslint-plugin-jest": "22.15.0",
         "jest": "24.8.0",
-        "mockdate": "2.0.4",
+        "mockdate": "2.0.5",
         "prettier": "1.18.2",
         "shortid": "2.2.15",
         "stream-mock": "2.0.5",
