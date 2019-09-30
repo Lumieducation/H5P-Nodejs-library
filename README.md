@@ -1,6 +1,6 @@
 # H5P-Editor
 
-[![Build Status](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library.svg?branch=master)](https://travis-ci.org/Lumieducation/H5P-Editor-Nodejs-library)
+[![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master)
 
 This project is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) for Nodejs.
 
