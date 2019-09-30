@@ -10,7 +10,7 @@
         "start": "node examples/express.js",
         "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core",
         "build": "./node_modules/.bin/tsc && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
-        "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json",
+        "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:core": "sh scripts/install.sh",
         "clear": "rm -rf test/data/hub-content",
