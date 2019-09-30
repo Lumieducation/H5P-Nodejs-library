@@ -1,4 +1,5 @@
 import H5PPlayer from '../src/H5PPlayer';
+import { conditionalExpression } from '@babel/types';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {
@@ -11,82 +12,82 @@ describe('Rendering the HTML page', () => {
         return new H5PPlayer(undefined, undefined, undefined, undefined)
             .render(contentId, contentObject, h5pObject as any)
             .then(html => {
-                expect(html.replace(/\r?\n|\r|\s/g, '')).toBe(
+                expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
-<html class="h5p-iframe">
-<head>
-    <meta charset="utf-8">
-    
-    <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
-    <script src="/h5p/core/js/jquery.js"></script>
-    <script src="/h5p/core/js/h5p.js"></script>
-    <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
-    <script src="/h5p/core/js/h5p-x-api-event.js"></script>
-    <script src="/h5p/core/js/h5p-x-api.js"></script>
-    <script src="/h5p/core/js/h5p-content-type.js"></script>
-    <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
-    <script src="/h5p/core/js/h5p-action-bar.js"></script>
-
-    <script>
-        H5PIntegration = {
-  "url": "/h5p",
-  "postUserStatistics": false,
-  "saveFreq": false,
-  "l10n": {
-    "H5P": {
-      "fullscreen": "Fullscreen",
-      "disableFullscreen": "Disable fullscreen",
-      "download": "Download",
-      "copyrights": "Rights of use",
-      "embed": "Embed",
-      "size": "Size",
-      "showAdvanced": "Show advanced",
-      "hideAdvanced": "Hide advanced",
-      "advancedHelp": "Include this script on your website if you want dynamic sizing of the embedded content:",
-      "copyrightInformation": "Rights of use",
-      "close": "Close",
-      "title": "Title",
-      "author": "Author",
-      "year": "Year",
-      "source": "Source",
-      "license": "License",
-      "thumbnail": "Thumbnail",
-      "noCopyrights": "No copyright information available for this content.",
-      "downloadDescription": "Download this content as a H5P file.",
-      "copyrightsDescription": "View copyright information for this content.",
-      "embedDescription": "View the embed code for this content.",
-      "h5pDescription": "Visit H5P.org to check out more cool content.",
-      "contentChanged": "This content has changed since you last used it.",
-      "startingOver": "You'll be starting over.",
-      "by": "by",
-      "showMore": "Show more",
-      "showLess": "Show less",
-      "subLevel": "Sublevel"
-    }
-  },
-  "contents": {
-    "cid-foo": {
-      "jsonContent": "{\\"my\\":\\"content\\"}",
-      "contentUrl": "/h5p/content/foo/content",
-      "fullScreen": false,
-      "displayOptions": {
-        "frame": false,
-        "export": false,
-        "embed": false,
-        "copyright": false,
-        "icon": false,
-        "copy": false
-      }
-    }
-  }
-};
-    </script>
-</head>
-<body>
-    <div class="h5p-content" data-content-id="foo"></div>
-</body>
-</html>`.replace(/\r?\n|\r|\s/g, '')
+                <html class="h5p-iframe">
+                <head>
+                    <meta charset="utf-8">
+                    
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
+                    <script src="/h5p/core/js/jquery.js"></script>
+                    <script src="/h5p/core/js/h5p.js"></script>
+                    <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
+                    <script src="/h5p/core/js/h5p-x-api-event.js"></script>
+                    <script src="/h5p/core/js/h5p-x-api.js"></script>
+                    <script src="/h5p/core/js/h5p-content-type.js"></script>
+                    <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
+                    <script src="/h5p/core/js/h5p-action-bar.js"></script>
+                
+                    <script>
+                        H5PIntegration = {
+                  "contents": {
+                    "cid-foo": {
+                      "contentUrl": "/h5p/content/foo/content",
+                      "displayOptions": {
+                        "copy": false,
+                        "copyright": false,
+                        "embed": false,
+                        "export": false,
+                        "frame": false,
+                        "icon": false
+                      },
+                      "fullScreen": false,
+                      "jsonContent": "{\\"my\\":\\"content\\"}"
+                    }
+                  },
+                  "l10n": {
+                    "H5P": {
+                      "fullscreen": "Fullscreen",
+                      "disableFullscreen": "Disable fullscreen",
+                      "download": "Download",
+                      "copyrights": "Rights of use",
+                      "embed": "Embed",
+                      "size": "Size",
+                      "showAdvanced": "Show advanced",
+                      "hideAdvanced": "Hide advanced",
+                      "advancedHelp": "Include this script on your website if you want dynamic sizing of the embedded content:",
+                      "copyrightInformation": "Rights of use",
+                      "close": "Close",
+                      "title": "Title",
+                      "author": "Author",
+                      "year": "Year",
+                      "source": "Source",
+                      "license": "License",
+                      "thumbnail": "Thumbnail",
+                      "noCopyrights": "No copyright information available for this content.",
+                      "downloadDescription": "Download this content as a H5P file.",
+                      "copyrightsDescription": "View copyright information for this content.",
+                      "embedDescription": "View the embed code for this content.",
+                      "h5pDescription": "Visit H5P.org to check out more cool content.",
+                      "contentChanged": "This content has changed since you last used it.",
+                      "startingOver": "You'll be starting over.",
+                      "by": "by",
+                      "showMore": "Show more",
+                      "showLess": "Show less",
+                      "subLevel": "Sublevel"
+                    }
+                  },
+                  "postUserStatistics": false,
+                  "saveFreq": 0,
+                  "url": "/h5p"
+                };
+                    </script>
+                </head>
+                <body>
+                    <div class="h5p-content" data-content-id="foo"></div>
+                </body>
+                </html>`.replace(/ /g, '')
                 );
             });
     });
@@ -206,82 +207,82 @@ describe('Rendering the HTML page', () => {
         )
             .render(contentId, contentObject, h5pObject as any)
             .then(html => {
-                expect(html).toBe(
+                expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
-<html class="h5p-iframe">
-<head>
-    <meta charset="utf-8">
-    
-    <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
-    <script src="/h5p/core/js/jquery.js"></script>
-    <script src="/h5p/core/js/h5p.js"></script>
-    <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
-    <script src="/h5p/core/js/h5p-x-api-event.js"></script>
-    <script src="/h5p/core/js/h5p-x-api.js"></script>
-    <script src="/h5p/core/js/h5p-content-type.js"></script>
-    <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
-    <script src="/h5p/core/js/h5p-action-bar.js"></script>
-
-    <script>
-        H5PIntegration = {
-  "url": "/h5p",
-  "postUserStatistics": false,
-  "saveFreq": false,
-  "l10n": {
-    "H5P": {
-      "fullscreen": "Fullscreen",
-      "disableFullscreen": "Disable fullscreen",
-      "download": "Download",
-      "copyrights": "Rights of use",
-      "embed": "Embed",
-      "size": "Size",
-      "showAdvanced": "Show advanced",
-      "hideAdvanced": "Hide advanced",
-      "advancedHelp": "Include this script on your website if you want dynamic sizing of the embedded content:",
-      "copyrightInformation": "Rights of use",
-      "close": "Close",
-      "title": "Title",
-      "author": "Author",
-      "year": "Year",
-      "source": "Source",
-      "license": "License",
-      "thumbnail": "Thumbnail",
-      "noCopyrights": "No copyright information available for this content.",
-      "downloadDescription": "Download this content as a H5P file.",
-      "copyrightsDescription": "View copyright information for this content.",
-      "embedDescription": "View the embed code for this content.",
-      "h5pDescription": "Visit H5P.org to check out more cool content.",
-      "contentChanged": "This content has changed since you last used it.",
-      "startingOver": "You'll be starting over.",
-      "by": "by",
-      "showMore": "Show more",
-      "showLess": "Show less",
-      "subLevel": "Sublevel"
-    }
-  },
-  "contents": {
-    "cid-foo": {
-      "jsonContent": "{\\"my\\":\\"content\\"}",
-      "contentUrl": "/h5p/content/foo/content",
-      "fullScreen": false,
-      "displayOptions": {
-        "frame": false,
-        "export": false,
-        "embed": false,
-        "copyright": false,
-        "icon": false,
-        "copy": false
-      }
-    }
-  }
-};
-    </script><script src="/test" />
-</head>
-<body>
-    <div class="h5p-content" data-content-id="foo"></div>
-</body>
-</html>`
+                    <html class="h5p-iframe">
+                    <head>
+                        <meta charset="utf-8">
+                        
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
+                        <script src="/h5p/core/js/jquery.js"></script>
+                        <script src="/h5p/core/js/h5p.js"></script>
+                        <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
+                        <script src="/h5p/core/js/h5p-x-api-event.js"></script>
+                        <script src="/h5p/core/js/h5p-x-api.js"></script>
+                        <script src="/h5p/core/js/h5p-content-type.js"></script>
+                        <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
+                        <script src="/h5p/core/js/h5p-action-bar.js"></script>
+                    
+                        <script>
+                            H5PIntegration = {
+                      "contents": {
+                        "cid-foo": {
+                          "contentUrl": "/h5p/content/foo/content",
+                          "displayOptions": {
+                            "copy": false,
+                            "copyright": false,
+                            "embed": false,
+                            "export": false,
+                            "frame": false,
+                            "icon": false
+                          },
+                          "fullScreen": false,
+                          "jsonContent": "{\\"my\\":\\"content\\"}"
+                        }
+                      },
+                      "l10n": {
+                        "H5P": {
+                          "fullscreen": "Fullscreen",
+                          "disableFullscreen": "Disable fullscreen",
+                          "download": "Download",
+                          "copyrights": "Rights of use",
+                          "embed": "Embed",
+                          "size": "Size",
+                          "showAdvanced": "Show advanced",
+                          "hideAdvanced": "Hide advanced",
+                          "advancedHelp": "Include this script on your website if you want dynamic sizing of the embedded content:",
+                          "copyrightInformation": "Rights of use",
+                          "close": "Close",
+                          "title": "Title",
+                          "author": "Author",
+                          "year": "Year",
+                          "source": "Source",
+                          "license": "License",
+                          "thumbnail": "Thumbnail",
+                          "noCopyrights": "No copyright information available for this content.",
+                          "downloadDescription": "Download this content as a H5P file.",
+                          "copyrightsDescription": "View copyright information for this content.",
+                          "embedDescription": "View the embed code for this content.",
+                          "h5pDescription": "Visit H5P.org to check out more cool content.",
+                          "contentChanged": "This content has changed since you last used it.",
+                          "startingOver": "You'll be starting over.",
+                          "by": "by",
+                          "showMore": "Show more",
+                          "showLess": "Show less",
+                          "subLevel": "Sublevel"
+                        }
+                      },
+                      "postUserStatistics": false,
+                      "saveFreq": 0,
+                      "url": "/h5p"
+                    };
+                        </script><script src="/test" />
+                    </head>
+                    <body>
+                        <div class="h5p-content" data-content-id="foo"></div>
+                    </body>
+                    </html>`.replace(/ /g, '')
                 );
             });
     });
