@@ -7,7 +7,7 @@
         "url": "https://github.com/Lumieducation/H5P-Editor-Nodejs-library"
     },
     "scripts": {
-        "build": "./node_modules/.bin/tsc",
+        "build": "./node_modules/.bin/tsc && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
         "prepare": "npm run download:content-type-cache && npm run download:content",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
