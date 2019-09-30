@@ -7,6 +7,7 @@ module.exports = {
     User: require('./build/src/User').default,
     TranslationService: require('./build/src/TranslationService').default,
     Editor: require('./build/src/H5PEditor').default,
+    Player: require('./build/src/H5PPlayer'),
     englishStrings: require('./build/src/translations/en.json').default,
     Library: require('./build/src/Library').default
 };
