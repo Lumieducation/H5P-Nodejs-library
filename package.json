@@ -8,7 +8,6 @@
     },
     "scripts": {
         "start": "node examples/express.js",
-        "build": "./node_modules/.bin/tsc",
         "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core",
         "build": "./node_modules/.bin/tsc && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json",
