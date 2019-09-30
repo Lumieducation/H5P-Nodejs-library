@@ -1,0 +1,12 @@
+{
+    "extends": ["config:base"],
+    "labels": ["[type] chore", "[status] needs reviewer"],
+    "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": "every weekday"
+    },
+    "prConcurrentLimit": 0,
+    "prHourlyLimit": 50,
+    "semanticCommits": true,
+    "semanticCommitType": "chore"
+}

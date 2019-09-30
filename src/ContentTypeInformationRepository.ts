@@ -210,7 +210,7 @@ export default class ContentTypeInformationRepository {
         );
         await Promise.all(
             hubInfo.map(async hl => {
-                const hubLib = hl; // to avoid eslint from complaining about changing function parameters
+                const hubLib = hl; // to avoid tslint from complaining about changing function parameters
                 const localLib = localLibs.find(
                     l => l.machineName === hubLib.machineName
                 );
