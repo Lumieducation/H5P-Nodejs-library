@@ -5,7 +5,16 @@ test/
 .github/
 .vscode/
 .editorconfig
+.gitignore
 .prettierrc
 CODE-OF-CONDUCT.md
 jest.config.js
 __tests__
+.env
+src/
+scripts/
+assets/
+.circleci/
+renovate.json
+tslint.json
+tsconfig.json
