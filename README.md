@@ -1,4 +1,4 @@
-# H5P-Editor
+# H5P-Nodejs-library
 
 [![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master)
 
@@ -6,7 +6,7 @@ This project is a port of the [H5P-Editor-PHP-library](https://github.com/h5p/h5
 
 Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
 
-An example of how to integrate and use this library can be found in the [H5P-Demo](https://github.com/Lumieducation/H5P-Demo) project.
+An example of how to integrate and use this library can be found in [examples](examples/).
 
 
 ## Installation
@@ -14,7 +14,7 @@ An example of how to integrate and use this library can be found in the [H5P-Dem
 You can install the library with 
 
 ```
-npm install h5p-editor
+npm install h5p-nodejs-library
 ```
 
 
@@ -23,13 +23,13 @@ npm install h5p-editor
 After installation, you can import the library with
 
 ```js
-const H5PEditor = require('h5p-editor');
+const H5P = require('h5p-nodejs-library');
 ```
 
 and instantiate the Editor with
 
 ```js
-const h5pEditor = new H5PEditor.Editor(
+const h5pEditor = new H5P.Editor(
         urls,
         keyValueStorage,
         config,
@@ -91,7 +91,7 @@ const keyValueStore = {
 
 #### config
 
-An object holding all configuration parameters as properties. You can find the description of the parameters in [`src/config.js`](https://github.com/Lumieducation/H5P-Editor-Nodejs-library/blob/master/src/config.js).
+An object holding all configuration parameters as properties. You can find the description of the parameters in [`src/EditorConfig.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/src/EditorConfig.ts).
 
 #### libraryStorage
 
@@ -192,7 +192,7 @@ const libraryStorage = {
 If you store all library information as files in folders under `./h5p/libraries` you can use
 
 ```js
-const libraryStorage = new H5PEditor.FileLibraryStorage(`h5p/libraries`);
+const libraryStorage = new H5P.FileLibraryStorage(`h5p/libraries`);
 ```
 
 #### contentStorage
@@ -269,7 +269,7 @@ const contentStorage = {
 If you store all library information as files in folders under `./h5p/content` you can use
 
 ```js
-const contentStorage = new H5PEditor.FileContentStorage(`h5p/content`);
+const contentStorage = new H5P.FileContentStorage(`h5p/content`);
 ```
 
 #### user
@@ -463,13 +463,13 @@ h5pEditor.uploadPackage(query.contentId, files.h5p.data)
 
 ### Core Files
 
-See the [example integration for express](https://github.com/Lumieducation/H5P-Demo/blob/master/express.js) how to integrate it with express.
+See the [example integration for express](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/examples/express.js) how to integrate it with express.
 
 You have to provide the H5P core and library files. To do so
 
 1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.22.0.zip) and place its content in your project.
 2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.22.0.zip) and place its content in your project.
-3. Add a route that serves the downloaded files. (See the [express-example](https://github.com/Lumieducation/H5P-Demo/blob/master/express.js#L62))
+3. Add a route that serves the downloaded files. (See the [express-example](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/examples/express.js#L62))
 
 ### Adapters
 
@@ -478,7 +478,7 @@ We will provide adapters for express and meteor in the future. If you would like
 
 ## Content-Type Hub
 
-If you want to use your own Content Type Hub, you can find the protocol you have to implement in [hub-protocol.md](https://github.com/Lumieducation/H5P-Editor-Nodejs-library/blob/master/hub-protocol.md).
+If you want to use your own Content Type Hub, you can find the protocol you have to implement in [hub-protocol.md](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/hub-protocol.md).
 
 
 ## Development & Testing
