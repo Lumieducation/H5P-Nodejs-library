@@ -33,7 +33,6 @@ fs.readdir(contentPath, (error, files) => {
         server.use('/h5p/core', express.static(`${path.resolve('')}/h5p/core`));
         server.get('/examples/:name', (req, res) => {
             const { name } = req.params;
-            // const name = path.basename(examplesJson[key].h5p);
             const dir = `${extractedContentPath}/${name}`;
             server.use('/h5p/libraries', express.static(dir));
             server.use(
@@ -74,9 +73,10 @@ fs.readdir(contentPath, (error, files) => {
                                         browser.newPage().then(page => {
                                             page.on('pageerror', msg => {
                                                 console.log(
-                                                    `${file}): ERROR`,
+                                                    `${file}: ERROR`,
                                                     msg
                                                 );
+                                                process.exit(1);
                                                 reject(
                                                     new Error(
                                                         JSON.stringify(file)
@@ -91,7 +91,7 @@ fs.readdir(contentPath, (error, files) => {
                                             ).then(() => {
                                                 setTimeout(() => {
                                                     page.close();
-                                                    console.log(`${file}): OK`);
+                                                    console.log(`${file}: OK`);
                                                     resolve();
                                                 }, 1000);
                                             });
