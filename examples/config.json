@@ -1,0 +1,10 @@
+{
+    "fetchingDisabled": 0,
+    "uuid": "8de62c47-f335-42f6-909d-2d8f4b7fb7f5",
+    "siteType": "local",
+    "sendUsageStatistics": false,
+    "hubRegistrationEndpoint": "https://api.h5p.org/v1/sites",
+    "hubContentTypesEndpoint": "https://api.h5p.org/v1/content-types/",
+    "contentTypeCacheRefreshInterval": 86400000,
+    "enableLrsContentTypes": true
+}

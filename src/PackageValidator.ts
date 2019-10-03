@@ -308,7 +308,6 @@ export default class PackageValidator {
      * @param {boolean} throwOnError If true, the rule will throw an error if the file does not exist.
      * @returns the rule
      */
-    // eslint-disable-next-line class-methods-use-this
     private fileMustExist(
         filename: string,
         errorMessage: string,

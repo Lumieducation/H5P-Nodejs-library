@@ -44,6 +44,7 @@ export interface IIntegration {
         setFinished: string;
     };
     ajaxPath: string;
+    contents?: any;
     editor?: IEditorIntegration;
     hubIsEnabled: boolean;
     l10n: object;
@@ -238,3 +239,8 @@ export interface IURLConfig {
     filesPath?: string;
     libraryUrl?: string;
 }
+export type ILibraryLoader = (
+    machineName: string,
+    majorVersion: number,
+    minorVersion: number
+) => ILibraryJson;

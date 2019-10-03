@@ -130,7 +130,6 @@ export default class FileContentStorage implements IContentStorage {
             id = FileContentStorage.getRandomInt(1, 2 ** 32);
             counter += 1;
             const p = path.join(this.contentPath, id.toString());
-            // eslint-disable-next-line no-await-in-loop
             exists = await fsExtra.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
@@ -192,7 +191,6 @@ export default class FileContentStorage implements IContentStorage {
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
-    // eslint-disable-next-line no-unused-vars
     public getContentFileStream(
         id: ContentId,
         filename: string,
