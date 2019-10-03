@@ -1,12 +1,13 @@
+import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
+import { Stream } from 'stream';
 
 import { streamToString } from './helpers/StreamHelpers';
 
 import {
     ICSS,
-    IDependency,
     IJS,
     ILibraryData,
     ILibraryJson,
@@ -15,8 +16,6 @@ import {
 } from './types';
 
 import Library from './Library';
-
-import { Stream } from 'stream';
 
 /**
  * This class manages library installations, enumerating installed libraries etc.
@@ -39,12 +38,12 @@ export default class LibraryManager {
      * Throws an exception if the file does not exist.
      * @param {Library} library library
      * @param {string} filename the relative path inside the library
-     * @returns {Promise<Stream>} a readable stream of the file's contents
+     * @returns {ReadStream} a readable stream of the file's contents
      */
-    public async getFileStream(
+    public getFileStream(
         library: Library,
         file: string
-    ): Promise<Stream> {
+    ): ReadStream {
         return this.libraryStorage.getFileStream(library, file);
     }
 
@@ -192,6 +191,15 @@ export default class LibraryManager {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Gets a list of files that exist in the library.
+     * @param library the library for which the files should be listed
+     * @return the files in the library including language files
+     */
+    public async listFiles(library: Library): Promise<string[]> {
+        return this.libraryStorage.listFiles(library);
     }
 
     /**

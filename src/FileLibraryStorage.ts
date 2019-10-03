@@ -1,5 +1,6 @@
 import { crc32 } from 'crc';
-import fsExtra from 'fs-extra';
+import fsExtra, { ReadStream } from 'fs-extra';
+import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { Stream } from 'stream';
@@ -89,16 +90,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename the relative path inside the library
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
-    public async getFileStream(
-        library: Library,
-        filename: string
-    ): Promise<Stream> {
-        if (!(await this.fileExists(library, filename))) {
-            throw new Error(
-                `File ${filename} does not exist in library ${library.getDirName()}`
-            );
-        }
-
+    public getFileStream(library: Library, filename: string): ReadStream {
         return fsExtra.createReadStream(
             path.join(this.librariesDirectory, library.getDirName(), filename)
         );
@@ -191,6 +183,16 @@ export default class FileLibraryStorage implements ILibraryStorage {
             await fsExtra.remove(libPath);
             throw error;
         }
+    }
+
+    /**
+     * Gets a list of translations that exist for this library.
+     * @param {Library} library
+     * @returns {Promise<string[]>} the language codes for translations of this library
+     */
+    public async listFiles(library: Library): Promise<string[]> {
+        const libPath = this.getDirectoryPath(library);
+        return (await globPromise(path.join(libPath, '**/*.*'))).map(p => path.relative(libPath, p));
     }
 
     /**

@@ -13,7 +13,15 @@ import H5pError from './helpers/H5pError';
 import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
-import { ContentId, ITranslationService, IUser, Permission } from './types';
+import {
+    ContentId,
+    ITranslationService,
+    IUser,
+    Permission,
+    IH5PJson
+} from './types';
+import DependencyGetter from './DependencyGetter';
+import Library from './Library';
 
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
@@ -144,11 +152,9 @@ export default class PackageManager {
             );
         }
         let metadataStream: Readable;
+        let metadata: IH5PJson;
         try {
-            const metadata = await this.contentManager.loadH5PJson(
-                contentId,
-                user
-            );
+            metadata = await this.contentManager.loadH5PJson(contentId, user);
             metadataStream = new Readable();
             metadataStream._read = () => {
                 return;
@@ -179,6 +185,33 @@ export default class PackageManager {
                 ),
                 filePath
             );
+        }
+
+        const dependencyGetter = new DependencyGetter(this.libraryManager);
+        const mainLibrary = metadata.preloadedDependencies.find(
+            l => l.machineName === metadata.mainLibrary
+        );
+        if (!mainLibrary) {
+            throw new H5pError(
+                `The main library ${metadata.mainLibrary} is not listed in the dependencies`
+            );
+        }
+        const dependencies = await dependencyGetter.getDependencies(
+            new Library(
+                mainLibrary.machineName,
+                mainLibrary.majorVersion,
+                mainLibrary.minorVersion
+            ),
+            { editor: true, preloaded: true }
+        );
+        for (const dependency of dependencies) {
+            const files = await this.libraryManager.listFiles(dependency);
+            for (const file of files) {
+                zip.addReadStream(
+                    this.libraryManager.getFileStream(dependency, file),
+                    `${dependency.getDirName()}/${file}`
+                );
+            }
         }
 
         zip.end();
