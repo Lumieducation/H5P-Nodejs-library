@@ -41,7 +41,7 @@ export interface IIntegration {
     /**
      * Set to false to disable saving user state.
      */
-    saveFreq: number | boolean; 
+    saveFreq: number | boolean;
     url: string;
     user: {
         mail: string;
