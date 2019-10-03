@@ -494,7 +494,7 @@ export default class H5PEditor {
                 H5P: this.translation
             },
             postUserStatistics: false,
-            saveFreq: 0,
+            saveFreq: false,
             url: this.baseUrl,
             user: {
                 mail: '',

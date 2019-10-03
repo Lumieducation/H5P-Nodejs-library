@@ -38,7 +38,7 @@ export default class PackageImporter {
      * @param {boolean} includeMetadata If true, the h5p.json file inside the package will be extracted.
      * @returns {Promise<void>}
      */
-    private static async extractPackage(
+    public static async extractPackage(
         packagePath: string,
         directoryPath: string,
         {

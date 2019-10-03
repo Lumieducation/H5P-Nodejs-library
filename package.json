@@ -1,6 +1,6 @@
 {
     "name": "h5p-nodejs-library",
-    "version": "v0.5.0",
+    "version": "v0.5.1",
     "description": "The H5P-Nodejs-library is a port of the H5P-Editor-PHP-library and the H5P-PHP-Library for Nodejs.",
     "repository": {
         "type": "git",
@@ -8,7 +8,7 @@
     },
     "scripts": {
         "start": "node examples/express.js",
-        "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core",
+        "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core && npm run build",
         "build": "./node_modules/.bin/tsc && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
@@ -19,6 +19,8 @@
         "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
         "test": "jest",
         "test:watch": "jest --watch",
+        "test:e2e": "npm run test:e2e:player",
+        "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
         "format:check": "prettier --check \"{src,test}/**/*.ts\"",
         "format": "prettier --write \"{src,test}/**/*.ts\""
     },
@@ -45,7 +47,9 @@
         "glob-promise": "^3.4.0",
         "merge": "^1.2.1",
         "mkdirp": "^0.5.1",
+        "promise-queue": "^2.2.5",
         "promisepipe": "^3.0.0",
+        "puppeteer": "^1.20.0",
         "qs": "^6.7.0",
         "stream-buffers": "^3.0.2",
         "tmp-promise": "^2.0.2",
