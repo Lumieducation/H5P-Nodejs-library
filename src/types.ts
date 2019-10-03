@@ -21,7 +21,7 @@ export interface IAssets {
 export interface IDependency {
     machineName: string;
     majorVersion: number;
-    minorVersion: number;    
+    minorVersion: number;
 }
 
 export interface IMetadata extends IDependency {
