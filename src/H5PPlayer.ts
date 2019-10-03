@@ -112,7 +112,7 @@ export default class H5PPlayer {
                 H5P: this.translation
             },
             postUserStatistics: false,
-            saveFreq: 0,
+            saveFreq: false,
             url: this.baseUrl
         };
     }
