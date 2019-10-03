@@ -10,15 +10,15 @@ export default class DependencyGetter {
     constructor(private libraryManager: LibraryManager) {}
 
     /**
-     * Gets all dependent libraries of the specified library.
-     * @param library the library whose dependencies should be retrieved
+     * Gets all dependent libraries of the libraries in the list.
+     * @param libraries the libraries whose dependencies should be retrieved
      * @param dynamic include dependencies that are part of the dynamicDependencies property or used in the content
      * @param editor include dependencies that are listed in editorDependencies
      * @param preloaded include regular dependencies that are included in preloadedDependencies
      * @returns a list of libraries
      */
-    public async getDependencies(
-        library: Library,
+    public async getDependentLibraries(
+        libraries: IDependency[],
         {
             dynamic = false,
             editor = false,
@@ -26,11 +26,17 @@ export default class DependencyGetter {
         }: { dynamic?: boolean; editor?: boolean; preloaded?: boolean }
     ): Promise<Library[]> {
         const dependencies = new Set<string>();
-        await this.addDependenciesRecursive(
-            library,
-            { preloaded, editor, dynamic },
-            dependencies
-        );
+        for (const library of libraries) {
+            await this.addDependenciesRecursive(
+                new Library(
+                    library.machineName,
+                    library.majorVersion,
+                    library.minorVersion
+                ),
+                { preloaded, editor, dynamic },
+                dependencies
+            );
+        }
         return Array.from(dependencies).map(str => Library.createFromName(str));
     }
 

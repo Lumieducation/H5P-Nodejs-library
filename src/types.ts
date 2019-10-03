@@ -21,8 +21,7 @@ export interface IAssets {
 export interface IDependency {
     machineName: string;
     majorVersion: number;
-    minorVersion: number;
-    preloadedDependencies?: IDependency[];
+    minorVersion: number;    
 }
 
 export interface IMetadata extends IDependency {
@@ -30,9 +29,12 @@ export interface IMetadata extends IDependency {
 }
 
 export interface IH5PJson extends IDependency {
+    dynamicDependencies?: IDependency[];
+    editorDependencies?: IDependency[];
     language: string;
     license: string;
     mainLibrary: string;
+    preloadedDependencies?: IDependency[];
     title: string;
 }
 

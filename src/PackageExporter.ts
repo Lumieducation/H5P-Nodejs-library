@@ -64,10 +64,10 @@ export default class PackageExporter {
         outputZipFile.addReadStream(metadataStream, 'h5p.json');
 
         // add content file (= files in content directory)
-        this.addContentFiles(contentId, user, outputZipFile);
+        await this.addContentFiles(contentId, user, outputZipFile);
 
         // add library files
-        this.addLibraryFiles(metadata, outputZipFile);
+        await this.addLibraryFiles(metadata, outputZipFile);
 
         // signal the end of zip creation
         outputZipFile.end();
@@ -108,20 +108,10 @@ export default class PackageExporter {
     ): Promise<void> {
         {
             const dependencyGetter = new DependencyGetter(this.libraryManager);
-            const mainLibrary = metadata.preloadedDependencies.find(
-                l => l.machineName === metadata.mainLibrary
-            );
-            if (!mainLibrary) {
-                throw new H5pError(
-                    `The main library ${metadata.mainLibrary} is not listed in the dependencies`
-                );
-            }
-            const dependencies = await dependencyGetter.getDependencies(
-                new Library(
-                    mainLibrary.machineName,
-                    mainLibrary.majorVersion,
-                    mainLibrary.minorVersion
-                ),
+            const dependencies = await dependencyGetter.getDependentLibraries(
+                metadata.preloadedDependencies
+                    .concat(metadata.editorDependencies || [])
+                    .concat(metadata.dynamicDependencies || []),
                 { editor: true, preloaded: true }
             );
             for (const dependency of dependencies) {
