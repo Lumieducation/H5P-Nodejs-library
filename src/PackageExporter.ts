@@ -25,7 +25,7 @@ export default class PackageExporter {
      * @param {LibraryManager} libraryManager
      * @param {TranslationService} translationService
      * @param {EditorConfig} config
-     * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageManger to copy content from a package (e.g. Upload option in the editor)
+     * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
      */
     constructor(
         private libraryManager: LibraryManager,

@@ -6,7 +6,7 @@ import puppeteer from 'puppeteer';
 
 import H5PPlayer from '../../src/H5PPlayer';
 
-import PackageManger from '../../src/PackageManager';
+import PackageImporter from '../../src/PackageImporter';
 
 const contentPath = `${path.resolve('')}/test/data/hub-content`;
 const extractedContentPath = `${path.resolve(
@@ -17,7 +17,7 @@ fs.readdir(contentPath, (error, files) => {
     Promise.all(
         files.map(file => {
             console.log(`extracting: ${file}`);
-            return PackageManger.extractPackage(
+            return PackageImporter.extractPackage(
                 `${contentPath}/${file}`,
                 `${extractedContentPath}/${file}`,
                 {
