@@ -192,7 +192,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async listFiles(library: Library): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
-        return (await globPromise(path.join(libPath, '**/*.*'))).map(p => path.relative(libPath, p));
+        return (await globPromise(path.join(libPath, '**/*.*'))).map(p =>
+            path.relative(libPath, p)
+        );
     }
 
     /**

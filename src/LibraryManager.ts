@@ -40,10 +40,7 @@ export default class LibraryManager {
      * @param {string} filename the relative path inside the library
      * @returns {ReadStream} a readable stream of the file's contents
      */
-    public getFileStream(
-        library: Library,
-        file: string
-    ): ReadStream {
+    public getFileStream(library: Library, file: string): ReadStream {
         return this.libraryStorage.getFileStream(library, file);
     }
 
