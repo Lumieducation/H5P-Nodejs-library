@@ -47,7 +47,7 @@ const start = async () => {
     const h5pRoute = '/h5p';
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
-        const stream = await h5pEditor.libraryManager.getFileStream(
+        const stream = h5pEditor.libraryManager.getFileStream(
             H5PEditor.Library.createFromName(req.params.uberName),
             req.params.file
         );
@@ -58,7 +58,7 @@ const start = async () => {
     });
 
     server.get(`${h5pRoute}/content/:id/content/:file(*)`, async (req, res) => {
-        const stream = await h5pEditor.contentManager.getContentFileStream(
+        const stream = h5pEditor.contentManager.getContentFileStream(
             req.params.id,
             `content/${req.params.file}`,
             null
@@ -93,7 +93,7 @@ const start = async () => {
             h5pEditor.contentManager.loadContent(req.query.contentId),
             h5pEditor.contentManager.loadH5PJson(req.query.contentId)
         ]).then(([contentObject, h5pObject]) =>
-            new H5PPlayer.Player(libraryLoader)
+            new H5PPlayer(libraryLoader)
                 .render(req.query.contentId, contentObject, h5pObject)
                 .then(h5p_page => res.end(h5p_page))
                 .catch(error => res.status(500).end(error.message))
@@ -113,7 +113,7 @@ const start = async () => {
 
         exec(`sh scripts/download-example.sh ${examples[key].h5p}`)
             .then(async () => {
-                const contentId = await h5pEditor.packageManager.addPackageLibrariesAndContent(
+                const contentId = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
                     tempFilename,
                     { canUpdateAndInstallLibraries: true }
                 );
@@ -123,7 +123,7 @@ const start = async () => {
                 const contentObject = await h5pEditor.contentManager.loadContent(
                     contentId
                 );
-                return new H5PPlayer.Player(libraryLoader).render(
+                return new H5PPlayer(libraryLoader).render(
                     contentId,
                     contentObject,
                     h5pObject

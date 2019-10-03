@@ -17,7 +17,7 @@ import ContentTypeInformationRepository from './ContentTypeInformationRepository
 import H5pError from './helpers/H5pError';
 import Library from './Library';
 import LibraryManager from './LibraryManager';
-import PackageManager from './PackageManager';
+import PackageImporter from './PackageImporter';
 import TranslationService from './TranslationService';
 
 import EditorConfig from './EditorConfig';
@@ -75,7 +75,7 @@ export default class H5PEditor {
         this.translationService = translationService;
         this.config = config;
         this.user = user;
-        this.packageManager = new PackageManager(
+        this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.translationService,
             this.config,
@@ -93,7 +93,7 @@ export default class H5PEditor {
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
     private libraryUrl: string;
-    private packageManager: PackageManager;
+    private packageImporter: PackageImporter;
     private renderer: any;
     private translation: any;
     private translationService: TranslationService;
@@ -279,7 +279,7 @@ export default class H5PEditor {
                     );
                 }
 
-                newContentId = await this.packageManager.addPackageLibrariesAndContent(
+                newContentId = await this.packageImporter.addPackageLibrariesAndContent(
                     tempPackagePath,
                     this.user,
                     contentId

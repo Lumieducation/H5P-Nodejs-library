@@ -9,11 +9,11 @@ import EditorConfig from '../src/EditorConfig';
 import FileContentStorage from '../src/FileContentStorage';
 import FileLibraryStorage from '../src/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
-import PackageManager from '../src/PackageManager';
+import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
 import User from '../src/User';
 
-describe('basic package manager functionality', () => {
+describe('package importer', () => {
     it('installs libraries', async () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
@@ -23,12 +23,12 @@ describe('basic package manager functionality', () => {
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
                 );
-                const packageManager = new PackageManager(
+                const packageImporter = new PackageImporter(
                     libraryManager,
                     new TranslationService({}),
                     new EditorConfig(null)
                 );
-                await packageManager.installLibrariesFromPackage(
+                await packageImporter.installLibrariesFromPackage(
                     path.resolve('test/data/validator/valid2.h5p')
                 );
 
@@ -66,13 +66,13 @@ describe('basic package manager functionality', () => {
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
                 );
-                const packageManager = new PackageManager(
+                const packageImporter = new PackageImporter(
                     libraryManager,
                     new TranslationService({}),
                     new EditorConfig(null),
                     contentManager
                 );
-                const contentId = await packageManager.addPackageLibrariesAndContent(
+                const contentId = await packageImporter.addPackageLibrariesAndContent(
                     path.resolve('test/data/validator/valid2.h5p'),
                     user
                 );

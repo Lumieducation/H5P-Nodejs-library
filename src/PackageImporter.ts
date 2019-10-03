@@ -10,34 +10,24 @@ import H5pError from './helpers/H5pError';
 import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
-
 import { ContentId, ITranslationService, IUser } from './types';
+
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
  */
-export default class PackageManager {
+export default class PackageImporter {
     /**
      * @param {LibraryManager} libraryManager
      * @param {TranslationService} translationService
      * @param {EditorConfig} config
-     * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageManger to copy content from a package (e.g. Upload option in the editor)
+     * @param {ContentManager} contentManager
      */
     constructor(
-        libraryManager: LibraryManager,
-        translationService: ITranslationService,
-        config: EditorConfig,
-        contentManager: ContentManager = null
-    ) {
-        this.libraryManager = libraryManager;
-        this.translationService = translationService;
-        this.config = config;
-        this.contentManager = contentManager;
-    }
-
-    private config: EditorConfig;
-    private contentManager: ContentManager;
-    private libraryManager: LibraryManager;
-    private translationService: ITranslationService;
+        private libraryManager: LibraryManager,
+        private translationService: ITranslationService,
+        private config: EditorConfig,
+        private contentManager: ContentManager = null
+    ) {}
 
     /**
      * Extracts a H5P package to the specified directory.
@@ -148,7 +138,7 @@ export default class PackageManager {
             await packageValidator.validatePackage(packagePath, false, true); // no need to check result as the validator throws an exception if there is an error
             const { path: tempDirPath } = await dir(); // we don't use withDir here, to have better error handling (catch block below)
             try {
-                await PackageManager.extractPackage(packagePath, tempDirPath, {
+                await PackageImporter.extractPackage(packagePath, tempDirPath, {
                     includeContent: copyContent,
                     includeLibraries: installLibraries,
                     includeMetadata: copyContent
@@ -177,7 +167,7 @@ export default class PackageManager {
                 if (copyContent) {
                     if (!this.contentManager) {
                         throw new Error(
-                            'PackageManager was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
+                            'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );
                     }
                     newContentId = await this.contentManager.copyContentFromDirectory(
@@ -205,4 +195,4 @@ export default class PackageManager {
     }
 }
 
-module.exports = PackageManager;
+module.exports = PackageImporter;

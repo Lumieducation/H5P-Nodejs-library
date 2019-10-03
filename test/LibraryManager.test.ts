@@ -261,7 +261,6 @@ describe('basic file library manager functionality', () => {
         );
     });
 });
-
 describe('listLanguages()', () => {
     it('returns an empty array if the language folder does not exist', async () => {
         const libManager = new LibraryManager(

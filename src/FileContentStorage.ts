@@ -1,9 +1,11 @@
+import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
+import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
 
 import { Stream } from 'stream';
-import { ContentId, IContentStorage, IUser } from './types';
+import { ContentId, IContentStorage, IUser, Permission } from './types';
 
 /**
  * Persists content to the disk.
@@ -59,6 +61,17 @@ export default class FileContentStorage implements IContentStorage {
         await fsExtra.ensureDir(path.dirname(fullPath));
         const writeStream = fsExtra.createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
+    }
+
+    /**
+     * Checks if a piece of content exists in storage.
+     * @param contentId the content id to check
+     * @returns true if the piece of content exists
+     */
+    public async contentExists(contentId: ContentId): Promise<boolean> {
+        return fsExtra.pathExists(
+            path.join(this.contentPath, contentId.toString())
+        );
     }
 
     /**
@@ -147,6 +160,31 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
+     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content (does not include the content directory!), e.g. ['image1.png', 'video2.mp4']
+     */
+    public async getContentFiles(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<string[]> {
+        const contentDirectoryPath = path.join(
+            this.contentPath,
+            contentId.toString(),
+            'content'
+        );
+        const absolutePaths = await globPromise(
+            path.join(contentDirectoryPath, '**', '*.*'),
+            {
+                ignore: [path.join(contentDirectoryPath, 'content.json')],
+                nodir: true
+            }
+        );
+        return absolutePaths.map(p => path.relative(contentDirectoryPath, p));
+    }
+
+    /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param {ContentId} id the id of the content object that the file is attached to
      * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
@@ -157,9 +195,27 @@ export default class FileContentStorage implements IContentStorage {
         id: ContentId,
         filename: string,
         user: IUser
-    ): Stream {
+    ): ReadStream {
         return fsExtra.createReadStream(
             path.join(this.contentPath, id.toString(), filename)
         );
+    }
+
+    /**
+     * Returns an array of permissions that the user has on the piece of content
+     * @param contentId the content id to check
+     * @param user the user who wants to access the piece of content
+     */
+    public async getUserPermissions(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<Permission[]> {
+        return [
+            Permission.Delete,
+            Permission.Download,
+            Permission.Edit,
+            Permission.Embed,
+            Permission.View
+        ];
     }
 }

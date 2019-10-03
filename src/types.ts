@@ -1,7 +1,16 @@
+import { ReadStream } from 'fs';
 import { Stream } from 'stream';
 import Library from './Library';
 
 export type ContentId = string;
+
+export enum Permission {
+    Delete,
+    Download,
+    Edit,
+    Embed,
+    View
+}
 
 export interface IAssets {
     scripts: string[];
@@ -13,7 +22,6 @@ export interface IDependency {
     machineName: string;
     majorVersion: number;
     minorVersion: number;
-    preloadedDependencies?: IDependency[];
 }
 
 export interface IMetadata extends IDependency {
@@ -21,9 +29,12 @@ export interface IMetadata extends IDependency {
 }
 
 export interface IH5PJson extends IDependency {
+    dynamicDependencies?: IDependency[];
+    editorDependencies?: IDependency[];
     language: string;
     license: string;
     mainLibrary: string;
+    preloadedDependencies?: IDependency[];
     title: string;
 }
 
@@ -112,6 +123,7 @@ export interface IContentStorage {
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
+    contentExists(contentId: ContentId): Promise<boolean>;
     createContent(
         metadata: any,
         content: any,
@@ -120,11 +132,16 @@ export interface IContentStorage {
     ): Promise<ContentId>;
     createContentId(): Promise<ContentId>;
     deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
+    getContentFiles(contentId: ContentId, user: IUser): Promise<string[]>;
     getContentFileStream(
         contentId: ContentId,
         file: string,
         user: IUser
-    ): Stream;
+    ): ReadStream;
+    getUserPermissions(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<Permission[]>;
 }
 
 export interface ILibraryStorage {
@@ -135,7 +152,7 @@ export interface ILibraryStorage {
     ): Promise<boolean>;
     clearLibraryFiles(library: Library): Promise<any>;
     fileExists(library: Library, filename: string): Promise<boolean>;
-    getFileStream(library: Library, file: string): Promise<Stream>;
+    getFileStream(library: Library, file: string): ReadStream;
     getId(library: Library): Promise<number>;
     getInstalled(...machineNames: string[]): Promise<Library[]>;
     getLanguageFiles(library: Library): Promise<string[]>;
@@ -143,6 +160,7 @@ export interface ILibraryStorage {
         libraryData: ILibraryJson,
         restricted: boolean
     ): Promise<Library>;
+    listFiles(library: Library): Promise<string[]>;
     removeLibrary(library: Library): Promise<any>;
     updateLibrary(
         library: Library,
@@ -158,6 +176,7 @@ export interface ISemantic {
 }
 
 export interface ILibraryJson extends Library {
+    dynamicDependencies: IDependency[];
     editorDependencies: IDependency[];
     libraryId: number;
     patchVersion: number;

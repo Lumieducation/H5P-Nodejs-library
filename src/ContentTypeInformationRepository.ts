@@ -8,7 +8,7 @@ import EditorConfig from './EditorConfig';
 import H5pError from './helpers/H5pError';
 import Library from './Library';
 import LibraryManager from './LibraryManager';
-import PackageManager from './PackageManager';
+import PackageImporter from './PackageImporter';
 import { IKeyValueStorage, ITranslationService, IUser } from './types';
 
 /**
@@ -123,12 +123,12 @@ export default class ContentTypeInformationRepository {
                     );
                 }
 
-                const packageManger = new PackageManager(
+                const packageImporter = new PackageImporter(
                     this.libraryManager,
                     this.translationService,
                     this.config
                 );
-                await packageManger.installLibrariesFromPackage(
+                await packageImporter.installLibrariesFromPackage(
                     tempPackagePath
                 );
             },
