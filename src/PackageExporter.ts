@@ -14,9 +14,12 @@ import {
     IH5PJson,
     ITranslationService,
     IUser,
-    Permission,    
+    Permission
 } from './types';
 
+/**
+ * Offers functionality to create .h5p files from content that is stored in the system.
+ */
 export default class PackageExporter {
     /**
      * @param {LibraryManager} libraryManager
@@ -42,6 +45,105 @@ export default class PackageExporter {
         outputStream: WriteStream,
         user: IUser
     ): Promise<void> {
+        await this.checkAccess(contentId, user);
+
+        // create zip files
+        const outputZipFile = new yazl.ZipFile();
+        outputZipFile.outputStream.pipe(outputStream);
+
+        // add json files
+        const contentStream = await this.createContentFileStream(
+            contentId,
+            user
+        );
+        outputZipFile.addReadStream(contentStream, 'content/content.json');
+        const { metadata, metadataStream } = await this.getMetadata(
+            contentId,
+            user
+        );
+        outputZipFile.addReadStream(metadataStream, 'h5p.json');
+
+        // add content file (= files in content directory)
+        this.addContentFiles(contentId, user, outputZipFile);
+
+        // add library files
+        this.addLibraryFiles(metadata, outputZipFile);
+
+        // signal the end of zip creation
+        outputZipFile.end();
+    }
+
+    /**
+     * Adds the files inside the content directory to the zip file. Does not include content.json!
+     */
+    private async addContentFiles(
+        contentId: ContentId,
+        user: IUser,
+        outputZipFile: yazl.ZipFile
+    ): Promise<void> {
+        const contentFiles = await this.contentManager.getContentFiles(
+            contentId,
+            user
+        );
+
+        for (const contentFile of contentFiles) {
+            const filePath = path.join('content', contentFile);
+            outputZipFile.addReadStream(
+                this.contentManager.getContentFileStream(
+                    contentId,
+                    filePath,
+                    user
+                ),
+                filePath
+            );
+        }
+    }
+
+    /**
+     * Adds the library files to the zip file that are required for the content to be playable.
+     */
+    private async addLibraryFiles(
+        metadata: IH5PJson,
+        outputZipFile: yazl.ZipFile
+    ): Promise<void> {
+        {
+            const dependencyGetter = new DependencyGetter(this.libraryManager);
+            const mainLibrary = metadata.preloadedDependencies.find(
+                l => l.machineName === metadata.mainLibrary
+            );
+            if (!mainLibrary) {
+                throw new H5pError(
+                    `The main library ${metadata.mainLibrary} is not listed in the dependencies`
+                );
+            }
+            const dependencies = await dependencyGetter.getDependencies(
+                new Library(
+                    mainLibrary.machineName,
+                    mainLibrary.majorVersion,
+                    mainLibrary.minorVersion
+                ),
+                { editor: true, preloaded: true }
+            );
+            for (const dependency of dependencies) {
+                const files = await this.libraryManager.listFiles(dependency);
+                for (const file of files) {
+                    outputZipFile.addReadStream(
+                        this.libraryManager.getFileStream(dependency, file),
+                        `${dependency.getDirName()}/${file}`
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a piece of content exists and if the user has download permissions for it.
+     * Throws an exception with the respective error message if this is not the case.
+     */
+    private async checkAccess(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<void> {
         if (!(await this.contentManager.contentExists(contentId))) {
             throw new H5pError(
                 `Content can't be downloaded as no content with id ${contentId} exists.`
@@ -57,6 +159,15 @@ export default class PackageExporter {
                 `You do not have permission to download content with id ${contentId}`
             );
         }
+    }
+
+    /**
+     * Creates a readable stream for the content.json file
+     */
+    private async createContentFileStream(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<Readable> {
         let contentStream: Readable;
         try {
             const content = await this.contentManager.loadContent(
@@ -74,6 +185,16 @@ export default class PackageExporter {
                 `Content can't be downloaded as the content data is unreadable.`
             );
         }
+        return contentStream;
+    }
+
+    /**
+     * Gets the metadata for the piece of content (h5p.json) and also creates a file stream for it.
+     */
+    private async getMetadata(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<{ metadata: IH5PJson; metadataStream: Readable }> {
         let metadataStream: Readable;
         let metadata: IH5PJson;
         try {
@@ -90,53 +211,6 @@ export default class PackageExporter {
             );
         }
 
-        const contentFiles = await this.contentManager.getContentFiles(
-            contentId,
-            user
-        );
-        const zip = new yazl.ZipFile();
-        zip.outputStream.pipe(outputStream);
-        zip.addReadStream(metadataStream, 'h5p.json');
-        zip.addReadStream(contentStream, 'content/content.json');
-        for (const contentFile of contentFiles) {
-            const filePath = path.join('content', contentFile);
-            zip.addReadStream(
-                this.contentManager.getContentFileStream(
-                    contentId,
-                    filePath,
-                    user
-                ),
-                filePath
-            );
-        }
-
-        const dependencyGetter = new DependencyGetter(this.libraryManager);
-        const mainLibrary = metadata.preloadedDependencies.find(
-            l => l.machineName === metadata.mainLibrary
-        );
-        if (!mainLibrary) {
-            throw new H5pError(
-                `The main library ${metadata.mainLibrary} is not listed in the dependencies`
-            );
-        }
-        const dependencies = await dependencyGetter.getDependencies(
-            new Library(
-                mainLibrary.machineName,
-                mainLibrary.majorVersion,
-                mainLibrary.minorVersion
-            ),
-            { editor: true, preloaded: true }
-        );
-        for (const dependency of dependencies) {
-            const files = await this.libraryManager.listFiles(dependency);
-            for (const file of files) {
-                zip.addReadStream(
-                    this.libraryManager.getFileStream(dependency, file),
-                    `${dependency.getDirName()}/${file}`
-                );
-            }
-        }
-
-        zip.end();
+        return { metadata, metadataStream };
     }
 }

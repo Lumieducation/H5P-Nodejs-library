@@ -111,5 +111,5 @@ describe('package importer', () => {
             },
             { keep: false, unsafeCleanup: true }
         );
-    });    
+    });
 });
