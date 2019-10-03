@@ -79,7 +79,7 @@ describe('Rendering the HTML page', () => {
                     }
                   },
                   "postUserStatistics": false,
-                  "saveFreq": 0,
+                  "saveFreq": false,
                   "url": "/h5p"
                 };
                     </script>
@@ -274,7 +274,7 @@ describe('Rendering the HTML page', () => {
                         }
                       },
                       "postUserStatistics": false,
-                      "saveFreq": 0,
+                      "saveFreq": false,
                       "url": "/h5p"
                     };
                         </script><script src="/test" />

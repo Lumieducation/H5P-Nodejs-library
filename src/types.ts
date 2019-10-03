@@ -38,7 +38,10 @@ export interface IIntegration {
     hubIsEnabled: boolean;
     l10n: object;
     postUserStatistics: boolean;
-    saveFreq: number;
+    /**
+     * Set to false to disable saving user state.
+     */
+    saveFreq: number | boolean; 
     url: string;
     user: {
         mail: string;
