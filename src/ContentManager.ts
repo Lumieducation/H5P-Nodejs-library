@@ -9,8 +9,8 @@ import { streamToString } from './helpers/StreamHelpers';
 import {
     Content,
     ContentId,
+    IContentMetadata,
     IContentStorage,
-    IH5PJson,
     IUser,
     Permission
 } from './types';
@@ -73,7 +73,7 @@ export default class ContentManager {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
-        const metadata: IH5PJson = await fsExtra.readJSON(
+        const metadata: IContentMetadata = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
         const content: Content = await fsExtra.readJSON(
@@ -123,7 +123,7 @@ export default class ContentManager {
      * @returns {Promise<string>} The newly assigned content id
      */
     public async createContent(
-        metadata: IH5PJson,
+        metadata: IContentMetadata,
         content: Content,
         user: IUser,
         contentId: ContentId
@@ -205,7 +205,7 @@ export default class ContentManager {
     public async loadH5PJson(
         contentId: ContentId,
         user: IUser
-    ): Promise<IH5PJson> {
+    ): Promise<IContentMetadata> {
         return this.getFileJson(contentId, 'h5p.json', user);
     }
 

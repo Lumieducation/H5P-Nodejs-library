@@ -12,7 +12,6 @@ import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
 import ContentTypeCache from './ContentTypeCache';
-// tslint:disable-next-line: import-name
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
 import Library from './Library';
@@ -26,16 +25,15 @@ import {
     Content,
     ContentId,
     IAssets,
+    IContentMetadata,
     IContentStorage,
     IDependency,
     IEditorIntegration,
-    IH5PJson,
     IIntegration,
     IKeyValueStorage,
     ILibraryData,
     ILibraryInfo,
     ILibraryStorage,
-    IMetadata,
     IURLConfig,
     IUser
 } from './types';
@@ -181,10 +179,10 @@ export default class H5PEditor {
         contentId: ContentId,
         user?: IUser
     ): Promise<{
-        h5p: IH5PJson;
+        h5p: IContentMetadata;
         library: string;
         params: {
-            metadata: IH5PJson;
+            metadata: IContentMetadata;
             params: Content;
         };
     }> {
@@ -230,10 +228,10 @@ export default class H5PEditor {
     public async saveH5P(
         contentId: ContentId,
         content: Content,
-        metadata: IMetadata,
+        metadata: IContentMetadata,
         libraryName: string
     ): Promise<ContentId> {
-        const h5pJson: IH5PJson = await this.generateH5PJSON(
+        const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
             libraryName,
             this.findLibraries(content)
@@ -440,19 +438,17 @@ export default class H5PEditor {
     }
 
     private generateH5PJSON(
-        metadata: IMetadata,
+        metadata: IContentMetadata,
         libraryName: string,
         contentDependencies: IDependency[] = []
-    ): Promise<IH5PJson> {
-        return new Promise((resolve: (value: IH5PJson) => void) => {
+    ): Promise<IContentMetadata> {
+        return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
                 .loadLibrary(
                     Library.createFromName(libraryName.replace(' ', '-'))
                 )
                 .then((library: Library) => {
-                    const h5pJson: IH5PJson = {
-                        language: '',
-                        license: '',
+                    const h5pJson: IContentMetadata = {
                         ...metadata,
                         mainLibrary: library.machineName,
                         preloadedDependencies: [
@@ -463,15 +459,14 @@ export default class H5PEditor {
                                 majorVersion: library.majorVersion,
                                 minorVersion: library.minorVersion
                             }
-                        ],
-                        title: ''
+                        ]
                     };
                     resolve(h5pJson);
                 });
         });
     }
 
-    private getUbernameFromH5pJson(h5pJson: IH5PJson): string {
+    private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
         const library: IDependency = (
             h5pJson.preloadedDependencies || []
         ).filter(

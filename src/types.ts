@@ -24,18 +24,50 @@ export interface IDependency {
     minorVersion: number;
 }
 
-export interface IMetadata extends IDependency {
-    patchVersion: number;
+/**
+ * This is an author inside content metadata.
+ */
+export interface IContentAuthor {
+    name?: string;
+    role?: string;
 }
 
-export interface IH5PJson extends IDependency {
+/**
+ * This is a change inside content metadata.
+ */
+export interface IContentChange {
+    author?: string;
+    date?: string;
+    log?: string;
+}
+
+/**
+ * This is the structure of the object received by the editor client when saving content.
+ * It is also used when creating h5p.json files for .h5p packages.
+ */
+export interface IContentMetadata {
+    author?: string;
+    authors?: IContentAuthor[];
+    autorComments?: string;
+    changes?: IContentChange[];
+    contentType?: string;
     dynamicDependencies?: IDependency[];
     editorDependencies?: IDependency[];
+    embedTypes?: 'iframe' | 'div';
+    h?: string;
     language: string;
-    license: string;
+    license?: string;
+    licenseExtras?: string;
+    licenseVersion?: string;
     mainLibrary: string;
-    preloadedDependencies?: IDependency[];
+    metaDescription?: string;
+    metaKeywords?: string;
+    preloadedDependencies: IDependency[];
+    source?: string;
     title: string;
+    w?: string;
+    yearsFrom?: string;
+    yearsTo?: string;
 }
 
 export interface IIntegration {
