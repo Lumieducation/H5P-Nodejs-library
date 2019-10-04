@@ -157,7 +157,7 @@ export interface IContentStorage {
     ): Promise<void>;
     contentExists(contentId: ContentId): Promise<boolean>;
     createContent(
-        metadata: any,
+        metadata: IContentMetadata,
         content: any,
         user: IUser,
         contentId?: ContentId
