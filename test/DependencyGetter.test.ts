@@ -1,7 +1,7 @@
 import path from 'path';
 
 import DependencyGetter from '../src/DependencyGetter';
-import FileLibraryStorage from '../src/FileLibraryStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import Library from '../src/Library';
 import LibraryManager from '../src/LibraryManager';
 

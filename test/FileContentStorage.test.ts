@@ -2,8 +2,8 @@ import fsExtra from 'fs-extra';
 import { withDir } from 'tmp-promise';
 
 import { Readable } from 'stream';
-import FileContentStorage from '../src/FileContentStorage';
-import User from '../src/User';
+import FileContentStorage from '../examples/implementation/FileContentStorage';
+import User from '../examples/implementation/User';
 
 describe('FileContentStorage (repository that saves content objects to a local directory)', () => {
     it('assigns a new id for new content', async () => {

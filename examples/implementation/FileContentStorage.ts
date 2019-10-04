@@ -5,7 +5,7 @@ import path from 'path';
 import promisepipe from 'promisepipe';
 
 import { Stream } from 'stream';
-import { ContentId, IContentStorage, IUser, Permission } from './types';
+import { ContentId, IContentStorage, IUser, Permission } from '../../src/types';
 
 /**
  * Persists content to the disk.

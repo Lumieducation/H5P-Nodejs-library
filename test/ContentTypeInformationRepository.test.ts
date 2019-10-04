@@ -6,12 +6,12 @@ import shortid from 'shortid';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
-import EditorConfig from '../src/EditorConfig';
-import FileLibraryStorage from '../src/FileLibraryStorage';
-import InMemoryStorage from '../src/InMemoryStorage';
+import EditorConfig from '../examples/implementation/EditorConfig';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
+import InMemoryStorage from '../examples/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
 import TranslationService from '../src/TranslationService';
-import User from '../src/User';
+import User from '../examples/implementation/User';
 
 const axiosMock = new axiosMockAdapter(axios);
 

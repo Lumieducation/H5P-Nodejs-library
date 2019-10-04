@@ -1,5 +1,5 @@
 import path from 'path';
-import FileLibraryStorage from '../src/FileLibraryStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
 import LibraryManager from '../src/LibraryManager';
 
