@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
-import shortid from 'shortid';
+import { withDir } from 'tmp-promise';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
@@ -299,45 +299,45 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new EditorConfig(storage);
 
-        const tmpDir = `${path.resolve('')}/test/tmp-${shortid()}`;
-        try {
-            const libManager = new LibraryManager(
-                new FileLibraryStorage(tmpDir)
-            );
-            const cache = new ContentTypeCache(config, storage);
-            const user = new User();
-
-            axiosMock
-                .onPost(config.hubRegistrationEndpoint)
-                .reply(
-                    200,
-                    require('./data/content-type-cache/registration.json')
+        await withDir(
+            async ({ path: tmpDir }) => {
+                const libManager = new LibraryManager(
+                    new FileLibraryStorage(tmpDir)
                 );
-            axiosMock
-                .onPost(config.hubContentTypesEndpoint)
-                .reply(
-                    200,
-                    require('./data/content-type-cache/real-content-types.json')
+                const cache = new ContentTypeCache(config, storage);
+                const user = new User();
+
+                axiosMock
+                    .onPost(config.hubRegistrationEndpoint)
+                    .reply(
+                        200,
+                        require('./data/content-type-cache/registration.json')
+                    );
+                axiosMock
+                    .onPost(config.hubContentTypesEndpoint)
+                    .reply(
+                        200,
+                        require('./data/content-type-cache/real-content-types.json')
+                    );
+
+                await cache.updateIfNecessary();
+                const repository = new ContentTypeInformationRepository(
+                    cache,
+                    storage,
+                    libManager,
+                    config,
+                    user,
+                    new TranslationService({})
                 );
 
-            await cache.updateIfNecessary();
-            const repository = new ContentTypeInformationRepository(
-                cache,
-                storage,
-                libManager,
-                config,
-                user,
-                new TranslationService({})
-            );
-
-            axiosMock.restore(); // TOO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
-            await expect(repository.install('H5P.DragText')).resolves.toEqual(
-                true
-            );
-            const libs = await libManager.getInstalled();
-            expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
-        } finally {
-            await fsExtra.remove(tmpDir);
-        }
+                axiosMock.restore(); // TODO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
+                await expect(
+                    repository.install('H5P.DragText')
+                ).resolves.toEqual(true);
+                const libs = await libManager.getInstalled();
+                expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
+            },
+            { keep: false, unsafeCleanup: true }
+        );
     }, 30000);
 });

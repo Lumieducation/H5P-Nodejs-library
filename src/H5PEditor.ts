@@ -12,7 +12,6 @@ import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
 import ContentTypeCache from './ContentTypeCache';
-// tslint:disable-next-line: import-name
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
 import Library from './Library';
@@ -24,17 +23,16 @@ import {
     Content,
     ContentId,
     IAssets,
+    IContentMetadata,
     IContentStorage,
     IDependency,
     IEditorConfig,
     IEditorIntegration,
-    IH5PJson,
     IIntegration,
     IKeyValueStorage,
     ILibraryData,
     ILibraryInfo,
     ILibraryStorage,
-    IMetadata,
     IURLConfig,
     IUser
 } from './types';
@@ -135,6 +133,42 @@ export default class H5PEditor {
         }));
     }
 
+    /**
+     * Retrieves the installed languages for libraries
+     * @param libraryNames A list of libraries for which the language files should be retrieved.
+     *                     In this list the names of the libraries don't use hyphens to separate
+     *                     machine name and version.
+     * @param language the language code to get the files for
+     * @returns The strings of the language files
+     */
+    public async getLibraryLanguageFiles(
+        libraryNames: string[],
+        language: string
+    ): Promise<{ [key: string]: string }> {
+        return (await Promise.all(
+            libraryNames.map(async name => {
+                const lib = this.parseLibraryString(name);
+                return {
+                    languageJson: await this.libraryManager.loadLanguage(
+                        new Library(
+                            lib.machineName,
+                            lib.majorVersion,
+                            lib.minorVersion
+                        ),
+                        language
+                    ),
+                    // tslint:disable-next-line: object-shorthand-properties-first
+                    name
+                };
+            })
+        )).reduce((builtObject: any, { languageJson, name }) => {
+            if (languageJson) {
+                builtObject[name] = JSON.stringify(languageJson);
+            }
+            return builtObject;
+        }, {});
+    }
+
     public getLibraryOverview(libraryNames: string[]): Promise<ILibraryInfo[]> {
         return Promise.all(
             libraryNames.map((libraryName: string) => {
@@ -180,10 +214,10 @@ export default class H5PEditor {
         contentId: ContentId,
         user?: IUser
     ): Promise<{
-        h5p: IH5PJson;
+        h5p: IContentMetadata;
         library: string;
         params: {
-            metadata: IH5PJson;
+            metadata: IContentMetadata;
             params: Content;
         };
     }> {
@@ -229,10 +263,10 @@ export default class H5PEditor {
     public async saveH5P(
         contentId: ContentId,
         content: Content,
-        metadata: IMetadata,
+        metadata: IContentMetadata,
         libraryName: string
     ): Promise<ContentId> {
-        const h5pJson: IH5PJson = await this.generateH5PJSON(
+        const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
             libraryName,
             this.findLibraries(content)
@@ -439,19 +473,17 @@ export default class H5PEditor {
     }
 
     private generateH5PJSON(
-        metadata: IMetadata,
+        metadata: IContentMetadata,
         libraryName: string,
         contentDependencies: IDependency[] = []
-    ): Promise<IH5PJson> {
-        return new Promise((resolve: (value: IH5PJson) => void) => {
+    ): Promise<IContentMetadata> {
+        return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
                 .loadLibrary(
                     Library.createFromName(libraryName.replace(' ', '-'))
                 )
                 .then((library: Library) => {
-                    const h5pJson: IH5PJson = {
-                        language: '',
-                        license: '',
+                    const h5pJson: IContentMetadata = {
                         ...metadata,
                         mainLibrary: library.machineName,
                         preloadedDependencies: [
@@ -462,15 +494,14 @@ export default class H5PEditor {
                                 majorVersion: library.majorVersion,
                                 minorVersion: library.minorVersion
                             }
-                        ],
-                        title: ''
+                        ]
                     };
                     resolve(h5pJson);
                 });
         });
     }
 
-    private getUbernameFromH5pJson(h5pJson: IH5PJson): string {
+    private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
         const library: IDependency = (
             h5pJson.preloadedDependencies || []
         ).filter(
@@ -572,6 +603,10 @@ export default class H5PEditor {
             .then(() => assets);
     }
 
+    /**
+     *
+     * @param libraryName the library name **WITHOUT** a separating hyphen
+     */
     private parseLibraryString(libraryName: string): IDependency {
         return {
             machineName: libraryName.split(' ')[0],

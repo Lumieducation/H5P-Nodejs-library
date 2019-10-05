@@ -1,8 +1,8 @@
 import {
     ContentId,
     IAssets,
+    IContentMetadata,
     IDependency,
-    IH5PJson,
     IIntegration,
     ILibraryJson,
     ILibraryLoader
@@ -86,7 +86,7 @@ export default class H5PPlayer {
     public generateIntegration(
         contentId: ContentId,
         contentObject: any,
-        h5pObject: IH5PJson
+        h5pObject: IContentMetadata
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         return {
@@ -120,7 +120,7 @@ export default class H5PPlayer {
     public render(
         contentId: ContentId,
         contentObject: any,
-        h5pObject: IH5PJson
+        h5pObject: IContentMetadata
     ): Promise<string> {
         const model = {
             contentId,
@@ -228,7 +228,7 @@ export default class H5PPlayer {
         );
     }
 
-    private mainLibraryString(h5pObject: IH5PJson): string {
+    private mainLibraryString(h5pObject: IContentMetadata): string {
         const library = (h5pObject.preloadedDependencies || []).find(
             lib => lib.machineName === h5pObject.mainLibrary
         );

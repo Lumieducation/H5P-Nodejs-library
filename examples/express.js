@@ -210,7 +210,15 @@ const start = async () => {
                         res.status(200).json(libraries);
                     });
                 break;
-
+            case 'translations':
+                    const language = req.query.language;
+                    const libraries = req.body.libraries;
+                    h5pEditor
+                        .getLibraryLanguageFiles(libraries, language)
+                        .then(response => {
+                            res.status(200).json({ success: true, data: response });
+                        });
+                    break;
             case 'files':
                 h5pEditor
                     .saveContentFile(
