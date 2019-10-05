@@ -5,7 +5,13 @@ import path from 'path';
 import promisepipe from 'promisepipe';
 
 import { Stream } from 'stream';
-import { ContentId, IContentStorage, IUser, Permission } from '../../src/types';
+import {
+    ContentId,
+    IContentMetadata,
+    IContentStorage,
+    IUser,
+    Permission
+} from './types';
 
 /**
  * Persists content to the disk.
@@ -84,7 +90,7 @@ export default class FileContentStorage implements IContentStorage {
      * @returns {Promise<ContentId>} The newly assigned content id
      */
     public async createContent(
-        metadata: any,
+        metadata: IContentMetadata,
         content: any,
         user: IUser,
         id?: ContentId
