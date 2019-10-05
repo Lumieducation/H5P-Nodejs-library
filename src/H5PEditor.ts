@@ -134,6 +134,42 @@ export default class H5PEditor {
         }));
     }
 
+    /**
+     * Retrieves the installed languages for libraries
+     * @param libraryNames A list of libraries for which the language files should be retrieved.
+     *                     In this list the names of the libraries don't use hyphens to separate
+     *                     machine name and version.
+     * @param language the language code to get the files for
+     * @returns The strings of the language files
+     */
+    public async getLibraryLanguageFiles(
+        libraryNames: string[],
+        language: string
+    ): Promise<{ [key: string]: string }> {
+        return (await Promise.all(
+            libraryNames.map(async name => {
+                const lib = this.parseLibraryString(name);
+                return {
+                    languageJson: await this.libraryManager.loadLanguage(
+                        new Library(
+                            lib.machineName,
+                            lib.majorVersion,
+                            lib.minorVersion
+                        ),
+                        language
+                    ),
+                    // tslint:disable-next-line: object-shorthand-properties-first
+                    name
+                };
+            })
+        )).reduce((builtObject: any, { languageJson, name }) => {
+            if (languageJson) {
+                builtObject[name] = JSON.stringify(languageJson);
+            }
+            return builtObject;
+        }, {});
+    }
+
     public getLibraryOverview(libraryNames: string[]): Promise<ILibraryInfo[]> {
         return Promise.all(
             libraryNames.map((libraryName: string) => {
@@ -568,6 +604,10 @@ export default class H5PEditor {
             .then(() => assets);
     }
 
+    /**
+     *
+     * @param libraryName the library name **WITHOUT** a separating hyphen
+     */
     private parseLibraryString(libraryName: string): IDependency {
         return {
             machineName: libraryName.split(' ')[0],
