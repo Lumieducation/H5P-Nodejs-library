@@ -4,8 +4,12 @@ import * as merge from 'merge';
 import * as qs from 'qs';
 
 import ContentType from './ContentType';
-import EditorConfig from './EditorConfig';
-import { IKeyValueStorage, IRegistrationData, IUsageStatistics } from './types';
+import {
+    IEditorConfig,
+    IKeyValueStorage,
+    IRegistrationData,
+    IUsageStatistics
+} from './types';
 
 /**
  * This class caches the information about the content types on the H5P Hub.
@@ -27,12 +31,12 @@ export default class ContentTypeCache {
      * @param {EditorConfig} config The configuration to use.
      * @param {IStorage} storage The storage object.
      */
-    constructor(config: EditorConfig, storage: IKeyValueStorage) {
+    constructor(config: IEditorConfig, storage: IKeyValueStorage) {
         this.config = config;
         this.storage = storage;
     }
 
-    private config: EditorConfig;
+    private config: IEditorConfig;
     private storage: IKeyValueStorage;
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.

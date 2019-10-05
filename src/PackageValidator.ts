@@ -4,14 +4,13 @@ import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
 import * as yauzlPromise from 'yauzl-promise';
 
-import EditorConfig from './EditorConfig';
 import { formatBytes } from './helpers/StringFormatter';
 import ValidationError from './helpers/ValidationError';
 import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { ITranslationService } from './types';
+import { IEditorConfig, ITranslationService } from './types';
 
 /**
  * Performs checks if uploaded H5P packages or those from the H5P Hub are valid.
@@ -32,7 +31,7 @@ export default class PackageValidator {
      */
     constructor(
         private translationService: ITranslationService,
-        private config: EditorConfig
+        private config: IEditorConfig
     ) {
         this.contentExtensionWhitelist = config.contentWhitelist.split(' ');
         this.libraryExtensionWhitelist = config.libraryWhitelist

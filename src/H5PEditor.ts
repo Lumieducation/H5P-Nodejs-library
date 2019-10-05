@@ -20,14 +20,13 @@ import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import TranslationService from './TranslationService';
 
-import EditorConfig from './EditorConfig';
-
 import {
     Content,
     ContentId,
     IAssets,
     IContentStorage,
     IDependency,
+    IEditorConfig,
     IEditorIntegration,
     IH5PJson,
     IIntegration,
@@ -49,7 +48,7 @@ export default class H5PEditor {
             libraryUrl: '/h5p/editor/'
         },
         keyValueStorage: IKeyValueStorage,
-        config: EditorConfig,
+        config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
         user: IUser,
@@ -87,7 +86,7 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
-    private config: EditorConfig;
+    private config: IEditorConfig;
     private contentManager: ContentManager;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;

@@ -5,12 +5,11 @@ import { dir } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
 import ContentManager from './ContentManager';
-import EditorConfig from './EditorConfig';
 import H5pError from './helpers/H5pError';
 import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
-import { ContentId, ITranslationService, IUser } from './types';
+import { ContentId, IEditorConfig, ITranslationService, IUser } from './types';
 
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
@@ -25,7 +24,7 @@ export default class PackageImporter {
     constructor(
         private libraryManager: LibraryManager,
         private translationService: ITranslationService,
-        private config: EditorConfig,
+        private config: IEditorConfig,
         private contentManager: ContentManager = null
     ) {}
 

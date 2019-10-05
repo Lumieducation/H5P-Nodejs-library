@@ -247,3 +247,31 @@ export type ILibraryLoader = (
     majorVersion: number,
     minorVersion: number
 ) => ILibraryJson;
+
+export interface IEditorConfig {
+    // constructor(storage: IKeyValueStorage);
+
+    contentTypeCacheRefreshInterval: number;
+    contentWhitelist: string;
+    coreApiVersion: {
+        major: number;
+        minor: number;
+    };
+    enableLrsContentTypes: boolean;
+    fetchingDisabled: number;
+    h5pVersion: string;
+    hubContentTypesEndpoint: string;
+    hubRegistrationEndpoint: string;
+    libraryWhitelist: string;
+    lrsContentTypes: string[];
+    maxFileSize: number;
+    maxTotalSize: number;
+    platformName: string;
+    platformVersion: string;
+    sendUsageStatistics: boolean;
+    siteType: 'local' | 'network' | 'internet';
+    uuid: string;
+
+    load(): Promise<any>;
+    save(): Promise<void>;
+}

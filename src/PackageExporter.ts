@@ -5,12 +5,12 @@ import yazl from 'yazl';
 
 import ContentManager from './ContentManager';
 import DependencyGetter from './DependencyGetter';
-import EditorConfig from './EditorConfig';
 import H5pError from './helpers/H5pError';
 import Library from './Library';
 import LibraryManager from './LibraryManager';
 import {
     ContentId,
+    IEditorConfig,
     IH5PJson,
     ITranslationService,
     IUser,
@@ -30,7 +30,7 @@ export default class PackageExporter {
     constructor(
         private libraryManager: LibraryManager,
         private translationService: ITranslationService,
-        private config: EditorConfig,
+        private config: IEditorConfig,
         private contentManager: ContentManager = null
     ) {}
 
