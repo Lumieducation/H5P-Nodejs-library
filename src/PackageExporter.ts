@@ -11,7 +11,7 @@ import Library from './Library';
 import LibraryManager from './LibraryManager';
 import {
     ContentId,
-    IH5PJson,
+    IContentMetadata,
     ITranslationService,
     IUser,
     Permission
@@ -103,7 +103,7 @@ export default class PackageExporter {
      * Adds the library files to the zip file that are required for the content to be playable.
      */
     private async addLibraryFiles(
-        metadata: IH5PJson,
+        metadata: IContentMetadata,
         outputZipFile: yazl.ZipFile
     ): Promise<void> {
         {
@@ -184,9 +184,9 @@ export default class PackageExporter {
     private async getMetadata(
         contentId: ContentId,
         user: IUser
-    ): Promise<{ metadata: IH5PJson; metadataStream: Readable }> {
+    ): Promise<{ metadata: IContentMetadata; metadataStream: Readable }> {
         let metadataStream: Readable;
-        let metadata: IH5PJson;
+        let metadata: IContentMetadata;
         try {
             metadata = await this.contentManager.loadH5PJson(contentId, user);
             metadataStream = new Readable();
