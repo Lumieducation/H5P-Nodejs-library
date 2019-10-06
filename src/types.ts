@@ -281,8 +281,6 @@ export type ILibraryLoader = (
 ) => ILibraryJson;
 
 export interface IEditorConfig {
-    // constructor(storage: IKeyValueStorage);
-
     contentTypeCacheRefreshInterval: number;
     contentWhitelist: string;
     coreApiVersion: {
