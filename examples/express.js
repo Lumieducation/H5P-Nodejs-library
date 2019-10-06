@@ -48,7 +48,7 @@ const start = async () => {
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
         const stream = h5pEditor.libraryManager.getFileStream(
-            H5PEditor.Library.createFromName(req.params.uberName),
+            H5PEditor.Library.createFromUberName(req.params.uberName),
             req.params.file
         );
         stream.on('end', () => {
