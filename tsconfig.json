@@ -1,18 +1,7 @@
 {
+    "extends": "./tsconfig.base.json",    
+    "include": ["src/**/*.ts", "test/**/*.ts", "examples/**/*.ts"],
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "removeComments": false,
-        "noImplicitAny": false,
-        "allowJs": true,
-        "sourceMap": true,
-        "baseUrl": "./",
-        "outDir": "./build",
-        "resolveJsonModule": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
+        "outDir": "./build-ide"
+    }
 }
