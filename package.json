@@ -9,7 +9,7 @@
     "scripts": {
         "start": "node examples/express.js",
         "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core && npm run build",
-        "build": "./node_modules/.bin/tsc && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
+        "build": "npx tsc -p ./tsconfig.build.json && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:core": "sh scripts/install.sh",
