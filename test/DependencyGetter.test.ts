@@ -1,9 +1,10 @@
 import path from 'path';
 
 import DependencyGetter from '../src/DependencyGetter';
-import FileLibraryStorage from '../src/FileLibraryStorage';
 import Library from '../src/Library';
 import LibraryManager from '../src/LibraryManager';
+
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 
 describe('basic file library manager functionality', () => {
     it('determines dependencies of libraries', async () => {

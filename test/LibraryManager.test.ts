@@ -2,7 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
 
-import FileLibraryStorage from '../src/FileLibraryStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import Library from '../src/Library';
 import LibraryManager from '../src/LibraryManager';
 

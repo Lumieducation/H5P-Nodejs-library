@@ -1,17 +1,18 @@
 import axios from 'axios';
+// tslint:disable-next-line: no-implicit-dependencies
 import axiosMockAdapter from 'axios-mock-adapter';
-import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
-import EditorConfig from '../src/EditorConfig';
-import FileLibraryStorage from '../src/FileLibraryStorage';
-import InMemoryStorage from '../src/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
 import TranslationService from '../src/TranslationService';
-import User from '../src/User';
+
+import EditorConfig from '../examples/implementation/EditorConfig';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
+import InMemoryStorage from '../examples/implementation/InMemoryStorage';
+import User from '../examples/implementation/User';
 
 const axiosMock = new axiosMockAdapter(axios);
 
@@ -237,9 +238,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             config,
             new User(),
             new TranslationService({
-                'hub-install-no-content-type': 'hub-install-no-content-type',
                 'hub-install-invalid-content-type':
-                    'hub-install-invalid-content-type'
+                    'hub-install-invalid-content-type',
+                'hub-install-no-content-type': 'hub-install-no-content-type'
             })
         );
         await expect(repository.install(undefined)).rejects.toThrow(

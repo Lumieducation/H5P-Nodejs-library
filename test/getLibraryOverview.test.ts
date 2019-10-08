@@ -1,5 +1,5 @@
 import path from 'path';
-import FileLibraryStorage from '../src/FileLibraryStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
 import LibraryManager from '../src/LibraryManager';
 
@@ -18,15 +18,15 @@ describe('getting overview about multiple libraries', () => {
             .then(libraries =>
                 expect(libraries).toEqual([
                     {
-                        uberName: 'H5P.Example1 1.1',
-                        name: 'H5P.Example1',
                         majorVersion: 1,
+                        metadataSettings: null,
                         minorVersion: 1,
-                        tutorialUrl: '',
-                        title: 'Example 1',
-                        runnable: 1,
+                        name: 'H5P.Example1',
                         restricted: false,
-                        metadataSettings: null
+                        runnable: 1,
+                        title: 'Example 1',
+                        tutorialUrl: '',
+                        uberName: 'H5P.Example1 1.1'
                     }
                 ])
             );

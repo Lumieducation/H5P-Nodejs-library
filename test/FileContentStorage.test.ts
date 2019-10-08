@@ -2,9 +2,9 @@ import fsExtra from 'fs-extra';
 import { withDir } from 'tmp-promise';
 
 import { Readable } from 'stream';
-import FileContentStorage from '../src/FileContentStorage';
+import FileContentStorage from '../examples/implementation/FileContentStorage';
+import User from '../examples/implementation/User';
 import { IContentMetadata } from '../src/types';
-import User from '../src/User';
 
 describe('FileContentStorage (repository that saves content objects to a local directory)', () => {
     function createMetadataMock(): IContentMetadata {

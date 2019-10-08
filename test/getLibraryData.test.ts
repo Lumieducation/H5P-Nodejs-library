@@ -1,4 +1,4 @@
-import FileLibraryStorage from '../src/FileLibraryStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
 import LibraryManager from '../src/LibraryManager';
 
@@ -83,24 +83,25 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
-            loadSemantics: () => Promise.resolve({}),
+            listLanguages: () => Promise.resolve([]),
+            loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
+                            editorDependencies: [
+                                {
+                                    machineName: 'EditorDependency',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ],
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 2,
                             preloadedDependencies: [
                                 {
                                     machineName: 'PreloadedDependency',
-                                    majorVersion: 1,
-                                    minorVersion: 0
-                                }
-                            ],
-                            editorDependencies: [
-                                {
-                                    machineName: 'EditorDependency',
                                     majorVersion: 1,
                                     minorVersion: 0
                                 }
@@ -111,14 +112,14 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'PreloadedDependency',
                             majorVersion: 1,
                             minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'some/script.js'
-                                }
-                            ],
                             preloadedCss: [
                                 {
                                     path: 'some/style.css'
+                                }
+                            ],
+                            preloadedJs: [
+                                {
+                                    path: 'some/script.js'
                                 }
                             ]
                         });
@@ -127,14 +128,14 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'EditorDependency',
                             majorVersion: 1,
                             minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'path/to/script.js'
-                                }
-                            ],
                             preloadedCss: [
                                 {
                                     path: 'path/to/style.css'
+                                }
+                            ],
+                            preloadedJs: [
+                                {
+                                    path: 'path/to/script.js'
                                 }
                             ]
                         });
@@ -142,8 +143,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadLanguage: () => Promise.resolve(null),
-            listLanguages: () => Promise.resolve([])
+            loadSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -173,7 +173,8 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
-            loadSemantics: () => Promise.resolve({}),
+            listLanguages: () => Promise.resolve([]),
+            loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
@@ -191,14 +192,16 @@ describe('aggregating data from library folders for the editor', () => {
                         });
                     case 'Bar':
                         return Promise.resolve({
+                            editorDependencies: [
+                                {
+                                    machineName: 'EditorDependency',
+                                    majorVersion: 1,
+                                    minorVersion: 0
+                                }
+                            ],
                             machineName: 'Bar',
                             majorVersion: 1,
                             minorVersion: 3,
-                            preloadedJs: [
-                                {
-                                    path: 'bar/script.js'
-                                }
-                            ],
                             preloadedDependencies: [
                                 {
                                     machineName: 'PreloadedDependency',
@@ -206,11 +209,9 @@ describe('aggregating data from library folders for the editor', () => {
                                     minorVersion: 0
                                 }
                             ],
-                            editorDependencies: [
+                            preloadedJs: [
                                 {
-                                    machineName: 'EditorDependency',
-                                    majorVersion: 1,
-                                    minorVersion: 0
+                                    path: 'bar/script.js'
                                 }
                             ]
                         });
@@ -240,8 +241,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadLanguage: () => Promise.resolve(null),
-            listLanguages: () => Promise.resolve([])
+            loadSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -264,9 +264,11 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
-            loadSemantics: () => Promise.resolve({}),
-            loadLibrary: ({ machineName }) => {
-                switch (machineName) {
+            listLanguages: () => Promise.resolve([]),
+            // tslint:disable-next-line: object-shorthand-properties-first
+            loadLanguage,
+            loadLibrary: ({ _machineName }) => {
+                switch (_machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
                             machineName: 'H5PEditor.test',
@@ -280,21 +282,20 @@ describe('aggregating data from library folders for the editor', () => {
                         });
                     default:
                         return Promise.resolve({
-                            machineName: 'Foo',
-                            majorVersion: 1,
-                            minorVersion: 2,
                             editorDependencies: [
                                 {
                                     machineName: 'H5PEditor.Test',
                                     majorVersion: 1,
                                     minorVersion: 0
                                 }
-                            ]
+                            ],
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 2
                         });
                 }
             },
-            loadLanguage,
-            listLanguages: () => Promise.resolve([])
+            loadSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -332,9 +333,9 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
-            loadSemantics: () => Promise.resolve({}),
-            loadLibrary: ({ machineName }) => {
-                switch (machineName) {
+            listLanguages,
+            loadLibrary: ({ _machineName }) => {
+                switch (_machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
                             machineName: 'H5PEditor.test',
@@ -348,21 +349,22 @@ describe('aggregating data from library folders for the editor', () => {
                         });
                     default:
                         return Promise.resolve({
-                            machineName: 'Foo',
-                            majorVersion: 1,
-                            minorVersion: 2,
                             editorDependencies: [
                                 {
                                     machineName: 'H5PEditor.Test',
                                     majorVersion: 1,
                                     minorVersion: 0
                                 }
-                            ]
+                            ],
+                            machineName: 'Foo',
+                            majorVersion: 1,
+                            minorVersion: 2
                         });
                 }
             },
+            // tslint:disable-next-line: object-literal-sort-keys
             loadLanguage: () => Promise.resolve([]),
-            listLanguages
+            loadSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -402,7 +404,8 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
-            loadSemantics: () => Promise.resolve({}),
+            listLanguages: () => Promise.resolve([]),
+            loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
@@ -410,11 +413,6 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'script.js'
-                                }
-                            ],
                             preloadedDependencies: [
                                 {
                                     machineName: 'Bar',
@@ -426,6 +424,11 @@ describe('aggregating data from library folders for the editor', () => {
                                     majorVersion: 1,
                                     minorVersion: 0
                                 }
+                            ],
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
+                                }
                             ]
                         });
                     case 'Bar':
@@ -433,16 +436,16 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Bar',
                             majorVersion: 1,
                             minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'script.js'
-                                }
-                            ],
                             preloadedDependencies: [
                                 {
                                     machineName: 'Jaz',
                                     majorVersion: 1,
                                     minorVersion: 0
+                                }
+                            ],
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
                                 }
                             ]
                         });
@@ -451,16 +454,16 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Baz',
                             majorVersion: 1,
                             minorVersion: 0,
-                            preloadedJs: [
-                                {
-                                    path: 'script.js'
-                                }
-                            ],
                             preloadedDependencies: [
                                 {
                                     machineName: 'Jaz',
                                     majorVersion: 1,
                                     minorVersion: 0
+                                }
+                            ],
+                            preloadedJs: [
+                                {
+                                    path: 'script.js'
                                 }
                             ]
                         });
@@ -472,16 +475,16 @@ describe('aggregating data from library folders for the editor', () => {
                                         machineName: 'Bar',
                                         majorVersion: 1,
                                         minorVersion: 0,
-                                        preloadedJs: [
-                                            {
-                                                path: 'script.js'
-                                            }
-                                        ],
                                         preloadedDependencies: [
                                             {
                                                 machineName: 'Jaz',
                                                 majorVersion: 1,
                                                 minorVersion: 0
+                                            }
+                                        ],
+                                        preloadedJs: [
+                                            {
+                                                path: 'script.js'
                                             }
                                         ]
                                     }),
@@ -492,8 +495,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadLanguage: () => Promise.resolve(null),
-            listLanguages: () => Promise.resolve([])
+            loadSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;

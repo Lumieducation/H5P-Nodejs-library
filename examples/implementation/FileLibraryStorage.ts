@@ -5,8 +5,8 @@ import path from 'path';
 import promisepipe from 'promisepipe';
 import { Stream } from 'stream';
 
-import Library from './Library';
-import { ILibraryStorage } from './types';
+import Library from '../../src/Library';
+import { ILibraryStorage } from '../../src/types';
 
 /**
  * Stores libraries in a directory.

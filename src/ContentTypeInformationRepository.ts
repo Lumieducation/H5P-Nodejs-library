@@ -4,12 +4,16 @@ import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
 
 import ContentTypeCache from './ContentTypeCache';
-import EditorConfig from './EditorConfig';
 import H5pError from './helpers/H5pError';
 import Library from './Library';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
-import { IKeyValueStorage, ITranslationService, IUser } from './types';
+import {
+    IEditorConfig,
+    IKeyValueStorage,
+    ITranslationService,
+    IUser
+} from './types';
 
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
@@ -34,7 +38,7 @@ export default class ContentTypeInformationRepository {
         private contentTypeCache: ContentTypeCache,
         private storage: IKeyValueStorage,
         private libraryManager: LibraryManager,
-        private config: EditorConfig,
+        private config: IEditorConfig,
         private user: IUser,
         private translationService: ITranslationService
     ) {}

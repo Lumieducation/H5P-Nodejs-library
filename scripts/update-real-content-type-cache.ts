@@ -6,8 +6,8 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import H5PEditorConfig from '../src/EditorConfig';
-import InMemoryStorage from '../src/InMemoryStorage';
+import H5PEditorConfig from '../examples/implementation/EditorConfig';
+import InMemoryStorage from '../examples/implementation/InMemoryStorage';
 import ContentTypeCache from '../src/ContentTypeCache';
 import { IKeyValueStorage } from '../src/types';
 
@@ -16,7 +16,10 @@ const start = async () => {
     const config: H5PEditorConfig = new H5PEditorConfig(keyValueStorage);
     config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
 
-    const contentTypeCache: ContentTypeCache = new ContentTypeCache(config, keyValueStorage);
+    const contentTypeCache: ContentTypeCache = new ContentTypeCache(
+        config,
+        keyValueStorage
+    );
     if (!(await contentTypeCache.forceUpdate())) {
         console.error('Could not download content type cache from H5P Hub.');
         return;
