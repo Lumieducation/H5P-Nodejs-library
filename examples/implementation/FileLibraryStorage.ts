@@ -122,7 +122,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return libraryDirectories
             .filter(name => nameRegex.test(name))
             .map(name => {
-                return Library.createFromName(name);
+                return Library.createFromUberName(name);
             })
             .filter(
                 lib =>

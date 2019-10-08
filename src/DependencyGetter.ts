@@ -37,7 +37,9 @@ export default class DependencyGetter {
                 dependencies
             );
         }
-        return Array.from(dependencies).map(str => Library.createFromName(str));
+        return Array.from(dependencies).map(str =>
+            Library.createFromUberName(str)
+        );
     }
 
     /**
