@@ -1,5 +1,4 @@
 import H5PPlayer from '../src/H5PPlayer';
-import { conditionalExpression } from '@babel/types';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {

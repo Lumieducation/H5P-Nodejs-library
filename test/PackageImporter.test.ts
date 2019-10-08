@@ -1,16 +1,19 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
+// tslint:disable-next-line: no-implicit-dependencies
 import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileContentStorage from '../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
+
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
+
+import EditorConfig from '../examples/implementation/EditorConfig';
+import FileContentStorage from '../examples/implementation/FileContentStorage';
+import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import User from '../examples/implementation/User';
 
 describe('package importer', () => {

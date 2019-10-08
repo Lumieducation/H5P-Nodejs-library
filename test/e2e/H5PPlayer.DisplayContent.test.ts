@@ -1,3 +1,4 @@
+// tslint:disable-next-line: no-implicit-dependencies
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -13,9 +14,12 @@ const extractedContentPath = `${path.resolve(
     ''
 )}/test/data/hub-content-extracted/`;
 
-fs.readdir(contentPath, (error, files) => {
+// TODO: Replace console.log with logger.
+
+fs.readdir(contentPath, (fsError, files) => {
     Promise.all(
         files.map(file => {
+            // tslint:disable-next-line: no-console
             console.log(`extracting: ${file}`);
             return PackageImporter.extractPackage(
                 `${contentPath}/${file}`,
@@ -57,53 +61,64 @@ fs.readdir(contentPath, (error, files) => {
         });
         server.use((error, req, res, next) => {
             if (error) {
+                // tslint:disable-next-line: no-console
                 console.log(error);
                 process.exit(1);
             }
         });
         server.listen(8080, () => {
+            // tslint:disable-next-line: no-console
             console.log(`server running on http://localhost: ${8080}`);
             puppeteer.launch({ devtools: true }).then(browser => {
-                fs.readdir(extractedContentPath, (error, files) => {
-                    files.forEach((file, index) => {
-                        queue
-                            .add(
-                                () =>
-                                    new Promise((resolve, reject) => {
-                                        browser.newPage().then(page => {
-                                            page.on('pageerror', msg => {
-                                                console.log(
-                                                    `${file}: ERROR`,
-                                                    msg
-                                                );
-                                                process.exit(1);
-                                                reject(
-                                                    new Error(
-                                                        JSON.stringify(file)
-                                                    )
-                                                );
+                fs.readdir(
+                    extractedContentPath,
+                    (fsExtractedError, extractedFiles) => {
+                        extractedFiles.forEach((file, index) => {
+                            queue
+                                .add(
+                                    () =>
+                                        new Promise((resolve, reject) => {
+                                            browser.newPage().then(page => {
+                                                page.on('pageerror', msg => {
+                                                    // tslint:disable-next-line: no-console
+                                                    console.log(
+                                                        `${file}: ERROR`,
+                                                        msg
+                                                    );
+                                                    process.exit(1);
+                                                    reject(
+                                                        new Error(
+                                                            JSON.stringify(file)
+                                                        )
+                                                    );
+                                                });
+                                                page.goto(
+                                                    `http://localhost:8080/examples/${file}`,
+                                                    {
+                                                        waitUntil:
+                                                            'networkidle0'
+                                                    }
+                                                ).then(() => {
+                                                    setTimeout(() => {
+                                                        page.close();
+                                                        // tslint:disable-next-line: no-console
+                                                        console.log(
+                                                            `${file}: OK`
+                                                        );
+                                                        resolve();
+                                                    }, 1000);
+                                                });
                                             });
-                                            page.goto(
-                                                `http://localhost:8080/examples/${file}`,
-                                                {
-                                                    waitUntil: 'networkidle0'
-                                                }
-                                            ).then(() => {
-                                                setTimeout(() => {
-                                                    page.close();
-                                                    console.log(`${file}: OK`);
-                                                    resolve();
-                                                }, 1000);
-                                            });
-                                        });
-                                    })
-                            )
-                            .catch(error => {
-                                console.log(error);
-                                process.exit(1);
-                            });
-                    });
-                });
+                                        })
+                                )
+                                .catch(error => {
+                                    // tslint:disable-next-line: no-console
+                                    console.log(error);
+                                    process.exit(1);
+                                });
+                        });
+                    }
+                );
 
                 const interval = setInterval(() => {
                     if (queue.getPendingLength() === 0) {
