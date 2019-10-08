@@ -27,7 +27,7 @@ export default class Library implements IDependency {
     public majorVersion: number;
     public minorVersion: number;
     public patchVersion: number;
-    public preloadedDependencies: IDependency[];
+    public preloadedDependencies?: IDependency[];
     public restricted: boolean;
     public runnable: boolean;
     public title: string;
