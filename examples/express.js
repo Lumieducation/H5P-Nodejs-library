@@ -10,6 +10,13 @@ const index = require('./index');
 const H5PEditor = require('../');
 const H5PPlayer = H5PEditor.Player;
 
+const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage').default;
+const JsonStorage = require('../build/examples/implementation/JsonStorage').default;
+const EditorConfig = require('../build/examples/implementation/EditorConfig').default;
+const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage').default;
+const FileContentStorage = require('../build/examples/implementation/FileContentStorage').default;
+const User = require('../build/examples/implementation/User').default;
+
 const examples = require('./examples.json');
 
 const start = async () => {
@@ -20,13 +27,13 @@ const start = async () => {
             libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
             filesPath: '/h5p/content'
         },
-        new H5PEditor.InMemoryStorage(),
-        await new H5PEditor.Config(
-            new H5PEditor.JsonStorage(path.resolve('examples/config.json'))
+        new InMemoryStorage(),
+        await new EditorConfig(
+            new JsonStorage(path.resolve('examples/config.json'))
         ).load(),
-        new H5PEditor.FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
-        new H5PEditor.FileContentStorage(`${path.resolve('')}/h5p/content`),
-        new H5PEditor.User(),
+        new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
+        new FileContentStorage(`${path.resolve('')}/h5p/content`),
+        new User(),
         new H5PEditor.TranslationService(H5PEditor.englishStrings)
     );
 
@@ -211,14 +218,14 @@ const start = async () => {
                     });
                 break;
             case 'translations':
-                    const language = req.query.language;
-                    const libraries = req.body.libraries;
-                    h5pEditor
-                        .getLibraryLanguageFiles(libraries, language)
-                        .then(response => {
-                            res.status(200).json({ success: true, data: response });
-                        });
-                    break;
+                const language = req.query.language;
+                const libraries = req.body.libraries;
+                h5pEditor
+                    .getLibraryLanguageFiles(libraries, language)
+                    .then(response => {
+                        res.status(200).json({ success: true, data: response });
+                    });
+                break;
             case 'files':
                 h5pEditor
                     .saveContentFile(
