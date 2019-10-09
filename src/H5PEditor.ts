@@ -487,7 +487,7 @@ export default class H5PEditor {
                         mainLibrary: library.machineName,
                         preloadedDependencies: [
                             ...contentDependencies,
-                            ...library.preloadedDependencies,
+                            ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
                             {
                                 machineName: library.machineName,
                                 majorVersion: library.majorVersion,
