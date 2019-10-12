@@ -78,9 +78,6 @@ jobs:
                       - ./node_modules
             - run: npm run test:e2e:player
     release:
-        branches:
-            only:
-                - master
         docker:
             - image: 'circleci/node:latest'
         steps:
