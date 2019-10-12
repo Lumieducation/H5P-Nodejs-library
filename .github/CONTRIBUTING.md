@@ -64,6 +64,30 @@ Whether somebody is reviewing your code or you are reviewing somebody else’s c
 
 If you feel yourself waiting for someone to review a PR, don’t hesitate to personally ask for someone to review it or to mention them on GitHub. _The PR author is responsible for pushing the change through._
 
+### Commit-Messages
+
+Please make sure to use [conventional commit messages](https://www.conventionalcommits.org/en/v1.0.0/):
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+The commit contains the following structural elements, to communicate intent to the consumers of your library:
+
+1. **fix**: a commit of the _type_ `fix` patches a bug in your codebase (this correlates with `PATCH` in semantic versioning).
+
+2. **feat**: a commit of the _type_ `feat` introduces a new feature to the codebase (this correlates with `MINOR` in semantic versioning).
+
+3. **BREAKING CHANGE**: a commit that has a footer `BREAKING CHANGE`:, or appends a `!` after the type/scope, introduces a breaking API change (correlating with `MAJOR` in semantic versioning). A `BREAKING CHANGE` can be part of commits of any type.
+
+4. types other than `fix`: and `feat`: are allowed, for example: `chore`, `ci`, `docs`, `style`, `refactor`, `perf`, `test`, and others.
+
+5. footers other than `BREAKING CHANGE: <description>` may be provided and follow a convention similar to git trailer format.
+
 ### Short Branches: Merge Early and Often
 
 In order to avoid lots of conflicts, to make sure the code works together, and to make the code review process easier, we strongly encourage that branches are small and short-lived. A branch that only has one small commit is perfectly fine and normal.
