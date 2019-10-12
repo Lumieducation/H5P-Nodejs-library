@@ -91,7 +91,35 @@ const keyValueStore = {
 
 #### config
 
-An object holding all configuration parameters as properties. You can find the description of the parameters in [`src/EditorConfig.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/src/EditorConfig.ts).
+An object holding all configuration parameters as properties. It must implement the `IEditorConfig` interface, which can be found in [`src/types.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/src/types.ts):
+
+```js
+interface IEditorConfig {
+    contentTypeCacheRefreshInterval: number;
+    contentWhitelist: string;
+    coreApiVersion: {
+        major: number;
+        minor: number;
+    };
+    enableLrsContentTypes: boolean;
+    fetchingDisabled: number;
+    h5pVersion: string;
+    hubContentTypesEndpoint: string;
+    hubRegistrationEndpoint: string;
+    libraryWhitelist: string;
+    lrsContentTypes: string[];
+    maxFileSize: number;
+    maxTotalSize: number;
+    platformName: string;
+    platformVersion: string;
+    sendUsageStatistics: boolean;
+    siteType: 'local' | 'network' | 'internet';
+    uuid: string;
+
+    load(): Promise<any>;
+    save(): Promise<void>;
+}
+```
 
 #### libraryStorage
 
