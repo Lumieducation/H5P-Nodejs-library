@@ -22,7 +22,11 @@
         "test:e2e": "npm run test:e2e:player",
         "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
         "format:check": "prettier --check \"{src,test}/**/*.ts\"",
-        "format": "prettier --write \"{src,test}/**/*.ts\""
+        "format": "prettier --write \"{src,test}/**/*.ts\"",
+        "semantic-release": "semantic-release"
+    },
+    "release": {
+        "branch": "master"
     },
     "contributors": [
         {
@@ -72,6 +76,7 @@
         "jest": "24.9.0",
         "mockdate": "2.0.5",
         "prettier": "1.18.2",
+        "semantic-release": "^15.13.24",
         "shortid": "2.2.15",
         "stream-mock": "2.0.5",
         "ts-jest": "24.1.0",

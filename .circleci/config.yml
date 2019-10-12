@@ -77,6 +77,20 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run test:e2e:player
+    release:
+        branches: 
+          only:
+            - master
+        docker:
+            - image: 'circleci/node:latest'
+        steps:
+            - checkout
+            - run:
+                  name: install
+                  command: npm install
+            - run:
+                  name: release
+                  command: npm run semantic-release || true
 workflows:
     version: 2
     h5peditor:
@@ -89,3 +103,11 @@ workflows:
             - format
             - unit-tests
             - player-e2e-test
+            - release
+                  requires:
+                      - install
+                      - build
+                      - lint
+                      - format
+                      - unit-tests
+                      - player-e2e-test
