@@ -17,6 +17,7 @@ export default class H5PPlayer {
         libraryLoader: ILibraryLoader,
         urls: {
             baseUrl?: string;
+            downloadUrl?: string;
             libraryUrl?: string;
             scriptUrl?: string;
             stylesUrl?: string;
@@ -35,6 +36,7 @@ export default class H5PPlayer {
 
         this.urls = {
             baseUrl: '/h5p',
+            downloadUrl: '/download',
             libraryUrl: `/h5p/libraries`,
             scriptUrl: `/h5p/core/js`,
             stylesUrl: `/h5p/core/styles`,
@@ -59,6 +61,7 @@ export default class H5PPlayer {
     private translation: any;
     private urls: {
         baseUrl?: string;
+        downloadUrl?: string;
         libraryUrl?: string;
         scriptUrl?: string;
         stylesUrl?: string;
@@ -125,6 +128,7 @@ export default class H5PPlayer {
         const model = {
             contentId,
             customScripts: this.customScripts,
+            downloadPath: this.generateDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
                 contentObject,
@@ -152,6 +156,10 @@ export default class H5PPlayer {
     public useRenderer(renderer: any): H5PPlayer {
         this.renderer = renderer;
         return this;
+    }
+
+    private generateDownloadPath(contentId: ContentId): string {
+        return `${this.urls.downloadUrl}?contentId=${contentId}`;
     }
 
     private loadAssets(

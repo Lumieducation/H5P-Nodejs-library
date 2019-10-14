@@ -113,6 +113,30 @@ const start = async () => {
         );
     });
 
+    server.get('/download', async (req, res) => {
+        if (!req.query.contentId) {
+            return res.redirect('/');
+        }
+
+        const packageExporter = new H5PEditor.PackageExporter(
+            h5pEditor.libraryManager,
+            h5pEditor.translationService,
+            h5pEditor.config,
+            h5pEditor.contentManager
+        );
+        
+        // set filename for the package with .h5p extension
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.query.contentId}.h5p`
+        );
+        await packageExporter.createPackage(
+            req.query.contentId,
+            res,
+            new User()
+        );
+    });
+
     server.get('/examples/:key', (req, res) => {
         let key = req.params.key;
         let name = path.basename(examples[key].h5p);

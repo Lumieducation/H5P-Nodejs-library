@@ -46,7 +46,7 @@ export default class H5PEditor {
             libraryUrl: '/h5p/editor/'
         },
         keyValueStorage: IKeyValueStorage,
-        config: IEditorConfig,
+        public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
         translationService: TranslationService
@@ -81,7 +81,6 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
-    private config: IEditorConfig;
     private contentManager: ContentManager;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
