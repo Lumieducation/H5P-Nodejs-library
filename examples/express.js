@@ -10,11 +10,16 @@ const index = require('./index');
 const H5PEditor = require('../');
 const H5PPlayer = H5PEditor.Player;
 
-const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage').default;
-const JsonStorage = require('../build/examples/implementation/JsonStorage').default;
-const EditorConfig = require('../build/examples/implementation/EditorConfig').default;
-const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage').default;
-const FileContentStorage = require('../build/examples/implementation/FileContentStorage').default;
+const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage')
+    .default;
+const JsonStorage = require('../build/examples/implementation/JsonStorage')
+    .default;
+const EditorConfig = require('../build/examples/implementation/EditorConfig')
+    .default;
+const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage')
+    .default;
+const FileContentStorage = require('../build/examples/implementation/FileContentStorage')
+    .default;
 const User = require('../build/examples/implementation/User').default;
 
 const examples = require('./examples.json');
@@ -104,6 +109,30 @@ const start = async () => {
                 .render(req.query.contentId, contentObject, h5pObject)
                 .then(h5p_page => res.end(h5p_page))
                 .catch(error => res.status(500).end(error.message))
+        );
+    });
+
+    server.get('/download', async (req, res) => {
+        if (!req.query.contentId) {
+            return res.redirect('/');
+        }
+
+        const packageExporter = new H5PEditor.PackageExporter(
+            h5pEditor.libraryManager,
+            h5pEditor.translationService,
+            h5pEditor.config,
+            h5pEditor.contentManager
+        );
+        
+        // set filename for the package with .h5p extension
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.query.contentId}.h5p`
+        );
+        await packageExporter.createPackage(
+            req.query.contentId,
+            res,
+            new User()
         );
     });
 

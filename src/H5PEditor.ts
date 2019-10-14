@@ -46,11 +46,11 @@ export default class H5PEditor {
             libraryUrl: '/h5p/editor/'
         },
         keyValueStorage: IKeyValueStorage,
-        config: IEditorConfig,
+        public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        user: IUser,
-        translationService: TranslationService
+        private user: IUser,
+        public translationService: TranslationService
     ) {
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
@@ -69,9 +69,6 @@ export default class H5PEditor {
             user,
             translationService
         );
-        this.translationService = translationService;
-        this.config = config;
-        this.user = user;
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.translationService,
@@ -84,7 +81,6 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
-    private config: IEditorConfig;
     private contentManager: ContentManager;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
@@ -93,8 +89,6 @@ export default class H5PEditor {
     private packageImporter: PackageImporter;
     private renderer: any;
     private translation: any;
-    private translationService: TranslationService;
-    private user: any;
 
     public getContentTypeCache(): Promise<any> {
         return this.contentTypeRepository.get();

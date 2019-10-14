@@ -16,5 +16,6 @@ export default model => `<!doctype html>
 </head>
 <body>
     <div class="h5p-content" data-content-id="${model.contentId}"></div>
+    <a href="${model.downloadPath}">Download</button>
 </body>
 </html>`;
