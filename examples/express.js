@@ -10,11 +10,16 @@ const index = require('./index');
 const H5PEditor = require('../');
 const H5PPlayer = H5PEditor.Player;
 
-const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage').default;
-const JsonStorage = require('../build/examples/implementation/JsonStorage').default;
-const EditorConfig = require('../build/examples/implementation/EditorConfig').default;
-const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage').default;
-const FileContentStorage = require('../build/examples/implementation/FileContentStorage').default;
+const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage')
+    .default;
+const JsonStorage = require('../build/examples/implementation/JsonStorage')
+    .default;
+const EditorConfig = require('../build/examples/implementation/EditorConfig')
+    .default;
+const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage')
+    .default;
+const FileContentStorage = require('../build/examples/implementation/FileContentStorage')
+    .default;
 const User = require('../build/examples/implementation/User').default;
 
 const examples = require('./examples.json');
@@ -33,9 +38,10 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
         new FileContentStorage(`${path.resolve('')}/h5p/content`),
-        new User(),
         new H5PEditor.TranslationService(H5PEditor.englishStrings)
     );
+
+    const user = new User();
 
     const server = express();
 
@@ -170,7 +176,7 @@ const start = async () => {
 
         switch (action) {
             case 'content-type-cache':
-                h5pEditor.getContentTypeCache().then(contentTypeCache => {
+                h5pEditor.getContentTypeCache(user).then(contentTypeCache => {
                     res.status(200).json(contentTypeCache);
                 });
                 break;
@@ -241,8 +247,8 @@ const start = async () => {
                 break;
 
             case 'library-install':
-                h5pEditor.installLibrary(req.query.id).then(() =>
-                    h5pEditor.getContentTypeCache().then(contentTypeCache => {
+                h5pEditor.installLibrary(req.query.id, user).then(() =>
+                    h5pEditor.getContentTypeCache(user).then(contentTypeCache => {
                         res.status(200).json({
                             success: true,
                             data: contentTypeCache
@@ -253,11 +259,15 @@ const start = async () => {
 
             case 'library-upload':
                 h5pEditor
-                    .uploadPackage(req.files.h5p.data, req.query.contentId)
+                    .uploadPackage(
+                        req.files.h5p.data,
+                        req.query.contentId,
+                        user
+                    )
                     .then(contentId =>
                         Promise.all([
                             h5pEditor.loadH5P(contentId),
-                            h5pEditor.getContentTypeCache()
+                            h5pEditor.getContentTypeCache(user)
                         ]).then(([content, contentTypes]) =>
                             res.status(200).json({
                                 success: true,

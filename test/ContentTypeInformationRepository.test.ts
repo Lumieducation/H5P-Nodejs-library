@@ -42,10 +42,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
             require('./data/content-type-cache/real-content-types.json')
@@ -75,10 +74,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
             require('./data/content-type-cache/real-content-types.json')
@@ -109,10 +107,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
     });
 
@@ -139,10 +136,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
         expect(content.libraries[0].installed).toEqual(true);
         expect(content.libraries[0].isUpToDate).toEqual(false);
@@ -166,10 +162,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
     });
 
@@ -196,10 +191,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            user,
             new TranslationService({})
         );
-        const content = await repository.get();
+        const content = await repository.get(user);
         expect(content.libraries.length).toEqual(2);
         expect(
             content.libraries.find(l => l.machineName === 'H5P.Example1')
@@ -236,17 +230,16 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            new User(),
             new TranslationService({
                 'hub-install-invalid-content-type':
                     'hub-install-invalid-content-type',
                 'hub-install-no-content-type': 'hub-install-no-content-type'
             })
         );
-        await expect(repository.install(undefined)).rejects.toThrow(
+        await expect(repository.install(undefined, new User())).rejects.toThrow(
             'hub-install-no-content-type'
         );
-        await expect(repository.install('asd')).rejects.toThrow(
+        await expect(repository.install('asd', new User())).rejects.toThrow(
             'hub-install-invalid-content-type'
         );
     });
@@ -277,7 +270,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             storage,
             libManager,
             config,
-            user,
             new TranslationService({
                 'hub-install-denied': 'hub-install-denied'
             })
@@ -285,14 +277,14 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         user.canInstallRecommended = false;
         user.canUpdateAndInstallLibraries = false;
-        await expect(repository.install('H5P.Blanks')).rejects.toThrow(
+        await expect(repository.install('H5P.Blanks', user)).rejects.toThrow(
             'hub-install-denied'
         );
 
         user.canInstallRecommended = true;
         user.canUpdateAndInstallLibraries = false;
         await expect(
-            repository.install('H5P.ImageHotspotQuestion')
+            repository.install('H5P.ImageHotspotQuestion', user)
         ).rejects.toThrow('hub-install-denied');
     });
 
@@ -327,13 +319,12 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     storage,
                     libManager,
                     config,
-                    user,
                     new TranslationService({})
                 );
 
                 axiosMock.restore(); // TODO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
                 await expect(
-                    repository.install('H5P.DragText')
+                    repository.install('H5P.DragText', user)
                 ).resolves.toEqual(true);
                 const libs = await libManager.getInstalled();
                 expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file

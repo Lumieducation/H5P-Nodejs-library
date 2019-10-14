@@ -399,7 +399,7 @@ Requests available content types. Respond with
 
 ```js
 h5pEditor
-    .getContentTypeCache()
+    .getContentTypeCache(user)
     .then(types => /** send types to browser **/)
 ```
 
@@ -458,8 +458,8 @@ Requests for the given library to be installed. Handle with
 
 ```js
 h5pEditor
-    .installLibrary(libraryId)
-    .then(() => h5pEditor.getContentTypeCache())
+    .installLibrary(libraryId, user)
+    .then(() => h5pEditor.getContentTypeCache(user))
     .then(contentTypeCache => ({ success: true, data: contentTypeCache }))
     .then(response => /** send response to browser **/)
 ```
@@ -473,10 +473,10 @@ is used to upload a `.h5p` file, and install the containing libraries and conten
 Handle with
 
 ```js
-h5pEditor.uploadPackage(query.contentId, files.h5p.data)
+h5pEditor.uploadPackage(query.contentId, files.h5p.data, user)
     .then(() => Promise.all([
         h5pEditor.loadH5P(query.contentId),
-        h5pEditor.getContentTypeCache()
+        h5pEditor.getContentTypeCache(user)
     ]))
     .then(([content, contentTypes]) => ({
         success: true,
