@@ -63,7 +63,7 @@ export default class ContentManager {
      * @returns true if the piece of content exists
      */
     public async contentExists(contentId: ContentId): Promise<boolean> {
-        log.info(`checking if content ${contentId} exists`);
+        log.debug(`checking if content ${contentId} exists`);
         return this.contentStorage.contentExists(contentId);
     }
 
@@ -108,6 +108,7 @@ export default class ContentManager {
                         path.join(packageDirectory, 'content'),
                         file
                     );
+                    log.debug(`adding ${file} to ${packageDirectory}`);
                     return this.contentStorage.addContentFile(
                         newContentId,
                         localPath,
@@ -151,7 +152,7 @@ export default class ContentManager {
      * @returns {Promise<number>} A unique content id
      */
     public async createContentId(): Promise<ContentId> {
-        log.info(`generating contentId`);
+        log.debug(`generating contentId`);
         return this.contentStorage.createContentId();
     }
 
@@ -175,7 +176,7 @@ export default class ContentManager {
         filename: string,
         user: IUser
     ): ReadStream {
-        log.info(`loading ${filename} for ${contentId}`);
+        log.debug(`loading ${filename} for ${contentId}`);
         return this.contentStorage.getContentFileStream(
             contentId,
             filename,
@@ -237,7 +238,7 @@ export default class ContentManager {
         file: string,
         user: IUser
     ): Promise<any> {
-        log.info(`loading ${file} for ${contentId}`);
+        log.debug(`loading ${file} for ${contentId}`);
         const stream: Stream = this.contentStorage.getContentFileStream(
             contentId,
             file,

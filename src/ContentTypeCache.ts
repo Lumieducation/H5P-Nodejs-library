@@ -11,6 +11,10 @@ import {
     IUsageStatistics
 } from './types';
 
+import Logger from './helpers/Logger';
+
+const log = new Logger('ContentTypeCache');
+
 /**
  * This class caches the information about the content types on the H5P Hub.
  *
@@ -32,6 +36,7 @@ export default class ContentTypeCache {
      * @param {IStorage} storage The storage object.
      */
     constructor(config: IEditorConfig, storage: IKeyValueStorage) {
+        log.info(`initialize`);
         this.config = config;
         this.storage = storage;
     }
@@ -44,6 +49,7 @@ export default class ContentTypeCache {
      * @returns the local content type object
      */
     private static convertCacheEntryToLocalFormat(entry: any): ContentType {
+        log.debug(`converting Cache Entry to local format`);
         return new ContentType({
             categories: entry.categories || [],
             createdAt: Date.parse(entry.createdAt),
@@ -74,6 +80,7 @@ export default class ContentTypeCache {
      * @returns {string} id
      */
     private static generateLocalId(): string {
+        log.debug(`generating local Id`);
         return crc32(__dirname);
     }
 
@@ -83,6 +90,9 @@ export default class ContentTypeCache {
      * @returns content types
      */
     public async downloadContentTypesFromHub(): Promise<any[]> {
+        log.info(
+            `downloading content types from hub ${this.config.hubContentTypesEndpoint}`
+        );
         await this.registerOrGetUuid();
         let formData = this.compileRegistrationData();
         if (this.config.sendUsageStatistics) {
@@ -116,6 +126,7 @@ export default class ContentTypeCache {
      * @returns {Promise<boolean>} true if update was done; false if it failed (e.g. because Hub was unreachable)
      */
     public async forceUpdate(): Promise<boolean> {
+        log.info(`forcing update`);
         let cacheInHubFormat;
         try {
             cacheInHubFormat = await this.downloadContentTypesFromHub();
@@ -123,7 +134,7 @@ export default class ContentTypeCache {
                 return false;
             }
         } catch (error) {
-            // TODO: Add error logging
+            log.error(error);
             return false;
         }
         const cacheInInternalFormat = cacheInHubFormat.map(
@@ -140,6 +151,7 @@ export default class ContentTypeCache {
      * @returns {Promise<ContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
     public async get(...machineNames: string[]): Promise<ContentType[]> {
+        log.info(`getting content types`);
         if (!machineNames || machineNames.length === 0) {
             return this.storage.load('contentTypeCache');
         }
@@ -157,6 +169,7 @@ export default class ContentTypeCache {
      * @returns {Promise<boolean>} true if cache is outdated, false if not
      */
     public async isOutdated(): Promise<boolean> {
+        log.info(`checking if content type cache is up to date`);
         const lastUpdate = await this.storage.load('contentTypeCacheUpdate');
         return (
             !lastUpdate ||
@@ -172,6 +185,9 @@ export default class ContentTypeCache {
      * @returns uuid
      */
     public async registerOrGetUuid(): Promise<string> {
+        log.info(
+            `registering or getting uuid from hub ${this.config.hubRegistrationEndpoint}`
+        );
         if (this.config.uuid && this.config.uuid !== '') {
             return this.config.uuid;
         }
@@ -187,6 +203,7 @@ export default class ContentTypeCache {
         if (!response.data || !response.data.uuid) {
             throw new Error('Could not register this site at the H5P Hub.');
         }
+        log.debug(`setting uuid to ${response.data.uuid}`);
         this.config.uuid = response.data.uuid;
         await this.config.save();
         return this.config.uuid;
@@ -197,10 +214,13 @@ export default class ContentTypeCache {
      * @returns {Promise<boolean>} true if cache was updated, false if not
      */
     public async updateIfNecessary(): Promise<boolean> {
+        log.info(`checking if update is necessary`);
         const oldCache = await this.storage.load('contentTypeCache');
         if (!oldCache || (await this.isOutdated())) {
+            log.info(`update is necessary`);
             return this.forceUpdate();
         }
+        log.info(`no update necessary`);
         return false;
     }
 
@@ -208,6 +228,9 @@ export default class ContentTypeCache {
      * @returns An object with the registration data as required by the H5P Hub
      */
     private compileRegistrationData(): IRegistrationData {
+        log.debug(
+            `compiling registration data for hub ${this.config.hubRegistrationEndpoint}`
+        );
         return {
             core_api_version: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`,
             disabled: this.config.fetchingDisabled,
@@ -224,6 +247,7 @@ export default class ContentTypeCache {
      * @returns An object with usage statistics as required by the H5P Hub
      */
     private compileUsageStatistics(): IUsageStatistics {
+        log.info(`compiling usage statistics`);
         return {
             libraries: {}, // TODO: add library information here
             num_authors: 0 // number of active authors
