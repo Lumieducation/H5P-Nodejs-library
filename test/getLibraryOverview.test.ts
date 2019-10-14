@@ -1,7 +1,6 @@
 import path from 'path';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
-import LibraryManager from '../src/LibraryManager';
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
@@ -10,7 +9,6 @@ describe('getting overview about multiple libraries', () => {
             null,
             null,
             new FileLibraryStorage(path.resolve('test/data/libraries')),
-            null,
             null,
             null
         )
@@ -38,7 +36,6 @@ describe('getting overview about multiple libraries', () => {
             null,
             null,
             new FileLibraryStorage(path.resolve('test/data/libraries')),
-            null,
             null,
             null
         )

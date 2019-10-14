@@ -49,8 +49,7 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        private user: IUser,
-        public translationService: TranslationService
+        translationService: TranslationService
     ) {
         this.renderer = defaultRenderer;
         this.baseUrl = urls.baseUrl;
@@ -66,9 +65,10 @@ export default class H5PEditor {
             keyValueStorage,
             this.libraryManager,
             config,
-            user,
             translationService
         );
+        this.translationService = translationService;
+        this.config = config;
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.translationService,
@@ -89,9 +89,10 @@ export default class H5PEditor {
     private packageImporter: PackageImporter;
     private renderer: any;
     private translation: any;
+    private translationService: TranslationService;
 
-    public getContentTypeCache(): Promise<any> {
-        return this.contentTypeRepository.get();
+    public getContentTypeCache(user: IUser): Promise<any> {
+        return this.contentTypeRepository.get(user);
     }
 
     public getLibraryData(
@@ -197,8 +198,8 @@ export default class H5PEditor {
      * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
      * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
      */
-    public async installLibrary(id: string): Promise<boolean> {
-        return this.contentTypeRepository.install(id);
+    public async installLibrary(id: string, user: IUser): Promise<boolean> {
+        return this.contentTypeRepository.install(id, user);
     }
 
     public loadH5P(
@@ -283,7 +284,8 @@ export default class H5PEditor {
      */
     public async uploadPackage(
         data: Buffer,
-        contentId: ContentId
+        contentId: ContentId,
+        user: IUser
     ): Promise<ContentId> {
         const dataStream: any = new stream.PassThrough();
         dataStream.end(data);
@@ -305,7 +307,7 @@ export default class H5PEditor {
 
                 newContentId = await this.packageImporter.addPackageLibrariesAndContent(
                     tempPackagePath,
-                    this.user,
+                    user,
                     contentId
                 );
             },

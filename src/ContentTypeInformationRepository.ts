@@ -31,7 +31,6 @@ export default class ContentTypeInformationRepository {
      * @param {IStorage} storage
      * @param {LibraryManager} libraryManager
      * @param {H5PEditorConfig} config
-     * @param {User} user
      * @param {TranslationService} translationService
      */
     constructor(
@@ -39,14 +38,13 @@ export default class ContentTypeInformationRepository {
         private storage: IKeyValueStorage,
         private libraryManager: LibraryManager,
         private config: IEditorConfig,
-        private user: IUser,
         private translationService: ITranslationService
     ) {}
 
     /**
      * Gets the information about available content types with all the extra information as listed in the class description.
      */
-    public async get(): Promise<any> {
+    public async get(user: IUser): Promise<any> {
         let cachedHubInfo = await this.contentTypeCache.get();
         if (!cachedHubInfo) {
             // try updating cache if it is empty for some reason
@@ -58,9 +56,10 @@ export default class ContentTypeInformationRepository {
             cachedHubInfo = [];
         }
         cachedHubInfo = await this.addUserAndInstallationSpecificInfo(
-            cachedHubInfo
+            cachedHubInfo,
+            user
         );
-        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo);
+        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo, user);
 
         return {
             apiVersion: this.config.coreApiVersion,
@@ -68,10 +67,10 @@ export default class ContentTypeInformationRepository {
             libraries: cachedHubInfo,
             outdated:
                 (await this.contentTypeCache.isOutdated()) &&
-                (this.user.canInstallRecommended ||
-                    this.user.canUpdateAndInstallLibraries),
+                (user.canInstallRecommended ||
+                    user.canUpdateAndInstallLibraries),
             recentlyUsed: [], // TODO: store this somewhere
-            user: this.user.type
+            user: user.type
         };
     }
 
@@ -81,7 +80,7 @@ export default class ContentTypeInformationRepository {
      * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
      * @returns {Promise<boolean>} true if the library was installed.
      */
-    public async install(machineName: string): Promise<boolean> {
+    public async install(machineName: string, user: IUser): Promise<boolean> {
         if (!machineName) {
             throw new H5pError(
                 this.translationService.getTranslation(
@@ -101,7 +100,7 @@ export default class ContentTypeInformationRepository {
         }
 
         // Reject installation of content types that the user has no permission to
-        if (!localContentType[0].canBeInstalledBy(this.user)) {
+        if (!localContentType[0].canBeInstalledBy(user)) {
             throw new H5pError(
                 this.translationService.getTranslation('hub-install-denied')
             );
@@ -148,7 +147,10 @@ export default class ContentTypeInformationRepository {
      * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about
      * locally installed libraries.
      */
-    private async addLocalLibraries(hubInfo: any[]): Promise<any[]> {
+    private async addLocalLibraries(
+        hubInfo: any[],
+        user: IUser
+    ): Promise<any[]> {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
@@ -189,7 +191,7 @@ export default class ContentTypeInformationRepository {
                     patchVersion: localLib.patchVersion,
                     restricted:
                         this.libraryIsRestricted(localLib) &&
-                        !this.user.canCreateRestricted,
+                        !user.canCreateRestricted,
                     title: localLib.title
                 };
             });
@@ -203,7 +205,8 @@ export default class ContentTypeInformationRepository {
      * @returns {Promise<any[]>} The hub information as passed into the method with added information.
      */
     private async addUserAndInstallationSpecificInfo(
-        hubInfo: any[]
+        hubInfo: any[],
+        user: IUser
     ): Promise<any[]> {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped).map(
@@ -220,18 +223,18 @@ export default class ContentTypeInformationRepository {
                 );
                 if (!localLib) {
                     hubLib.installed = false;
-                    hubLib.restricted = !this.canInstallLibrary(hubLib);
-                    hubLib.canInstall = this.canInstallLibrary(hubLib);
+                    hubLib.restricted = !this.canInstallLibrary(hubLib, user);
+                    hubLib.canInstall = this.canInstallLibrary(hubLib, user);
                     hubLib.isUpToDate = true;
                 } else {
                     hubLib.id = localLib.id;
                     hubLib.installed = true;
                     hubLib.restricted =
                         this.libraryIsRestricted(localLib) &&
-                        !this.user.canCreateRestricted;
+                        !user.canCreateRestricted;
                     hubLib.canInstall =
                         !this.libraryIsRestricted(localLib) &&
-                        this.canInstallLibrary(hubLib);
+                        this.canInstallLibrary(hubLib, user);
                     hubLib.isUpToDate = !(await this.libraryManager.libraryHasUpgrade(
                         hubLib
                     ));
@@ -249,10 +252,10 @@ export default class ContentTypeInformationRepository {
      * Checks if users can install library due to their rights.
      * @param {Library} library
      */
-    private canInstallLibrary(library: any): boolean {
+    private canInstallLibrary(library: any, user: IUser): boolean {
         return (
-            this.user.canUpdateAndInstallLibraries ||
-            (library.isRecommended && this.user.canInstallRecommended)
+            user.canUpdateAndInstallLibraries ||
+            (library.isRecommended && user.canInstallRecommended)
         );
     }
 
