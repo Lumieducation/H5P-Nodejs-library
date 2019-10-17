@@ -30,7 +30,7 @@ import {
     IEditorIntegration,
     IIntegration,
     IKeyValueStorage,
-    ILibraryData,
+    ILibraryDataForClient,
     ILibraryInfo,
     ILibraryStorage,
     IURLConfig,
@@ -100,7 +100,7 @@ export default class H5PEditor {
         majorVersion: number,
         minorVersion: number,
         language: string = 'en'
-    ): Promise<ILibraryData> {
+    ): Promise<ILibraryDataForClient> {
         const library: Library = new Library(
             machineName,
             majorVersion,

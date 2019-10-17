@@ -9,7 +9,7 @@ import { streamToString } from './helpers/StreamHelpers';
 import {
     ICSS,
     IJS,
-    ILibraryData,
+    ILibraryDataForClient,
     ILibraryJson,
     ILibraryStorage,
     ISemantic
@@ -271,7 +271,7 @@ export default class LibraryManager {
             );
         }
 
-        let metadata: ILibraryData;
+        let metadata: ILibraryDataForClient;
         try {
             metadata = await this.getJsonFile(library, 'library.json');
         } catch (error) {
