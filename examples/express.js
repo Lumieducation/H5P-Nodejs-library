@@ -26,12 +26,6 @@ const examples = require('./examples.json');
 
 const start = async () => {
     const h5pEditor = new H5PEditor.Editor(
-        {
-            baseUrl: '/h5p',
-            ajaxPath: '/ajax?action=',
-            libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
-            filesPath: '/h5p/content'
-        },
         new InMemoryStorage(),
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))
@@ -124,7 +118,7 @@ const start = async () => {
             h5pEditor.config,
             h5pEditor.contentManager
         );
-        
+
         // set filename for the package with .h5p extension
         res.setHeader(
             'Content-disposition',
@@ -272,12 +266,14 @@ const start = async () => {
 
             case 'library-install':
                 h5pEditor.installLibrary(req.query.id, user).then(() =>
-                    h5pEditor.getContentTypeCache(user).then(contentTypeCache => {
-                        res.status(200).json({
-                            success: true,
-                            data: contentTypeCache
-                        });
-                    })
+                    h5pEditor
+                        .getContentTypeCache(user)
+                        .then(contentTypeCache => {
+                            res.status(200).json({
+                                success: true,
+                                data: contentTypeCache
+                            });
+                        })
                 );
                 break;
 

@@ -1,10 +1,17 @@
+import EditorConfig from '../examples/implementation/EditorConfig';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
 import LibraryManager from '../src/LibraryManager';
 
 describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
-        const h5pEditor = new H5PEditor({}, null, null, null, null, null);
+        const h5pEditor = new H5PEditor(
+            null,
+            new EditorConfig(null),
+            null,
+            null,
+            null
+        );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
@@ -37,7 +44,13 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('includes the semantics.json content', () => {
-        const h5pEditor = new H5PEditor({}, null, null, null, null, null);
+        const h5pEditor = new H5PEditor(
+            null,
+            new EditorConfig(null),
+            null,
+            null,
+            null
+        );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
@@ -72,9 +85,9 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('includes assets of preloaded and editor dependencies', () => {
         const h5pEditor = new H5PEditor(
-            { baseUrl: '/h5p' },
             null,
-            null,
+            // tslint:disable-next-line: prefer-object-spread
+            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -161,9 +174,9 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('includes dependencies of dependencies in the javascript field', () => {
         const h5pEditor = new H5PEditor(
-            { baseUrl: '/h5p' },
             null,
-            null,
+            // tslint:disable-next-line: prefer-object-spread
+            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -258,7 +271,13 @@ describe('aggregating data from library folders for the editor', () => {
             return Promise.resolve({ arbitrary: 'languageObject' });
         }) as jest.Mocked<any>;
 
-        const h5pEditor = new H5PEditor({}, null, null, null, null, null);
+        const h5pEditor = new H5PEditor(
+            null,
+            new EditorConfig(null),
+            null,
+            null,
+            null
+        );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
@@ -327,7 +346,14 @@ describe('aggregating data from library folders for the editor', () => {
             return Promise.resolve(['array', 'with', 'languages']);
         }) as jest.Mock<any>;
 
-        const h5pEditor = new H5PEditor({}, null, null, null, null, null);
+        const h5pEditor = new H5PEditor(
+            null,
+            // tslint:disable-next-line: prefer-object-spread
+            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            null,
+            null,
+            null
+        );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
@@ -391,9 +417,9 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('lists dependencies in correct order', () => {
         const h5pEditor = new H5PEditor(
-            { baseUrl: '/h5p' },
             null,
-            null,
+            // tslint:disable-next-line: prefer-object-spread
+            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
