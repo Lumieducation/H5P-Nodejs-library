@@ -49,10 +49,9 @@ export default class H5PEditor {
             libraryUrl: '/h5p/editor/'
         },
         keyValueStorage: IKeyValueStorage,
-        config: IEditorConfig,
+        public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        user: IUser,
         translationService: TranslationService
     ) {
         log.info('initialize');
@@ -70,12 +69,10 @@ export default class H5PEditor {
             keyValueStorage,
             this.libraryManager,
             config,
-            user,
             translationService
         );
         this.translationService = translationService;
         this.config = config;
-        this.user = user;
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.translationService,
@@ -88,7 +85,6 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
-    private config: IEditorConfig;
     private contentManager: ContentManager;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
@@ -98,11 +94,10 @@ export default class H5PEditor {
     private renderer: any;
     private translation: any;
     private translationService: TranslationService;
-    private user: any;
 
-    public getContentTypeCache(): Promise<any> {
+    public getContentTypeCache(user: IUser): Promise<any> {
         log.info(`getting content type chache`);
-        return this.contentTypeRepository.get();
+        return this.contentTypeRepository.get(user);
     }
 
     public getLibraryData(
@@ -219,8 +214,8 @@ export default class H5PEditor {
      * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
      * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
      */
-    public async installLibrary(id: string): Promise<boolean> {
-        return this.contentTypeRepository.install(id);
+    public async installLibrary(id: string, user: IUser): Promise<boolean> {
+        return this.contentTypeRepository.install(id, user);
     }
 
     public loadH5P(
@@ -310,7 +305,8 @@ export default class H5PEditor {
      */
     public async uploadPackage(
         data: Buffer,
-        contentId: ContentId
+        contentId: ContentId,
+        user: IUser
     ): Promise<ContentId> {
         log.info(`uploading package for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
@@ -333,7 +329,7 @@ export default class H5PEditor {
 
                 newContentId = await this.packageImporter.addPackageLibrariesAndContent(
                     tempPackagePath,
-                    this.user,
+                    user,
                     contentId
                 );
             },

@@ -6,7 +6,6 @@ import yazl from 'yazl';
 import ContentManager from './ContentManager';
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
-import Library from './Library';
 import LibraryManager from './LibraryManager';
 import {
     ContentId,
