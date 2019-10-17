@@ -12,6 +12,10 @@ export default class EditorConfig implements IEditorConfig {
         this.storage = storage;
     }
 
+    public ajaxPath: string = '/ajax?action=';
+
+    public baseUrl: string = '/h5p';
+
     /**
      * Time after which the content type cache is considered to be outdated in milliseconds.
      * User-configurable.
@@ -47,6 +51,8 @@ export default class EditorConfig implements IEditorConfig {
      */
     public fetchingDisabled: number = 0;
 
+    public filesPath: string = '';
+
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
      * It is sent to the H5P Hub when registering there.
@@ -66,6 +72,8 @@ export default class EditorConfig implements IEditorConfig {
      * User-configurable.
      */
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
+
+    public libraryUrl: string = '/h5p/editor/';
 
     /**
      * A list of file extensions allowed for library files.

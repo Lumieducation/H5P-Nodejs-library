@@ -33,18 +33,11 @@ import {
     ILibraryData,
     ILibraryInfo,
     ILibraryStorage,
-    IURLConfig,
     IUser
 } from './types';
 
 export default class H5PEditor {
     constructor(
-        urls: IURLConfig = {
-            ajaxPath: '/ajax?action=',
-            baseUrl: '/h5p',
-            filesPath: '',
-            libraryUrl: '/h5p/editor/'
-        },
         keyValueStorage: IKeyValueStorage,
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
@@ -52,11 +45,11 @@ export default class H5PEditor {
         translationService: TranslationService
     ) {
         this.renderer = defaultRenderer;
-        this.baseUrl = urls.baseUrl;
+        this.baseUrl = config.baseUrl;
         this.translation = defaultTranslation;
-        this.ajaxPath = urls.ajaxPath;
-        this.libraryUrl = urls.libraryUrl;
-        this.filesPath = urls.filesPath;
+        this.ajaxPath = config.ajaxPath;
+        this.libraryUrl = config.libraryUrl;
+        this.filesPath = config.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(libraryStorage);
         this.contentManager = new ContentManager(contentStorage);
