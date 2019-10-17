@@ -11,6 +11,9 @@ import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
 import { ContentId, IEditorConfig, ITranslationService, IUser } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('PackageImporter');
+
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
  */
@@ -26,7 +29,9 @@ export default class PackageImporter {
         private translationService: ITranslationService,
         private config: IEditorConfig,
         private contentManager: ContentManager = null
-    ) {}
+    ) {
+        log.info(`initialize`);
+    }
 
     /**
      * Extracts a H5P package to the specified directory.
@@ -50,6 +55,7 @@ export default class PackageImporter {
             includeMetadata: boolean;
         }
     ): Promise<void> {
+        log.info(`extracting package ${packagePath} from to ${directoryPath}`);
         const zipFile = await yauzlPromise.open(packagePath);
         await zipFile.walkEntries(async (entry: any) => {
             const basename = path.basename(entry.fileName);
@@ -85,6 +91,7 @@ export default class PackageImporter {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
+        log.info(`adding content from ${packagePath} to system`);
         return this.processPackage(
             packagePath,
             {
@@ -105,6 +112,7 @@ export default class PackageImporter {
     public async installLibrariesFromPackage(
         packagePath: string
     ): Promise<ContentId> {
+        log.info(`installing libraries from package ${packagePath}`);
         return this.processPackage(packagePath, {
             copyContent: false,
             installLibraries: true
@@ -128,6 +136,7 @@ export default class PackageImporter {
         user?: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
+        log.info(`processing package ${packagePath}`);
         const packageValidator = new PackageValidator(
             this.translationService,
             this.config
@@ -165,6 +174,9 @@ export default class PackageImporter {
                 // Copy content to the repository
                 if (copyContent) {
                     if (!this.contentManager) {
+                        log.error(
+                            'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
+                        );
                         throw new Error(
                             'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );

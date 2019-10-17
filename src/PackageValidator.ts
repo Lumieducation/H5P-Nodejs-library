@@ -12,6 +12,9 @@ import {
 } from './helpers/ValidatorBuilder';
 import { IEditorConfig, ITranslationService } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('PackageValidator');
+
 /**
  * Performs checks if uploaded H5P packages or those from the H5P Hub are valid.
  * Call await validatePackage(...) to perform these checks.
@@ -33,6 +36,7 @@ export default class PackageValidator {
         private translationService: ITranslationService,
         private config: IEditorConfig
     ) {
+        log.info(`initialize`);
         this.contentExtensionWhitelist = config.contentWhitelist.split(' ');
         this.libraryExtensionWhitelist = config.libraryWhitelist
             .split(' ')
@@ -53,6 +57,11 @@ export default class PackageValidator {
     private static getTopLevelDirectories(
         zipEntries: yauzlPromise.Entry[]
     ): string[] {
+        log.verbose(
+            `getting top level directories ${zipEntries
+                .map(entry => entry.fileName)
+                .join(', ')}`
+        );
         return Object.keys(
             zipEntries.reduce((directorySet, entry) => {
                 const split = entry.fileName.split('/');
@@ -73,6 +82,11 @@ export default class PackageValidator {
         filename: string,
         allowedExtensions: string[]
     ): boolean {
+        log.verbose(
+            `checking allowed file extension: ${filename} - allowed extensions: ${allowedExtensions.join(
+                ', '
+            )}`
+        );
         let actualExtension = path.extname(filename);
         if (actualExtension === '') {
             return false;
@@ -94,6 +108,7 @@ export default class PackageValidator {
      * @returns {boolean} true if directory, false if not
      */
     private static isDirectory(p: string): boolean {
+        log.debug(`checking if ${p} is a directory`);
         return p.endsWith('/');
     }
 
@@ -106,9 +121,11 @@ export default class PackageValidator {
         file: string
     ): Promise<yauzlPromise.ZipFile> {
         try {
+            log.info(`opnening zip archive ${file}`);
             // we await the promise here because we want to catch the error and return undefined
             return await yauzlPromise.open(file, { lazyEntries: false });
         } catch (ignored) {
+            log.error(`zip file ${file} could not be opened`);
             return undefined;
         }
     }
@@ -138,6 +155,7 @@ export default class PackageValidator {
         checkContent: boolean = true,
         checkLibraries: boolean = true
     ): Promise<any> {
+        log.info(`validating package ${h5pFile}`);
         await this.initializeJsonValidators();
 
         return new ValidatorBuilder()
@@ -223,6 +241,7 @@ export default class PackageValidator {
         libraryName: string,
         error: ValidationError
     ): boolean {
+        log.info(`checking core version for ${libraryName}`);
         if (
             !metadata.coreApi ||
             !metadata.coreApi.majorVersion ||
@@ -237,6 +256,9 @@ export default class PackageValidator {
                 metadata.coreApi.minorVersion >
                     this.config.coreApiVersion.minor)
         ) {
+            log.error(
+                `api version ${metadata.coreApi.majorVersion}.${metadata.coreApi.minorVersion} for ${libraryName} not supported`
+            );
             error.addError(
                 this.translationService.getTranslation(
                     'api-version-unsupported',
@@ -282,6 +304,11 @@ export default class PackageValidator {
                         whitelist
                     )
                 ) {
+                    log.error(
+                        `file extension ${
+                            zipEntry.fileName
+                        } is not in whitelist: ${whitelist.join(', ')}`
+                    );
                     error.addError(
                         this.translationService.getTranslation(
                             'not-in-whitelist',
@@ -315,6 +342,7 @@ export default class PackageValidator {
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
     ) => Promise<yauzlPromise.Entry[]> {
+        log.verbose(`checking if file ${filename} exists`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError
@@ -326,6 +354,7 @@ export default class PackageValidator {
                         filename.toLocaleLowerCase()
                 )
             ) {
+                log.error(`file ${filename} does not exist`);
                 error.addError(errorMessage);
                 if (throwOnError) {
                     throw error;
@@ -346,11 +375,13 @@ export default class PackageValidator {
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
     ): Promise<yauzlPromise.Entry[]> => {
+        log.debug(`checking if file sizes exceed limit`);
         let totalFileSize = 0; // in bytes
         if (this.config.maxFileSize) {
             for (const entry of zipEntries) {
                 totalFileSize += entry.uncompressedSize;
                 if (entry.uncompressedSize > this.config.maxFileSize) {
+                    log.error(`file ${entry.fileName} exceeds limit`);
                     error.addError(
                         this.translationService.getTranslation(
                             'file-size-too-large',
@@ -368,6 +399,7 @@ export default class PackageValidator {
             this.config.maxTotalSize &&
             totalFileSize > this.config.maxTotalSize
         ) {
+            log.error(`total size is too large`);
             error.addError(
                 this.translationService.getTranslation('total-size-too-large', {
                     '%max': formatBytes(this.config.maxTotalSize),
@@ -390,6 +422,7 @@ export default class PackageValidator {
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
     ) => Promise<yauzlPromise.Entry[]> {
+        log.info(`checking if files are readable`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError
@@ -408,6 +441,7 @@ export default class PackageValidator {
                     });
                     await promisepipe(readStream, writeStream);
                 } catch (e) {
+                    log.error(`file ${e.fileName} is not readable`);
                     error.addError(
                         this.translationService.getTranslation('corrupt-file', {
                             '%file': e.fileName
@@ -446,6 +480,7 @@ export default class PackageValidator {
         if (this.h5pMetadataValidator && this.libraryMetadataValidator) {
             return;
         }
+        log.info(`initializing json validators`);
 
         const jsonValidator = new ajv();
         const h5pJsonSchema = require('./schemas/h5p-schema.json');
@@ -477,6 +512,7 @@ export default class PackageValidator {
         zipEntires: yauzlPromise.Entry[],
         error: ValidationError
     ) => Promise<yauzlPromise.Entry[]> {
+        log.info(`checking if json is parseable`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError
@@ -490,6 +526,9 @@ export default class PackageValidator {
                 if (skipIfNonExistent) {
                     return zipEntries;
                 }
+                log.error(
+                    `File ${filename} missing from H5P package. Make sure to use the fileMustExistRule before using jsonMustBeParsableRule!`
+                );
                 throw new Error(
                     `File ${filename} missing from H5P package. Make sure to use the fileMustExistRule before using jsonMustBeParsableRule!`
                 );
@@ -497,6 +536,7 @@ export default class PackageValidator {
             try {
                 await this.tryParseJson(entry);
             } catch (jsonParseError) {
+                log.error(`json ${filename} is not parseable`);
                 if (throwIfError) {
                     throw error.addError(
                         errorMessage || jsonParseError.message
@@ -532,6 +572,7 @@ export default class PackageValidator {
         | yauzlPromise.Entry[]
         | { jsonData: any; zipEntries: yauzlPromise.Entry[] }
     > {
+        log.info(`checking if json ${filename} conforms to schema`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError
@@ -542,6 +583,9 @@ export default class PackageValidator {
                     filename.toLocaleLowerCase()
             );
             if (!entry) {
+                log.error(
+                    `File ${filename} missing from H5P package. Make sure to use the fileMustExistRule before using jsonMustConformToSchemaRule!`
+                );
                 throw new Error(
                     `File ${filename} missing from H5P package. Make sure to use the fileMustExistRule before using jsonMustConformToSchemaRule!`
                 );
@@ -550,11 +594,13 @@ export default class PackageValidator {
             try {
                 jsonData = await this.tryParseJson(entry);
             } catch (jsonParseError) {
+                log.error(`${jsonParseMessage || jsonParseError.message}`);
                 throw error.addError(
                     jsonParseMessage || jsonParseError.message
                 );
             }
             if (!schemaValidator(jsonData)) {
+                log.error(`json ${filename} does not conform to schema`);
                 throw error.addError(
                     this.translationService.getTranslation(errorMessageId, {
                         '%name': entry.fileName,
@@ -583,6 +629,7 @@ export default class PackageValidator {
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
     ): Promise<yauzlPromise.Entry[]> => {
+        log.info(`validating libraries inside package`);
         const topLevelDirectories = PackageValidator.getTopLevelDirectories(
             zipEntries
         );
@@ -607,6 +654,7 @@ export default class PackageValidator {
         zipEntries: yauzlPromise.Entry[],
         error: ValidationError
     ) => Promise<yauzlPromise.Entry[]> {
+        log.info(`validating library's directory to naming standards`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError
@@ -637,6 +685,9 @@ export default class PackageValidator {
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
     ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
+        log.info(
+            `checking if language files in library ${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion} have the correct naming schema and are valid JSON`
+        );
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         const languagePath = PackageValidator.pathJoin(dirName, 'language/');
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
@@ -647,6 +698,9 @@ export default class PackageValidator {
         )) {
             const languageFileName = path.basename(languageFileEntry.fileName);
             if (!languageFileRegex.test(languageFileName)) {
+                log.error(
+                    `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}: invalid language file`
+                );
                 error.addError(
                     this.translationService.getTranslation(
                         'invalid-language-file',
@@ -657,6 +711,9 @@ export default class PackageValidator {
             try {
                 await this.tryParseJson(languageFileEntry);
             } catch (ignored) {
+                log.error(
+                    `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}: langauge json could not be parsed`
+                );
                 error.addError(
                     this.translationService.getTranslation(
                         'invalid-language-file-json',
@@ -690,6 +747,9 @@ export default class PackageValidator {
          * @param {ValidationError} error The error object to use
          * @returns {Promise<{zipEntries: yauzl.Entry[], jsonData: any}>} the unchanged data passed to the rule
          */
+        log.info(
+            `checking if directory names ${directoryName} of libraries match library.json metadata`
+        );
         return async (
             {
                 zipEntries,
@@ -707,6 +767,9 @@ export default class PackageValidator {
                 directoryName !==
                     `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`
             ) {
+                log.error(
+                    `library directory does not match name ${directoryName}`
+                );
                 error.addError(
                     this.translationService.getTranslation(
                         'library-directory-name-mismatch',
@@ -737,6 +800,9 @@ export default class PackageValidator {
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
     ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
+        log.info(
+            `checking if all js and css file references in the preloaded section of the library metadata are present in package`
+        );
         const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
@@ -785,6 +851,9 @@ export default class PackageValidator {
         }: { jsonData: any; zipEntries: yauzlPromise.Entry[] },
         error: ValidationError
     ): Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> => {
+        log.info(
+            `checking if library is compatible with the core version running`
+        );
         this.checkCoreVersion(
             jsonData,
             `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`,
@@ -804,7 +873,9 @@ export default class PackageValidator {
         h5pFile: string,
         error: ValidationError
     ): Promise<string> => {
+        log.info(`checking if file extension is .h5p`);
         if (path.extname(h5pFile).toLocaleLowerCase() !== '.h5p') {
+            log.error(`file extension is not .h5p`);
             throw error.addError(
                 this.translationService.getTranslation('missing-h5p-extension')
             );
@@ -826,6 +897,7 @@ export default class PackageValidator {
      * @returns {Promise<any>} The read JSON as an object
      */
     private async tryParseJson(entry: yauzlPromise.Entry): Promise<any> {
+        log.verbose(`parsing json ${entry.fileName}`);
         let content;
         try {
             const readStream = await entry.openReadStream();
@@ -836,6 +908,7 @@ export default class PackageValidator {
             await promisepipe(readStream, writeStream);
             content = writeStream.getContentsAsString('utf8');
         } catch (ignored) {
+            log.error(`unable to read package file`);
             throw new Error(
                 this.translationService.getTranslation(
                     'unable-to-read-package-file',
@@ -847,6 +920,7 @@ export default class PackageValidator {
         try {
             return JSON.parse(content);
         } catch (ignored) {
+            log.error(`unable to parse package ${entry.fileName}`);
             throw new Error(
                 this.translationService.getTranslation(
                     'unable-to-parse-package',
@@ -869,6 +943,7 @@ export default class PackageValidator {
         error: ValidationError
     ): Promise<{ hasIcon: boolean; language: any; semantics: any } | boolean> {
         try {
+            log.info(`validating library ${libraryName}`);
             return await new ValidatorBuilder()
                 .addRule(this.libraryDirectoryMustHaveValidName(libraryName))
                 .addRule(
@@ -922,6 +997,7 @@ export default class PackageValidator {
     ): Promise<yauzlPromise.Entry[]> => {
         const zipArchive = await PackageValidator.openZipArchive(h5pFile);
         if (!zipArchive) {
+            log.error(`zip archive not valid`);
             throw error.addError(
                 this.translationService.getTranslation('unable-to-unzip')
             );

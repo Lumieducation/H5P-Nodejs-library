@@ -15,6 +15,10 @@ import {
     Permission
 } from './types';
 
+import Logger from './helpers/Logger';
+
+const log = new Logger('ContentManager');
+
 /**
  * The ContentManager takes care of saving content and dependent files. It only contains storage-agnostic functionality and
  * depends on a ContentStorage object to do the actual persistence.
@@ -24,6 +28,7 @@ export default class ContentManager {
      * @param {FileContentStorage} contentStorage The storage object
      */
     constructor(contentStorage: IContentStorage) {
+        log.info('initialize');
         this.contentStorage = contentStorage;
     }
 
@@ -43,6 +48,7 @@ export default class ContentManager {
         stream: Stream,
         user: IUser
     ): Promise<void> {
+        log.info(`adding file ${filename} to content ${contentId}`);
         return this.contentStorage.addContentFile(
             contentId,
             filename,
@@ -57,6 +63,7 @@ export default class ContentManager {
      * @returns true if the piece of content exists
      */
     public async contentExists(contentId: ContentId): Promise<boolean> {
+        log.debug(`checking if content ${contentId} exists`);
         return this.contentStorage.contentExists(contentId);
     }
 
@@ -73,6 +80,7 @@ export default class ContentManager {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
+        log.info(`copying content from directory ${packageDirectory}`);
         const metadata: IContentMetadata = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
@@ -100,6 +108,7 @@ export default class ContentManager {
                         path.join(packageDirectory, 'content'),
                         file
                     );
+                    log.debug(`adding ${file} to ${packageDirectory}`);
                     return this.contentStorage.addContentFile(
                         newContentId,
                         localPath,
@@ -108,6 +117,7 @@ export default class ContentManager {
                 })
             );
         } catch (error) {
+            log.error(error);
             await this.contentStorage.deleteContent(newContentId);
             throw error;
         }
@@ -128,6 +138,7 @@ export default class ContentManager {
         user: IUser,
         contentId: ContentId
     ): Promise<ContentId> {
+        log.info(`creating content for ${contentId}`);
         return this.contentStorage.createContent(
             metadata,
             content,
@@ -141,6 +152,7 @@ export default class ContentManager {
      * @returns {Promise<number>} A unique content id
      */
     public async createContentId(): Promise<ContentId> {
+        log.debug(`generating contentId`);
         return this.contentStorage.createContentId();
     }
 
@@ -148,6 +160,7 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<string[]> {
+        log.info(`loading content files for ${contentId}`);
         return this.contentStorage.getContentFiles(contentId, user);
     }
 
@@ -163,6 +176,7 @@ export default class ContentManager {
         filename: string,
         user: IUser
     ): ReadStream {
+        log.debug(`loading ${filename} for ${contentId}`);
         return this.contentStorage.getContentFileStream(
             contentId,
             filename,
@@ -180,6 +194,7 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<Permission[]> {
+        log.info(`checking user permissions for ${contentId}`);
         return this.contentStorage.getUserPermissions(contentId, user);
     }
 
@@ -213,7 +228,7 @@ export default class ContentManager {
      * Returns the decoded JSON data inside a file
      * @param {number} contentId The id of the content object that the file is attached to
      * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
-     * @param {IUser} user The user who wants to acces this object
+     * @param {IUser} user The user who wants to access this object
      * @returns {Promise<any>}
      */
     private async getFileJson(
@@ -221,6 +236,7 @@ export default class ContentManager {
         file: string,
         user: IUser
     ): Promise<any> {
+        log.debug(`loading ${file} for ${contentId}`);
         const stream: Stream = this.contentStorage.getContentFileStream(
             contentId,
             file,

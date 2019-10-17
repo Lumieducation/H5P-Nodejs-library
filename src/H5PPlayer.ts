@@ -12,6 +12,10 @@ import player from './renderers/player';
 // tslint:disable-next-line: import-name
 import defaultTranslation from './translations/en.player.json';
 
+import Logger from './helpers/Logger';
+
+const log = new Logger('Player');
+
 export default class H5PPlayer {
     constructor(
         libraryLoader: ILibraryLoader,
@@ -26,6 +30,7 @@ export default class H5PPlayer {
         content: any,
         customScripts: string = ''
     ) {
+        log.info('initialize');
         this.libraryLoader = libraryLoader;
         this.renderer = player;
         this.translation = defaultTranslation;
@@ -92,6 +97,7 @@ export default class H5PPlayer {
         h5pObject: IContentMetadata
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
+        log.info(`generating integration for ${contentId}`);
         return {
             ...this.integration,
             contents: {
@@ -125,6 +131,7 @@ export default class H5PPlayer {
         contentObject: any,
         h5pObject: IContentMetadata
     ): Promise<string> {
+        log.info(`rendering page for ${contentId}`);
         const model = {
             contentId,
             customScripts: this.customScripts,
@@ -154,6 +161,7 @@ export default class H5PPlayer {
     }
 
     public useRenderer(renderer: any): H5PPlayer {
+        log.info('changing renderer');
         this.renderer = renderer;
         return this;
     }
@@ -168,6 +176,14 @@ export default class H5PPlayer {
         libraries: object = {},
         loaded: object = {}
     ): void {
+        log.verbose(
+            `loading assets from dependencies: ${dependencies
+                .map(
+                    dep =>
+                        `${dep.machineName}-${dep.majorVersion}.${dep.minorVersion}`
+                )
+                .join(', ')}`
+        );
         dependencies.forEach(dependency => {
             const name = dependency.machineName;
             const majVer = dependency.majorVersion;
@@ -198,6 +214,14 @@ export default class H5PPlayer {
         dependencies: IDependency[],
         loaded: object
     ): Promise<void> {
+        log.verbose(
+            `loading libraries from dependencies: ${dependencies
+                .map(
+                    dep =>
+                        `${dep.machineName}-${dep.majorVersion}.${dep.minorVersion}`
+                )
+                .join(', ')}`
+        );
         return new Promise(resolve => {
             Promise.all(
                 dependencies.map(
@@ -231,6 +255,9 @@ export default class H5PPlayer {
         majorVersion: number,
         minorVersion: number
     ): Promise<ILibraryJson> {
+        log.verbose(
+            `loading library ${machineName}-${majorVersion}.${minorVersion}`
+        );
         return Promise.resolve(
             this.libraryLoader(machineName, majorVersion, minorVersion)
         );
