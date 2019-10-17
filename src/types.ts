@@ -1,6 +1,5 @@
 import { ReadStream } from 'fs';
 import { Stream } from 'stream';
-import Library from './Library';
 
 export type ContentId = string;
 
@@ -24,7 +23,7 @@ export interface IAssets {
     translations: object;
 }
 
-export interface IDependency {
+export interface ILibraryName {
     machineName: string;
     majorVersion: number;
     minorVersion: number;
@@ -57,8 +56,8 @@ export interface IContentMetadata {
     autorComments?: string;
     changes?: IContentChange[];
     contentType?: string;
-    dynamicDependencies?: IDependency[];
-    editorDependencies?: IDependency[];
+    dynamicDependencies?: ILibraryName[];
+    editorDependencies?: ILibraryName[];
     embedTypes?: 'iframe' | 'div';
     h?: string;
     language: string;
@@ -68,7 +67,7 @@ export interface IContentMetadata {
     mainLibrary: string;
     metaDescription?: string;
     metaKeywords?: string;
-    preloadedDependencies: IDependency[];
+    preloadedDependencies: ILibraryName[];
     source?: string;
     title: string;
     w?: string;
@@ -78,7 +77,7 @@ export interface IContentMetadata {
 
 /**
  * The integration object is used to pass information to the H5P JavaScript
- * client running in the browser about certain settings and values of the 
+ * client running in the browser about certain settings and values of the
  * server.
  */
 export interface IIntegration {
@@ -129,12 +128,12 @@ export interface IJS {
  * This is the structure of "data transfer objects" that are passed back to the
  * JavaScript client. It is used to return a lot of information about library
  * metadata, required files, translations etc.
- * 
+ *
  * It does not exactly follow the structure library.json: it also includes other
  * properties, which aren't present in the library.json file (they are added
  * dynamically) and some properties are missing or named differently.
  */
-export interface ILibraryDataForClient {
+export interface ILibraryDetailedDataForClient {
     css: string[];
     defaultLanguage: string;
     javascript: string[];
@@ -151,7 +150,11 @@ export interface ILibraryDataForClient {
     };
 }
 
-export interface ILibraryInfo {
+/**
+ * This is the structure of "data transfer objects" that are passed back to the
+ * Javascript client. It is used when giving a rough overview of installed libraries.
+ */
+export interface ILibraryOverviewForClient {
     majorVersion: number;
     metadataSettings: any;
     minorVersion: number;
@@ -160,6 +163,9 @@ export interface ILibraryInfo {
     runnable: boolean;
     title: string;
     tutorialUrl: string;
+    /**
+     * The name of the library in the format "H5P.Library-1.0"
+     */
     uberName: string;
 }
 
@@ -196,6 +202,10 @@ export interface IUser {
     type: 'local' | string;
 }
 
+/**
+ * This is the interface implementations need to implement to persist pieces of h5p content
+ * somewhere.
+ */
 export interface IContentStorage {
     addContentFile(
         contentId: ContentId,
@@ -224,45 +234,102 @@ export interface IContentStorage {
     ): Promise<Permission[]>;
 }
 
+/**
+ * This is the interface implementations need to implement to persist libraries.
+ */
 export interface ILibraryStorage {
     addLibraryFile(
-        library: Library,
+        library: ILibraryName,
         fileLocalPath: string,
         readStream: Stream
     ): Promise<boolean>;
-    clearLibraryFiles(library: Library): Promise<any>;
-    fileExists(library: Library, filename: string): Promise<boolean>;
-    getFileStream(library: Library, file: string): ReadStream;
-    getId(library: Library): Promise<number>;
-    getInstalled(...machineNames: string[]): Promise<Library[]>;
-    getLanguageFiles(library: Library): Promise<string[]>;
+    clearLibraryFiles(library: ILibraryName): Promise<void>;
+    fileExists(library: ILibraryName, filename: string): Promise<boolean>;
+    getFileStream(library: ILibraryName, file: string): ReadStream;
+    getId(library: ILibraryName): Promise<number>;
+    getInstalled(...machineNames: string[]): Promise<ILibraryName[]>;
+    getLanguageFiles(library: ILibraryName): Promise<string[]>;
     installLibrary(
-        libraryData: ILibraryJson,
+        libraryData: ILibraryMetadata,
         restricted: boolean
-    ): Promise<Library>;
-    listFiles(library: Library): Promise<string[]>;
-    removeLibrary(library: Library): Promise<any>;
+    ): Promise<IInstalledLibrary>;
+    listFiles(library: ILibraryName): Promise<string[]>;
+    removeLibrary(library: ILibraryName): Promise<void>;
     updateLibrary(
-        library: Library,
-        libraryMetadata: ILibraryJson
-    ): Promise<any>;
+        libraryMetadata: ILibraryMetadata
+    ): Promise<IInstalledLibrary>;
 }
 
-export type Content = any;
+/**
+ * This is the actual "content itself", meaning the object contained in content.json. It is
+ * created by the JavaScript editor client and played out by the JavaScript player. Its structure
+ * can vary depending on the semantics associated with the main library of the content.
+ */
+export type ContentParameters = any;
 
-export interface ISemantic {
+/**
+ * This is an entry in the semantics of a library. The semantics define who content parameters
+ * must look like.
+ *
+ * Note: There are many more attributes to entries of semantics.json. See https://h5p.org/semantics
+ * for a full reference.
+ */
+export interface ISemanticsEntry {
+    /**
+     * The text displayed in the editor for the entry. (localizable)
+     */
     label: string;
+    /**
+     * The internal name (e.g. for referencing it in code)
+     */
     name: string;
 }
 
-export interface ILibraryJson extends Library {
-    dynamicDependencies: IDependency[];
-    editorDependencies: IDependency[];
+/**
+ * Objects of this interface represent installed libraries that have an id.
+ */
+export interface IInstalledLibrary extends ILibraryMetadata {
+    id: number;
     libraryId: number;
-    patchVersion: number;
-    preloadedCss: ICSS[];
-    preloadedJs: IJS[];
+    /**
+     * If set to true, the library can only be used be users who have this special
+     * privilege.
+     */
+    restricted: boolean;
+
+    compare(otherLibrary: ILibraryMetadata): number;
+    compareVersions(otherLibrary: ILibraryMetadata): number;
 }
+
+/**
+ * This interface represents the structure of library.json files.
+ */
+export interface ILibraryMetadata extends ILibraryName {
+    author?: string;
+    coreApi?: { majorVersion: number; minorVersion: number };
+    description?: string;
+    // tslint:disable-next-line: prefer-array-literal
+    dropLibraryCss?: Array<{ machineName: string }>;
+    dynamicDependencies?: ILibraryName[];
+    editorDependencies?: ILibraryName[];
+    // tslint:disable-next-line: prefer-array-literal
+    embedTypes?: Array<'iframe' | 'div'>;
+    fullscreen?: 0 | 1;
+    h?: number;
+    license?: string;
+    metadataSettings?: {
+        disable: 0 | 1;
+        disableExtraTitleField: 0 | 1;
+    };
+    patchVersion: number;
+    preloadedCss?: ICSS[];
+    preloadedDependencies?: ILibraryName[];
+    preloadedJs?: IJS[];
+    runnable: boolean;
+    title: string;
+    w?: number;
+}
+
 /**
  * Persists any complex object to some storage.
  */
@@ -326,7 +393,7 @@ export type ILibraryLoader = (
     machineName: string,
     majorVersion: number,
     minorVersion: number
-) => ILibraryJson;
+) => IInstalledLibrary;
 
 export interface IEditorConfig {
     contentTypeCacheRefreshInterval: number;

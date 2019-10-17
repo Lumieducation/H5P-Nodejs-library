@@ -3,13 +3,14 @@ import * as fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
 
+import ContentType from './ContentType';
 import ContentTypeCache from './ContentTypeCache';
 import H5pError from './helpers/H5pError';
-import Library from './Library';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import {
     IEditorConfig,
+    IInstalledLibrary,
     IKeyValueStorage,
     ITranslationService,
     IUser
@@ -250,9 +251,9 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Checks if users can install library due to their rights.
-     * @param {Library} library
+     * @param {ContentType} library
      */
-    private canInstallLibrary(library: any, user: IUser): boolean {
+    private canInstallLibrary(library: ContentType, user: IUser): boolean {
         return (
             user.canUpdateAndInstallLibraries ||
             (library.isRecommended && user.canInstallRecommended)
@@ -262,9 +263,9 @@ export default class ContentTypeInformationRepository {
     /**
      * Checks if the library is restricted e.g. because it is LRS dependent and the
      * admin has restricted them or because it was set as restricted individually.
-     * @param {Library} library
+     * @param {IInstalledLibrary} library
      */
-    private libraryIsRestricted(library: Library): boolean {
+    private libraryIsRestricted(library: IInstalledLibrary): boolean {
         if (this.config.enableLrsContentTypes) {
             return library.restricted;
         }

@@ -2,10 +2,10 @@ import {
     ContentId,
     IAssets,
     IContentMetadata,
-    IDependency,
+    IInstalledLibrary,
     IIntegration,
-    ILibraryJson,
-    ILibraryLoader
+    ILibraryLoader,
+    ILibraryName
 } from './types';
 
 import player from './renderers/player';
@@ -163,7 +163,7 @@ export default class H5PPlayer {
     }
 
     private loadAssets(
-        dependencies: IDependency[],
+        dependencies: ILibraryName[],
         assets: IAssets,
         libraries: object = {},
         loaded: object = {}
@@ -195,7 +195,7 @@ export default class H5PPlayer {
     }
 
     private loadLibraries(
-        dependencies: IDependency[],
+        dependencies: ILibraryName[],
         loaded: object
     ): Promise<void> {
         return new Promise(resolve => {
@@ -230,7 +230,7 @@ export default class H5PPlayer {
         machineName: string,
         majorVersion: number,
         minorVersion: number
-    ): Promise<ILibraryJson> {
+    ): Promise<IInstalledLibrary> {
         return Promise.resolve(
             this.libraryLoader(machineName, majorVersion, minorVersion)
         );

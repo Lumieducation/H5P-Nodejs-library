@@ -6,16 +6,17 @@ import { Stream } from 'stream';
 
 import { streamToString } from './helpers/StreamHelpers';
 
+import InstalledLibrary from './InstalledLibrary';
+import LibraryName from './LibraryName';
 import {
     ICSS,
+    IInstalledLibrary,
     IJS,
-    ILibraryDataForClient,
-    ILibraryJson,
+    ILibraryMetadata,
+    ILibraryName,
     ILibraryStorage,
-    ISemantic
+    ISemanticsEntry
 } from './types';
-
-import Library from './Library';
 
 /**
  * This class manages library installations, enumerating installed libraries etc.
@@ -36,21 +37,21 @@ export default class LibraryManager {
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
-     * @param {Library} library library
+     * @param {ILibraryName} library library
      * @param {string} filename the relative path inside the library
      * @returns {ReadStream} a readable stream of the file's contents
      */
-    public getFileStream(library: Library, file: string): ReadStream {
+    public getFileStream(library: ILibraryName, file: string): ReadStream {
         return this.libraryStorage.getFileStream(library, file);
     }
 
     /**
      * Get id to an existing installed library.
      * If version number is not specified, the newest version will be returned.
-     * @param {Library} library Note that patch version is ignored.
+     * @param {ILibraryName} library Note that patch version is ignored.
      * @returns {Promise<number>} The id of the specified library or undefined (if not installed).
      */
-    public async getId(library: Library): Promise<number> {
+    public async getId(library: ILibraryName): Promise<number> {
         return this.libraryStorage.getId(library);
     }
 
@@ -63,14 +64,14 @@ export default class LibraryManager {
     public async getInstalled(machineNames?: string[]): Promise<any> {
         let libraries = await this.libraryStorage.getInstalled(...machineNames);
         libraries = (await Promise.all(
-            libraries.map(async oldLib => {
-                const newLib = oldLib;
-                const info = await this.loadLibrary(oldLib);
-                newLib.patchVersion = info.patchVersion;
-                newLib.id = info.libraryId;
-                newLib.runnable = info.runnable;
-                newLib.title = info.title;
-                return newLib;
+            libraries.map(async libName => {
+                const installedLib = InstalledLibrary.fromName(libName);
+                const info = await this.loadLibrary(libName);
+                installedLib.patchVersion = info.patchVersion;
+                installedLib.id = info.libraryId;
+                installedLib.runnable = info.runnable;
+                installedLib.title = info.title;
+                return installedLib;
             })
         )).sort((lib1, lib2) => lib1.compare(lib2));
 
@@ -96,36 +97,30 @@ export default class LibraryManager {
         directory: string,
         restricted: boolean = false
     ): Promise<boolean> {
-        const libraryMetadata: ILibraryJson = await fsExtra.readJSON(
+        const newLibraryMetadata: ILibraryMetadata = await fsExtra.readJSON(
             `${directory}/library.json`
         );
-        let library: Library = Library.createFromMetadata(libraryMetadata);
-        if (await this.getId(library)) {
+        if (await this.getId(newLibraryMetadata)) {
             // Check if library is already installed.
-            if (await this.isPatchedLibrary(library)) {
+            if (await this.isPatchedLibrary(newLibraryMetadata)) {
                 // Update the library if it is only a patch of an existing library
-                await this.updateLibrary(library, libraryMetadata, directory);
+                await this.updateLibrary(newLibraryMetadata, directory);
                 return true;
             }
             // Skip installation of library if it has already been installed and the library is no patch for it.
             return false;
         }
         // Install the library if it hasn't been installed before (treat different major/minor versions the same as a new library)
-        library = await this.installLibrary(
-            directory,
-            library,
-            libraryMetadata,
-            restricted
-        );
+        await this.installLibrary(directory, newLibraryMetadata, restricted);
         return true;
     }
 
     /**
      * Is the library a patched version of an existing library?
-     * @param {Library} library The library the check
+     * @param {ILibraryMetadata} library The library the check
      * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
      */
-    public async isPatchedLibrary(library: Library): Promise<boolean> {
+    public async isPatchedLibrary(library: ILibraryMetadata): Promise<boolean> {
         const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
@@ -150,12 +145,12 @@ export default class LibraryManager {
 
     /**
      * Check if the library contains a file
-     * @param {Library} library The library to check
+     * @param {ILibraryName} library The library to check
      * @param {string} filename
      * @return {Promise<boolean>} true if file exists in library, false otherwise
      */
     public async libraryFileExists(
-        library: Library,
+        library: ILibraryName,
         filename: string
     ): Promise<boolean> {
         return this.libraryStorage.fileExists(library, filename);
@@ -163,18 +158,16 @@ export default class LibraryManager {
 
     /**
      * Checks if the given library has a higher version than the highest installed version.
-     * @param {Library} library Library to compare against the highest locally installed version.
+     * @param {ILibraryMetadata} library Library to compare against the highest locally installed version.
      * @returns {Promise<boolean>} true if the passed library contains a version that is higher than the highest installed version, false otherwise
      */
-    public async libraryHasUpgrade(library: Library): Promise<boolean> {
-        const wrappedLibraryInfos: Library = await this.getInstalled([
+    public async libraryHasUpgrade(
+        library: ILibraryMetadata
+    ): Promise<boolean> {
+        const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
-        if (
-            !wrappedLibraryInfos ||
-            !wrappedLibraryInfos[library.machineName] // ||
-            // !wrappedLibraryInfos[library.machineName].length === 0
-        ) {
+        if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
             return false;
         }
         const allInstalledLibsOfMachineName = wrappedLibraryInfos[
@@ -195,16 +188,16 @@ export default class LibraryManager {
      * @param library the library for which the files should be listed
      * @return the files in the library including language files
      */
-    public async listFiles(library: Library): Promise<string[]> {
+    public async listFiles(library: ILibraryName): Promise<string[]> {
         return this.libraryStorage.listFiles(library);
     }
 
     /**
      * Gets a list of translations that exist for this library.
-     * @param {Library} library
+     * @param {ILibraryName} library
      * @returns {Promise<string[]>} the language codes for translations of this library
      */
-    public async listLanguages(library: Library): Promise<string[]> {
+    public async listLanguages(library: ILibraryName): Promise<string[]> {
         try {
             return await this.libraryStorage.getLanguageFiles(library);
         } catch (error) {
@@ -214,12 +207,12 @@ export default class LibraryManager {
 
     /**
      * Gets the language file for the specified language.
-     * @param {Library} library
+     * @param {ILibraryName} library
      * @param {string} language the language code
      * @returns {Promise<any>} the decoded JSON data in the language file
      */
     public async loadLanguage(
-        library: Library,
+        library: ILibraryName,
         language: string
     ): Promise<any> {
         try {
@@ -234,12 +227,14 @@ export default class LibraryManager {
 
     /**
      * Returns the information about the library that is contained in library.json.
-     * @param {Library} library The library to get (machineName, majorVersion and minorVersion is enough)
+     * @param {ILibraryName} library The library to get (machineName, majorVersion and minorVersion is enough)
      * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
      */
-    public async loadLibrary(library: Library): Promise<ILibraryJson> {
+    public async loadLibrary(
+        library: ILibraryName
+    ): Promise<IInstalledLibrary> {
         try {
-            const libraryMetadata: ILibraryJson = await this.getJsonFile(
+            const libraryMetadata = await this.getJsonFile(
                 library,
                 'library.json'
             );
@@ -252,33 +247,37 @@ export default class LibraryManager {
 
     /**
      * Returns the content of semantics.json for the specified library.
-     * @param {Library} library
+     * @param {ILibraryName} library
      * @returns {Promise<any>} the content of semantics.json
      */
-    public async loadSemantics(library: Library): Promise<ISemantic[]> {
+    public async loadSemantics(
+        library: ILibraryName
+    ): Promise<ISemanticsEntry[]> {
         return this.getJsonFile(library, 'semantics.json');
     }
 
     /**
      * Checks (as far as possible) if all necessary files are present for the library to run properly.
-     * @param {Library} library The library to check
+     * @param {ILibraryName} library The library to check
      * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
      */
-    private async checkConsistency(library: Library): Promise<boolean> {
+    private async checkConsistency(library: ILibraryName): Promise<boolean> {
         if (!(await this.libraryStorage.getId(library))) {
             throw new Error(
-                `Error in library ${library.getDirName()}: not installed.`
+                `Error in library ${LibraryName.toDirName(
+                    library
+                )}: not installed.`
             );
         }
 
-        let metadata: ILibraryDataForClient;
+        let metadata: ILibraryMetadata;
         try {
             metadata = await this.getJsonFile(library, 'library.json');
         } catch (error) {
             throw new Error(
-                `Error in library ${library.getDirName()}: library.json not readable: ${
-                    error.message
-                }.`
+                `Error in library ${LibraryName.toDirName(
+                    library
+                )}: library.json not readable: ${error.message}.`
             );
         }
         if (metadata.preloadedJs) {
@@ -299,12 +298,12 @@ export default class LibraryManager {
 
     /**
      * Checks if all files in the list are present in the library.
-     * @param {Library} library The library to check
+     * @param {ILibraryName} library The library to check
      * @param {string[]} requiredFiles The files (relative paths in the library) that must be present
      * @returns {Promise<boolean>} true if all dependencies are present. Throws an error if any are missing.
      */
     private async checkFiles(
-        library: Library,
+        library: ILibraryName,
         requiredFiles: string[]
     ): Promise<boolean> {
         const missingFiles = (await Promise.all(
@@ -318,7 +317,9 @@ export default class LibraryManager {
             .filter((file: { status: boolean }) => !file.status)
             .map((file: { path: string }) => file.path);
         if (missingFiles.length > 0) {
-            let message = `Error(s) in library ${library.getDirName()}:\n`;
+            let message = `Error(s) in library ${LibraryName.toDirName(
+                library
+            )}:\n`;
             message += missingFiles
                 .map((file: string) => `${file} is missing.`)
                 .join('\n');
@@ -331,12 +332,12 @@ export default class LibraryManager {
      * Copies all library files from a directory (excludes library.json) to the storage.
      * Throws errors if something went wrong.
      * @param {string} fromDirectory The directory to copy from
-     * @param {Library} libraryInfo the library object
+     * @param {ILibraryName} libraryInfo the library object
      * @returns {Promise<void>}
      */
     private async copyLibraryFiles(
         fromDirectory: string,
-        libraryInfo: Library
+        libraryInfo: ILibraryName
     ): Promise<void> {
         const files: string[] = await globPromise(`${fromDirectory}/**/*.*`);
         await Promise.all(
@@ -362,11 +363,14 @@ export default class LibraryManager {
 
     /**
      * Gets the parsed contents of a library file that is JSON.
-     * @param {Library} library
+     * @param {ILibraryName} library
      * @param {string} file
      * @returns {Promise<any|undefined>} The content or undefined if there was an error
      */
-    private async getJsonFile(library: Library, file: string): Promise<any> {
+    private async getJsonFile(
+        library: ILibraryName,
+        file: string
+    ): Promise<any> {
         const stream: Stream = await this.libraryStorage.getFileStream(
             library,
             file
@@ -379,17 +383,16 @@ export default class LibraryManager {
      * Installs a library and rolls back changes if the library installation failed.
      * Throws errors if something went wrong.
      * @param {string} fromDirectory the local directory to install from
-     * @param {Library} libraryInfo the library object
+     * @param {ILibraryName} libraryInfo the library object
      * @param {any} libraryMetadata the library metadata
      * @param {boolean} restricted true if the library can only be installed with a special permission
-     * @returns {Library} the libray object (containing - among others - the id of the newly installed library)
+     * @returns {IInstalledLibrary} the libray object (containing - among others - the id of the newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,
-        libraryInfo: Library,
-        libraryMetadata: ILibraryJson,
+        libraryMetadata: ILibraryMetadata,
         restricted: boolean
-    ): Promise<Library> {
+    ): Promise<IInstalledLibrary> {
         const newLibraryInfo = await this.libraryStorage.installLibrary(
             libraryMetadata,
             restricted
@@ -397,35 +400,32 @@ export default class LibraryManager {
 
         try {
             await this.copyLibraryFiles(fromDirectory, newLibraryInfo);
-            await this.checkConsistency(libraryInfo);
+            await this.checkConsistency(libraryMetadata);
         } catch (error) {
-            await this.libraryStorage.removeLibrary(libraryInfo);
+            await this.libraryStorage.removeLibrary(libraryMetadata);
             throw error;
         }
-        return libraryInfo;
+        return newLibraryInfo;
     }
 
     /**
      * Updates the library to a new version.
      * REMOVES THE LIBRARY IF THERE IS AN ERROR!!!
-     * @param {number} installedLibraryId The id of the installed library
-     * @param {string} filesDirectory the path of the directory containing the library files to update to
-     * @param {Library} libraryInfo the library object
-     * @param {any} libraryMetadata the library metadata (library.json)
-     * @param {boolean} restricted true if the library can only be installed with a special permission
+     * @param filesDirectory the path of the directory containing the library files to update to
+     * @param library the library object
+     * @param newLibraryMetadata the library metadata (library.json)
      */
     private async updateLibrary(
-        library: Library,
-        libraryMetadata: ILibraryJson,
+        newLibraryMetadata: ILibraryMetadata,
         filesDirectory: string
     ): Promise<any> {
         try {
-            await this.libraryStorage.updateLibrary(library, libraryMetadata);
-            await this.libraryStorage.clearLibraryFiles(library);
-            await this.copyLibraryFiles(filesDirectory, library);
-            await this.checkConsistency(library);
+            await this.libraryStorage.updateLibrary(newLibraryMetadata);
+            await this.libraryStorage.clearLibraryFiles(newLibraryMetadata);
+            await this.copyLibraryFiles(filesDirectory, newLibraryMetadata);
+            await this.checkConsistency(newLibraryMetadata);
         } catch (error) {
-            await this.libraryStorage.removeLibrary(library);
+            await this.libraryStorage.removeLibrary(newLibraryMetadata);
             throw error;
         }
     }
