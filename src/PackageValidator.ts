@@ -572,7 +572,7 @@ export default class PackageValidator {
         | yauzlPromise.Entry[]
         | { jsonData: any; zipEntries: yauzlPromise.Entry[] }
     > {
-        log.info(`checking if json ${filename} coforms to schema`);
+        log.info(`checking if json ${filename} conforms to schema`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: ValidationError

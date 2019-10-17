@@ -195,7 +195,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<Permission[]> {
         log.info(
-            `checking user permissions for ${contentId} and user ${user.id}`
+            `checking user permissions for ${contentId}`
         );
         return this.contentStorage.getUserPermissions(contentId, user);
     }
