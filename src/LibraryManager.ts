@@ -227,7 +227,7 @@ export default class LibraryManager {
             );
             return await this.libraryStorage.getLanguageFiles(library);
         } catch (error) {
-            log.warn(`no langagues found for library ${library.getDirName()}`);
+            log.warn(`no languages found for library ${library.getDirName()}`);
             return [];
         }
     }
@@ -273,7 +273,7 @@ export default class LibraryManager {
             libraryMetadata.libraryId = await this.getId(library);
             return libraryMetadata;
         } catch (ignored) {
-            log.warn(`library ${library.getDirName()} is not insatlled`);
+            log.warn(`library ${library.getDirName()} is not installed`);
             return undefined;
         }
     }
@@ -340,7 +340,7 @@ export default class LibraryManager {
         requiredFiles: string[]
     ): Promise<boolean> {
         log.debug(
-            `cheking files ${requiredFiles.join(
+            `checking files ${requiredFiles.join(
                 ', '
             )} for ${library.getDirName()}`
         );
@@ -421,7 +421,7 @@ export default class LibraryManager {
      * @param {Library} libraryInfo the library object
      * @param {any} libraryMetadata the library metadata
      * @param {boolean} restricted true if the library can only be installed with a special permission
-     * @returns {Library} the libray object (containing - among others - the id of the newly installed library)
+     * @returns {Library} the library object (containing - among others - the id of the newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,

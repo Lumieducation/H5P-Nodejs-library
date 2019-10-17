@@ -228,7 +228,7 @@ export default class ContentManager {
      * Returns the decoded JSON data inside a file
      * @param {number} contentId The id of the content object that the file is attached to
      * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
-     * @param {IUser} user The user who wants to acces this object
+     * @param {IUser} user The user who wants to access this object
      * @returns {Promise<any>}
      */
     private async getFileJson(
