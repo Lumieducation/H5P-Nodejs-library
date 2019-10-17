@@ -87,9 +87,9 @@ export default class ContentTypeInformationRepository {
      * @returns {Promise<boolean>} true if the library was installed.
      */
     public async install(machineName: string, user: IUser): Promise<boolean> {
-       log.info(
-                  `installing library ${machineName} from hub ${this.config.hubContentTypesEndpoint}`
-              );
+        log.info(
+            `installing library ${machineName} from hub ${this.config.hubContentTypesEndpoint}`
+        );
         if (!machineName) {
             log.error(`content type ${machineName} not found`);
             throw new H5pError(
