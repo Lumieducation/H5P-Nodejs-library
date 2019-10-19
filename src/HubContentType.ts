@@ -1,7 +1,7 @@
 import { IUser } from './types';
 
 /**
- * This objects carries information about content types that the user can select 
+ * This objects carries information about content types that the user can select
  * from the H5P Hub.
  */
 export default class HubContentType {
