@@ -9,12 +9,11 @@ import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
-    ICSS,
     IInstalledLibrary,
-    IJS,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
+    IPath,
     ISemanticsEntry
 } from './types';
 
@@ -283,13 +282,13 @@ export default class LibraryManager {
         if (metadata.preloadedJs) {
             await this.checkFiles(
                 library,
-                metadata.preloadedJs.map((js: IJS) => js.path)
+                metadata.preloadedJs.map((js: IPath) => js.path)
             );
         }
         if (metadata.preloadedCss) {
             await this.checkFiles(
                 library,
-                metadata.preloadedCss.map((css: ICSS) => css.path)
+                metadata.preloadedCss.map((css: IPath) => css.path)
             );
         }
 

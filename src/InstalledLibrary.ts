@@ -1,9 +1,8 @@
 import {
-    ICSS,
     IInstalledLibrary,
-    IJS,
     ILibraryMetadata,
-    ILibraryName
+    ILibraryName,
+    IPath
 } from './types';
 
 /**
@@ -42,9 +41,9 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public libraryId: number;
     public license?: string;
     public metadataSettings?: { disable: 0 | 1; disableExtraTitleField: 0 | 1 };
-    public preloadedCss?: ICSS[];
+    public preloadedCss?: IPath[];
     public preloadedDependencies?: ILibraryName[];
-    public preloadedJs?: IJS[];
+    public preloadedJs?: IPath[];
     public runnable: boolean;
     public title: string;
     public w?: number;

@@ -116,11 +116,12 @@ export interface IEditorIntegration {
     libraryUrl: string;
 }
 
-export interface ICSS {
-    path: string;
-}
-
-export interface IJS {
+/**
+ * This descripes the Path of JavaScript and CSS files in a library.json file.
+ * This single property interface exists because the library.json file expects
+ * this format.
+ */
+export interface IPath {
     path: string;
 }
 
@@ -140,8 +141,8 @@ export interface ILibraryDetailedDataForClient {
     language: any;
     languages: string[];
     name: string;
-    preloadedCss?: ICSS[];
-    preloadedJs?: IJS[];
+    preloadedCss?: IPath[];
+    preloadedJs?: IPath[];
     semantics: any;
     translations: any;
     version: {
@@ -322,9 +323,9 @@ export interface ILibraryMetadata extends ILibraryName {
         disableExtraTitleField: 0 | 1;
     };
     patchVersion: number;
-    preloadedCss?: ICSS[];
+    preloadedCss?: IPath[];
     preloadedDependencies?: ILibraryName[];
-    preloadedJs?: IJS[];
+    preloadedJs?: IPath[];
     runnable: boolean;
     title: string;
     w?: number;

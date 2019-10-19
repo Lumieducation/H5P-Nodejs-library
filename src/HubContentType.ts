@@ -1,7 +1,11 @@
 import { IUser } from './types';
 
-export default class ContentType {
-    constructor(init?: Partial<ContentType>) {
+/**
+ * This objects carries information about content types that the user can select 
+ * from the H5P Hub.
+ */
+export default class HubContentType {
+    constructor(init?: Partial<HubContentType>) {
         Object.assign(this, init);
     }
 

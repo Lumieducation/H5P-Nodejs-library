@@ -3,9 +3,9 @@ import * as fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
 
-import ContentType from './ContentType';
 import ContentTypeCache from './ContentTypeCache';
 import H5pError from './helpers/H5pError';
+import HubContentType from './HubContentType';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import {
@@ -251,9 +251,9 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Checks if users can install library due to their rights.
-     * @param {ContentType} library
+     * @param {HubContentType} library
      */
-    private canInstallLibrary(library: ContentType, user: IUser): boolean {
+    private canInstallLibrary(library: HubContentType, user: IUser): boolean {
         return (
             user.canUpdateAndInstallLibraries ||
             (library.isRecommended && user.canInstallRecommended)
