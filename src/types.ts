@@ -414,6 +414,15 @@ export interface IEditorConfig {
     platformVersion: string;
     sendUsageStatistics: boolean;
     siteType: 'local' | 'network' | 'internet';
+    /**
+     * Temporary files will be deleted after this time. (in milliseconds)
+     */
+    temporaryFileLifetime: number;
+    /**
+     * The URL path of temporary file storage (used for image, video etc. uploads of
+     * unsaved content).
+     */
+    temporaryFilesPath: string;
     uuid: string;
 
     load(): Promise<any>;

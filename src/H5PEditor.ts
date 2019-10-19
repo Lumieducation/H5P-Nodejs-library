@@ -39,6 +39,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
+import TemporaryFileManager from './TemporaryFileManager';
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -74,9 +75,11 @@ export default class H5PEditor {
             this.config,
             this.contentManager
         );
+        this.temporaryFileManager = new TemporaryFileManager(this.config);
     }
 
     public libraryManager: LibraryManager;
+    public temporaryFileManager: TemporaryFileManager;
 
     private ajaxPath: string;
     private baseUrl: string;
@@ -271,17 +274,31 @@ export default class H5PEditor {
             size: number;
             tempFilePath: string;
             truncated: boolean;
-        }
+        },
+        user: IUser
     ): Promise<{ mime: string; path: string }> {
-        log.info(`saving content file ${file} for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
+        if (!contentId) {
+            log.info(`saving content file ${file.name} for unsaved content`);
+            const tmpFilename = await this.temporaryFileManager.saveFile(
+                file.name,
+                dataStream,
+                user
+            );
+            return {
+                mime: file.mimetype,
+                path: tmpFilename
+            };
+        }
+
+        log.info(`saving content file ${file.name} for ${contentId}`);
         await this.contentManager.addContentFile(
             contentId,
             file.name,
             dataStream,
-            undefined
+            user
         );
         return {
             mime: file.mimetype,
@@ -480,7 +497,9 @@ export default class H5PEditor {
                     '/editor/ckeditor/ckeditor.js'
                 ].map((asset: string) => `${this.baseUrl}${asset}`)
             },
-            filesPath: `${this.filesPath}/${contentId}/content`,
+            filesPath: contentId
+                ? `${this.filesPath}/${contentId}/content`
+                : this.config.temporaryFilesPath,
             libraryUrl: this.libraryUrl
         };
     }

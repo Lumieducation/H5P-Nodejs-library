@@ -133,6 +133,17 @@ export default class EditorConfig implements IEditorConfig {
     public siteType: 'local' | 'network' | 'internet' = 'local';
 
     /**
+     * Temporary files will be deleted after this time. (in milliseconds)
+     */
+    public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
+
+    /**
+     * The URL path of temporary file storage (used for image, video etc. uploads of
+     * unsaved content).
+     */
+    public temporaryFilesPath: string = '/h5p/temp-files';
+
+    /**
      * Used to identify the running instance when calling the H5P Hub.
      * User-configurable, but also automatically set when the Hub is first called.
      */

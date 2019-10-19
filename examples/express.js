@@ -76,6 +76,17 @@ const start = async () => {
         stream.pipe(res.type(path.basename(req.params.file)));
     });
 
+    server.get(`${h5pEditor.config.temporaryFilesPath}/:file(*)`, async (req, res) => {
+        const stream = h5pEditor.temporaryFileManager.getFileStream(
+            req.params.file,
+            null
+        );
+        stream.on('end', () => {
+            res.end();
+        });
+        stream.pipe(res.type(path.basename(req.params.file)));
+    });
+
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
     server.use('/favicon.ico', express.static(`favicon.ico`));
@@ -169,11 +180,6 @@ const start = async () => {
     });
 
     server.get('/edit', async (req, res) => {
-        if (!req.query.contentId) {
-            res.redirect(
-                `?contentId=${await h5pEditor.contentManager.createContentId()}`
-            );
-        }
         h5pEditor.render(req.query.contentId).then(page => res.end(page));
     });
 
@@ -245,7 +251,10 @@ const start = async () => {
                     req.body.libraries,
                     req.query.language
                 );
-                res.status(200).json({ success: true, data: translationsResponse });
+                res.status(200).json({
+                    success: true,
+                    data: translationsResponse
+                });
                 break;
             case 'files':
                 const uploadFileResponse = await h5pEditor.saveContentFile(
@@ -253,7 +262,8 @@ const start = async () => {
                         ? req.query.contentId
                         : req.body.contentId,
                     JSON.parse(req.body.field),
-                    req.files.file
+                    req.files.file,
+                    null
                 );
                 res.status(200).json(uploadFileResponse);
                 break;
