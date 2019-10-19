@@ -215,7 +215,7 @@ export default class H5PEditor {
         return this.contentTypeRepository.install(id, user);
     }
 
-    public loadH5P(
+    public async loadH5P(
         contentId: ContentId,
         user?: IUser
     ): Promise<{
@@ -227,17 +227,18 @@ export default class H5PEditor {
         };
     }> {
         log.info(`loading h5p for ${contentId}`);
-        return Promise.all([
+        const [h5pJson, content] = await Promise.all([
             this.contentManager.loadH5PJson(contentId, user),
             this.contentManager.loadContent(contentId, user)
-        ]).then(([h5pJson, content]) => ({
+        ]);
+        return {
             h5p: h5pJson,
             library: this.getUbernameFromH5pJson(h5pJson),
             params: {
                 metadata: h5pJson,
                 params: content
             }
-        }));
+        };
     }
 
     public render(contentId: ContentId): Promise<string> {

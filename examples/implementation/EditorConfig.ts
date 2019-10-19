@@ -51,7 +51,10 @@ export default class EditorConfig implements IEditorConfig {
      */
     public fetchingDisabled: number = 0;
 
-    public filesPath: string = '';
+    /**
+     * This is where the client will look for image, video etc. files added to content.
+     */
+    public filesPath: string = '/h5p/content';
 
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
@@ -73,6 +76,10 @@ export default class EditorConfig implements IEditorConfig {
      */
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
 
+    /**
+     * The EDITOR LIBRARY FILES are loaded from here (needed for the ckeditor), NOT
+     * the libraries itself.
+     */
     public libraryUrl: string = '/h5p/editor/';
 
     /**
