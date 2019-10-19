@@ -26,12 +26,6 @@ const examples = require('./examples.json');
 
 const start = async () => {
     const h5pEditor = new H5PEditor.Editor(
-        {
-            baseUrl: '/h5p',
-            ajaxPath: '/ajax?action=',
-            libraryUrl: '/h5p/editor/', // this is confusing as it loads no library but the editor-library files (needed for the ckeditor)
-            filesPath: '/h5p/content'
-        },
         new InMemoryStorage(),
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))

@@ -34,30 +34,27 @@ import {
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
-    IURLConfig,
     IUser
 } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('Editor');
+
 export default class H5PEditor {
     constructor(
-        urls: IURLConfig = {
-            ajaxPath: '/ajax?action=',
-            baseUrl: '/h5p',
-            filesPath: '',
-            libraryUrl: '/h5p/editor/'
-        },
         keyValueStorage: IKeyValueStorage,
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
         translationService: TranslationService
     ) {
+        log.info('initialize');
         this.renderer = defaultRenderer;
-        this.baseUrl = urls.baseUrl;
+        this.baseUrl = config.baseUrl;
         this.translation = defaultTranslation;
-        this.ajaxPath = urls.ajaxPath;
-        this.libraryUrl = urls.libraryUrl;
-        this.filesPath = urls.filesPath;
+        this.ajaxPath = config.ajaxPath;
+        this.libraryUrl = config.libraryUrl;
+        this.filesPath = config.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(libraryStorage);
         this.contentManager = new ContentManager(contentStorage);
@@ -93,6 +90,7 @@ export default class H5PEditor {
     private translationService: TranslationService;
 
     public getContentTypeCache(user: IUser): Promise<any> {
+        log.info(`getting content type chache`);
         return this.contentTypeRepository.get(user);
     }
 
@@ -102,6 +100,9 @@ export default class H5PEditor {
         minorVersion: number,
         language: string = 'en'
     ): Promise<ILibraryDetailedDataForClient> {
+        log.info(
+            `getting data for library ${machineName}-${majorVersion}.${minorVersion}`
+        );
         const library = new LibraryName(
             machineName,
             majorVersion,
@@ -141,6 +142,11 @@ export default class H5PEditor {
         libraryNames: string[],
         language: string
     ): Promise<{ [key: string]: string }> {
+        log.info(
+            `getting language files (${language}) for ${libraryNames.join(
+                ', '
+            )}`
+        );
         return (await Promise.all(
             libraryNames.map(async name => {
                 const lib = LibraryName.fromUberName(name, {
@@ -166,6 +172,9 @@ export default class H5PEditor {
     public async getLibraryOverview(
         libraryNames: string[]
     ): Promise<ILibraryOverviewForClient[]> {
+        log.info(
+            `getting library overview for libraries: ${libraryNames.join(', ')}`
+        );
         return (await Promise.all(
             libraryNames
                 .map(name =>
@@ -216,6 +225,7 @@ export default class H5PEditor {
             params: ContentParameters;
         };
     }> {
+        log.info(`loading h5p for ${contentId}`);
         return Promise.all([
             this.contentManager.loadH5PJson(contentId, user),
             this.contentManager.loadContent(contentId, user)
@@ -230,6 +240,7 @@ export default class H5PEditor {
     }
 
     public render(contentId: ContentId): Promise<string> {
+        log.info(`rendering ${contentId}`);
         const model = {
             integration: this.integration(contentId),
             scripts: this.coreScripts(),
@@ -244,6 +255,7 @@ export default class H5PEditor {
         field: any,
         file: any
     ): Promise<{ mime: string; path: string }> {
+        log.info(`saving content file ${file} for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
@@ -261,6 +273,7 @@ export default class H5PEditor {
         metadata: IContentMetadata,
         libraryName: string
     ): Promise<ContentId> {
+        log.info(`saving h5p.json for ${contentId}`);
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
             libraryName,
@@ -275,6 +288,7 @@ export default class H5PEditor {
     }
 
     public setAjaxPath(ajaxPath: string): H5PEditor {
+        log.info(`setting ajax path to ${ajaxPath}`);
         this.ajaxPath = ajaxPath;
         return this;
     }
@@ -290,6 +304,7 @@ export default class H5PEditor {
         contentId: ContentId,
         user: IUser
     ): Promise<ContentId> {
+        log.info(`uploading package for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(data);
 
@@ -385,6 +400,7 @@ export default class H5PEditor {
     }
 
     private editorIntegration(contentId: ContentId): IEditorIntegration {
+        log.info(`generating integration for ${contentId}`);
         return {
             ...defaultEditorIntegration,
             ajaxPath: this.ajaxPath,
@@ -473,6 +489,7 @@ export default class H5PEditor {
         libraryName: string,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
+        log.info(`generating h5p.json`);
         return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
                 .loadLibrary(

@@ -16,6 +16,9 @@ import {
     IUser
 } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('ContentTypeInformationRepository');
+
 /**
  * This class provides access to information about content types that are either available at the H5P Hub
  * or were installed locally. It is used by the editor to display the list of available content types. Technically
@@ -40,12 +43,15 @@ export default class ContentTypeInformationRepository {
         private libraryManager: LibraryManager,
         private config: IEditorConfig,
         private translationService: ITranslationService
-    ) {}
+    ) {
+        log.info(`initialize`);
+    }
 
     /**
      * Gets the information about available content types with all the extra information as listed in the class description.
      */
     public async get(user: IUser): Promise<any> {
+        log.info(`getting information about available content types`);
         let cachedHubInfo = await this.contentTypeCache.get();
         if (!cachedHubInfo) {
             // try updating cache if it is empty for some reason
@@ -82,7 +88,11 @@ export default class ContentTypeInformationRepository {
      * @returns {Promise<boolean>} true if the library was installed.
      */
     public async install(machineName: string, user: IUser): Promise<boolean> {
+        log.info(
+            `installing library ${machineName} from hub ${this.config.hubContentTypesEndpoint}`
+        );
         if (!machineName) {
+            log.error(`content type ${machineName} not found`);
             throw new H5pError(
                 this.translationService.getTranslation(
                     'hub-install-no-content-type'
@@ -93,6 +103,9 @@ export default class ContentTypeInformationRepository {
         // Reject content types that are not listed in the hub
         const localContentType = await this.contentTypeCache.get(machineName);
         if (!localContentType || localContentType.length === 0) {
+            log.error(
+                `rejecting content type ${machineName}: content type is not listed in the hub ${this.config.hubContentTypesEndpoint}`
+            );
             throw new H5pError(
                 this.translationService.getTranslation(
                     'hub-install-invalid-content-type'
@@ -102,6 +115,9 @@ export default class ContentTypeInformationRepository {
 
         // Reject installation of content types that the user has no permission to
         if (!localContentType[0].canBeInstalledBy(user)) {
+            log.warn(
+                `rejecting installation of content type ${machineName}: user has no permission`
+            );
             throw new H5pError(
                 this.translationService.getTranslation('hub-install-denied')
             );
@@ -120,6 +136,7 @@ export default class ContentTypeInformationRepository {
                 try {
                     await promisepipe(response.data, writeStream);
                 } catch (error) {
+                    log.error(error);
                     throw new H5pError(
                         this.translationService.getTranslation(
                             'hub-install-download-failed'
@@ -197,6 +214,14 @@ export default class ContentTypeInformationRepository {
                 };
             });
         const finalLocalLibs = await Promise.all(localLibs);
+        log.info(
+            `adding local libraries: ${finalLocalLibs
+                .map(
+                    lib =>
+                        `${lib.machineName}-${lib.majorVersion}.${lib.minorVersion}`
+                )
+                .join(', ')}`
+        );
         return hubInfo.concat(finalLocalLibs);
     }
 
@@ -209,6 +234,7 @@ export default class ContentTypeInformationRepository {
         hubInfo: any[],
         user: IUser
     ): Promise<any[]> {
+        log.info(`adding user and installation specific information`);
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped).map(
             machineName =>
@@ -254,6 +280,9 @@ export default class ContentTypeInformationRepository {
      * @param {HubContentType} library
      */
     private canInstallLibrary(library: HubContentType, user: IUser): boolean {
+        log.verbose(
+            `checking if user can install library ${library.machineName}`
+        );
         return (
             user.canUpdateAndInstallLibraries ||
             (library.isRecommended && user.canInstallRecommended)
@@ -266,6 +295,7 @@ export default class ContentTypeInformationRepository {
      * @param {IInstalledLibrary} library
      */
     private libraryIsRestricted(library: IInstalledLibrary): boolean {
+        log.verbose(`checking if library ${library.machineName} is restriced`);
         if (this.config.enableLrsContentTypes) {
             return library.restricted;
         }

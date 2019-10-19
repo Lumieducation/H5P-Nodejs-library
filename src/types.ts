@@ -384,12 +384,6 @@ export interface ITranslationService {
     ): string;
 }
 
-export interface IURLConfig {
-    ajaxPath?: string;
-    baseUrl?: string;
-    filesPath?: string;
-    libraryUrl?: string;
-}
 export type ILibraryLoader = (
     machineName: string,
     majorVersion: number,
@@ -397,6 +391,8 @@ export type ILibraryLoader = (
 ) => IInstalledLibrary;
 
 export interface IEditorConfig {
+    ajaxPath: string;
+    baseUrl: string;
     contentTypeCacheRefreshInterval: number;
     contentWhitelist: string;
     coreApiVersion: {
@@ -405,9 +401,11 @@ export interface IEditorConfig {
     };
     enableLrsContentTypes: boolean;
     fetchingDisabled: number;
+    filesPath: string;
     h5pVersion: string;
     hubContentTypesEndpoint: string;
     hubRegistrationEndpoint: string;
+    libraryUrl: string;
     libraryWhitelist: string;
     lrsContentTypes: string[];
     maxFileSize: number;

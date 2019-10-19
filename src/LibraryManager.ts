@@ -17,6 +17,9 @@ import {
     ISemanticsEntry
 } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('LibraryManager');
+
 /**
  * This class manages library installations, enumerating installed libraries etc.
  * It is storage agnostic and can be re-used in all implementations/plugins.
@@ -28,6 +31,7 @@ export default class LibraryManager {
      * @param {FileLibraryStorage} libraryStorage The library repository that persists library somewhere.
      */
     constructor(libraryStorage: ILibraryStorage) {
+        log.info('initialize');
         this.libraryStorage = libraryStorage;
     }
 
@@ -41,6 +45,7 @@ export default class LibraryManager {
      * @returns {ReadStream} a readable stream of the file's contents
      */
     public getFileStream(library: ILibraryName, file: string): ReadStream {
+        log.debug(`getting file ${file} from library ${LibraryName.toDirName(library)}`);
         return this.libraryStorage.getFileStream(library, file);
     }
 
@@ -51,6 +56,7 @@ export default class LibraryManager {
      * @returns {Promise<number>} The id of the specified library or undefined (if not installed).
      */
     public async getId(library: ILibraryName): Promise<number> {
+        log.debug(`getting id for library ${LibraryName.toDirName(library)}`);
         return this.libraryStorage.getId(library);
     }
 
@@ -61,6 +67,7 @@ export default class LibraryManager {
      * values are arrays of Library objects, which represent the different versions installed of this library.
      */
     public async getInstalled(machineNames?: string[]): Promise<any> {
+        log.verbose(`checking if libraries ${machineNames} are installed`);
         let libraries = await this.libraryStorage.getInstalled(...machineNames);
         libraries = (await Promise.all(
             libraries.map(async libName => {
@@ -96,6 +103,7 @@ export default class LibraryManager {
         directory: string,
         restricted: boolean = false
     ): Promise<boolean> {
+        log.info(`installing from directory ${directory}`);
         const newLibraryMetadata: ILibraryMetadata = await fsExtra.readJSON(
             `${directory}/library.json`
         );
@@ -120,6 +128,7 @@ export default class LibraryManager {
      * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
      */
     public async isPatchedLibrary(library: ILibraryMetadata): Promise<boolean> {
+    log.info(`checking if library ${LibraryName.toDirName(library)} is patched`);
         const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
@@ -152,6 +161,9 @@ export default class LibraryManager {
         library: ILibraryName,
         filename: string
     ): Promise<boolean> {
+        log.debug(
+            `checking if file ${filename} exists for library ${LibraryName.toDirName(library)}`
+        );
         return this.libraryStorage.fileExists(library, filename);
     }
 
@@ -163,6 +175,9 @@ export default class LibraryManager {
     public async libraryHasUpgrade(
         library: ILibraryMetadata
     ): Promise<boolean> {
+        log.verbose(
+            `checking if library ${library.machineName}-${library.majorVersion}.${library.minorVersion} has an upgrade`
+        );
         const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
@@ -188,6 +203,7 @@ export default class LibraryManager {
      * @return the files in the library including language files
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
+    log.verbose(`listing files for library ${LibraryName.toDirName(library)}`);
         return this.libraryStorage.listFiles(library);
     }
 
@@ -198,8 +214,12 @@ export default class LibraryManager {
      */
     public async listLanguages(library: ILibraryName): Promise<string[]> {
         try {
+            log.verbose(
+                `listing languages for library ${LibraryName.toDirName(library)}`
+            );
             return await this.libraryStorage.getLanguageFiles(library);
         } catch (error) {
+            log.warn(`no languages found for library ${LibraryName.toDirName(library)}`);
             return [];
         }
     }
@@ -215,11 +235,17 @@ export default class LibraryManager {
         language: string
     ): Promise<any> {
         try {
+            log.debug(
+                `loading language ${language} for library ${LibraryName.toDirName(library)}`
+            );
             return await this.getJsonFile(
                 library,
                 path.join('language', `${language}.json`)
             );
         } catch (ignored) {
+            log.debug(
+                `language '${language}' not found for ${LibraryName.toDirName(library)}`
+            );
             return null;
         }
     }
@@ -233,6 +259,7 @@ export default class LibraryManager {
         library: ILibraryName
     ): Promise<IInstalledLibrary> {
         try {
+            log.debug(`loading library ${LibraryName.toDirName(library)}`);
             const libraryMetadata = await this.getJsonFile(
                 library,
                 'library.json'
@@ -240,6 +267,7 @@ export default class LibraryManager {
             libraryMetadata.libraryId = await this.getId(library);
             return libraryMetadata;
         } catch (ignored) {
+            log.warn(`library ${LibraryName.toDirName(library)} is not installed`);
             return undefined;
         }
     }
@@ -252,6 +280,7 @@ export default class LibraryManager {
     public async loadSemantics(
         library: ILibraryName
     ): Promise<ISemanticsEntry[]> {
+        log.debug(`loading semantics for library ${LibraryName.toDirName(library)}`);
         return this.getJsonFile(library, 'semantics.json');
     }
 
@@ -262,6 +291,9 @@ export default class LibraryManager {
      */
     private async checkConsistency(library: ILibraryName): Promise<boolean> {
         if (!(await this.libraryStorage.getId(library))) {
+            log.error(
+                `Error in library ${LibraryName.toDirName(library)}: not installed.`
+            );
             throw new Error(
                 `Error in library ${LibraryName.toDirName(
                     library
@@ -305,6 +337,11 @@ export default class LibraryManager {
         library: ILibraryName,
         requiredFiles: string[]
     ): Promise<boolean> {
+        log.debug(
+            `checking files ${requiredFiles.join(
+                ', '
+            )} for ${LibraryName.toDirName(library)}`
+        );
         const missingFiles = (await Promise.all(
             requiredFiles.map(async (file: string) => {
                 return {
@@ -338,6 +375,7 @@ export default class LibraryManager {
         fromDirectory: string,
         libraryInfo: ILibraryName
     ): Promise<void> {
+        log.info(`copying library files from ${fromDirectory}`);
         const files: string[] = await globPromise(`${fromDirectory}/**/*.*`);
         await Promise.all(
             files.map((fileFullPath: string) => {
@@ -370,6 +408,7 @@ export default class LibraryManager {
         library: ILibraryName,
         file: string
     ): Promise<any> {
+        log.silly(`loading ${file} for library ${LibraryName.toDirName(library)}`);
         const stream: Stream = await this.libraryStorage.getFileStream(
             library,
             file
@@ -392,6 +431,9 @@ export default class LibraryManager {
         libraryMetadata: ILibraryMetadata,
         restricted: boolean
     ): Promise<IInstalledLibrary> {
+        log.info(
+            `installing library ${libraryMetadata.machineName}-${libraryMetadata.majorVersion}.${libraryMetadata.minorVersion} from ${fromDirectory}`
+        );
         const newLibraryInfo = await this.libraryStorage.installLibrary(
             libraryMetadata,
             restricted
@@ -419,11 +461,17 @@ export default class LibraryManager {
         filesDirectory: string
     ): Promise<any> {
         try {
+            log.info(
+                `updating library ${LibraryName.toDirName(newLibraryMetadata)} in ${filesDirectory}`
+            );            
             await this.libraryStorage.updateLibrary(newLibraryMetadata);
+            log.info(`clearing library ${LibraryName.toDirName(newLibraryMetadata)} from files`);
             await this.libraryStorage.clearLibraryFiles(newLibraryMetadata);
             await this.copyLibraryFiles(filesDirectory, newLibraryMetadata);
             await this.checkConsistency(newLibraryMetadata);
         } catch (error) {
+            log.error(error);
+            log.info(`removing library ${LibraryName.toDirName(newLibraryMetadata)}`);
             await this.libraryStorage.removeLibrary(newLibraryMetadata);
             throw error;
         }
