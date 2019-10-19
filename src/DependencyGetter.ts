@@ -71,10 +71,10 @@ export default class DependencyGetter {
     ): Promise<Set<string>> {
         log.debug(`adding dependencies recursively`);
         // we use strings to make equality comparison easier
-        if (libraries.has(LibraryName.toDirName(library))) {
+        if (libraries.has(LibraryName.toUberName(library))) {
             return null;
         }
-        libraries.add(LibraryName.toDirName(library));
+        libraries.add(LibraryName.toUberName(library));
 
         const metadata = await this.libraryManager.loadLibrary(library);
         if (preloaded && metadata.preloadedDependencies) {

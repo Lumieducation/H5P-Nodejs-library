@@ -127,7 +127,7 @@ export default class PackageExporter {
                 for (const file of files) {
                     outputZipFile.addReadStream(
                         this.libraryManager.getFileStream(dependency, file),
-                        `${LibraryName.toDirName(dependency)}/${file}`
+                        `${LibraryName.toUberName(dependency)}/${file}`
                     );
                 }
             }

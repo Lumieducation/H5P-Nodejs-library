@@ -38,7 +38,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     ): Promise<boolean> {
         if (!(await this.getId(library))) {
             throw new Error(
-                `Can't add file ${filename} to library ${LibraryName.toDirName(library)} because the library metadata has not been installed.`
+                `Can't add file ${filename} to library ${LibraryName.toUberName(library)} because the library metadata has not been installed.`
             );
         }
         const fullPath = this.getFullPath(library, filename);
@@ -57,7 +57,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async clearLibraryFiles(library: ILibraryName): Promise<void> {
         if (!(await this.getId(library))) {
             throw new Error(
-                `Can't clear library ${LibraryName.toDirName(library)} because the library has not been installed.`
+                `Can't clear library ${LibraryName.toUberName(library)} because the library has not been installed.`
             );
         }
         const fullLibraryPath = this.getDirectoryPath(library);
@@ -93,7 +93,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public getFileStream(library: ILibraryName, filename: string): ReadStream {
         return fsExtra.createReadStream(
-            path.join(this.librariesDirectory, LibraryName.toDirName(library), filename)
+            path.join(this.librariesDirectory, LibraryName.toUberName(library), filename)
         );
     }
 
@@ -169,7 +169,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(library);
         if (await fsExtra.pathExists(libPath)) {
             throw new Error(
-                `Library ${LibraryName.toDirName(library)} has already been installed.`
+                `Library ${LibraryName.toUberName(library)} has already been installed.`
             );
         }
         try {
@@ -208,7 +208,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(library);
         if (!(await fsExtra.pathExists(libPath))) {
             throw new Error(
-                `Library ${LibraryName.toDirName(library)} is not installed on the system.`
+                `Library ${LibraryName.toUberName(library)} is not installed on the system.`
             );
         }
         await fsExtra.remove(libPath);
@@ -228,7 +228,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(libraryMetadata);
         if (!(await fsExtra.pathExists(libPath))) {
             throw new Error(
-                `Library ${LibraryName.toDirName(libraryMetadata)} can't be updated as it hasn't been installed yet.`
+                `Library ${LibraryName.toUberName(libraryMetadata)} can't be updated as it hasn't been installed yet.`
             );
         }
         await fsExtra.writeJSON(
@@ -246,7 +246,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns {string} the absolute path to the directory
      */
     private getDirectoryPath(library: ILibraryName): string {
-        return path.join(this.librariesDirectory, LibraryName.toDirName(library));
+        return path.join(this.librariesDirectory, LibraryName.toUberName(library));
     }
 
     /**
@@ -258,7 +258,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     private getFullPath(library: ILibraryName, filename: string): string {
         return path.join(
             this.librariesDirectory,
-            LibraryName.toDirName(library),
+            LibraryName.toUberName(library),
             filename
         );
     }

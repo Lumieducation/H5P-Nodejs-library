@@ -45,7 +45,7 @@ export default class LibraryManager {
      * @returns {ReadStream} a readable stream of the file's contents
      */
     public getFileStream(library: ILibraryName, file: string): ReadStream {
-        log.debug(`getting file ${file} from library ${LibraryName.toDirName(library)}`);
+        log.debug(`getting file ${file} from library ${LibraryName.toUberName(library)}`);
         return this.libraryStorage.getFileStream(library, file);
     }
 
@@ -56,7 +56,7 @@ export default class LibraryManager {
      * @returns {Promise<number>} The id of the specified library or undefined (if not installed).
      */
     public async getId(library: ILibraryName): Promise<number> {
-        log.debug(`getting id for library ${LibraryName.toDirName(library)}`);
+        log.debug(`getting id for library ${LibraryName.toUberName(library)}`);
         return this.libraryStorage.getId(library);
     }
 
@@ -128,7 +128,7 @@ export default class LibraryManager {
      * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
      */
     public async isPatchedLibrary(library: ILibraryMetadata): Promise<boolean> {
-    log.info(`checking if library ${LibraryName.toDirName(library)} is patched`);
+    log.info(`checking if library ${LibraryName.toUberName(library)} is patched`);
         const wrappedLibraryInfos = await this.getInstalled([
             library.machineName
         ]);
@@ -162,7 +162,7 @@ export default class LibraryManager {
         filename: string
     ): Promise<boolean> {
         log.debug(
-            `checking if file ${filename} exists for library ${LibraryName.toDirName(library)}`
+            `checking if file ${filename} exists for library ${LibraryName.toUberName(library)}`
         );
         return this.libraryStorage.fileExists(library, filename);
     }
@@ -203,7 +203,7 @@ export default class LibraryManager {
      * @return the files in the library including language files
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
-    log.verbose(`listing files for library ${LibraryName.toDirName(library)}`);
+    log.verbose(`listing files for library ${LibraryName.toUberName(library)}`);
         return this.libraryStorage.listFiles(library);
     }
 
@@ -215,11 +215,11 @@ export default class LibraryManager {
     public async listLanguages(library: ILibraryName): Promise<string[]> {
         try {
             log.verbose(
-                `listing languages for library ${LibraryName.toDirName(library)}`
+                `listing languages for library ${LibraryName.toUberName(library)}`
             );
             return await this.libraryStorage.getLanguageFiles(library);
         } catch (error) {
-            log.warn(`no languages found for library ${LibraryName.toDirName(library)}`);
+            log.warn(`no languages found for library ${LibraryName.toUberName(library)}`);
             return [];
         }
     }
@@ -236,7 +236,7 @@ export default class LibraryManager {
     ): Promise<any> {
         try {
             log.debug(
-                `loading language ${language} for library ${LibraryName.toDirName(library)}`
+                `loading language ${language} for library ${LibraryName.toUberName(library)}`
             );
             return await this.getJsonFile(
                 library,
@@ -244,7 +244,7 @@ export default class LibraryManager {
             );
         } catch (ignored) {
             log.debug(
-                `language '${language}' not found for ${LibraryName.toDirName(library)}`
+                `language '${language}' not found for ${LibraryName.toUberName(library)}`
             );
             return null;
         }
@@ -259,7 +259,7 @@ export default class LibraryManager {
         library: ILibraryName
     ): Promise<IInstalledLibrary> {
         try {
-            log.debug(`loading library ${LibraryName.toDirName(library)}`);
+            log.debug(`loading library ${LibraryName.toUberName(library)}`);
             const libraryMetadata = await this.getJsonFile(
                 library,
                 'library.json'
@@ -267,7 +267,7 @@ export default class LibraryManager {
             libraryMetadata.libraryId = await this.getId(library);
             return libraryMetadata;
         } catch (ignored) {
-            log.warn(`library ${LibraryName.toDirName(library)} is not installed`);
+            log.warn(`library ${LibraryName.toUberName(library)} is not installed`);
             return undefined;
         }
     }
@@ -280,7 +280,7 @@ export default class LibraryManager {
     public async loadSemantics(
         library: ILibraryName
     ): Promise<ISemanticsEntry[]> {
-        log.debug(`loading semantics for library ${LibraryName.toDirName(library)}`);
+        log.debug(`loading semantics for library ${LibraryName.toUberName(library)}`);
         return this.getJsonFile(library, 'semantics.json');
     }
 
@@ -292,10 +292,10 @@ export default class LibraryManager {
     private async checkConsistency(library: ILibraryName): Promise<boolean> {
         if (!(await this.libraryStorage.getId(library))) {
             log.error(
-                `Error in library ${LibraryName.toDirName(library)}: not installed.`
+                `Error in library ${LibraryName.toUberName(library)}: not installed.`
             );
             throw new Error(
-                `Error in library ${LibraryName.toDirName(
+                `Error in library ${LibraryName.toUberName(
                     library
                 )}: not installed.`
             );
@@ -306,7 +306,7 @@ export default class LibraryManager {
             metadata = await this.getJsonFile(library, 'library.json');
         } catch (error) {
             throw new Error(
-                `Error in library ${LibraryName.toDirName(
+                `Error in library ${LibraryName.toUberName(
                     library
                 )}: library.json not readable: ${error.message}.`
             );
@@ -340,7 +340,7 @@ export default class LibraryManager {
         log.debug(
             `checking files ${requiredFiles.join(
                 ', '
-            )} for ${LibraryName.toDirName(library)}`
+            )} for ${LibraryName.toUberName(library)}`
         );
         const missingFiles = (await Promise.all(
             requiredFiles.map(async (file: string) => {
@@ -353,7 +353,7 @@ export default class LibraryManager {
             .filter((file: { status: boolean }) => !file.status)
             .map((file: { path: string }) => file.path);
         if (missingFiles.length > 0) {
-            let message = `Error(s) in library ${LibraryName.toDirName(
+            let message = `Error(s) in library ${LibraryName.toUberName(
                 library
             )}:\n`;
             message += missingFiles
@@ -408,7 +408,7 @@ export default class LibraryManager {
         library: ILibraryName,
         file: string
     ): Promise<any> {
-        log.silly(`loading ${file} for library ${LibraryName.toDirName(library)}`);
+        log.silly(`loading ${file} for library ${LibraryName.toUberName(library)}`);
         const stream: Stream = await this.libraryStorage.getFileStream(
             library,
             file
@@ -462,16 +462,16 @@ export default class LibraryManager {
     ): Promise<any> {
         try {
             log.info(
-                `updating library ${LibraryName.toDirName(newLibraryMetadata)} in ${filesDirectory}`
+                `updating library ${LibraryName.toUberName(newLibraryMetadata)} in ${filesDirectory}`
             );            
             await this.libraryStorage.updateLibrary(newLibraryMetadata);
-            log.info(`clearing library ${LibraryName.toDirName(newLibraryMetadata)} from files`);
+            log.info(`clearing library ${LibraryName.toUberName(newLibraryMetadata)} from files`);
             await this.libraryStorage.clearLibraryFiles(newLibraryMetadata);
             await this.copyLibraryFiles(filesDirectory, newLibraryMetadata);
             await this.checkConsistency(newLibraryMetadata);
         } catch (error) {
             log.error(error);
-            log.info(`removing library ${LibraryName.toDirName(newLibraryMetadata)}`);
+            log.info(`removing library ${LibraryName.toUberName(newLibraryMetadata)}`);
             await this.libraryStorage.removeLibrary(newLibraryMetadata);
             throw error;
         }

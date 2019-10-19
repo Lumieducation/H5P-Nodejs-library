@@ -688,8 +688,8 @@ export default class PackageValidator {
         log.info(
             `checking if language files in library ${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion} have the correct naming schema and are valid JSON`
         );
-        const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
-        const languagePath = PackageValidator.pathJoin(dirName, 'language/');
+        const uberName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
+        const languagePath = PackageValidator.pathJoin(uberName, 'language/');
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
         for (const languageFileEntry of zipEntries.filter(
             e =>
@@ -704,7 +704,7 @@ export default class PackageValidator {
                 error.addError(
                     this.translationService.getTranslation(
                         'invalid-language-file',
-                        { '%file': languageFileName, '%library': dirName }
+                        { '%file': languageFileName, '%library': uberName }
                     )
                 );
             }
@@ -717,7 +717,7 @@ export default class PackageValidator {
                 error.addError(
                     this.translationService.getTranslation(
                         'invalid-language-file-json',
-                        { '%file': languageFileName, '%library': dirName }
+                        { '%file': languageFileName, '%library': uberName }
                     )
                 );
             }
@@ -803,16 +803,16 @@ export default class PackageValidator {
         log.info(
             `checking if all js and css file references in the preloaded section of the library metadata are present in package`
         );
-        const dirName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
+        const uberName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
             await Promise.all(
                 jsonData.preloadedJs.map(file =>
                     this.fileMustExist(
-                        PackageValidator.pathJoin(dirName, file.path),
+                        PackageValidator.pathJoin(uberName, file.path),
                         this.translationService.getTranslation(
                             'library-missing-file',
-                            { '%file': file.path, '%name': dirName }
+                            { '%file': file.path, '%name': uberName }
                         )
                     )(zipEntries, error)
                 )
@@ -824,10 +824,10 @@ export default class PackageValidator {
             await Promise.all(
                 jsonData.preloadedCss.map(file =>
                     this.fileMustExist(
-                        PackageValidator.pathJoin(dirName, file.path),
+                        PackageValidator.pathJoin(uberName, file.path),
                         this.translationService.getTranslation(
                             'library-missing-file',
-                            { '%file': file.path, '%name': dirName }
+                            { '%file': file.path, '%name': uberName }
                         )
                     )(zipEntries, error)
                 )
