@@ -34,6 +34,7 @@ import {
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
+    ISemanticsEntry,
     IUser
 } from './types';
 
@@ -250,21 +251,41 @@ export default class H5PEditor {
         return Promise.resolve(this.renderer(model));
     }
 
-    public saveContentFile(
+    /**
+     *
+     * @param contentId the id of the piece of content the file is attached to; Set to null/undefined if
+     * the content hasn't been saved before.
+     * @param field the semantic structure of the field the file is attached to.
+     * @param file information about the uploaded file
+     */
+    public async saveContentFile(
         contentId: ContentId,
-        field: any,
-        file: any
+        field: ISemanticsEntry,
+        file: {
+            data: Buffer;
+            encoding: string;
+            md5: string;
+            mimetype: string;
+            name: string;
+            size: number;
+            tempFilePath: string;
+            truncated: boolean;
+        }
     ): Promise<{ mime: string; path: string }> {
         log.info(`saving content file ${file} for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
-        return this.contentManager
-            .addContentFile(contentId, file.name, dataStream, undefined)
-            .then(() => ({
-                mime: file.mimetype,
-                path: file.name
-            }));
+        await this.contentManager.addContentFile(
+            contentId,
+            file.name,
+            dataStream,
+            undefined
+        );
+        return {
+            mime: file.mimetype,
+            path: file.name
+        };
     }
 
     public async saveH5P(
