@@ -1,5 +1,8 @@
 import { ReadStream } from 'fs';
-import { Stream } from 'stream';
+import path from 'path';
+import shortid from 'shortid';
+
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import { IEditorConfig, ITemporaryFileStorage, IUser } from './types';
 
@@ -34,9 +37,12 @@ export default class TemporaryFileManager {
      * @param filename the file to get
      * @param user the user who requests the file
      */
-    public async getFileStream(filename: string, user: IUser): Promise<ReadStream> {
+    public async getFileStream(
+        filename: string,
+        user: IUser
+    ): Promise<ReadStream> {
         log.info(`Getting temporary file ${filename}`);
-        return undefined;
+        return this.storage.getFileStream(filename, user);
     }
 
     /**
@@ -50,10 +56,50 @@ export default class TemporaryFileManager {
      */
     public async saveFile(
         filename: string,
-        dataStream: Stream,
+        dataStream: ReadStream,
         user: IUser
     ): Promise<string> {
         log.info(`Storing temporary file ${filename}`);
-        return `${filename}#tmp`;
+        const uniqueFilename = await this.generateUniqueName(filename, user);
+        log.debug(`Unique filename will be ${uniqueFilename}`);
+        const tmpFile = await this.storage.saveFile(
+            uniqueFilename,
+            dataStream,
+            user,
+            new Date(Date.now() + this.config.temporaryFileLifetime)
+        );
+        return tmpFile.filename;
+    }
+
+    /**
+     * Tries generating a unique filename for the file by appending a
+     * id to it. Checks in storage if the filename already exists and
+     * tries again if necessary.
+     * Throws an H5PError if no filename could be determined.
+     * @param filename the filename to check
+     * @param user the user who is saving the file
+     * @returns the unique filename
+     */
+    private async generateUniqueName(
+        filename: string,
+        user: IUser
+    ): Promise<string> {
+        const attempts = 0;
+        let filenameAttempt = '';
+        let exists = false;
+        do {
+            filenameAttempt = `${path.basename(
+                filename,
+                path.extname(filename)
+            )}-${shortid()}${path.extname(filename)}`;
+            exists = await this.storage.fileExists(filenameAttempt, user);
+        } while (attempts < 5 && exists); // only try 5 times
+        if (exists) {
+            log.error(`Cannot determine a unique filename for ${filename}`);
+            throw new H5pError(
+                `Cannot determine a unique filename for ${filename}`
+            );
+        }
+        return filenameAttempt;
     }
 }

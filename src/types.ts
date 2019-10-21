@@ -456,6 +456,14 @@ export interface ITemporaryFileStorage {
     deleteFile(file: ITemporaryFile): Promise<boolean>;
 
     /**
+     * Checks if a file exists in temporary storage.
+     * @param filename the filename to check
+     * @param user the user for who to check
+     * @returns true if file already exists
+     */
+    fileExists(filename: string, user: IUser): Promise<boolean>;
+
+    /**
      * Returns the contents of a file.
      * Must check for access permissions and throw an H5PError if a file is not accessible.
      * @param filename the filename
@@ -477,11 +485,13 @@ export interface ITemporaryFileStorage {
      * @param filename the filename by which the file will be identified later
      * @param dataStream the stream containing the file's data
      * @param user the user who is allowed to access the file
+     * @param expirationTime when the file ought to be deleted
      * @returns an object containing information about the stored file; undefined if failed
      */
     saveFile(
         filename: string,
         dataStream: ReadStream,
-        user: IUser
+        user: IUser,
+        expirationTime: Date
     ): Promise<ITemporaryFile>;
 }
