@@ -378,8 +378,7 @@ export default class H5PEditor {
             '/editor/scripts/h5peditor-metadata-author-widget.js',
             '/editor/scripts/h5peditor-metadata-changelog-widget.js',
             '/editor/scripts/h5peditor-pre-save.js',
-            '/editor/ckeditor/ckeditor.js',
-            '/editor/wp/h5p-editor.js'
+            '/editor/ckeditor/ckeditor.js'
         ].map((file: string) => `${this.baseUrl}${file}`);
     }
 
