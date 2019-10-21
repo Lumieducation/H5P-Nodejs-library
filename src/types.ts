@@ -462,7 +462,7 @@ export interface ITemporaryFileStorage {
      * @param user the user who accesses the file
      * @returns the stream containing the file's content
      */
-    getFileStream(filename: string, user: IUser): ReadStream;
+    getFileStream(filename: string, user: IUser): Promise<ReadStream>;
 
     /**
      * Returns a list of files in temporary storage for the specified user.

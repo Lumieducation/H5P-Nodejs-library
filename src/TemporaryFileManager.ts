@@ -34,7 +34,7 @@ export default class TemporaryFileManager {
      * @param filename the file to get
      * @param user the user who requests the file
      */
-    public getFileStream(filename: string, user: IUser): ReadStream {
+    public async getFileStream(filename: string, user: IUser): Promise<ReadStream> {
         log.info(`Getting temporary file ${filename}`);
         return undefined;
     }
