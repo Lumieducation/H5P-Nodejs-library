@@ -428,3 +428,60 @@ export interface IEditorConfig {
     load(): Promise<any>;
     save(): Promise<void>;
 }
+
+/**
+ * Describes as file that is stored temporarily (for uploads of unsaved content)
+ */
+export interface ITemporaryFile {
+    /**
+     * Indicates when the temporary file should be deleted.
+     */
+    expiresAt: Date;
+    /**
+     * The name by which the file can be identified
+     */
+    filename: string;
+    /**
+     * The user who is allowed to access the file
+     */
+    ownedBy: IUser;
+}
+
+export interface ITemporaryFileStorage {
+    /**
+     * Deletes the file from temporary storage (e.g. because it has expired)
+     * @param file the information as received from listFiles(...)
+     * @returns true if deletion was successful
+     */
+    deleteFile(file: ITemporaryFile): Promise<boolean>;
+
+    /**
+     * Returns the contents of a file.
+     * Must check for access permissions and throw an H5PError if a file is not accessible.
+     * @param filename the filename
+     * @param user the user who accesses the file
+     * @returns the stream containing the file's content
+     */
+    getFileStream(filename: string, user: IUser): ReadStream;
+
+    /**
+     * Returns a list of files in temporary storage for the specified user.
+     * If the user is undefined or null, lists all files in temporary storage.
+     * @param user (optional) Only list files for the user. If left out, will list all temporary files.
+     * @returns a list of information about the files
+     */
+    listFiles(user?: IUser): Promise<ITemporaryFile[]>;
+
+    /**
+     * Stores a file. Only the user who stores the file is allowed to access it later.
+     * @param filename the filename by which the file will be identified later
+     * @param dataStream the stream containing the file's data
+     * @param user the user who is allowed to access the file
+     * @returns an object containing information about the stored file; undefined if failed
+     */
+    saveFile(
+        filename: string,
+        dataStream: ReadStream,
+        user: IUser
+    ): Promise<ITemporaryFile>;
+}
