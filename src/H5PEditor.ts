@@ -14,24 +14,25 @@ import ContentManager from './ContentManager';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
-import Library from './Library';
+import InstalledLibrary from './InstalledLibrary';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import TranslationService from './TranslationService';
 
+import LibraryName from './LibraryName';
 import {
-    Content,
     ContentId,
+    ContentParameters,
     IAssets,
     IContentMetadata,
     IContentStorage,
-    IDependency,
     IEditorConfig,
     IEditorIntegration,
     IIntegration,
     IKeyValueStorage,
-    ILibraryData,
-    ILibraryInfo,
+    ILibraryDetailedDataForClient,
+    ILibraryName,
+    ILibraryOverviewForClient,
     ILibraryStorage,
     IUser
 } from './types';
@@ -98,11 +99,11 @@ export default class H5PEditor {
         majorVersion: number,
         minorVersion: number,
         language: string = 'en'
-    ): Promise<ILibraryData> {
+    ): Promise<ILibraryDetailedDataForClient> {
         log.info(
             `getting data for library ${machineName}-${majorVersion}.${minorVersion}`
         );
-        const library: Library = new Library(
+        const library = new LibraryName(
             machineName,
             majorVersion,
             minorVersion
@@ -148,7 +149,7 @@ export default class H5PEditor {
         );
         return (await Promise.all(
             libraryNames.map(async name => {
-                const lib = Library.createFromUberName(name, {
+                const lib = LibraryName.fromUberName(name, {
                     useWhitespace: true
                 });
                 return {
@@ -170,14 +171,16 @@ export default class H5PEditor {
 
     public async getLibraryOverview(
         libraryNames: string[]
-    ): Promise<ILibraryInfo[]> {
+    ): Promise<ILibraryOverviewForClient[]> {
         log.info(
             `getting library overview for libraries: ${libraryNames.join(', ')}`
         );
         return (await Promise.all(
             libraryNames
                 .map(name =>
-                    Library.createFromUberName(name, { useWhitespace: true })
+                    LibraryName.fromUberName(name, {
+                        useWhitespace: true
+                    })
                 )
                 .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
                 .map(async lib => {
@@ -219,7 +222,7 @@ export default class H5PEditor {
         library: string;
         params: {
             metadata: IContentMetadata;
-            params: Content;
+            params: ContentParameters;
         };
     }> {
         log.info(`loading h5p for ${contentId}`);
@@ -266,7 +269,7 @@ export default class H5PEditor {
 
     public async saveH5P(
         contentId: ContentId,
-        content: Content,
+        content: ContentParameters,
         metadata: IContentMetadata,
         libraryName: string
     ): Promise<ContentId> {
@@ -460,7 +463,7 @@ export default class H5PEditor {
         };
     }
 
-    private findLibraries(object: any, collect: any = {}): IDependency[] {
+    private findLibraries(object: any, collect: any = {}): ILibraryName[] {
         if (typeof object !== 'object') return collect;
 
         Object.keys(object).forEach((key: string) => {
@@ -484,17 +487,17 @@ export default class H5PEditor {
     private generateH5PJSON(
         metadata: IContentMetadata,
         libraryName: string,
-        contentDependencies: IDependency[] = []
+        contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
         return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
                 .loadLibrary(
-                    Library.createFromUberName(libraryName, {
+                    LibraryName.fromUberName(libraryName, {
                         useWhitespace: true
                     })
                 )
-                .then((library: Library) => {
+                .then((library: InstalledLibrary) => {
                     const h5pJson: IContentMetadata = {
                         ...metadata,
                         mainLibrary: library.machineName,
@@ -514,10 +517,10 @@ export default class H5PEditor {
     }
 
     private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library: IDependency = (
+        const library: ILibraryName = (
             h5pJson.preloadedDependencies || []
         ).filter(
-            (dependency: IDependency) =>
+            (dependency: ILibraryName) =>
                 dependency.machineName === h5pJson.mainLibrary
         )[0];
         return `${library.machineName} ${library.majorVersion}.${library.minorVersion}`;
@@ -564,7 +567,7 @@ export default class H5PEditor {
             translations: {}
         };
 
-        const lib: Library = new Library(
+        const lib: LibraryName = new LibraryName(
             machineName,
             majorVersion,
             minorVersion
@@ -616,15 +619,15 @@ export default class H5PEditor {
     }
 
     private resolveDependencies(
-        originalDependencies: IDependency[],
+        originalDependencies: ILibraryName[],
         language: string,
         loaded: object
     ): Promise<IAssets[]> {
-        const dependencies: IDependency[] = originalDependencies.slice();
+        const dependencies: ILibraryName[] = originalDependencies.slice();
         const resolved: IAssets[] = [];
 
-        const resolve: (dependency: IDependency) => Promise<any> = (
-            dependency: IDependency
+        const resolve: (dependency: ILibraryName) => Promise<any> = (
+            dependency: ILibraryName
         ) => {
             if (!dependency) return Promise.resolve(resolved);
 

@@ -7,8 +7,8 @@ import { Stream } from 'stream';
 import { streamToString } from './helpers/StreamHelpers';
 
 import {
-    Content,
     ContentId,
+    ContentParameters,
     IContentMetadata,
     IContentStorage,
     IUser,
@@ -84,7 +84,7 @@ export default class ContentManager {
         const metadata: IContentMetadata = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
-        const content: Content = await fsExtra.readJSON(
+        const content: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (await globPromise(
@@ -134,7 +134,7 @@ export default class ContentManager {
      */
     public async createContent(
         metadata: IContentMetadata,
-        content: Content,
+        content: ContentParameters,
         user: IUser,
         contentId: ContentId
     ): Promise<ContentId> {
@@ -207,7 +207,7 @@ export default class ContentManager {
     public async loadContent(
         contentId: ContentId,
         user: IUser
-    ): Promise<Content> {
+    ): Promise<ContentParameters> {
         return this.getFileJson(contentId, 'content/content.json', user);
     }
 

@@ -55,7 +55,7 @@ const start = async () => {
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
         const stream = h5pEditor.libraryManager.getFileStream(
-            H5PEditor.Library.createFromUberName(req.params.uberName),
+            H5PEditor.LibraryName.fromUberName(req.params.uberName),
             req.params.file
         );
         stream.on('end', () => {
@@ -94,7 +94,7 @@ const start = async () => {
 
         const libraryLoader = (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5PEditor.Library(lib, maj, min)
+                new H5PEditor.LibraryName(lib, maj, min)
             );
         Promise.all([
             h5pEditor.contentManager.loadContent(req.query.contentId),
@@ -139,7 +139,7 @@ const start = async () => {
 
         const libraryLoader = async (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5PEditor.Library(lib, maj, min)
+                new H5PEditor.LibraryName(lib, maj, min)
             );
 
         exec(`sh scripts/download-example.sh ${examples[key].h5p}`)

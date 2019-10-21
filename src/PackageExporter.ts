@@ -7,6 +7,7 @@ import ContentManager from './ContentManager';
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
+import LibraryName from './LibraryName';
 import {
     ContentId,
     IContentMetadata,
@@ -126,7 +127,7 @@ export default class PackageExporter {
                 for (const file of files) {
                     outputZipFile.addReadStream(
                         this.libraryManager.getFileStream(dependency, file),
-                        `${dependency.getDirName()}/${file}`
+                        `${LibraryName.toUberName(dependency)}/${file}`
                     );
                 }
             }
