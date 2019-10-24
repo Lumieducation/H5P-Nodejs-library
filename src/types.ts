@@ -444,7 +444,7 @@ export interface ITemporaryFile {
     /**
      * The user who is allowed to access the file
      */
-    ownedBy: IUser;
+    ownedByUserId: string;
 }
 
 export interface ITemporaryFileStorage {
@@ -453,7 +453,7 @@ export interface ITemporaryFileStorage {
      * @param file the information as received from listFiles(...)
      * @returns true if deletion was successful
      */
-    deleteFile(file: ITemporaryFile): Promise<boolean>;
+    deleteFile(file: ITemporaryFile): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.

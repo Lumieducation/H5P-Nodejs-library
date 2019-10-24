@@ -1,4 +1,5 @@
 import fsExtra from 'fs-extra';
+import mockdate from 'mockdate';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
@@ -86,29 +87,63 @@ describe('TemporaryFileManager', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
-    it('deletes files after expiration time', async () => {
+    it('deletes expired files, but keep unexpired ones', async () => {
         const config = new EditorConfig(null);
         config.temporaryFileLifetime = 100000;
         const user = new User();
+        try {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    const tmpManager = new TemporaryFileManager(
+                        new DirectoryTemporaryFileStorage(tempDirPath),
+                        config
+                    );
 
-        await withDir(
-            async ({ path: tempDirPath }) => {
-                const tmpManager = new TemporaryFileManager(
-                    new DirectoryTemporaryFileStorage(tempDirPath),
-                    config
-                );
-                const newFilename1 = await tmpManager.saveFile(
-                    'real-content-types.json',
-                    fsExtra.createReadStream(
-                        path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
-                        )
-                    ),
-                    user
-                );
-            },
-            { keep: false, unsafeCleanup: true }
-        );
+                    // add file that will expire
+                    const expiringFilename = await tmpManager.saveFile(
+                        'expiring.json',
+                        fsExtra.createReadStream(
+                            path.resolve(
+                                'test/data/content-type-cache/real-content-types.json'
+                            )
+                        ),
+                        user
+                    );
+
+                    // move the clock to add second file
+                    mockdate.set(Date.now() + config.temporaryFileLifetime / 2);
+
+                    // add second file that won't expire
+                    const nonExpiringFilename = await tmpManager.saveFile(
+                        'non-expiring.json',
+                        fsExtra.createReadStream(
+                            path.resolve(
+                                'test/data/content-type-cache/real-content-types.json'
+                            )
+                        ),
+                        user
+                    );
+
+                    // move the clock to expire the file
+                    mockdate.set(
+                        Date.now() + config.temporaryFileLifetime / 2 + 1000
+                    );
+
+                    // remove expired files
+                    await tmpManager.cleanUp();
+
+                    // check if only one file remains
+                    await expect(
+                        tmpManager.getFileStream(expiringFilename, user)
+                    ).rejects.toThrow();
+                    const stream = await tmpManager.getFileStream(nonExpiringFilename, user);
+                    stream.close(); // we have to close the stream, as the file must be deleted later
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        } finally {
+            mockdate.reset();
+        }
     });
     it('prevents unauthorized users from accessing a file', async () => {
         const config = new EditorConfig(null);

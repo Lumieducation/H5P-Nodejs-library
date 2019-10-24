@@ -27,15 +27,35 @@ export default class TemporaryFileManager {
      */
     public async cleanUp(): Promise<void> {
         log.info('cleaning up temporary files');
+        const temporaryFiles = await this.storage.listFiles();
+        const now = Date.now();
+        const filesToDelete = temporaryFiles.filter(
+            f => f.expiresAt.getTime() < now
+        );
+        if (filesToDelete.length > 0) {
+            log.debug(
+                `these temporary files have expired and will be deleted: ${filesToDelete
+                    .map(
+                        f =>
+                            `${
+                                f.filename
+                            } (expired at ${f.expiresAt.toISOString()})`
+                    )
+                    .join(' ')}`
+            );
+        } else {
+            log.debug('no temporary files have expired and must be deleted');
+        }
+        await Promise.all(filesToDelete.map(f => this.storage.deleteFile(f)));
         return;
     }
 
     /**
-     * Returns a file stream for a temporarily saved file.
-     * Will throw H5PError if the file doesn't exist or the user
-     * has no access permissions!
+     * Returns a file stream for temporary file.
+     * Will throw H5PError if the file doesn't exist or the user has no access permissions!
      * @param filename the file to get
      * @param user the user who requests the file
+     * @returns a stream to read from
      */
     public async getFileStream(
         filename: string,
@@ -61,7 +81,7 @@ export default class TemporaryFileManager {
     ): Promise<string> {
         log.info(`Storing temporary file ${filename}`);
         const uniqueFilename = await this.generateUniqueName(filename, user);
-        log.debug(`Unique filename will be ${uniqueFilename}`);
+        log.debug(`Assigned unique filename ${uniqueFilename}`);
         const tmpFile = await this.storage.saveFile(
             uniqueFilename,
             dataStream,
