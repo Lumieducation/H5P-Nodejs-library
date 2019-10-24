@@ -17,6 +17,17 @@ You can install the library with
 npm install h5p-nodejs-library
 ```
 
+## Trying out the demo
+
+Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed.
+
+1. Clone the repository with git
+2. ```npm install```
+3. ```npm run build```
+4. ```npm start```
+   
+You can then open the URL http://localhost:8080 in any browser. Not that the project is still in its early stages and things will not work as expected.
+The interfaces are also not stable yet!
 
 ## Usage
 
