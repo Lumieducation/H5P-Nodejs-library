@@ -10,6 +10,8 @@ const index = require('./index');
 const H5PEditor = require('../');
 const H5PPlayer = H5PEditor.Player;
 
+const DirectoryTemporaryFileStorage = require('../build/examples/implementation/DirectoryTemporaryFileStorage')
+    .default;
 const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage')
     .default;
 const JsonStorage = require('../build/examples/implementation/JsonStorage')
@@ -32,6 +34,7 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
         new FileContentStorage(`${path.resolve('')}/h5p/content`),
+        new DirectoryTemporaryFileStorage(`${path.resolve('')}/h5p/temporary-storage`),
         new H5PEditor.TranslationService(H5PEditor.englishStrings)
     );
 
@@ -76,16 +79,19 @@ const start = async () => {
         stream.pipe(res.type(path.basename(req.params.file)));
     });
 
-    server.get(`${h5pEditor.config.temporaryFilesPath}/:file(*)`, async (req, res) => {
-        const stream = h5pEditor.temporaryFileManager.getFileStream(
-            req.params.file,
-            null
-        );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
-    });
+    server.get(
+        `${h5pEditor.config.temporaryFilesPath}/:file(*)`,
+        async (req, res) => {
+            const stream = await h5pEditor.temporaryFileManager.getFileStream(
+                req.params.file,
+                user
+            );
+            stream.on('end', () => {
+                res.end();
+            });
+            stream.pipe(res.type(path.basename(req.params.file)));
+        }
+    );
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
@@ -263,7 +269,7 @@ const start = async () => {
                         : req.body.contentId,
                     JSON.parse(req.body.field),
                     req.files.file,
-                    null
+                    user
                 );
                 res.status(200).json(uploadFileResponse);
                 break;

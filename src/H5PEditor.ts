@@ -35,6 +35,7 @@ import {
     ILibraryOverviewForClient,
     ILibraryStorage,
     ISemanticsEntry,
+    ITemporaryFileStorage,
     IUser
 } from './types';
 
@@ -48,6 +49,7 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
+        temporaryStorage: ITemporaryFileStorage,
         translationService: TranslationService
     ) {
         log.info('initialize');
@@ -75,7 +77,10 @@ export default class H5PEditor {
             this.config,
             this.contentManager
         );
-        this.temporaryFileManager = new TemporaryFileManager(this.config);
+        this.temporaryFileManager = new TemporaryFileManager(
+            temporaryStorage,
+            this.config
+        );
     }
 
     public libraryManager: LibraryManager;

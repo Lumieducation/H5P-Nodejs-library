@@ -10,6 +10,7 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
+            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -47,6 +48,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             new EditorConfig(null),
+            null,
             null,
             null,
             null
@@ -88,6 +90,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            null,
             null,
             null,
             null
@@ -177,6 +180,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            null,
             null,
             null,
             null
@@ -276,6 +280,7 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
+            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -352,6 +357,7 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
+            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -420,6 +426,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            null,
             null,
             null,
             null

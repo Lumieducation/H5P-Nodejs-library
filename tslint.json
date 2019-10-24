@@ -29,6 +29,7 @@
                 ],
                 "alphabetize": true
             }
-        ]
+        ],
+        "no-implicit-dependencies": [true, "dev"]
     }
 }

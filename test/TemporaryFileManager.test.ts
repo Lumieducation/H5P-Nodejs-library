@@ -136,7 +136,10 @@ describe('TemporaryFileManager', () => {
                     await expect(
                         tmpManager.getFileStream(expiringFilename, user)
                     ).rejects.toThrow();
-                    const stream = await tmpManager.getFileStream(nonExpiringFilename, user);
+                    const stream = await tmpManager.getFileStream(
+                        nonExpiringFilename,
+                        user
+                    );
                     stream.close(); // we have to close the stream, as the file must be deleted later
                 },
                 { keep: false, unsafeCleanup: true }
