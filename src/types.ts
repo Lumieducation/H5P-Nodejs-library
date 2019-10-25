@@ -519,8 +519,8 @@ export interface ILibraryMetadata extends ILibraryName {
 }
 
 /**
- * Persists any complex object to some storage. Used to store settings and temporary data that
- * needs to be retrieved later.
+ * Persists any arbitrarily nested objects to some kind storage.
+ * Used to store settings and temporary data that needs to be retrieved later.
  */
 export interface IKeyValueStorage {
     /**
