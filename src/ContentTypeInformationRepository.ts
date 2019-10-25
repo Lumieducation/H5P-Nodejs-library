@@ -191,11 +191,11 @@ export default class ContentTypeInformationRepository {
                         localLib,
                         'icon.svg'
                     ))
-                        ? undefined // this.libraryManager.getLibraryFileUrl(
-                        : //  localLib,
-                          //  'icon.svg'
-                          // )
-                          undefined,
+                        ? this.libraryManager.getLibraryFileUrl(
+                              localLib,
+                              'icon.svg'
+                          )
+                        : undefined,
                     id: localLib.id,
                     installed: true,
                     isUpToDate: true,

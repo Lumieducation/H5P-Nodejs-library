@@ -30,12 +30,19 @@ export default class LibraryManager {
      *
      * @param {FileLibraryStorage} libraryStorage The library repository that persists library somewhere.
      */
-    constructor(libraryStorage: ILibraryStorage) {
+    constructor(
+        private libraryStorage: ILibraryStorage,
+        /**
+         * Gets URLs at which a file in a library can be downloaded. Must be passed
+         * through from the implementation.
+         */
+        private fileUrlResolver: (
+            library: ILibraryName,
+            filename: string
+        ) => string = (library, filename) => '' // default is there to avoid having to pass empty function in tests
+    ) {
         log.info('initialize');
-        this.libraryStorage = libraryStorage;
     }
-
-    private libraryStorage: ILibraryStorage;
 
     /**
      * Returns a readable stream of a library file's contents.
@@ -93,6 +100,40 @@ export default class LibraryManager {
             returnObject[library.machineName].push(library);
         }
         return returnObject;
+    }
+
+    /**
+     * Returns a (relative) URL for a library file that can be used to hardcode
+     * URLs of specific files if necessary. Avoid using this method when possible!
+     * This method does NOT check if the file exists!
+     * @param library the library for which the URL should be retrieved
+     * @param file the filename inside the library (path)
+     * @returns the URL of the file
+     */
+    public getLibraryFileUrl(library: ILibraryName, file: string): string {
+        log.debug(
+            `getting URL of file ${file} for library ${library.machineName}-${library.majorVersion}.${library.minorVersion}`
+        );
+        const url = this.fileUrlResolver(library, file);
+        log.debug(`URL resolved to ${url}`);
+        return url;
+    }
+
+    /**
+     * Returns a URL of the upgrades script in the library
+     * @param library the library whose upgrade script should be accessed
+     * @returns the URL of upgrades.js. Null if there is no upgrades file.
+     * (The null value can be passed back to the client.)
+     */
+    public async getUpgradesScriptPath(library: ILibraryName): Promise<string> {
+        log.debug(
+            `getting upgrades script for ${library.machineName}-${library.majorVersion}.${library.minorVersion}`
+        );
+        if (await this.libraryStorage.fileExists(library, 'upgrades.js')) {
+            return this.getLibraryFileUrl(library, 'upgrades.js');
+        }
+        log.debug(`no upgrades script found.`);
+        return null;
     }
 
     /**

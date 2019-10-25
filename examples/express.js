@@ -32,7 +32,9 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
         new FileContentStorage(`${path.resolve('')}/h5p/content`),
-        new H5PEditor.TranslationService(H5PEditor.englishStrings)
+        new H5PEditor.TranslationService(H5PEditor.englishStrings),
+        (library, file) =>
+            `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`
     );
 
     const user = new User();

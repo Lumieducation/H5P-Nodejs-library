@@ -10,7 +10,8 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -36,6 +37,7 @@ describe('aggregating data from library folders for the editor', () => {
             name: 'Foo',
             semantics: [],
             translations: {},
+            upgradesScript: null,
             version: {
                 major: 1,
                 minor: 2
@@ -49,7 +51,8 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -90,7 +93,8 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -179,7 +183,8 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -276,7 +281,8 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -352,7 +358,8 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -422,7 +429,8 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null
+            null,
+            (library, name) => ''
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
