@@ -661,7 +661,7 @@ export interface ITranslationService {
 }
 
 /**
- * This resolvers loads data about a local library.
+ * This resolver loads data about a local library.
  */
 export type ILibraryLoader = (
     machineName: string,
