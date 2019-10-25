@@ -50,7 +50,7 @@ export default class H5PEditor {
         /**
          * This function returns the (relative) URL at which a file inside a library
          * can be accessed. It is used when URLs of library files must be inserted
-         * (hardcoded) into data structures. The implementation must do this file -> 
+         * (hardcoded) into data structures. The implementation must do this file ->
          * URL resolution, as it decides where the files can be accessed.
          */
         libraryFileUrlResolver: (
