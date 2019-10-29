@@ -41,7 +41,6 @@ import {
 
 import Logger from './helpers/Logger';
 import TemporaryFileManager from './TemporaryFileManager';
-import TemporaryFileSyncer from './TemporaryFileSyncer.js';
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -95,11 +94,6 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
-        this.temporaryFileSyncer = new TemporaryFileSyncer(
-            this.temporaryFileManager,
-            this.contentManager,
-            this.libraryManager
-        );
     }
 
     public libraryManager: LibraryManager;
@@ -114,7 +108,6 @@ export default class H5PEditor {
     private libraryUrl: string;
     private packageImporter: PackageImporter;
     private renderer: any;
-    private temporaryFileSyncer: TemporaryFileSyncer;
     private translation: any;
     private translationService: TranslationService;
 
