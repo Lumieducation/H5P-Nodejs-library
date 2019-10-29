@@ -499,10 +499,10 @@ export interface ISemanticsEntry {
      */
     entity?: string;
     /**
-     * (for group) Group is expanded by default 
+     * (for group) Group is expanded by default
      */
     expanded?: boolean;
-    /** 
+    /**
      * (in lists only) defines a single field type in the list
      */
     field?: ISemanticsEntry;
@@ -514,11 +514,11 @@ export interface ISemanticsEntry {
      * The font choices the user has.
      */
     font?: {
-        background: any
-        color: any,
-        family: any,
-        size: any,
-    }
+        background: any;
+        color: any;
+        family: any;
+        size: any;
+    };
     /**
      * More important fields have a more promiment style in the editor.
      */
@@ -529,7 +529,7 @@ export interface ISemanticsEntry {
     important?: {
         description: string;
         example: string;
-    }
+    };
     /**
      * (for group) unknown
      */
@@ -540,7 +540,7 @@ export interface ISemanticsEntry {
     label?: string;
     /**
      * (for number) the maximum number allowed
-     * (for list) the maximum number of elements 
+     * (for list) the maximum number of elements
      */
     max?: number;
     /**
@@ -562,7 +562,7 @@ export interface ISemanticsEntry {
     optional?: boolean;
     /**
      * (for select) the options to choose from
-     * (for library) a list of library ubernames (whitespaces instead 
+     * (for library) a list of library ubernames (whitespaces instead
      * of hyphens as separators)
      */
     options?: any[];
@@ -570,10 +570,9 @@ export interface ISemanticsEntry {
      * (for text) the regexp pattern the text must match
      */
     regexp?: {
-        modifiers: string
-        pattern: string,
-
-    }
+        modifiers: string;
+        pattern: string;
+    };
     /**
      * (for number) the allowed steps
      */
@@ -582,6 +581,20 @@ export interface ISemanticsEntry {
      * (for text) list of allowed html tags.
      */
     tags?: string[];
+    /**
+     * The object type of this entry.
+     */
+    type:
+        | 'text'
+        | 'number'
+        | 'boolean'
+        | 'group'
+        | 'list'
+        | 'select'
+        | 'library'
+        | 'image'
+        | 'video'
+        | 'audio';
     /**
      * Name of the widget to use in the editor.
      */
