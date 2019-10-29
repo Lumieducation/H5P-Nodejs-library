@@ -11,7 +11,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -52,7 +53,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -94,7 +96,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -184,7 +187,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -282,7 +286,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -359,7 +364,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
@@ -430,7 +436,8 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => ''
+            (library, name) => '',
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
