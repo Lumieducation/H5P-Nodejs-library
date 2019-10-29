@@ -34,10 +34,13 @@ import {
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
+    ISemanticsEntry,
+    ITemporaryFileStorage,
     IUser
 } from './types';
 
 import Logger from './helpers/Logger';
+import TemporaryFileManager from './TemporaryFileManager';
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -56,7 +59,8 @@ export default class H5PEditor {
         libraryFileUrlResolver: (
             library: ILibraryName,
             filename: string
-        ) => string
+        ) => string,
+        temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
         this.renderer = defaultRenderer;
@@ -86,9 +90,14 @@ export default class H5PEditor {
             this.config,
             this.contentManager
         );
+        this.temporaryFileManager = new TemporaryFileManager(
+            temporaryStorage,
+            this.config
+        );
     }
 
     public libraryManager: LibraryManager;
+    public temporaryFileManager: TemporaryFileManager;
 
     private ajaxPath: string;
     private baseUrl: string;
@@ -237,7 +246,7 @@ export default class H5PEditor {
         return this.contentTypeRepository.install(id, user);
     }
 
-    public loadH5P(
+    public async loadH5P(
         contentId: ContentId,
         user?: IUser
     ): Promise<{
@@ -249,17 +258,18 @@ export default class H5PEditor {
         };
     }> {
         log.info(`loading h5p for ${contentId}`);
-        return Promise.all([
+        const [h5pJson, content] = await Promise.all([
             this.contentManager.loadH5PJson(contentId, user),
             this.contentManager.loadContent(contentId, user)
-        ]).then(([h5pJson, content]) => ({
+        ]);
+        return {
             h5p: h5pJson,
             library: this.getUbernameFromH5pJson(h5pJson),
             params: {
                 metadata: h5pJson,
                 params: content
             }
-        }));
+        };
     }
 
     public render(contentId: ContentId): Promise<string> {
@@ -273,21 +283,55 @@ export default class H5PEditor {
         return Promise.resolve(this.renderer(model));
     }
 
-    public saveContentFile(
+    /**
+     *
+     * @param contentId the id of the piece of content the file is attached to; Set to null/undefined if
+     * the content hasn't been saved before.
+     * @param field the semantic structure of the field the file is attached to.
+     * @param file information about the uploaded file
+     */
+    public async saveContentFile(
         contentId: ContentId,
-        field: any,
-        file: any
+        field: ISemanticsEntry,
+        file: {
+            data: Buffer;
+            encoding: string;
+            md5: string;
+            mimetype: string;
+            name: string;
+            size: number;
+            tempFilePath: string;
+            truncated: boolean;
+        },
+        user: IUser
     ): Promise<{ mime: string; path: string }> {
-        log.info(`saving content file ${file} for ${contentId}`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
-        return this.contentManager
-            .addContentFile(contentId, file.name, dataStream, undefined)
-            .then(() => ({
+        if (!contentId) {
+            log.info(`saving content file ${file.name} for unsaved content`);
+            const tmpFilename = await this.temporaryFileManager.saveFile(
+                file.name,
+                dataStream,
+                user
+            );
+            return {
                 mime: file.mimetype,
-                path: file.name
-            }));
+                path: tmpFilename
+            };
+        }
+
+        log.info(`saving content file ${file.name} for ${contentId}`);
+        await this.contentManager.addContentFile(
+            contentId,
+            file.name,
+            dataStream,
+            user
+        );
+        return {
+            mime: file.mimetype,
+            path: file.name
+        };
     }
 
     public async saveH5P(
@@ -480,7 +524,9 @@ export default class H5PEditor {
                     '/editor/ckeditor/ckeditor.js'
                 ].map((asset: string) => `${this.baseUrl}${asset}`)
             },
-            filesPath: `${this.filesPath}/${contentId}/content`,
+            filesPath: contentId
+                ? `${this.filesPath}/${contentId}/content`
+                : this.config.temporaryFilesPath,
             libraryUrl: this.libraryUrl
         };
     }
