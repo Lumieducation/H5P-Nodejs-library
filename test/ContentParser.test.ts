@@ -39,7 +39,8 @@ describe('ContentParser', () => {
                     contentManager
                 );
                 const contentId = await packageImporter.addPackageLibrariesAndContent(
-                    path.resolve('test/data/validator/valid2.h5p'),
+                    // path.resolve('test/data/validator/valid2.h5p'),
+                    path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
                     user
                 );
 

@@ -585,6 +585,7 @@ export interface ISemanticsEntry {
      * The object type of this entry.
      */
     type:
+        | 'file'
         | 'text'
         | 'number'
         | 'boolean'
