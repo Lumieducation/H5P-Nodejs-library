@@ -51,7 +51,10 @@ export default class EditorConfig implements IEditorConfig {
      */
     public fetchingDisabled: number = 0;
 
-    public filesPath: string = '';
+    /**
+     * This is where the client will look for image, video etc. files added to content.
+     */
+    public filesPath: string = '/h5p/content';
 
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
@@ -73,6 +76,10 @@ export default class EditorConfig implements IEditorConfig {
      */
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
 
+    /**
+     * The EDITOR LIBRARY FILES are loaded from here (needed for the ckeditor), NOT
+     * the libraries itself.
+     */
     public libraryUrl: string = '/h5p/editor/';
 
     /**
@@ -124,6 +131,17 @@ export default class EditorConfig implements IEditorConfig {
      * (If possible.)
      */
     public siteType: 'local' | 'network' | 'internet' = 'local';
+
+    /**
+     * Temporary files will be deleted after this time. (in milliseconds)
+     */
+    public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
+
+    /**
+     * The URL path of temporary file storage (used for image, video etc. uploads of
+     * unsaved content).
+     */
+    public temporaryFilesPath: string = '/h5p/temp-files';
 
     /**
      * Used to identify the running instance when calling the H5P Hub.

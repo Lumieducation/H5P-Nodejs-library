@@ -10,6 +10,8 @@ const index = require('./index');
 const H5PEditor = require('../');
 const H5PPlayer = H5PEditor.Player;
 
+const DirectoryTemporaryFileStorage = require('../build/examples/implementation/DirectoryTemporaryFileStorage')
+    .default;
 const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage')
     .default;
 const JsonStorage = require('../build/examples/implementation/JsonStorage')
@@ -32,6 +34,7 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
         new FileContentStorage(`${path.resolve('')}/h5p/content`),
+        new DirectoryTemporaryFileStorage(`${path.resolve('')}/h5p/temporary-storage`),
         new H5PEditor.TranslationService(H5PEditor.englishStrings)
     );
 
@@ -75,6 +78,20 @@ const start = async () => {
         });
         stream.pipe(res.type(path.basename(req.params.file)));
     });
+
+    server.get(
+        `${h5pEditor.config.temporaryFilesPath}/:file(*)`,
+        async (req, res) => {
+            const stream = await h5pEditor.temporaryFileManager.getFileStream(
+                req.params.file,
+                user
+            );
+            stream.on('end', () => {
+                res.end();
+            });
+            stream.pipe(res.type(path.basename(req.params.file)));
+        }
+    );
 
     server.use(h5pRoute, express.static(`${path.resolve('')}/h5p`));
 
@@ -169,11 +186,6 @@ const start = async () => {
     });
 
     server.get('/edit', async (req, res) => {
-        if (!req.query.contentId) {
-            res.redirect(
-                `?contentId=${await h5pEditor.contentManager.createContentId()}`
-            );
-        }
         h5pEditor.render(req.query.contentId).then(page => res.end(page));
     });
 
@@ -231,76 +243,65 @@ const start = async () => {
             });
     });
 
-    server.post('/ajax', (req, res) => {
+    server.post('/ajax', async (req, res) => {
         const { action } = req.query;
         switch (action) {
             case 'libraries':
-                h5pEditor
-                    .getLibraryOverview(req.body.libraries)
-                    .then(libraries => {
-                        res.status(200).json(libraries);
-                    });
+                const libraryOverview = await h5pEditor.getLibraryOverview(
+                    req.body.libraries
+                );
+                res.status(200).json(libraryOverview);
                 break;
             case 'translations':
-                const language = req.query.language;
-                const libraries = req.body.libraries;
-                h5pEditor
-                    .getLibraryLanguageFiles(libraries, language)
-                    .then(response => {
-                        res.status(200).json({ success: true, data: response });
-                    });
+                const translationsResponse = await h5pEditor.getLibraryLanguageFiles(
+                    req.body.libraries,
+                    req.query.language
+                );
+                res.status(200).json({
+                    success: true,
+                    data: translationsResponse
+                });
                 break;
             case 'files':
-                h5pEditor
-                    .saveContentFile(
-                        req.body.contentId === '0'
-                            ? req.query.contentId
-                            : req.body.contentId,
-                        JSON.parse(req.body.field),
-                        req.files.file
-                    )
-                    .then(response => {
-                        res.status(200).json(response);
-                    });
-                break;
-
-            case 'library-install':
-                h5pEditor.installLibrary(req.query.id, user).then(() =>
-                    h5pEditor
-                        .getContentTypeCache(user)
-                        .then(contentTypeCache => {
-                            res.status(200).json({
-                                success: true,
-                                data: contentTypeCache
-                            });
-                        })
+                const uploadFileResponse = await h5pEditor.saveContentFile(
+                    req.body.contentId === '0'
+                        ? req.query.contentId
+                        : req.body.contentId,
+                    JSON.parse(req.body.field),
+                    req.files.file,
+                    user
                 );
+                res.status(200).json(uploadFileResponse);
                 break;
-
+            case 'library-install':
+                await h5pEditor.installLibrary(req.query.id, user);
+                const contentTypeCache = await h5pEditor.getContentTypeCache(
+                    user
+                );
+                res.status(200).json({
+                    success: true,
+                    data: contentTypeCache
+                });
+                break;
             case 'library-upload':
-                h5pEditor
-                    .uploadPackage(
-                        req.files.h5p.data,
-                        req.query.contentId,
-                        user
-                    )
-                    .then(contentId =>
-                        Promise.all([
-                            h5pEditor.loadH5P(contentId),
-                            h5pEditor.getContentTypeCache(user)
-                        ]).then(([content, contentTypes]) =>
-                            res.status(200).json({
-                                success: true,
-                                data: {
-                                    h5p: content.h5p,
-                                    content: content.params.params,
-                                    contentTypes
-                                }
-                            })
-                        )
-                    );
+                const contentId = await h5pEditor.uploadPackage(
+                    req.files.h5p.data,
+                    req.query.contentId,
+                    user
+                );
+                const [content, contentTypes] = await Promise.all([
+                    h5pEditor.loadH5P(contentId),
+                    h5pEditor.getContentTypeCache(user)
+                ]);
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        h5p: content.h5p,
+                        content: content.params.params,
+                        contentTypes
+                    }
+                });
                 break;
-
             default:
                 res.status(500).end('NOT IMPLEMENTED');
                 break;

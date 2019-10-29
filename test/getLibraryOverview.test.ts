@@ -11,6 +11,7 @@ describe('getting overview about multiple libraries', () => {
             new EditorConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
+            null,
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1'])
@@ -36,6 +37,7 @@ describe('getting overview about multiple libraries', () => {
             null,
             new EditorConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
+            null,
             null,
             null
         )
