@@ -51,7 +51,7 @@
         "mkdirp": "^0.5.1",
         "promise-queue": "^2.2.5",
         "promisepipe": "^3.0.0",
-        "puppeteer": "^1.20.0",
+        "puppeteer": "^2.0.0",
         "qs": "^6.7.0",
         "shortid": "2.2.15",
         "stream-buffers": "^3.0.2",
