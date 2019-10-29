@@ -211,6 +211,7 @@ export default class FileContentStorage implements IContentStorage {
      * Returns an array of permissions that the user has on the piece of content
      * @param contentId the content id to check
      * @param user the user who wants to access the piece of content
+     * @returns the permissions the user has for this content (e.g. download it, delete it etc.)
      */
     public async getUserPermissions(
         contentId: ContentId,

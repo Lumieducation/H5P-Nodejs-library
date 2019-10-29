@@ -70,7 +70,7 @@ export default class InstalledLibrary implements IInstalledLibrary {
 
     /**
      * Compares libraries by giving precedence to title, then major version, then minor version
-     * @param {InstalledLibrary} otherLibrary
+     * @param otherLibrary
      */
     public compare(otherLibrary: InstalledLibrary): number {
         return (
@@ -82,7 +82,7 @@ export default class InstalledLibrary implements IInstalledLibrary {
 
     /**
      * Compares libraries by giving precedence to major version, then minor version, then patch version.
-     * @param {InstalledLibrary} otherLibrary
+     * @param otherLibrary
      */
     public compareVersions(otherLibrary: InstalledLibrary): number {
         return (

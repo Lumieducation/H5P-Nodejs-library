@@ -75,7 +75,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Check if the library contains a file
      * @param {ILibraryName} library The library to check
      * @param {string} filename
-     * @return {Promise<boolean>} true if file exists in library, false otherwise
+     * @returns {Promise<boolean>} true if file exists in library, false otherwise
      */
     public async fileExists(
         library: ILibraryName,
@@ -100,9 +100,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Returns the id of an installed library.
      * @param {ILibraryName} library The library to get the id for
-     * @returns {Promise<any>} the id or undefined if the library is not installed
+     * @returns {Promise<number>} the id or undefined if the library is not installed
      */
-    public async getId(library: ILibraryName): Promise<any> {
+    public async getId(library: ILibraryName): Promise<number> {
         const libraryPath = this.getFullPath(library, 'library.json');
         if (await fsExtra.pathExists(libraryPath)) {
             return crc32(libraryPath);
@@ -112,10 +112,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param  {...any} machineNames (optional) only return libraries that have these machine names
+     * @param  {...string[]} machineNames (optional) only return libraries that have these machine names
      * @returns {Promise<ILibraryName[]>} the libraries installed
      */
-    public async getInstalled(...machineNames: any[]): Promise<ILibraryName[]> {
+    public async getInstalled(...machineNames: string[]): Promise<ILibraryName[]> {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
         const libraryDirectories = await fsExtra.readdir(
             this.librariesDirectory
@@ -187,9 +187,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Gets a list of translations that exist for this library.
+     * Gets a list of all library files that exist for this library.
      * @param {ILibraryName} library
-     * @returns {Promise<string[]>} the language codes for translations of this library
+     * @returns {Promise<string[]>} all files that exist for the library
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);

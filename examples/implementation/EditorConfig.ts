@@ -49,7 +49,7 @@ export default class EditorConfig implements IEditorConfig {
      * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
      * User-configurable.
      */
-    public fetchingDisabled: number = 0;
+    public fetchingDisabled: 0 | 1 = 0;
 
     /**
      * This is where the client will look for image, video etc. files added to content.
