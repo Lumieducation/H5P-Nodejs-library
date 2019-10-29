@@ -11,6 +11,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -37,6 +38,7 @@ describe('aggregating data from library folders for the editor', () => {
             name: 'Foo',
             semantics: [],
             translations: {},
+            upgradesScript: null,
             version: {
                 major: 1,
                 minor: 2
@@ -51,6 +53,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -93,6 +96,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -183,6 +187,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -281,6 +286,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -358,6 +364,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -429,6 +436,7 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
+            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));

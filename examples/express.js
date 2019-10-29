@@ -34,8 +34,10 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
         new FileContentStorage(`${path.resolve('')}/h5p/content`),
-        new DirectoryTemporaryFileStorage(`${path.resolve('')}/h5p/temporary-storage`),
-        new H5PEditor.TranslationService(H5PEditor.englishStrings)
+        new H5PEditor.TranslationService(H5PEditor.englishStrings),
+        (library, file) =>
+            `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
+        new DirectoryTemporaryFileStorage(`${path.resolve('')}/h5p/temporary-storage`)
     );
 
     const user = new User();

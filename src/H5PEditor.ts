@@ -49,8 +49,18 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        temporaryStorage: ITemporaryFileStorage,
-        translationService: TranslationService
+        translationService: TranslationService,
+        /**
+         * This function returns the (relative) URL at which a file inside a library
+         * can be accessed. It is used when URLs of library files must be inserted
+         * (hardcoded) into data structures. The implementation must do this file ->
+         * URL resolution, as it decides where the files can be accessed.
+         */
+        libraryFileUrlResolver: (
+            library: ILibraryName,
+            filename: string
+        ) => string,
+        temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
         this.renderer = defaultRenderer;
@@ -60,7 +70,10 @@ export default class H5PEditor {
         this.libraryUrl = config.libraryUrl;
         this.filesPath = config.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
-        this.libraryManager = new LibraryManager(libraryStorage);
+        this.libraryManager = new LibraryManager(
+            libraryStorage,
+            libraryFileUrlResolver
+        );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
@@ -121,22 +134,32 @@ export default class H5PEditor {
             this.loadAssets(machineName, majorVersion, minorVersion, language),
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
-            this.libraryManager.listLanguages(library)
-        ]).then(([assets, semantics, languageObject, languages]) => ({
-            languages,
-            semantics,
-            // tslint:disable-next-line: object-literal-sort-keys
-            css: assets.styles,
-            defaultLanguage: null,
-            language: languageObject,
-            name: machineName,
-            version: {
-                major: majorVersion,
-                minor: minorVersion
-            },
-            javascript: assets.scripts,
-            translations: assets.translations
-        }));
+            this.libraryManager.listLanguages(library),
+            this.libraryManager.getUpgradesScriptPath(library)
+        ]).then(
+            ([
+                assets,
+                semantics,
+                languageObject,
+                languages,
+                upgradeScriptPath
+            ]) => ({
+                languages,
+                semantics,
+                // tslint:disable-next-line: object-literal-sort-keys
+                css: assets.styles,
+                defaultLanguage: null,
+                language: languageObject,
+                name: machineName,
+                version: {
+                    major: majorVersion,
+                    minor: minorVersion
+                },
+                javascript: assets.scripts,
+                translations: assets.translations,
+                upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
+            })
+        );
     }
 
     /**

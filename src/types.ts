@@ -157,16 +157,46 @@ export interface IPath {
  * dynamically) and some properties are missing or named differently.
  */
 export interface ILibraryDetailedDataForClient {
+    /**
+     * URLs of CSS files required for the editor.
+     */
     css: string[];
+    /**
+     * Exact usage unknown. Can be null.
+     */
     defaultLanguage: string;
+    /**
+     * URLs of JavaScript files required for the editor.
+     */
     javascript: string[];
+    /**
+     * Exact usage unknown. Can be null.
+     */
     language: any;
+    /**
+     * The languages available for the content type (e.g. en, de, fr, etc.)
+     */
     languages: string[];
+    /**
+     * The machine name of the library. (e.g. H5P.Example)
+     */
     name: string;
-    preloadedCss?: IPath[];
-    preloadedJs?: IPath[];
-    semantics: any;
+    /**
+     * The semantics object describing the structure of content of this type.
+     */
+    semantics: ISemanticsEntry[];
+    /**
+     * Used translation strings for the various libraries.
+     */
     translations: any;
+    /**
+     * The URL of the JavaScript file that performs content upgrades.
+     * Can be null.
+     */
+    upgradesScript: string;
+    /**
+     * The version of the library.
+     */
     version: {
         major: number;
         minor: number;
