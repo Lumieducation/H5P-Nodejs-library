@@ -41,6 +41,7 @@ import {
 
 import Logger from './helpers/Logger';
 import TemporaryFileManager from './TemporaryFileManager';
+import TemporaryFileSyncer from './TemporaryFileSyncer.js';
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -94,6 +95,11 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
+        this.temporaryFileSyncer = new TemporaryFileSyncer(
+            this.temporaryFileManager,
+            this.contentManager,
+            this.libraryManager
+        );
     }
 
     public libraryManager: LibraryManager;
@@ -108,6 +114,7 @@ export default class H5PEditor {
     private libraryUrl: string;
     private packageImporter: PackageImporter;
     private renderer: any;
+    private temporaryFileSyncer: TemporaryFileSyncer;
     private translation: any;
     private translationService: TranslationService;
 
@@ -338,7 +345,8 @@ export default class H5PEditor {
         contentId: ContentId,
         content: ContentParameters,
         metadata: IContentMetadata,
-        libraryName: string
+        libraryName: string,
+        user: IUser
     ): Promise<ContentId> {
         log.info(`saving h5p.json for ${contentId}`);
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
@@ -346,12 +354,14 @@ export default class H5PEditor {
             libraryName,
             this.findLibraries(content)
         );
-        return this.contentManager.createContent(
+        const newContentId = await this.contentManager.createContent(
             h5pJson,
             content,
-            undefined,
+            user,
             contentId
         );
+
+        return newContentId;
     }
 
     public setAjaxPath(ajaxPath: string): H5PEditor {
