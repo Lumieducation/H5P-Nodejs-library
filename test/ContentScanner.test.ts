@@ -68,10 +68,14 @@ describe('ContentScanner', () => {
                 );
 
                 const calledPaths: string[] = [];
-                await contentScanner.scanContent(contentId, user, (semantics, params, p) => {
-                    calledPaths.push(p);
-                    return false;
-                });
+                await contentScanner.scanContent(
+                    contentId,
+                    user,
+                    (semantics, params, p) => {
+                        calledPaths.push(p);
+                        return false;
+                    }
+                );
                 expect(calledPaths.sort()).toEqual(
                     [
                         '.media',
@@ -115,6 +119,73 @@ describe('ContentScanner', () => {
                         '.confirmCheck.body',
                         '.confirmCheck.cancelLabel',
                         '.confirmCheck.confirmLabel',
+                        '.confirmRetry',
+                        '.confirmRetry.header',
+                        '.confirmRetry.body',
+                        '.confirmRetry.cancelLabel',
+                        '.confirmRetry.confirmLabel',
+                        '.scoreBarLabel'
+                    ].sort()
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('aborts scanning when requested', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                const user = new User();
+                user.canUpdateAndInstallLibraries = true;
+
+                const {
+                    contentScanner,
+                    contentId
+                } = await createContentScanner(
+                    path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
+                    user,
+                    tmpDirPath
+                );
+
+                const calledPaths: string[] = [];
+                await contentScanner.scanContent(
+                    contentId,
+                    user,
+                    (semantics, params, p) => {
+                        calledPaths.push(p);
+                        if (
+                            semantics.name === 'media' ||
+                            semantics.name === 'behaviour' ||
+                            semantics.name === 'confirmCheck'
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }
+                );
+                expect(calledPaths.sort()).toEqual(
+                    [
+                        '.media',
+                        '.text',
+                        '.questions',
+                        '.questions[0].question',
+                        '.questions[1].question',
+                        '.questions[2].question',
+                        '.overallFeedback',
+                        '.showSolutions',
+                        '.tryAgain',
+                        '.checkAnswer',
+                        '.notFilledOut',
+                        '.answerIsCorrect',
+                        '.answerIsWrong',
+                        '.answeredCorrectly',
+                        '.answeredIncorrectly',
+                        '.solutionLabel',
+                        '.inputLabel',
+                        '.inputHasTipLabel',
+                        '.tipLabel',
+                        '.behaviour',
+                        '.confirmCheck',
                         '.confirmRetry',
                         '.confirmRetry.header',
                         '.confirmRetry.body',
