@@ -7,6 +7,7 @@ import { ContentScanner } from '../src/ContentScanner';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
+import { ContentId, IUser } from '../src/types';
 
 import EditorConfig from '../examples/implementation/EditorConfig';
 import FileContentStorage from '../examples/implementation/FileContentStorage';
@@ -14,49 +15,63 @@ import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import User from '../examples/implementation/User';
 
 describe('ContentScanner', () => {
+    async function createContentScanner(
+        file: string,
+        user: IUser,
+        tmpDirPath: string
+    ): Promise<{ contentId: ContentId; contentScanner: ContentScanner }> {
+        // create required dependencies
+        const contentDir = path.join(tmpDirPath, 'content');
+        const libraryDir = path.join(tmpDirPath, 'libraries');
+        await fsExtra.ensureDir(contentDir);
+        await fsExtra.ensureDir(libraryDir);
+
+        const contentManager = new ContentManager(
+            new FileContentStorage(contentDir)
+        );
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(libraryDir)
+        );
+
+        // install content & libraries
+        const packageImporter = new PackageImporter(
+            libraryManager,
+            new TranslationService({}),
+            new EditorConfig(null),
+            contentManager
+        );
+        const contentId = await packageImporter.addPackageLibrariesAndContent(
+            file,
+            user
+        );
+
+        // create ContentScanner
+        return {
+            contentId,
+            contentScanner: new ContentScanner(contentManager, libraryManager)
+        };
+    }
+
     it('scans the semantic structure of H5P.Blanks example', async () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
-                // install content & libraries
-                const contentDir = path.join(tmpDirPath, 'content');
-                const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fsExtra.ensureDir(contentDir);
-                await fsExtra.ensureDir(libraryDir);
-
                 const user = new User();
                 user.canUpdateAndInstallLibraries = true;
 
-                const contentManager = new ContentManager(
-                    new FileContentStorage(contentDir)
-                );
-                const libraryManager = new LibraryManager(
-                    new FileLibraryStorage(libraryDir)
-                );
-                const packageImporter = new PackageImporter(
-                    libraryManager,
-                    new TranslationService({}),
-                    new EditorConfig(null),
-                    contentManager
-                );
-                const contentId = await packageImporter.addPackageLibrariesAndContent(
-                    // path.resolve('test/data/validator/valid2.h5p'),
+                const {
+                    contentScanner,
+                    contentId
+                } = await createContentScanner(
                     path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
-                    user
-                );
-
-                // parse content
-                const contentParser = new ContentScanner(
-                    contentManager,
-                    libraryManager
+                    user,
+                    tmpDirPath
                 );
 
                 const calledPaths: string[] = [];
-                const logger = (semantics, params, p) => {
+                await contentScanner.scanContent(contentId, user, (semantics, params, p) => {
                     calledPaths.push(p);
                     return false;
-                };
-
-                await contentParser.scanContent(contentId, user, logger);
+                });
                 expect(calledPaths.sort()).toEqual(
                     [
                         '.media',
