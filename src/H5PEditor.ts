@@ -189,7 +189,6 @@ export default class H5PEditor {
                         lib,
                         language
                     ),
-                    // tslint:disable-next-line: object-shorthand-properties-first
                     name
                 };
             })

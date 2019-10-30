@@ -1,9 +1,8 @@
 import ContentManager from './ContentManager';
-import LibraryManager from './LibraryManager';
-import { ContentId, ISemanticsEntry, IUser } from './types';
-
 import Logger from './helpers/Logger';
+import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
+import { ContentId, ISemanticsEntry, IUser } from './types';
 
 const log = new Logger('ContentScanner');
 
