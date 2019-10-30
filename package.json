@@ -18,7 +18,7 @@
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test",
         "lint": "./node_modules/.bin/tslint --project tsconfig.json --config tslint.json",
-        "test": "jest",
+        "test": "jest --testTimeout=30000",
         "test:watch": "jest --watch",
         "test:e2e": "npm run test:e2e:player",
         "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
