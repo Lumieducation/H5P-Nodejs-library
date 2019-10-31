@@ -2,6 +2,9 @@ import escapeHtml from 'escape-html';
 
 import { ITranslationService } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('TranslationService');
+
 /**
  * Allows other components to get localizations of string literals.
  */
@@ -15,6 +18,7 @@ export default class TranslationService implements ITranslationService {
         private fallbackLanguageStrings: { [key: string]: string },
         private localLanguageStrings?: { [key: string]: string }
     ) {
+        log.info(`initialize`);
         this.localLanguageStrings =
             localLanguageStrings || fallbackLanguageStrings;
     }
@@ -39,6 +43,7 @@ export default class TranslationService implements ITranslationService {
         id: string,
         replacements: { [key: string]: string } = {}
     ): string {
+        log.verbose(`getting translation ${id}`);
         let literal = this.getLiteral(id);
         if (literal === '') return '';
 
@@ -80,6 +85,7 @@ export default class TranslationService implements ITranslationService {
      * @returns {string} The localized language string or an empty string if there is no localization and fallback value.
      */
     private getLiteral(id: string): string {
+        log.debug(`getting literal ${id}`);
         return (
             this.localLanguageStrings[id] ||
             this.fallbackLanguageStrings[id] ||

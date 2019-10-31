@@ -1,13 +1,17 @@
-import Library from './Library';
 import LibraryManager from './LibraryManager';
-import { IDependency } from './types';
+import LibraryName from './LibraryName';
+import { ILibraryName } from './types';
 
+import Logger from './helpers/Logger';
+const log = new Logger('DependencyGetter');
 /**
  * Gets the libraries required to run a specific library.
  * Uses LibraryManager to get metadata for libraries.
  */
 export default class DependencyGetter {
-    constructor(private libraryManager: LibraryManager) {}
+    constructor(private libraryManager: LibraryManager) {
+        log.info(`initialize`);
+    }
 
     /**
      * Gets all dependent libraries of the libraries in the list.
@@ -18,17 +22,25 @@ export default class DependencyGetter {
      * @returns a list of libraries
      */
     public async getDependentLibraries(
-        libraries: IDependency[],
+        libraries: ILibraryName[],
         {
             dynamic = false,
             editor = false,
             preloaded = false
         }: { dynamic?: boolean; editor?: boolean; preloaded?: boolean }
-    ): Promise<Library[]> {
+    ): Promise<ILibraryName[]> {
+        log.info(
+            `getting dependent libraries for ${libraries
+                .map(
+                    dep =>
+                        `${dep.machineName}-${dep.majorVersion}.${dep.minorVersion}`
+                )
+                .join(', ')}`
+        );
         const dependencies = new Set<string>();
         for (const library of libraries) {
             await this.addDependenciesRecursive(
-                new Library(
+                new LibraryName(
                     library.machineName,
                     library.majorVersion,
                     library.minorVersion
@@ -38,7 +50,7 @@ export default class DependencyGetter {
             );
         }
         return Array.from(dependencies).map(str =>
-            Library.createFromUberName(str)
+            LibraryName.fromUberName(str)
         );
     }
 
@@ -49,7 +61,7 @@ export default class DependencyGetter {
      * @returns the set that was added to (same as libraries; can be used to chain the call)
      */
     private async addDependenciesRecursive(
-        library: Library,
+        library: ILibraryName,
         {
             dynamic = false,
             editor = false,
@@ -57,11 +69,12 @@ export default class DependencyGetter {
         }: { dynamic: boolean; editor: boolean; preloaded: boolean },
         libraries: Set<string>
     ): Promise<Set<string>> {
+        log.debug(`adding dependencies recursively`);
         // we use strings to make equality comparison easier
-        if (libraries.has(library.getDirName())) {
+        if (libraries.has(LibraryName.toUberName(library))) {
             return null;
         }
-        libraries.add(library.getDirName());
+        libraries.add(LibraryName.toUberName(library));
 
         const metadata = await this.libraryManager.loadLibrary(library);
         if (preloaded && metadata.preloadedDependencies) {
@@ -96,7 +109,7 @@ export default class DependencyGetter {
      * Adds all dependencies in the list to the set.
      */
     private async addDependenciesToSet(
-        dependencies: IDependency[],
+        dependencies: ILibraryName[],
         {
             dynamic = false,
             editor = false,
@@ -104,9 +117,10 @@ export default class DependencyGetter {
         }: { dynamic: boolean; editor: boolean; preloaded: boolean },
         libraries: Set<string>
     ): Promise<void> {
+        log.info(`adding dependencies to set`);
         for (const dependency of dependencies) {
             await this.addDependenciesRecursive(
-                new Library(
+                new LibraryName(
                     dependency.machineName,
                     dependency.majorVersion,
                     dependency.minorVersion

@@ -3,7 +3,7 @@ import path from 'path';
 import { withDir } from 'tmp-promise';
 
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
-import Library from '../src/Library';
+import InstalledLibrary from '../src/InstalledLibrary';
 import LibraryManager from '../src/LibraryManager';
 
 describe('basic file library manager functionality', () => {
@@ -267,7 +267,7 @@ describe('listLanguages()', () => {
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
 
-        const library = new Library('H5P.Example2', 1, 2, 0);
+        const library = new InstalledLibrary('H5P.Example2', 1, 2, 0);
 
         await expect(libManager.listLanguages(library)).resolves.toEqual([]);
     });

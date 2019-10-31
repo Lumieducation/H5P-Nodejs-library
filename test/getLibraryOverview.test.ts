@@ -1,17 +1,18 @@
+import EditorConfig from '../examples/implementation/EditorConfig';
+
 import path from 'path';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
-import LibraryManager from '../src/LibraryManager';
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
         return new H5PEditor(
-            {},
             null,
-            null,
+            new EditorConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null,
+            (library, name) => '',
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1'])
@@ -34,12 +35,12 @@ describe('getting overview about multiple libraries', () => {
 
     it('return information about multiple libraries', () => {
         return new H5PEditor(
-            {},
             null,
-            null,
+            new EditorConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null,
+            (library, name) => '',
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])

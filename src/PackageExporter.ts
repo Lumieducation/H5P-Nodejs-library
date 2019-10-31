@@ -6,8 +6,8 @@ import yazl from 'yazl';
 import ContentManager from './ContentManager';
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
-import Library from './Library';
 import LibraryManager from './LibraryManager';
+import LibraryName from './LibraryName';
 import {
     ContentId,
     IContentMetadata,
@@ -16,6 +16,9 @@ import {
     IUser,
     Permission
 } from './types';
+
+import Logger from './helpers/Logger';
+const log = new Logger('PackageExporter');
 
 /**
  * Offers functionality to create .h5p files from content that is stored in the system.
@@ -32,7 +35,9 @@ export default class PackageExporter {
         private translationService: ITranslationService,
         private config: IEditorConfig,
         private contentManager: ContentManager = null
-    ) {}
+    ) {
+        log.info(`initialize`);
+    }
 
     /**
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
@@ -45,6 +50,7 @@ export default class PackageExporter {
         outputStream: WriteStream,
         user: IUser
     ): Promise<void> {
+        log.info(`creating package for ${contentId}`);
         await this.checkAccess(contentId, user);
 
         // create zip files
@@ -81,6 +87,7 @@ export default class PackageExporter {
         user: IUser,
         outputZipFile: yazl.ZipFile
     ): Promise<void> {
+        log.info(`adding content files to ${contentId}`);
         const contentFiles = await this.contentManager.getContentFiles(
             contentId,
             user
@@ -106,6 +113,7 @@ export default class PackageExporter {
         metadata: IContentMetadata,
         outputZipFile: yazl.ZipFile
     ): Promise<void> {
+        log.info(`adding library files`);
         {
             const dependencyGetter = new DependencyGetter(this.libraryManager);
             const dependencies = await dependencyGetter.getDependentLibraries(
@@ -119,7 +127,7 @@ export default class PackageExporter {
                 for (const file of files) {
                     outputZipFile.addReadStream(
                         this.libraryManager.getFileStream(dependency, file),
-                        `${dependency.getDirName()}/${file}`
+                        `${LibraryName.toUberName(dependency)}/${file}`
                     );
                 }
             }

@@ -1,16 +1,17 @@
-import H5pError from '../src/helpers/H5pError';
-import Library from '../src/Library';
+import LibraryName from '../src/LibraryName';
 
 describe('Library model', () => {
     it('creates library classes from uber names', async () => {
-        expect(Library.createFromUberName('H5P.Example-1.0')).toMatchObject({
+        expect(LibraryName.fromUberName('H5P.Example-1.0')).toMatchObject({
             machineName: 'H5P.Example',
             majorVersion: 1,
             minorVersion: 0
         });
 
         expect(
-            Library.createFromUberName('H5P.Example-1.0', { useHyphen: true })
+            LibraryName.fromUberName('H5P.Example-1.0', {
+                useHyphen: true
+            })
         ).toMatchObject({
             machineName: 'H5P.Example',
             majorVersion: 1,
@@ -18,7 +19,7 @@ describe('Library model', () => {
         });
 
         expect(
-            Library.createFromUberName('H5P.Example 1.0', {
+            LibraryName.fromUberName('H5P.Example 1.0', {
                 useWhitespace: true
             })
         ).toMatchObject({
@@ -28,7 +29,7 @@ describe('Library model', () => {
         });
 
         expect(
-            Library.createFromUberName('H5P.Example-1.0', {
+            LibraryName.fromUberName('H5P.Example-1.0', {
                 useHyphen: true,
                 useWhitespace: true
             })
@@ -39,7 +40,7 @@ describe('Library model', () => {
         });
 
         expect(
-            Library.createFromUberName('H5P.Example 1.0', {
+            LibraryName.fromUberName('H5P.Example 1.0', {
                 useHyphen: true,
                 useWhitespace: true
             })
@@ -50,7 +51,7 @@ describe('Library model', () => {
         });
 
         expect(() => {
-            Library.createFromUberName('H5P.Example-1.0', {
+            LibraryName.fromUberName('H5P.Example-1.0', {
                 useHyphen: false,
                 useWhitespace: false
             });
