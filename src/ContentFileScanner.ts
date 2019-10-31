@@ -57,6 +57,7 @@ export class ContentFileScanner extends ContentScanner {
     ): Promise<IFileScanResult[]> {
         const results: IFileScanResult[] = [];
         await this.scanContent(contentId, user, (semantics, params, path) => {
+            log.debug(`Checking entry ${path} (type ${semantics.type})`);
             switch (semantics.type) {
                 case 'file':
                 case 'image':

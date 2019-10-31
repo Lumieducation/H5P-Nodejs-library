@@ -89,6 +89,35 @@ describe('ContentFileScanner', () => {
         );
     });
 
+    it('finds the image in H5P.Questionnaire example (= weird group single fields entry behaviour)', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                const user = new User();
+                user.canUpdateAndInstallLibraries = true;
+
+                const {
+                    contentScanner,
+                    contentId
+                } = await createContentFileScanner(
+                    path.resolve('test/data/hub-content/H5P.Questionnaire.h5p'),
+                    user,
+                    tmpDirPath
+                );
+
+                const foundImages = await contentScanner.scanForFiles(
+                    contentId,
+                    user
+                );
+
+                expect(foundImages.length).toEqual(1);
+                expect(foundImages[0].path).toEqual(
+                    'images/file-5a4d06a8cbabc.jpg'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
     // scan all Hub examples for their file references and compare to directory contents
     const directory = path.resolve('test/data/hub-content/');
     let files;

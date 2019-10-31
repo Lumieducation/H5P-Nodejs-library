@@ -91,6 +91,26 @@ export class ContentScanner {
         }
 
         const currentPath = `${parentPath}.${elementSemantics.name}`;
+        if (
+            elementSemantics.type === 'group' &&
+            elementSemantics.fields.length === 1 &&
+            elementSemantics.fields[0].name === elementSemantics.name &&
+            !elementParams[elementSemantics.name]
+        ) {
+            // The parameters produced by H5P are weird in this case: You would expect the parameters
+            // to be an array with a single entry [{...}], as the semantic structure defines a group with a single entry.
+            // For some reason, H5P directly puts the object {...} into the parameters. We have to
+            // compensate for this special case.
+            log.debug(`found single group entry ${currentPath}`);
+            await this.walkEntryRecursive(
+                elementSemantics.fields[0],
+                elementParams,
+                parentPath,
+                callback
+            );
+            return;
+        }
+
         if (callback(elementSemantics, elementParams, currentPath)) {
             // don't walk further into the tree if the callback signalled to stop
             return;
