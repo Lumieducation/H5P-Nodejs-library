@@ -94,7 +94,6 @@ export class ContentScanner {
         if (
             elementSemantics.type === 'group' &&
             elementSemantics.fields.length === 1 &&
-            elementSemantics.fields[0].name === elementSemantics.name &&
             !elementParams[elementSemantics.name]
         ) {
             // The parameters produced by H5P are weird in this case: You would expect the parameters
