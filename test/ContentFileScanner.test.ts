@@ -81,8 +81,8 @@ describe('ContentFileScanner', () => {
                 );
 
                 expect(foundImages.length).toEqual(1);
-                expect(foundImages[0].path).toEqual(
-                    'images/file-5885c18261805.jpg'
+                expect(path.normalize(foundImages[0].path)).toEqual(
+                    path.normalize('images/file-5885c18261805.jpg')
                 );
             },
             { keep: false, unsafeCleanup: true }
@@ -110,8 +110,8 @@ describe('ContentFileScanner', () => {
                 );
 
                 expect(foundImages.length).toEqual(1);
-                expect(foundImages[0].path).toEqual(
-                    'images/file-5a4d06a8cbabc.jpg'
+                expect(path.normalize(foundImages[0].path)).toEqual(
+                    path.normalize('images/file-5a4d06a8cbabc.jpg')
                 );
             },
             { keep: false, unsafeCleanup: true }
@@ -155,8 +155,8 @@ describe('ContentFileScanner', () => {
                         contentId,
                         user
                     );
-                    expect(foundFiles.map(f => f.path).sort()).toEqual(
-                        fileSystemFiles.sort()
+                    expect(foundFiles.map(f => path.normalize(f.path)).sort()).toEqual(
+                        fileSystemFiles.map(p => path.normalize(p)).sort()
                     );
                 },
                 { keep: false, unsafeCleanup: true }
