@@ -19,7 +19,11 @@ describe('ContentFileScanner', () => {
         file: string,
         user: IUser,
         tmpDirPath: string
-    ): Promise<{ contentId: ContentId; contentScanner: ContentFileScanner }> {
+    ): Promise<{
+        contentId: ContentId;
+        contentManager: ContentManager;
+        contentScanner: ContentFileScanner;
+    }> {
         // create required dependencies
         const contentDir = path.join(tmpDirPath, 'content');
         const libraryDir = path.join(tmpDirPath, 'libraries');
@@ -48,6 +52,7 @@ describe('ContentFileScanner', () => {
         // create ContentScanner
         return {
             contentId,
+            contentManager,
             contentScanner: new ContentFileScanner(
                 contentManager,
                 libraryManager
@@ -83,4 +88,50 @@ describe('ContentFileScanner', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    // scan all Hub examples for their file references and compare to directory contents
+    const directory = path.resolve('test/data/hub-content/');
+    let files;
+    try {
+        files = fsExtra.readdirSync(directory);
+    } catch {
+        throw new Error(
+            "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
+        );
+    }
+
+    for (const file of files.filter(f => f.endsWith('.h5p'))) {
+        it(`finds all files in ${file}`, async () => {
+            await withDir(
+                async ({ path: tmpDirPath }) => {
+                    const user = new User();
+                    user.canUpdateAndInstallLibraries = true;
+
+                    const {
+                        contentId,
+                        contentManager,
+                        contentScanner
+                    } = await createContentFileScanner(
+                        path.join(directory, file),
+                        user,
+                        tmpDirPath
+                    );
+
+                    const foundFiles = await contentScanner.scanForFiles(
+                        contentId,
+                        user
+                    );
+
+                    const fileSystemFiles = await contentManager.getContentFiles(
+                        contentId,
+                        user
+                    );
+                    expect(foundFiles.map(f => f.path).sort()).toEqual(
+                        fileSystemFiles.sort()
+                    );
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+    }
 });
