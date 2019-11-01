@@ -35,7 +35,7 @@ export default class EditorConfig implements IEditorConfig {
      */
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
-        minor: 23
+        minor: 24
     };
 
     /**
