@@ -72,8 +72,8 @@
         "jest": "24.9.0",
         "mockdate": "2.0.5",
         "prettier": "1.18.2",
-        "promise-queue": "^2.2.5",
-        "puppeteer": "^2.0.0",
+        "promise-queue": "2.2.5",
+        "puppeteer": "2.0.0",
         "source-map-support": "0.5.16",
         "stream-mock": "2.0.5",
         "ts-jest": "24.1.0",
@@ -81,7 +81,7 @@
         "tslint": "5.20.0",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
-        "typescript": "^3.6.3"
+        "typescript": "3.6.4"
     },
     "main": "./index.js"
 }
