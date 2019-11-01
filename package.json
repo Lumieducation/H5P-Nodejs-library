@@ -23,6 +23,7 @@
         "test:e2e": "npm run test:e2e:player",
         "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
         "test:coverage": "npx jest --collect-coverage --testTimeout=30000",
+        "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=4",
         "format:check": "prettier --check \"{src,test}/**/*.ts\"",
         "format": "prettier --write \"{src,test}/**/*.ts\""
     },
