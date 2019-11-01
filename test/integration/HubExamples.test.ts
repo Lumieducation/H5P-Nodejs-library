@@ -1,11 +1,11 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import PackageValidator from '../src/PackageValidator';
-import TranslationService from '../src/TranslationService';
+import EditorConfig from '../../examples/implementation/EditorConfig';
+import PackageValidator from '../../src/PackageValidator';
+import TranslationService from '../../src/TranslationService';
 
-describe('validate H5P files from the Hub', () => {
+describe('validate all H5P files from the Hub', () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
     let files;
     try {
