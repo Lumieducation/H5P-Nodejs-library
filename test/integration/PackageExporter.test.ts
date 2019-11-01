@@ -4,7 +4,7 @@ import path from 'path';
 import { importAndExportPackage } from '../PackageExporter.test';
 
 describe('PackageExporter (integration tests with examples from H5P Hub)', () => {
-   const directory = `${path.resolve('')}/test/data/hub-content/`;
+    const directory = `${path.resolve('')}/test/data/hub-content/`;
     let files;
     try {
         files = fsExtra.readdirSync(directory);
