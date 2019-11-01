@@ -35,7 +35,7 @@ export default class EditorConfig implements IEditorConfig {
      */
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
-        minor: 23
+        minor: 24
     };
 
     /**
@@ -61,7 +61,7 @@ export default class EditorConfig implements IEditorConfig {
      * It is sent to the H5P Hub when registering there.
      * Not user-configurable and should not be changed by custom implementations.
      */
-    public h5pVersion: string = '1.22';
+    public h5pVersion: string = '1.24';
 
     /**
      * Called to fetch information about the content types available at the H5P Hub.

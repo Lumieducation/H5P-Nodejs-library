@@ -40,7 +40,7 @@ describe('Loading dependencies', () => {
                     '/h5p/libraries/Foo-4.2/foo2.css',
                     '/h5p/libraries/Bar-2.1/bar.css'
                 ]);
-                expect((model as any).scripts.slice(8)).toEqual([
+                expect((model as any).scripts.slice(9)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.js',
                     '/h5p/libraries/Foo-4.2/foo2.js',
                     '/h5p/libraries/Bar-2.1/bar.js'
@@ -106,7 +106,7 @@ describe('Loading dependencies', () => {
                     '/h5p/libraries/Foo-4.2/foo2.css',
                     '/h5p/libraries/Bar-2.1/bar.css'
                 ]);
-                expect((model as any).scripts.slice(8)).toEqual([
+                expect((model as any).scripts.slice(9)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.js',
                     '/h5p/libraries/Foo-4.2/foo2.js',
                     '/h5p/libraries/Bar-2.1/bar.js'
@@ -179,7 +179,7 @@ describe('Loading dependencies', () => {
                     '/h5p/libraries/Bar-2.1/bar.css',
                     '/h5p/libraries/Foo-4.2/foo.css'
                 ]);
-                expect((model as any).scripts.slice(8)).toEqual([
+                expect((model as any).scripts.slice(9)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.js',
                     '/h5p/libraries/Bar-2.1/bar.js',
                     '/h5p/libraries/Foo-4.2/foo.js'
@@ -240,7 +240,7 @@ describe('Loading dependencies', () => {
                     '/h5p/libraries/Bar-2.1/bar.css',
                     '/h5p/libraries/Foo-4.2/foo.css'
                 ]);
-                expect((model as any).scripts.slice(8)).toEqual([
+                expect((model as any).scripts.slice(9)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.js',
                     '/h5p/libraries/Bar-2.1/bar.js',
                     '/h5p/libraries/Foo-4.2/foo.js'
@@ -305,7 +305,7 @@ describe('Loading dependencies', () => {
                     '/h5p/libraries/Bar-2.1/bar.css',
                     '/h5p/libraries/Foo-4.2/foo.css'
                 ]);
-                expect((model as any).scripts.slice(8)).toEqual([
+                expect((model as any).scripts.slice(9)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.js',
                     '/h5p/libraries/Bar-2.1/bar.js',
                     '/h5p/libraries/Foo-4.2/foo.js'
@@ -392,7 +392,8 @@ describe('Loading dependencies', () => {
                     '/scriptUrl/h5p-x-api.js',
                     '/scriptUrl/h5p-content-type.js',
                     '/scriptUrl/h5p-confirmation-dialog.js',
-                    '/scriptUrl/h5p-action-bar.js'
+                    '/scriptUrl/h5p-action-bar.js',
+                    '/scriptUrl/request-queue.js'
                 ]);
 
                 expect(h5p.coreStyles()).toEqual([

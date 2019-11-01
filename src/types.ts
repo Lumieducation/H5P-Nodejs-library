@@ -693,7 +693,7 @@ export interface IKeyValueStorage {
  */
 export interface IRegistrationData {
     /**
-     * The core API version that the site supports (e.g. 1.22). Unknown if the hub only reports back content
+     * The core API version that the site supports (e.g. 1.24). Unknown if the hub only reports back content
      * types that work for this core version.
      */
     core_api_version: string;

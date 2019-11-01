@@ -73,8 +73,8 @@ The H5P client (running in the browser) sends many AJAX requests to the server (
 
 This application doesn't include the H5P JavaScript core files for the editor and the player. These are the files that make up the editor and player that the end user interacts with in the browser. The core files must be obtained seperately:
 
-1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.22.0.zip) and place them into a folder called `h5p/core` in your project.
-2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.22.0.zip) and place them into a folder called `h5p/editor` in your project.
+1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/core` in your project.
+2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/editor` in your project.
 
 You must add a route to your implementation that serves the static files found under `h5p/core` and `h5p/editor` to the endpoint configured in `config.libraryUrl` . (See the [express-example](examples/express.js#L79))
 
