@@ -39,7 +39,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     user.canUpdateAndInstallLibraries = true;
 
     // We have to use beforeAll as describe(...) doesn't accept async functions
-    beforeAll(async () => {
+    beforeAll(async (done) => {
         tmpDir = await dir({ unsafeCleanup: true });
         tmpDirPath = tmpDir.path;
 
@@ -75,6 +75,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         }
 
         contentScanner = new ContentFileScanner(contentManager, libraryManager);
+        done();
     }, 120000); // long timeout because we install a lot of packages
 
     afterAll(async () => {
