@@ -7,38 +7,47 @@ import { ContentId, ISemanticsEntry, IUser } from './types';
 const log = new Logger('ContentFileScanner');
 
 /**
- * Describes a file that was found inside the paramters of a piece of content.
+ * Describes a reference to a file that is embedded inside the content.
  */
-export interface IFileScanResult {
+export interface IFileReference {
+    /**
+     * Information about where the file reference was found
+     */
     context: {
-        /**
-         * The parameters of the object.
-         */
-        params: any;
         /**
          * The path of the object **inside the params tree**. You can use this path
          * to later modify the params, if needed.
          */
-        path: string;
+        jsonPath: string;
         /**
-         * The semantic structure of the object (as defined in semantics.json)
-         * .
-         * Can be null or undefined if there is not semantic structure for the element
+         * The raw parameters of the object.
+         */
+        params: any;
+        /**
+         * The semantic structure of the object (as defined in semantics.json).
+         *
+         * Can be null or undefined if there is no semantic structure for the element
          * (happens if the file can be found somewhere that is not described by the
          * semantics)
          */
         semantics?: ISemanticsEntry;
     };
     /**
-     * The path of the file **inside the H5P content directory**.
+     * The path of the file **inside the H5P content directory** as can be used
+     * to reference it in ContentManager (without any suffixes like #tmp).
      */
-    path: string;
+    filePath: string;
     /**
      * If true, the file was marked as temporary (by the #tmp suffix).
+     * The suffix is **not included** in filePath
      */
     temporary: boolean;
 }
 
+/**
+ * Scans the content parameters (=content.json) of a piece of content and returns a list
+ * of references to file that are embedded inside the content.
+ */
 export class ContentFileScanner extends ContentScanner {
     constructor(
         contentManager: ContentManager,
@@ -48,100 +57,137 @@ export class ContentFileScanner extends ContentScanner {
         log.info('initialize');
     }
 
+    /**
+     * Used to differentiate between local files and URLs.
+     */
     // tslint:disable-next-line: typedef
-    private static urlRegexp = /^https?:\/\//;
+    private static urlRegExp = /^https?:\/\//;
 
+    /**
+     * Loads the specified content from the ContentManager and scans its paramters (= content.json) for references
+     * to local files (= audio, video, images, generic files).
+     * @param contentId the content to scan
+     * @param user the user who wants to access the file
+     * @returns a list of local files
+     */
     public async scanForFiles(
         contentId: ContentId,
         user: IUser
-    ): Promise<IFileScanResult[]> {
-        const results: IFileScanResult[] = [];
-        await this.scanContent(contentId, user, (semantics, params, path) => {
-            log.debug(`Checking entry ${path} (type ${semantics.type})`);
-            switch (semantics.type) {
-                case 'file':
-                case 'image':
-                    log.debug(`found ${semantics.type} element`);
-                    const element = this.pushIfDefined(
-                        results,
-                        this.checkFile(semantics, params, path)
-                    );
-                    if (element) {
-                        log.debug(
-                            `Found file is a reference to ${element.path}`
-                        );
-                    }
-                    if (params.originalImage) {
-                        const originalImageElement = this.pushIfDefined(
+    ): Promise<IFileReference[]> {
+        const results: IFileReference[] = [];
+        await this.scanContent(
+            contentId,
+            user,
+            (semantics, params, jsonPath) => {
+                log.debug(
+                    `Checking entry ${jsonPath} (type ${semantics.type})`
+                );
+                switch (semantics.type) {
+                    case 'file':
+                    case 'image':
+                        log.debug(`found ${semantics.type} element`);
+                        const element = this.pushIfDefined(
                             results,
-                            this.checkFile(
-                                null,
-                                params.originalImage,
-                                `${path}.originalImage`
-                            )
+                            this.checkFileElement(semantics, params, jsonPath)
                         );
-                        if (originalImageElement) {
+                        if (element) {
                             log.debug(
-                                `Found file is a reference to ${originalImageElement.path}`
+                                `Found file is a reference to ${element.filePath}`
                             );
                         }
-                    }
-                    return true; // returning true aborts further recursion
-                case 'video':
-                case 'audio':
-                    if (Array.isArray(params)) {
-                        for (let index = 0; index < params.length; index += 1) {
-                            const arrayElement = this.pushIfDefined(
+                        if (params.originalImage) {
+                            const originalImageElement = this.pushIfDefined(
                                 results,
-                                this.checkFile(
+                                this.checkFileElement(
                                     null,
-                                    params[index],
-                                    `${path}[${index}]`
+                                    params.originalImage,
+                                    `${jsonPath}.originalImage`
                                 )
                             );
-                            if (arrayElement) {
+                            if (originalImageElement) {
                                 log.debug(
-                                    `Found file is a reference to ${arrayElement.path}`
+                                    `Found file is a reference to ${originalImageElement.filePath}`
                                 );
                             }
                         }
-                    }
-                    return true; // returning true aborts further recursion
+                        return true; // returning true aborts further recursion
+                    case 'video':
+                    case 'audio':
+                        if (Array.isArray(params)) {
+                            for (
+                                let index = 0;
+                                index < params.length;
+                                index += 1
+                            ) {
+                                const arrayElement = this.pushIfDefined(
+                                    results,
+                                    this.checkFileElement(
+                                        null,
+                                        params[index],
+                                        `${jsonPath}[${index}]`
+                                    )
+                                );
+                                if (arrayElement) {
+                                    log.debug(
+                                        `Found file is a reference to ${arrayElement.filePath}`
+                                    );
+                                }
+                            }
+                        }
+                        return true; // returning true aborts further recursion
+                }
+                return false;
             }
-            return false;
-        });
+        );
         return results;
     }
 
-    private checkFile(
+    /**
+     * Checks if an element in the parameter tree contains a valid reference to a local file and
+     * removed temporary markers.
+     * @param semantics The semantic structure of the element to check
+     * @param params the parameter object of the element to check
+     * @param jsonPath the JSONPath at which the element can be found in the parameter object
+     * @returns an object with information about the file reference; undefined if the file reference is invalid
+     */
+    private checkFileElement(
         semantics: ISemanticsEntry,
         params: any,
-        path: string
-    ): IFileScanResult {
+        jsonPath: string
+    ): IFileReference {
         if (!params.path) {
             // Path shouldn't be empty, but we simply ignore the entry in this case.
             return undefined;
         }
-        if (ContentFileScanner.urlRegexp.test(params.path)) {
+        if (ContentFileScanner.urlRegExp.test(params.path)) {
             // if the file is a reference to a URL, we don't return it.
             return undefined;
         }
 
         let temporary = false;
-        let cleanPath = params.path;
+        let cleanFileReferencePath = params.path;
         if (params.path.endsWith('#tmp')) {
             // files marked as temporary will be identified as such
             temporary = true;
-            cleanPath = params.path.substr(0, params.path.length - 4);
+            cleanFileReferencePath = params.path.substr(
+                0,
+                params.path.length - 4
+            );
         }
 
         return {
-            context: { semantics, params, path },
-            path: cleanPath,
+            context: { semantics, params, jsonPath },
+            filePath: cleanFileReferencePath,
             temporary
         };
     }
 
+    /**
+     * Helper function that pushed an item to an array if the item is defined.
+     * @param array the array to push to
+     * @param item the item to push
+     * @returns the item (if defined); otherwise undefined
+     */
     private pushIfDefined<T>(array: T[], item: T): T {
         if (item !== undefined) {
             array.push(item);

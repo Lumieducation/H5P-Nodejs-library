@@ -9,18 +9,18 @@ const log = new Logger('ContentScanner');
 /**
  * @param semantics The semantic information about the current content params
  * @param params The current current params
- * @param path The current path of the object in the tree as a JSON path (example: .media.type.path)
+ * @param jsonPath The current path of the object in the tree as a JSON path (example: .media.type.path)
  * @returns true if the children of this entry should not be scanned (= abort scan for this subtree)
  */
 export type ScanCallback = (
     semantics: ISemanticsEntry,
     params: any,
-    path: string
+    jsonPath: string
 ) => boolean;
 
 /**
- * Scans the content parameters of a piece of content and calls a callback for each
- * element in the semantic tree.This includes all nested pieces of content.
+ * Scans the content parameters (=content.json) of a piece of content and calls a callback for each
+ * element in the semantic tree. This includes all nested pieces of content.
  */
 export class ContentScanner {
     constructor(
@@ -64,20 +64,20 @@ export class ContentScanner {
         );
         const params = await this.contentManager.loadContent(contentId, user);
 
-        await this.walkSemanticsRecursive(mainSemantics, params, '', callback);
+        await this.walkSemanticsRecursive(mainSemantics, params, '$', callback);
     }
 
     /**
      * Walks through an element in the semantic tree of a library.
      * @param elementSemantics the semantic information for the current element
      * @param elementParams the paramters for the current element (as in content.json)
-     * @param parentPath the JSON path of the parent (example: .media.type)
+     * @param parentJsonPath the JSON path of the parent (example: .media.type)
      * @param callback a function that is executed for this element and for every child
      */
     private async walkEntryRecursive(
         elementSemantics: ISemanticsEntry,
         elementParams: any,
-        parentPath: string,
+        parentJsonPath: string,
         callback: ScanCallback
     ): Promise<void> {
         if (elementParams === undefined && !elementSemantics.optional) {
@@ -90,7 +90,7 @@ export class ContentScanner {
             return;
         }
 
-        const currentPath = `${parentPath}.${elementSemantics.name}`;
+        const currentJsonPath = `${parentJsonPath}.${elementSemantics.name}`;
         if (
             elementSemantics.type === 'group' &&
             elementSemantics.fields.length === 1 &&
@@ -100,17 +100,17 @@ export class ContentScanner {
             // to be an array with a single entry [{...}], as the semantic structure defines a group with a single entry.
             // For some reason, H5P directly puts the object {...} into the parameters. We have to
             // compensate for this special case.
-            log.debug(`found single group entry ${currentPath}`);
+            log.debug(`found single group entry ${currentJsonPath}`);
             await this.walkEntryRecursive(
                 elementSemantics.fields[0],
                 elementParams,
-                parentPath,
+                parentJsonPath,
                 callback
             );
             return;
         }
 
-        if (callback(elementSemantics, elementParams, currentPath)) {
+        if (callback(elementSemantics, elementParams, currentJsonPath)) {
             // don't walk further into the tree if the callback signalled to stop
             return;
         }
@@ -135,7 +135,7 @@ export class ContentScanner {
                 await this.walkSemanticsRecursive(
                     subSemantics,
                     elementParams.params,
-                    currentPath,
+                    currentJsonPath,
                     callback
                 );
                 break;
@@ -145,7 +145,7 @@ export class ContentScanner {
                     await this.walkEntryRecursive(
                         groupElement,
                         elementParams[groupElement.name],
-                        currentPath,
+                        currentJsonPath,
                         callback
                     );
                 }
@@ -157,7 +157,7 @@ export class ContentScanner {
                     await this.walkEntryRecursive(
                         elementSemantics.field,
                         listElement,
-                        `${currentPath}[${counter}]`,
+                        `${currentJsonPath}[${counter}]`,
                         callback
                     );
                     counter += 1;
@@ -170,20 +170,20 @@ export class ContentScanner {
      * Walks through all semantic entries in a library semantics.
      * @param semantics the semantic structure of a library
      * @param params the parameter object for the content
-     * @param parentPath the path of the parent
+     * @param parentJsonPath the path of the parent
      * @param callback the callback to execute for every element in the tree
      */
     private async walkSemanticsRecursive(
         semantics: ISemanticsEntry[],
         params: any,
-        parentPath: string,
+        parentJsonPath: string,
         callback: ScanCallback
     ): Promise<void> {
         for (const semanticEntry of semantics) {
             await this.walkEntryRecursive(
                 semanticEntry,
                 params[semanticEntry.name],
-                parentPath,
+                parentJsonPath,
                 callback
             );
         }

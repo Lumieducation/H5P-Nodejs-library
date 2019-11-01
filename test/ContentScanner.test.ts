@@ -67,68 +67,68 @@ describe('ContentScanner', () => {
                     tmpDirPath
                 );
 
-                const calledPaths: string[] = [];
+                const calledJsonPaths: string[] = [];
                 await contentScanner.scanContent(
                     contentId,
                     user,
-                    (semantics, params, p) => {
-                        calledPaths.push(p);
+                    (semantics, params, jsonPath) => {
+                        calledJsonPaths.push(jsonPath);
                         return false;
                     }
                 );
-                expect(calledPaths.sort()).toEqual(
+                expect(calledJsonPaths.sort()).toEqual(
                     [
-                        '.media',
-                        '.media.type',
-                        '.media.type.file',
-                        '.media.type.alt',
-                        '.media.type.title',
-                        '.media.type.contentName',
-                        '.media.disableImageZooming',
-                        '.text',
-                        '.questions',
-                        '.questions[0].question',
-                        '.questions[1].question',
-                        '.questions[2].question',
-                        '.overallFeedback',
-                        '.overallFeedback[0].overallFeedback',
-                        '.overallFeedback[0].overallFeedback.feedback',
-                        '.overallFeedback[0].overallFeedback.from',
-                        '.overallFeedback[0].overallFeedback.to',
-                        '.showSolutions',
-                        '.tryAgain',
-                        '.checkAnswer',
-                        '.notFilledOut',
-                        '.answerIsCorrect',
-                        '.answerIsWrong',
-                        '.answeredCorrectly',
-                        '.answeredIncorrectly',
-                        '.solutionLabel',
-                        '.inputLabel',
-                        '.inputHasTipLabel',
-                        '.tipLabel',
-                        '.behaviour',
-                        '.behaviour.enableRetry',
-                        '.behaviour.enableSolutionsButton',
-                        '.behaviour.enableCheckButton',
-                        '.behaviour.autoCheck',
-                        '.behaviour.caseSensitive',
-                        '.behaviour.showSolutionsRequiresInput',
-                        '.behaviour.separateLines',
-                        '.behaviour.confirmCheckDialog',
-                        '.behaviour.confirmRetryDialog',
-                        '.behaviour.acceptSpellingErrors',
-                        '.confirmCheck',
-                        '.confirmCheck.header',
-                        '.confirmCheck.body',
-                        '.confirmCheck.cancelLabel',
-                        '.confirmCheck.confirmLabel',
-                        '.confirmRetry',
-                        '.confirmRetry.header',
-                        '.confirmRetry.body',
-                        '.confirmRetry.cancelLabel',
-                        '.confirmRetry.confirmLabel',
-                        '.scoreBarLabel'
+                        '$.media',
+                        '$.media.type',
+                        '$.media.type.file',
+                        '$.media.type.alt',
+                        '$.media.type.title',
+                        '$.media.type.contentName',
+                        '$.media.disableImageZooming',
+                        '$.text',
+                        '$.questions',
+                        '$.questions[0].question',
+                        '$.questions[1].question',
+                        '$.questions[2].question',
+                        '$.overallFeedback',
+                        '$.overallFeedback[0].overallFeedback',
+                        '$.overallFeedback[0].overallFeedback.feedback',
+                        '$.overallFeedback[0].overallFeedback.from',
+                        '$.overallFeedback[0].overallFeedback.to',
+                        '$.showSolutions',
+                        '$.tryAgain',
+                        '$.checkAnswer',
+                        '$.notFilledOut',
+                        '$.answerIsCorrect',
+                        '$.answerIsWrong',
+                        '$.answeredCorrectly',
+                        '$.answeredIncorrectly',
+                        '$.solutionLabel',
+                        '$.inputLabel',
+                        '$.inputHasTipLabel',
+                        '$.tipLabel',
+                        '$.behaviour',
+                        '$.behaviour.enableRetry',
+                        '$.behaviour.enableSolutionsButton',
+                        '$.behaviour.enableCheckButton',
+                        '$.behaviour.autoCheck',
+                        '$.behaviour.caseSensitive',
+                        '$.behaviour.showSolutionsRequiresInput',
+                        '$.behaviour.separateLines',
+                        '$.behaviour.confirmCheckDialog',
+                        '$.behaviour.confirmRetryDialog',
+                        '$.behaviour.acceptSpellingErrors',
+                        '$.confirmCheck',
+                        '$.confirmCheck.header',
+                        '$.confirmCheck.body',
+                        '$.confirmCheck.cancelLabel',
+                        '$.confirmCheck.confirmLabel',
+                        '$.confirmRetry',
+                        '$.confirmRetry.header',
+                        '$.confirmRetry.body',
+                        '$.confirmRetry.cancelLabel',
+                        '$.confirmRetry.confirmLabel',
+                        '$.scoreBarLabel'
                     ].sort()
                 );
             },
@@ -151,12 +151,12 @@ describe('ContentScanner', () => {
                     tmpDirPath
                 );
 
-                const calledPaths: string[] = [];
+                const calledJsonPaths: string[] = [];
                 await contentScanner.scanContent(
                     contentId,
                     user,
-                    (semantics, params, p) => {
-                        calledPaths.push(p);
+                    (semantics, params, jsonPath) => {
+                        calledJsonPaths.push(jsonPath);
                         if (
                             semantics.name === 'media' ||
                             semantics.name === 'behaviour' ||
@@ -167,39 +167,39 @@ describe('ContentScanner', () => {
                         return false;
                     }
                 );
-                expect(calledPaths.sort()).toEqual(
+                expect(calledJsonPaths.sort()).toEqual(
                     [
-                        '.media',
-                        '.text',
-                        '.questions',
-                        '.questions[0].question',
-                        '.questions[1].question',
-                        '.questions[2].question',
-                        '.overallFeedback',
-                        '.overallFeedback[0].overallFeedback',
-                        '.overallFeedback[0].overallFeedback.feedback',
-                        '.overallFeedback[0].overallFeedback.from',
-                        '.overallFeedback[0].overallFeedback.to',
-                        '.showSolutions',
-                        '.tryAgain',
-                        '.checkAnswer',
-                        '.notFilledOut',
-                        '.answerIsCorrect',
-                        '.answerIsWrong',
-                        '.answeredCorrectly',
-                        '.answeredIncorrectly',
-                        '.solutionLabel',
-                        '.inputLabel',
-                        '.inputHasTipLabel',
-                        '.tipLabel',
-                        '.behaviour',
-                        '.confirmCheck',
-                        '.confirmRetry',
-                        '.confirmRetry.header',
-                        '.confirmRetry.body',
-                        '.confirmRetry.cancelLabel',
-                        '.confirmRetry.confirmLabel',
-                        '.scoreBarLabel'
+                        '$.media',
+                        '$.text',
+                        '$.questions',
+                        '$.questions[0].question',
+                        '$.questions[1].question',
+                        '$.questions[2].question',
+                        '$.overallFeedback',
+                        '$.overallFeedback[0].overallFeedback',
+                        '$.overallFeedback[0].overallFeedback.feedback',
+                        '$.overallFeedback[0].overallFeedback.from',
+                        '$.overallFeedback[0].overallFeedback.to',
+                        '$.showSolutions',
+                        '$.tryAgain',
+                        '$.checkAnswer',
+                        '$.notFilledOut',
+                        '$.answerIsCorrect',
+                        '$.answerIsWrong',
+                        '$.answeredCorrectly',
+                        '$.answeredIncorrectly',
+                        '$.solutionLabel',
+                        '$.inputLabel',
+                        '$.inputHasTipLabel',
+                        '$.tipLabel',
+                        '$.behaviour',
+                        '$.confirmCheck',
+                        '$.confirmRetry',
+                        '$.confirmRetry.header',
+                        '$.confirmRetry.body',
+                        '$.confirmRetry.cancelLabel',
+                        '$.confirmRetry.confirmLabel',
+                        '$.scoreBarLabel'
                     ].sort()
                 );
             },

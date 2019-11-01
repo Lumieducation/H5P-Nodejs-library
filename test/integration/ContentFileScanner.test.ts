@@ -94,9 +94,9 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
                 user
             );
 
-            expect(foundFiles.map(f => path.normalize(f.path)).sort()).toEqual(
-                fileSystemFiles.map(p => path.normalize(p)).sort()
-            );
+            expect(
+                foundFiles.map(f => path.normalize(f.filePath)).sort()
+            ).toEqual(fileSystemFiles.map(p => path.normalize(p)).sort());
         });
     }
 });

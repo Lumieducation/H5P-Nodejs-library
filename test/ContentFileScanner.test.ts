@@ -81,7 +81,7 @@ describe('ContentFileScanner', () => {
                 );
 
                 expect(foundImages.length).toEqual(1);
-                expect(path.normalize(foundImages[0].path)).toEqual(
+                expect(path.normalize(foundImages[0].filePath)).toEqual(
                     path.normalize('images/file-5885c18261805.jpg')
                 );
             },
@@ -110,7 +110,7 @@ describe('ContentFileScanner', () => {
                 );
 
                 expect(foundImages.length).toEqual(1);
-                expect(path.normalize(foundImages[0].path)).toEqual(
+                expect(path.normalize(foundImages[0].filePath)).toEqual(
                     path.normalize('images/file-5a4d06a8cbabc.jpg')
                 );
             },
