@@ -73,24 +73,33 @@ export class ContentScanner {
      * @param elementParams the paramters for the current element (as in content.json)
      * @param parentJsonPath the JSON path of the parent (example: .media.type)
      * @param callback a function that is executed for this element and for every child
+     * @param doNotAddNameToJsonPath if true, the name of the current element will not appended to the JSON path
+     * This is the case when a group contains only one element. Then the child's name is omitted in the parameters.
      */
     private async walkEntryRecursive(
         elementSemantics: ISemanticsEntry,
         elementParams: any,
         parentJsonPath: string,
-        callback: ScanCallback
+        callback: ScanCallback,
+        doNotAddNameToJsonPath: boolean = false
     ): Promise<void> {
         if (elementParams === undefined && !elementSemantics.optional) {
             log.info(
                 `${elementSemantics.name} has no params but is not optional.`
             );
         }
+
+        // we ignore elements that are not used in the parameters
         if (elementParams === undefined) {
-            // we ignore elements that are not used in the parameters
             return;
         }
 
-        const currentJsonPath = `${parentJsonPath}.${elementSemantics.name}`;
+        // Don't append our name to the JSON path if our parent signalled us not to do so
+        const currentJsonPath = doNotAddNameToJsonPath
+            ? parentJsonPath
+            : `${parentJsonPath}.${elementSemantics.name}`;
+
+        // Treating a special case of how group deals with fields with only one entry.
         if (
             elementSemantics.type === 'group' &&
             elementSemantics.fields.length === 1 &&
@@ -100,12 +109,17 @@ export class ContentScanner {
             // to be an array with a single entry [{...}], as the semantic structure defines a group with a single entry.
             // For some reason, H5P directly puts the object {...} into the parameters. We have to
             // compensate for this special case.
+
             log.debug(`found single group entry ${currentJsonPath}`);
             await this.walkEntryRecursive(
                 elementSemantics.fields[0],
                 elementParams,
-                parentJsonPath,
-                callback
+                doNotAddNameToJsonPath
+                    ? parentJsonPath
+                    : `${parentJsonPath}.${elementSemantics.name}`,
+                callback,
+                true // we have already added the parent's name to the JSON path, so
+                // we don't want the child to add its name
             );
             return;
         }
@@ -117,10 +131,10 @@ export class ContentScanner {
 
         switch (elementSemantics.type) {
             case 'library':
-                // If content contains another library, we have to retrieve the exact name,
+                // If an element contains another library, we have to retrieve the exact name,
                 // and the nested content parameters.
                 if (elementParams.library === undefined) {
-                    // Skip if the element is empty.
+                    // Skip if the element is empty. (= unused)
                     return;
                 }
                 const subLibraryName = LibraryName.fromUberName(
@@ -135,7 +149,7 @@ export class ContentScanner {
                 await this.walkSemanticsRecursive(
                     subSemantics,
                     elementParams.params,
-                    currentJsonPath,
+                    `${currentJsonPath}.params`,
                     callback
                 );
                 break;
@@ -158,7 +172,8 @@ export class ContentScanner {
                         elementSemantics.field,
                         listElement,
                         `${currentJsonPath}[${counter}]`,
-                        callback
+                        callback,
+                        true // we don't want the field name of a list to be added to the JSON path
                     );
                     counter += 1;
                 }

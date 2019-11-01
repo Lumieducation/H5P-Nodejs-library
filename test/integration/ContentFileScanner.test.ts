@@ -1,4 +1,5 @@
 import * as fsExtra from 'fs-extra';
+import jsonpath, { query } from 'jsonpath';
 import * as path from 'path';
 import { dir, DirectoryResult } from 'tmp-promise';
 
@@ -39,7 +40,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     user.canUpdateAndInstallLibraries = true;
 
     // We have to use beforeAll as describe(...) doesn't accept async functions
-    beforeAll(async (done) => {
+    beforeAll(async done => {
         tmpDir = await dir({ unsafeCleanup: true });
         tmpDirPath = tmpDir.path;
 
@@ -98,6 +99,23 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
             expect(
                 foundFiles.map(f => path.normalize(f.filePath)).sort()
             ).toEqual(fileSystemFiles.map(p => path.normalize(p)).sort());
+
+            const parameters = await contentManager.loadContent(
+                contentId,
+                user
+            );
+            for (const foundFile of foundFiles) {
+                const queryResult = jsonpath.query(
+                    parameters,
+                    foundFile.context.jsonPath
+                )[0];
+                expect(queryResult).toBeDefined();
+                expect(queryResult.path).toEqual(
+                    // for some reason there seems to be some #tmp remnant in the examples, so we have
+                    // to add the temporary file marked for these cases
+                    `${foundFile.filePath}${foundFile.temporary ? '#tmp' : ''}`
+                );
+            }
         });
     }
 });

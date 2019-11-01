@@ -1,4 +1,5 @@
 import * as fsExtra from 'fs-extra';
+import jsonpath from 'jsonpath';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';
 
@@ -68,7 +69,8 @@ describe('ContentFileScanner', () => {
 
                 const {
                     contentScanner,
-                    contentId
+                    contentId,
+                    contentManager
                 } = await createContentFileScanner(
                     path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
                     user,
@@ -84,6 +86,16 @@ describe('ContentFileScanner', () => {
                 expect(path.normalize(foundImages[0].filePath)).toEqual(
                     path.normalize('images/file-5885c18261805.jpg')
                 );
+                const parameters = await contentManager.loadContent(
+                    contentId,
+                    user
+                );
+                expect(
+                    jsonpath.query(
+                        parameters,
+                        foundImages[0].context.jsonPath
+                    )[0].path
+                ).toEqual(foundImages[0].filePath);
             },
             { keep: false, unsafeCleanup: true }
         );
