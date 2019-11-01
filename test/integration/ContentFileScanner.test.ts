@@ -14,7 +14,6 @@ import FileContentStorage from '../../examples/implementation/FileContentStorage
 import FileLibraryStorage from '../../examples/implementation/FileLibraryStorage';
 import User from '../../examples/implementation/User';
 
-
 describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     // scan all Hub examples for their file references and compare to directory contents
     const directory = path.resolve('test/data/hub-content/');
@@ -28,7 +27,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     }
 
     // Install all packages from the H5P Hub before running tests for indidual content.
-    // (This is necessary, as some packages have unfulfilled dependencies if you just install them. The 
+    // (This is necessary, as some packages have unfulfilled dependencies if you just install them. The
     // tests for these packages will fail because the semantics.json file is missing for them.)
 
     let tmpDir: DirectoryResult;
