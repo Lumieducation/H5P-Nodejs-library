@@ -81,7 +81,8 @@ export default class H5PPlayer {
             'h5p-x-api.js',
             'h5p-content-type.js',
             'h5p-confirmation-dialog.js',
-            'h5p-action-bar.js'
+            'h5p-action-bar.js',
+            'request-queue.js'
         ].map(file => `${this.scriptUrl}/${file}`);
     }
 
