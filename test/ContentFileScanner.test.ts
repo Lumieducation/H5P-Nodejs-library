@@ -15,6 +15,8 @@ import FileContentStorage from '../examples/implementation/FileContentStorage';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import User from '../examples/implementation/User';
 
+import { getContentDetails } from './ContentScanner.test';
+
 describe('ContentFileScanner', () => {
     async function createContentFileScanner(
         file: string,
@@ -54,10 +56,7 @@ describe('ContentFileScanner', () => {
         return {
             contentId,
             contentManager,
-            contentScanner: new ContentFileScanner(
-                contentManager,
-                libraryManager
-            )
+            contentScanner: new ContentFileScanner(libraryManager)
         };
     }
 
@@ -77,9 +76,15 @@ describe('ContentFileScanner', () => {
                     tmpDirPath
                 );
 
-                const foundImages = await contentScanner.scanForFiles(
+                const { params, mainLibraryName } = await getContentDetails(
                     contentId,
-                    user
+                    user,
+                    contentManager
+                );
+
+                const foundImages = await contentScanner.scanForFiles(
+                    params,
+                    mainLibraryName
                 );
 
                 expect(foundImages.length).toEqual(1);
@@ -109,16 +114,23 @@ describe('ContentFileScanner', () => {
 
                 const {
                     contentScanner,
-                    contentId
+                    contentId,
+                    contentManager
                 } = await createContentFileScanner(
                     path.resolve('test/data/hub-content/H5P.Questionnaire.h5p'),
                     user,
                     tmpDirPath
                 );
 
-                const foundImages = await contentScanner.scanForFiles(
+                const { params, mainLibraryName } = await getContentDetails(
                     contentId,
-                    user
+                    user,
+                    contentManager
+                );
+
+                const foundImages = await contentScanner.scanForFiles(
+                    params,
+                    mainLibraryName
                 );
 
                 expect(foundImages.length).toEqual(1);

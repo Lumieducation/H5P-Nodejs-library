@@ -1,8 +1,7 @@
-import ContentManager from './ContentManager';
 import { ContentScanner } from './ContentScanner';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
-import { ContentId, ISemanticsEntry, IUser } from './types';
+import { ILibraryName, ISemanticsEntry } from './types';
 
 const log = new Logger('ContentFileScanner');
 
@@ -49,11 +48,8 @@ export interface IFileReference {
  * of references to file that are embedded inside the content.
  */
 export class ContentFileScanner extends ContentScanner {
-    constructor(
-        contentManager: ContentManager,
-        libraryManager: LibraryManager
-    ) {
-        super(contentManager, libraryManager);
+    constructor(libraryManager: LibraryManager) {
+        super(libraryManager);
         log.info('initialize');
     }
 
@@ -71,13 +67,13 @@ export class ContentFileScanner extends ContentScanner {
      * @returns a list of local files
      */
     public async scanForFiles(
-        contentId: ContentId,
-        user: IUser
+        mainParams: any,
+        mainLibraryName: ILibraryName
     ): Promise<IFileReference[]> {
         const results: IFileReference[] = [];
         await this.scanContent(
-            contentId,
-            user,
+            mainParams,
+            mainLibraryName,
             (semantics, params, jsonPath) => {
                 log.debug(
                     `Checking entry ${jsonPath} (type ${semantics.type})`

@@ -2,7 +2,7 @@ import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
-import { ContentId, ISemanticsEntry, IUser } from './types';
+import { ILibraryName, ISemanticsEntry } from './types';
 
 const log = new Logger('ContentScanner');
 
@@ -19,51 +19,35 @@ export type ScanCallback = (
 ) => boolean;
 
 /**
- * Scans the content parameters (=content.json) of a piece of content and calls a callback for each
+ * Scans the content parameters (= content.json) of a piece of content and calls a callback for each
  * element in the semantic tree. This includes all nested pieces of content.
  */
 export class ContentScanner {
-    constructor(
-        private contentManager: ContentManager,
-        private libraryManager: LibraryManager
-    ) {
+    constructor(private libraryManager: LibraryManager) {
         log.info('initialize');
     }
 
     /**
-     * Scans the specified content and executes the callback for every element in the tree.
+     * Scans the specified parameters and executes the callback for every element in the tree.
      * This includes nested content!
      * @param contentId the piece of content
      * @param user the user who executes the action
      * @param callback a function that is executed for every element in the semantic structure
      */
     public async scanContent(
-        contentId: ContentId,
-        user: IUser,
+        params: any,
+        mainLibraryName: ILibraryName,
         callback: ScanCallback
     ): Promise<void> {
-        log.info(`scanning content for contentId ${contentId}`);
-
-        // load metadata for content
-        const contentMetadata = await this.contentManager.loadH5PJson(
-            contentId,
-            user
+        log.info(
+            `scanning content for of type ${LibraryName.toUberName(
+                mainLibraryName
+            )}`
         );
 
-        // get main library ubername
-        const libraryName = contentMetadata.preloadedDependencies.find(
-            ln => ln.machineName === contentMetadata.mainLibrary
-        );
-        log.debug(
-            `main library is ${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`
-        );
-
-        // load semantics && params
         const mainSemantics = await this.libraryManager.loadSemantics(
-            libraryName
+            mainLibraryName
         );
-        const params = await this.contentManager.loadContent(contentId, user);
-
         await this.walkSemanticsRecursive(mainSemantics, params, '$', callback);
     }
 
