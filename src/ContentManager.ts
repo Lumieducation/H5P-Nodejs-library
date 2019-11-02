@@ -156,6 +156,12 @@ export default class ContentManager {
         return this.contentStorage.createContentId();
     }
 
+    /**
+     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content (does not include the content directory!), e.g. ['image1.png', 'video2.mp4']
+     */
     public async getContentFiles(
         contentId: ContentId,
         user: IUser

@@ -30,6 +30,7 @@
                 "alphabetize": true
             }
         ],
+        "object-shorthand-properties-first": false,
         "no-implicit-dependencies": [true, "dev"]
     }
 }
