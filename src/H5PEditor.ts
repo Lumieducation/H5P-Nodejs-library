@@ -11,16 +11,17 @@ import defaultTranslation from '../assets/translations/en.json';
 // tslint:disable-next-line: import-name
 import defaultRenderer from './renderers/default';
 
+import { ContentFileScanner } from './ContentFileScanner';
 import ContentManager from './ContentManager';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryManager from './LibraryManager';
-import PackageImporter from './PackageImporter';
-import TranslationService from './TranslationService';
-
 import LibraryName from './LibraryName';
+import PackageImporter from './PackageImporter';
+import TemporaryFileManager from './TemporaryFileManager';
+import TranslationService from './TranslationService';
 import {
     ContentId,
     ContentParameters,
@@ -41,7 +42,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
-import TemporaryFileManager from './TemporaryFileManager';
+
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -95,6 +96,7 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
+        this.contentFileScanner = new ContentFileScanner(this.libraryManager);
     }
 
     public libraryManager: LibraryManager;
@@ -102,6 +104,7 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
+    private contentFileScanner: ContentFileScanner;
     private contentManager: ContentManager;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
@@ -348,7 +351,7 @@ export default class H5PEditor {
             log.debug(`New temporary filename is ${tmpFilename}`);
             return {
                 mime: file.mimetype,
-                path: `${tmpFilename}#tmp`                
+                path: `${tmpFilename}#tmp`
             };
         }
     }
@@ -366,12 +369,43 @@ export default class H5PEditor {
             libraryName,
             this.findLibraries(content)
         );
+
+        const fileToCopyFromTemporaryStorage: string[] = [];
+
+        const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
+            content,
+            LibraryName.fromUberName(libraryName) // TODO: check which ubername version this is (whitespace or hyphen?)
+        );
+        for (const ref of fileReferencesInNewParams) {
+            if (ref.filePath.endsWith('#tmp')) {
+                const cleanPath = ref.filePath.substr(
+                    0,
+                    ref.filePath.length - 4
+                );
+                fileToCopyFromTemporaryStorage.push(cleanPath);
+                ref.context.params.path = cleanPath;
+            }
+        }
+
         const newContentId = await this.contentManager.createContent(
             h5pJson,
             content,
             user,
             contentId
         );
+
+        for (const fileToCopy of fileToCopyFromTemporaryStorage) {
+            const readStream = await this.temporaryFileManager.getFileStream(
+                fileToCopy,
+                user
+            );
+            await this.contentManager.addContentFile(
+                newContentId,
+                fileToCopy,
+                readStream,
+                user
+            );
+        }
 
         return newContentId;
     }
