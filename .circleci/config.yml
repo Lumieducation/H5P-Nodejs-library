@@ -86,3 +86,4 @@ workflows:
             - format
             - unit-tests
             - player-e2e-test
+            - integration-tests
