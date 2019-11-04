@@ -1,3 +1,4 @@
+import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import stream from 'stream';
@@ -111,8 +112,36 @@ export default class H5PEditor {
     private translation: any;
     private translationService: TranslationService;
 
+    /**
+     * Returns a stream for a file that was uploaded for a content object.
+     * The requested content file can be a temporary file uploaded for unsaved content or a
+     * file in permanent content storage.
+     * @param contentId the content id (undefined if retrieved for unsaved content)
+     * @param filename the file to get (without 'content/' prefix!)
+     * @param user the user who wants to retrieve the file
+     * @returns a stream of the content file
+     */
+    public async getContentFileStream(
+        contentId: ContentId,
+        filename: string,
+        user: IUser
+    ): Promise<ReadStream> {
+        if (filename.endsWith('#tmp')) {
+            return this.temporaryFileManager.getFileStream(
+                filename.substr(0, filename.length - 4),
+                user
+            );
+        }
+
+        return this.contentManager.getContentFileStream(
+            contentId,
+            `content/${filename}`,
+            user
+        );
+    }
+
     public getContentTypeCache(user: IUser): Promise<any> {
-        log.info(`getting content type chache`);
+        log.info(`getting content type cache`);
         return this.contentTypeRepository.get(user);
     }
 
@@ -283,7 +312,7 @@ export default class H5PEditor {
     }
 
     /**
-     *
+     * Stores an uploaded file in temporary storage.
      * @param contentId the id of the piece of content the file is attached to; Set to null/undefined if
      * the content hasn't been saved before.
      * @param field the semantic structure of the field the file is attached to.
@@ -308,29 +337,20 @@ export default class H5PEditor {
         dataStream.end(file.data);
 
         if (!contentId) {
-            log.info(`saving content file ${file.name} for unsaved content`);
+            log.info(
+                `Putting content file ${file.name} into temporary storage`
+            );
             const tmpFilename = await this.temporaryFileManager.saveFile(
                 file.name,
                 dataStream,
                 user
             );
+            log.debug(`New temporary filename is ${tmpFilename}`);
             return {
                 mime: file.mimetype,
-                path: tmpFilename
+                path: `${tmpFilename}#tmp`                
             };
         }
-
-        log.info(`saving content file ${file.name} for ${contentId}`);
-        await this.contentManager.addContentFile(
-            contentId,
-            file.name,
-            dataStream,
-            user
-        );
-        return {
-            mime: file.mimetype,
-            path: file.name
-        };
     }
 
     public async saveH5P(
