@@ -472,6 +472,10 @@ export default class H5PEditor {
         return {
             ...defaultEditorIntegration,
             ajaxPath: this.ajaxPath,
+            apiVersion: {
+                majorVersion: this.config.coreApiVersion.major,
+                minorVersion: this.config.coreApiVersion.minor
+            },
             assets: {
                 css: [
                     '/core/styles/h5p.css',
