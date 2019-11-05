@@ -380,6 +380,24 @@ export default class H5PEditor {
             this.findLibraries(content)
         );
 
+        let filesInOldParams: string[] = [];
+        if (contentId !== undefined) {
+            const oldParams = await this.contentManager.loadContent(
+                contentId,
+                user
+            );
+            const oldMetadata = await this.contentManager.loadH5PJson(
+                contentId,
+                user
+            );
+            filesInOldParams = (await this.contentFileScanner.scanForFiles(
+                oldParams,
+                oldMetadata.preloadedDependencies.find(
+                    dep => dep.machineName === oldMetadata.mainLibrary
+                )
+            )).map(fi => fi.filePath);
+        }
+
         const fileToCopyFromTemporaryStorage: string[] = [];
         const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
             content,
@@ -427,6 +445,27 @@ export default class H5PEditor {
                 );
                 // delete the temporary file
                 await this.temporaryFileManager.deleteFile(fileToCopy, user); // TODO: reconsider if this should really be deleted
+            }
+        }
+
+        // delete unused existing files
+        if (contentId !== undefined) {
+            for (const file of filesInOldParams) {
+                if (!fileReferencesInNewParams.some(f => f.filePath === file)) {
+                    log.debug(
+                        `Deleting unneccessary file ${file} from ${contentId}`
+                    );
+                    try {
+                        await this.contentManager.deleteContentFile(
+                            contentId,
+                            file
+                        );
+                    } catch (error) {
+                        log.error(
+                            `Could not delete unused content file: ${error}`
+                        );
+                    }
+                }
             }
         }
 

@@ -181,6 +181,29 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
+     * Deletes a file from a content object.
+     * @param contentId the content object the file is attached to
+     * @param filename the file to delete
+     */
+    public async deleteContentFile(
+        contentId: ContentId,
+        filename: string
+    ): Promise<void> {
+        const absolutePath = path.join(
+            this.contentPath,
+            contentId.toString(),
+            'content',
+            filename
+        );
+        if (!(await fsExtra.pathExists(absolutePath))) {
+            throw new Error(
+                `Cannot delete file ${filename} from content id ${contentId}: It does not exist.`
+            );
+        }
+        await fsExtra.remove(absolutePath);
+    }
+
+    /**
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content

@@ -170,6 +170,18 @@ export default class ContentManager {
     }
 
     /**
+     * Deletes a file from a content object.
+     * @param contentId the content object the file is attached to
+     * @param filename the file to delete
+     */
+    public async deleteContentFile(
+        contentId: ContentId,
+        filename: string
+    ): Promise<void> {
+        return this.contentStorage.deleteContentFile(contentId, filename);
+    }
+
+    /**
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
