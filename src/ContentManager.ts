@@ -68,6 +68,19 @@ export default class ContentManager {
     }
 
     /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    public async contentFileExists(
+        contentId: ContentId,
+        filename: string
+    ): Promise<boolean> {
+        return this.contentStorage.contentFileExists(contentId, filename);
+    }
+
+    /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
      * It does not check whether the user has permissions to save content.
      * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)

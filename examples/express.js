@@ -241,7 +241,8 @@ const start = async () => {
                 req.query.contentId,
                 req.body.params.params,
                 req.body.params.metadata,
-                req.body.library
+                req.body.library,
+                user
             )
             .then(() => {
                 res.status(200).end();

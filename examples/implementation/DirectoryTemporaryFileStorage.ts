@@ -20,22 +20,16 @@ export default class DirectoryTemporaryFileStorage
      */
     constructor(private directory: string) {}
 
-    public async deleteFile(file: ITemporaryFile): Promise<void> {
+    public async deleteFile(filename: string, userId: string): Promise<void> {
+        await fsExtra.remove(path.join(this.directory, userId, filename));
         await fsExtra.remove(
-            path.join(this.directory, file.ownedByUserId, file.filename)
-        );
-        await fsExtra.remove(
-            `${path.join(
-                this.directory,
-                file.ownedByUserId,
-                file.filename
-            )}.metadata`
+            `${path.join(this.directory, userId, filename)}.metadata`
         );
         const userFiles = await fsExtra.readdir(
-            path.join(this.directory, file.ownedByUserId)
+            path.join(this.directory, userId)
         );
         if (userFiles.length === 0) {
-            await fsExtra.rmdir(path.join(this.directory, file.ownedByUserId));
+            await fsExtra.rmdir(path.join(this.directory, userId));
         }
     }
 

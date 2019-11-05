@@ -973,10 +973,11 @@ export interface ITemporaryFile {
 export interface ITemporaryFileStorage {
     /**
      * Deletes the file from temporary storage (e.g. because it has expired)
-     * @param file the information as received from listFiles(...)
+     * @param filename the filename
+     * @param userId the user id
      * @returns true if deletion was successful
      */
-    deleteFile(file: ITemporaryFile): Promise<void>;
+    deleteFile(filename: string, userId: string): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.

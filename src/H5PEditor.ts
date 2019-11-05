@@ -129,6 +129,8 @@ export default class H5PEditor {
         filename: string,
         user: IUser
     ): Promise<ReadStream> {
+        // We have to try the regular content repository first and then fall back to the temporary storage.
+        // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
         try {
             // we don't directly return the result of the getters as try - catch would not work then
             const returnStream = await this.contentManager.getContentFileStream(
@@ -354,6 +356,16 @@ export default class H5PEditor {
         };
     }
 
+    /**
+     * Stores new content or updates existing content.
+     * Copies over files from temporary storage if necessary.
+     * @param contentId the contentId of existing content (undefined or previously unsaved content)
+     * @param content the content parameters (=content.json)
+     * @param metadata the content metadata (~h5p.json)
+     * @param libraryName the ubername with whitespace as separator (no hyphen!)
+     * @param user the user who wants to save the piece of content
+     * @returns the existing contentId or the newly assigned one
+     */
     public async saveH5P(
         contentId: ContentId,
         content: ContentParameters,
@@ -369,19 +381,16 @@ export default class H5PEditor {
         );
 
         const fileToCopyFromTemporaryStorage: string[] = [];
-
         const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
             content,
-            LibraryName.fromUberName(libraryName) // TODO: check which ubername version this is (whitespace or hyphen?)
+            LibraryName.fromUberName(libraryName, { useWhitespace: true })
         );
         for (const ref of fileReferencesInNewParams) {
-            if (ref.filePath.endsWith('#tmp')) {
-                const cleanPath = ref.filePath.substr(
-                    0,
-                    ref.filePath.length - 4
-                );
-                fileToCopyFromTemporaryStorage.push(cleanPath);
-                ref.context.params.path = cleanPath;
+            if (ref.temporary) {
+                // save temporary file for later copying
+                fileToCopyFromTemporaryStorage.push(ref.filePath);
+                // remove temporary file marker from parameters
+                ref.context.params.path = ref.filePath;
             }
         }
 
@@ -392,17 +401,33 @@ export default class H5PEditor {
             contentId
         );
 
+        // Copy files from temporary storage
         for (const fileToCopy of fileToCopyFromTemporaryStorage) {
-            const readStream = await this.temporaryFileManager.getFileStream(
-                fileToCopy,
-                user
-            );
-            await this.contentManager.addContentFile(
-                newContentId,
-                fileToCopy,
-                readStream,
-                user
-            );
+            let readStream;
+            try {
+                readStream = await this.temporaryFileManager.getFileStream(
+                    fileToCopy,
+                    user
+                );
+            } catch (error) {
+                // We just log this error and continue.
+                log.error(
+                    `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
+                );
+            }
+            if (readStream !== undefined) {
+                log.debug(
+                    `Adding temporary file ${fileToCopy} to content id ${contentId}`
+                );
+                await this.contentManager.addContentFile(
+                    newContentId,
+                    fileToCopy,
+                    readStream,
+                    user
+                );
+                // delete the temporary file
+                await this.temporaryFileManager.deleteFile(fileToCopy, user); // TODO: reconsider if this should really be deleted
+            }
         }
 
         return newContentId;
