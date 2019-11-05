@@ -32,13 +32,13 @@ const start = async () => {
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))
         ).load(),
-        new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
-        new FileContentStorage(`${path.resolve('')}/h5p/content`),
+        new FileLibraryStorage(path.resolve('h5p/libraries')),
+        new FileContentStorage(path.resolve('h5p/content')),
         new H5PEditor.TranslationService(H5PEditor.englishStrings),
         (library, file) =>
             `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
         new DirectoryTemporaryFileStorage(
-            `upload${path.resolve('')}/h5p/temporary-storage`
+            path.resolve('h5p/temporary-storage')
         )
     );
 
@@ -149,7 +149,7 @@ const start = async () => {
         await packageExporter.createPackage(
             req.query.contentId,
             res,
-            new User()
+            user
         );
     });
 

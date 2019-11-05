@@ -129,18 +129,20 @@ export default class H5PEditor {
         filename: string,
         user: IUser
     ): Promise<ReadStream> {
-        if (filename.endsWith('#tmp')) {
-            return this.temporaryFileManager.getFileStream(
-                filename.substr(0, filename.length - 4),
+        try {
+            // we don't directly return the result of the getters as try - catch would not work then
+            const returnStream = await this.contentManager.getContentFileStream(
+                contentId,
+                `content/${filename}`,
                 user
             );
+            return returnStream;
+        } catch (error) {
+            log.debug(
+                `Couldn't find file ${filename} in storage. Trying temporary storage.`
+            );
         }
-
-        return this.contentManager.getContentFileStream(
-            contentId,
-            `content/${filename}`,
-            user
-        );
+        return this.temporaryFileManager.getFileStream(filename, user);
     }
 
     public getContentTypeCache(user: IUser): Promise<any> {
@@ -339,21 +341,17 @@ export default class H5PEditor {
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
-        if (!contentId) {
-            log.info(
-                `Putting content file ${file.name} into temporary storage`
-            );
-            const tmpFilename = await this.temporaryFileManager.saveFile(
-                file.name,
-                dataStream,
-                user
-            );
-            log.debug(`New temporary filename is ${tmpFilename}`);
-            return {
-                mime: file.mimetype,
-                path: `${tmpFilename}#tmp`
-            };
-        }
+        log.info(`Putting content file ${file.name} into temporary storage`);
+        const tmpFilename = await this.temporaryFileManager.saveFile(
+            file.name,
+            dataStream,
+            user
+        );
+        log.debug(`New temporary filename is ${tmpFilename}`);
+        return {
+            mime: file.mimetype,
+            path: `${tmpFilename}#tmp`
+        };
     }
 
     public async saveH5P(

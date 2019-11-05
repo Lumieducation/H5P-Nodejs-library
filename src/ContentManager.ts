@@ -4,8 +4,8 @@ import globPromise from 'glob-promise';
 import * as path from 'path';
 import { Stream } from 'stream';
 
+import H5pError from './helpers/H5pError';
 import { streamToString } from './helpers/StreamHelpers';
-
 import {
     ContentId,
     ContentParameters,
@@ -177,12 +177,19 @@ export default class ContentManager {
      * @param {IUser} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
-    public getContentFileStream(
+    public async getContentFileStream(
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): ReadStream {
+    ): Promise<ReadStream> {
         log.debug(`loading ${filename} for ${contentId}`);
+        if (
+            !(await this.contentStorage.contentFileExists(contentId, filename))
+        ) {
+            throw new H5pError(
+                `File ${filename} does not exist in ${contentId}`
+            );
+        }
         return this.contentStorage.getContentFileStream(
             contentId,
             filename,

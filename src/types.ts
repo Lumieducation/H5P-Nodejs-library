@@ -264,7 +264,7 @@ export interface IUser {
 export interface IContentStorage {
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param id The id of the content to add the file to
+     * @param contentId The id of the content to add the file to
      * @param filename The filename INSIDE the content folder
      * @param stream A readable stream that contains the data
      * @param user The user who owns this object
@@ -282,6 +282,14 @@ export interface IContentStorage {
      * @returns true if the piece of content exists
      */
     contentExists(contentId: ContentId): Promise<boolean>;
+
+    /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    contentFileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
      * Creates a content object in the repository. Content files (like images) are added to it later

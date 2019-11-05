@@ -81,6 +81,21 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    public async contentFileExists(
+        contentId: ContentId,
+        filename: string
+    ): Promise<boolean> {
+        return fsExtra.pathExists(
+            path.join(this.contentPath, contentId.toString(), filename)
+        );
+    }
+
+    /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
      * @param {any} metadata The metadata of the content (= h5p.json)

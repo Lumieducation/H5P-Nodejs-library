@@ -96,7 +96,7 @@ export default class PackageExporter {
         for (const contentFile of contentFiles) {
             const filePath = path.join('content', contentFile);
             outputZipFile.addReadStream(
-                this.contentManager.getContentFileStream(
+                await this.contentManager.getContentFileStream(
                     contentId,
                     filePath,
                     user
