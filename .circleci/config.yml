@@ -99,7 +99,7 @@ workflows:
             - player-e2e-test
             - release:
                   requires:
-                      - install&build
+                      - install+build
                       - lint
                       - format
                       - unit-tests
