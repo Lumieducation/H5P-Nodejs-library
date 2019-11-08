@@ -88,7 +88,6 @@ export default class DirectoryTemporaryFileStorage
         });
         return {
             expiresAt: expirationTime,
-            // tslint:disable-next-line: object-shorthand-properties-first
             filename,
             ownedByUserId: user.id
         };
@@ -103,7 +102,6 @@ export default class DirectoryTemporaryFileStorage
         );
         return {
             expiresAt: new Date(metadata.expiresAt),
-            // tslint:disable-next-line: object-shorthand-properties-first
             filename,
             ownedByUserId: userId
         };

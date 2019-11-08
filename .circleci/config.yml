@@ -1,6 +1,6 @@
 version: 2
 jobs:
-    install:
+    install+build:
         docker:
             - image: circleci/node:10-browsers-legacy
         steps:
@@ -12,19 +12,6 @@ jobs:
                   key: dependency-cache-{{ checksum "package.json" }}
                   paths:
                       - ./node_modules
-    build:
-        docker:
-            - image: circleci/node:10-browsers-legacy
-        steps:
-            - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
-            - run: npm run build
     lint:
         docker:
             - image: circleci/node:10-browsers-legacy
@@ -64,6 +51,19 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run test
+    integration-tests:
+        docker:
+            - image: circleci/node:10-browsers-legacy
+        steps:
+            - checkout
+            - restore_cache: # special step to restore the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+            - run: npm ci
+            - save_cache: # special step to save the dependency cache
+                  key: dependency-cache-{{ checksum "package.json" }}
+                  paths:
+                      - ./node_modules
+            - run: npm run test:integration
     player-e2e-test:
         docker:
             - image: circleci/node:10-browsers-legacy
@@ -92,10 +92,7 @@ workflows:
     version: 2
     h5peditor:
         jobs:
-            - install
-            - build:
-                  requires:
-                      - install
+            - install+build
             - lint
             - format
             - unit-tests
@@ -108,3 +105,4 @@ workflows:
                       - format
                       - unit-tests
                       - player-e2e-test
+                      - integration-tests

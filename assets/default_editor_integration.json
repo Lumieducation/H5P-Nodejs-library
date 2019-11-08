@@ -588,6 +588,5 @@
         "css": [],
         "js": []
     },
-    "deleteMessage": "Are you sure you wish to delete this content?",
-    "apiVersion": { "majorVersion": 1, "minorVersion": 19 }
+    "deleteMessage": "Are you sure you wish to delete this content?"
 }

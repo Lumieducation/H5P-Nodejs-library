@@ -23,6 +23,7 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
     // Promise.all allows parallel downloads
     await Promise.all(
         machineNames
+            .filter(machineName => machineName !== "H5P.IFrameEmbed") // IFrameEmbed is broken and is deprecated
             .filter(machineName => {
                 if (fs.pathExistsSync(path.join(directoryPath, `${machineName}.h5p`))) {
                     downloadsFinished += 1;

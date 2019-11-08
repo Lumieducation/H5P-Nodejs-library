@@ -293,7 +293,6 @@ describe('aggregating data from library folders for the editor', () => {
 
         Object.assign(libraryManager, {
             listLanguages: () => Promise.resolve([]),
-            // tslint:disable-next-line: object-shorthand-properties-first
             loadLanguage,
             loadLibrary: ({ _machineName }) => {
                 switch (_machineName) {

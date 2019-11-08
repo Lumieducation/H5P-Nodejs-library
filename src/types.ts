@@ -130,6 +130,7 @@ export interface IIntegration {
  */
 export interface IEditorIntegration {
     ajaxPath: string;
+    apiVersion: { majorVersion: number; minorVersion: number };
     assets: {
         css: string[];
         js: string[];
@@ -468,18 +469,138 @@ export type ContentParameters = any;
  * This is an entry in the semantics of a library. The semantics define who content parameters
  * must look like.
  *
- * Note: There are many more attributes to entries of semantics.json. See https://h5p.org/semantics
+ * Note: Attributes can only be used by specific semantic types. See https://h5p.org/semantics
  * for a full reference.
  */
 export interface ISemanticsEntry {
     /**
+     * A common field is set for all instances of the library at once.
+     * In the editor, all common fields are displayed in a group at the bottom.
+     * Use this for localization / translations.
+     */
+    common?: boolean;
+    /**
+     * (for number) the number of allowed decimals
+     */
+    decimals?: number;
+    /**
+     * The default value of the field.
+     */
+    default?: string;
+    /**
+     * An explanation text below the widget shown in the editor
+     */
+    description?: string;
+    /**
+     * (for text with html widget) what the html widget inserts when pressing enter
+     */
+    enterMode?: 'p' | 'div';
+    /**
+     * (for list) The name for a single entity in a list.
+     */
+    entity?: string;
+    /**
+     * (for group) Group is expanded by default
+     */
+    expanded?: boolean;
+    /**
+     * (in lists only) defines a single field type in the list
+     */
+    field?: ISemanticsEntry;
+    /**
+     * (in groups only) a list of field definitions
+     */
+    fields?: ISemanticsEntry[];
+    /**
+     * The font choices the user has.
+     */
+    font?: {
+        background: any;
+        color: any;
+        family: any;
+        size: any;
+    };
+    /**
+     * More important fields have a more promiment style in the editor.
+     */
+    importance?: 'low' | 'medium' | 'high';
+    /**
+     * A help text that can be collapsed.
+     */
+    important?: {
+        description: string;
+        example: string;
+    };
+    /**
+     * (for group) unknown
+     */
+    isSubContent?: boolean;
+    /**
      * The text displayed in the editor for the entry. (localizable)
      */
-    label: string;
+    label?: string;
+    /**
+     * (for number) the maximum number allowed
+     * (for list) the maximum number of elements
+     */
+    max?: number;
+    /**
+     * (for text) the maximum number of characters of the text
+     */
+    maxLength?: number;
+    /**
+     * (for number) the minimum number allowed
+     * (for list) the minimum number of elements
+     */
+    min?: number;
     /**
      * The internal name (e.g. for referencing it in code)
      */
     name: string;
+    /**
+     * Optional fields don't have to be filled in.
+     */
+    optional?: boolean;
+    /**
+     * (for select) the options to choose from
+     * (for library) a list of library ubernames (whitespaces instead
+     * of hyphens as separators)
+     */
+    options?: any[];
+    /**
+     * (for text) the regexp pattern the text must match
+     */
+    regexp?: {
+        modifiers: string;
+        pattern: string;
+    };
+    /**
+     * (for number) the allowed steps
+     */
+    steps?: number;
+    /**
+     * (for text) list of allowed html tags.
+     */
+    tags?: string[];
+    /**
+     * The object type of this entry.
+     */
+    type:
+        | 'file'
+        | 'text'
+        | 'number'
+        | 'boolean'
+        | 'group'
+        | 'list'
+        | 'select'
+        | 'library'
+        | 'image'
+        | 'video'
+        | 'audio';
+    /**
+     * Name of the widget to use in the editor.
+     */
+    widget?: string;
 }
 
 /**
@@ -573,7 +694,7 @@ export interface IKeyValueStorage {
  */
 export interface IRegistrationData {
     /**
-     * The core API version that the site supports (e.g. 1.22). Unknown if the hub only reports back content
+     * The core API version that the site supports (e.g. 1.24). Unknown if the hub only reports back content
      * types that work for this core version.
      */
     core_api_version: string;
@@ -744,6 +865,7 @@ export interface IEditorConfig {
     filesPath: string;
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
+     * Can be anything like 1.22.1
      * It is sent to the H5P Hub when registering there.
      * Not user-configurable and should not be changed by custom implementations.
      */

@@ -27,6 +27,7 @@ describe('Rendering the HTML page', () => {
                     <script src="/h5p/core/js/h5p-content-type.js"></script>
                     <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
                     <script src="/h5p/core/js/h5p-action-bar.js"></script>
+                    <script src="/h5p/core/js/request-queue.js"></script>
                 
                     <script>
                         H5PIntegration = {
@@ -223,6 +224,7 @@ describe('Rendering the HTML page', () => {
                         <script src="/h5p/core/js/h5p-content-type.js"></script>
                         <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
                         <script src="/h5p/core/js/h5p-action-bar.js"></script>
+                        <script src="/h5p/core/js/request-queue.js"></script>
                     
                         <script>
                             H5PIntegration = {
