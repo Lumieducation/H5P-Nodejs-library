@@ -87,5 +87,6 @@
         "tslint-config-prettier": "1.18.0",
         "typescript": "3.7.2"
     },
-    "main": "./index.js"
+    "main": "./build/src/index.js",
+    "types": "./build/src/index.d.ts"
 }

@@ -7,10 +7,10 @@
         "experimentalDecorators": true,
         "removeComments": false,
         "noImplicitAny": false,
-        "allowJs": true,
         "sourceMap": true,
         "baseUrl": "./",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "declaration": true
     },
     "exclude": ["node_modules"]
 }
