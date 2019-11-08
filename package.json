@@ -25,7 +25,11 @@
         "test:coverage": "npx jest --collect-coverage --testTimeout=30000",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=4",
         "format:check": "prettier --check \"{src,test}/**/*.ts\"",
-        "format": "prettier --write \"{src,test}/**/*.ts\""
+        "format": "prettier --write \"{src,test}/**/*.ts\"",
+        "semantic-release": "semantic-release"
+    },
+    "release": {
+        "branch": "master"
     },
     "contributors": [
         {
@@ -78,6 +82,8 @@
         "prettier": "1.18.2",
         "promise-queue": "2.2.5",
         "puppeteer": "2.0.0",
+        "semantic-release": "15.13.24",
+        "shortid": "2.2.15",
         "source-map-support": "0.5.16",
         "stream-mock": "2.0.5",
         "ts-jest": "24.1.0",

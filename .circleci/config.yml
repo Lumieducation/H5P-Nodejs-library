@@ -77,6 +77,18 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run test:e2e:player
+    release:
+        docker:
+            - image: 'circleci/node:latest'
+        steps:
+            - checkout
+            - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+            - run:
+                  name: install
+                  command: npm install
+            - run:
+                  name: release
+                  command: npm run semantic-release || true
 workflows:
     version: 2
     h5peditor:
@@ -87,3 +99,11 @@ workflows:
             - unit-tests
             - player-e2e-test
             - integration-tests
+            - release:
+                  requires:
+                      - install+build
+                      - lint
+                      - format
+                      - unit-tests
+                      - player-e2e-test
+                      - integration-tests
