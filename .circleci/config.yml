@@ -97,6 +97,7 @@ workflows:
             - format
             - unit-tests
             - player-e2e-test
+            - integration-tests
             - release:
                   requires:
                       - install+build
