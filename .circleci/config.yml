@@ -82,6 +82,7 @@ jobs:
             - image: 'circleci/node:latest'
         steps:
             - checkout
+            - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - run:
                   name: install
                   command: npm install
