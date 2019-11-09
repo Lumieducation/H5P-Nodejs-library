@@ -79,7 +79,7 @@
         "express-fileupload": "1.1.6-alpha.6",
         "jest": "24.9.0",
         "mockdate": "2.0.5",
-        "prettier": "1.18.2",
+        "prettier": "1.19.1",
         "promise-queue": "2.2.5",
         "puppeteer": "2.0.0",
         "semantic-release": "15.13.30",
