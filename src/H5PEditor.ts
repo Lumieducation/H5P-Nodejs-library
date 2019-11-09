@@ -11,8 +11,8 @@ import defaultTranslation from '../assets/translations/en.json';
 // tslint:disable-next-line: import-name
 import defaultRenderer from './renderers/default';
 
-import { ContentFileScanner } from './ContentFileScanner';
 import ContentManager from './ContentManager';
+import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
@@ -94,7 +94,11 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
-        this.contentFileScanner = new ContentFileScanner(this.libraryManager);
+        this.contentStorer = new ContentStorer(
+            this.contentManager,
+            this.libraryManager,
+            this.temporaryFileManager
+        );
     }
 
     public libraryManager: LibraryManager;
@@ -102,8 +106,8 @@ export default class H5PEditor {
 
     private ajaxPath: string;
     private baseUrl: string;
-    private contentFileScanner: ContentFileScanner;
     private contentManager: ContentManager;
+    private contentStorer: ContentStorer;
     private contentTypeCache: ContentTypeCache;
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
@@ -354,115 +358,38 @@ export default class H5PEditor {
      * Stores new content or updates existing content.
      * Copies over files from temporary storage if necessary.
      * @param contentId the contentId of existing content (undefined or previously unsaved content)
-     * @param content the content parameters (=content.json)
+     * @param parameters the content parameters (=content.json)
      * @param metadata the content metadata (~h5p.json)
-     * @param libraryName the ubername with whitespace as separator (no hyphen!)
+     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
      * @param user the user who wants to save the piece of content
      * @returns the existing contentId or the newly assigned one
      */
     public async saveH5P(
         contentId: ContentId,
-        content: ContentParameters,
+        parameters: ContentParameters,
         metadata: IContentMetadata,
-        libraryName: string,
+        mainLibraryName: string,
         user: IUser
     ): Promise<ContentId> {
-        log.info(`saving h5p.json for ${contentId}`);
+        if (contentId !== undefined) {
+            log.info(`saving h5p content for ${contentId}`);
+        } else {
+            log.info('saving new content');
+        }
+
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
-            libraryName,
-            this.findLibraries(content)
+            mainLibraryName,
+            this.findLibraries(parameters)
         );
 
-        let filesInOldParams: string[] = [];
-        if (contentId !== undefined) {
-            const oldParams = await this.contentManager.loadContent(
-                contentId,
-                user
-            );
-            const oldMetadata = await this.contentManager.loadH5PJson(
-                contentId,
-                user
-            );
-            filesInOldParams = (await this.contentFileScanner.scanForFiles(
-                oldParams,
-                oldMetadata.preloadedDependencies.find(
-                    dep => dep.machineName === oldMetadata.mainLibrary
-                )
-            )).map(fi => fi.filePath);
-        }
-
-        const fileToCopyFromTemporaryStorage: string[] = [];
-        const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
-            content,
-            LibraryName.fromUberName(libraryName, { useWhitespace: true })
-        );
-        for (const ref of fileReferencesInNewParams) {
-            if (ref.temporary) {
-                // save temporary file for later copying
-                fileToCopyFromTemporaryStorage.push(ref.filePath);
-                // remove temporary file marker from parameters
-                ref.context.params.path = ref.filePath;
-            }
-        }
-
-        const newContentId = await this.contentManager.createContent(
+        const newContentId = await this.contentStorer.saveContent(
+            contentId,
+            parameters,
             h5pJson,
-            content,
-            user,
-            contentId
+            mainLibraryName,
+            user
         );
-
-        // Copy files from temporary storage
-        for (const fileToCopy of fileToCopyFromTemporaryStorage) {
-            let readStream;
-            try {
-                readStream = await this.temporaryFileManager.getFileStream(
-                    fileToCopy,
-                    user
-                );
-            } catch (error) {
-                // We just log this error and continue.
-                log.error(
-                    `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
-                );
-            }
-            if (readStream !== undefined) {
-                log.debug(
-                    `Adding temporary file ${fileToCopy} to content id ${contentId}`
-                );
-                await this.contentManager.addContentFile(
-                    newContentId,
-                    fileToCopy,
-                    readStream,
-                    user
-                );
-                // delete the temporary file
-                await this.temporaryFileManager.deleteFile(fileToCopy, user); // TODO: reconsider if this should really be deleted
-            }
-        }
-
-        // delete unused existing files
-        if (contentId !== undefined) {
-            for (const file of filesInOldParams) {
-                if (!fileReferencesInNewParams.some(f => f.filePath === file)) {
-                    log.debug(
-                        `Deleting unneccessary file ${file} from ${contentId}`
-                    );
-                    try {
-                        await this.contentManager.deleteContentFile(
-                            contentId,
-                            file
-                        );
-                    } catch (error) {
-                        log.error(
-                            `Could not delete unused content file: ${error}`
-                        );
-                    }
-                }
-            }
-        }
-
         return newContentId;
     }
 
