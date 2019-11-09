@@ -148,10 +148,9 @@ export default class PackageExporter {
             );
         }
         if (
-            !(await this.contentManager.getUserPermissions(
-                contentId,
-                user
-            )).some(p => p === Permission.Download)
+            !(
+                await this.contentManager.getUserPermissions(contentId, user)
+            ).some(p => p === Permission.Download)
         ) {
             throw new H5pError(
                 `You do not have permission to download content with id ${contentId}`
