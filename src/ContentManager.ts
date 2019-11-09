@@ -145,7 +145,7 @@ export default class ContentManager {
      * @param contentId (optional) The content id to use
      * @returns The newly assigned content id
      */
-    public async createContent(
+    public async createOrUpdateContent(
         metadata: IContentMetadata,
         content: ContentParameters,
         user: IUser,

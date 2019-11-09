@@ -43,7 +43,7 @@ describe('ContentManager', () => {
                     new FileContentStorage(tempDirPath)
                 );
 
-                const contentId = await contentManager.createContent(
+                const contentId = await contentManager.createOrUpdateContent(
                     mockupMetadata,
                     mockupParameters,
                     new User()
@@ -61,7 +61,7 @@ describe('ContentManager', () => {
                     new FileContentStorage(tempDirPath)
                 );
 
-                const contentId = await contentManager.createContent(
+                const contentId = await contentManager.createOrUpdateContent(
                     mockupMetadata,
                     mockupParameters,
                     new User(),
@@ -81,7 +81,7 @@ describe('ContentManager', () => {
                 );
 
                 const user = new User();
-                const contentId = await contentManager.createContent(
+                const contentId = await contentManager.createOrUpdateContent(
                     mockupMetadata,
                     mockupParameters,
                     user
@@ -115,7 +115,7 @@ describe('ContentManager', () => {
                 );
 
                 const user = new User();
-                const contentId = await contentManager.createContent(
+                const contentId = await contentManager.createOrUpdateContent(
                     mockupMetadata,
                     mockupParameters,
                     user
@@ -140,7 +140,7 @@ describe('ContentManager', () => {
                 );
 
                 const user = new User();
-                const contentId = await contentManager.createContent(
+                const contentId = await contentManager.createOrUpdateContent(
                     mockupMetadata,
                     mockupParameters,
                     user

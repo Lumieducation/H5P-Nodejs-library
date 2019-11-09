@@ -383,7 +383,7 @@ export default class H5PEditor {
             this.findLibraries(parameters)
         );
 
-        const newContentId = await this.contentStorer.saveContent(
+        const newContentId = await this.contentStorer.saveOrUpdateContent(
             contentId,
             parameters,
             h5pJson,
