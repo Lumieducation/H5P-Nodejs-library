@@ -80,7 +80,7 @@ export interface IContentMetadata {
     contentType?: string;
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
-    embedTypes?: 'iframe' | 'div';
+    embedTypes?: ('iframe' | 'div')[];
     h?: string;
     language: string;
     license?: string;
@@ -661,12 +661,10 @@ export interface ILibraryMetadata extends ILibraryName {
      */
     coreApi?: { majorVersion: number; minorVersion: number };
     description?: string;
-    // tslint:disable-next-line: prefer-array-literal
-    dropLibraryCss?: Array<{ machineName: string }>;
+    dropLibraryCss?: { machineName: string }[];
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
-    // tslint:disable-next-line: prefer-array-literal
-    embedTypes?: Array<'iframe' | 'div'>;
+    embedTypes?: ('iframe' | 'div')[];
     fullscreen?: 0 | 1;
     h?: number;
     license?: string;

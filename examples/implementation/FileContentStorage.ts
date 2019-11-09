@@ -160,7 +160,7 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Deletes content from the repository.
+     * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
      * @param {ContentId} id The content id to delete.
      * @param {User} user The user who wants to delete the content
