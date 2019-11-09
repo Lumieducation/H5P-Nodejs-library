@@ -158,6 +158,14 @@ describe('ContentManager', () => {
                     user
                 );
 
+                // check if file exists
+                await expect(
+                    contentManager.contentFileExists(
+                        contentId,
+                        'content/earth.jpg'
+                    )
+                ).resolves.toEqual(true);
+
                 // check if file is in list
                 const addedFiles = await contentManager.getContentFiles(
                     contentId,

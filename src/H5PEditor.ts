@@ -33,6 +33,7 @@ import {
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
+    ILibraryFileUrlResolver,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
@@ -58,10 +59,7 @@ export default class H5PEditor {
          * (hardcoded) into data structures. The implementation must do this file ->
          * URL resolution, as it decides where the files can be accessed.
          */
-        libraryFileUrlResolver: (
-            library: ILibraryName,
-            filename: string
-        ) => string,
+        libraryFileUrlResolver: ILibraryFileUrlResolver,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -330,13 +328,9 @@ export default class H5PEditor {
         field: ISemanticsEntry,
         file: {
             data: Buffer;
-            encoding: string;
-            md5: string;
             mimetype: string;
             name: string;
             size: number;
-            tempFilePath: string;
-            truncated: boolean;
         },
         user: IUser
     ): Promise<{ mime: string; path: string }> {
@@ -703,13 +697,13 @@ export default class H5PEditor {
     }
 
     private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library: ILibraryName = (
-            h5pJson.preloadedDependencies || []
-        ).filter(
-            (dependency: ILibraryName) =>
-                dependency.machineName === h5pJson.mainLibrary
-        )[0];
-        return `${library.machineName} ${library.majorVersion}.${library.minorVersion}`;
+        const library = (h5pJson.preloadedDependencies || []).find(
+            dependency => dependency.machineName === h5pJson.mainLibrary
+        );
+        if (!library) {
+            return '';
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
     }
 
     private integration(contentId: ContentId): IIntegration {
