@@ -1,0 +1,21 @@
+{
+  "title": "Greeting Card",
+  "description": "Displays a greeting card",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 6,
+  "runnable": 1,
+  "author": "Joubel AS",
+  "license": "MIT",
+  "machineName": "H5P.GreetingCard",
+  "preloadedJs": [
+    {
+      "path": "greetingcard.js"
+    }
+  ],
+  "preloadedCss": [
+    {
+      "path": "greetingcard.css"
+    }
+  ]
+}

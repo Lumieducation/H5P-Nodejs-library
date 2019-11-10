@@ -28,8 +28,7 @@ export class ValidatorBuilder {
         this.rules = [];
     }
 
-    // tslint:disable-next-line: prefer-array-literal
-    private rules: Array<(content: any, error: ValidationError) => any>;
+    private rules: ((content: any, error: ValidationError) => any)[];
 
     /**
      * Adds a rule to the validator. Chain this method together to create complex validators.

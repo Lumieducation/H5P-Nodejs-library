@@ -32,12 +32,14 @@ const start = async () => {
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))
         ).load(),
-        new FileLibraryStorage(`${path.resolve('')}/h5p/libraries`),
-        new FileContentStorage(`${path.resolve('')}/h5p/content`),
+        new FileLibraryStorage(path.resolve('h5p/libraries')),
+        new FileContentStorage(path.resolve('h5p/content')),
         new H5PEditor.TranslationService(H5PEditor.englishStrings),
         (library, file) =>
             `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-        new DirectoryTemporaryFileStorage(`${path.resolve('')}/h5p/temporary-storage`)
+        new DirectoryTemporaryFileStorage(
+            path.resolve('h5p/temporary-storage')
+        )
     );
 
     const user = new User();
@@ -70,10 +72,10 @@ const start = async () => {
     });
 
     server.get(`${h5pRoute}/content/:id/content/:file(*)`, async (req, res) => {
-        const stream = h5pEditor.contentManager.getContentFileStream(
+        const stream = await h5pEditor.getContentFileStream(
             req.params.id,
-            `content/${req.params.file}`,
-            null
+            req.params.file,
+            user
         );
         stream.on('end', () => {
             res.end();
@@ -84,7 +86,8 @@ const start = async () => {
     server.get(
         `${h5pEditor.config.temporaryFilesPath}/:file(*)`,
         async (req, res) => {
-            const stream = await h5pEditor.temporaryFileManager.getFileStream(
+            const stream = await h5pEditor.getContentFileStream(
+                undefined,
                 req.params.file,
                 user
             );
@@ -146,7 +149,7 @@ const start = async () => {
         await packageExporter.createPackage(
             req.query.contentId,
             res,
-            new User()
+            user
         );
     });
 
@@ -238,7 +241,8 @@ const start = async () => {
                 req.query.contentId,
                 req.body.params.params,
                 req.body.params.metadata,
-                req.body.library
+                req.body.library,
+                user
             )
             .then(() => {
                 res.status(200).end();

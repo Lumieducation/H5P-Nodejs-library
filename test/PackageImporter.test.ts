@@ -98,7 +98,7 @@ describe('package importer', () => {
                     ((await contentManager.loadContent(contentId, user)) as any)
                         .greeting
                 ).toEqual('Hello world!');
-                const fileStream = contentManager.getContentFileStream(
+                const fileStream = await contentManager.getContentFileStream(
                     contentId,
                     'content/earth.jpg',
                     user

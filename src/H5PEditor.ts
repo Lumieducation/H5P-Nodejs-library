@@ -1,3 +1,4 @@
+import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import stream from 'stream';
@@ -11,15 +12,16 @@ import defaultTranslation from '../assets/translations/en.json';
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
+import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryManager from './LibraryManager';
-import PackageImporter from './PackageImporter';
-import TranslationService from './TranslationService';
-
 import LibraryName from './LibraryName';
+import PackageImporter from './PackageImporter';
+import TemporaryFileManager from './TemporaryFileManager';
+import TranslationService from './TranslationService';
 import {
     ContentId,
     ContentParameters,
@@ -31,6 +33,7 @@ import {
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
+    ILibraryFileUrlResolver,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
@@ -40,7 +43,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
-import TemporaryFileManager from './TemporaryFileManager';
+
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -56,10 +59,7 @@ export default class H5PEditor {
          * (hardcoded) into data structures. The implementation must do this file ->
          * URL resolution, as it decides where the files can be accessed.
          */
-        libraryFileUrlResolver: (
-            library: ILibraryName,
-            filename: string
-        ) => string,
+        libraryFileUrlResolver: ILibraryFileUrlResolver,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -94,15 +94,21 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
+        this.contentStorer = new ContentStorer(
+            this.contentManager,
+            this.libraryManager,
+            this.temporaryFileManager
+        );
     }
 
+    public contentTypeCache: ContentTypeCache;
     public libraryManager: LibraryManager;
     public temporaryFileManager: TemporaryFileManager;
 
     private ajaxPath: string;
     private baseUrl: string;
     private contentManager: ContentManager;
-    private contentTypeCache: ContentTypeCache;
+    private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
     private libraryUrl: string;
@@ -111,8 +117,40 @@ export default class H5PEditor {
     private translation: any;
     private translationService: TranslationService;
 
+    /**
+     * Returns a stream for a file that was uploaded for a content object.
+     * The requested content file can be a temporary file uploaded for unsaved content or a
+     * file in permanent content storage.
+     * @param contentId the content id (undefined if retrieved for unsaved content)
+     * @param filename the file to get (without 'content/' prefix!)
+     * @param user the user who wants to retrieve the file
+     * @returns a stream of the content file
+     */
+    public async getContentFileStream(
+        contentId: ContentId,
+        filename: string,
+        user: IUser
+    ): Promise<ReadStream> {
+        // We have to try the regular content repository first and then fall back to the temporary storage.
+        // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
+        try {
+            // we don't directly return the result of the getters as try - catch would not work then
+            const returnStream = await this.contentManager.getContentFileStream(
+                contentId,
+                `content/${filename}`,
+                user
+            );
+            return returnStream;
+        } catch (error) {
+            log.debug(
+                `Couldn't find file ${filename} in storage. Trying temporary storage.`
+            );
+        }
+        return this.temporaryFileManager.getFileStream(filename, user);
+    }
+
     public getContentTypeCache(user: IUser): Promise<any> {
-        log.info(`getting content type chache`);
+        log.info(`getting content type cache`);
         return this.contentTypeRepository.get(user);
     }
 
@@ -287,7 +325,7 @@ export default class H5PEditor {
     }
 
     /**
-     *
+     * Stores an uploaded file in temporary storage.
      * @param contentId the id of the piece of content the file is attached to; Set to null/undefined if
      * the content hasn't been saved before.
      * @param field the semantic structure of the field the file is attached to.
@@ -298,65 +336,64 @@ export default class H5PEditor {
         field: ISemanticsEntry,
         file: {
             data: Buffer;
-            encoding: string;
-            md5: string;
             mimetype: string;
             name: string;
             size: number;
-            tempFilePath: string;
-            truncated: boolean;
         },
         user: IUser
     ): Promise<{ mime: string; path: string }> {
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
-        if (!contentId) {
-            log.info(`saving content file ${file.name} for unsaved content`);
-            const tmpFilename = await this.temporaryFileManager.saveFile(
-                file.name,
-                dataStream,
-                user
-            );
-            return {
-                mime: file.mimetype,
-                path: tmpFilename
-            };
-        }
-
-        log.info(`saving content file ${file.name} for ${contentId}`);
-        await this.contentManager.addContentFile(
-            contentId,
+        log.info(`Putting content file ${file.name} into temporary storage`);
+        const tmpFilename = await this.temporaryFileManager.saveFile(
             file.name,
             dataStream,
             user
         );
+        log.debug(`New temporary filename is ${tmpFilename}`);
         return {
             mime: file.mimetype,
-            path: file.name
+            path: `${tmpFilename}#tmp`
         };
     }
 
+    /**
+     * Stores new content or updates existing content.
+     * Copies over files from temporary storage if necessary.
+     * @param contentId the contentId of existing content (undefined or previously unsaved content)
+     * @param parameters the content parameters (=content.json)
+     * @param metadata the content metadata (~h5p.json)
+     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
+     * @param user the user who wants to save the piece of content
+     * @returns the existing contentId or the newly assigned one
+     */
     public async saveH5P(
         contentId: ContentId,
-        content: ContentParameters,
+        parameters: ContentParameters,
         metadata: IContentMetadata,
-        libraryName: string,
+        mainLibraryName: string,
         user: IUser
     ): Promise<ContentId> {
-        log.info(`saving h5p.json for ${contentId}`);
+        if (contentId !== undefined) {
+            log.info(`saving h5p content for ${contentId}`);
+        } else {
+            log.info('saving new content');
+        }
+
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
-            libraryName,
-            this.findLibraries(content)
-        );
-        const newContentId = await this.contentManager.createContent(
-            h5pJson,
-            content,
-            user,
-            contentId
+            mainLibraryName,
+            this.findLibraries(parameters)
         );
 
+        const newContentId = await this.contentStorer.saveOrUpdateContent(
+            contentId,
+            parameters,
+            h5pJson,
+            mainLibraryName,
+            user
+        );
         return newContentId;
     }
 
@@ -595,13 +632,13 @@ export default class H5PEditor {
     }
 
     private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library: ILibraryName = (
-            h5pJson.preloadedDependencies || []
-        ).filter(
-            (dependency: ILibraryName) =>
-                dependency.machineName === h5pJson.mainLibrary
-        )[0];
-        return `${library.machineName} ${library.majorVersion}.${library.minorVersion}`;
+        const library = (h5pJson.preloadedDependencies || []).find(
+            dependency => dependency.machineName === h5pJson.mainLibrary
+        );
+        if (!library) {
+            return '';
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
     }
 
     private integration(contentId: ContentId): IIntegration {

@@ -29,12 +29,10 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public author?: string;
     public coreApi?: { majorVersion: number; minorVersion: number };
     public description?: string;
-    // tslint:disable-next-line: prefer-array-literal
-    public dropLibraryCss?: Array<{ machineName: string }>;
+    public dropLibraryCss?: { machineName: string }[];
     public dynamicDependencies?: ILibraryName[];
     public editorDependencies?: ILibraryName[];
-    // tslint:disable-next-line: prefer-array-literal
-    public embedTypes?: Array<'iframe' | 'div'>;
+    public embedTypes?: ('iframe' | 'div')[];
     public fullscreen?: 0 | 1;
     public h?: number;
     public id: number;

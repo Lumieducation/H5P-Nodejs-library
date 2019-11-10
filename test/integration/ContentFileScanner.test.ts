@@ -1,5 +1,5 @@
 import * as fsExtra from 'fs-extra';
-import jsonpath, { query } from 'jsonpath';
+import jsonpath from 'jsonpath';
 import * as path from 'path';
 import { dir, DirectoryResult } from 'tmp-promise';
 
@@ -14,6 +14,8 @@ import EditorConfig from '../../examples/implementation/EditorConfig';
 import FileContentStorage from '../../examples/implementation/FileContentStorage';
 import FileLibraryStorage from '../../examples/implementation/FileLibraryStorage';
 import User from '../../examples/implementation/User';
+
+import { getContentDetails } from '../ContentScanner.test';
 
 describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     // scan all Hub examples for their file references and compare to directory contents
@@ -75,7 +77,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
             );
         }
 
-        contentScanner = new ContentFileScanner(contentManager, libraryManager);
+        contentScanner = new ContentFileScanner(libraryManager);
         done();
     }, 120000); // long timeout because we install a lot of packages
 
@@ -86,9 +88,16 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     for (const file of h5pPackages.filter(f => f.endsWith('.h5p'))) {
         it(`finds all files in ${file}`, async () => {
             const contentId = packageIdMap.get(file);
-            const foundFiles = await contentScanner.scanForFiles(
+
+            const { params, mainLibraryName } = await getContentDetails(
                 contentId,
-                user
+                user,
+                contentManager
+            );
+
+            const foundFiles = await contentScanner.scanForFiles(
+                params,
+                mainLibraryName
             );
 
             const fileSystemFiles = await contentManager.getContentFiles(

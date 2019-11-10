@@ -81,6 +81,21 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    public async contentFileExists(
+        contentId: ContentId,
+        filename: string
+    ): Promise<boolean> {
+        return fsExtra.pathExists(
+            path.join(this.contentPath, contentId.toString(), filename)
+        );
+    }
+
+    /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
      * @param {any} metadata The metadata of the content (= h5p.json)
@@ -145,7 +160,7 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Deletes content from the repository.
+     * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
      * @param {ContentId} id The content id to delete.
      * @param {User} user The user who wants to delete the content
@@ -163,6 +178,29 @@ export default class FileContentStorage implements IContentStorage {
         }
 
         await fsExtra.remove(path.join(this.contentPath, id.toString()));
+    }
+
+    /**
+     * Deletes a file from a content object.
+     * @param contentId the content object the file is attached to
+     * @param filename the file to delete
+     */
+    public async deleteContentFile(
+        contentId: ContentId,
+        filename: string
+    ): Promise<void> {
+        const absolutePath = path.join(
+            this.contentPath,
+            contentId.toString(),
+            'content',
+            filename
+        );
+        if (!(await fsExtra.pathExists(absolutePath))) {
+            throw new Error(
+                `Cannot delete file ${filename} from content id ${contentId}: It does not exist.`
+            );
+        }
+        await fsExtra.remove(absolutePath);
     }
 
     /**

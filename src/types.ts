@@ -80,7 +80,7 @@ export interface IContentMetadata {
     contentType?: string;
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
-    embedTypes?: 'iframe' | 'div';
+    embedTypes?: ('iframe' | 'div')[];
     h?: string;
     language: string;
     license?: string;
@@ -265,7 +265,7 @@ export interface IUser {
 export interface IContentStorage {
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param id The id of the content to add the file to
+     * @param contentId The id of the content to add the file to
      * @param filename The filename INSIDE the content folder
      * @param stream A readable stream that contains the data
      * @param user The user who owns this object
@@ -283,6 +283,14 @@ export interface IContentStorage {
      * @returns true if the piece of content exists
      */
     contentExists(contentId: ContentId): Promise<boolean>;
+
+    /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    contentFileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
      * Creates a content object in the repository. Content files (like images) are added to it later
@@ -315,6 +323,13 @@ export interface IContentStorage {
      * @param user The user who wants to delete the content
      */
     deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
+
+    /**
+     * Deletes a file from a content object.
+     * @param contentId the content object the file is attached to
+     * @param filename the file to delete
+     */
+    deleteContentFile(contentId: ContentId, filename: string): Promise<void>;
 
     /**
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
@@ -647,12 +662,10 @@ export interface ILibraryMetadata extends ILibraryName {
      */
     coreApi?: { majorVersion: number; minorVersion: number };
     description?: string;
-    // tslint:disable-next-line: prefer-array-literal
-    dropLibraryCss?: Array<{ machineName: string }>;
+    dropLibraryCss?: { machineName: string }[];
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
-    // tslint:disable-next-line: prefer-array-literal
-    embedTypes?: Array<'iframe' | 'div'>;
+    embedTypes?: ('iframe' | 'div')[];
     fullscreen?: 0 | 1;
     h?: number;
     license?: string;
@@ -967,10 +980,11 @@ export interface ITemporaryFile {
 export interface ITemporaryFileStorage {
     /**
      * Deletes the file from temporary storage (e.g. because it has expired)
-     * @param file the information as received from listFiles(...)
+     * @param filename the filename
+     * @param userId the user id
      * @returns true if deletion was successful
      */
-    deleteFile(file: ITemporaryFile): Promise<void>;
+    deleteFile(filename: string, userId: string): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.
@@ -1012,3 +1026,14 @@ export interface ITemporaryFileStorage {
         expirationTime: Date
     ): Promise<ITemporaryFile>;
 }
+
+/**
+ * This function returns the (relative) URL at which a file inside a library
+ * can be accessed. It is used when URLs of library files must be inserted
+ * (hardcoded) into data structures. The implementation must do this file ->
+ * URL resolution, as it decides where the files can be accessed.
+ */
+export type ILibraryFileUrlResolver = (
+    library: ILibraryName,
+    filename: string
+) => string;

@@ -91,6 +91,12 @@ The interfaces that can be implemented are:
 
 There are already default implementations that you can use. These are only for demonstration purposes and are not suitable to be used in a multi-user environment and not optimised for speed.
 
+### Calling maintenance functions regularly
+
+The implementation needs to call several function regularly (comparable to a cronjob):
+
+- Call ```H5PEditor.temporaryFileManager.cleanUp()``` every 5 minutes. This checks which temporary files have expired and deletes them if necessary. It is important to do this, as temporary files are **not** automatically deleted when a piece of content is saved.
+- Call ```H5PEditor.contentTypeCache.updateIfNecessary()``` every 12 hours. This will download information about the available content types from the H5P Hub. If you don't do this, users won't be shown new content types or updates to existing content types when they become available.
 
 ## Development & Testing
 

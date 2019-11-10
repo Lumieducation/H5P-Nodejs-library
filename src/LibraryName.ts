@@ -54,7 +54,22 @@ export default class LibraryName implements ILibraryName {
     /**
      * Returns the directory name that is used for this library (e.g. H5P.ExampleLibrary-1.0)
      */
-    public static toUberName(libraryName: ILibraryName): string {
-        return `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
+    public static toUberName(
+        libraryName: ILibraryName,
+        options: {
+            useHyphen?: boolean;
+            useWhitespace?: boolean;
+        } = {
+            useHyphen: true,
+            useWhitespace: false
+        }
+    ): string {
+        if (options.useHyphen) {
+            return `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
+        }
+        if (options.useWhitespace) {
+            return `${libraryName.machineName} ${libraryName.majorVersion}.${libraryName.minorVersion}`;
+        }
+        return '';
     }
 }

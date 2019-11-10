@@ -4,8 +4,8 @@ import globPromise from 'glob-promise';
 import * as path from 'path';
 import { Stream } from 'stream';
 
+import H5pError from './helpers/H5pError';
 import { streamToString } from './helpers/StreamHelpers';
-
 import {
     ContentId,
     ContentParameters,
@@ -68,6 +68,19 @@ export default class ContentManager {
     }
 
     /**
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @returns true if the file exists
+     */
+    public async contentFileExists(
+        contentId: ContentId,
+        filename: string
+    ): Promise<boolean> {
+        return this.contentStorage.contentFileExists(contentId, filename);
+    }
+
+    /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
      * It does not check whether the user has permissions to save content.
      * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
@@ -126,17 +139,17 @@ export default class ContentManager {
 
     /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
-     * @param {any} metadata The metadata of the content (= h5p.json)
-     * @param {any} content the content object (= content/content.json)
-     * @param {IUser} user The user who owns this object.
-     * @param {number} contentId (optional) The content id to use
-     * @returns {Promise<string>} The newly assigned content id
+     * @param metadata The metadata of the content (= h5p.json)
+     * @param content the content object (= content/content.json)
+     * @param user The user who owns this object.
+     * @param contentId (optional) The content id to use
+     * @returns The newly assigned content id
      */
-    public async createContent(
+    public async createOrUpdateContent(
         metadata: IContentMetadata,
         content: ContentParameters,
         user: IUser,
-        contentId: ContentId
+        contentId?: ContentId
     ): Promise<ContentId> {
         log.info(`creating content for ${contentId}`);
         return this.contentStorage.createContent(
@@ -148,12 +161,27 @@ export default class ContentManager {
     }
 
     /**
-     * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<number>} A unique content id
+     * Deletes a piece of content and all files dependent on it.
+     * @param contentId the piece of content to delete
+     * @param user the user who wants to delete it
      */
-    public async createContentId(): Promise<ContentId> {
-        log.debug(`generating contentId`);
-        return this.contentStorage.createContentId();
+    public async deleteContent(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<void> {
+        return this.contentStorage.deleteContent(contentId, user);
+    }
+
+    /**
+     * Deletes a file from a content object.
+     * @param contentId the content object the file is attached to
+     * @param filename the file to delete (WITHOUT 'content' directory in the path)
+     */
+    public async deleteContentFile(
+        contentId: ContentId,
+        filename: string
+    ): Promise<void> {
+        return this.contentStorage.deleteContentFile(contentId, filename);
     }
 
     /**
@@ -177,12 +205,19 @@ export default class ContentManager {
      * @param {IUser} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
-    public getContentFileStream(
+    public async getContentFileStream(
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): ReadStream {
+    ): Promise<ReadStream> {
         log.debug(`loading ${filename} for ${contentId}`);
+        if (
+            !(await this.contentStorage.contentFileExists(contentId, filename))
+        ) {
+            throw new H5pError(
+                `File ${filename} does not exist in ${contentId}`
+            );
+        }
         return this.contentStorage.getContentFileStream(
             contentId,
             filename,

@@ -10,6 +10,7 @@ import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
     IInstalledLibrary,
+    ILibraryFileUrlResolver,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
@@ -36,10 +37,10 @@ export default class LibraryManager {
          * Gets URLs at which a file in a library can be downloaded. Must be passed
          * through from the implementation.
          */
-        private fileUrlResolver: (
-            library: ILibraryName,
-            filename: string
-        ) => string = (library, filename) => '' // default is there to avoid having to pass empty function in tests
+        private fileUrlResolver: ILibraryFileUrlResolver = (
+            library,
+            filename
+        ) => '' // default is there to avoid having to pass empty function in tests
     ) {
         log.info('initialize');
     }

@@ -7,59 +7,85 @@ import { ContentScanner } from '../src/ContentScanner';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
-import { ContentId, IUser } from '../src/types';
+import { ContentId, ILibraryName, IUser } from '../src/types';
 
 import EditorConfig from '../examples/implementation/EditorConfig';
 import FileContentStorage from '../examples/implementation/FileContentStorage';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import User from '../examples/implementation/User';
 
+async function createContentScanner(
+    file: string,
+    user: IUser,
+    tmpDirPath: string
+): Promise<{
+    contentId: ContentId;
+    contentManager: ContentManager;
+    contentScanner: ContentScanner;
+}> {
+    // create required dependencies
+    const contentDir = path.join(tmpDirPath, 'content');
+    const libraryDir = path.join(tmpDirPath, 'libraries');
+    await fsExtra.ensureDir(contentDir);
+    await fsExtra.ensureDir(libraryDir);
+
+    const contentManager = new ContentManager(
+        new FileContentStorage(contentDir)
+    );
+    const libraryManager = new LibraryManager(
+        new FileLibraryStorage(libraryDir)
+    );
+
+    // install content & libraries
+    const packageImporter = new PackageImporter(
+        libraryManager,
+        new TranslationService({}),
+        new EditorConfig(null),
+        contentManager
+    );
+    const contentId = await packageImporter.addPackageLibrariesAndContent(
+        file,
+        user
+    );
+
+    // create ContentScanner
+    return {
+        contentId,
+        contentManager,
+        contentScanner: new ContentScanner(libraryManager)
+    };
+}
+
+export async function getContentDetails(
+    contentId: ContentId,
+    user: IUser,
+    contentManager: ContentManager
+): Promise<{ mainLibraryName: ILibraryName; params: any }> {
+    // load metadata for content
+    const contentMetadata = await contentManager.loadH5PJson(contentId, user);
+
+    // get main library name
+    const mainLibraryName = contentMetadata.preloadedDependencies.find(
+        lib => lib.machineName === contentMetadata.mainLibrary
+    );
+
+    // load params
+    const params = await contentManager.loadContent(contentId, user);
+
+    return { mainLibraryName, params };
+}
+
 describe('ContentScanner', () => {
-    async function createContentScanner(
-        file: string,
-        user: IUser,
-        tmpDirPath: string
-    ): Promise<{ contentId: ContentId; contentScanner: ContentScanner }> {
-        // create required dependencies
-        const contentDir = path.join(tmpDirPath, 'content');
-        const libraryDir = path.join(tmpDirPath, 'libraries');
-        await fsExtra.ensureDir(contentDir);
-        await fsExtra.ensureDir(libraryDir);
-
-        const contentManager = new ContentManager(
-            new FileContentStorage(contentDir)
-        );
-        const libraryManager = new LibraryManager(
-            new FileLibraryStorage(libraryDir)
-        );
-
-        // install content & libraries
-        const packageImporter = new PackageImporter(
-            libraryManager,
-            new TranslationService({}),
-            new EditorConfig(null),
-            contentManager
-        );
-        const contentId = await packageImporter.addPackageLibrariesAndContent(
-            file,
-            user
-        );
-
-        // create ContentScanner
-        return {
-            contentId,
-            contentScanner: new ContentScanner(contentManager, libraryManager)
-        };
-    }
-
     it('scans the semantic structure of H5P.Blanks example', async () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const user = new User();
                 user.canUpdateAndInstallLibraries = true;
 
+                // initialize content manager
                 const {
                     contentScanner,
+                    contentManager,
                     contentId
                 } = await createContentScanner(
                     path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
@@ -67,11 +93,17 @@ describe('ContentScanner', () => {
                     tmpDirPath
                 );
 
-                const calledJsonPaths: string[] = [];
-                await contentScanner.scanContent(
+                const { mainLibraryName, params } = await getContentDetails(
                     contentId,
                     user,
-                    (semantics, params, jsonPath) => {
+                    contentManager
+                );
+
+                const calledJsonPaths: string[] = [];
+                await contentScanner.scanContent(
+                    params,
+                    mainLibraryName,
+                    (semantics, subParams, jsonPath) => {
                         calledJsonPaths.push(jsonPath);
                         return false;
                     }
@@ -144,18 +176,25 @@ describe('ContentScanner', () => {
 
                 const {
                     contentScanner,
-                    contentId
+                    contentId,
+                    contentManager
                 } = await createContentScanner(
                     path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
                     user,
                     tmpDirPath
                 );
 
-                const calledJsonPaths: string[] = [];
-                await contentScanner.scanContent(
+                const { mainLibraryName, params } = await getContentDetails(
                     contentId,
                     user,
-                    (semantics, params, jsonPath) => {
+                    contentManager
+                );
+
+                const calledJsonPaths: string[] = [];
+                await contentScanner.scanContent(
+                    params,
+                    mainLibraryName,
+                    (semantics, subParams, jsonPath) => {
                         calledJsonPaths.push(jsonPath);
                         if (
                             semantics.name === 'media' ||

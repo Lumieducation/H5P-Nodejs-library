@@ -46,8 +46,24 @@ export default class TemporaryFileManager {
         } else {
             log.debug('no temporary files have expired and must be deleted');
         }
-        await Promise.all(filesToDelete.map(f => this.storage.deleteFile(f)));
+        await Promise.all(
+            filesToDelete.map(f =>
+                this.storage.deleteFile(f.filename, f.ownedByUserId)
+            )
+        );
         return;
+    }
+
+    /**
+     * Removes a file from temporary storage. Will silently do nothing if the file does not
+     * exist or is not accessible.
+     * @param filename
+     * @param user
+     */
+    public async deleteFile(filename: string, user: IUser): Promise<void> {
+        if (await this.storage.fileExists(filename, user)) {
+            await this.storage.deleteFile(filename, user.id);
+        }
     }
 
     /**
