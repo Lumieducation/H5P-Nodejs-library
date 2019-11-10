@@ -7,7 +7,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const index = require('./index');
 
-const H5PEditor = require('../');
+const H5PEditor = require('../').default;
 const H5PPlayer = H5PEditor.Player;
 
 const DirectoryTemporaryFileStorage = require('../build/examples/implementation/DirectoryTemporaryFileStorage')
