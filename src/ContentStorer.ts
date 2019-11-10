@@ -9,7 +9,8 @@ import { ContentId, IUser } from './types';
 const log = new Logger('ContentStorer');
 
 /**
- * Contains logic to store content in permanent storage.
+ * Contains logic to store content in permanent storage. Copies files from temporary storage and
+ * deletes unused files.
  */
 export default class ContentStorer {
     constructor(

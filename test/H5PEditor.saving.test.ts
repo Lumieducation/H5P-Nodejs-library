@@ -300,4 +300,88 @@ describe('H5PEditor', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('still works if user presses save twice on unsaved content', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } = createH5PEditor(
+                    tempDirPath
+                );
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save image
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const { path: savedFilePath } = await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: fsExtra.statSync(originalPath).size
+                    },
+                    user
+                );
+
+                // put path of image into parameters (like the H5P editor client would)
+                mockupParametersWithImage.image.path = savedFilePath;
+
+                // save the H5P content object
+                const contentId1 = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // we write the filename into the path again as it was modified by the previous call to saveH5P
+                mockupParametersWithImage.image.path = savedFilePath;
+
+                // save the H5P content object a second time
+                const contentId2 = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // we pressed save twice, so the content should have been saved to two different places
+                expect(contentId1).not.toEqual(contentId2);
+
+                // expect the image to be present in both pieces of content
+                const cleanFilePath = savedFilePath.substr(
+                    0,
+                    savedFilePath.length - 4
+                );
+                await expect(
+                    contentStorage.contentFileExists(
+                        contentId1,
+                        `content/${cleanFilePath}`
+                    )
+                ).resolves.toEqual(true);
+                await expect(
+                    contentStorage.contentFileExists(
+                        contentId2,
+                        `content/${cleanFilePath}`
+                    )
+                ).resolves.toEqual(true);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });
