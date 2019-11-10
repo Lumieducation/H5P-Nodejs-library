@@ -301,7 +301,7 @@ describe('H5PEditor', () => {
         );
     });
 
-    it('still works if user presses save twice on unsaved content', async () => {
+    it('produces two identical copies with dependent files if the user presses "save" twice on unsaved content', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const { h5pEditor, contentStorage } = createH5PEditor(
@@ -380,6 +380,109 @@ describe('H5PEditor', () => {
                         `content/${cleanFilePath}`
                     )
                 ).resolves.toEqual(true);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('gracefully changes temporary paths to regular paths if the user presses "save" twice on already saved content', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } = createH5PEditor(
+                    tempDirPath
+                );
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save content without an image
+                const contentId = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithoutImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // save image
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const { path: savedFilePath } = await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: fsExtra.statSync(originalPath).size
+                    },
+                    user
+                );
+
+                // check if the temporary file can be read
+                const cleanFilePath = savedFilePath.substr(
+                    0,
+                    savedFilePath.length - 4
+                );
+                await expect(
+                    h5pEditor.temporaryFileManager.getFileStream(
+                        cleanFilePath,
+                        user
+                    )
+                ).resolves.toBeDefined();
+
+                // put path of image into parameters (like the H5P editor client would)
+                mockupParametersWithImage.image.path = savedFilePath;
+
+                // save the H5P content object
+                await h5pEditor.saveH5P(
+                    contentId,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // the temporary file must have been deleted
+                await expect(
+                    h5pEditor.temporaryFileManager.getFileStream(
+                        cleanFilePath,
+                        user
+                    )
+                ).rejects.toThrow();
+
+                // we write the filename into the path again as it was modified by the previous call to saveH5P
+                mockupParametersWithImage.image.path = savedFilePath;
+
+                // save the H5P content object a second time
+                await h5pEditor.saveH5P(
+                    contentId,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+                // expect the image to be exist in the content
+                await expect(
+                    contentStorage.contentFileExists(
+                        contentId,
+                        `content/${cleanFilePath}`
+                    )
+                ).resolves.toEqual(true);
+
+                // the temporary file marker must not be present in the content parameters
+                const { params } = await h5pEditor.loadH5P(contentId, user);
+                expect(params.params.image.path).toEqual(cleanFilePath);
             },
             { keep: false, unsafeCleanup: true }
         );

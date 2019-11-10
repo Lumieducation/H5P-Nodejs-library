@@ -30,9 +30,11 @@ export default class ContentStorer {
         mainLibraryName: string,
         user: IUser
     ): Promise<ContentId> {
+        const isUpdate = contentId !== undefined;
+
         // Get the list of files used in the old version of the content (if the content was saved before).
         // This list will later be compared against the files referenced in the new params.
-        const filesInOldParams = contentId
+        const filesInOldParams = isUpdate
             ? await this.getFilesInParams(contentId, user)
             : [];
 
@@ -44,7 +46,8 @@ export default class ContentStorer {
             LibraryName.fromUberName(mainLibraryName, { useWhitespace: true })
         );
         const filesToCopyFromTemporaryStorage = await this.determineFilesToCopyFromTemporaryStorage(
-            fileReferencesInNewParams
+            fileReferencesInNewParams,
+            filesInOldParams
         );
 
         // Store the content in persistent storage / update the content there.
@@ -60,7 +63,10 @@ export default class ContentStorer {
         await this.copyFilesFromTemporaryStorage(
             filesToCopyFromTemporaryStorage,
             user,
-            newContentId
+            newContentId,
+            isUpdate // We only delete the temporary file when this is an update. If new content is stored, the temporary
+            // files might still be needed, e.g. if the user accidentally presses save twice. They will be deleted through
+            // the regular expiration mechanism at some point.
         );
 
         // If this is an content update, we might have to delete files from storage that
@@ -85,11 +91,13 @@ export default class ContentStorer {
      * @param files the list of filenames to copy
      * @param user the user who is saving the content
      * @param contentId the content id of the object
+     * @param deleteTemporaryFiles true if temporary files should be deleted after copying
      */
     private async copyFilesFromTemporaryStorage(
         files: string[],
         user: IUser,
-        contentId: string
+        contentId: string,
+        deleteTemporaryFiles: boolean
     ): Promise<void> {
         for (const fileToCopy of files) {
             let readStream;
@@ -114,8 +122,12 @@ export default class ContentStorer {
                     readStream,
                     user
                 );
-                // delete the temporary file
-                await this.temporaryFileManager.deleteFile(fileToCopy, user);
+                if (deleteTemporaryFiles) {
+                    await this.temporaryFileManager.deleteFile(
+                        fileToCopy,
+                        user
+                    );
+                }
             }
         }
     }
@@ -157,14 +169,19 @@ export default class ContentStorer {
      * @returns the list of files to copy
      */
     private async determineFilesToCopyFromTemporaryStorage(
-        fileReferencesInNewParams: IFileReference[]
+        fileReferencesInNewParams: IFileReference[],
+        oldFiles: string[]
     ): Promise<string[]> {
         const filesToCopyFromTemporaryStorage: string[] = [];
 
         for (const ref of fileReferencesInNewParams) {
+            // We mark the file to be copied over from temporary storage if the file has a temporary marker.
             if (ref.temporary) {
-                // save temporary file for later copying
-                filesToCopyFromTemporaryStorage.push(ref.filePath);
+                // We only save temporary file for later copying, however, if the there isn't already a file
+                // with the exact name. This might be the case if the user presses "save" twice.
+                if (!oldFiles.some(f => f === ref.filePath)) {
+                    filesToCopyFromTemporaryStorage.push(ref.filePath);
+                }
                 // remove temporary file marker from parameters
                 ref.context.params.path = ref.filePath;
             }
@@ -190,11 +207,13 @@ export default class ContentStorer {
             contentId,
             user
         );
-        return (await this.contentFileScanner.scanForFiles(
-            oldParams,
-            oldMetadata.preloadedDependencies.find(
-                dep => dep.machineName === oldMetadata.mainLibrary
+        return (
+            await this.contentFileScanner.scanForFiles(
+                oldParams,
+                oldMetadata.preloadedDependencies.find(
+                    dep => dep.machineName === oldMetadata.mainLibrary
+                )
             )
-        )).map(fi => fi.filePath);
+        ).map(fi => fi.filePath);
     }
 }

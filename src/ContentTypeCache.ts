@@ -155,12 +155,12 @@ export default class ContentTypeCache {
         if (!machineNames || machineNames.length === 0) {
             return this.storage.load('contentTypeCache');
         }
-        return (await this.storage.load('contentTypeCache')).filter(
-            (contentType: HubContentType) =>
-                machineNames.some(
-                    (machineName: string) =>
-                        machineName === contentType.machineName
-                )
+        return (
+            await this.storage.load('contentTypeCache')
+        ).filter((contentType: HubContentType) =>
+            machineNames.some(
+                (machineName: string) => machineName === contentType.machineName
+            )
         );
     }
 

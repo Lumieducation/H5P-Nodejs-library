@@ -81,17 +81,19 @@ export default class LibraryManager {
     public async getInstalled(machineNames?: string[]): Promise<any> {
         log.verbose(`checking if libraries ${machineNames} are installed`);
         let libraries = await this.libraryStorage.getInstalled(...machineNames);
-        libraries = (await Promise.all(
-            libraries.map(async libName => {
-                const installedLib = InstalledLibrary.fromName(libName);
-                const info = await this.loadLibrary(libName);
-                installedLib.patchVersion = info.patchVersion;
-                installedLib.id = info.libraryId;
-                installedLib.runnable = info.runnable;
-                installedLib.title = info.title;
-                return installedLib;
-            })
-        )).sort((lib1, lib2) => lib1.compare(lib2));
+        libraries = (
+            await Promise.all(
+                libraries.map(async libName => {
+                    const installedLib = InstalledLibrary.fromName(libName);
+                    const info = await this.loadLibrary(libName);
+                    installedLib.patchVersion = info.patchVersion;
+                    installedLib.id = info.libraryId;
+                    installedLib.runnable = info.runnable;
+                    installedLib.title = info.title;
+                    return installedLib;
+                })
+            )
+        ).sort((lib1, lib2) => lib1.compare(lib2));
 
         const returnObject = {};
         for (const library of libraries) {
@@ -410,14 +412,19 @@ export default class LibraryManager {
                 ', '
             )} for ${LibraryName.toUberName(library)}`
         );
-        const missingFiles = (await Promise.all(
-            requiredFiles.map(async (file: string) => {
-                return {
-                    path: file,
-                    status: await this.libraryStorage.fileExists(library, file)
-                };
-            })
-        ))
+        const missingFiles = (
+            await Promise.all(
+                requiredFiles.map(async (file: string) => {
+                    return {
+                        path: file,
+                        status: await this.libraryStorage.fileExists(
+                            library,
+                            file
+                        )
+                    };
+                })
+            )
+        )
             .filter((file: { status: boolean }) => !file.status)
             .map((file: { path: string }) => file.path);
         if (missingFiles.length > 0) {
