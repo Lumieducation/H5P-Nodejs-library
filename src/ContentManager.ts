@@ -87,9 +87,9 @@ export default class ContentManager {
         const content: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
-        const otherContentFiles: string[] = (await globPromise(
-            path.join(packageDirectory, 'content', '**/*.*')
-        )).filter(
+        const otherContentFiles: string[] = (
+            await globPromise(path.join(packageDirectory, 'content', '**/*.*'))
+        ).filter(
             (file: string) =>
                 path.relative(packageDirectory, file) !== 'content.json'
         );
