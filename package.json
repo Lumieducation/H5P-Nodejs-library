@@ -1,6 +1,6 @@
 {
     "name": "h5p-nodejs-library",
-    "version": "v0.6.0",
+    "version": "v0.7.0",
     "description": "The H5P-Nodejs-library is a port of the H5P-Editor-PHP-library and the H5P-PHP-Library for Nodejs.",
     "repository": {
         "type": "git",
@@ -25,7 +25,11 @@
         "test:coverage": "npx jest --collect-coverage --testTimeout=30000",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=4",
         "format:check": "prettier --check \"{src,test}/**/*.ts\"",
-        "format": "prettier --write \"{src,test}/**/*.ts\""
+        "format": "prettier --write \"{src,test}/**/*.ts\"",
+        "semantic-release": "semantic-release"
+    },
+    "release": {
+        "branch": "master"
     },
     "contributors": [
         {
@@ -63,7 +67,7 @@
     "devDependencies": {
         "@types/escape-html": "0.0.20",
         "@types/fs-extra": "8.0.1",
-        "@types/jest": "24.0.21",
+        "@types/jest": "24.0.22",
         "@types/jsonpath": "0.2.0",
         "@types/shortid": "0.0.29",
         "@types/stream-buffers": "3.0.3",
@@ -75,17 +79,20 @@
         "express-fileupload": "1.1.6-alpha.6",
         "jest": "24.9.0",
         "mockdate": "2.0.5",
-        "prettier": "1.18.2",
+        "prettier": "1.19.1",
         "promise-queue": "2.2.5",
         "puppeteer": "2.0.0",
+        "semantic-release": "15.13.30",
+        "shortid": "2.2.15",
         "source-map-support": "0.5.16",
         "stream-mock": "2.0.5",
         "ts-jest": "24.1.0",
         "ts-node": "8.4.1",
-        "tslint": "5.20.0",
+        "tslint": "5.20.1",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
-        "typescript": "3.6.4"
+        "typescript": "3.7.2"
     },
-    "main": "./index.js"
+    "main": "./build/src/index.js",
+    "types": "./build/src/index.d.ts"
 }

@@ -130,6 +130,7 @@ export interface IIntegration {
  */
 export interface IEditorIntegration {
     ajaxPath: string;
+    apiVersion: { majorVersion: number; minorVersion: number };
     assets: {
         css: string[];
         js: string[];
@@ -877,6 +878,7 @@ export interface IEditorConfig {
     filesPath: string;
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
+     * Can be anything like 1.22.1
      * It is sent to the H5P Hub when registering there.
      * Not user-configurable and should not be changed by custom implementations.
      */
