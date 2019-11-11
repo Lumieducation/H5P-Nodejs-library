@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import child_process from 'child_process';
 import express from 'express';
-// tslint:disable-next-line: import-name
 import fileUpload from 'express-fileupload';
 import fs from 'fs';
 
@@ -10,7 +9,6 @@ import util from 'util';
 const exec = util.promisify(child_process.exec);
 import index from './index';
 
-// tslint:disable-next-line: import-name
 import H5P from '../src';
 
 import DirectoryTemporaryFileStorage from './implementation/DirectoryTemporaryFileStorage';
@@ -19,10 +17,8 @@ import FileContentStorage from './implementation/FileContentStorage';
 import FileLibraryStorage from './implementation/FileLibraryStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import JsonStorage from './implementation/JsonStorage';
-
 import User from './implementation/User';
 
-// tslint:disable-next-line: import-name
 import examples from './examples.json';
 
 const start = async () => {

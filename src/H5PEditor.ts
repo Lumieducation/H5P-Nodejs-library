@@ -4,11 +4,8 @@ import promisepipe from 'promisepipe';
 import stream from 'stream';
 import { withFile } from 'tmp-promise';
 
-// tslint:disable-next-line: import-name
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-// tslint:disable-next-line: import-name
 import defaultTranslation from '../assets/translations/en.json';
-// tslint:disable-next-line: import-name
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
