@@ -37,7 +37,7 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param {ContentId} id The id of the content to add the file to
-     * @param {string} filename The filename INSIDE the content folder
+     * @param {string} filename The filename
      * @param {Stream} stream A readable stream that contains the data
      * @param {User} user The user who owns this object
      * @returns {Promise<void>}
@@ -58,12 +58,7 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
 
-        const fullPath = path.join(
-            this.contentPath,
-            id.toString(),
-            'content',
-            filename
-        );
+        const fullPath = path.join(this.contentPath, id.toString(), filename);
         await fsExtra.ensureDir(path.dirname(fullPath));
         const writeStream = fsExtra.createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
@@ -83,7 +78,7 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Checks if a file exists.
      * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param filename the filename of the file to get
      * @returns true if the file exists
      */
     public async contentFileExists(
@@ -116,20 +111,12 @@ export default class FileContentStorage implements IContentStorage {
         }
         try {
             await fsExtra.ensureDir(path.join(this.contentPath, id.toString()));
-            await fsExtra.ensureDir(
-                path.join(this.contentPath, id.toString(), 'content')
-            );
             await fsExtra.writeJSON(
                 path.join(this.contentPath, id.toString(), 'h5p.json'),
                 metadata
             );
             await fsExtra.writeJSON(
-                path.join(
-                    this.contentPath,
-                    id.toString(),
-                    'content',
-                    'content.json'
-                ),
+                path.join(this.contentPath, id.toString(), 'content.json'),
                 content
             );
         } catch (error) {
@@ -192,7 +179,6 @@ export default class FileContentStorage implements IContentStorage {
         const absolutePath = path.join(
             this.contentPath,
             contentId.toString(),
-            'content',
             filename
         );
         if (!(await fsExtra.pathExists(absolutePath))) {
@@ -207,7 +193,7 @@ export default class FileContentStorage implements IContentStorage {
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content (does not include the content directory!), e.g. ['image1.png', 'video2.mp4']
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
     public async getContentFiles(
         contentId: ContentId,
@@ -215,13 +201,15 @@ export default class FileContentStorage implements IContentStorage {
     ): Promise<string[]> {
         const contentDirectoryPath = path.join(
             this.contentPath,
-            contentId.toString(),
-            'content'
+            contentId.toString()
         );
         const absolutePaths = await globPromise(
             path.join(contentDirectoryPath, '**', '*.*'),
             {
-                ignore: [path.join(contentDirectoryPath, 'content.json')],
+                ignore: [
+                    path.join(contentDirectoryPath, 'content.json'),
+                    path.join(contentDirectoryPath, 'h5p.json')
+                ],
                 nodir: true
             }
         );
@@ -231,7 +219,7 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param {ContentId} id the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param {string} filename the filename of the file to get
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */

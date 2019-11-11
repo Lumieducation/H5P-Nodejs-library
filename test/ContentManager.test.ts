@@ -160,10 +160,7 @@ describe('ContentManager', () => {
 
                 // check if file exists
                 await expect(
-                    contentManager.contentFileExists(
-                        contentId,
-                        'content/earth.jpg'
-                    )
+                    contentManager.contentFileExists(contentId, 'earth.jpg')
                 ).resolves.toEqual(true);
 
                 // check if file is in list
@@ -176,7 +173,7 @@ describe('ContentManager', () => {
                 // check if added file is readable
                 const fileStream = await contentManager.getContentFileStream(
                     contentId,
-                    'content/earth.jpg',
+                    'earth.jpg',
                     user
                 );
                 const mockWriteStream1 = new BufferWritableMock();
@@ -199,7 +196,7 @@ describe('ContentManager', () => {
                 await expect(
                     contentManager.getContentFileStream(
                         contentId,
-                        'content/earth.jpg',
+                        'earth.jpg',
                         user
                     )
                 ).rejects.toThrow();

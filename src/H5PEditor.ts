@@ -134,7 +134,7 @@ export default class H5PEditor {
             // we don't directly return the result of the getters as try - catch would not work then
             const returnStream = await this.contentManager.getContentFileStream(
                 contentId,
-                `content/${filename}`,
+                filename,
                 user
             );
             return returnStream;
@@ -569,7 +569,7 @@ export default class H5PEditor {
                 ].map((asset: string) => `${this.baseUrl}${asset}`)
             },
             filesPath: contentId
-                ? `${this.filesPath}/${contentId}/content`
+                ? `${this.filesPath}/${contentId}`
                 : this.config.temporaryFilesPath,
             libraryUrl: this.libraryUrl,
             nodeVersionId: contentId

@@ -274,10 +274,7 @@ describe('H5PEditor', () => {
 
                 // check if image is now in permanent storage
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        path.join('content', newFilename)
-                    )
+                    contentStorage.contentFileExists(contentId, newFilename)
                 ).resolves.toEqual(true);
 
                 // update content type without image
@@ -291,10 +288,7 @@ describe('H5PEditor', () => {
 
                 // check if file was deleted from storage
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        path.join('content', newFilename)
-                    )
+                    contentStorage.contentFileExists(contentId, newFilename)
                 ).resolves.toEqual(false);
             },
             { keep: false, unsafeCleanup: true }
@@ -369,16 +363,10 @@ describe('H5PEditor', () => {
                     savedFilePath.length - 4
                 );
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId1,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId1, cleanFilePath)
                 ).resolves.toEqual(true);
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId2,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId2, cleanFilePath)
                 ).resolves.toEqual(true);
             },
             { keep: false, unsafeCleanup: true }
@@ -474,10 +462,7 @@ describe('H5PEditor', () => {
                 );
                 // expect the image to be exist in the content
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId, cleanFilePath)
                 ).resolves.toEqual(true);
 
                 // the temporary file marker must not be present in the content parameters

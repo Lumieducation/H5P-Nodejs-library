@@ -37,7 +37,7 @@ export default class ContentManager {
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param {number} contentId The id of the content to add the file to
-     * @param {string} filename The filename INSIDE the content folder
+     * @param {string} filename The name of the content file
      * @param {Stream} stream A readable stream that contains the data
      * @param {IUser} user The user who owns this object
      * @returns {Promise<void>}
@@ -70,7 +70,7 @@ export default class ContentManager {
     /**
      * Checks if a file exists.
      * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param filename the filename of the file to get
      * @returns true if the file exists
      */
     public async contentFileExists(
@@ -175,7 +175,7 @@ export default class ContentManager {
     /**
      * Deletes a file from a content object.
      * @param contentId the content object the file is attached to
-     * @param filename the file to delete (WITHOUT 'content' directory in the path)
+     * @param filename the file to delete
      */
     public async deleteContentFile(
         contentId: ContentId,
@@ -188,7 +188,7 @@ export default class ContentManager {
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content (does not include the content directory!), e.g. ['image1.png', 'video2.mp4']
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
     public async getContentFiles(
         contentId: ContentId,
@@ -201,7 +201,7 @@ export default class ContentManager {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param {number} contentId the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param {string} filename the filename of the file to get
      * @param {IUser} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
@@ -249,7 +249,7 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<ContentParameters> {
-        return this.getFileJson(contentId, 'content/content.json', user);
+        return this.getFileJson(contentId, 'content.json', user);
     }
 
     /**
@@ -268,7 +268,7 @@ export default class ContentManager {
     /**
      * Returns the decoded JSON data inside a file
      * @param {number} contentId The id of the content object that the file is attached to
-     * @param {string} file The filename to get (relative to main dir, you have to add "content/" if you want to access a content file)
+     * @param {string} file The filename to get
      * @param {IUser} user The user who wants to access this object
      * @returns {Promise<any>}
      */
