@@ -1,45 +1,42 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const fileUpload = require('express-fileupload');
-const fs = require('fs');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const index = require('./index');
+import bodyParser from 'body-parser';
+import child_process from 'child_process';
+import express from 'express';
+// tslint:disable-next-line: import-name
+import fileUpload from 'express-fileupload';
+import fs from 'fs';
 
-const H5PEditor = require('../');
-const H5PPlayer = H5PEditor.Player;
+import path from 'path';
+import util from 'util';
+const exec = util.promisify(child_process.exec);
+import index from './index';
 
-const DirectoryTemporaryFileStorage = require('../build/examples/implementation/DirectoryTemporaryFileStorage')
-    .default;
-const InMemoryStorage = require('../build/examples/implementation/InMemoryStorage')
-    .default;
-const JsonStorage = require('../build/examples/implementation/JsonStorage')
-    .default;
-const EditorConfig = require('../build/examples/implementation/EditorConfig')
-    .default;
-const FileLibraryStorage = require('../build/examples/implementation/FileLibraryStorage')
-    .default;
-const FileContentStorage = require('../build/examples/implementation/FileContentStorage')
-    .default;
-const User = require('../build/examples/implementation/User').default;
+// tslint:disable-next-line: import-name
+import H5P from '../src';
 
-const examples = require('./examples.json');
+import DirectoryTemporaryFileStorage from './implementation/DirectoryTemporaryFileStorage';
+import EditorConfig from './implementation/EditorConfig';
+import FileContentStorage from './implementation/FileContentStorage';
+import FileLibraryStorage from './implementation/FileLibraryStorage';
+import InMemoryStorage from './implementation/InMemoryStorage';
+import JsonStorage from './implementation/JsonStorage';
+
+import User from './implementation/User';
+
+// tslint:disable-next-line: import-name
+import examples from './examples.json';
 
 const start = async () => {
-    const h5pEditor = new H5PEditor.Editor(
+    const h5pEditor = new H5P.Editor(
         new InMemoryStorage(),
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))
         ).load(),
         new FileLibraryStorage(path.resolve('h5p/libraries')),
         new FileContentStorage(path.resolve('h5p/content')),
-        new H5PEditor.TranslationService(H5PEditor.englishStrings),
+        new H5P.TranslationService(H5P.englishStrings),
         (library, file) =>
             `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-        new DirectoryTemporaryFileStorage(
-            path.resolve('h5p/temporary-storage')
-        )
+        new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
     );
 
     const user = new User();
@@ -62,7 +59,7 @@ const start = async () => {
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
         const stream = h5pEditor.libraryManager.getFileStream(
-            H5PEditor.LibraryName.fromUberName(req.params.uberName),
+            H5P.LibraryName.fromUberName(req.params.uberName),
             req.params.file
         );
         stream.on('end', () => {
@@ -104,8 +101,7 @@ const start = async () => {
 
     server.get('/', (req, res) => {
         fs.readdir('h5p/content', (error, files) => {
-            if (error) files = [];
-            res.end(index({ contentIds: files, examples }));
+            res.end(index({ contentIds: error ? [] : files, examples }));
         });
     });
 
@@ -116,15 +112,21 @@ const start = async () => {
 
         const libraryLoader = (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5PEditor.LibraryName(lib, maj, min)
+                new H5P.LibraryName(lib, maj, min)
             );
         Promise.all([
-            h5pEditor.contentManager.loadContent(req.query.contentId),
-            h5pEditor.contentManager.loadH5PJson(req.query.contentId)
+            h5pEditor.contentManager.loadContent(
+                req.query.contentId,
+                new User()
+            ),
+            h5pEditor.contentManager.loadH5PJson(
+                req.query.contentId,
+                new User()
+            )
         ]).then(([contentObject, h5pObject]) =>
-            new H5PPlayer(libraryLoader)
+            new H5P.Player(libraryLoader as any, {}, null, null, null)
                 .render(req.query.contentId, contentObject, h5pObject)
-                .then(h5p_page => res.end(h5p_page))
+                .then(h5pPage => res.end(h5pPage))
                 .catch(error => res.status(500).end(error.message))
         );
     });
@@ -134,7 +136,7 @@ const start = async () => {
             return res.redirect('/');
         }
 
-        const packageExporter = new H5PEditor.PackageExporter(
+        const packageExporter = new H5P.PackageExporter(
             h5pEditor.libraryManager,
             h5pEditor.translationService,
             h5pEditor.config,
@@ -146,43 +148,43 @@ const start = async () => {
             'Content-disposition',
             `attachment; filename=${req.query.contentId}.h5p`
         );
-        await packageExporter.createPackage(
-            req.query.contentId,
-            res,
-            user
-        );
+        await packageExporter.createPackage(req.query.contentId, res, user);
     });
 
     server.get('/examples/:key', (req, res) => {
-        let key = req.params.key;
-        let name = path.basename(examples[key].h5p);
+        const key = req.params.key;
+        const name = path.basename(examples[key].h5p);
         const tempPath = path.resolve('scripts/tmp');
         const tempFilename = path.join(tempPath, name);
 
         const libraryLoader = async (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5PEditor.LibraryName(lib, maj, min)
+                new H5P.LibraryName(lib, maj, min)
             );
 
         exec(`sh scripts/download-example.sh ${examples[key].h5p}`)
             .then(async () => {
                 const contentId = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
                     tempFilename,
-                    { canUpdateAndInstallLibraries: true }
+                    new User()
                 );
                 const h5pObject = await h5pEditor.contentManager.loadH5PJson(
-                    contentId
+                    contentId,
+                    new User()
                 );
                 const contentObject = await h5pEditor.contentManager.loadContent(
-                    contentId
-                );
-                return new H5PPlayer(libraryLoader).render(
                     contentId,
-                    contentObject,
-                    h5pObject
+                    new User()
                 );
+                return new H5P.Player(
+                    libraryLoader as any,
+                    {},
+                    null,
+                    null,
+                    ''
+                ).render(contentId, contentObject, h5pObject);
             })
-            .then(h5p_page => res.end(h5p_page))
+            .then(h5pPage => res.end(h5pPage))
             .catch(error => res.status(500).end(error.message))
             .finally(() => {
                 fs.unlinkSync(tempFilename);
@@ -264,8 +266,8 @@ const start = async () => {
                     req.query.language
                 );
                 res.status(200).json({
-                    success: true,
-                    data: translationsResponse
+                    data: translationsResponse,
+                    success: true
                 });
                 break;
             case 'files':
@@ -285,8 +287,8 @@ const start = async () => {
                     user
                 );
                 res.status(200).json({
-                    success: true,
-                    data: contentTypeCache
+                    data: contentTypeCache,
+                    success: true
                 });
                 break;
             case 'library-upload':
@@ -300,12 +302,12 @@ const start = async () => {
                     h5pEditor.getContentTypeCache(user)
                 ]);
                 res.status(200).json({
-                    success: true,
                     data: {
-                        h5p: content.h5p,
                         content: content.params.params,
-                        contentTypes
-                    }
+                        contentTypes,
+                        h5p: content.h5p
+                    },
+                    success: true
                 });
                 break;
             default:
@@ -314,11 +316,7 @@ const start = async () => {
         }
     });
 
-    server.listen(process.env.PORT || 8080, () => {
-        console.log(
-            `server running at http://localhost:${process.env.PORT || 8080}`
-        );
-    });
+    server.listen(process.env.PORT || 8080);
 };
 
 start();

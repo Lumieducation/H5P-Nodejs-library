@@ -101,21 +101,21 @@ export default class H5PEditor {
         );
     }
 
+    public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public libraryManager: LibraryManager;
+    public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
+    public translationService: TranslationService;
 
     private ajaxPath: string;
     private baseUrl: string;
-    private contentManager: ContentManager;
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
     private libraryUrl: string;
-    private packageImporter: PackageImporter;
     private renderer: any;
     private translation: any;
-    private translationService: TranslationService;
 
     /**
      * Returns a stream for a file that was uploaded for a content object.
@@ -217,22 +217,20 @@ export default class H5PEditor {
                 ', '
             )}`
         );
-        return (
-            await Promise.all(
-                libraryNames.map(async name => {
-                    const lib = LibraryName.fromUberName(name, {
-                        useWhitespace: true
-                    });
-                    return {
-                        languageJson: await this.libraryManager.loadLanguage(
-                            lib,
-                            language
-                        ),
-                        name
-                    };
-                })
-            )
-        ).reduce((builtObject: any, { languageJson, name }) => {
+        return (await Promise.all(
+            libraryNames.map(async name => {
+                const lib = LibraryName.fromUberName(name, {
+                    useWhitespace: true
+                });
+                return {
+                    languageJson: await this.libraryManager.loadLanguage(
+                        lib,
+                        language
+                    ),
+                    name
+                };
+            })
+        )).reduce((builtObject: any, { languageJson, name }) => {
             if (languageJson) {
                 builtObject[name] = JSON.stringify(languageJson);
             }
@@ -246,36 +244,34 @@ export default class H5PEditor {
         log.info(
             `getting library overview for libraries: ${libraryNames.join(', ')}`
         );
-        return (
-            await Promise.all(
-                libraryNames
-                    .map(name =>
-                        LibraryName.fromUberName(name, {
-                            useWhitespace: true
-                        })
-                    )
-                    .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
-                    .map(async lib => {
-                        const loadedLibrary = await this.libraryManager.loadLibrary(
-                            lib
-                        );
-                        if (!loadedLibrary) {
-                            return undefined;
-                        }
-                        return {
-                            majorVersion: loadedLibrary.majorVersion,
-                            metadataSettings: null,
-                            minorVersion: loadedLibrary.minorVersion,
-                            name: loadedLibrary.machineName,
-                            restricted: false,
-                            runnable: loadedLibrary.runnable,
-                            title: loadedLibrary.title,
-                            tutorialUrl: '',
-                            uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
-                        };
+        return (await Promise.all(
+            libraryNames
+                .map(name =>
+                    LibraryName.fromUberName(name, {
+                        useWhitespace: true
                     })
-            )
-        ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
+                )
+                .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
+                .map(async lib => {
+                    const loadedLibrary = await this.libraryManager.loadLibrary(
+                        lib
+                    );
+                    if (!loadedLibrary) {
+                        return undefined;
+                    }
+                    return {
+                        majorVersion: loadedLibrary.majorVersion,
+                        metadataSettings: null,
+                        minorVersion: loadedLibrary.minorVersion,
+                        name: loadedLibrary.machineName,
+                        restricted: false,
+                        runnable: loadedLibrary.runnable,
+                        title: loadedLibrary.title,
+                        tutorialUrl: '',
+                        uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
+                    };
+                })
+        )).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
     }
 
     /**

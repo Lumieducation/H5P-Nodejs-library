@@ -32,6 +32,7 @@
         ],
         "object-shorthand-properties-first": false,
         "no-implicit-dependencies": [true, "dev"],
-        "array-type": false
+        "array-type": false,
+        "import-name": false
     }
 }
