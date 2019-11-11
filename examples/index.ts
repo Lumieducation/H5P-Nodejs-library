@@ -1,4 +1,4 @@
-module.exports = model => `<html>
+export default model => `<html>
 <head>
 <meta charset="UTF-8">
 </head>

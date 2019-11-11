@@ -4,11 +4,8 @@ import promisepipe from 'promisepipe';
 import stream from 'stream';
 import { withFile } from 'tmp-promise';
 
-// tslint:disable-next-line: import-name
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-// tslint:disable-next-line: import-name
 import defaultTranslation from '../assets/translations/en.json';
-// tslint:disable-next-line: import-name
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
@@ -101,21 +98,21 @@ export default class H5PEditor {
         );
     }
 
+    public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public libraryManager: LibraryManager;
+    public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
+    public translationService: TranslationService;
 
     private ajaxPath: string;
     private baseUrl: string;
-    private contentManager: ContentManager;
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
     private libraryUrl: string;
-    private packageImporter: PackageImporter;
     private renderer: any;
     private translation: any;
-    private translationService: TranslationService;
 
     /**
      * Returns a stream for a file that was uploaded for a content object.

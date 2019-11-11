@@ -9,7 +9,6 @@ import {
 } from './types';
 
 import player from './renderers/player';
-// tslint:disable-next-line: import-name
 import defaultTranslation from './translations/en.player.json';
 
 import Logger from './helpers/Logger';

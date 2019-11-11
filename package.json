@@ -7,7 +7,7 @@
         "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
     },
     "scripts": {
-        "start": "node examples/express.js",
+        "start": "./node_modules/.bin/ts-node examples/express.ts",
         "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core && npm run build",
         "build": "npx tsc -p ./tsconfig.build.json && cp -r src/schemas build/src/schemas && cp -r src/translations build/src/translations",
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
@@ -75,6 +75,7 @@
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
         "axios-mock-adapter": "1.17.0",
+        "body-parser": "^1.19.0",
         "express": "4.17.1",
         "express-fileupload": "1.1.6-alpha.6",
         "jest": "24.9.0",

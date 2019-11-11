@@ -4,7 +4,6 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import TranslationService from './TranslationService';
 
-// tslint:disable-next-line: import-name
 import englishStrings from './translations/en.json';
 
 export default {
