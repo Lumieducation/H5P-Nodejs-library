@@ -75,7 +75,7 @@
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
         "axios-mock-adapter": "1.17.0",
-        "body-parser": "^1.19.0",
+        "body-parser": "1.19.0",
         "express": "4.17.1",
         "express-fileupload": "1.1.6-alpha.6",
         "jest": "24.9.0",
