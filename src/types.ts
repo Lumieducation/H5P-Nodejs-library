@@ -137,6 +137,7 @@ export interface IEditorIntegration {
     };
     filesPath: string;
     libraryUrl: string;
+    nodeVersionId: ContentId;
 }
 
 /**

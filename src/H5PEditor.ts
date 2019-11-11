@@ -571,7 +571,8 @@ export default class H5PEditor {
             filesPath: contentId
                 ? `${this.filesPath}/${contentId}/content`
                 : this.config.temporaryFilesPath,
-            libraryUrl: this.libraryUrl
+            libraryUrl: this.libraryUrl,
+            nodeVersionId: contentId
         };
     }
 
