@@ -103,7 +103,6 @@ export default class H5PPlayer {
             contents: {
                 [`cid-${contentId}`]: {
                     ...this.content,
-                    contentUrl: `${this.baseUrl}/content/${contentId}`,
                     displayOptions: {
                         copy: false,
                         copyright: false,

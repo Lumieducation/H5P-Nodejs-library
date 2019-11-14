@@ -135,6 +135,9 @@ export interface IEditorIntegration {
         css: string[];
         js: string[];
     };
+    /**
+     * The path where **temporary** files can be retrieved from.
+     */
     filesPath: string;
     libraryUrl: string;
     nodeVersionId: ContentId;

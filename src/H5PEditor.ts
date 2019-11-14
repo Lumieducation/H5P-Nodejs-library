@@ -568,9 +568,7 @@ export default class H5PEditor {
                     '/editor/ckeditor/ckeditor.js'
                 ].map((asset: string) => `${this.baseUrl}${asset}`)
             },
-            filesPath: contentId
-                ? `${this.filesPath}/${contentId}`
-                : this.config.temporaryFilesPath,
+            filesPath: this.config.temporaryFilesPath,
             libraryUrl: this.libraryUrl,
             nodeVersionId: contentId
         };
