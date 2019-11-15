@@ -120,7 +120,7 @@ export default class TemporaryFileManager {
         filename: string,
         user: IUser
     ): Promise<string> {
-        const attempts = 0;
+        let attempts = 0;
         let filenameAttempt = '';
         let exists = false;
         do {
@@ -129,6 +129,7 @@ export default class TemporaryFileManager {
                 path.extname(filename)
             )}-${shortid()}${path.extname(filename)}`;
             exists = await this.storage.fileExists(filenameAttempt, user);
+            attempts += 1;
         } while (attempts < 5 && exists); // only try 5 times
         if (exists) {
             log.error(`Cannot determine a unique filename for ${filename}`);
