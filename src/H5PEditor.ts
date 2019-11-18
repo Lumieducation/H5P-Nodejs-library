@@ -151,7 +151,7 @@ export default class H5PEditor {
         return this.contentTypeRepository.get(user);
     }
 
-    public getLibraryData(
+    public async getLibraryData(
         machineName: string,
         majorVersion: number,
         minorVersion: number,
@@ -165,36 +165,42 @@ export default class H5PEditor {
             majorVersion,
             minorVersion
         );
-        return Promise.all([
+
+        if (!(await this.libraryManager.libraryExists(library))) {
+            throw new H5pError(
+                `Library ${LibraryName.toUberName(library)} was not found.`
+            );
+        }
+
+        const [
+            assets,
+            semantics,
+            languageObject,
+            languages,
+            upgradeScriptPath
+        ] = await Promise.all([
             this.loadAssets(machineName, majorVersion, minorVersion, language),
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library),
             this.libraryManager.getUpgradesScriptPath(library)
-        ]).then(
-            ([
-                assets,
-                semantics,
-                languageObject,
-                languages,
-                upgradeScriptPath
-            ]) => ({
-                languages,
-                semantics,
-                // tslint:disable-next-line: object-literal-sort-keys
-                css: assets.styles,
-                defaultLanguage: null,
-                language: languageObject,
-                name: machineName,
-                version: {
-                    major: majorVersion,
-                    minor: minorVersion
-                },
-                javascript: assets.scripts,
-                translations: assets.translations,
-                upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
-            })
-        );
+        ]);
+        return {
+            languages,
+            semantics,
+            // tslint:disable-next-line: object-literal-sort-keys
+            css: assets.styles,
+            defaultLanguage: null,
+            language: languageObject,
+            name: machineName,
+            version: {
+                major: majorVersion,
+                minor: minorVersion
+            },
+            javascript: assets.scripts,
+            translations: assets.translations,
+            upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
+        };
     }
 
     /**
