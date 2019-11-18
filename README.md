@@ -128,6 +128,15 @@ After installation, you can run the tests with
 npm test
 ```
 
+### Debugging
+
+The library emits log messages with [debug](https://www.npmjs.com/package/debug). To see those messages you have to set the environment variable ```DEBUG``` to ```h5p:*```. There are several log levels. By default you'll only see the messages sent with the level ```info```. To get the verbose log, set the environment variable ```LOG_LEVEL``` to verbose (mind the capitalization).
+
+Example (for Linux):
+```
+$ DEBUG=h5p:* LOG_LEVEL=verbose node script.js
+```
+
 ### Other scripts
 
 Check out the many other npm scripts in [package.json](package.json) for other development functionality.
