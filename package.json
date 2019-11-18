@@ -83,7 +83,7 @@
         "prettier": "1.19.1",
         "promise-queue": "2.2.5",
         "puppeteer": "2.0.0",
-        "semantic-release": "15.13.30",
+        "semantic-release": "15.13.31",
         "shortid": "2.2.15",
         "source-map-support": "0.5.16",
         "stream-mock": "2.0.5",
