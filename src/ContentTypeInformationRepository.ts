@@ -53,15 +53,6 @@ export default class ContentTypeInformationRepository {
     public async get(user: IUser): Promise<any> {
         log.info(`getting information about available content types`);
         let cachedHubInfo = await this.contentTypeCache.get();
-        if (!cachedHubInfo) {
-            // try updating cache if it is empty for some reason
-            await this.contentTypeCache.updateIfNecessary();
-            cachedHubInfo = await this.contentTypeCache.get();
-        }
-        if (!cachedHubInfo) {
-            // if the H5P Hub is unreachable use empty array (so that local libraries can be added)
-            cachedHubInfo = [];
-        }
         cachedHubInfo = await this.addUserAndInstallationSpecificInfo(
             cachedHubInfo,
             user

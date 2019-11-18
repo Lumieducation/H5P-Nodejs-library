@@ -123,43 +123,58 @@ export default class ContentTypeCache {
 
     /**
      * Downloads the content type information from the H5P Hub and stores it in the storage object.
-     * @returns {Promise<boolean>} true if update was done; false if it failed (e.g. because Hub was unreachable)
+     * @returns the downloaded (and saved) cache; undefined if it failed (e.g. because Hub was unreachable)
      */
-    public async forceUpdate(): Promise<boolean> {
+    public async forceUpdate(): Promise<any> {
         log.info(`forcing update`);
         let cacheInHubFormat;
         try {
             cacheInHubFormat = await this.downloadContentTypesFromHub();
             if (!cacheInHubFormat) {
-                return false;
+                return undefined;
             }
         } catch (error) {
             log.error(error);
-            return false;
+            return undefined;
         }
         const cacheInInternalFormat = cacheInHubFormat.map(
             ContentTypeCache.convertCacheEntryToLocalFormat
         );
         await this.storage.save('contentTypeCache', cacheInInternalFormat);
         await this.storage.save('contentTypeCacheUpdate', Date.now());
-        return true;
+        return cacheInInternalFormat;
     }
 
     /**
      * Returns the cache data.
-     * @param {string[]} machineNames (optional) The method only returns content type cache data for these machinen ames.
+     * @param {string[]} machineNames (optional) The method only returns content type cache data for these machine names.
      * @returns {Promise<HubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
     public async get(...machineNames: string[]): Promise<HubContentType[]> {
         log.info(`getting content types`);
-        if (!machineNames || machineNames.length === 0) {
-            return this.storage.load('contentTypeCache');
+
+        let cache = await this.storage.load('contentTypeCache');
+        if (!cache) {
+            log.info(
+                'ContentTypeCache was never updated before. Downloading it from the H5P Hub...'
+            );
+            // try updating cache if it is empty for some reason
+            cache = await this.forceUpdate();
+            // if the cache is still empty (e.g. because no connection to the H5P Hub can be established, return an empty array)
+            if (!cache) {
+                log.info(
+                    'ContentTypeCache could not be retrieved from H5P Hub.'
+                );
+                return [];
+            }
         }
-        return (
-            await this.storage.load('contentTypeCache')
-        ).filter((contentType: HubContentType) =>
+
+        if (!machineNames || machineNames.length === 0) {
+            return cache;
+        }
+        return cache.filter((contentType: HubContentType) =>
             machineNames.some(
-                (machineName: string) => machineName === contentType.machineName
+                machineName => machineName === contentType.machineName
             )
         );
     }
@@ -218,7 +233,7 @@ export default class ContentTypeCache {
         const oldCache = await this.storage.load('contentTypeCache');
         if (!oldCache || (await this.isOutdated())) {
             log.info(`update is necessary`);
-            return this.forceUpdate();
+            return (await this.forceUpdate()) !== undefined;
         }
         log.info(`no update necessary`);
         return false;
