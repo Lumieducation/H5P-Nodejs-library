@@ -1,9 +1,13 @@
 {
     "extends": ["config:base"],
-    "labels": ["[type] chore", "[status] needs reviewer"],
+    "labels": ["[type] chore", "[status] needs review"],
     "lockFileMaintenance": {
         "enabled": true,
         "schedule": "every weekday"
+    },
+    "automerge": true,
+    "major": {
+        "automerge": false
     },
     "prConcurrentLimit": 0,
     "prHourlyLimit": 50,
