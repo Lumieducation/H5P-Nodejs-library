@@ -1,10 +1,13 @@
+import path from 'path';
+import shortid from 'shortid';
+
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import TemporaryFileManager from './TemporaryFileManager';
-import { ContentId, IUser } from './types';
+import { ContentId, IContentMetadata, IUser } from './types';
 
 const log = new Logger('ContentStorer');
 
@@ -23,11 +26,20 @@ export default class ContentStorer {
 
     private contentFileScanner: ContentFileScanner;
 
+    /**
+     * Saves content in the persistence system. Also copies over files from temporary storage
+     * or from other content if the content was pasted from there.
+     * @param contentId the contentId (can be undefined if previously unsaved)
+     * @param parameters the parameters of teh content (= content.json)
+     * @param metadata = content of h5p.json
+     * @param mainLibraryUberName use whitespace as separated (e.g. H5P.Example 1.0)
+     * @param user the user who wants to save the file
+     */
     public async saveOrUpdateContent(
         contentId: ContentId,
         parameters: any,
-        h5pJson: any,
-        mainLibraryName: string,
+        metadata: IContentMetadata,
+        mainLibraryUberName: string,
         user: IUser
     ): Promise<ContentId> {
         const isUpdate = contentId !== undefined;
@@ -43,7 +55,9 @@ export default class ContentStorer {
         // were deleted in the editor by the user.
         const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
             parameters,
-            LibraryName.fromUberName(mainLibraryName, { useWhitespace: true })
+            LibraryName.fromUberName(mainLibraryUberName, {
+                useWhitespace: true
+            })
         );
         const filesToCopyFromTemporaryStorage = await this.determineFilesToCopyFromTemporaryStorage(
             fileReferencesInNewParams,
@@ -52,7 +66,7 @@ export default class ContentStorer {
 
         // Store the content in persistent storage / update the content there.
         const newContentId = await this.contentManager.createOrUpdateContent(
-            h5pJson,
+            metadata,
             parameters,
             user,
             contentId
@@ -69,6 +83,24 @@ export default class ContentStorer {
             // the regular expiration mechanism at some point.
         );
 
+        // We copy over files that were pasted from another piece of content. This might requires changing the paths
+        // in the parameters, so we have to update them.
+        // TODO: In the future we might want to avoid updating content right after it was saved.
+        if (
+            await this.copyFilesFromPasteSource(
+                fileReferencesInNewParams,
+                user,
+                newContentId
+            )
+        ) {
+            await this.contentManager.createOrUpdateContent(
+                metadata,
+                parameters,
+                user,
+                newContentId
+            );
+        }
+
         // If this is an content update, we might have to delete files from storage that
         // were deleted by the user.
         // (Files that were referenced in the old params but aren't referenced in the new params anymore
@@ -84,6 +116,73 @@ export default class ContentStorer {
         }
 
         return newContentId;
+    }
+
+    /**
+     * Looks through the file references and check if any of them originate from a copy & paste
+     * operation. (Can be detected by checking if the path is relative.) If there are copy & pasted
+     * files, these files will be copied over to the new contentId and the references will be updated
+     * accordingly.
+     * @param fileReferencesInParams The file references found in the parameters
+     * @param user the user who wants to save the content
+     * @param contentId the content the files will be attached to
+     * @returns true if file reference were changed and the changed parameters must be saved
+     */
+    private async copyFilesFromPasteSource(
+        fileReferencesInParams: IFileReference[],
+        user: IUser,
+        contentId: string
+    ): Promise<boolean> {
+        let changedSomething = false;
+        for (const ref of fileReferencesInParams) {
+            // Check for relative paths
+            log.debug(`Checking if file ${ref.filePath} is a relative path.`);
+            const matches = ref.filePath.match(
+                /^\.\.\/content\/([\w\-._]+)\/([\w\-.\/_]+)$/
+            );
+            if (!matches || matches.length === 0) {
+                continue;
+            }
+            const sourceContentId = matches[1];
+            const sourceFilename = matches[2];
+
+            log.debug(
+                `Copying pasted file ${sourceFilename} from ${sourceContentId}.`
+            );
+
+            // If something goes wrong we simply remove the file from the reference.
+            try {
+                const sourceFileStream = await this.contentManager.getContentFileStream(
+                    sourceContentId,
+                    sourceFilename,
+                    user
+                );
+
+                // the filename might already be in use in the piece of content, so we generate a new one.
+                const pastedFilename = await this.getUniqueFilename(
+                    contentId,
+                    sourceFilename
+                );
+
+                await this.contentManager.addContentFile(
+                    contentId,
+                    pastedFilename,
+                    sourceFileStream,
+                    user
+                );
+
+                // We have to replace the relative path with the path of the just saved file
+                ref.context.params.path = pastedFilename;
+                changedSomething = true;
+            } catch (error) {
+                // If something went wrong, we simply remove the reference to the file from the params.
+                log.error(
+                    `Could not copy file ${sourceFilename} from ${sourceContentId}: ${error}. Removing the reference in the pasted content.`
+                );
+                ref.context.params.path = '';
+            }
+        }
+        return changedSomething;
     }
 
     /**
@@ -215,5 +314,50 @@ export default class ContentStorer {
                 )
             )
         ).map(fi => fi.filePath);
+    }
+
+    /**
+     * Generates a unique filename. Removes short-ids that were added to filenames
+     * @param contentId the content object for which the file is about to be saved
+     * @param filename the filename on which to base the unique filename on
+     * @returns a unique filename (within the content object)
+     */
+    private async getUniqueFilename(
+        contentId: ContentId,
+        filename: string
+    ): Promise<string> {
+        log.debug(`Getting unique name for ${filename}.`);
+        let actualFilename = filename;
+        // remove already assigned shortids
+        const match = filename.match(/^(.+?)-(.+?)(\.\w+)$/);
+        if (match && shortid.isValid(match[2])) {
+            actualFilename = match[1] + match[3];
+            log.debug(`Actual filename is ${actualFilename}.`);
+        }
+
+        // try newly generated filenames
+        let attempts = 0;
+        let filenameAttempt = '';
+        let exists = false;
+        do {
+            filenameAttempt = `${path.basename(
+                actualFilename,
+                path.extname(actualFilename)
+            )}-${shortid()}${path.extname(actualFilename)}`;
+            log.debug(`Checking if ${filenameAttempt} already exists`);
+            exists = await this.contentManager.contentFileExists(
+                contentId,
+                filenameAttempt
+            );
+            attempts += 1;
+        } while (attempts < 5 && exists); // only try 5 times
+        if (exists) {
+            log.error(`Cannot determine a unique filename for ${filename}`);
+            throw new Error(
+                `Cannot determine a unique filename for ${filename}`
+            );
+        }
+        log.debug(`Unique filename is ${filenameAttempt}`);
+        return filenameAttempt;
     }
 }

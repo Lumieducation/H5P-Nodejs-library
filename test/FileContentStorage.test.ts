@@ -154,4 +154,45 @@ describe('FileContentStorage (repository that saves content objects to a local d
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it("doesn't accept relative paths", async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const user = new User();
+                const storage = new FileContentStorage(tempDirPath);
+                const id = await storage.createContent(
+                    createMetadataMock(),
+                    {},
+                    user
+                );
+                const stream1 = new Readable();
+                stream1._read = () => {
+                    return;
+                };
+                stream1.push('dummy');
+                stream1.push(null);
+                await expect(
+                    storage.addContentFile(id, '../file1.txt', stream1, user)
+                ).rejects.toThrow(
+                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
+                );
+                await expect(
+                    storage.contentFileExists(id, '../file1.txt')
+                ).rejects.toThrow(
+                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
+                );
+                await expect(
+                    storage.deleteContentFile(id, '../file1.txt')
+                ).rejects.toThrow(
+                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
+                );
+                expect(() => {
+                    storage.getContentFileStream(id, '../file1.txt', user);
+                }).toThrow(
+                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });

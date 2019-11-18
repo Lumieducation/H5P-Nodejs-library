@@ -100,7 +100,7 @@ describe('package importer', () => {
                 ).toEqual('Hello world!');
                 const fileStream = await contentManager.getContentFileStream(
                     contentId,
-                    'content/earth.jpg',
+                    'earth.jpg',
                     user
                 );
                 expect(fileStream).toBeDefined();

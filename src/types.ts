@@ -135,8 +135,12 @@ export interface IEditorIntegration {
         css: string[];
         js: string[];
     };
+    /**
+     * The path where **temporary** files can be retrieved from.
+     */
     filesPath: string;
     libraryUrl: string;
+    nodeVersionId: ContentId;
 }
 
 /**
@@ -266,13 +270,13 @@ export interface IContentStorage {
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param contentId The id of the content to add the file to
-     * @param filename The filename INSIDE the content folder
+     * @param filename The filename
      * @param stream A readable stream that contains the data
      * @param user The user who owns this object
      */
     addContentFile(
         contentId: ContentId,
-        localPath: string,
+        filename: string,
         readStream: Stream,
         user?: IUser
     ): Promise<void>;
@@ -287,7 +291,7 @@ export interface IContentStorage {
     /**
      * Checks if a file exists.
      * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param filename the filename of the file to get
      * @returns true if the file exists
      */
     contentFileExists(contentId: ContentId, filename: string): Promise<boolean>;
@@ -335,7 +339,7 @@ export interface IContentStorage {
      * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content (does not include the content directory!), e.g. ['image1.png', 'video2.mp4']
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
     getContentFiles(contentId: ContentId, user: IUser): Promise<string[]>;
 
@@ -343,7 +347,7 @@ export interface IContentStorage {
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * NOTE: THIS METHOD IS NOT ASYNC!
      * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get (you have to add the "content/" directory if needed)
+     * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
      * @returns the stream (that can be used to send the file to the user)
      */

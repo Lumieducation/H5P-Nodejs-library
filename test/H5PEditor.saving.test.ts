@@ -274,10 +274,7 @@ describe('H5PEditor', () => {
 
                 // check if image is now in permanent storage
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        path.join('content', newFilename)
-                    )
+                    contentStorage.contentFileExists(contentId, newFilename)
                 ).resolves.toEqual(true);
 
                 // update content type without image
@@ -291,10 +288,7 @@ describe('H5PEditor', () => {
 
                 // check if file was deleted from storage
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        path.join('content', newFilename)
-                    )
+                    contentStorage.contentFileExists(contentId, newFilename)
                 ).resolves.toEqual(false);
             },
             { keep: false, unsafeCleanup: true }
@@ -369,16 +363,10 @@ describe('H5PEditor', () => {
                     savedFilePath.length - 4
                 );
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId1,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId1, cleanFilePath)
                 ).resolves.toEqual(true);
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId2,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId2, cleanFilePath)
                 ).resolves.toEqual(true);
             },
             { keep: false, unsafeCleanup: true }
@@ -474,15 +462,114 @@ describe('H5PEditor', () => {
                 );
                 // expect the image to be exist in the content
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId,
-                        `content/${cleanFilePath}`
-                    )
+                    contentStorage.contentFileExists(contentId, cleanFilePath)
                 ).resolves.toEqual(true);
 
                 // the temporary file marker must not be present in the content parameters
                 const { params } = await h5pEditor.loadH5P(contentId, user);
                 expect(params.params.image.path).toEqual(cleanFilePath);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('copies pasted image from saved content', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } = createH5PEditor(
+                    tempDirPath
+                );
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save image
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const { path: savedFilePath } = await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: fsExtra.statSync(originalPath).size
+                    },
+                    user
+                );
+
+                // put path of image into parameters (like the H5P editor client would)
+                mockupParametersWithImage.image.path = savedFilePath;
+
+                // save the H5P content object
+                const contentId1 = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // remove the #tmp tag
+                const cleanSavedFilePath = savedFilePath.substr(
+                    0,
+                    savedFilePath.length - 4
+                );
+
+                // save pasted content
+                const pastedMockupParametersWithImage = {
+                    greeting: 'Hello pasted!',
+                    image: {
+                        copyright: { license: 'U' },
+                        height: 300,
+                        path: `../content/${contentId1}/${cleanSavedFilePath}`,
+                        width: 300
+                    }
+                };
+                const contentId2 = await h5pEditor.saveH5P(
+                    undefined,
+                    pastedMockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // check if newly saved content has a different file name than the original (to prevent collisions)
+                const { params: params2 } = await h5pEditor.loadH5P(
+                    contentId2,
+                    user
+                );
+                expect(params2.params.image.path).not.toEqual(
+                    cleanSavedFilePath
+                );
+                // check if the relative path was removed
+                expect(params2.params.image.path.startsWith('../')).toBeFalsy();
+
+                // check if first saved content still has content file
+                await expect(
+                    contentStorage.contentFileExists(
+                        contentId1,
+                        cleanSavedFilePath
+                    )
+                ).resolves.toEqual(true);
+
+                // check if second saved content has copy of content file
+                await expect(
+                    contentStorage.contentFileExists(
+                        contentId2,
+                        params2.params.image.path
+                    )
+                ).resolves.toEqual(true);
             },
             { keep: false, unsafeCleanup: true }
         );
