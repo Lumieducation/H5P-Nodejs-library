@@ -33,7 +33,6 @@ describe('Rendering the HTML page', () => {
                         H5PIntegration = {
                   "contents": {
                     "cid-foo": {
-                      "contentUrl": "/h5p/content/foo/content",
                       "displayOptions": {
                         "copy": false,
                         "copyright": false,
@@ -230,7 +229,6 @@ describe('Rendering the HTML page', () => {
                             H5PIntegration = {
                       "contents": {
                         "cid-foo": {
-                          "contentUrl": "/h5p/content/foo/content",
                           "displayOptions": {
                             "copy": false,
                             "copyright": false,

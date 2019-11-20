@@ -64,7 +64,7 @@ const start = async () => {
         stream.pipe(res.type(path.basename(req.params.file)));
     });
 
-    server.get(`${h5pRoute}/content/:id/content/:file(*)`, async (req, res) => {
+    server.get(`${h5pRoute}/content/:id/:file(*)`, async (req, res) => {
         const stream = await h5pEditor.getContentFileStream(
             req.params.id,
             req.params.file,
