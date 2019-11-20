@@ -384,9 +384,19 @@ export default class H5PEditor {
             log.info('saving new content');
         }
 
+        // validate library name
+        let parsedLibraryName: ILibraryName;
+        try {
+            parsedLibraryName = LibraryName.fromUberName(mainLibraryName, {
+                useWhitespace: true
+            });
+        } catch (error) {
+            throw new H5pError(`mainLibraryName is invalid: ${error.message}`);
+        }
+
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
-            mainLibraryName,
+            parsedLibraryName,
             this.findLibraries(parameters)
         );
 
@@ -394,7 +404,7 @@ export default class H5PEditor {
             contentId,
             parameters,
             h5pJson,
-            mainLibraryName,
+            parsedLibraryName,
             user
         );
         return newContentId;
@@ -603,17 +613,13 @@ export default class H5PEditor {
 
     private generateH5PJSON(
         metadata: IContentMetadata,
-        libraryName: string,
+        libraryName: ILibraryName,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
         return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
-                .loadLibrary(
-                    LibraryName.fromUberName(libraryName, {
-                        useWhitespace: true
-                    })
-                )
+                .loadLibrary(libraryName)
                 .then((library: InstalledLibrary) => {
                     const h5pJson: IContentMetadata = {
                         ...metadata,

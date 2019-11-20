@@ -574,4 +574,27 @@ describe('H5PEditor', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('returns a helpful error if libraryName is invalid', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // save the content
+                await expect(
+                    h5pEditor.saveH5P(
+                        undefined,
+                        mockupParametersWithoutImage,
+                        mockupMetadata,
+                        'abc',
+                        user
+                    )
+                ).rejects.toThrowError(
+                    'mainLibraryName is invalid: \'abc is not a valid H5P library name ("ubername"). You must follow this pattern: H5P.Example 1.0\''
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });
