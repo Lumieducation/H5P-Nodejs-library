@@ -23,6 +23,11 @@ The interfaces are also not stable yet!
 
 ## Using h5p-nodejs-library to create your own H5P server application
 
+### Architecture
+
+To find out what this library provides for you and what you must implement on your own, check
+out the [architecture overview](docs/architecture.md) first.
+
 ### Installation
 
 Install the library by executing
