@@ -29,7 +29,7 @@ The request will be sent to the URL under which the editor is rendered.
 Its body is
 
 ```js
-{ 
+{
     params: {
         params: {/** new content **/},
         metadata: {/** new metadata **/}
@@ -42,10 +42,11 @@ The request data should be passed to `H5PEditor.saveH5P`
 
 ```js
 h5pEditor.saveH5P(
-    contentId,      // (optional)
-    body.params.params, 
-    body.params.metadata, 
-    body.library)
+    contentId, // (optional)
+    body.params.params,
+    body.params.metadata,
+    body.library
+);
 ```
 
 ### Get Content Information
@@ -57,7 +58,7 @@ Requests information about a piece of content. Respond with
 ```js
 h5pEditor
     .loadH5P(
-        contentId, 
+        contentId,
         user)       // the requesting user
     .then(content => /** send content to browser **/)
 ```
@@ -107,7 +108,7 @@ h5pEditor
 
 `POST /ajax?action=files&contentId=<string>`
 
-Sends a file to be saved under the given content ID. 
+Sends a file to be saved under the given content ID.
 The ID can be passed in the query string of the body of the request.
 
 ```js

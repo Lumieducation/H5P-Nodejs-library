@@ -2,7 +2,7 @@
 
 ## General overview
 
-A final H5P web-application consists of four components, which communicate between each other:
+A H5P web-application using this library consists of four components, which communicate between each other:
 
 1. This library on the server-side (in yellow below)
 2. Your server (implementation of the interfaces of this library + other endpoints, in blue below)
@@ -13,16 +13,16 @@ As you can see, this library is not an out of the box solution, but requires you
 
 ## Example diagram of the editor
 
-The diagram shows how the four components interact in a selection of user interaction. Each interaction has a specific colour and can be traced through the system by it.
+The diagram shows how the four components interact in a selection of use cases. Each use case has a specific colour and can be traced through the system by it.
 
 ![Diagram showing the components at work](editor-architecture.svg)
 
 You have to implement all the components shown in blue. This library provides the parts in yellow and the grey parts are provided by Joubel's H5P client libraries (downloaded from the PHP implementation).
 
-Note: The diagram doesn't show a complete list of all interactions and is only intended to illustrate how everything plays together! There is a lot more functionality in the h5p-nodejs-library, which is not listed here.
+Note: The diagram doesn't show a complete list of all use cases and is only intended to illustrate how everything plays together! There is a lot more functionality in the h5p-nodejs-library, which is not listed here.
 
 The player is simpler, as it doesn't have as many endpoints, but works in a comparable way to the structure in the diagram.
 
 ## Example implementation
 
-There is a basic example implementation of the server and client (blue parts) using Express in the ```examples``` folder. Check it out to see how everything plays together.
+There is a basic example implementation of the server and client (blue parts) using Express in the [`examples`](/examples) folder.

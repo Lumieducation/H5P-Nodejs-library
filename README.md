@@ -13,13 +13,12 @@ An example of how to integrate and use this library with [Express](https://expre
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed.
 
 1. Clone the repository with git
-2. ```npm install```
-3. ```npm run build```
-4. ```npm start```
-   
+2. `npm install`
+3. `npm run build`
+4. `npm start`
+
 You can then open the URL http://localhost:8080 in any browser. Not that the project is still in its early stages and things will not work as expected.
 The interfaces are also not stable yet!
-
 
 ## Using h5p-nodejs-library to create your own H5P server application
 
@@ -48,11 +47,15 @@ and instantiate the editor with
 
 ```js
 const h5pEditor = new H5P.Editor(
-        keyValueStorage,
-        config,
-        new H5PEditor.FileLibraryStorage("/path/to/library/directory"),
-        new H5PEditor.FileContentStorage("/path/to/content/storage/directory"),
-        translationService);
+    keyValueStorage,
+    config,
+    new H5PEditor.FileLibraryStorage('/path/to/library/directory'),
+    new H5PEditor.FileContentStorage('/path/to/content/storage/directory'),
+    translationService,
+    (library, file) =>
+        `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
+    new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
+);
 ```
 
 and render the editor for content with a specific content ID with
@@ -68,6 +71,7 @@ To use a custom renderer, change it with
 ```js
 h5pEditor.useRenderer(model => /** HTML string **/);
 ```
+
 See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor.
 
 ### Handling AJAX Requests
@@ -89,10 +93,11 @@ Several aspects of your H5P server can be customized by creating your own implem
 
 The interfaces that can be implemented are:
 
-- `IEditorConfig`
-- `IUser`
-- `IContentStorage`
-- `ILibraryStorage`
+-   `IContentStorage`
+-   `IEditorConfig`
+-   `ILibraryStorage`
+-   `ITemporaryFileStorage`
+-   `IUser`
 
 There are already default implementations that you can use. These are only for demonstration purposes and are not suitable to be used in a multi-user environment and not optimized for speed.
 
@@ -100,8 +105,8 @@ There are already default implementations that you can use. These are only for d
 
 The implementation needs to call several function regularly (comparable to a cronjob):
 
-- Call ```H5PEditor.temporaryFileManager.cleanUp()``` every 5 minutes. This checks which temporary files have expired and deletes them if necessary. It is important to do this, as temporary files are **not** automatically deleted when a piece of content is saved.
-- Call ```H5PEditor.contentTypeCache.updateIfNecessary()``` every 12 hours. This will download information about the available content types from the H5P Hub. If you don't do this, users won't be shown new content types or updates to existing content types when they become available.
+-   Call `H5PEditor.temporaryFileManager.cleanUp()` every 5 minutes. This checks which temporary files have expired and deletes them if necessary. It is important to do this, as temporary files are **not** automatically deleted when a piece of content is saved.
+-   Call `H5PEditor.contentTypeCache.updateIfNecessary()` every 12 hours. This will download information about the available content types from the H5P Hub. If you don't do this, users won't be shown new content types or updates to existing content types when they become available.
 
 ## Development & Testing
 
@@ -119,7 +124,7 @@ npm install
 
 ### Building the TypeScript files
 
-You must transpile the TypeScript files to ES5 for the project to work (the TypeScript transpiler will be installed automatically if you run ```npm install```):
+You must transpile the TypeScript files to ES5 for the project to work (the TypeScript transpiler will be installed automatically if you run `npm install`):
 
 ```
 npm run build
@@ -135,9 +140,10 @@ npm test
 
 ### Debugging
 
-The library emits log messages with [debug](https://www.npmjs.com/package/debug). To see those messages you have to set the environment variable ```DEBUG``` to ```h5p:*```. There are several log levels. By default you'll only see the messages sent with the level ```info```. To get the verbose log, set the environment variable ```LOG_LEVEL``` to verbose (mind the capitalization).
+The library emits log messages with [debug](https://www.npmjs.com/package/debug). To see those messages you have to set the environment variable `DEBUG` to `h5p:*`. There are several log levels. By default you'll only see the messages sent with the level `info`. To get the verbose log, set the environment variable `LOG_LEVEL` to verbose (mind the capitalization).
 
 Example (for Linux):
+
 ```
 $ DEBUG=h5p:* LOG_LEVEL=verbose node script.js
 ```
@@ -158,11 +164,9 @@ h5p-nodejs-library has adopted the code of conduct defined by the Contributor Co
 
 [Slack](https://join.slack.com/t/lumi-education/shared_invite/enQtMjY0MTM2NjIwNDU0LWU3YzVhZjdkNGFjZGE1YThjNzBiMmJjY2I2ODk2MzAzNDE3YzI0MmFkOTdmZWZhOTBmY2RjOTc3ZmZmOWMxY2U) or [c@Lumi.education](mailto:c@Lumi.education).
 
-
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Lumieducation/Lumi/tags).
-
 
 ## License
 
@@ -174,6 +178,6 @@ This work obtained financial support for development from the German BMBF-sponso
 
 Read more about them at the following websites:
 
-- CARO - https://blogs.uni-bremen.de/caroprojekt/
-- University of Bremen - https://www.uni-bremen.de/en.html
-- BMBF - https://www.bmbf.de/en/index.html 
+-   CARO - https://blogs.uni-bremen.de/caroprojekt/
+-   University of Bremen - https://www.uni-bremen.de/en.html
+-   BMBF - https://www.bmbf.de/en/index.html
