@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master)
 
-This project is a re-implmentation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
+This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
 Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
 
@@ -76,7 +76,7 @@ The H5P client (running in the browser) sends many AJAX requests to the server (
 
 ### Serving static H5P core files for the client
 
-This application doesn't include the H5P JavaScript core files for the editor and the player. These are the files that make up the editor and player that the end user interacts with in the browser. The core files must be obtained seperately:
+This application doesn't include the H5P JavaScript core files for the editor and the player. These are the files that make up the editor and player that the end user interacts with in the browser. The core files must be obtained separately:
 
 1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/core` in your project.
 2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/editor` in your project.
@@ -94,7 +94,7 @@ The interfaces that can be implemented are:
 - `IContentStorage`
 - `ILibraryStorage`
 
-There are already default implementations that you can use. These are only for demonstration purposes and are not suitable to be used in a multi-user environment and not optimised for speed.
+There are already default implementations that you can use. These are only for demonstration purposes and are not suitable to be used in a multi-user environment and not optimized for speed.
 
 ### Calling maintenance functions regularly
 

@@ -25,4 +25,4 @@ The player is simpler, as it doesn't have as many endpoints, but works in a comp
 
 ## Example implementation
 
-There is a basic example implementation of the server and client (blue parts) using Express in the ```examples``` folder. Check it out to see how everything play together.
+There is a basic example implementation of the server and client (blue parts) using Express in the ```examples``` folder. Check it out to see how everything plays together.
