@@ -49,12 +49,12 @@ and instantiate the editor with
 const h5pEditor = new H5P.Editor(
     keyValueStorage,
     config,
-    new H5PEditor.FileLibraryStorage('/path/to/library/directory'),
-    new H5PEditor.FileContentStorage('/path/to/content/storage/directory'),
+    new FileLibraryStorage('/path/to/library/directory'),
+    new FileContentStorage('/path/to/content/storage/directory'),
     translationService,
     (library, file) =>
-        `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-    new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
+        `/h5p-library-route/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
+    new DirectoryTemporaryFileStorage('/path/to/temporary/storage')
 );
 ```
 

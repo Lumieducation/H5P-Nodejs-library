@@ -17,7 +17,7 @@ The `libraryStorage` provides information about installed libraries and installs
 If you store all library information as files in folders under `./h5p/libraries` you can use the sample implementation in [`examples/implementation/FileLibraryStorage.ts`](/examples/implementation/FileLibraryStorage.ts):
 
 ```js
-const libraryStorage = new H5P.FileLibraryStorage(`h5p/libraries`);
+const libraryStorage = new FileLibraryStorage(`h5p/libraries`);
 ```
 
 ### contentStorage
@@ -25,7 +25,7 @@ const libraryStorage = new H5P.FileLibraryStorage(`h5p/libraries`);
 The `contentStorage` provides information about installed content and creates it. It must implement the `IContentStorage` interface. If you store all library information as files in folders under `./h5p/content` you can use the sample implementation in [`examples/implementation/FileContentStorage.ts`](/examples/implementation/FileContentStorage.ts):
 
 ```js
-const contentStorage = new H5P.FileContentStorage(`h5p/content`);
+const contentStorage = new FileContentStorage(`h5p/content`);
 ```
 
 ### translationService
