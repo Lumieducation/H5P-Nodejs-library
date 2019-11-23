@@ -1,4 +1,4 @@
-import { IUser } from '../../src/types';
+import { IUser } from '../../src';
 
 /**
  * Example user object
