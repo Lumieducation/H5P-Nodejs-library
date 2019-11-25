@@ -78,7 +78,9 @@ export default class LibraryManager {
      * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library.
      */
-    public async getInstalled(machineNames?: string[]): Promise<any> {
+    public async getInstalled(
+        machineNames?: string[]
+    ): Promise<{ [key: string]: IInstalledLibrary[] }> {
         log.verbose(`checking if libraries ${machineNames} are installed`);
         let libraries = await this.libraryStorage.getInstalled(...machineNames);
         libraries = (
@@ -199,6 +201,25 @@ export default class LibraryManager {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if a library was installed.
+     * @param library the library to check
+     * @returns true if the library has been installed
+     */
+    public async libraryExists(library: LibraryName): Promise<boolean> {
+        const installed = await this.getInstalled([library.machineName]);
+        if (!installed || !installed[library.machineName]) {
+            return false;
+        }
+        return (
+            installed[library.machineName].find(
+                l =>
+                    l.majorVersion === library.majorVersion &&
+                    l.minorVersion === l.minorVersion
+            ) !== undefined
+        );
     }
 
     /**

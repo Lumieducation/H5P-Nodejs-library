@@ -5,9 +5,8 @@ import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
-import LibraryName from './LibraryName';
 import TemporaryFileManager from './TemporaryFileManager';
-import { ContentId, IContentMetadata, IUser } from './types';
+import { ContentId, IContentMetadata, ILibraryName, IUser } from './types';
 
 const log = new Logger('ContentStorer');
 
@@ -32,14 +31,14 @@ export default class ContentStorer {
      * @param contentId the contentId (can be undefined if previously unsaved)
      * @param parameters the parameters of teh content (= content.json)
      * @param metadata = content of h5p.json
-     * @param mainLibraryUberName use whitespace as separated (e.g. H5P.Example 1.0)
+     * @param mainLibraryName the library name
      * @param user the user who wants to save the file
      */
     public async saveOrUpdateContent(
         contentId: ContentId,
         parameters: any,
         metadata: IContentMetadata,
-        mainLibraryUberName: string,
+        mainLibraryName: ILibraryName,
         user: IUser
     ): Promise<ContentId> {
         const isUpdate = contentId !== undefined;
@@ -55,9 +54,7 @@ export default class ContentStorer {
         // were deleted in the editor by the user.
         const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
             parameters,
-            LibraryName.fromUberName(mainLibraryUberName, {
-                useWhitespace: true
-            })
+            mainLibraryName
         );
         const filesToCopyFromTemporaryStorage = await this.determineFilesToCopyFromTemporaryStorage(
             fileReferencesInNewParams,

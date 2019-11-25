@@ -38,10 +38,21 @@ export default class LibraryName implements ILibraryName {
                 ? /([^\s]+)-(\d+)\.(\d+)/
                 : /([^\s]+)\s(\d+)\.(\d+)/;
 
-        const result: RegExpExecArray = nameRegex.exec(libraryName);
+        const result = nameRegex.exec(libraryName);
 
         if (!result) {
-            return undefined;
+            let example = '';
+            if (options.useHyphen && options.useWhitespace) {
+                example = 'H5P.Example-1.0 or H5P.Example 1.0';
+            } else if (options.useHyphen && !options.useWhitespace) {
+                example = 'H5P.Example-1.0';
+            } else {
+                example = 'H5P.Example 1.0';
+            }
+
+            throw new Error(
+                `'${libraryName} is not a valid H5P library name ("ubername"). You must follow this pattern: ${example}'`
+            );
         }
 
         return new LibraryName(

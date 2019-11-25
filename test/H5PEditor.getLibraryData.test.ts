@@ -1,3 +1,5 @@
+import { withDir } from 'tmp-promise';
+
 import EditorConfig from '../examples/implementation/EditorConfig';
 import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
@@ -17,6 +19,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage: () => Promise.resolve(null),
             loadLibrary: () => {
@@ -59,6 +62,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage: () => Promise.resolve(null),
             loadLibrary: () => {
@@ -102,6 +106,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
@@ -112,6 +117,7 @@ describe('aggregating data from library folders for the editor', () => {
                                 {
                                     machineName: 'EditorDependency',
                                     majorVersion: 1,
+
                                     minorVersion: 0
                                 }
                             ],
@@ -193,6 +199,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
@@ -292,6 +299,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage,
             loadLibrary: ({ _machineName }) => {
@@ -369,6 +377,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages,
             loadLibrary: ({ _machineName }) => {
                 switch (_machineName) {
@@ -441,6 +450,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             loadLanguage: () => Promise.resolve(null),
             loadLibrary: ({ machineName }) => {
@@ -545,5 +555,26 @@ describe('aggregating data from library folders for the editor', () => {
                 '/h5p/libraries/Foo-1.0/script.js'
             ]);
         });
+    });
+
+    it('throws a helpful error message when using an uninstalled library name', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const h5pEditor = new H5PEditor(
+                    null,
+                    new EditorConfig(null),
+                    new FileLibraryStorage(tempDirPath),
+                    null,
+                    null,
+                    (library, name) => '',
+                    null
+                );
+
+                expect(h5pEditor.getLibraryData('Foo', 1, 2)).rejects.toThrow(
+                    'Library Foo-1.2 was not found.'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
     });
 });

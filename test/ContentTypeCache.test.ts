@@ -51,7 +51,7 @@ describe('getting H5P Hub content types', () => {
         const cache = new ContentTypeCache(config, storage);
 
         const cached = await cache.get();
-        expect(cached).toBeUndefined();
+        expect(cached).toEqual([]);
     });
     it('loads content type information from the H5P Hub', async () => {
         const storage = new InMemoryStorage();

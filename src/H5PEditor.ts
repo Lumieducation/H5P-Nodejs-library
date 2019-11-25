@@ -151,7 +151,7 @@ export default class H5PEditor {
         return this.contentTypeRepository.get(user);
     }
 
-    public getLibraryData(
+    public async getLibraryData(
         machineName: string,
         majorVersion: number,
         minorVersion: number,
@@ -165,36 +165,42 @@ export default class H5PEditor {
             majorVersion,
             minorVersion
         );
-        return Promise.all([
+
+        if (!(await this.libraryManager.libraryExists(library))) {
+            throw new H5pError(
+                `Library ${LibraryName.toUberName(library)} was not found.`
+            );
+        }
+
+        const [
+            assets,
+            semantics,
+            languageObject,
+            languages,
+            upgradeScriptPath
+        ] = await Promise.all([
             this.loadAssets(machineName, majorVersion, minorVersion, language),
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library),
             this.libraryManager.getUpgradesScriptPath(library)
-        ]).then(
-            ([
-                assets,
-                semantics,
-                languageObject,
-                languages,
-                upgradeScriptPath
-            ]) => ({
-                languages,
-                semantics,
-                // tslint:disable-next-line: object-literal-sort-keys
-                css: assets.styles,
-                defaultLanguage: null,
-                language: languageObject,
-                name: machineName,
-                version: {
-                    major: majorVersion,
-                    minor: minorVersion
-                },
-                javascript: assets.scripts,
-                translations: assets.translations,
-                upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
-            })
-        );
+        ]);
+        return {
+            languages,
+            semantics,
+            // tslint:disable-next-line: object-literal-sort-keys
+            css: assets.styles,
+            defaultLanguage: null,
+            language: languageObject,
+            name: machineName,
+            version: {
+                major: majorVersion,
+                minor: minorVersion
+            },
+            javascript: assets.scripts,
+            translations: assets.translations,
+            upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
+        };
     }
 
     /**
@@ -378,9 +384,19 @@ export default class H5PEditor {
             log.info('saving new content');
         }
 
+        // validate library name
+        let parsedLibraryName: ILibraryName;
+        try {
+            parsedLibraryName = LibraryName.fromUberName(mainLibraryName, {
+                useWhitespace: true
+            });
+        } catch (error) {
+            throw new H5pError(`mainLibraryName is invalid: ${error.message}`);
+        }
+
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
             metadata,
-            mainLibraryName,
+            parsedLibraryName,
             this.findLibraries(parameters)
         );
 
@@ -388,7 +404,7 @@ export default class H5PEditor {
             contentId,
             parameters,
             h5pJson,
-            mainLibraryName,
+            parsedLibraryName,
             user
         );
         return newContentId;
@@ -597,17 +613,13 @@ export default class H5PEditor {
 
     private generateH5PJSON(
         metadata: IContentMetadata,
-        libraryName: string,
+        libraryName: ILibraryName,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
         return new Promise((resolve: (value: IContentMetadata) => void) => {
             this.libraryManager
-                .loadLibrary(
-                    LibraryName.fromUberName(libraryName, {
-                        useWhitespace: true
-                    })
-                )
+                .loadLibrary(libraryName)
                 .then((library: InstalledLibrary) => {
                     const h5pJson: IContentMetadata = {
                         ...metadata,
