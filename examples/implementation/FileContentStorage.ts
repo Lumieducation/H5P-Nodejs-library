@@ -11,7 +11,7 @@ import {
     IContentStorage,
     IUser,
     Permission
-} from '../../src/types';
+} from '../../src';
 
 /**
  * Persists content to the disk.

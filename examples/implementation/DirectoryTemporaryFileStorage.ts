@@ -3,8 +3,12 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 
-import H5pError from '../../src/helpers/H5pError';
-import { ITemporaryFile, ITemporaryFileStorage, IUser } from '../../src/types';
+import {
+    H5pError,
+    ITemporaryFile,
+    ITemporaryFileStorage,
+    IUser
+} from '../../src';
 
 /**
  * Stores temporary files in directories on the disk.
@@ -53,18 +57,20 @@ export default class DirectoryTemporaryFileStorage
 
     public async listFiles(user?: IUser): Promise<ITemporaryFile[]> {
         const users = user ? [user.id] : await fsExtra.readdir(this.directory);
-        return (await Promise.all(
-            users.map(async u => {
-                const filesOfUser = await fsExtra.readdir(
-                    path.join(this.directory, u)
-                );
-                return Promise.all(
-                    filesOfUser
-                        .filter(f => !f.endsWith('.metadata'))
-                        .map(f => this.getTemporaryFileInfo(f, u))
-                );
-            })
-        )).reduce((prev, curr) => prev.concat(curr), []);
+        return (
+            await Promise.all(
+                users.map(async u => {
+                    const filesOfUser = await fsExtra.readdir(
+                        path.join(this.directory, u)
+                    );
+                    return Promise.all(
+                        filesOfUser
+                            .filter(f => !f.endsWith('.metadata'))
+                            .map(f => this.getTemporaryFileInfo(f, u))
+                    );
+                })
+            )
+        ).reduce((prev, curr) => prev.concat(curr), []);
     }
 
     public async saveFile(

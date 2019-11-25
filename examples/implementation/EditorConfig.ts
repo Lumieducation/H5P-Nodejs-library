@@ -1,4 +1,4 @@
-import { IEditorConfig, IKeyValueStorage } from '../../src/types';
+import { IEditorConfig, IKeyValueStorage } from '../../src';
 
 /**
  * Stores configuration options and literals that are used throughout the system.
@@ -53,7 +53,7 @@ export default class EditorConfig implements IEditorConfig {
 
     /**
      * This is where the client will look for image, video etc. files added to content.
-     * WARNING: Do not change the 'content' part of the URL, as the editor client assumes that it can find 
+     * WARNING: Do not change the 'content' part of the URL, as the editor client assumes that it can find
      * content under this path!
      */
     public filesPath: string = '/h5p/content';

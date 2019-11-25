@@ -9,7 +9,7 @@ import util from 'util';
 const exec = util.promisify(child_process.exec);
 import index from './index';
 
-import H5P from '../src';
+import * as h5pLib from '../src';
 
 import DirectoryTemporaryFileStorage from './implementation/DirectoryTemporaryFileStorage';
 import EditorConfig from './implementation/EditorConfig';
@@ -22,14 +22,14 @@ import User from './implementation/User';
 import examples from './examples.json';
 
 const start = async () => {
-    const h5pEditor = new H5P.Editor(
+    const h5pEditor = new h5pLib.H5PEditor(
         new InMemoryStorage(),
         await new EditorConfig(
             new JsonStorage(path.resolve('examples/config.json'))
         ).load(),
         new FileLibraryStorage(path.resolve('h5p/libraries')),
         new FileContentStorage(path.resolve('h5p/content')),
-        new H5P.TranslationService(H5P.englishStrings),
+        new h5pLib.TranslationService(h5pLib.englishStrings),
         (library, file) =>
             `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
         new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
@@ -55,7 +55,7 @@ const start = async () => {
 
     server.get(`${h5pRoute}/libraries/:uberName/:file(*)`, async (req, res) => {
         const stream = h5pEditor.libraryManager.getFileStream(
-            H5P.LibraryName.fromUberName(req.params.uberName),
+            h5pLib.LibraryName.fromUberName(req.params.uberName),
             req.params.file
         );
         stream.on('end', () => {
@@ -108,7 +108,7 @@ const start = async () => {
 
         const libraryLoader = (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5P.LibraryName(lib, maj, min)
+                new h5pLib.LibraryName(lib, maj, min)
             );
         Promise.all([
             h5pEditor.contentManager.loadContent(
@@ -120,7 +120,7 @@ const start = async () => {
                 new User()
             )
         ]).then(([contentObject, h5pObject]) =>
-            new H5P.Player(libraryLoader as any, {}, null, null, null)
+            new h5pLib.H5PPlayer(libraryLoader as any, {}, null, null, null)
                 .render(req.query.contentId, contentObject, h5pObject)
                 .then(h5pPage => res.end(h5pPage))
                 .catch(error => res.status(500).end(error.message))
@@ -132,7 +132,7 @@ const start = async () => {
             return res.redirect('/');
         }
 
-        const packageExporter = new H5P.PackageExporter(
+        const packageExporter = new h5pLib.PackageExporter(
             h5pEditor.libraryManager,
             h5pEditor.translationService,
             h5pEditor.config,
@@ -155,7 +155,7 @@ const start = async () => {
 
         const libraryLoader = async (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
-                new H5P.LibraryName(lib, maj, min)
+                new h5pLib.LibraryName(lib, maj, min)
             );
 
         exec(`sh scripts/download-example.sh ${examples[key].h5p}`)
@@ -172,7 +172,7 @@ const start = async () => {
                     contentId,
                     new User()
                 );
-                return new H5P.Player(
+                return new h5pLib.H5PPlayer(
                     libraryLoader as any,
                     {},
                     null,
