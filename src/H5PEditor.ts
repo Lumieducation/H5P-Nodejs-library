@@ -81,12 +81,6 @@ export default class H5PEditor {
         );
         this.translationService = translationService;
         this.config = config;
-        this.packageImporter = new PackageImporter(
-            this.libraryManager,
-            this.translationService,
-            this.config,
-            this.contentManager
-        );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
@@ -95,6 +89,12 @@ export default class H5PEditor {
             this.contentManager,
             this.libraryManager,
             this.temporaryFileManager
+        );
+        this.packageImporter = new PackageImporter(
+            this.libraryManager,
+            this.translationService,
+            this.config,
+            this.contentStorer
         );
     }
 
@@ -417,21 +417,25 @@ export default class H5PEditor {
     }
 
     /**
-     * Adds the contents of a package to the system.
-     * @param {*} data The data (format?)
-     * @param {number} contentId (optional) the content id of the uploaded package
-     * @returns {Promise<string>} the newly created content it or the one passed to it
+     * Adds the contents of a package to the system: Installs required libraries (if
+     * the user has the permissions for this), adds files to temporary storage and
+     * returns the actual content information for the editor to process.
+     * Throws errors if something goes wrong.
+     * @param data the raw data of the h5p package as a buffer
+     * @returns the content information extracted from the package
      */
     public async uploadPackage(
         data: Buffer,
-        contentId: ContentId,
         user: IUser
-    ): Promise<ContentId> {
-        log.info(`uploading package for ${contentId}`);
+    ): Promise<{ metadata: IContentMetadata; parameters: any }> {
+        log.info(`uploading package`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(data);
 
-        let newContentId: ContentId;
+        let returnValues: {
+            metadata: IContentMetadata;
+            parameters: any;
+        };
 
         await withFile(
             async ({ path: tempPackagePath }) => {
@@ -446,16 +450,15 @@ export default class H5PEditor {
                     );
                 }
 
-                newContentId = await this.packageImporter.addPackageLibrariesAndContent(
+                returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
                     tempPackagePath,
-                    user,
-                    contentId
+                    user
                 );
             },
             { postfix: '.h5p', keep: false }
         );
 
-        return newContentId;
+        return returnValues;
     }
 
     public useRenderer(renderer: any): H5PEditor {

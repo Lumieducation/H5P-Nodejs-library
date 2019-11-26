@@ -4,15 +4,40 @@ import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
-import ContentManager from './ContentManager';
+import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
 import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
-import { ContentId, IEditorConfig, ITranslationService, IUser } from './types';
+import {
+    ContentId,
+    IContentMetadata,
+    IEditorConfig,
+    ITranslationService,
+    IUser
+} from './types';
 
 import Logger from './helpers/Logger';
 const log = new Logger('PackageImporter');
+
+/**
+ * Indicates what to do with content.
+ */
+enum ContentCopyModes {
+    /**
+     * "Install" means that the content should be permanently added to the system (i.e. added through ContentManager)
+     */
+    Install,
+    /**
+     * "Temporary" means that the content should not be permanently added to the system. Instead only the content files (images etc.)
+     * are added to temporary storage.
+     */
+    Temporary,
+    /**
+     * "NoCopy" means that content is ignored.
+     */
+    NoCopy
+}
 
 /**
  * Handles the installation of libraries and saving of content from a H5P package.
@@ -22,13 +47,13 @@ export default class PackageImporter {
      * @param {LibraryManager} libraryManager
      * @param {TranslationService} translationService
      * @param {EditorConfig} config
-     * @param {ContentManager} contentManager
+     * @param {ContentStorer} contentStorer
      */
     constructor(
         private libraryManager: LibraryManager,
         private translationService: ITranslationService,
         private config: IEditorConfig,
-        private contentManager: ContentManager = null
+        private contentStorer: ContentStorer = null
     ) {
         log.info(`initialize`);
     }
@@ -79,27 +104,70 @@ export default class PackageImporter {
     }
 
     /**
-     * Adds content from a H5P package to the system (e.g. when uploading a H5P file). Also installs the necessary libraries from the package if they are not already installed.
+     * Permanently adds content from a H5P package to the system. This means that
+     * content is __permanently__ added to storage and necessary libraries are installed from the package
+     * if they are not already installed.
+     *
+     * This is __NOT__ what you want if the user is just uploading a package in the editor client!
+     *
      * Throws errors if something goes wrong.
-     * @param {string} packagePath The full path to the H5P package file on the local disk.
-     * @param {User} user The user who wants to upload the package.
-     * @param {number} contentId (optional) the content id to use for the package
-     * @returns {Promise<number>} the id of the newly created content
+     * @param packagePath The full path to the H5P package file on the local disk.
+     * @param user The user who wants to upload the package.
+     * @param contentId (optional) the content id to use for the package
+     * @returns the newly assigned content id, the metadata (=h5p.json) and parameters (=content.json)
+     * inside the package
      */
     public async addPackageLibrariesAndContent(
         packagePath: string,
         user: IUser,
         contentId?: ContentId
-    ): Promise<ContentId> {
+    ): Promise<{
+        id: ContentId;
+        metadata: IContentMetadata;
+        parameters: any;
+    }> {
         log.info(`adding content from ${packagePath} to system`);
-        return this.processPackage(
+        const { id, metadata, parameters } = await this.processPackage(
             packagePath,
             {
-                copyContent: true,
+                copyMode: ContentCopyModes.Install,
                 installLibraries: user.canUpdateAndInstallLibraries
             },
             user,
             contentId
+        );
+        if (id === undefined) {
+            throw new Error(
+                'Something went wrong when storing the package: no content id was assigned.'
+            );
+        }
+        return { id, metadata, parameters };
+    }
+
+    /**
+     * Copies files inside the package into temporary storage and installs the necessary libraries from the package
+     * if they are not already installed. (This is what you want to do if the user uploads a package in the editor client.)
+     * Pass the information returned about the content back to the editor client.
+     * Throws errors if something goes wrong.
+     * @param packagePath The full path to the H5P package file on the local disk.
+     * @param user The user who wants to upload the package.
+     * @returns the metadata and parameters inside the package
+     */
+    public async addPackageLibrariesAndTemporaryFiles(
+        packagePath: string,
+        user: IUser
+    ): Promise<{
+        metadata: IContentMetadata;
+        parameters: any;
+    }> {
+        log.info(`adding content from ${packagePath} to system`);
+        return this.processPackage(
+            packagePath,
+            {
+                copyMode: ContentCopyModes.Temporary,
+                installLibraries: user.canUpdateAndInstallLibraries
+            },
+            user
         );
     }
 
@@ -111,45 +179,55 @@ export default class PackageImporter {
      */
     public async installLibrariesFromPackage(
         packagePath: string
-    ): Promise<ContentId> {
+    ): Promise<void> {
         log.info(`installing libraries from package ${packagePath}`);
-        return this.processPackage(packagePath, {
-            copyContent: false,
+        this.processPackage(packagePath, {
+            copyMode: ContentCopyModes.NoCopy,
             installLibraries: true
         });
     }
 
     /**
      * Generic method to process a H5P package. Can install libraries and copy content.
-     * @param {string} packagePath The full path to the H5P package file on the local disk
-     * @param {boolean} installLibraries If true, try installing libraries from package. Defaults to false.
-     * @param {boolean} copyContent If true, try copying content from package. Defaults to false.
-     * @param {User} user (optional) the user who wants to copy content (only needed when copying content)
-     * @returns {Promise<number|undefined>} The id of the newly created content when content was copied or undefined otherwise.
+     * @param packagePath The full path to the H5P package file on the local disk
+     * @param installLibraries If true, try installing libraries from package. Defaults to false.
+     * @param copyMode indicates if and how content should be installed
+     * @param user (optional) the user who wants to copy content (only needed when copying content)
+     * @returns the newly assigned content id (undefined if not saved permanently), the metadata (=h5p.json)
+     * and parameters (=content.json) inside the package
      */
     private async processPackage(
         packagePath: string,
         {
             installLibraries = false,
-            copyContent = false
-        }: { copyContent: boolean; installLibraries: boolean },
+            copyMode = ContentCopyModes.NoCopy
+        }: { copyMode: ContentCopyModes; installLibraries: boolean },
         user?: IUser,
         contentId?: ContentId
-    ): Promise<ContentId> {
+    ): Promise<{
+        id?: ContentId;
+        metadata: IContentMetadata;
+        parameters: any;
+    }> {
         log.info(`processing package ${packagePath}`);
         const packageValidator = new PackageValidator(
             this.translationService,
             this.config
         );
-        let newContentId: ContentId;
         try {
-            await packageValidator.validatePackage(packagePath, false, true); // no need to check result as the validator throws an exception if there is an error
-            const { path: tempDirPath } = await dir(); // we don't use withDir here, to have better error handling (catch block below)
+            // no need to check result as the validator throws an exception if there is an error
+            await packageValidator.validatePackage(packagePath, false, true);
+            // we don't use withDir here, to have better error handling (catch & finally block below)
+            const { path: tempDirPath } = await dir();
             try {
                 await PackageImporter.extractPackage(packagePath, tempDirPath, {
-                    includeContent: copyContent,
+                    includeContent:
+                        copyMode === ContentCopyModes.Install ||
+                        copyMode === ContentCopyModes.Temporary,
                     includeLibraries: installLibraries,
-                    includeMetadata: copyContent
+                    includeMetadata:
+                        copyMode === ContentCopyModes.Install ||
+                        copyMode === ContentCopyModes.Temporary
                 });
                 const dirContent = await fsExtra.readdir(tempDirPath);
 
@@ -171,9 +249,12 @@ export default class PackageImporter {
                     );
                 }
 
-                // Copy content to the repository
-                if (copyContent) {
-                    if (!this.contentManager) {
+                // Copy content / temporary files to the repository
+                if (
+                    copyMode === ContentCopyModes.Install ||
+                    copyMode === ContentCopyModes.Temporary
+                ) {
+                    if (!this.contentStorer) {
                         log.error(
                             'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );
@@ -181,14 +262,15 @@ export default class PackageImporter {
                             'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );
                     }
-                    newContentId = await this.contentManager.copyContentFromDirectory(
+                    return await this.contentStorer.copyContentFromDirectory(
                         tempDirPath,
                         user,
+                        copyMode,
                         contentId
                     );
                 }
             } catch (error) {
-                // otherwise finally swallows errors
+                // if we don't do this, finally weirdly just swallows the errors
                 throw error;
             } finally {
                 // clean up temporary files in any case
@@ -202,8 +284,6 @@ export default class PackageImporter {
             }
         }
 
-        return newContentId;
+        return { id: undefined, metadata: undefined, parameters: undefined };
     }
 }
-
-module.exports = PackageImporter;

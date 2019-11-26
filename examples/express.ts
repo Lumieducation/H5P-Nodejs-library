@@ -160,7 +160,9 @@ const start = async () => {
 
         exec(`sh scripts/download-example.sh ${examples[key].h5p}`)
             .then(async () => {
-                const contentId = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+                const {
+                    id: contentId
+                } = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
                     tempFilename,
                     new User()
                 );
@@ -288,20 +290,17 @@ const start = async () => {
                 });
                 break;
             case 'library-upload':
-                const contentId = await h5pEditor.uploadPackage(
+                const { metadata, parameters } = await h5pEditor.uploadPackage(
                     req.files.h5p.data,
-                    req.query.contentId,
                     user
                 );
-                const [content, contentTypes] = await Promise.all([
-                    h5pEditor.loadH5P(contentId),
-                    h5pEditor.getContentTypeCache(user)
-                ]);
+                const contentTypes = await h5pEditor.getContentTypeCache(user);
+
                 res.status(200).json({
                     data: {
-                        content: content.params.params,
+                        content: parameters,
                         contentTypes,
-                        h5p: content.h5p
+                        h5p: metadata
                     },
                     success: true
                 });
