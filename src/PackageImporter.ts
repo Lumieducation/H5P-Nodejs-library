@@ -4,6 +4,7 @@ import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
+import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
 import ValidationError from './helpers/ValidationError';
@@ -18,6 +19,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
+
 const log = new Logger('PackageImporter');
 
 /**
@@ -53,6 +55,7 @@ export default class PackageImporter {
         private libraryManager: LibraryManager,
         private translationService: ITranslationService,
         private config: IEditorConfig,
+        private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
     ) {
         log.info(`initialize`);
@@ -80,7 +83,7 @@ export default class PackageImporter {
             includeMetadata: boolean;
         }
     ): Promise<void> {
-        log.info(`extracting package ${packagePath} from to ${directoryPath}`);
+        log.info(`extracting package ${packagePath} to ${directoryPath}`);
         const zipFile = await yauzlPromise.open(packagePath);
         await zipFile.walkEntries(async (entry: any) => {
             const basename = path.basename(entry.fileName);
@@ -181,7 +184,7 @@ export default class PackageImporter {
         packagePath: string
     ): Promise<void> {
         log.info(`installing libraries from package ${packagePath}`);
-        this.processPackage(packagePath, {
+        await this.processPackage(packagePath, {
             copyMode: ContentCopyModes.NoCopy,
             installLibraries: true
         });
@@ -249,24 +252,30 @@ export default class PackageImporter {
                     );
                 }
 
-                // Copy content / temporary files to the repository
-                if (
-                    copyMode === ContentCopyModes.Install ||
-                    copyMode === ContentCopyModes.Temporary
-                ) {
-                    if (!this.contentStorer) {
-                        log.error(
-                            'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
-                        );
+                // Copy content files to the repository
+                if (copyMode === ContentCopyModes.Install) {
+                    if (!this.contentManager) {
                         throw new Error(
-                            'PackageImporter was initialized with a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
+                            'PackageImporter was initialized without a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );
                     }
-                    return await this.contentStorer.copyContentFromDirectory(
+                    return await this.contentManager.copyContentFromDirectory(
                         tempDirPath,
                         user,
-                        copyMode,
                         contentId
+                    );
+                }
+
+                // Copy temporary files to the repository
+                if (copyMode === ContentCopyModes.Temporary) {
+                    if (!this.contentStorer) {
+                        throw new Error(
+                            'PackageImporter was initialized without a ContentStorer, but you want to copy content from a package. Pass a ContentStorer object to the the constructor!'
+                        );
+                    }
+                    return await this.contentStorer.copyFromDirectoryToTemporary(
+                        tempDirPath,
+                        user
                     );
                 }
             } catch (error) {

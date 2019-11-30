@@ -83,21 +83,21 @@ export default class ContentManager {
     /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
      * It does not check whether the user has permissions to save content.
-     * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
-     * @param {IUser} user The user who is adding the package.
-     * @param {number} contentId (optional) The content id to use for the package
-     * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
+     * @param packageDirectory The absolute path containing the package (the directory containing h5p.json)
+     * @param user The user who is adding the package.
+     * @param contentId (optional) The content id to use for the package
+     * @returns The id of the content that was created (the one passed to the method or a new id if there was none).
      */
     public async copyContentFromDirectory(
         packageDirectory: string,
         user: IUser,
         contentId?: ContentId
-    ): Promise<ContentId> {
+    ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
         log.info(`copying content from directory ${packageDirectory}`);
         const metadata: IContentMetadata = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
-        const content: ContentParameters = await fsExtra.readJSON(
+        const parameters: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (
@@ -109,7 +109,7 @@ export default class ContentManager {
 
         const newContentId: ContentId = await this.contentStorage.createContent(
             metadata,
-            content,
+            parameters,
             user,
             contentId
         );
@@ -134,7 +134,7 @@ export default class ContentManager {
             await this.contentStorage.deleteContent(newContentId);
             throw error;
         }
-        return newContentId;
+        return { id: newContentId, metadata, parameters };
     }
 
     /**

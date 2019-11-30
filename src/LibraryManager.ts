@@ -213,12 +213,10 @@ export default class LibraryManager {
         if (!installed || !installed[library.machineName]) {
             return false;
         }
-        return (
-            installed[library.machineName].find(
-                l =>
-                    l.majorVersion === library.majorVersion &&
-                    l.minorVersion === l.minorVersion
-            ) !== undefined
+        return installed[library.machineName].some(
+            l =>
+                l.majorVersion === library.majorVersion &&
+                l.minorVersion === library.minorVersion
         );
     }
 
@@ -530,7 +528,9 @@ export default class LibraryManager {
         restricted: boolean
     ): Promise<IInstalledLibrary> {
         log.info(
-            `installing library ${libraryMetadata.machineName}-${libraryMetadata.majorVersion}.${libraryMetadata.minorVersion} from ${fromDirectory}`
+            `installing library ${LibraryName.toUberName(
+                libraryMetadata
+            )} from ${fromDirectory}`
         );
         const newLibraryInfo = await this.libraryStorage.installLibrary(
             libraryMetadata,
@@ -541,9 +541,19 @@ export default class LibraryManager {
             await this.copyLibraryFiles(fromDirectory, newLibraryInfo);
             await this.checkConsistency(libraryMetadata);
         } catch (error) {
+            log.error(
+                `There was a consistency error when installing library ${LibraryName.toUberName(
+                    libraryMetadata
+                )}. Reverting installation.`
+            );
             await this.libraryStorage.removeLibrary(libraryMetadata);
             throw error;
         }
+        log.debug(
+            `library ${LibraryName.toUberName(
+                libraryMetadata
+            )} successfully installed.`
+        );
         return newLibraryInfo;
     }
 

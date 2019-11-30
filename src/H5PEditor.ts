@@ -94,6 +94,7 @@ export default class H5PEditor {
             this.libraryManager,
             this.translationService,
             this.config,
+            this.contentManager,
             this.contentStorer
         );
     }
@@ -153,17 +154,19 @@ export default class H5PEditor {
 
     public async getLibraryData(
         machineName: string,
-        majorVersion: number,
-        minorVersion: number,
+        majorVersion: string,
+        minorVersion: string,
         language: string = 'en'
     ): Promise<ILibraryDetailedDataForClient> {
         log.info(
             `getting data for library ${machineName}-${majorVersion}.${minorVersion}`
         );
+        const majorVersionAsNr = Number.parseInt(majorVersion, 10);
+        const minorVersionAsNr = Number.parseInt(minorVersion, 10);
         const library = new LibraryName(
             machineName,
-            majorVersion,
-            minorVersion
+            majorVersionAsNr,
+            minorVersionAsNr
         );
 
         if (!(await this.libraryManager.libraryExists(library))) {
@@ -179,7 +182,12 @@ export default class H5PEditor {
             languages,
             upgradeScriptPath
         ] = await Promise.all([
-            this.loadAssets(machineName, majorVersion, minorVersion, language),
+            this.loadAssets(
+                machineName,
+                majorVersionAsNr,
+                minorVersionAsNr,
+                language
+            ),
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library),
@@ -194,8 +202,8 @@ export default class H5PEditor {
             language: languageObject,
             name: machineName,
             version: {
-                major: majorVersion,
-                minor: minorVersion
+                major: majorVersionAsNr,
+                minor: minorVersionAsNr
             },
             javascript: assets.scripts,
             translations: assets.translations,
