@@ -305,10 +305,10 @@ const start = async () => {
                     success: true
                 });
                 break;
-            case 'filter': 
+            case 'filter':
                 res.status(200).json({
                     data: JSON.parse(req.body.libraryParameters),
-                    success: true                    
+                    success: true
                 });
                 break;
             default:
