@@ -305,6 +305,12 @@ const start = async () => {
                     success: true
                 });
                 break;
+            case 'filter': 
+                res.status(200).json({
+                    data: JSON.parse(req.body.libraryParameters),
+                    success: true                    
+                });
+                break;
             default:
                 res.status(500).end('NOT IMPLEMENTED');
                 break;
