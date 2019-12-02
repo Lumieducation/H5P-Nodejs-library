@@ -9,10 +9,10 @@ import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
 import { ContentId, ILibraryName, IUser } from '../src/types';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileContentStorage from '../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
-import User from '../examples/implementation/User';
+import EditorConfig from '../examples/EditorConfig';
+import FileContentStorage from '../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
+import User from '../src/implementation/fs/User';
 
 async function createContentScanner(
     file: string,

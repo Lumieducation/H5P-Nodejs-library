@@ -1,7 +1,7 @@
 import { withDir } from 'tmp-promise';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
+import EditorConfig from '../examples/EditorConfig';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
 import LibraryManager from '../src/LibraryManager';
 

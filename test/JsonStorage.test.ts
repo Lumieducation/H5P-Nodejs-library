@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import JsonStorage from '../examples/implementation/JsonStorage';
+import EditorConfig from '../examples/EditorConfig';
+import JsonStorage from '../src/implementation/fs/JsonStorage';
 
 describe('JSON storage of configuration', () => {
     it('loads JSON valid files', async () => {

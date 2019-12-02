@@ -18,12 +18,12 @@ import {
     ITranslationService
 } from '../src/types';
 
-import DirectoryTemporaryFileStorage from '../examples/implementation/DirectoryTemporaryFileStorage';
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileContentStorage from '../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
-import InMemoryStorage from '../examples/implementation/InMemoryStorage';
-import User from '../examples/implementation/User';
+import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
+import EditorConfig from '../examples/EditorConfig';
+import FileContentStorage from '../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
+import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
+import User from '../src/implementation/fs/User';
 
 describe('H5PEditor', () => {
     function createH5PEditor(

@@ -9,10 +9,10 @@ import ContentTypeInformationRepository from '../src/ContentTypeInformationRepos
 import LibraryManager from '../src/LibraryManager';
 import TranslationService from '../src/TranslationService';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
-import InMemoryStorage from '../examples/implementation/InMemoryStorage';
-import User from '../examples/implementation/User';
+import EditorConfig from '../examples/EditorConfig';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
+import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
+import User from '../src/implementation/fs/User';
 
 const axiosMock = new axiosMockAdapter(axios);
 

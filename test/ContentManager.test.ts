@@ -7,8 +7,8 @@ import { withDir } from 'tmp-promise';
 import ContentManager from '../src/ContentManager';
 import { IContentMetadata } from '../src/types';
 
-import FileContentStorage from '../examples/implementation/FileContentStorage';
-import User from '../examples/implementation/User';
+import FileContentStorage from '../src/implementation/fs/FileContentStorage';
+import User from '../src/implementation/fs/User';
 
 describe('ContentManager', () => {
     const mockupMetadata: IContentMetadata = {
