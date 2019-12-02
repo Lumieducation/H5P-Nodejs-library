@@ -11,28 +11,18 @@ import index from './index';
 
 import * as h5pLib from '../src';
 
-import DirectoryTemporaryFileStorage from './implementation/DirectoryTemporaryFileStorage';
-import EditorConfig from './implementation/EditorConfig';
-import FileContentStorage from './implementation/FileContentStorage';
-import FileLibraryStorage from './implementation/FileLibraryStorage';
-import InMemoryStorage from './implementation/InMemoryStorage';
-import JsonStorage from './implementation/JsonStorage';
-import User from './implementation/User';
+import EditorConfig from './EditorConfig';
 
 import examples from './examples.json';
 
+import User from '../src/implementation/fs/User';
+
 const start = async () => {
-    const h5pEditor = new h5pLib.H5PEditor(
-        new InMemoryStorage(),
-        await new EditorConfig(
-            new JsonStorage(path.resolve('examples/config.json'))
-        ).load(),
-        new FileLibraryStorage(path.resolve('h5p/libraries')),
-        new FileContentStorage(path.resolve('h5p/content')),
-        new h5pLib.TranslationService(h5pLib.englishStrings),
-        (library, file) =>
-            `${h5pRoute}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-        new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
+    const h5pEditor = h5pLib.fs(
+        new EditorConfig(),
+        path.resolve('h5p/libraries'),
+        path.resolve('h5p/temporary-storage'),
+        path.resolve('h5p/content')
     );
 
     const user = new User();

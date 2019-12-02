@@ -1,4 +1,4 @@
-import { IEditorConfig, IKeyValueStorage } from '../../src';
+import { IEditorConfig, IKeyValueStorage } from '../src';
 
 /**
  * Stores configuration options and literals that are used throughout the system.
@@ -8,7 +8,7 @@ export default class EditorConfig implements IEditorConfig {
     /**
      * @param {IStorage} storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
      */
-    constructor(storage: IKeyValueStorage) {
+    constructor(storage?: IKeyValueStorage) {
         this.storage = storage;
     }
 

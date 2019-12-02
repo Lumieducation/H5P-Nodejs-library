@@ -12,7 +12,7 @@ import {
     ILibraryStorage,
     InstalledLibrary,
     LibraryName
-} from '../../src';
+} from '../../../src';
 
 /**
  * Stores libraries in a directory.

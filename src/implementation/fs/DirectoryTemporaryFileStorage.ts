@@ -8,7 +8,7 @@ import {
     ITemporaryFile,
     ITemporaryFileStorage,
     IUser
-} from '../../src';
+} from '../../../src';
 
 /**
  * Stores temporary files in directories on the disk.

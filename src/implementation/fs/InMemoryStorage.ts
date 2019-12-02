@@ -1,10 +1,8 @@
-import { IKeyValueStorage } from '../../src';
-
 /**
  * Stores objects in memory. It can store any key-value pairs.
  * This is just a placeholder for a proper storage implementation.
  */
-export default class InMemoryStorage implements IKeyValueStorage {
+export default class InMemoryStorage {
     protected storage: any;
 
     constructor() {

@@ -7,6 +7,8 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import TranslationService from './TranslationService';
 
+import fs from './implementation/fs';
+
 // Interfaces
 import {
     ContentId,
@@ -56,5 +58,7 @@ export {
     IUser,
     Permission,
     // assets
-    englishStrings
+    englishStrings,
+    // implementations
+    fs
 };
