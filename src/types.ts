@@ -418,13 +418,6 @@ export interface ILibraryStorage {
     getFileStream(library: ILibraryName, file: string): ReadStream;
 
     /**
-     * Returns the id of an installed library.
-     * @param library The library to get the id for
-     * @returns the id or undefined if the library is not installed
-     */
-    getId(library: ILibraryName): Promise<number>;
-
-    /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
      * @param machineNames (optional) only return libraries that have these machine names
      * @returns the libraries installed
@@ -450,6 +443,13 @@ export interface ILibraryStorage {
         libraryData: ILibraryMetadata,
         restricted: boolean
     ): Promise<IInstalledLibrary>;
+
+    /**
+     * Checks if the library has been installed.
+     * @param name the library name
+     * @returns true if the library has been installed
+     */
+    libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
      * Gets a list of all library files that exist for this library.
@@ -626,17 +626,6 @@ export interface ISemanticsEntry {
  * Objects of this interface represent installed libraries that have an id.
  */
 export interface IInstalledLibrary extends ILibraryMetadata {
-    /**
-     * The id used internally to identify the library. Must be unique and assigned when the
-     * library is installed. Libraries whose machine name is identical but that have different
-     * major or minor version must also have different ids, while libraries that only differ in
-     * patch versions can have the same id (as they can't co-exist).
-     */
-    id: number;
-    /**
-     * Unknown. Check if obsolete and to be removed.
-     */
-    libraryId: number;
     /**
      * If set to true, the library can only be used be users who have this special
      * privilege.

@@ -41,7 +41,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         filename: string,
         stream: Stream
     ): Promise<boolean> {
-        if (!(await this.getId(library))) {
+        if (!(await this.libraryExists(library))) {
             throw new Error(
                 `Can't add file ${filename} to library ${LibraryName.toUberName(
                     library
@@ -62,7 +62,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns {Promise<void>}
      */
     public async clearLibraryFiles(library: ILibraryName): Promise<void> {
-        if (!(await this.getId(library))) {
+        if (!(await this.libraryExists(library))) {
             throw new Error(
                 `Can't clear library ${LibraryName.toUberName(
                     library
@@ -108,19 +108,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 filename
             )
         );
-    }
-
-    /**
-     * Returns the id of an installed library.
-     * @param {ILibraryName} library The library to get the id for
-     * @returns {Promise<number>} the id or undefined if the library is not installed
-     */
-    public async getId(library: ILibraryName): Promise<number> {
-        const libraryPath = this.getFullPath(library, 'library.json');
-        if (await fsExtra.pathExists(libraryPath)) {
-            return crc32(libraryPath);
-        }
-        return undefined;
     }
 
     /**
@@ -195,12 +182,20 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 this.getFullPath(library, 'library.json'),
                 libraryMetadata
             );
-            library.id = await this.getId(library);
             return library;
         } catch (error) {
             await fsExtra.remove(libPath);
             throw error;
         }
+    }
+
+    /**
+     * Checks if the library has been installed.
+     * @param name the library name
+     * @returns true if the library has been installed
+     */
+    public async libraryExists(name: ILibraryName): Promise<boolean> {
+        return fsExtra.pathExists(this.getDirectoryPath(name));
     }
 
     /**
@@ -257,7 +252,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
             libraryMetadata
         );
         const newLibrary = InstalledLibrary.fromMetadata(libraryMetadata);
-        newLibrary.id = await this.getId(newLibrary);
         return newLibrary;
     }
 

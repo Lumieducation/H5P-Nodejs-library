@@ -20,7 +20,6 @@ export default class InstalledLibrary implements IInstalledLibrary {
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
         this.patchVersion = patchVersion;
-        this.id = undefined;
         this.title = undefined;
         this.runnable = undefined;
         this.restricted = restricted;
@@ -35,8 +34,6 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public embedTypes?: ('iframe' | 'div')[];
     public fullscreen?: 0 | 1;
     public h?: number;
-    public id: number;
-    public libraryId: number;
     public license?: string;
     public metadataSettings?: { disable: 0 | 1; disableExtraTitleField: 0 | 1 };
     public preloadedCss?: IPath[];
