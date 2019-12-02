@@ -1,8 +1,8 @@
 import { withDir } from 'tmp-promise';
 
 import EditorConfig from '../examples/EditorConfig';
-import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 
 describe('aggregating data from library folders for the editor', () => {

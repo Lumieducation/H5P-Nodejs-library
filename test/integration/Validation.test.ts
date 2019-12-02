@@ -1,7 +1,8 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import EditorConfig from '../../examples/implementation/EditorConfig';
+import EditorConfig from '../../examples/EditorConfig';
+
 import PackageValidator from '../../src/PackageValidator';
 import TranslationService from '../../src/TranslationService';
 

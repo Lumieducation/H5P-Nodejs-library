@@ -7,8 +7,8 @@ import { WritableStreamBuffer } from 'stream-buffers';
 import { withDir } from 'tmp-promise';
 import TemporaryFileManager from '../src/TemporaryFileManager';
 
-import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import EditorConfig from '../examples/EditorConfig';
+import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import User from '../src/implementation/fs/User';
 
 describe('TemporaryFileManager', () => {

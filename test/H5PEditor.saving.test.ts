@@ -18,8 +18,8 @@ import {
     ITranslationService
 } from '../src/types';
 
-import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import EditorConfig from '../examples/EditorConfig';
+import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
