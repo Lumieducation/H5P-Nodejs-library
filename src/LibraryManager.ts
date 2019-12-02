@@ -197,15 +197,7 @@ export default class LibraryManager {
      * @returns true if the library has been installed
      */
     public async libraryExists(library: LibraryName): Promise<boolean> {
-        const installed = await this.getInstalled([library.machineName]);
-        if (!installed || !installed[library.machineName]) {
-            return false;
-        }
-        return installed[library.machineName].some(
-            l =>
-                l.majorVersion === library.majorVersion &&
-                l.minorVersion === library.minorVersion
-        );
+        return this.libraryStorage.libraryExists(library);
     }
 
     /**
