@@ -62,17 +62,6 @@ export default class LibraryManager {
     }
 
     /**
-     * Get id to an existing installed library.
-     * If version number is not specified, the newest version will be returned.
-     * @param {ILibraryName} library Note that patch version is ignored.
-     * @returns {Promise<number>} The id of the specified library or undefined (if not installed).
-     */
-    public async getId(library: ILibraryName): Promise<number> {
-        log.debug(`getting id for library ${LibraryName.toUberName(library)}`);
-        return this.libraryStorage.getId(library);
-    }
-
-    /**
      * Get a list of the currently installed libraries.
      * @param {String[]?} machineNames (if supplied) only return results for the machines names in the list
      * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
@@ -89,7 +78,6 @@ export default class LibraryManager {
                     const installedLib = InstalledLibrary.fromName(libName);
                     const info = await this.loadLibrary(libName);
                     installedLib.patchVersion = info.patchVersion;
-                    installedLib.id = info.libraryId;
                     installedLib.runnable = info.runnable;
                     installedLib.title = info.title;
                     return installedLib;
@@ -157,7 +145,7 @@ export default class LibraryManager {
         const newLibraryMetadata: ILibraryMetadata = await fsExtra.readJSON(
             `${directory}/library.json`
         );
-        if (await this.getId(newLibraryMetadata)) {
+        if (await this.libraryExists(newLibraryMetadata)) {
             // Check if library is already installed.
             if (await this.isPatchedLibrary(newLibraryMetadata)) {
                 // Update the library if it is only a patch of an existing library
@@ -347,7 +335,7 @@ export default class LibraryManager {
                 library,
                 'library.json'
             );
-            libraryMetadata.libraryId = await this.getId(library);
+            libraryMetadata.libraryId = await this.libraryExists(library);
             return libraryMetadata;
         } catch (ignored) {
             log.warn(
@@ -377,7 +365,7 @@ export default class LibraryManager {
      * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
      */
     private async checkConsistency(library: ILibraryName): Promise<boolean> {
-        if (!(await this.libraryStorage.getId(library))) {
+        if (!(await this.libraryExists(library))) {
             log.error(
                 `Error in library ${LibraryName.toUberName(
                     library

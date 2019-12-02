@@ -187,7 +187,6 @@ export default class ContentTypeInformationRepository {
                               'icon.svg'
                           )
                         : undefined,
-                    id: localLib.id,
                     installed: true,
                     isUpToDate: true,
                     localMajorVersion: localLib.majorVersion,
@@ -245,7 +244,6 @@ export default class ContentTypeInformationRepository {
                     hubLib.canInstall = this.canInstallLibrary(hubLib, user);
                     hubLib.isUpToDate = true;
                 } else {
-                    hubLib.id = localLib.id;
                     hubLib.installed = true;
                     hubLib.restricted =
                         this.libraryIsRestricted(localLib) &&
