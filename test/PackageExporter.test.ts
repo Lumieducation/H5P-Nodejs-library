@@ -50,10 +50,12 @@ export async function importAndExportPackage(
                 config,
                 contentManager
             );
-            const contentId = await packageImporter.addPackageLibrariesAndContent(
-                packagePath,
-                user
-            );
+            const contentId = (
+                await packageImporter.addPackageLibrariesAndContent(
+                    packagePath,
+                    user
+                )
+            ).id;
 
             await withFile(
                 async fileResult => {
