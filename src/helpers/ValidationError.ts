@@ -1,3 +1,5 @@
+import H5pError from './H5pError';
+
 /**
  * A ValidationError is an error object that is thrown when the validation of an object
  * failed and can't be continued. ValidationError can also be used to store error messages
@@ -5,7 +7,7 @@
  * stopped right away. In this case the ValidationError is created, messages are added to it
  * and it is thrown later.
  */
-export default class ValidationError extends Error {
+export default class ValidationError extends H5pError {
     /**
      * @param {string} message The first error message
      */
