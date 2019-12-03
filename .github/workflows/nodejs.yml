@@ -18,8 +18,20 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: npm-${{ runner.OS }}-build-${{ hashFiles('package-lock.json') }}        
     - name: install + build
       run: npm ci
+    - name: Cache H5P examples
+      uses: actions/cache@v1
+      with:
+        path: test/data/hub-content
+        key: h5p-hub-content-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
+    - name: Download content files from H5P Hub      
+      run: npm run download:content
     - name: lint
       run: npm run lint
     - name: format
