@@ -262,22 +262,26 @@ export default class ContentStorer {
                     `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
                 );
             }
-            if (readStream !== undefined) {
-                log.debug(
-                    `Adding temporary file ${fileToCopy} to content id ${contentId}`
-                );
-                await this.contentManager.addContentFile(
-                    contentId,
-                    fileToCopy,
-                    readStream,
-                    user
-                );
-                if (deleteTemporaryFiles) {
-                    await this.temporaryFileManager.deleteFile(
+            try {
+                if (readStream !== undefined) {
+                    log.debug(
+                        `Adding temporary file ${fileToCopy} to content id ${contentId}`
+                    );
+                    await this.contentManager.addContentFile(
+                        contentId,
                         fileToCopy,
+                        readStream,
                         user
                     );
+                    if (deleteTemporaryFiles) {
+                        await this.temporaryFileManager.deleteFile(
+                            fileToCopy,
+                            user
+                        );
+                    }
                 }
+            } finally {
+                readStream.close();
             }
         }
     }
