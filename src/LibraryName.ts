@@ -9,6 +9,22 @@ export default class LibraryName implements ILibraryName {
     ) {}
 
     /**
+     * Checks if two libraries are identical.
+     * @param library1
+     * @param library2
+     */
+    public static equal(
+        library1: ILibraryName,
+        library2: ILibraryName
+    ): boolean {
+        return (
+            library1.machineName === library2.machineName &&
+            library1.majorVersion === library2.majorVersion &&
+            library1.minorVersion === library2.minorVersion
+        );
+    }
+
+    /**
      * Creates a library object from a library name
      * @param {string} libraryName The library name in a format "H5P.Example-1.0" or "H5P.Example 1.0" (see options)
      * @param {boolean} restricted true if the library is restricted

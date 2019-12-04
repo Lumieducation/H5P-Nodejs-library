@@ -32,7 +32,9 @@ describe('aggregating data from library folders for the editor', () => {
 
         h5pEditor.libraryManager = libraryManager;
 
-        return expect(h5pEditor.getLibraryData('Foo', 1, 2)).resolves.toEqual({
+        return expect(
+            h5pEditor.getLibraryData('Foo', '1', '2')
+        ).resolves.toEqual({
             css: [],
             defaultLanguage: null,
             javascript: [],
@@ -82,7 +84,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         h5pEditor.libraryManager = libraryManager;
 
-        return h5pEditor.getLibraryData('Foo', 1, 2).then(libraryData => {
+        return h5pEditor.getLibraryData('Foo', '1', '2').then(libraryData => {
             expect(libraryData.semantics).toEqual({
                 arbitrary: 'content',
                 machineName: 'Foo',
@@ -173,7 +175,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         h5pEditor.libraryManager = libraryManager;
 
-        return h5pEditor.getLibraryData('Foo', 1, 2).then(libraryData => {
+        return h5pEditor.getLibraryData('Foo', '1', '2').then(libraryData => {
             expect(libraryData.javascript).toEqual([
                 '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
                 '/h5p/libraries/EditorDependency-1.0/path/to/script.js'
@@ -273,7 +275,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         h5pEditor.libraryManager = libraryManager;
 
-        return h5pEditor.getLibraryData('Foo', 1, 2).then(libraryData => {
+        return h5pEditor.getLibraryData('Foo', '1', '2').then(libraryData => {
             expect(libraryData.javascript).toEqual([
                 '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
                 '/h5p/libraries/EditorDependency-1.0/path/to/script.js',
@@ -341,7 +343,7 @@ describe('aggregating data from library folders for the editor', () => {
         const language = 'en';
 
         return h5pEditor
-            .getLibraryData('Foo', 1, 2, language)
+            .getLibraryData('Foo', '1', '2', language)
             .then(libraryData => {
                 expect(libraryData.language).toEqual({
                     arbitrary: 'languageObject'
@@ -418,7 +420,7 @@ describe('aggregating data from library folders for the editor', () => {
         const majorVersion = 1;
         const minorVersion = 2;
 
-        return h5pEditor.getLibraryData('Foo', 1, 2).then(libraryData => {
+        return h5pEditor.getLibraryData('Foo', '1', '2').then(libraryData => {
             expect(libraryData.languages).toEqual([
                 'array',
                 'with',
@@ -547,7 +549,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         h5pEditor.libraryManager = libraryManager;
 
-        return h5pEditor.getLibraryData('Foo', 1, 0).then(libraryData => {
+        return h5pEditor.getLibraryData('Foo', '1', '0').then(libraryData => {
             expect(libraryData.javascript).toEqual([
                 '/h5p/libraries/Jaz-1.0/script.js',
                 '/h5p/libraries/Bar-1.0/script.js',
@@ -570,9 +572,9 @@ describe('aggregating data from library folders for the editor', () => {
                     null
                 );
 
-                expect(h5pEditor.getLibraryData('Foo', 1, 2)).rejects.toThrow(
-                    'Library Foo-1.2 was not found.'
-                );
+                expect(
+                    h5pEditor.getLibraryData('Foo', '1', '2')
+                ).rejects.toThrow('Library Foo-1.2 was not found.');
             },
             { keep: false, unsafeCleanup: true }
         );
