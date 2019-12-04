@@ -12,7 +12,7 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
         await fs.readJSON(contentTypeCacheFilePath)
     ).contentTypes.map(ct => ct.id);
 
-    console.log(`Found ${machineNames.length} already downloaded packages.`);
+    console.log(`Found ${machineNames.length} packages on H5P Hub.`);
 
     // Create the directory if it doesn't exist
     if (!(await fs.pathExists(directoryPath))) {
