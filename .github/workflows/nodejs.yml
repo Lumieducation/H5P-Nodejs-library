@@ -9,11 +9,16 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-        node-version: [10.x, 12.x]
+        os: [ubuntu-latest, macos-latest]
+        node-version: [10.x]
 
     steps:
     - uses: actions/checkout@v1
+    - name: Puppeteer action
+      if: matrix.os == 'ubuntu-latest'
+      uses: ianwalter/puppeteer@v2.0.0
+      with:
+        args: npm
     - name: Use Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
       uses: actions/setup-node@v1
       with:
