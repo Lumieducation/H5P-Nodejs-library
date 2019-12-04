@@ -65,6 +65,8 @@
         "yazl": "^2.5.1"
     },
     "devDependencies": {
+        "@semantic-release/git": "7.0.18",
+        "@semantic-release/github": "5.5.5",
         "@types/escape-html": "0.0.20",
         "@types/fs-extra": "8.0.1",
         "@types/jest": "24.0.23",
