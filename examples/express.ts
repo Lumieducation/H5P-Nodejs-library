@@ -22,7 +22,7 @@ const start = async () => {
         ).load(),
         new FileLibraryStorage(path.resolve('h5p/libraries')),
         new FileContentStorage(path.resolve('h5p/content')),
-        new h5pLib.TranslationService(H5P.englishStrings),
+        new H5P.TranslationService(H5P.englishStrings),
         (library, file) =>
             `h5p/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
         new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
