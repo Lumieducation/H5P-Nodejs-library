@@ -69,65 +69,75 @@ fs.readdir(contentPath, (fsError, files) => {
         server.listen(8080, () => {
             // tslint:disable-next-line: no-console
             console.log(`server running on http://localhost: ${8080}`);
-            puppeteer.launch({ devtools: true }).then(browser => {
-                fs.readdir(
-                    extractedContentPath,
-                    (fsExtractedError, extractedFiles) => {
-                        extractedFiles.forEach((file, index) => {
-                            queue
-                                .add(
-                                    () =>
-                                        new Promise((resolve, reject) => {
-                                            browser.newPage().then(page => {
-                                                page.on('pageerror', msg => {
-                                                    // tslint:disable-next-line: no-console
-                                                    console.log(
-                                                        `${file}: ERROR`,
-                                                        msg
+            puppeteer
+                .launch({
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                    devtools: true
+                })
+                .then(browser => {
+                    fs.readdir(
+                        extractedContentPath,
+                        (fsExtractedError, extractedFiles) => {
+                            extractedFiles.forEach((file, index) => {
+                                queue
+                                    .add(
+                                        () =>
+                                            new Promise((resolve, reject) => {
+                                                browser.newPage().then(page => {
+                                                    page.on(
+                                                        'pageerror',
+                                                        msg => {
+                                                            // tslint:disable-next-line: no-console
+                                                            console.log(
+                                                                `${file}: ERROR`,
+                                                                msg
+                                                            );
+                                                            process.exit(1);
+                                                            reject(
+                                                                new Error(
+                                                                    JSON.stringify(
+                                                                        file
+                                                                    )
+                                                                )
+                                                            );
+                                                        }
                                                     );
-                                                    process.exit(1);
-                                                    reject(
-                                                        new Error(
-                                                            JSON.stringify(file)
-                                                        )
-                                                    );
+                                                    page.goto(
+                                                        `http://localhost:8080/examples/${file}`,
+                                                        {
+                                                            waitUntil:
+                                                                'networkidle0'
+                                                        }
+                                                    ).then(() => {
+                                                        setTimeout(() => {
+                                                            page.close();
+                                                            // tslint:disable-next-line: no-console
+                                                            console.log(
+                                                                `${file}: OK`
+                                                            );
+                                                            resolve();
+                                                        }, 1000);
+                                                    });
                                                 });
-                                                page.goto(
-                                                    `http://localhost:8080/examples/${file}`,
-                                                    {
-                                                        waitUntil:
-                                                            'networkidle0'
-                                                    }
-                                                ).then(() => {
-                                                    setTimeout(() => {
-                                                        page.close();
-                                                        // tslint:disable-next-line: no-console
-                                                        console.log(
-                                                            `${file}: OK`
-                                                        );
-                                                        resolve();
-                                                    }, 1000);
-                                                });
-                                            });
-                                        })
-                                )
-                                .catch(error => {
-                                    // tslint:disable-next-line: no-console
-                                    console.log(error);
-                                    process.exit(1);
-                                });
-                        });
-                    }
-                );
+                                            })
+                                    )
+                                    .catch(error => {
+                                        // tslint:disable-next-line: no-console
+                                        console.log(error);
+                                        process.exit(1);
+                                    });
+                            });
+                        }
+                    );
 
-                const interval = setInterval(() => {
-                    if (queue.getPendingLength() === 0) {
-                        browser.close();
-                        clearInterval(interval);
-                        process.exit(0);
-                    }
-                }, 500);
-            });
+                    const interval = setInterval(() => {
+                        if (queue.getPendingLength() === 0) {
+                            browser.close();
+                            clearInterval(interval);
+                            process.exit(0);
+                        }
+                    }, 500);
+                });
         });
     });
 });
