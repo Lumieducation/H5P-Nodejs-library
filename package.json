@@ -92,7 +92,7 @@
         "tslint": "5.20.1",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
-        "typescript": "3.7.2"
+        "typescript": "3.7.3"
     },
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts"
