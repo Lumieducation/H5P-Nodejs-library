@@ -14,11 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Puppeteer action
-      if: matrix.os == 'ubuntu-latest'
-      uses: ianwalter/puppeteer@v2.0.0
-      with:
-        args: npm
     - name: Use Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
       uses: actions/setup-node@v1
       with:
@@ -45,7 +40,13 @@ jobs:
       run: npm run test
     - name: integration-tests
       run: npm run test:integration
-    - name: player-e2e-test
-      run: npm run test:e2e:player               
+    - name: Linux player-e2e-test
+      if: matrix.os == 'ubuntu-latest'
+      uses: ianwalter/puppeteer@v2.0.0
+      with:
+        args: npm run test:e2e:player
+    - name: Windows + MacOs player-e2e-test
+      if: matrix.os != 'ubuntu-latest'
+      run: npm run test:e2e:player
       env:
         CI: true
