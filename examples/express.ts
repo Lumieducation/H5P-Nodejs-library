@@ -72,6 +72,7 @@ const start = async () => {
         );
         stream.on('end', () => {
             res.end();
+            stream.close();
         });
         stream.pipe(res.type(path.basename(req.params.file)));
     });
@@ -86,6 +87,7 @@ const start = async () => {
             );
             stream.on('end', () => {
                 res.end();
+                stream.close();
             });
             stream.pipe(res.type(path.basename(req.params.file)));
         }

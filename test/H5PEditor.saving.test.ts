@@ -93,6 +93,7 @@ describe('H5PEditor', () => {
                 mockWriteStream1.on('finish', onFinish1);
                 await promisepipe(returnedStream, mockWriteStream1);
                 expect(onFinish1).toHaveBeenCalled();
+                returnedStream.close();
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -360,12 +361,12 @@ describe('H5PEditor', () => {
                     0,
                     savedFilePath.length - 4
                 );
-                await expect(
-                    h5pEditor.temporaryFileManager.getFileStream(
-                        cleanFilePath,
-                        user
-                    )
-                ).resolves.toBeDefined();
+                const fileStream = await h5pEditor.temporaryFileManager.getFileStream(
+                    cleanFilePath,
+                    user
+                );
+                await expect(fileStream).toBeDefined();
+                fileStream.close();
 
                 // put path of image into parameters (like the H5P editor client would)
                 mockupParametersWithImage.image.path = savedFilePath;
