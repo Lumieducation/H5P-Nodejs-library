@@ -169,18 +169,18 @@ export default class ContentTypeCache {
             }
         }
 
+        cache = cache.map(
+            (contentType: HubContentType) => new HubContentType(contentType)
+        );
+
         if (!machineNames || machineNames.length === 0) {
             return cache;
         }
-        return cache
-            .filter((contentType: HubContentType) =>
-                machineNames.some(
-                    machineName => machineName === contentType.machineName
-                )
+        return cache.filter((contentType: HubContentType) =>
+            machineNames.some(
+                machineName => machineName === contentType.machineName
             )
-            .map(
-                (contentType: HubContentType) => new HubContentType(contentType)
-            );
+        );
     }
 
     /**
