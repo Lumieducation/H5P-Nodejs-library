@@ -8,6 +8,7 @@ import ContentTypeCache from '../src/ContentTypeCache';
 
 import EditorConfig from '../examples/implementation/EditorConfig';
 import InMemoryStorage from '../examples/implementation/InMemoryStorage';
+import JsonStorage from '../examples/implementation/JsonStorage';
 
 const axiosMock = new axiosMockAdapter(axios);
 
@@ -130,5 +131,19 @@ describe('getting H5P Hub content types', () => {
         mockdate.set(Date.now() + 200);
         expect(await cache.isOutdated()).toEqual(true);
         mockdate.reset();
+    });
+
+    it('returns the contentTypeCache as array of HubContentTypes with defined .canBeInstalledBy method when lodaded from json storage', async () => {
+        const storage = new JsonStorage(
+            `${__dirname}/data/content-type-cache/real-content-types.json`
+        );
+        const config = new EditorConfig(storage);
+        const contentTypeCache = new ContentTypeCache(config, storage);
+
+        const cache = await contentTypeCache.get();
+
+        cache.forEach(contentType => {
+            expect(contentType.canBeInstalledBy).toBeDefined();
+        });
     });
 });
