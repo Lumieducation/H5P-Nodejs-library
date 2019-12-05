@@ -1,14 +1,12 @@
 import axios from 'axios';
-// tslint:disable-next-line: no-implicit-dependencies
 import axiosMockAdapter from 'axios-mock-adapter';
-// tslint:disable-next-line: no-implicit-dependencies
+import fsExtra from 'fs-extra';
 import mockdate from 'mockdate';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 
 import EditorConfig from '../examples/implementation/EditorConfig';
 import InMemoryStorage from '../examples/implementation/InMemoryStorage';
-import JsonStorage from '../examples/implementation/JsonStorage';
 
 const axiosMock = new axiosMockAdapter(axios);
 
@@ -133,15 +131,24 @@ describe('getting H5P Hub content types', () => {
         mockdate.reset();
     });
 
-    it('returns the contentTypeCache as array of HubContentTypes with defined .canBeInstalledBy method when lodaded from json storage', async () => {
-        const storage = new JsonStorage(
-            `${__dirname}/data/content-type-cache/real-content-types.json`
-        );
+    it('returns the ContentTypeCache as array of HubContentType with defined .canBeInstalledBy method when loaded from json storage', async () => {
+        const storage = new InMemoryStorage();
         const config = new EditorConfig(storage);
-        const contentTypeCache = new ContentTypeCache(config, storage);
+        axiosMock
+            .onPost(config.hubRegistrationEndpoint)
+            .reply(200, require('./data/content-type-cache/registration.json'));
+        axiosMock
+            .onPost(config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                require('./data/content-type-cache/real-content-types.json')
+            );
 
-        const cache = await contentTypeCache.get();
+        const contentTypeCache1 = new ContentTypeCache(config, storage);
+        await contentTypeCache1.forceUpdate();
+        const contentTypeCache2 = new ContentTypeCache(config, storage);
 
+        const cache = await contentTypeCache2.get();
         cache.forEach(contentType => {
             expect(contentType.canBeInstalledBy).toBeDefined();
         });
