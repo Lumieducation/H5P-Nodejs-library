@@ -153,7 +153,9 @@ export default class ContentTypeCache {
     public async get(...machineNames: string[]): Promise<HubContentType[]> {
         log.info(`getting content types`);
 
-        let cache = await this.storage.load('contentTypeCache');
+        let cache = (await this.storage.load('contentTypeCache')).map(
+            ContentTypeCache.convertCacheEntryToLocalFormat
+        );
         if (!cache) {
             log.info(
                 'ContentTypeCache was never updated before. Downloading it from the H5P Hub...'
@@ -168,10 +170,6 @@ export default class ContentTypeCache {
                 return [];
             }
         }
-
-        cache = cache.map(
-            (contentType: HubContentType) => new HubContentType(contentType)
-        );
 
         if (!machineNames || machineNames.length === 0) {
             return cache;
