@@ -11,7 +11,7 @@ An example of how to integrate and use this library with [Express](https://expre
 
 ## Trying out the demo
 
-Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed.
+Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use Windows, you must use bash (comes with Git for windows) as a command shell (otherwise scripts won't run).
 
 1. Clone the repository with git
 2. `npm install`
@@ -113,7 +113,7 @@ The implementation needs to call several function regularly (comparable to a cro
 
 ### Prerequisites
 
-Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed.
+Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use Windows, you must use bash (comes with Git for windows) as a command shell (otherwise scripts won't run).
 
 ### Installation
 
