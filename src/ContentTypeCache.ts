@@ -153,9 +153,7 @@ export default class ContentTypeCache {
     public async get(...machineNames: string[]): Promise<IHubContentType[]> {
         log.info(`getting content types`);
 
-        let cache = (await this.storage.load('contentTypeCache')).map(
-            ContentTypeCache.convertCacheEntryToLocalFormat
-        );
+        let cache = await this.storage.load('contentTypeCache');
         if (!cache) {
             log.info(
                 'ContentTypeCache was never updated before. Downloading it from the H5P Hub...'
