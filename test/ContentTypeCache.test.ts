@@ -1,6 +1,5 @@
 import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
-import fsExtra from 'fs-extra';
 import mockdate from 'mockdate';
 
 import ContentTypeCache from '../src/ContentTypeCache';
@@ -129,28 +128,5 @@ describe('getting H5P Hub content types', () => {
         mockdate.set(Date.now() + 200);
         expect(await cache.isOutdated()).toEqual(true);
         mockdate.reset();
-    });
-
-    it('returns the ContentTypeCache as array of HubContentType with defined .canBeInstalledBy method when loaded from json storage', async () => {
-        const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
-        axiosMock
-            .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
-        axiosMock
-            .onPost(config.hubContentTypesEndpoint)
-            .reply(
-                200,
-                require('./data/content-type-cache/real-content-types.json')
-            );
-
-        const contentTypeCache1 = new ContentTypeCache(config, storage);
-        await contentTypeCache1.forceUpdate();
-        const contentTypeCache2 = new ContentTypeCache(config, storage);
-
-        const cache = await contentTypeCache2.get();
-        cache.forEach(contentType => {
-            expect(contentType.canBeInstalledBy).toBeDefined();
-        });
     });
 });
