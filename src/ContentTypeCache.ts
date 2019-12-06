@@ -3,9 +3,9 @@ import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
 
-import HubContentType from './HubContentType';
-import {
+=import {
     IEditorConfig,
+    IHubContentType,
     IKeyValueStorage,
     IRegistrationData,
     IUsageStatistics
@@ -48,9 +48,9 @@ export default class ContentTypeCache {
      * @param entry the entry as received from H5P Hub
      * @returns the local content type object
      */
-    private static convertCacheEntryToLocalFormat(entry: any): HubContentType {
+    private static convertCacheEntryToLocalFormat(entry: any): IHubContentType {
         log.debug(`converting Cache Entry to local format`);
-        return new HubContentType({
+        return {
             categories: entry.categories || [],
             createdAt: Date.parse(entry.createdAt),
             description: entry.description,
@@ -72,7 +72,7 @@ export default class ContentTypeCache {
             title: entry.title,
             tutorial: entry.tutorial || '',
             updatedAt: Date.parse(entry.updatedAt)
-        });
+        };
     }
 
     /**
