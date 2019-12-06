@@ -105,7 +105,7 @@ export default class ContentTypeInformationRepository {
         }
 
         // Reject installation of content types that the user has no permission to
-        if (!localContentType[0].canBeInstalledBy(user)) {
+        if (!this.canInstallLibrary(localContentType[0], user)) {
             log.warn(
                 `rejecting installation of content type ${machineName}: user has no permission`
             );

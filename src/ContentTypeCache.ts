@@ -3,7 +3,7 @@ import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
 
-=import {
+import {
     IEditorConfig,
     IHubContentType,
     IKeyValueStorage,
@@ -148,9 +148,9 @@ export default class ContentTypeCache {
     /**
      * Returns the cache data.
      * @param {string[]} machineNames (optional) The method only returns content type cache data for these machine names.
-     * @returns {Promise<HubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
+     * @returns {Promise<IHubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
-    public async get(...machineNames: string[]): Promise<HubContentType[]> {
+    public async get(...machineNames: string[]): Promise<IHubContentType[]> {
         log.info(`getting content types`);
 
         let cache = (await this.storage.load('contentTypeCache')).map(
@@ -174,7 +174,7 @@ export default class ContentTypeCache {
         if (!machineNames || machineNames.length === 0) {
             return cache;
         }
-        return cache.filter((contentType: HubContentType) =>
+        return cache.filter((contentType: IHubContentType) =>
             machineNames.some(
                 machineName => machineName === contentType.machineName
             )
