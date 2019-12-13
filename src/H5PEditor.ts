@@ -289,6 +289,16 @@ export default class H5PEditor {
         ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
     }
 
+    public getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
+        const library = (h5pJson.preloadedDependencies || []).find(
+            dependency => dependency.machineName === h5pJson.mainLibrary
+        );
+        if (!library) {
+            return '';
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
+    }
+
     /**
      * Installs a content type from the H5P Hub.
      * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
@@ -602,7 +612,9 @@ export default class H5PEditor {
     }
 
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {
-        if (typeof object !== 'object') return collect;
+        if (typeof object !== 'object') {
+            return collect;
+        }
 
         Object.keys(object).forEach((key: string) => {
             if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
@@ -648,16 +660,6 @@ export default class H5PEditor {
                     resolve(h5pJson);
                 });
         });
-    }
-
-    private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library = (h5pJson.preloadedDependencies || []).find(
-            dependency => dependency.machineName === h5pJson.mainLibrary
-        );
-        if (!library) {
-            return '';
-        }
-        return LibraryName.toUberName(library, { useWhitespace: true });
     }
 
     private integration(contentId: ContentId): IIntegration {
