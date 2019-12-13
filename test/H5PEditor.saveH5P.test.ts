@@ -24,10 +24,20 @@ describe('H5PEditor.saveH5P()', () => {
                     const metadata = require(`${contentPath}/${contentType}/h5p.json`);
                     const parameters = require(`${contentPath}/${contentType}/content/content.json`);
 
+                    await fsExtra.copy(
+                        path.join(contentPath, contentType),
+                        path.join(tempDirPath, contentType),
+                        {
+                            overwrite: true,
+                            recursive: true
+                        }
+                    );
                     const h5pEditor = new H5PEditor(
                         new InMemoryStorage(),
                         new EditorConfig(new InMemoryStorage()),
-                        new FileLibraryStorage(`${contentPath}/${contentType}`),
+                        new FileLibraryStorage(
+                            path.join(tempDirPath, contentType)
+                        ),
                         new FileContentStorage(
                             path.join(tempDirPath, 'content')
                         ),
