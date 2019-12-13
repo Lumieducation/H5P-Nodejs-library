@@ -617,15 +617,17 @@ export default class H5PEditor {
         }
 
         Object.keys(object).forEach((key: string) => {
-            if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
-                const [name, version] = object[key].split(' ');
-                const [major, minor] = version.split('.');
+            if (key === 'library' && typeof object[key] === 'string') {
+                if (object[key].match(/.+ \d+\.\d+/)) {
+                    const [name, version] = object[key].split(' ');
+                    const [major, minor] = version.split('.');
 
-                collect[object[key]] = {
-                    machineName: name,
-                    majorVersion: parseInt(major, 10),
-                    minorVersion: parseInt(minor, 10)
-                };
+                    collect[object[key]] = {
+                        machineName: name,
+                        majorVersion: parseInt(major, 10),
+                        minorVersion: parseInt(minor, 10)
+                    };
+                }
             } else {
                 this.findLibraries(object[key], collect);
             }
