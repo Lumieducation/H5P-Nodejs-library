@@ -6,7 +6,7 @@ import {
 } from './types';
 
 /**
- * Content metadata object with defaults for required values and 
+ * Content metadata object with defaults for required values and
  * sanitization to make sure it the metadata conforms to the schema.
  */
 export class ContentMetadata implements IContentMetadata {
