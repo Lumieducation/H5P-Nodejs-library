@@ -290,6 +290,21 @@ export default class H5PEditor {
     }
 
     /**
+     * Determines the main library and returns the ubername for it (e.g. "H5P.Example 1.0").
+     * @param metadata the metadata object (=h5p.json)
+     * @returns the ubername with a whitespace as separator
+     */
+    public getUbernameFromMetadata(metadata: IContentMetadata): string {
+        const library = (metadata.preloadedDependencies || []).find(
+            dependency => dependency.machineName === metadata.mainLibrary
+        );
+        if (!library) {
+            return '';
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
+    }
+
+    /**
      * Installs a content type from the H5P Hub.
      * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
      * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
@@ -316,7 +331,7 @@ export default class H5PEditor {
         ]);
         return {
             h5p: h5pJson,
-            library: this.getUbernameFromH5pJson(h5pJson),
+            library: this.getUbernameFromMetadata(h5pJson),
             params: {
                 metadata: h5pJson,
                 params: content
@@ -602,18 +617,18 @@ export default class H5PEditor {
     }
 
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {
-        if (typeof object !== 'object') return collect;
+        if (typeof object !== 'object') {
+            return collect;
+        }
 
         Object.keys(object).forEach((key: string) => {
-            if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
-                const [name, version] = object[key].split(' ');
-                const [major, minor] = version.split('.');
-
-                collect[object[key]] = {
-                    machineName: name,
-                    majorVersion: parseInt(major, 10),
-                    minorVersion: parseInt(minor, 10)
-                };
+            if (key === 'library' && typeof object[key] === 'string') {
+                if (object[key].match(/.+ \d+\.\d+/)) {
+                    collect[object[key]] = LibraryName.fromUberName(
+                        object[key],
+                        { useWhitespace: true }
+                    );
+                }
             } else {
                 this.findLibraries(object[key], collect);
             }
@@ -648,16 +663,6 @@ export default class H5PEditor {
                     resolve(h5pJson);
                 });
         });
-    }
-
-    private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library = (h5pJson.preloadedDependencies || []).find(
-            dependency => dependency.machineName === h5pJson.mainLibrary
-        );
-        if (!library) {
-            return '';
-        }
-        return LibraryName.toUberName(library, { useWhitespace: true });
     }
 
     private integration(contentId: ContentId): IIntegration {
