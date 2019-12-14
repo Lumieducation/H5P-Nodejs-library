@@ -74,8 +74,8 @@ export interface IContentChange {
  */
 export interface IContentMetadata {
     author?: string;
+    authorComments?: string;
     authors?: IContentAuthor[];
-    autorComments?: string;
     changes?: IContentChange[];
     contentType?: string;
     dynamicDependencies?: ILibraryName[];

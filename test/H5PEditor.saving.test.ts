@@ -2,9 +2,10 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
-import { withDir } from 'tmp-promise';
+import { withDir, withFile } from 'tmp-promise';
 
 import LibraryName from '../src/LibraryName';
+import PackageValidator from '../src/PackageValidator';
 import { IContentMetadata } from '../src/types';
 
 import User from '../examples/implementation/User';
@@ -531,6 +532,72 @@ describe('H5PEditor', () => {
                     )
                 ).rejects.toThrowError(
                     'mainLibraryName is invalid: \'abc is not a valid H5P library name ("ubername"). You must follow this pattern: H5P.Example 1.0\''
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('saves content and returns a valid package', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save the content
+                const contentId = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithoutImage,
+                    {
+                        language: 'und',
+                        mainLibrary: 'H5P.GreetingCard',
+                        preloadedDependencies: [
+                            {
+                                machineName: 'H5P.GreetingCard',
+                                majorVersion: 1,
+                                minorVersion: 0
+                            }
+                        ],
+                        title: 'Greeting card'
+                    },
+                    LibraryName.toUberName(
+                        mockupMetadata.preloadedDependencies[0],
+                        {
+                            useWhitespace: true
+                        }
+                    ),
+                    user
+                );
+
+                // save to H5P package
+                await withFile(
+                    async ({ path: h5pFilePath }) => {
+                        const writeStream = fsExtra.createWriteStream(
+                            h5pFilePath
+                        );
+                        await h5pEditor.exportPackage(
+                            contentId,
+                            writeStream,
+                            user
+                        );
+
+                        // check if saved H5P package is valid
+                        const validator = new PackageValidator(
+                            h5pEditor.translationService,
+                            h5pEditor.config
+                        );
+                        await expect(
+                            validator.validatePackage(h5pFilePath, true, true)
+                        ).resolves.toEqual(true);
+                    },
+                    { keep: false, postfix: '.h5p' }
                 );
             },
             { keep: false, unsafeCleanup: true }

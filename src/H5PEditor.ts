@@ -1,4 +1,4 @@
-import { ReadStream } from 'fs';
+import { ReadStream, WriteStream } from 'fs';
 import fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import stream from 'stream';
@@ -13,9 +13,9 @@ import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
-import InstalledLibrary from './InstalledLibrary';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
+import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
 import TemporaryFileManager from './TemporaryFileManager';
 import TranslationService from './TranslationService';
@@ -97,6 +97,12 @@ export default class H5PEditor {
             this.contentManager,
             this.contentStorer
         );
+        this.packageExporter = new PackageExporter(
+            this.libraryManager,
+            translationService,
+            config,
+            this.contentManager
+        );
     }
 
     public contentManager: ContentManager;
@@ -112,8 +118,27 @@ export default class H5PEditor {
     private contentTypeRepository: ContentTypeInformationRepository;
     private filesPath: string;
     private libraryUrl: string;
+    private packageExporter: PackageExporter;
     private renderer: any;
     private translation: any;
+
+    /**
+     * Creates a .h5p-package for the specified content file and pipes it to the stream.
+     * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
+     * @param contentId The contentId for which the package should be created.
+     * @param outputStream The stream that the package is written to (e.g. the response stream fo Express)
+     */
+    public async exportPackage(
+        contentId: ContentId,
+        outputStream: WriteStream,
+        user: IUser
+    ): Promise<void> {
+        return this.packageExporter.createPackage(
+            contentId,
+            outputStream,
+            user
+        );
+    }
 
     /**
      * Returns a stream for a file that was uploaded for a content object.
@@ -637,32 +662,28 @@ export default class H5PEditor {
         return Object.values(collect);
     }
 
-    private generateH5PJSON(
+    private async generateH5PJSON(
         metadata: IContentMetadata,
         libraryName: ILibraryName,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
-        return new Promise((resolve: (value: IContentMetadata) => void) => {
-            this.libraryManager
-                .loadLibrary(libraryName)
-                .then((library: InstalledLibrary) => {
-                    const h5pJson: IContentMetadata = {
-                        ...metadata,
-                        mainLibrary: library.machineName,
-                        preloadedDependencies: [
-                            ...contentDependencies,
-                            ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
-                            {
-                                machineName: library.machineName,
-                                majorVersion: library.majorVersion,
-                                minorVersion: library.minorVersion
-                            }
-                        ]
-                    };
-                    resolve(h5pJson);
-                });
-        });
+
+        const library = await this.libraryManager.loadLibrary(libraryName);
+        const h5pJson: IContentMetadata = {
+            ...metadata,
+            mainLibrary: library.machineName,
+            preloadedDependencies: [
+                ...contentDependencies,
+                ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
+                {
+                    machineName: library.machineName,
+                    majorVersion: library.majorVersion,
+                    minorVersion: library.minorVersion
+                }
+            ]
+        };
+        return h5pJson;
     }
 
     private integration(contentId: ContentId): IIntegration {
