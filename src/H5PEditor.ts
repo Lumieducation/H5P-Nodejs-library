@@ -9,6 +9,7 @@ import defaultTranslation from '../assets/translations/en.json';
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
+import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
@@ -670,19 +671,21 @@ export default class H5PEditor {
         log.info(`generating h5p.json`);
 
         const library = await this.libraryManager.loadLibrary(libraryName);
-        const h5pJson: IContentMetadata = {
-            ...metadata,
-            mainLibrary: library.machineName,
-            preloadedDependencies: [
-                ...contentDependencies,
-                ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
-                {
-                    machineName: library.machineName,
-                    majorVersion: library.majorVersion,
-                    minorVersion: library.minorVersion
-                }
-            ]
-        };
+        const h5pJson: IContentMetadata = new ContentMetadata(
+            metadata,
+            { mainLibrary: library.machineName },
+            {
+                preloadedDependencies: [
+                    ...contentDependencies,
+                    ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
+                    {
+                        machineName: library.machineName,
+                        majorVersion: library.majorVersion,
+                        minorVersion: library.minorVersion
+                    }
+                ]
+            }
+        );
         return h5pJson;
     }
 

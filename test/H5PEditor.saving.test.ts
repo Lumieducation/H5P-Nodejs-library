@@ -538,7 +538,7 @@ describe('H5PEditor', () => {
         );
     });
 
-    it('saves content and returns a valid package', async () => {
+    it('saving content returns a valid H5P package', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const { h5pEditor } = createH5PEditor(tempDirPath);
@@ -556,6 +556,7 @@ describe('H5PEditor', () => {
                     undefined,
                     mockupParametersWithoutImage,
                     {
+                        embedTypes: ['iframe'],
                         language: 'und',
                         mainLibrary: 'H5P.GreetingCard',
                         preloadedDependencies: [
@@ -567,26 +568,28 @@ describe('H5PEditor', () => {
                         ],
                         title: 'Greeting card'
                     },
-                    LibraryName.toUberName(
-                        mockupMetadata.preloadedDependencies[0],
-                        {
-                            useWhitespace: true
-                        }
-                    ),
+                    'H5P.GreetingCard 1.0',
                     user
                 );
 
-                // save to H5P package
+                // export to H5P package in a temporary file
                 await withFile(
                     async ({ path: h5pFilePath }) => {
                         const writeStream = fsExtra.createWriteStream(
                             h5pFilePath
                         );
+                        const packageFinishedPromise = new Promise(resolve => {
+                            writeStream.on('close', () => {
+                                resolve();
+                            });
+                        });
                         await h5pEditor.exportPackage(
                             contentId,
                             writeStream,
                             user
                         );
+                        await packageFinishedPromise;
+                        writeStream.close();
 
                         // check if saved H5P package is valid
                         const validator = new PackageValidator(
