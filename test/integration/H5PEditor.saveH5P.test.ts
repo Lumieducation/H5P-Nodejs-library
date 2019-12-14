@@ -32,7 +32,7 @@ describe('H5PEditor.saveH5P()', () => {
                             undefined,
                             parameters,
                             metadata,
-                            h5pEditor.getUbernameFromH5pJson(metadata),
+                            h5pEditor.getUbernameFromMetadata(metadata),
                             user
                         );
 

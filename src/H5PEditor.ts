@@ -289,9 +289,14 @@ export default class H5PEditor {
         ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
     }
 
-    public getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library = (h5pJson.preloadedDependencies || []).find(
-            dependency => dependency.machineName === h5pJson.mainLibrary
+    /**
+     * Determines the main library and returns the ubername for it (e.g. "H5P.Example 1.0").
+     * @param metadata the metadata object (=h5p.json)
+     * @returns the ubername with a whitespace as separator
+     */
+    public getUbernameFromMetadata(metadata: IContentMetadata): string {
+        const library = (metadata.preloadedDependencies || []).find(
+            dependency => dependency.machineName === metadata.mainLibrary
         );
         if (!library) {
             return '';
@@ -326,7 +331,7 @@ export default class H5PEditor {
         ]);
         return {
             h5p: h5pJson,
-            library: this.getUbernameFromH5pJson(h5pJson),
+            library: this.getUbernameFromMetadata(h5pJson),
             params: {
                 metadata: h5pJson,
                 params: content
@@ -619,14 +624,10 @@ export default class H5PEditor {
         Object.keys(object).forEach((key: string) => {
             if (key === 'library' && typeof object[key] === 'string') {
                 if (object[key].match(/.+ \d+\.\d+/)) {
-                    const [name, version] = object[key].split(' ');
-                    const [major, minor] = version.split('.');
-
-                    collect[object[key]] = {
-                        machineName: name,
-                        majorVersion: parseInt(major, 10),
-                        minorVersion: parseInt(minor, 10)
-                    };
+                    collect[object[key]] = LibraryName.fromUberName(
+                        object[key],
+                        { useWhitespace: true }
+                    );
                 }
             } else {
                 this.findLibraries(object[key], collect);
