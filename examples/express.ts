@@ -23,8 +23,6 @@ const start = async () => {
         new FileLibraryStorage(path.resolve('h5p/libraries')),
         new FileContentStorage(path.resolve('h5p/content')),
         new H5P.TranslationService(H5P.englishStrings),
-        (library, file) =>
-            `h5p/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
         new DirectoryTemporaryFileStorage(path.resolve('h5p/temporary-storage'))
     );
 
@@ -47,6 +45,7 @@ const start = async () => {
     });
 
     server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p')));
+
 
     server.listen(process.env.PORT || 8080);
 };

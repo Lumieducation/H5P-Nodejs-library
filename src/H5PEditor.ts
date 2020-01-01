@@ -50,26 +50,22 @@ export default class H5PEditor {
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
         translationService: TranslationService,
-        /**
-         * This function returns the (relative) URL at which a file inside a library
-         * can be accessed. It is used when URLs of library files must be inserted
-         * (hard-coded) into data structures. The implementation must do this file ->
-         * URL resolution, as it decides where the files can be accessed.
-         */
-        libraryFileUrlResolver: ILibraryFileUrlResolver,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
+
+        this.libraryFileUrlResolver = (library, file) =>
+            `${config.baseUrl}/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`;
+
         this.renderer = defaultRenderer;
         this.baseUrl = config.baseUrl;
         this.translation = defaultTranslation;
         this.ajaxPath = config.ajaxPath;
         this.libraryUrl = config.libraryUrl;
-        this.filesPath = config.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            libraryFileUrlResolver
+            this.libraryFileUrlResolver
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -110,7 +106,13 @@ export default class H5PEditor {
     private baseUrl: string;
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
-    private filesPath: string;
+    /**
+     * This function returns the (relative) URL at which a file inside a library
+     * can be accessed. It is used when URLs of library files must be inserted
+     * (hard-coded) into data structures. The implementation must do this file ->
+     * URL resolution, as it decides where the files can be accessed.
+     */
+    private libraryFileUrlResolver: ILibraryFileUrlResolver;
     private libraryUrl: string;
     private renderer: any;
     private translation: any;
@@ -183,9 +185,11 @@ export default class H5PEditor {
             upgradeScriptPath
         ] = await Promise.all([
             this.loadAssets(
-                machineName,
-                majorVersionAsNr,
-                minorVersionAsNr,
+                new LibraryName(
+                    machineName,
+                    majorVersionAsNr,
+                    minorVersionAsNr
+                ),
                 language
             ),
             this.libraryManager.loadSemantics(library),
@@ -683,15 +687,11 @@ export default class H5PEditor {
     }
 
     private loadAssets(
-        machineName: string,
-        majorVersion: number,
-        minorVersion: number,
+        libraryName: ILibraryName,
         language: string,
         loaded: object = {}
     ): Promise<IAssets> {
-        const key: string = `${machineName}-${majorVersion}.${minorVersion}`;
-        const path: string = `${this.baseUrl}/libraries/${key}`;
-
+        const key: string = LibraryName.toUberName(libraryName);
         if (key in loaded) return Promise.resolve(null);
         loaded[key] = true;
 
@@ -701,15 +701,9 @@ export default class H5PEditor {
             translations: {}
         };
 
-        const lib: LibraryName = new LibraryName(
-            machineName,
-            majorVersion,
-            minorVersion
-        );
-
         return Promise.all([
-            this.libraryManager.loadLibrary(lib),
-            this.libraryManager.loadLanguage(lib, language || 'en')
+            this.libraryManager.loadLibrary(libraryName),
+            this.libraryManager.loadLanguage(libraryName, language || 'en')
         ])
             .then(([library, translation]) =>
                 Promise.all([
@@ -740,12 +734,20 @@ export default class H5PEditor {
                     );
 
                     (library.preloadedJs || []).forEach(script =>
-                        assets.scripts.push(`${path}/${script.path}`)
+                        assets.scripts.push(
+                            this.libraryFileUrlResolver(
+                                libraryName,
+                                script.path
+                            )
+                        )
                     );
                     (library.preloadedCss || []).forEach(style =>
-                        assets.styles.push(`${path}/${style.path}`)
+                        assets.styles.push(
+                            this.libraryFileUrlResolver(libraryName, style.path)
+                        )
                     );
-                    assets.translations[machineName] = translation || undefined;
+                    assets.translations[libraryName.machineName] =
+                        translation || undefined;
                 })
             )
 
@@ -765,13 +767,7 @@ export default class H5PEditor {
         ) => {
             if (!dependency) return Promise.resolve(resolved);
 
-            return this.loadAssets(
-                dependency.machineName,
-                dependency.majorVersion,
-                dependency.minorVersion,
-                language,
-                loaded
-            )
+            return this.loadAssets(dependency, language, loaded)
                 .then((assets: IAssets) =>
                     assets ? resolved.push(assets) : null
                 )

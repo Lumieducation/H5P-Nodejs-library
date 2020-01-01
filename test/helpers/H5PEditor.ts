@@ -5,7 +5,6 @@ import {
     IContentStorage,
     IEditorConfig,
     IKeyValueStorage,
-    ILibraryFileUrlResolver,
     ILibraryStorage,
     ITemporaryFileStorage,
     ITranslationService,
@@ -25,7 +24,6 @@ export function createH5PEditor(
     contentStorage: IContentStorage;
     h5pEditor: H5PEditor;
     keyValueStorage: IKeyValueStorage;
-    libraryFileUrlResolver: ILibraryFileUrlResolver;
     libraryStorage: ILibraryStorage;
     temporaryStorage: ITemporaryFileStorage;
     translationService: ITranslationService;
@@ -39,7 +37,6 @@ export function createH5PEditor(
         path.join(tempPath, 'content')
     );
     const translationService = new TranslationService({});
-    const libraryFileUrlResolver = () => '';
     const temporaryStorage = new DirectoryTemporaryFileStorage(
         path.join(tempPath, 'tmp')
     );
@@ -50,7 +47,6 @@ export function createH5PEditor(
         libraryStorage,
         contentStorage,
         translationService,
-        libraryFileUrlResolver,
         temporaryStorage
     );
 
@@ -59,7 +55,6 @@ export function createH5PEditor(
         contentStorage,
         h5pEditor,
         keyValueStorage,
-        libraryFileUrlResolver,
         libraryStorage,
         temporaryStorage,
         translationService

@@ -12,7 +12,6 @@ describe('getting overview about multiple libraries', () => {
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null,
-            (library, name) => '',
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1'])
@@ -40,7 +39,6 @@ describe('getting overview about multiple libraries', () => {
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null,
-            (library, name) => '',
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])
