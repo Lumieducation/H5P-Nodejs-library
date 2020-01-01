@@ -168,23 +168,12 @@ export default function(
     );
 
     router.get('/download/:contentId', async (req, res) => {
-        const packageExporter = new H5P.PackageExporter(
-            h5pEditor.libraryManager,
-            h5pEditor.translationService,
-            h5pEditor.config,
-            h5pEditor.contentManager
-        );
-
         // set filename for the package with .h5p extension
         res.setHeader(
             'Content-disposition',
             `attachment; filename=${req.params.contentId}.h5p`
         );
-        await packageExporter.createPackage(
-            req.params.contentId,
-            res,
-            req.user
-        );
+        await h5pEditor.exportPackage(req.params.contentId, res, req.user);
     });
 
     // TODO: Move the following routes into the example.
