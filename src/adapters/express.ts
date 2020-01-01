@@ -47,33 +47,26 @@ export default function(
         }
     );
 
-    router.use('/', express.static(h5pCorePath));
-
     router.get('/:contentId/render', (req, res) => {
-        if (!req.params.contentId) {
-            return res.redirect('/');
-        }
-
         const libraryLoader = (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
                 new H5P.LibraryName(lib, maj, min)
             );
         Promise.all([
-            h5pEditor.contentManager.loadContent(req.query.contentId, req.user),
-            h5pEditor.contentManager.loadH5PJson(req.query.contentId, req.user)
+            h5pEditor.contentManager.loadContent(
+                req.params.contentId,
+                req.user
+            ),
+            h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
         ]).then(([contentObject, h5pObject]) =>
             new H5P.H5PPlayer(libraryLoader as any, {}, null, null, null)
-                .render(req.query.contentId, contentObject, h5pObject)
+                .render(req.params.contentId, contentObject, h5pObject)
                 .then(h5pPage => res.end(h5pPage))
                 .catch(error => res.status(500).end(error.message))
         );
     });
 
     router.get('/download', async (req, res) => {
-        if (!req.query.contentId) {
-            return res.redirect('/');
-        }
-
         const packageExporter = new H5P.PackageExporter(
             h5pEditor.libraryManager,
             h5pEditor.translationService,
@@ -111,7 +104,7 @@ export default function(
                 req.body.params.params,
                 req.body.params.metadata,
                 req.body.library,
-                req.ser
+                req.user
             )
             .then(() => {
                 res.status(200).end();
@@ -212,6 +205,8 @@ export default function(
                 break;
         }
     });
+
+    router.use('/', express.static(h5pCorePath));
 
     return router;
 }

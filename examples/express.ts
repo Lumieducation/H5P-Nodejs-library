@@ -42,10 +42,10 @@ const start = async () => {
 
     server.use((req, res, next) => {
         req.user = new User();
+        next();
     });
 
-    server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p')));
-
+    server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p')));    
 
     server.listen(process.env.PORT || 8080);
 };

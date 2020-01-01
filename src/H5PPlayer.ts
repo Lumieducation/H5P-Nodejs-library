@@ -40,7 +40,7 @@ export default class H5PPlayer {
 
         this.urls = {
             baseUrl: '/h5p',
-            downloadUrl: '/download',
+            downloadUrl: '/h5p/download',
             libraryUrl: `/h5p/libraries`,
             scriptUrl: `/h5p/core/js`,
             stylesUrl: `/h5p/core/styles`,

@@ -12,7 +12,7 @@ export default class EditorConfig implements IEditorConfig {
         this.storage = storage;
     }
 
-    public ajaxPath: string = '/ajax?action=';
+    public ajaxPath: string = '/h5p/ajax?action=';
 
     public baseUrl: string = '/h5p';
 
@@ -143,7 +143,7 @@ export default class EditorConfig implements IEditorConfig {
      * The URL path of temporary file storage (used for image, video etc. uploads of
      * unsaved content).
      */
-    public temporaryFilesPath: string = '/h5p/temp-files';
+    public temporaryFilesPath: string = '/temp-files';
 
     /**
      * Used to identify the running instance when calling the H5P Hub.
