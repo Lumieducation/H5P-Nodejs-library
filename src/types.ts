@@ -864,6 +864,10 @@ export interface IEditorConfig {
      */
     coreUrl: string;
     /**
+     * Path to the downloadable H5P packages.
+     */
+    downloadUrl: string;
+    /**
      * Path to editor "core files"
      */
     editorLibraryUrl: string;

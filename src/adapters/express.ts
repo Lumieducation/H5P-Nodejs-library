@@ -66,7 +66,13 @@ export default function(
             ),
             h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
         ]).then(([contentObject, h5pObject]) =>
-            new H5P.H5PPlayer(libraryLoader as any, {}, null, null, null)
+            new H5P.H5PPlayer(
+                libraryLoader as any,
+                h5pEditor.config,
+                null,
+                null,
+                null
+            )
                 .render(req.params.contentId, contentObject, h5pObject)
                 .then(h5pPage => res.end(h5pPage))
                 .catch(error => res.status(500).end(error.message))

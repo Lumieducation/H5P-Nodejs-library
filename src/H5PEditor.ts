@@ -6,9 +6,8 @@ import { withFile } from 'tmp-promise';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/en.json';
+import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
-
-import editorAssetList from './editorAssetList-1.24.json';
 
 import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
@@ -40,6 +39,7 @@ import {
     ITemporaryFileStorage,
     IUser
 } from './types';
+import UrlGenerator from './UrlGenerator';
 
 import Logger from './helpers/Logger';
 
@@ -57,19 +57,14 @@ export default class H5PEditor {
         log.info('initialize');
 
         this.config = config;
-        this.libraryFileUrlResolver = (library, file) =>
-            `${config.baseUrl}${config.librariesUrl}/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`;
-        this.coreFileUrlResolver = file =>
-            `${config.baseUrl}${config.coreUrl}/${file}`;
-        this.editorLibraryUrlResolver = file =>
-            `${config.baseUrl}${config.editorLibraryUrl}/${file}`;
+        this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
         this.translation = defaultTranslation;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            this.libraryFileUrlResolver
+            this.urlGenerator.libraryFile
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -107,17 +102,9 @@ export default class H5PEditor {
 
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
-    private coreFileUrlResolver: (file: string) => string;
-    private editorLibraryUrlResolver: (file: string) => string;
-    /**
-     * This function returns the (relative) URL at which a file inside a library
-     * can be accessed. It is used when URLs of library files must be inserted
-     * (hard-coded) into data structures. The implementation must do this file ->
-     * URL resolution, as it decides where the files can be accessed.
-     */
-    private libraryFileUrlResolver: ILibraryFileUrlResolver;
     private renderer: any;
     private translation: any;
+    private urlGenerator: UrlGenerator;
 
     /**
      * Returns a stream for a file that was uploaded for a content object.
@@ -525,19 +512,21 @@ export default class H5PEditor {
 
     private getCoreScripts(): string[] {
         return editorAssetList.scripts.core
-            .map(this.coreFileUrlResolver)
+            .map(this.urlGenerator.coreFile)
             .concat(
                 editorAssetList.scripts.editor.map(
-                    this.editorLibraryUrlResolver
+                    this.urlGenerator.editorLibraryFile
                 )
             );
     }
 
     private getCoreStyles(): string[] {
         return editorAssetList.styles.core
-            .map(this.coreFileUrlResolver)
+            .map(this.urlGenerator.coreFile)
             .concat(
-                editorAssetList.styles.editor.map(this.editorLibraryUrlResolver)
+                editorAssetList.styles.editor.map(
+                    this.urlGenerator.editorLibraryFile
+                )
             );
     }
 
@@ -553,10 +542,10 @@ export default class H5PEditor {
             assets: {
                 css: this.getCoreStyles(),
                 js: editorAssetList.scripts.integrationCore
-                    .map(this.coreFileUrlResolver)
+                    .map(this.urlGenerator.coreFile)
                     .concat(
                         editorAssetList.scripts.editor.map(
-                            this.editorLibraryUrlResolver
+                            this.urlGenerator.editorLibraryFile
                         )
                     )
             },
@@ -647,7 +636,7 @@ export default class H5PEditor {
 
                     (library.preloadedJs || []).forEach(script =>
                         assets.scripts.push(
-                            this.libraryFileUrlResolver(
+                            this.urlGenerator.libraryFile(
                                 libraryName,
                                 script.path
                             )
@@ -655,7 +644,10 @@ export default class H5PEditor {
                     );
                     (library.preloadedCss || []).forEach(style =>
                         assets.styles.push(
-                            this.libraryFileUrlResolver(libraryName, style.path)
+                            this.urlGenerator.libraryFile(
+                                libraryName,
+                                style.path
+                            )
                         )
                     );
                     assets.translations[libraryName.machineName] =

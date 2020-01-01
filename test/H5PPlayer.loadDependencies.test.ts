@@ -1,3 +1,5 @@
+import EditorConfig from '../examples/implementation/EditorConfig';
+
 import H5PPlayer from '../src/H5PPlayer';
 
 describe('Loading dependencies', () => {
@@ -31,7 +33,12 @@ describe('Loading dependencies', () => {
                 }
             }[name + maj + min]);
 
-        return new H5PPlayer(libraryLoader, undefined, undefined, undefined)
+        return new H5PPlayer(
+            libraryLoader,
+            new EditorConfig(undefined),
+            undefined,
+            undefined
+        )
             .useRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
@@ -94,7 +101,7 @@ describe('Loading dependencies', () => {
 
         return new H5PPlayer(
             libraryLoader as any,
-            undefined,
+            new EditorConfig(undefined),
             undefined,
             undefined
         )
@@ -167,7 +174,7 @@ describe('Loading dependencies', () => {
 
         return new H5PPlayer(
             libraryLoader as any,
-            undefined,
+            new EditorConfig(undefined),
             undefined,
             undefined
         )
@@ -231,7 +238,12 @@ describe('Loading dependencies', () => {
                 }
             }[name + maj + min]);
 
-        return new H5PPlayer(libraryLoader, undefined, undefined, undefined)
+        return new H5PPlayer(
+            libraryLoader,
+            new EditorConfig(undefined),
+            undefined,
+            undefined
+        )
             .useRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
@@ -296,7 +308,12 @@ describe('Loading dependencies', () => {
                 }
             }[name + maj + min]);
 
-        return new H5PPlayer(libraryLoader, undefined, undefined, undefined)
+        return new H5PPlayer(
+            libraryLoader,
+            new EditorConfig(undefined),
+            undefined,
+            undefined
+        )
             .useRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
@@ -364,12 +381,11 @@ describe('Loading dependencies', () => {
 
         const h5p = new H5PPlayer(
             libraryLoader,
-            {
+            new EditorConfig(undefined, {
                 baseUrl: '/baseUrl',
-                libraryUrl: `/libraryUrl`,
-                scriptUrl: `/scriptUrl`,
-                stylesUrl: `/stylesUrl`
-            },
+                coreUrl: '/coreUrl',
+                librariesUrl: `/libraryUrl`
+            }),
             undefined,
             undefined
         );
@@ -379,26 +395,26 @@ describe('Loading dependencies', () => {
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
-                    '/libraryUrl/Baz-3.3/baz.css',
-                    '/libraryUrl/Bar-2.1/bar.css',
-                    '/libraryUrl/Foo-4.2/foo.css'
+                    '/baseUrl/libraryUrl/Baz-3.3/baz.css',
+                    '/baseUrl/libraryUrl/Bar-2.1/bar.css',
+                    '/baseUrl/libraryUrl/Foo-4.2/foo.css'
                 ]);
 
-                expect(h5p.coreScripts()).toEqual([
-                    '/scriptUrl/jquery.js',
-                    '/scriptUrl/h5p.js',
-                    '/scriptUrl/h5p-event-dispatcher.js',
-                    '/scriptUrl/h5p-x-api-event.js',
-                    '/scriptUrl/h5p-x-api.js',
-                    '/scriptUrl/h5p-content-type.js',
-                    '/scriptUrl/h5p-confirmation-dialog.js',
-                    '/scriptUrl/h5p-action-bar.js',
-                    '/scriptUrl/request-queue.js'
+                expect(h5p.getCoreScripts()).toEqual([
+                    '/baseUrl/coreUrl/js/jquery.js',
+                    '/baseUrl/coreUrl/js/h5p.js',
+                    '/baseUrl/coreUrl/js/h5p-event-dispatcher.js',
+                    '/baseUrl/coreUrl/js/h5p-x-api-event.js',
+                    '/baseUrl/coreUrl/js/h5p-x-api.js',
+                    '/baseUrl/coreUrl/js/h5p-content-type.js',
+                    '/baseUrl/coreUrl/js/h5p-confirmation-dialog.js',
+                    '/baseUrl/coreUrl/js/h5p-action-bar.js',
+                    '/baseUrl/coreUrl/js/request-queue.js'
                 ]);
 
-                expect(h5p.coreStyles()).toEqual([
-                    '/stylesUrl/h5p.css',
-                    '/stylesUrl/h5p-confirmation-dialog.css'
+                expect(h5p.getCoreStyles()).toEqual([
+                    '/baseUrl/coreUrl/styles/h5p.css',
+                    '/baseUrl/coreUrl/styles/h5p-confirmation-dialog.css'
                 ]);
 
                 expect(

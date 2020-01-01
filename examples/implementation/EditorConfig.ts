@@ -6,10 +6,18 @@ import { IEditorConfig, IKeyValueStorage } from '../../src';
  */
 export default class EditorConfig implements IEditorConfig {
     /**
-     * @param {IStorage} storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
+     * @param storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
+     * @param defaults default values to use instead of the ones set by this class
      */
-    constructor(storage: IKeyValueStorage) {
+    constructor(storage: IKeyValueStorage, defaults?: any) {
         this.storage = storage;
+        if (defaults) {
+            for (const key in defaults) {
+                if (this[key] !== undefined) {
+                    this[key] = defaults[key];
+                }
+            }
+        }
     }
 
     public ajaxUrl: string = '/ajax';
@@ -23,6 +31,7 @@ export default class EditorConfig implements IEditorConfig {
         minor: 24
     };
     public coreUrl: string = '/core';
+    public downloadUrl: string = '/download';
     public editorLibraryUrl: string = '/editor';
     public enableLrsContentTypes: boolean = true;
     public fetchingDisabled: 0 | 1 = 0;
