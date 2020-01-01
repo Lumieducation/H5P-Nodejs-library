@@ -45,7 +45,7 @@ const start = async () => {
         next();
     });
 
-    server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p')));    
+    server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p')));
 
     server.listen(process.env.PORT || 8080);
 };
