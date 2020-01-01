@@ -54,73 +54,14 @@ export default function(
         }
     );
 
-    router.get('/:contentId/render', (req, res) => {
-        const libraryLoader = (lib, maj, min) =>
-            h5pEditor.libraryManager.loadLibrary(
-                new H5P.LibraryName(lib, maj, min)
-            );
-        Promise.all([
-            h5pEditor.contentManager.loadContent(
-                req.params.contentId,
-                req.user
-            ),
-            h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
-        ]).then(([contentObject, h5pObject]) =>
-            new H5P.H5PPlayer(
-                libraryLoader as any,
-                h5pEditor.config,
-                null,
-                null,
-                null
-            )
-                .render(req.params.contentId, contentObject, h5pObject)
-                .then(h5pPage => res.end(h5pPage))
-                .catch(error => res.status(500).end(error.message))
-        );
-    });
-
-    router.get('/download', async (req, res) => {
-        const packageExporter = new H5P.PackageExporter(
-            h5pEditor.libraryManager,
-            h5pEditor.translationService,
-            h5pEditor.config,
-            h5pEditor.contentManager
-        );
-
-        // set filename for the package with .h5p extension
-        res.setHeader(
-            'Content-disposition',
-            `attachment; filename=${req.query.contentId}.h5p`
-        );
-        await packageExporter.createPackage(req.query.contentId, res, req.user);
-    });
-
-    router.get('/params', (req, res) => {
+    router.get('/params/:contentId', (req, res) => {
         h5pEditor
-            .loadH5P(req.query.contentId)
+            .loadH5P(req.params.contentId, req.user)
             .then(content => {
                 res.status(200).json(content);
             })
             .catch(() => {
                 res.status(404).end();
-            });
-    });
-
-    router.get('/edit', async (req, res) => {
-        h5pEditor.render(req.query.contentId).then(page => res.end(page));
-    });
-
-    router.post('/edit', (req, res) => {
-        h5pEditor
-            .saveH5P(
-                req.query.contentId,
-                req.body.params.params,
-                req.body.params.metadata,
-                req.body.library,
-                req.user
-            )
-            .then(() => {
-                res.status(200).end();
             });
     });
 
@@ -220,10 +161,92 @@ export default function(
     });
 
     router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
+
     router.use(
         h5pEditor.config.editorLibraryUrl,
         express.static(h5pEditorLibraryPath)
     );
+
+    router.get('/download/:contentId', async (req, res) => {
+        const packageExporter = new H5P.PackageExporter(
+            h5pEditor.libraryManager,
+            h5pEditor.translationService,
+            h5pEditor.config,
+            h5pEditor.contentManager
+        );
+
+        // set filename for the package with .h5p extension
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.params.contentId}.h5p`
+        );
+        await packageExporter.createPackage(
+            req.params.contentId,
+            res,
+            req.user
+        );
+    });
+
+    // TODO: Move the following routes into the example.
+
+    router.get('/play/:contentId', (req, res) => {
+        const libraryLoader = (lib, maj, min) =>
+            h5pEditor.libraryManager.loadLibrary(
+                new H5P.LibraryName(lib, maj, min)
+            );
+        Promise.all([
+            h5pEditor.contentManager.loadContent(
+                req.params.contentId,
+                req.user
+            ),
+            h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
+        ]).then(([contentObject, h5pObject]) =>
+            new H5P.H5PPlayer(
+                libraryLoader as any,
+                h5pEditor.config,
+                null,
+                null,
+                null
+            )
+                .render(req.params.contentId, contentObject, h5pObject)
+                .then(h5pPage => res.end(h5pPage))
+                .catch(error => res.status(500).end(error.message))
+        );
+    });
+
+    router.get('/edit/:contentId', async (req, res) => {
+        h5pEditor.render(req.params.contentId).then(page => res.end(page));
+    });
+
+    router.post('/edit/:contentId', async (req, res) => {
+        const contentId = await h5pEditor.saveH5P(
+            req.params.contentId,
+            req.body.params.params,
+            req.body.params.metadata,
+            req.body.library,
+            req.user
+        );
+
+        res.send(JSON.stringify({ contentId }));
+        res.status(200).end();
+    });
+
+    router.get('/new', async (req, res) => {
+        h5pEditor.render(undefined).then(page => res.end(page));
+    });
+
+    router.post('/new', async (req, res) => {
+        const contentId = await h5pEditor.saveH5P(
+            undefined,
+            req.body.params.params,
+            req.body.params.metadata,
+            req.body.library,
+            req.user
+        );
+
+        res.send(JSON.stringify({ contentId }));
+        res.status(200).end();
+    });
 
     return router;
 }

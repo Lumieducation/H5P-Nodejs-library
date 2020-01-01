@@ -92,7 +92,7 @@ describe('Rendering the HTML page', () => {
                 </head>
                 <body>
                     <div class="h5p-content" data-content-id="foo"></div>
-                    <a href="/h5p/download?contentId=foo">Download</button>
+                    <a href="/h5p/download/foo">Download</button>
                 </body>
                 </html>`.replace(/ /g, '')
                 );
@@ -288,7 +288,7 @@ describe('Rendering the HTML page', () => {
                     </head>
                     <body>
                         <div class="h5p-content" data-content-id="foo"></div>
-                        <a href="/h5p/download?contentId=foo">Download</button>
+                        <a href="/h5p/download/foo">Download</button>
                     </body>
                     </html>`.replace(/ /g, '')
                 );

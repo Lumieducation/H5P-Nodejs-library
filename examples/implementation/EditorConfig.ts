@@ -47,8 +47,10 @@ export default class EditorConfig implements IEditorConfig {
     ];
     public maxFileSize: number = 16 * 1024 * 1024;
     public maxTotalSize: number = 64 * 1024 * 1024;
+    public paramsUrl: string = '/params';
     public platformName: string = 'H5P-Editor-NodeJs';
     public platformVersion: string = '0.10';
+    public playUrl: string = '/play';
     public sendUsageStatistics: boolean = false;
     public siteType: 'local' | 'network' | 'internet' = 'local';
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes

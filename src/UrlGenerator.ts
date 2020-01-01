@@ -11,7 +11,7 @@ export default class UrlGenerator {
     };
 
     public downloadPackage = (contentId: ContentId) => {
-        return `${this.config.baseUrl}${this.config.downloadUrl}?contentId=${contentId}`;
+        return `${this.config.baseUrl}${this.config.downloadUrl}/${contentId}`;
     };
 
     public editorLibraryFile = (file: string): string => {
@@ -20,5 +20,13 @@ export default class UrlGenerator {
 
     public libraryFile = (library: ILibraryName, file: string) => {
         return `${this.config.baseUrl}${this.config.librariesUrl}/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`;
+    };
+
+    public parameters = () => {
+        return `${this.config.baseUrl}${this.config.paramsUrl}`;
+    };
+
+    public play = () => {
+        return `${this.config.baseUrl}${this.config.playUrl}`;
     };
 }

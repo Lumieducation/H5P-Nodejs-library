@@ -923,6 +923,10 @@ export interface IEditorConfig {
      */
     maxTotalSize: number;
     /**
+     * The Url at which the parameters of a piece of content can be retrieved
+     */
+    paramsUrl: string;
+    /**
      * This is the name of the H5P implementation sent to the H5P for statistical reasons.
      * Not user-configurable but should be overridden by custom custom implementations.
      */
@@ -932,6 +936,10 @@ export interface IEditorConfig {
      * Not user-configurable but should be overridden by custom custom implementations.
      */
     platformVersion: string;
+    /**
+     * The Url at which content can be displayed.
+     */
+    playUrl: string;
     /**
      * If true, the instance will send usage statistics to the H5P Hub whenever it looks for new content types or updates.
      * User-configurable.

@@ -31,7 +31,6 @@ import {
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
-    ILibraryFileUrlResolver,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
@@ -322,7 +321,8 @@ export default class H5PEditor {
         const model = {
             integration: this.integration(contentId),
             scripts: this.getCoreScripts(),
-            styles: this.getCoreStyles()
+            styles: this.getCoreStyles(),
+            urlGenerator: this.urlGenerator
         };
 
         return Promise.resolve(this.renderer(model));
