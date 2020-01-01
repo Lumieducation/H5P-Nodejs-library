@@ -45,7 +45,6 @@ export default class H5PPlayer {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
         return {
-            ...this.integration,
             contents: {
                 [`cid-${contentId}`]: {
                     ...this.content,
@@ -67,7 +66,8 @@ export default class H5PPlayer {
             },
             postUserStatistics: false,
             saveFreq: false,
-            url: this.config.baseUrl
+            url: this.config.baseUrl,
+            ...this.integration
         };
     }
 

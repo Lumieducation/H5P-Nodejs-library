@@ -1,4 +1,4 @@
-import { ReadStream } from 'fs';
+import { ReadStream, WriteStream } from 'fs';
 import fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import stream from 'stream';
@@ -10,13 +10,14 @@ import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
+import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
-import InstalledLibrary from './InstalledLibrary';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
+import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
 import TemporaryFileManager from './TemporaryFileManager';
 import TranslationService from './TranslationService';
@@ -90,6 +91,12 @@ export default class H5PEditor {
             this.contentManager,
             this.contentStorer
         );
+        this.packageExporter = new PackageExporter(
+            this.libraryManager,
+            translationService,
+            config,
+            this.contentManager
+        );
     }
 
     public contentManager: ContentManager;
@@ -101,9 +108,28 @@ export default class H5PEditor {
 
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
+    private packageExporter: PackageExporter;
     private renderer: any;
     private translation: any;
     private urlGenerator: UrlGenerator;
+
+    /**
+     * Creates a .h5p-package for the specified content file and pipes it to the stream.
+     * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
+     * @param contentId The contentId for which the package should be created.
+     * @param outputStream The stream that the package is written to (e.g. the response stream fo Express)
+     */
+    public async exportPackage(
+        contentId: ContentId,
+        outputStream: WriteStream,
+        user: IUser
+    ): Promise<void> {
+        return this.packageExporter.createPackage(
+            contentId,
+            outputStream,
+            user
+        );
+    }
 
     /**
      * Returns a stream for a file that was uploaded for a content object.
@@ -282,6 +308,21 @@ export default class H5PEditor {
     }
 
     /**
+     * Determines the main library and returns the ubername for it (e.g. "H5P.Example 1.0").
+     * @param metadata the metadata object (=h5p.json)
+     * @returns the ubername with a whitespace as separator
+     */
+    public getUbernameFromMetadata(metadata: IContentMetadata): string {
+        const library = (metadata.preloadedDependencies || []).find(
+            dependency => dependency.machineName === metadata.mainLibrary
+        );
+        if (!library) {
+            return '';
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
+    }
+
+    /**
      * Installs a content type from the H5P Hub.
      * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
      * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
@@ -308,7 +349,7 @@ export default class H5PEditor {
         ]);
         return {
             h5p: h5pJson,
-            library: this.getUbernameFromH5pJson(h5pJson),
+            library: this.getUbernameFromMetadata(h5pJson),
             params: {
                 metadata: h5pJson,
                 params: content
@@ -462,18 +503,18 @@ export default class H5PEditor {
     }
 
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {
-        if (typeof object !== 'object') return collect;
+        if (typeof object !== 'object') {
+            return collect;
+        }
 
         Object.keys(object).forEach((key: string) => {
-            if (key === 'library' && object[key].match(/.+ \d+\.\d+/)) {
-                const [name, version] = object[key].split(' ');
-                const [major, minor] = version.split('.');
-
-                collect[object[key]] = {
-                    machineName: name,
-                    majorVersion: parseInt(major, 10),
-                    minorVersion: parseInt(minor, 10)
-                };
+            if (key === 'library' && typeof object[key] === 'string') {
+                if (object[key].match(/.+ \d+\.\d+/)) {
+                    collect[object[key]] = LibraryName.fromUberName(
+                        object[key],
+                        { useWhitespace: true }
+                    );
+                }
             } else {
                 this.findLibraries(object[key], collect);
             }
@@ -482,32 +523,30 @@ export default class H5PEditor {
         return Object.values(collect);
     }
 
-    private generateH5PJSON(
+    private async generateH5PJSON(
         metadata: IContentMetadata,
         libraryName: ILibraryName,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
-        return new Promise((resolve: (value: IContentMetadata) => void) => {
-            this.libraryManager
-                .loadLibrary(libraryName)
-                .then((library: InstalledLibrary) => {
-                    const h5pJson: IContentMetadata = {
-                        ...metadata,
-                        mainLibrary: library.machineName,
-                        preloadedDependencies: [
-                            ...contentDependencies,
-                            ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
-                            {
-                                machineName: library.machineName,
-                                majorVersion: library.majorVersion,
-                                minorVersion: library.minorVersion
-                            }
-                        ]
-                    };
-                    resolve(h5pJson);
-                });
-        });
+
+        const library = await this.libraryManager.loadLibrary(libraryName);
+        const h5pJson: IContentMetadata = new ContentMetadata(
+            metadata,
+            { mainLibrary: library.machineName },
+            {
+                preloadedDependencies: [
+                    ...contentDependencies,
+                    ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
+                    {
+                        machineName: library.machineName,
+                        majorVersion: library.majorVersion,
+                        minorVersion: library.minorVersion
+                    }
+                ]
+            }
+        );
+        return h5pJson;
     }
 
     private getCoreScripts(): string[] {
@@ -554,17 +593,7 @@ export default class H5PEditor {
             nodeVersionId: contentId
         };
     }
-
-    private getUbernameFromH5pJson(h5pJson: IContentMetadata): string {
-        const library = (h5pJson.preloadedDependencies || []).find(
-            dependency => dependency.machineName === h5pJson.mainLibrary
-        );
-        if (!library) {
-            return '';
-        }
-        return LibraryName.toUberName(library, { useWhitespace: true });
-    }
-
+        
     private integration(contentId: ContentId): IIntegration {
         return {
             ajax: {

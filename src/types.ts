@@ -74,13 +74,13 @@ export interface IContentChange {
  */
 export interface IContentMetadata {
     author?: string;
+    authorComments?: string;
     authors?: IContentAuthor[];
-    autorComments?: string;
     changes?: IContentChange[];
     contentType?: string;
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
-    embedTypes?: ('iframe' | 'div')[];
+    embedTypes: ('iframe' | 'div')[];
     h?: string;
     language: string;
     license?: string;
@@ -1051,3 +1051,31 @@ export type ILibraryFileUrlResolver = (
     library: ILibraryName,
     filename: string
 ) => string;
+
+/**
+ * This objects carries information about content types that the user can select
+ * from the H5P Hub.
+ */
+export interface IHubContentType {
+    categories: string[];
+    createdAt: number;
+    description: string;
+    example: string;
+    h5pMajorVersion: number;
+    h5pMinorVersion: number;
+    icon: string;
+    isRecommended: boolean;
+    keywords: string[];
+    license: any;
+    machineName: string;
+    majorVersion: number;
+    minorVersion: number;
+    owner: string;
+    patchVersion: number;
+    popularity: number;
+    screenshots: any;
+    summary: string;
+    title: string;
+    tutorial: string;
+    updatedAt: number;
+}

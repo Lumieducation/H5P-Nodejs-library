@@ -69,6 +69,7 @@ export default class TemporaryFileManager {
     /**
      * Returns a file stream for temporary file.
      * Will throw H5PError if the file doesn't exist or the user has no access permissions!
+     * Make sure to close this stream. Otherwise the temporary files can't be deleted properly!
      * @param filename the file to get
      * @param user the user who requests the file
      * @returns a stream to read from

@@ -125,7 +125,7 @@ export default class PackageValidator {
             // we await the promise here because we want to catch the error and return undefined
             return await yauzlPromise.open(file, { lazyEntries: false });
         } catch (ignored) {
-            log.error(`zip file ${file} could not be opened`);
+            log.error(`zip file ${file} could not be opened: ${ignored}`);
             return undefined;
         }
     }

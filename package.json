@@ -65,9 +65,11 @@
         "yazl": "^2.5.1"
     },
     "devDependencies": {
+        "@semantic-release/git": "7.0.18",
+        "@semantic-release/github": "5.5.5",
         "@types/escape-html": "0.0.20",
         "@types/fs-extra": "8.0.1",
-        "@types/jest": "24.0.23",
+        "@types/jest": "24.0.24",
         "@types/jsonpath": "0.2.0",
         "@types/shortid": "0.0.29",
         "@types/stream-buffers": "3.0.3",
@@ -92,7 +94,7 @@
         "tslint": "5.20.1",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
-        "typescript": "3.7.3"
+        "typescript": "3.7.4"
     },
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts"

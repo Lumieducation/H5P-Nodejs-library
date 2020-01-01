@@ -4,6 +4,7 @@ import globPromise from 'glob-promise';
 import * as path from 'path';
 import { Stream } from 'stream';
 
+import { ContentMetadata } from './ContentMetadata';
 import H5pError from './helpers/H5pError';
 import { streamToString } from './helpers/StreamHelpers';
 import {
@@ -262,7 +263,11 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<IContentMetadata> {
-        return this.getFileJson(contentId, 'h5p.json', user);
+        // We don't directly return the h5p.json file content as
+        // we have to make sure it conforms to the schema.
+        return new ContentMetadata(
+            await this.getFileJson(contentId, 'h5p.json', user)
+        );
     }
 
     /**
