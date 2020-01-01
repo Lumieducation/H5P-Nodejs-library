@@ -830,11 +830,15 @@ export interface IEditorConfig {
     /**
      * URL prefix for all AJAX requests
      */
-    ajaxPath: string;
+    ajaxUrl: string;
     /**
      * The prefix that is added to all URLs.
      */
     baseUrl: string;
+    /**
+     * base path for content files (e.g. images)
+     */
+    contentFilesUrl: string;
     /**
      * Time after which the content type cache is considered to be outdated in milliseconds.
      * User-configurable.
@@ -854,6 +858,15 @@ export interface IEditorConfig {
         major: number;
         minor: number;
     };
+
+    /**
+     * Path to the H5P core files directory.
+     */
+    coreUrl: string;
+    /**
+     * Path to editor "core files"
+     */
+    editorLibraryUrl: string;
     /**
      * If set to true, the content types that require a Learning Record Store to make sense are
      * offered as a choice when the user creates new content.
@@ -865,10 +878,6 @@ export interface IEditorConfig {
      * User-configurable.
      */
     fetchingDisabled: 0 | 1;
-    /**
-     * base path for content files (e.g. images)
-     */
-    filesPath: string;
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
      * Can be anything like 1.22.1
@@ -887,9 +896,9 @@ export interface IEditorConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * Path to editor "core files"
+     * The URL of the library files (=content types).
      */
-    libraryUrl: string;
+    librariesUrl: string;
     /**
      * A list of file extensions allowed for library files. (File extensions without . and
      * separated by whitespaces.)
@@ -938,7 +947,7 @@ export interface IEditorConfig {
      * The URL path of temporary file storage (used for image, video etc. uploads of
      * unsaved content).
      */
-    temporaryFilesPath: string;
+    temporaryFilesUrl: string;
 
     uuid: string;
 

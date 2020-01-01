@@ -5,35 +5,42 @@ import * as H5P from '../';
 
 export default function(
     h5pEditor: H5P.H5PEditor,
-    h5pCorePath: string
+    h5pCorePath: string,
+    h5pEditorLibraryPath: string
 ): express.Router {
     const router = express.Router();
 
-    router.get(`/libraries/:uberName/:file(*)`, async (req, res) => {
-        const stream = h5pEditor.libraryManager.getFileStream(
-            H5P.LibraryName.fromUberName(req.params.uberName),
-            req.params.file
-        );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
-    });
-
-    router.get(`/content/:id/:file(*)`, async (req, res) => {
-        const stream = await h5pEditor.getContentFileStream(
-            req.params.id,
-            req.params.file,
-            req.user
-        );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
-    });
+    router.get(
+        `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
+        async (req, res) => {
+            const stream = h5pEditor.libraryManager.getFileStream(
+                H5P.LibraryName.fromUberName(req.params.uberName),
+                req.params.file
+            );
+            stream.on('end', () => {
+                res.end();
+            });
+            stream.pipe(res.type(path.basename(req.params.file)));
+        }
+    );
 
     router.get(
-        `${h5pEditor.config.temporaryFilesPath}/:file(*)`,
+        `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
+        async (req, res) => {
+            const stream = await h5pEditor.getContentFileStream(
+                req.params.id,
+                req.params.file,
+                req.user
+            );
+            stream.on('end', () => {
+                res.end();
+            });
+            stream.pipe(res.type(path.basename(req.params.file)));
+        }
+    );
+
+    router.get(
+        `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
         async (req, res) => {
             const stream = await h5pEditor.getContentFileStream(
                 undefined,
@@ -111,7 +118,7 @@ export default function(
             });
     });
 
-    router.get('/ajax', (req, res) => {
+    router.get(h5pEditor.config.ajaxUrl, (req, res) => {
         const { action } = req.query;
         const { majorVersion, minorVersion, machineName, language } = req.query;
 
@@ -143,7 +150,7 @@ export default function(
         }
     });
 
-    router.post('/ajax', async (req, res) => {
+    router.post(h5pEditor.config.ajaxUrl, async (req, res) => {
         const { action } = req.query;
         switch (action) {
             case 'libraries':
@@ -206,7 +213,11 @@ export default function(
         }
     });
 
-    router.use('/', express.static(h5pCorePath));
+    router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
+    router.use(
+        h5pEditor.config.editorLibraryUrl,
+        express.static(h5pEditorLibraryPath)
+    );
 
     return router;
 }
