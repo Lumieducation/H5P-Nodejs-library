@@ -593,7 +593,7 @@ export default class H5PEditor {
             nodeVersionId: contentId
         };
     }
-        
+
     private integration(contentId: ContentId): IIntegration {
         return {
             ajax: {
