@@ -367,6 +367,13 @@ export interface IContentStorage {
         contentId: ContentId,
         user: IUser
     ): Promise<Permission[]>;
+
+    /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    listContent(user?: IUser): Promise<ContentId[]>;
 }
 
 /**

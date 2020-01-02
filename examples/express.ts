@@ -13,6 +13,7 @@ import FileLibraryStorage from './implementation/FileLibraryStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import JsonStorage from './implementation/JsonStorage';
 import User from './implementation/User';
+import startPageRenderer from './startPageRenderer';
 
 const start = async () => {
     const h5pEditor = new H5P.H5PEditor(
@@ -53,6 +54,8 @@ const start = async () => {
             path.resolve('h5p/editor')
         )
     );
+
+    server.get('/', startPageRenderer(h5pEditor));
 
     server.listen(process.env.PORT || 8080);
 };
