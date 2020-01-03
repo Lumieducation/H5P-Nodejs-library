@@ -251,7 +251,9 @@ export default function(
             return;
         }
 
-        res.send(`Content ${req.params.contentId} successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`);
+        res.send(
+            `Content ${req.params.contentId} successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
+        );
         res.status(200).end();
     });
 

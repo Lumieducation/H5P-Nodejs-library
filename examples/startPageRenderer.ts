@@ -1,6 +1,8 @@
 import * as H5P from '../src';
 
-export default function render(editor: H5P.H5PEditor) {
+export default function render(
+    editor: H5P.H5PEditor
+): (req: any, res: any) => any {
     return async (req, res) => {
         const contentIds = await editor.contentManager.listContent();
         const contentObjects = await Promise.all(
