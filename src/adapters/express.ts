@@ -3,6 +3,13 @@ import path from 'path';
 
 import * as H5P from '../';
 
+/**
+ * This router implements all Ajax calls necessary for the H5P (editor) client to work.
+ * Use it like this: server.use('/h5p', H5P.adapters.express(h5pEditor, path.resolve('h5p/core'), path.resolve('h5p/editor')));
+ * @param h5pEditor the editor object
+ * @param h5pCorePath the path on the local disk at which the core files (of the player) can be found
+ * @param h5pEditorLibraryPath the path on the local disk at which the core files of the editor can be found
+ */
 export default function(
     h5pEditor: H5P.H5PEditor,
     h5pCorePath: string,
@@ -54,7 +61,7 @@ export default function(
         }
     );
 
-    router.get('/params/:contentId', (req, res) => {
+    router.get(`${h5pEditor.config.paramsUrl}/:contentId`, (req, res) => {
         h5pEditor
             .loadH5P(req.params.contentId, req.user)
             .then(content => {
@@ -167,14 +174,17 @@ export default function(
         express.static(h5pEditorLibraryPath)
     );
 
-    router.get('/download/:contentId', async (req, res) => {
-        // set filename for the package with .h5p extension
-        res.setHeader(
-            'Content-disposition',
-            `attachment; filename=${req.params.contentId}.h5p`
-        );
-        await h5pEditor.exportPackage(req.params.contentId, res, req.user);
-    });
+    router.get(
+        `${h5pEditor.config.downloadUrl}/:contentId`,
+        async (req, res) => {
+            // set filename for the package with .h5p extension
+            res.setHeader(
+                'Content-disposition',
+                `attachment; filename=${req.params.contentId}.h5p`
+            );
+            await h5pEditor.exportPackage(req.params.contentId, res, req.user);
+        }
+    );
 
     return router;
 }

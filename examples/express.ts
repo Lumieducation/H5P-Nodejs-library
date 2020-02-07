@@ -1,11 +1,12 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
-
+import os from 'os';
 import path from 'path';
 
 import * as H5P from '../src';
 
+import expressRoutes from './expressRoutes';
 import DirectoryTemporaryFileStorage from './implementation/DirectoryTemporaryFileStorage';
 import EditorConfig from './implementation/EditorConfig';
 import FileContentStorage from './implementation/FileContentStorage';
@@ -14,7 +15,25 @@ import InMemoryStorage from './implementation/InMemoryStorage';
 import JsonStorage from './implementation/JsonStorage';
 import User from './implementation/User';
 import startPageRenderer from './startPageRenderer';
-import expressRoutes from './expressRoutes';
+
+function displayIps(port: string): void {
+    // tslint:disable-next-line: no-console
+    console.log('Example H5P NodeJs server is running:');
+    const networkInterfaces = os.networkInterfaces();
+    // tslint:disable-next-line: forin
+    for (const devName in networkInterfaces) {
+        networkInterfaces[devName]
+            .filter(int => !int.internal)
+            .forEach(int =>
+                // tslint:disable-next-line: no-console
+                console.log(
+                    `http://${int.family === 'IPv6' ? '[' : ''}${int.address}${
+                        int.family === 'IPv6' ? ']' : ''
+                    }:${port}`
+                )
+            );
+    }
+}
 
 const start = async () => {
     const h5pEditor = new H5P.H5PEditor(
@@ -48,7 +67,7 @@ const start = async () => {
     });
 
     server.use(
-        '/h5p',
+        h5pEditor.config.baseUrl,
         H5P.adapters.express(
             h5pEditor,
             path.resolve('h5p/core'),
@@ -56,11 +75,13 @@ const start = async () => {
         )
     );
 
-    server.use('/h5p', expressRoutes(h5pEditor));
+    server.use(h5pEditor.config.baseUrl, expressRoutes(h5pEditor));
 
     server.get('/', startPageRenderer(h5pEditor));
 
-    server.listen(process.env.PORT || 8080);
+    const port = process.env.PORT || '8080';
+    displayIps(port);
+    server.listen(port);
 };
 
 start();

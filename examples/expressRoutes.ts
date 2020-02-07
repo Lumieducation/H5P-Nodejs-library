@@ -5,7 +5,7 @@ import * as H5P from '../src';
 export default function(h5pEditor: H5P.H5PEditor): express.Router {
     const router = express.Router();
 
-    router.get('/play/:contentId', (req, res) => {
+    router.get(`${h5pEditor.config.playUrl}/:contentId`, (req, res) => {
         const libraryLoader = (lib, maj, min) =>
             h5pEditor.libraryManager.loadLibrary(
                 new H5P.LibraryName(lib, maj, min)

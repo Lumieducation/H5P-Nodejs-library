@@ -24,7 +24,9 @@ export default function render(
             <div class="container">
                 <h1>H5P NodeJs Demo</h1>
                 <div class="alert alert-warning">This demo is for debugging and demonstration purposes only and not suitable for production use!</div>
-                <a class="btn btn-primary my-2" href="/h5p/new"><span class="fa fa-plus-circle m-2"></span>Create new content</a>
+                <a class="btn btn-primary my-2" href="${
+                    editor.config.baseUrl
+                }/new"><span class="fa fa-plus-circle m-2"></span>Create new content</a>
                 <h2>Existing content</h2>
                 <div class="list-group">
                 ${contentObjects
@@ -33,7 +35,7 @@ export default function render(
                             `<div class="list-group-item">
                                 <div class="d-flex w-10">
                                     <div class="mr-auto p-2 align-self-center">
-                                        <a href="${editor.config.baseUrl}/play/${content.id}">
+                                        <a href="${editor.config.baseUrl}${editor.config.playUrl}/${content.id}">
                                             <h5>${content.content.title}</h5>
                                         </a>
                                         <div class="small d-flex">                                            
@@ -54,7 +56,7 @@ export default function render(
                                         </a>
                                     </div>
                                     <div class="p-2">
-                                        <a class="btn btn-info" href="${editor.config.baseUrl}/download/${content.id}">
+                                        <a class="btn btn-info" href="${editor.config.baseUrl}${editor.config.downloadUrl}/${content.id}">
                                             <span class="fa fa-file-download m-1"></span>
                                             download
                                         </a>
