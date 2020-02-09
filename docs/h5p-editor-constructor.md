@@ -8,13 +8,13 @@ The `keyValueStore` object is used by the `ContentTypeCache` to persist informat
 
 ### config
 
-An object holding all configuration parameters as properties. It must implement the `IEditorConfig` interface. You can use the sample implementation in [`examples/implementation/EditorConfig.ts`](/examples/implementation/EditorConfig.ts).
+An object holding all configuration parameters as properties. It must implement the `IEditorConfig` interface. You can use the sample implementation in [`src/implementation/EditorConfig.ts`](/src/implementation/EditorConfig.ts).
 
 ### libraryStorage
 
 The `libraryStorage` provides information about installed libraries and installs them. It must implement the `ILibraryStorage` interface.
 
-If you store all library information as files in folders under `./h5p/libraries` you can use the sample implementation in [`examples/implementation/FileLibraryStorage.ts`](/examples/implementation/FileLibraryStorage.ts):
+If you store all library information as files in folders under `./h5p/libraries` you can use the sample implementation in [`src/implementation/fs/FileLibraryStorage.ts`](/src/implementation/fs/FileLibraryStorage.ts):
 
 ```js
 const libraryStorage = new FileLibraryStorage(`h5p/libraries`);
@@ -22,7 +22,7 @@ const libraryStorage = new FileLibraryStorage(`h5p/libraries`);
 
 ### contentStorage
 
-The `contentStorage` provides information about installed content and creates it. It must implement the `IContentStorage` interface. If you store all library information as files in folders under `./h5p/content` you can use the sample implementation in [`examples/implementation/FileContentStorage.ts`](/examples/implementation/FileContentStorage.ts):
+The `contentStorage` provides information about installed content and creates it. It must implement the `IContentStorage` interface. If you store all library information as files in folders under `./h5p/content` you can use the sample implementation in [`src/implementation/fs/FileContentStorage.ts`](/src/implementation/fs/FileContentStorage.ts):
 
 ```js
 const contentStorage = new FileContentStorage(`h5p/content`);
@@ -49,7 +49,7 @@ When the user uploads files in the H5P editor client, these files are not direct
 
 The temporary storage must implement the interface `ITemporaryFileStorage`. Furthermore, you should regularly call `H5PEditor.temporaryFileManager.cleanUp()` to remove unneeded temporary files (every 5 min).
 
-If you don't have a multi-machine setup you can use the sample implementation in [`examples/implementation/DirectoryTemporaryFileStorage.ts`](/examples/implementation/DirectoryTemporaryFileStorage.ts):
+If you don't have a multi-machine setup you can use the sample implementation in [`src/implementation/fs/DirectoryTemporaryFileStorage.ts`](/src/implementation/fs/DirectoryTemporaryFileStorage.ts):
 
 ```js
 const temporaryStorage = new DirectoryTemporaryFileStorage(
