@@ -71,10 +71,12 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         for (const file of h5pPackages.filter(f => f.endsWith('.h5p'))) {
             packageIdMap.set(
                 file,
-                await packageImporter.addPackageLibrariesAndContent(
-                    path.join(directory, file),
-                    user
-                )
+                (
+                    await packageImporter.addPackageLibrariesAndContent(
+                        path.join(directory, file),
+                        user
+                    )
+                ).id
             );
         }
 

@@ -2,11 +2,9 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
-import { withDir } from 'tmp-promise';
+import { withDir, withFile } from 'tmp-promise';
 
-import H5PEditor from '../src/H5PEditor';
 import LibraryName from '../src/LibraryName';
-import TranslationService from '../src/TranslationService';
 import {
     IContentMetadata,
     IContentStorage,
@@ -18,12 +16,10 @@ import {
     ITranslationService
 } from '../src/types';
 
+import { fsImplementations, H5PEditor, TranslationService } from '../';
 import EditorConfig from '../examples/EditorConfig';
-import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
-import FileContentStorage from '../src/implementation/fs/FileContentStorage';
-import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
-import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
-import User from '../src/implementation/fs/User';
+import User from '../examples/User';
+import PackageValidator from '../src/PackageValidator';
 
 describe('H5PEditor', () => {
     function createH5PEditor(
@@ -38,17 +34,17 @@ describe('H5PEditor', () => {
         temporaryStorage: ITemporaryFileStorage;
         translationService: ITranslationService;
     } {
-        const keyValueStorage = new InMemoryStorage();
+        const keyValueStorage = new fsImplementations.InMemoryStorage();
         const config = new EditorConfig(keyValueStorage);
-        const libraryStorage = new FileLibraryStorage(
+        const libraryStorage = new fsImplementations.FileLibraryStorage(
             path.join(tempPath, 'libraries')
         );
-        const contentStorage = new FileContentStorage(
+        const contentStorage = new fsImplementations.FileContentStorage(
             path.join(tempPath, 'content')
         );
         const translationService = new TranslationService({});
         const libraryFileUrlResolver = () => '';
-        const temporaryStorage = new DirectoryTemporaryFileStorage(
+        const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
             path.join(tempPath, 'tmp')
         );
 
@@ -58,7 +54,6 @@ describe('H5PEditor', () => {
             libraryStorage,
             contentStorage,
             translationService,
-            libraryFileUrlResolver,
             temporaryStorage
         );
 
@@ -155,6 +150,7 @@ describe('H5PEditor', () => {
                 mockWriteStream1.on('finish', onFinish1);
                 await promisepipe(returnedStream, mockWriteStream1);
                 expect(onFinish1).toHaveBeenCalled();
+                returnedStream.close();
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -422,12 +418,12 @@ describe('H5PEditor', () => {
                     0,
                     savedFilePath.length - 4
                 );
-                await expect(
-                    h5pEditor.temporaryFileManager.getFileStream(
-                        cleanFilePath,
-                        user
-                    )
-                ).resolves.toBeDefined();
+                const fileStream = await h5pEditor.temporaryFileManager.getFileStream(
+                    cleanFilePath,
+                    user
+                );
+                await expect(fileStream).toBeDefined();
+                fileStream.close();
 
                 // put path of image into parameters (like the H5P editor client would)
                 mockupParametersWithImage.image.path = savedFilePath;
@@ -592,6 +588,75 @@ describe('H5PEditor', () => {
                     )
                 ).rejects.toThrowError(
                     'mainLibraryName is invalid: \'abc is not a valid H5P library name ("ubername"). You must follow this pattern: H5P.Example 1.0\''
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('saving content returns a valid H5P package', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save the content
+                const contentId = await h5pEditor.saveH5P(
+                    undefined,
+                    mockupParametersWithoutImage,
+                    {
+                        embedTypes: ['iframe'],
+                        language: 'und',
+                        mainLibrary: 'H5P.GreetingCard',
+                        preloadedDependencies: [
+                            {
+                                machineName: 'H5P.GreetingCard',
+                                majorVersion: 1,
+                                minorVersion: 0
+                            }
+                        ],
+                        title: 'Greeting card'
+                    },
+                    'H5P.GreetingCard 1.0',
+                    user
+                );
+
+                // export to H5P package in a temporary file
+                await withFile(
+                    async ({ path: h5pFilePath }) => {
+                        const writeStream = fsExtra.createWriteStream(
+                            h5pFilePath
+                        );
+                        const packageFinishedPromise = new Promise(resolve => {
+                            writeStream.on('close', () => {
+                                resolve();
+                            });
+                        });
+                        await h5pEditor.exportPackage(
+                            contentId,
+                            writeStream,
+                            user
+                        );
+                        await packageFinishedPromise;
+                        writeStream.close();
+
+                        // check if saved H5P package is valid
+                        const validator = new PackageValidator(
+                            h5pEditor.translationService,
+                            h5pEditor.config
+                        );
+                        await expect(
+                            validator.validatePackage(h5pFilePath, true, true)
+                        ).resolves.toEqual(true);
+                    },
+                    { keep: false, postfix: '.h5p' }
                 );
             },
             { keep: false, unsafeCleanup: true }

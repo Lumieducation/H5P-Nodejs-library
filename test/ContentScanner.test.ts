@@ -43,10 +43,9 @@ async function createContentScanner(
         new EditorConfig(null),
         contentManager
     );
-    const contentId = await packageImporter.addPackageLibrariesAndContent(
-        file,
-        user
-    );
+    const contentId = (
+        await packageImporter.addPackageLibrariesAndContent(file, user)
+    ).id;
 
     // create ContentScanner
     return {

@@ -204,4 +204,52 @@ describe('ContentManager', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('lists added content of all users and single users', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const contentManager = new ContentManager(
+                    new FileContentStorage(tempDirPath)
+                );
+
+                const user1 = new User();
+                const contentId1 = (
+                    await contentManager.createOrUpdateContent(
+                        mockupMetadata,
+                        mockupParameters,
+                        user1
+                    )
+                ).toString();
+                const contentId2 = (
+                    await contentManager.createOrUpdateContent(
+                        mockupMetadata,
+                        mockupParameters,
+                        user1
+                    )
+                ).toString();
+                const contentId3 = (
+                    await contentManager.createOrUpdateContent(
+                        mockupMetadata,
+                        mockupParameters,
+                        new User()
+                    )
+                ).toString();
+
+                const contentIdsAllUsers = (
+                    await contentManager.listContent()
+                ).sort();
+                expect(contentIdsAllUsers).toMatchObject(
+                    [contentId1, contentId2, contentId3].sort()
+                );
+                // TODO: add later when FileContentStorage supports user access rights
+                /*const contentIdsUser1 = (
+                    await contentManager.listContent(user1)
+                ).sort();
+                expect(contentIdsUser1).toMatchObject(
+                    [contentId1, contentId2].sort()
+                );*/
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });

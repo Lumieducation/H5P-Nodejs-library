@@ -4,6 +4,7 @@ import globPromise from 'glob-promise';
 import * as path from 'path';
 import { Stream } from 'stream';
 
+import { ContentMetadata } from './ContentMetadata';
 import H5pError from './helpers/H5pError';
 import { streamToString } from './helpers/StreamHelpers';
 import {
@@ -83,21 +84,21 @@ export default class ContentManager {
     /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
      * It does not check whether the user has permissions to save content.
-     * @param {string} packageDirectory The absolute path containing the package (the directory containing h5p.json)
-     * @param {IUser} user The user who is adding the package.
-     * @param {number} contentId (optional) The content id to use for the package
-     * @returns {Promise<string>} The id of the content that was created (the one passed to the method or a new id if there was none).
+     * @param packageDirectory The absolute path containing the package (the directory containing h5p.json)
+     * @param user The user who is adding the package.
+     * @param contentId (optional) The content id to use for the package
+     * @returns The id of the content that was created (the one passed to the method or a new id if there was none).
      */
     public async copyContentFromDirectory(
         packageDirectory: string,
         user: IUser,
         contentId?: ContentId
-    ): Promise<ContentId> {
+    ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
         log.info(`copying content from directory ${packageDirectory}`);
         const metadata: IContentMetadata = await fsExtra.readJSON(
             path.join(packageDirectory, 'h5p.json')
         );
-        const content: ContentParameters = await fsExtra.readJSON(
+        const parameters: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (
@@ -109,7 +110,7 @@ export default class ContentManager {
 
         const newContentId: ContentId = await this.contentStorage.createContent(
             metadata,
-            content,
+            parameters,
             user,
             contentId
         );
@@ -134,7 +135,7 @@ export default class ContentManager {
             await this.contentStorage.deleteContent(newContentId);
             throw error;
         }
-        return newContentId;
+        return { id: newContentId, metadata, parameters };
     }
 
     /**
@@ -240,6 +241,15 @@ export default class ContentManager {
     }
 
     /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    public listContent(user?: IUser): Promise<ContentId[]> {
+        return this.contentStorage.listContent(user);
+    }
+
+    /**
      * Returns the content object (=contents of content/content.json) of a piece of content.
      * @param {number} contentId the content id
      * @param {IUser} user The user who wants to access the content
@@ -262,7 +272,11 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<IContentMetadata> {
-        return this.getFileJson(contentId, 'h5p.json', user);
+        // We don't directly return the h5p.json file content as
+        // we have to make sure it conforms to the schema.
+        return new ContentMetadata(
+            await this.getFileJson(contentId, 'h5p.json', user)
+        );
     }
 
     /**

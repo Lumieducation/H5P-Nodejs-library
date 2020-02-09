@@ -22,7 +22,6 @@ describe('H5PEditor: general', () => {
                 'hub-install-invalid-content-type':
                     'hub-install-invalid-content-type'
             }),
-            (library, name) => '',
             null
         );
 
@@ -52,7 +51,6 @@ describe('H5PEditor: general', () => {
                 'hub-install-invalid-content-type':
                     'hub-install-invalid-content-type'
             }),
-            (library, name) => '',
             null
         );
 

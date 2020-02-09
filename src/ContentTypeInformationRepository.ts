@@ -5,11 +5,11 @@ import { withFile } from 'tmp-promise';
 
 import ContentTypeCache from './ContentTypeCache';
 import H5pError from './helpers/H5pError';
-import HubContentType from './HubContentType';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import {
     IEditorConfig,
+    IHubContentType,
     IInstalledLibrary,
     IKeyValueStorage,
     ITranslationService,
@@ -105,7 +105,7 @@ export default class ContentTypeInformationRepository {
         }
 
         // Reject installation of content types that the user has no permission to
-        if (!localContentType[0].canBeInstalledBy(user)) {
+        if (!this.canInstallLibrary(localContentType[0], user)) {
             log.warn(
                 `rejecting installation of content type ${machineName}: user has no permission`
             );
@@ -268,7 +268,7 @@ export default class ContentTypeInformationRepository {
      * Checks if users can install library due to their rights.
      * @param {HubContentType} library
      */
-    private canInstallLibrary(library: HubContentType, user: IUser): boolean {
+    private canInstallLibrary(library: IHubContentType, user: IUser): boolean {
         log.verbose(
             `checking if user can install library ${library.machineName}`
         );

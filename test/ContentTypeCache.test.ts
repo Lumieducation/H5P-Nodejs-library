@@ -1,7 +1,5 @@
 import axios from 'axios';
-// tslint:disable-next-line: no-implicit-dependencies
 import axiosMockAdapter from 'axios-mock-adapter';
-// tslint:disable-next-line: no-implicit-dependencies
 import mockdate from 'mockdate';
 
 import ContentTypeCache from '../src/ContentTypeCache';

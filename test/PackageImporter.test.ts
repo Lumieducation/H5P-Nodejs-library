@@ -1,7 +1,6 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
-// tslint:disable-next-line: no-implicit-dependencies
 import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
 
@@ -75,10 +74,12 @@ describe('package importer', () => {
                     new EditorConfig(null),
                     contentManager
                 );
-                const contentId = await packageImporter.addPackageLibrariesAndContent(
-                    path.resolve('test/data/validator/valid2.h5p'),
-                    user
-                );
+                const contentId = (
+                    await packageImporter.addPackageLibrariesAndContent(
+                        path.resolve('test/data/validator/valid2.h5p'),
+                        user
+                    )
+                ).id;
 
                 // Check if library was installed
                 const installedLibraries = await libraryManager.getInstalled();

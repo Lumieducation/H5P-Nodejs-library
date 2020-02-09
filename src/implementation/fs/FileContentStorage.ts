@@ -256,6 +256,29 @@ export default class FileContentStorage implements IContentStorage {
         ];
     }
 
+    /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    public async listContent(user?: IUser): Promise<ContentId[]> {
+        const directories = await fsExtra.readdir(this.contentPath);
+        return (
+            await Promise.all(
+                directories.map(async dir => {
+                    if (
+                        !(await fsExtra.pathExists(
+                            path.join(this.contentPath, dir, 'h5p.json')
+                        ))
+                    ) {
+                        return '';
+                    }
+                    return dir;
+                })
+            )
+        ).filter(content => content !== '');
+    }
+
     private checkFilename(filename: string): void {
         if (/\.\.\//.test(filename)) {
             throw new Error(

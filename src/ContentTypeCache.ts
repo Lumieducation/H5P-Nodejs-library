@@ -3,9 +3,9 @@ import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
 
-import HubContentType from './HubContentType';
 import {
     IEditorConfig,
+    IHubContentType,
     IKeyValueStorage,
     IRegistrationData,
     IUsageStatistics
@@ -48,9 +48,9 @@ export default class ContentTypeCache {
      * @param entry the entry as received from H5P Hub
      * @returns the local content type object
      */
-    private static convertCacheEntryToLocalFormat(entry: any): HubContentType {
+    private static convertCacheEntryToLocalFormat(entry: any): IHubContentType {
         log.debug(`converting Cache Entry to local format`);
-        return new HubContentType({
+        return {
             categories: entry.categories || [],
             createdAt: Date.parse(entry.createdAt),
             description: entry.description,
@@ -72,7 +72,7 @@ export default class ContentTypeCache {
             title: entry.title,
             tutorial: entry.tutorial || '',
             updatedAt: Date.parse(entry.updatedAt)
-        });
+        };
     }
 
     /**
@@ -148,9 +148,9 @@ export default class ContentTypeCache {
     /**
      * Returns the cache data.
      * @param {string[]} machineNames (optional) The method only returns content type cache data for these machine names.
-     * @returns {Promise<HubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
+     * @returns {Promise<IHubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
-    public async get(...machineNames: string[]): Promise<HubContentType[]> {
+    public async get(...machineNames: string[]): Promise<IHubContentType[]> {
         log.info(`getting content types`);
 
         let cache = await this.storage.load('contentTypeCache');
@@ -172,7 +172,7 @@ export default class ContentTypeCache {
         if (!machineNames || machineNames.length === 0) {
             return cache;
         }
-        return cache.filter((contentType: HubContentType) =>
+        return cache.filter((contentType: IHubContentType) =>
             machineNames.some(
                 machineName => machineName === contentType.machineName
             )

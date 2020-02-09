@@ -1,12 +1,21 @@
+import fsExtra from 'fs-extra';
+import globPromise from 'glob-promise';
 import path from 'path';
 import shortid from 'shortid';
+import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import TemporaryFileManager from './TemporaryFileManager';
-import { ContentId, IContentMetadata, ILibraryName, IUser } from './types';
+import {
+    ContentId,
+    ContentParameters,
+    IContentMetadata,
+    ILibraryName,
+    IUser
+} from './types';
 
 const log = new Logger('ContentStorer');
 
@@ -24,6 +33,51 @@ export default class ContentStorer {
     }
 
     private contentFileScanner: ContentFileScanner;
+
+    /**
+     * Scans through the parameters of the content and copies all referenced files into
+     * temporary storage.
+     * @param packageDirectory
+     * @param user
+     * @returns the metadata and parameters of the content
+     */
+    public async copyFromDirectoryToTemporary(
+        packageDirectory: string,
+        user: IUser
+    ): Promise<{ metadata: IContentMetadata; parameters: any }> {
+        const metadata: IContentMetadata = await fsExtra.readJSON(
+            path.join(packageDirectory, 'h5p.json')
+        );
+        const parameters: ContentParameters = await fsExtra.readJSON(
+            path.join(packageDirectory, 'content', 'content.json')
+        );
+
+        const fileReferencesInParams = await this.contentFileScanner.scanForFiles(
+            parameters,
+            metadata.preloadedDependencies.find(
+                l => l.machineName === metadata.mainLibrary
+            )
+        );
+
+        for (const reference of fileReferencesInParams) {
+            const filepath = path.join(
+                packageDirectory,
+                'content',
+                reference.filePath
+            );
+            if (!(await fsExtra.pathExists(filepath))) {
+                continue;
+            }
+            const readStream = fsExtra.createReadStream(filepath);
+            const newFilename = await this.temporaryFileManager.saveFile(
+                reference.filePath,
+                readStream,
+                user
+            );
+            reference.context.params.path = `${newFilename}#tmp`;
+        }
+        return { metadata, parameters };
+    }
 
     /**
      * Saves content in the persistence system. Also copies over files from temporary storage
@@ -208,22 +262,26 @@ export default class ContentStorer {
                     `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
                 );
             }
-            if (readStream !== undefined) {
-                log.debug(
-                    `Adding temporary file ${fileToCopy} to content id ${contentId}`
-                );
-                await this.contentManager.addContentFile(
-                    contentId,
-                    fileToCopy,
-                    readStream,
-                    user
-                );
-                if (deleteTemporaryFiles) {
-                    await this.temporaryFileManager.deleteFile(
+            try {
+                if (readStream !== undefined) {
+                    log.debug(
+                        `Adding temporary file ${fileToCopy} to content id ${contentId}`
+                    );
+                    await this.contentManager.addContentFile(
+                        contentId,
                         fileToCopy,
+                        readStream,
                         user
                     );
+                    if (deleteTemporaryFiles) {
+                        await this.temporaryFileManager.deleteFile(
+                            fileToCopy,
+                            user
+                        );
+                    }
                 }
+            } finally {
+                readStream.close();
             }
         }
     }

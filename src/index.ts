@@ -32,6 +32,13 @@ import {
 
 import englishStrings from './translations/en.json';
 
+// Adapters
+import express from './adapters/express';
+
+const adapters = {
+    express
+};
+
 export {
     // classes
     H5PEditor,
@@ -60,5 +67,7 @@ export {
     // assets
     englishStrings,
     // implementations
-    fs
+    fs,
+    // adapters
+    adapters
 };

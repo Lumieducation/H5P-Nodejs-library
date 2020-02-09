@@ -9,6 +9,7 @@ import { IContentMetadata } from '../src/types';
 describe('FileContentStorage (repository that saves content objects to a local directory)', () => {
     function createMetadataMock(): IContentMetadata {
         return {
+            embedTypes: ['iframe'],
             language: '',
             mainLibrary: '',
             preloadedDependencies: [],

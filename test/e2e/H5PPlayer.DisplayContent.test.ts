@@ -5,8 +5,9 @@ import path from 'path';
 import promiseQueue from 'promise-queue';
 import puppeteer from 'puppeteer';
 
-import H5PPlayer from '../../src/H5PPlayer';
+import EditorConfig from '../../examples/implementation/EditorConfig';
 
+import H5PPlayer from '../../src/H5PPlayer';
 import PackageImporter from '../../src/PackageImporter';
 
 const contentPath = `${path.resolve('')}/test/data/hub-content`;
@@ -51,7 +52,7 @@ fs.readdir(contentPath, (fsError, files) => {
             const contentObject = require(`${dir}/content/content.json`);
             return new H5PPlayer(
                 libraryLoader as any,
-                undefined,
+                new EditorConfig(undefined),
                 undefined,
                 undefined
             )

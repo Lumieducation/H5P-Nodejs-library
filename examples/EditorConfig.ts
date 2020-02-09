@@ -6,149 +6,55 @@ import { IEditorConfig, IKeyValueStorage } from '../src';
  */
 export default class EditorConfig implements IEditorConfig {
     /**
-     * @param {IStorage} storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
+     * @param storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
+     * @param defaults default values to use instead of the ones set by this class
      */
-    constructor(storage?: IKeyValueStorage) {
+    constructor(storage?: IKeyValueStorage, defaults?: any) {
         this.storage = storage;
+        if (defaults) {
+            for (const key in defaults) {
+                if (this[key] !== undefined) {
+                    this[key] = defaults[key];
+                }
+            }
+        }
     }
 
-    public ajaxPath: string = '/ajax?action=';
-
+    public ajaxUrl: string = '/ajax';
     public baseUrl: string = '/h5p';
-
-    /**
-     * Time after which the content type cache is considered to be outdated in milliseconds.
-     * User-configurable.
-     */
+    public contentFilesUrl: string = '/content';
     public contentTypeCacheRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
-
-    /**
-     * A list of file extensions allowed for content files. (Extensions separated by whitespaces)
-     */
     public contentWhitelist: string =
         'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt';
-
-    /**
-     * This is the version of the H5P Core (JS + CSS) that is used by this implementation.
-     * It is sent to the H5P Hub when registering there.
-     * Not user-configurable and should not be changed by custom implementations.
-     */
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
         minor: 24
     };
-
-    /**
-     * If set to true, the content types that require a Learning Record Store to make sense are
-     * offered as a choice when the user creates new content.
-     * User-configurable.
-     */
+    public coreUrl: string = '/core';
+    public downloadUrl: string = '/download';
+    public editorLibraryUrl: string = '/editor';
     public enableLrsContentTypes: boolean = true;
-
-    /**
-     * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
-     * User-configurable.
-     */
     public fetchingDisabled: 0 | 1 = 0;
-
-    /**
-     * This is where the client will look for image, video etc. files added to content.
-     * WARNING: Do not change the 'content' part of the URL, as the editor client assumes that it can find
-     * content under this path!
-     */
-    public filesPath: string = '/h5p/content';
-
-    /**
-     * This is the version of the PHP implementation that the NodeJS implementation imitates.
-     * It is sent to the H5P Hub when registering there.
-     * Not user-configurable and should not be changed by custom implementations.
-     */
     public h5pVersion: string = '1.24.0';
-
-    /**
-     * Called to fetch information about the content types available at the H5P Hub.
-     * User-configurable.
-     */
     public hubContentTypesEndpoint: string =
         'https://api.h5p.org/v1/content-types/';
-
-    /**
-     * Called to register the running instance at the H5P Hub.
-     * User-configurable.
-     */
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
-
-    /**
-     * The EDITOR LIBRARY FILES are loaded from here (needed for the ckeditor), NOT
-     * the libraries itself.
-     */
-    public libraryUrl: string = '/h5p/editor/';
-
-    /**
-     * A list of file extensions allowed for library files.
-     * (All extensions allowed for content files are also automatically allowed for libraries).
-     */
+    public librariesUrl: string = '/libraries';
     public libraryWhitelist: string = 'js css';
-
-    /**
-     * The list of content types that are enabled when enableLrsContentTypes is set to true.
-     * Not user-configurable.
-     */
     public lrsContentTypes: string[] = [
         'H5P.Questionnaire',
         'H5P.FreeTextQuestion'
     ];
-
-    /**
-     * The maximum allowed file size of content and library files (in bytes).
-     */
     public maxFileSize: number = 16 * 1024 * 1024;
-
-    /**
-     * The maximum allowed file size of all content and library files in an uploaded h5p package (in bytes).
-     */
     public maxTotalSize: number = 64 * 1024 * 1024;
-
-    /**
-     * This is the name of the H5P implementation sent to the H5P for statistical reasons.
-     * Not user-configurable but should be overridden by custom custom implementations.
-     */
+    public paramsUrl: string = '/params';
     public platformName: string = 'H5P-Editor-NodeJs';
-
-    /**
-     * This is the version of the H5P implementation sent to the H5P when registering the site.
-     * Not user-configurable but should be overridden by custom custom implementations.
-     */
-    public platformVersion: string = '0.1';
-
-    /**
-     * If true, the instance will send usage statistics to the H5P Hub whenever it looks for new content types or updates.
-     * User-configurable.
-     */
+    public platformVersion: string = '0.10';
+    public playUrl: string = '/play';
     public sendUsageStatistics: boolean = false;
-
-    /**
-     * Indicates on what kind of network the site is running. Can be "local", "network" or "internet".
-     * TODO: This value should not be user-configurable, but has to be determined by the system on startup.
-     * (If possible.)
-     */
     public siteType: 'local' | 'network' | 'internet' = 'local';
-
-    /**
-     * Temporary files will be deleted after this time. (in milliseconds)
-     */
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
-
-    /**
-     * The URL path of temporary file storage (used for image, video etc. uploads of
-     * unsaved content).
-     */
-    public temporaryFilesPath: string = '/h5p/temp-files';
-
-    /**
-     * Used to identify the running instance when calling the H5P Hub.
-     * User-configurable, but also automatically set when the Hub is first called.
-     */
+    public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = ''; // TODO: revert to''
 
     private storage: IKeyValueStorage;
