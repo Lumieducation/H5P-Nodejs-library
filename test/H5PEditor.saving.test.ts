@@ -16,7 +16,7 @@ import {
     ITranslationService
 } from '../src/types';
 
-import { fsImplementations, H5PEditor, TranslationService } from '../';
+import { fsImplementations, H5PEditor, TranslationService } from '../src';
 import EditorConfig from '../src/implementation/EditorConfig';
 import PackageValidator from '../src/PackageValidator';
 

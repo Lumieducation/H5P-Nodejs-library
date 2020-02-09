@@ -5,5 +5,5 @@ module.exports = {
 
     // The glob patterns Jest uses to detect test files
     testMatch: ['**/test/**/*.test.ts'],
-    testPathIgnorePatterns: ['/node_modules/', '/test/data', '/test/e2e', '/build']
+    testPathIgnorePatterns: ['/node_modules/', '/test/data', '/test/e2e']
 };
