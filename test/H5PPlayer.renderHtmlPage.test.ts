@@ -1,6 +1,5 @@
-import EditorConfig from '../examples/implementation/EditorConfig';
-
 import H5PPlayer from '../src/H5PPlayer';
+import EditorConfig from '../src/implementation/EditorConfig';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {

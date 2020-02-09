@@ -17,9 +17,10 @@ import {
 } from '../src/types';
 
 import { fsImplementations, H5PEditor, TranslationService } from '../';
-import EditorConfig from '../examples/EditorConfig';
-import User from '../examples/User';
+import EditorConfig from '../src/implementation/EditorConfig';
 import PackageValidator from '../src/PackageValidator';
+
+import User from '../examples/User';
 
 describe('H5PEditor', () => {
     function createH5PEditor(

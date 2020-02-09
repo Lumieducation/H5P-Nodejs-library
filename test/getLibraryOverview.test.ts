@@ -1,7 +1,7 @@
-import EditorConfig from '../examples/EditorConfig';
-
 import path from 'path';
+
 import H5PEditor from '../src/H5PEditor';
+import EditorConfig from '../src/implementation/EditorConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 
 describe('getting overview about multiple libraries', () => {

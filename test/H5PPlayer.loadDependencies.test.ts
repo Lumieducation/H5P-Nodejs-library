@@ -1,6 +1,5 @@
-import EditorConfig from '../examples/implementation/EditorConfig';
-
 import H5PPlayer from '../src/H5PPlayer';
+import EditorConfig from '../src/implementation/EditorConfig';
 
 describe('Loading dependencies', () => {
     it('resolves main dependencies', () => {

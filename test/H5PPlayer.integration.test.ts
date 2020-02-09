@@ -1,6 +1,5 @@
-import EditorConfig from '../examples/implementation/EditorConfig';
-
 import H5PPlayer from '../src/H5PPlayer';
+import EditorConfig from '../src/implementation/EditorConfig';
 
 describe('H5PPlayer.generateIntegration()', () => {
     it('should use the passed integration', () => {

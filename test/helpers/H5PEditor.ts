@@ -10,12 +10,11 @@ import {
     ITranslationService,
     TranslationService
 } from '../../src';
-
-import DirectoryTemporaryFileStorage from '../../examples/implementation/DirectoryTemporaryFileStorage';
-import EditorConfig from '../../examples/implementation/EditorConfig';
-import FileContentStorage from '../../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../../examples/implementation/FileLibraryStorage';
-import InMemoryStorage from '../../examples/implementation/InMemoryStorage';
+import EditorConfig from '../../src/implementation/EditorConfig';
+import DirectoryTemporaryFileStorage from '../../src/implementation/fs/DirectoryTemporaryFileStorage';
+import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
+import InMemoryStorage from '../../src/implementation/InMemoryStorage';
 
 export function createH5PEditor(
     tempPath: string

@@ -37,6 +37,7 @@ import {
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
+    ITranslationService,
     IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
@@ -51,7 +52,7 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        translationService: TranslationService,
+        translationService: ITranslationService,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -104,7 +105,7 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
-    public translationService: TranslationService;
+    public translationService: ITranslationService;
 
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;

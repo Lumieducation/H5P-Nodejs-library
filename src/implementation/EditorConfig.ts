@@ -1,4 +1,4 @@
-import { IEditorConfig, IKeyValueStorage } from '../src';
+import { IEditorConfig, IKeyValueStorage } from '../types';
 
 /**
  * Stores configuration options and literals that are used throughout the system.

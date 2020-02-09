@@ -7,12 +7,13 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import TranslationService from './TranslationService';
 
+import EditorConfig from './implementation/EditorConfig';
 import fs from './implementation/fs';
 import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
-import InMemoryStorage from './implementation/fs/InMemoryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
+import InMemoryStorage from './implementation/InMemoryStorage';
 
 // Interfaces
 import {
@@ -80,6 +81,7 @@ export {
     // assets
     englishStrings,
     // implementations
+    EditorConfig,
     fs,
     fsImplementations,
     // adapters

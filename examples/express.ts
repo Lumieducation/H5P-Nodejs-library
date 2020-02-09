@@ -5,11 +5,14 @@ import os from 'os';
 import path from 'path';
 
 import * as H5P from '../src';
-import EditorConfig from './EditorConfig';
 import expressRoutes from './expressRoutes';
 import startPageRenderer from './startPageRenderer';
 import User from './User';
 
+/**
+ * Displays links to the server at all available IP addresses.
+ * @param port The port at which the server can be accessed.
+ */
 function displayIps(port: string): void {
     // tslint:disable-next-line: no-console
     console.log('Example H5P NodeJs server is running:');
@@ -31,10 +34,14 @@ function displayIps(port: string): void {
 
 const start = async () => {
     const h5pEditor = H5P.fs(
-        new EditorConfig(),
-        path.resolve('h5p/libraries'),
-        path.resolve('h5p/temporary-storage'),
-        path.resolve('h5p/content')
+        await new H5P.EditorConfig(
+            new H5P.fsImplementations.JsonStorage(
+                path.resolve('examples/config.json')
+            )
+        ).load(),
+        path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
+        path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
+        path.resolve('h5p/content') // the path on the local disc where content is stored
     );
 
     const server = express();
@@ -60,8 +67,8 @@ const start = async () => {
         h5pEditor.config.baseUrl,
         H5P.adapters.express(
             h5pEditor,
-            path.resolve('h5p/core'),
-            path.resolve('h5p/editor')
+            path.resolve('h5p/core'), // the path on the local disc where the files of the JavaScript client of the player are stored
+            path.resolve('h5p/editor') // the path on the local disc where the files of the JavaScript client of the editor are stored
         )
     );
 

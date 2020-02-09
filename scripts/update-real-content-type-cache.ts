@@ -6,9 +6,9 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import H5PEditorConfig from '../examples/EditorConfig';
 import ContentTypeCache from '../src/ContentTypeCache';
-import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
+import H5PEditorConfig from '../src/implementation/EditorConfig';
+import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import { IKeyValueStorage } from '../src/types';
 
 const start = async () => {

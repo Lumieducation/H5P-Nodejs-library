@@ -5,9 +5,8 @@ import path from 'path';
 import promiseQueue from 'promise-queue';
 import puppeteer from 'puppeteer';
 
-import EditorConfig from '../../examples/implementation/EditorConfig';
-
 import H5PPlayer from '../../src/H5PPlayer';
+import EditorConfig from '../../src/implementation/EditorConfig';
 import PackageImporter from '../../src/PackageImporter';
 
 const contentPath = `${path.resolve('')}/test/data/hub-content`;

@@ -6,13 +6,13 @@ import { withDir } from 'tmp-promise';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
+import EditorConfig from '../src/implementation/EditorConfig';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
+import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
 import TranslationService from '../src/TranslationService';
 
-import EditorConfig from '../examples/EditorConfig';
 import User from '../examples/User';
-import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
-import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
 
 const axiosMock = new axiosMockAdapter(axios);
 

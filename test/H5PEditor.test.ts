@@ -1,12 +1,12 @@
 import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
 
-import EditorConfig from '../examples/EditorConfig';
 import H5PEditor from '../src/H5PEditor';
+import EditorConfig from '../src/implementation/EditorConfig';
+import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import TranslationService from '../src/TranslationService';
 
 import User from '../examples/User';
-import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
 
 describe('H5PEditor: general', () => {
     const axiosMock = new axiosMockAdapter(axios);

@@ -5,10 +5,10 @@ import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
+import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import { IContentMetadata } from '../src/types';
 
 import User from '../examples/User';
-import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 
 describe('ContentManager', () => {
     const mockupMetadata: IContentMetadata = {

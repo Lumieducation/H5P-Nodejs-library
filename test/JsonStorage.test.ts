@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import EditorConfig from '../examples/EditorConfig';
+import EditorConfig from '../src/implementation/EditorConfig';
 import JsonStorage from '../src/implementation/fs/JsonStorage';
 
 describe('JSON storage of configuration', () => {

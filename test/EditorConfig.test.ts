@@ -1,5 +1,5 @@
-import EditorConfig from '../examples/EditorConfig';
-import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
+import EditorConfig from '../src/implementation/EditorConfig';
+import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
 describe('loading configuration data from storage', () => {
     it("doesn't overwrite defaults if storage is empty", async () => {
