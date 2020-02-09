@@ -20,8 +20,6 @@ export default function h5pfs(
         new FileLibraryStorage(librariesPath),
         contentStorage || new FileContentStorage(contentPath),
         new H5P.TranslationService(H5P.englishStrings),
-        (library, file) =>
-            `${librariesPath}/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
         new DirectoryTemporaryFileStorage(temporaryStoragePath)
     );
 }

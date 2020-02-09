@@ -8,6 +8,11 @@ import PackageExporter from './PackageExporter';
 import TranslationService from './TranslationService';
 
 import fs from './implementation/fs';
+import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
+import FileContentStorage from './implementation/fs/FileContentStorage';
+import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
+import InMemoryStorage from './implementation/fs/InMemoryStorage';
+import JsonStorage from './implementation/fs/JsonStorage';
 
 // Interfaces
 import {
@@ -39,6 +44,14 @@ const adapters = {
     express
 };
 
+const fsImplementations = {
+    DirectoryTemporaryFileStorage,
+    FileContentStorage,
+    FileLibraryStorage,
+    InMemoryStorage,
+    JsonStorage
+};
+
 export {
     // classes
     H5PEditor,
@@ -68,6 +81,7 @@ export {
     englishStrings,
     // implementations
     fs,
+    fsImplementations,
     // adapters
     adapters
 };

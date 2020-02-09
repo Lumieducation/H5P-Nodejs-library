@@ -11,9 +11,9 @@ import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
 
 import EditorConfig from '../examples/EditorConfig';
+import User from '../examples/User';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
-import User from '../src/implementation/fs/User';
 
 export async function importAndExportPackage(
     packagePath: string

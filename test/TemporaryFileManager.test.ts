@@ -8,8 +8,8 @@ import { withDir } from 'tmp-promise';
 import TemporaryFileManager from '../src/TemporaryFileManager';
 
 import EditorConfig from '../examples/EditorConfig';
+import User from '../examples/User';
 import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
-import User from '../src/implementation/fs/User';
 
 describe('TemporaryFileManager', () => {
     it('stores files and lets you retrieve them', async () => {

@@ -10,9 +10,9 @@ import LibraryManager from '../src/LibraryManager';
 import TranslationService from '../src/TranslationService';
 
 import EditorConfig from '../examples/EditorConfig';
+import User from '../examples/User';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/fs/InMemoryStorage';
-import User from '../src/implementation/fs/User';
 
 const axiosMock = new axiosMockAdapter(axios);
 
