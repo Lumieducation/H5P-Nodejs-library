@@ -20,7 +20,6 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
 import TemporaryFileManager from './TemporaryFileManager';
-import TranslationService from './TranslationService';
 import {
     ContentId,
     ContentParameters,

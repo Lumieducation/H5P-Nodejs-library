@@ -5,7 +5,7 @@
 
 This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
-Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
+Please note that this project is in a early stage. Things will not work as expected and the interfaces are not stable yet! If you have questions or want to contribute, feel free to open issues or pull requests.
 
 An example of how to integrate and use this library with [Express](https://expressjs.com/) can be found in [examples](examples/).
 
@@ -18,8 +18,7 @@ Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) 
 3. `npm run build`
 4. `npm start`
 
-You can then open the URL http://localhost:8080 in any browser. Not that the project is still in its early stages and things will not work as expected.
-The interfaces are also not stable yet!
+You can then open the URL http://localhost:8080 in any browser.
 
 ## Using h5p-nodejs-library to create your own H5P server application
 
@@ -47,15 +46,15 @@ const H5P = require('h5p-nodejs-library');
 and instantiate the editor with
 
 ```js
-const h5pEditor = new H5P.Editor(
-    keyValueStorage,
-    config,
-    new FileLibraryStorage('/path/to/library/directory'),
-    new FileContentStorage('/path/to/content/storage/directory'),
-    translationService,
-    (library, file) =>
-        `/h5p-library-route/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-    new DirectoryTemporaryFileStorage('/path/to/temporary/storage')
+const h5pEditor = H5P.fs(
+    await new H5P.EditorConfig(
+        new H5P.fsImplementations.JsonStorage(
+            path.resolve('examples/config.json') // the path on the local disc where the configuration file is stored
+        )
+    ).load(),
+    path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
+    path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
+    path.resolve('h5p/content') // the path on the local disc where content is stored
 );
 ```
 
@@ -73,7 +72,7 @@ To use a custom renderer, change it with
 h5pEditor.useRenderer(model => /** HTML string **/);
 ```
 
-See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor.
+See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor in a more customized way.
 
 ### Handling AJAX Requests
 
