@@ -9,6 +9,7 @@ import {
     ITemporaryFileStorage,
     IUser
 } from '../../../src';
+import checkFilename from './filenameCheck';
 
 /**
  * Stores temporary files in directories on the disk.
@@ -25,6 +26,8 @@ export default class DirectoryTemporaryFileStorage
     constructor(private directory: string) {}
 
     public async deleteFile(filename: string, userId: string): Promise<void> {
+        checkFilename(filename);
+        checkFilename(userId);
         const filePath = this.getAbsoluteFilePath(userId, filename);
         await fsExtra.remove(filePath);
         await fsExtra.remove(`${filePath}.metadata`);
@@ -37,6 +40,8 @@ export default class DirectoryTemporaryFileStorage
     }
 
     public async fileExists(filename: string, user: IUser): Promise<boolean> {
+        checkFilename(filename);
+        checkFilename(user.id);
         const filePath = this.getAbsoluteFilePath(user.id, filename);
         return fsExtra.pathExists(filePath);
     }
@@ -45,6 +50,8 @@ export default class DirectoryTemporaryFileStorage
         filename: string,
         user: IUser
     ): Promise<ReadStream> {
+        checkFilename(filename);
+        checkFilename(user.id);
         const filePath = this.getAbsoluteFilePath(user.id, filename);
         if (!(await fsExtra.pathExists(filePath))) {
             throw new H5pError(
@@ -55,6 +62,9 @@ export default class DirectoryTemporaryFileStorage
     }
 
     public async listFiles(user?: IUser): Promise<ITemporaryFile[]> {
+        if (user) {
+            checkFilename(user.id);
+        }
         const users = user ? [user.id] : await fsExtra.readdir(this.directory);
         return (
             await Promise.all(
@@ -78,6 +88,9 @@ export default class DirectoryTemporaryFileStorage
         user: IUser,
         expirationTime: Date
     ): Promise<ITemporaryFile> {
+        checkFilename(filename);
+        checkFilename(user.id);
+
         await fsExtra.ensureDir(this.getAbsoluteUserDirectoryPath(user.id));
         const filePath = this.getAbsoluteFilePath(user.id, filename);
         const writeStream = fsExtra.createWriteStream(filePath);

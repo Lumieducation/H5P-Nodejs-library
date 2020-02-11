@@ -12,6 +12,7 @@ import {
     IUser,
     Permission
 } from '../../../src';
+import checkFilename from './filenameCheck';
 
 /**
  * Persists content to the disk.
@@ -48,7 +49,7 @@ export default class FileContentStorage implements IContentStorage {
         stream: Stream,
         user: IUser
     ): Promise<void> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         if (
             !(await fsExtra.pathExists(
                 path.join(this.contentPath, id.toString())
@@ -86,7 +87,7 @@ export default class FileContentStorage implements IContentStorage {
         contentId: ContentId,
         filename: string
     ): Promise<boolean> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         return fsExtra.pathExists(
             path.join(this.contentPath, contentId.toString(), filename)
         );
@@ -178,7 +179,7 @@ export default class FileContentStorage implements IContentStorage {
         contentId: ContentId,
         filename: string
     ): Promise<void> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         const absolutePath = path.join(
             this.contentPath,
             contentId.toString(),
@@ -231,7 +232,7 @@ export default class FileContentStorage implements IContentStorage {
         filename: string,
         user: IUser
     ): ReadStream {
-        this.checkFilename(filename);
+        checkFilename(filename);
         return fsExtra.createReadStream(
             path.join(this.contentPath, id.toString(), filename)
         );
@@ -277,18 +278,5 @@ export default class FileContentStorage implements IContentStorage {
                 })
             )
         ).filter(content => content !== '');
-    }
-
-    private checkFilename(filename: string): void {
-        if (/\.\.\//.test(filename)) {
-            throw new Error(
-                `Relative paths in filenames are not allowed: ${filename} is illegal`
-            );
-        }
-        if (filename.startsWith('/')) {
-            throw new Error(
-                `Absolute paths in filenames are not allowed: ${filename} is illegal`
-            );
-        }
     }
 }
