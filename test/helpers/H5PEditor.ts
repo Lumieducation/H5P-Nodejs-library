@@ -5,18 +5,16 @@ import {
     IContentStorage,
     IEditorConfig,
     IKeyValueStorage,
-    ILibraryFileUrlResolver,
     ILibraryStorage,
     ITemporaryFileStorage,
     ITranslationService,
     TranslationService
 } from '../../src';
-
-import DirectoryTemporaryFileStorage from '../../examples/implementation/DirectoryTemporaryFileStorage';
-import EditorConfig from '../../examples/implementation/EditorConfig';
-import FileContentStorage from '../../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../../examples/implementation/FileLibraryStorage';
-import InMemoryStorage from '../../examples/implementation/InMemoryStorage';
+import EditorConfig from '../../src/implementation/EditorConfig';
+import DirectoryTemporaryFileStorage from '../../src/implementation/fs/DirectoryTemporaryFileStorage';
+import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
+import InMemoryStorage from '../../src/implementation/InMemoryStorage';
 
 export function createH5PEditor(
     tempPath: string
@@ -25,7 +23,6 @@ export function createH5PEditor(
     contentStorage: IContentStorage;
     h5pEditor: H5PEditor;
     keyValueStorage: IKeyValueStorage;
-    libraryFileUrlResolver: ILibraryFileUrlResolver;
     libraryStorage: ILibraryStorage;
     temporaryStorage: ITemporaryFileStorage;
     translationService: ITranslationService;
@@ -39,7 +36,6 @@ export function createH5PEditor(
         path.join(tempPath, 'content')
     );
     const translationService = new TranslationService({});
-    const libraryFileUrlResolver = () => '';
     const temporaryStorage = new DirectoryTemporaryFileStorage(
         path.join(tempPath, 'tmp')
     );
@@ -50,7 +46,6 @@ export function createH5PEditor(
         libraryStorage,
         contentStorage,
         translationService,
-        libraryFileUrlResolver,
         temporaryStorage
     );
 
@@ -59,7 +54,6 @@ export function createH5PEditor(
         contentStorage,
         h5pEditor,
         keyValueStorage,
-        libraryFileUrlResolver,
         libraryStorage,
         temporaryStorage,
         translationService

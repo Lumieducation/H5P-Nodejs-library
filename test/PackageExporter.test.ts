@@ -4,16 +4,15 @@ import { withDir, withFile } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
 import ContentManager from '../src/ContentManager';
-
+import EditorConfig from '../src/implementation/EditorConfig';
+import FileContentStorage from '../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageExporter from '../src/PackageExporter';
 import PackageImporter from '../src/PackageImporter';
 import TranslationService from '../src/TranslationService';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileContentStorage from '../examples/implementation/FileContentStorage';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
-import User from '../examples/implementation/User';
+import User from '../examples/User';
 
 export async function importAndExportPackage(
     packagePath: string

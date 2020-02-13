@@ -7,6 +7,14 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import TranslationService from './TranslationService';
 
+import EditorConfig from './implementation/EditorConfig';
+import fs from './implementation/fs';
+import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
+import FileContentStorage from './implementation/fs/FileContentStorage';
+import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
+import JsonStorage from './implementation/fs/JsonStorage';
+import InMemoryStorage from './implementation/InMemoryStorage';
+
 // Interfaces
 import {
     ContentId,
@@ -29,6 +37,21 @@ import {
 // Assets
 
 import englishStrings from './translations/en.json';
+
+// Adapters
+import express from './adapters/express';
+
+const adapters = {
+    express
+};
+
+const fsImplementations = {
+    DirectoryTemporaryFileStorage,
+    FileContentStorage,
+    FileLibraryStorage,
+    InMemoryStorage,
+    JsonStorage
+};
 
 export {
     // classes
@@ -56,5 +79,11 @@ export {
     IUser,
     Permission,
     // assets
-    englishStrings
+    englishStrings,
+    // implementations
+    EditorConfig,
+    fs,
+    fsImplementations,
+    // adapters
+    adapters
 };

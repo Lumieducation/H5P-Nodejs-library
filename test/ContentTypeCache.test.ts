@@ -3,9 +3,8 @@ import axiosMockAdapter from 'axios-mock-adapter';
 import mockdate from 'mockdate';
 
 import ContentTypeCache from '../src/ContentTypeCache';
-
-import EditorConfig from '../examples/implementation/EditorConfig';
-import InMemoryStorage from '../examples/implementation/InMemoryStorage';
+import EditorConfig from '../src/implementation/EditorConfig';
+import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
 const axiosMock = new axiosMockAdapter(axios);
 

@@ -6,6 +6,7 @@ import { withFile } from 'tmp-promise';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/en.json';
+import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
 import ContentManager from './ContentManager';
@@ -19,7 +20,6 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
 import TemporaryFileManager from './TemporaryFileManager';
-import TranslationService from './TranslationService';
 import {
     ContentId,
     ContentParameters,
@@ -31,14 +31,15 @@ import {
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
-    ILibraryFileUrlResolver,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
+    ITranslationService,
     IUser
 } from './types';
+import UrlGenerator from './UrlGenerator';
 
 import Logger from './helpers/Logger';
 
@@ -50,27 +51,20 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        translationService: TranslationService,
-        /**
-         * This function returns the (relative) URL at which a file inside a library
-         * can be accessed. It is used when URLs of library files must be inserted
-         * (hard-coded) into data structures. The implementation must do this file ->
-         * URL resolution, as it decides where the files can be accessed.
-         */
-        libraryFileUrlResolver: ILibraryFileUrlResolver,
+        translationService: ITranslationService,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
+
+        this.config = config;
+        this.urlGenerator = new UrlGenerator(config);
+
         this.renderer = defaultRenderer;
-        this.baseUrl = config.baseUrl;
         this.translation = defaultTranslation;
-        this.ajaxPath = config.ajaxPath;
-        this.libraryUrl = config.libraryUrl;
-        this.filesPath = config.filesPath;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            libraryFileUrlResolver
+            this.urlGenerator.libraryFile
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -81,7 +75,6 @@ export default class H5PEditor {
             translationService
         );
         this.translationService = translationService;
-        this.config = config;
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
@@ -111,17 +104,14 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
-    public translationService: TranslationService;
+    public translationService: ITranslationService;
 
-    private ajaxPath: string;
-    private baseUrl: string;
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;
-    private filesPath: string;
-    private libraryUrl: string;
     private packageExporter: PackageExporter;
     private renderer: any;
     private translation: any;
+    private urlGenerator: UrlGenerator;
 
     /**
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
@@ -209,9 +199,11 @@ export default class H5PEditor {
             upgradeScriptPath
         ] = await Promise.all([
             this.loadAssets(
-                machineName,
-                majorVersionAsNr,
-                minorVersionAsNr,
+                new LibraryName(
+                    machineName,
+                    majorVersionAsNr,
+                    minorVersionAsNr
+                ),
                 language
             ),
             this.libraryManager.loadSemantics(library),
@@ -233,7 +225,7 @@ export default class H5PEditor {
             },
             javascript: assets.scripts,
             translations: assets.translations,
-            upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can retur null
+            upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can return null
         };
     }
 
@@ -369,8 +361,9 @@ export default class H5PEditor {
         log.info(`rendering ${contentId}`);
         const model = {
             integration: this.integration(contentId),
-            scripts: this.coreScripts(),
-            styles: this.coreStyles()
+            scripts: this.getCoreScripts(),
+            styles: this.getCoreStyles(),
+            urlGenerator: this.urlGenerator
         };
 
         return Promise.resolve(this.renderer(model));
@@ -459,12 +452,6 @@ export default class H5PEditor {
         return newContentId;
     }
 
-    public setAjaxPath(ajaxPath: string): H5PEditor {
-        log.info(`setting ajax path to ${ajaxPath}`);
-        this.ajaxPath = ajaxPath;
-        return this;
-    }
-
     /**
      * Adds the contents of a package to the system: Installs required libraries (if
      * the user has the permissions for this), adds files to temporary storage and
@@ -515,133 +502,6 @@ export default class H5PEditor {
         return this;
     }
 
-    private coreScripts(): string[] {
-        return [
-            '/core/js/jquery.js',
-            '/core/js/h5p.js',
-            '/core/js/h5p-event-dispatcher.js',
-            '/core/js/h5p-x-api-event.js',
-            '/core/js/h5p-x-api.js',
-            '/core/js/h5p-content-type.js',
-            '/core/js/h5p-confirmation-dialog.js',
-            '/core/js/h5p-action-bar.js',
-            '/editor/scripts/h5p-hub-client.js',
-            '/editor/scripts/h5peditor-editor.js',
-            '/editor/scripts/h5peditor.js',
-            '/editor/scripts/h5peditor-semantic-structure.js',
-            '/editor/scripts/h5peditor-library-selector.js',
-            '/editor/scripts/h5peditor-form.js',
-            '/editor/scripts/h5peditor-text.js',
-            '/editor/scripts/h5peditor-html.js',
-            '/editor/scripts/h5peditor-number.js',
-            '/editor/scripts/h5peditor-textarea.js',
-            '/editor/scripts/h5peditor-file-uploader.js',
-            '/editor/scripts/h5peditor-file.js',
-            '/editor/scripts/h5peditor-image.js',
-            '/editor/scripts/h5peditor-image-popup.js',
-            '/editor/scripts/h5peditor-av.js',
-            '/editor/scripts/h5peditor-group.js',
-            '/editor/scripts/h5peditor-boolean.js',
-            '/editor/scripts/h5peditor-list.js',
-            '/editor/scripts/h5peditor-list-editor.js',
-            '/editor/scripts/h5peditor-library.js',
-            '/editor/scripts/h5peditor-library-list-cache.js',
-            '/editor/scripts/h5peditor-select.js',
-            '/editor/scripts/h5peditor-selector-hub.js',
-            '/editor/scripts/h5peditor-selector-legacy.js',
-            '/editor/scripts/h5peditor-dimensions.js',
-            '/editor/scripts/h5peditor-coordinates.js',
-            '/editor/scripts/h5peditor-none.js',
-            '/editor/scripts/h5peditor-metadata.js',
-            '/editor/scripts/h5peditor-metadata-author-widget.js',
-            '/editor/scripts/h5peditor-metadata-changelog-widget.js',
-            '/editor/scripts/h5peditor-pre-save.js',
-            '/editor/ckeditor/ckeditor.js'
-        ].map((file: string) => `${this.baseUrl}${file}`);
-    }
-
-    private coreStyles(): string[] {
-        return [
-            '/core/styles/h5p.css',
-            '/core/styles/h5p-confirmation-dialog.css',
-            '/core/styles/h5p-core-button.css',
-            '/editor/libs/darkroom.css',
-            '/editor/styles/css/h5p-hub-client.css',
-            '/editor/styles/css/fonts.css',
-            '/editor/styles/css/application.css',
-            '/editor/styles/css/libs/zebra_datepicker.min.css'
-        ].map((file: string) => `${this.baseUrl}${file}`);
-    }
-
-    private editorIntegration(contentId: ContentId): IEditorIntegration {
-        log.info(`generating integration for ${contentId}`);
-        return {
-            ...defaultEditorIntegration,
-            ajaxPath: this.ajaxPath,
-            apiVersion: {
-                majorVersion: this.config.coreApiVersion.major,
-                minorVersion: this.config.coreApiVersion.minor
-            },
-            assets: {
-                css: [
-                    '/core/styles/h5p.css',
-                    '/core/styles/h5p-confirmation-dialog.css',
-                    '/core/styles/h5p-core-button.css',
-                    '/editor/libs/darkroom.css',
-                    '/editor/styles/css/h5p-hub-client.css',
-                    '/editor/styles/css/fonts.css',
-                    '/editor/styles/css/application.css',
-                    '/editor/styles/css/libs/zebra_datepicker.min.css'
-                ].map((asset: string) => `${this.baseUrl}${asset}`),
-                js: [
-                    '/core/js/jquery.js',
-                    '/core/js/h5p.js',
-                    '/core/js/h5p-event-dispatcher.js',
-                    '/core/js/h5p-x-api-event.js',
-                    '/core/js/h5p-x-api.js',
-                    '/core/js/h5p-content-type.js',
-                    '/core/js/h5p-confirmation-dialog.js',
-                    '/core/js/h5p-action-bar.js',
-                    '/editor/scripts/h5p-hub-client.js',
-                    '/editor/scripts/h5peditor.js',
-                    '/editor/language/en.js',
-                    '/editor/scripts/h5peditor-semantic-structure.js',
-                    '/editor/scripts/h5peditor-library-selector.js',
-                    '/editor/scripts/h5peditor-form.js',
-                    '/editor/scripts/h5peditor-text.js',
-                    '/editor/scripts/h5peditor-html.js',
-                    '/editor/scripts/h5peditor-number.js',
-                    '/editor/scripts/h5peditor-textarea.js',
-                    '/editor/scripts/h5peditor-file-uploader.js',
-                    '/editor/scripts/h5peditor-file.js',
-                    '/editor/scripts/h5peditor-image.js',
-                    '/editor/scripts/h5peditor-image-popup.js',
-                    '/editor/scripts/h5peditor-av.js',
-                    '/editor/scripts/h5peditor-group.js',
-                    '/editor/scripts/h5peditor-boolean.js',
-                    '/editor/scripts/h5peditor-list.js',
-                    '/editor/scripts/h5peditor-list-editor.js',
-                    '/editor/scripts/h5peditor-library.js',
-                    '/editor/scripts/h5peditor-library-list-cache.js',
-                    '/editor/scripts/h5peditor-select.js',
-                    '/editor/scripts/h5peditor-selector-hub.js',
-                    '/editor/scripts/h5peditor-selector-legacy.js',
-                    '/editor/scripts/h5peditor-dimensions.js',
-                    '/editor/scripts/h5peditor-coordinates.js',
-                    '/editor/scripts/h5peditor-none.js',
-                    '/editor/scripts/h5peditor-metadata.js',
-                    '/editor/scripts/h5peditor-metadata-author-widget.js',
-                    '/editor/scripts/h5peditor-metadata-changelog-widget.js',
-                    '/editor/scripts/h5peditor-pre-save.js',
-                    '/editor/ckeditor/ckeditor.js'
-                ].map((asset: string) => `${this.baseUrl}${asset}`)
-            },
-            filesPath: this.config.temporaryFilesPath,
-            libraryUrl: this.libraryUrl,
-            nodeVersionId: contentId
-        };
-    }
-
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {
         if (typeof object !== 'object') {
             return collect;
@@ -689,21 +549,66 @@ export default class H5PEditor {
         return h5pJson;
     }
 
+    private getCoreScripts(): string[] {
+        return editorAssetList.scripts.core
+            .map(this.urlGenerator.coreFile)
+            .concat(
+                editorAssetList.scripts.editor.map(
+                    this.urlGenerator.editorLibraryFile
+                )
+            );
+    }
+
+    private getCoreStyles(): string[] {
+        return editorAssetList.styles.core
+            .map(this.urlGenerator.coreFile)
+            .concat(
+                editorAssetList.styles.editor.map(
+                    this.urlGenerator.editorLibraryFile
+                )
+            );
+    }
+
+    private getEditorIntegration(contentId: ContentId): IEditorIntegration {
+        log.info(`generating integration for ${contentId}`);
+        return {
+            ...defaultEditorIntegration,
+            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
+            apiVersion: {
+                majorVersion: this.config.coreApiVersion.major,
+                minorVersion: this.config.coreApiVersion.minor
+            },
+            assets: {
+                css: this.getCoreStyles(),
+                js: editorAssetList.scripts.integrationCore
+                    .map(this.urlGenerator.coreFile)
+                    .concat(
+                        editorAssetList.scripts.editor.map(
+                            this.urlGenerator.editorLibraryFile
+                        )
+                    )
+            },
+            filesPath: this.config.baseUrl + this.config.temporaryFilesUrl,
+            libraryUrl: this.config.baseUrl + this.config.editorLibraryUrl,
+            nodeVersionId: contentId
+        };
+    }
+
     private integration(contentId: ContentId): IIntegration {
         return {
             ajax: {
                 contentUserData: '',
                 setFinished: ''
             },
-            ajaxPath: this.ajaxPath,
-            editor: this.editorIntegration(contentId),
+            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
+            editor: this.getEditorIntegration(contentId),
             hubIsEnabled: true,
             l10n: {
                 H5P: this.translation
             },
             postUserStatistics: false,
             saveFreq: false,
-            url: this.baseUrl,
+            url: this.config.baseUrl,
             user: {
                 mail: '',
                 name: ''
@@ -712,15 +617,11 @@ export default class H5PEditor {
     }
 
     private loadAssets(
-        machineName: string,
-        majorVersion: number,
-        minorVersion: number,
+        libraryName: ILibraryName,
         language: string,
         loaded: object = {}
     ): Promise<IAssets> {
-        const key: string = `${machineName}-${majorVersion}.${minorVersion}`;
-        const path: string = `${this.baseUrl}/libraries/${key}`;
-
+        const key: string = LibraryName.toUberName(libraryName);
         if (key in loaded) return Promise.resolve(null);
         loaded[key] = true;
 
@@ -730,15 +631,9 @@ export default class H5PEditor {
             translations: {}
         };
 
-        const lib: LibraryName = new LibraryName(
-            machineName,
-            majorVersion,
-            minorVersion
-        );
-
         return Promise.all([
-            this.libraryManager.loadLibrary(lib),
-            this.libraryManager.loadLanguage(lib, language || 'en')
+            this.libraryManager.loadLibrary(libraryName),
+            this.libraryManager.loadLanguage(libraryName, language || 'en')
         ])
             .then(([library, translation]) =>
                 Promise.all([
@@ -769,12 +664,23 @@ export default class H5PEditor {
                     );
 
                     (library.preloadedJs || []).forEach(script =>
-                        assets.scripts.push(`${path}/${script.path}`)
+                        assets.scripts.push(
+                            this.urlGenerator.libraryFile(
+                                libraryName,
+                                script.path
+                            )
+                        )
                     );
                     (library.preloadedCss || []).forEach(style =>
-                        assets.styles.push(`${path}/${style.path}`)
+                        assets.styles.push(
+                            this.urlGenerator.libraryFile(
+                                libraryName,
+                                style.path
+                            )
+                        )
                     );
-                    assets.translations[machineName] = translation || undefined;
+                    assets.translations[libraryName.machineName] =
+                        translation || undefined;
                 })
             )
 
@@ -794,13 +700,7 @@ export default class H5PEditor {
         ) => {
             if (!dependency) return Promise.resolve(resolved);
 
-            return this.loadAssets(
-                dependency.machineName,
-                dependency.majorVersion,
-                dependency.minorVersion,
-                language,
-                loaded
-            )
+            return this.loadAssets(dependency, language, loaded)
                 .then((assets: IAssets) =>
                     assets ? resolved.push(assets) : null
                 )

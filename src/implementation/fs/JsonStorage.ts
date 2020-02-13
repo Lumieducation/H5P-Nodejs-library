@@ -1,6 +1,6 @@
 import * as fsExtra from 'fs-extra';
 
-import InMemoryStorage from './InMemoryStorage';
+import InMemoryStorage from '../InMemoryStorage';
 
 /**
  * Reads key-value pairs from a JSON file and writes them back.

@@ -11,7 +11,8 @@ import {
     IContentStorage,
     IUser,
     Permission
-} from '../../src';
+} from '../../../src';
+import checkFilename from './filenameCheck';
 
 /**
  * Persists content to the disk.
@@ -48,7 +49,7 @@ export default class FileContentStorage implements IContentStorage {
         stream: Stream,
         user: IUser
     ): Promise<void> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         if (
             !(await fsExtra.pathExists(
                 path.join(this.contentPath, id.toString())
@@ -86,7 +87,7 @@ export default class FileContentStorage implements IContentStorage {
         contentId: ContentId,
         filename: string
     ): Promise<boolean> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         return fsExtra.pathExists(
             path.join(this.contentPath, contentId.toString(), filename)
         );
@@ -178,7 +179,7 @@ export default class FileContentStorage implements IContentStorage {
         contentId: ContentId,
         filename: string
     ): Promise<void> {
-        this.checkFilename(filename);
+        checkFilename(filename);
         const absolutePath = path.join(
             this.contentPath,
             contentId.toString(),
@@ -231,7 +232,7 @@ export default class FileContentStorage implements IContentStorage {
         filename: string,
         user: IUser
     ): ReadStream {
-        this.checkFilename(filename);
+        checkFilename(filename);
         return fsExtra.createReadStream(
             path.join(this.contentPath, id.toString(), filename)
         );
@@ -256,16 +257,26 @@ export default class FileContentStorage implements IContentStorage {
         ];
     }
 
-    private checkFilename(filename: string): void {
-        if (/\.\.\//.test(filename)) {
-            throw new Error(
-                `Relative paths in filenames are not allowed: ${filename} is illegal`
-            );
-        }
-        if (filename.startsWith('/')) {
-            throw new Error(
-                `Absolute paths in filenames are not allowed: ${filename} is illegal`
-            );
-        }
+    /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    public async listContent(user?: IUser): Promise<ContentId[]> {
+        const directories = await fsExtra.readdir(this.contentPath);
+        return (
+            await Promise.all(
+                directories.map(async dir => {
+                    if (
+                        !(await fsExtra.pathExists(
+                            path.join(this.contentPath, dir, 'h5p.json')
+                        ))
+                    ) {
+                        return '';
+                    }
+                    return dir;
+                })
+            )
+        ).filter(content => content !== '');
     }
 }

@@ -367,6 +367,13 @@ export interface IContentStorage {
         contentId: ContentId,
         user: IUser
     ): Promise<Permission[]>;
+
+    /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    listContent(user?: IUser): Promise<ContentId[]>;
 }
 
 /**
@@ -830,11 +837,15 @@ export interface IEditorConfig {
     /**
      * URL prefix for all AJAX requests
      */
-    ajaxPath: string;
+    ajaxUrl: string;
     /**
      * The prefix that is added to all URLs.
      */
     baseUrl: string;
+    /**
+     * base path for content files (e.g. images)
+     */
+    contentFilesUrl: string;
     /**
      * Time after which the content type cache is considered to be outdated in milliseconds.
      * User-configurable.
@@ -854,6 +865,19 @@ export interface IEditorConfig {
         major: number;
         minor: number;
     };
+
+    /**
+     * Path to the H5P core files directory.
+     */
+    coreUrl: string;
+    /**
+     * Path to the downloadable H5P packages.
+     */
+    downloadUrl: string;
+    /**
+     * Path to editor "core files"
+     */
+    editorLibraryUrl: string;
     /**
      * If set to true, the content types that require a Learning Record Store to make sense are
      * offered as a choice when the user creates new content.
@@ -865,10 +889,6 @@ export interface IEditorConfig {
      * User-configurable.
      */
     fetchingDisabled: 0 | 1;
-    /**
-     * base path for content files (e.g. images)
-     */
-    filesPath: string;
     /**
      * This is the version of the PHP implementation that the NodeJS implementation imitates.
      * Can be anything like 1.22.1
@@ -887,9 +907,9 @@ export interface IEditorConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * Path to editor "core files"
+     * The URL of the library files (=content types).
      */
-    libraryUrl: string;
+    librariesUrl: string;
     /**
      * A list of file extensions allowed for library files. (File extensions without . and
      * separated by whitespaces.)
@@ -910,6 +930,10 @@ export interface IEditorConfig {
      */
     maxTotalSize: number;
     /**
+     * The Url at which the parameters of a piece of content can be retrieved
+     */
+    paramsUrl: string;
+    /**
      * This is the name of the H5P implementation sent to the H5P for statistical reasons.
      * Not user-configurable but should be overridden by custom custom implementations.
      */
@@ -919,6 +943,10 @@ export interface IEditorConfig {
      * Not user-configurable but should be overridden by custom custom implementations.
      */
     platformVersion: string;
+    /**
+     * The Url at which content can be displayed.
+     */
+    playUrl: string;
     /**
      * If true, the instance will send usage statistics to the H5P Hub whenever it looks for new content types or updates.
      * User-configurable.
@@ -938,7 +966,7 @@ export interface IEditorConfig {
      * The URL path of temporary file storage (used for image, video etc. uploads of
      * unsaved content).
      */
-    temporaryFilesPath: string;
+    temporaryFilesUrl: string;
 
     uuid: string;
 

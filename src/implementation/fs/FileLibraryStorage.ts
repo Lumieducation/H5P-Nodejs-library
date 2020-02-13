@@ -12,7 +12,8 @@ import {
     ILibraryStorage,
     InstalledLibrary,
     LibraryName
-} from '../../src';
+} from '../../../src';
+import checkFilename from './filenameCheck';
 
 /**
  * Stores libraries in a directory.
@@ -41,6 +42,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         filename: string,
         stream: Stream
     ): Promise<boolean> {
+        checkFilename(filename);
         if (!(await this.libraryExists(library))) {
             throw new Error(
                 `Can't add file ${filename} to library ${LibraryName.toUberName(
@@ -90,6 +92,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<boolean> {
+        checkFilename(filename);
         return fsExtra.pathExists(this.getFullPath(library, filename));
     }
 
@@ -101,6 +104,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
     public getFileStream(library: ILibraryName, filename: string): ReadStream {
+        checkFilename(filename);
         return fsExtra.createReadStream(
             path.join(
                 this.librariesDirectory,

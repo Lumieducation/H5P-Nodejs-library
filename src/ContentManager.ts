@@ -241,6 +241,15 @@ export default class ContentManager {
     }
 
     /**
+     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * @param user (optional) the user who owns the content
+     * @returns a list of contentIds
+     */
+    public listContent(user?: IUser): Promise<ContentId[]> {
+        return this.contentStorage.listContent(user);
+    }
+
+    /**
      * Returns the content object (=contents of content/content.json) of a piece of content.
      * @param {number} contentId the content id
      * @param {IUser} user The user who wants to access the content

@@ -5,14 +5,71 @@ import { BufferWritableMock } from 'stream-mock';
 import { withDir, withFile } from 'tmp-promise';
 
 import LibraryName from '../src/LibraryName';
+import {
+    IContentMetadata,
+    IContentStorage,
+    IEditorConfig,
+    IKeyValueStorage,
+    ILibraryFileUrlResolver,
+    ILibraryStorage,
+    ITemporaryFileStorage,
+    ITranslationService
+} from '../src/types';
+
+import { fsImplementations, H5PEditor, TranslationService } from '../src';
+import EditorConfig from '../src/implementation/EditorConfig';
 import PackageValidator from '../src/PackageValidator';
-import { IContentMetadata } from '../src/types';
 
-import User from '../examples/implementation/User';
-
-import { createH5PEditor } from './helpers/H5PEditor';
+import User from '../examples/User';
 
 describe('H5PEditor', () => {
+    function createH5PEditor(
+        tempPath: string
+    ): {
+        config: IEditorConfig;
+        contentStorage: IContentStorage;
+        h5pEditor: H5PEditor;
+        keyValueStorage: IKeyValueStorage;
+        libraryFileUrlResolver: ILibraryFileUrlResolver;
+        libraryStorage: ILibraryStorage;
+        temporaryStorage: ITemporaryFileStorage;
+        translationService: ITranslationService;
+    } {
+        const keyValueStorage = new fsImplementations.InMemoryStorage();
+        const config = new EditorConfig(keyValueStorage);
+        const libraryStorage = new fsImplementations.FileLibraryStorage(
+            path.join(tempPath, 'libraries')
+        );
+        const contentStorage = new fsImplementations.FileContentStorage(
+            path.join(tempPath, 'content')
+        );
+        const translationService = new TranslationService({});
+        const libraryFileUrlResolver = () => '';
+        const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
+            path.join(tempPath, 'tmp')
+        );
+
+        const h5pEditor = new H5PEditor(
+            keyValueStorage,
+            config,
+            libraryStorage,
+            contentStorage,
+            translationService,
+            temporaryStorage
+        );
+
+        return {
+            config,
+            contentStorage,
+            h5pEditor,
+            keyValueStorage,
+            libraryFileUrlResolver,
+            libraryStorage,
+            temporaryStorage,
+            translationService
+        };
+    }
+
     const mockupMetadata: IContentMetadata = {
         embedTypes: ['div'],
         language: 'und',

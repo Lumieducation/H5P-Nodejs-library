@@ -1,4 +1,4 @@
-import { IKeyValueStorage } from '../../src';
+import { IKeyValueStorage } from '../types';
 
 /**
  * Stores objects in memory. It can store any key-value pairs.

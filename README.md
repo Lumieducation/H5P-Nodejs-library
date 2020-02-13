@@ -5,7 +5,7 @@
 
 This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
-Please note that this project is in a very early and experimental stage. If you have questions or want to contribute, feel free to open issues or pull requests.
+Please note that this project is in a early stage. Things will not work as expected and the interfaces are not stable yet! If you have questions or want to contribute, feel free to open issues or pull requests.
 
 An example of how to integrate and use this library with [Express](https://expressjs.com/) can be found in [examples](examples/).
 
@@ -18,8 +18,7 @@ Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) 
 3. `npm run build`
 4. `npm start`
 
-You can then open the URL http://localhost:8080 in any browser. Not that the project is still in its early stages and things will not work as expected.
-The interfaces are also not stable yet!
+You can then open the URL http://localhost:8080 in any browser.
 
 ## Using h5p-nodejs-library to create your own H5P server application
 
@@ -32,8 +31,8 @@ out the [architecture overview](docs/architecture.md) first.
 
 Install the library by executing
 
-```
-$ npm install h5p-nodejs-library
+```sh
+npm install h5p-nodejs-library
 ```
 
 ### Writing your custom implementation
@@ -47,15 +46,15 @@ const H5P = require('h5p-nodejs-library');
 and instantiate the editor with
 
 ```js
-const h5pEditor = new H5P.Editor(
-    keyValueStorage,
-    config,
-    new FileLibraryStorage('/path/to/library/directory'),
-    new FileContentStorage('/path/to/content/storage/directory'),
-    translationService,
-    (library, file) =>
-        `/h5p-library-route/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`,
-    new DirectoryTemporaryFileStorage('/path/to/temporary/storage')
+const h5pEditor = H5P.fs(
+    await new H5P.EditorConfig(
+        new H5P.fsImplementations.JsonStorage(
+            path.resolve('examples/config.json') // the path on the local disc where the configuration file is stored
+        )
+    ).load(),
+    path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
+    path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
+    path.resolve('h5p/content') // the path on the local disc where content is stored
 );
 ```
 
@@ -73,11 +72,11 @@ To use a custom renderer, change it with
 h5pEditor.useRenderer(model => /** HTML string **/);
 ```
 
-See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor.
+See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor in a more customized way.
 
 ### Handling AJAX Requests
 
-The H5P client (running in the browser) sends many AJAX requests to the server (this application). While this library provides you with everything required to process the requests in the backend, your implementation must serve the requests to these endpoints. Check out the [documentation on endpoints](docs/endpoints.md) for details.
+The H5P client (running in the browser) sends many AJAX requests to the server (this application). While this library provides you with everything required to process the requests in the backend, your implementation must still serve the requests to these endpoints. There is an Express adapter that you can use out-of-the box for this purpose. Check out the [documentation on endpoints](docs/endpoints.md) for details.
 
 ### Serving static H5P core files for the client
 
@@ -86,7 +85,19 @@ This application doesn't include the H5P JavaScript core files for the editor an
 1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/core` in your project.
 2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/editor` in your project.
 
-You must add a route to your implementation that serves the static files found under `h5p/core` and `h5p/editor` to the endpoint configured in `config.libraryUrl` . (See the [express-example](examples/express.js#L79))
+You must add a route to your implementation that serves the static files found under `h5p/core` and `h5p/editor` to the endpoint configured in `config.libraryUrl`. The out-of-the-box Express adapter already includes a route for this.
+
+### Creating content views
+
+While the AJAX communication between the actual H5P editor client (running in the browser) and the server (this application) can be fully handled by the Express adapter, you must still create custom views for these purposes:
+
+-   View that is shown when creating new content
+-   View that is shown when editing existing content
+-   View for deleting content
+-   View that lists existing content
+-   View that plays content
+
+The reason why you have to do this on your own is that this library is unaware of other data that your system might attach to a piece of content (e.g. access rights, tags). If you want any custom UI elements around the editor and player (which is highly likely), you must put this into the views. Check out the example for how to write custom views.
 
 ### Writing custom interface implementations
 
@@ -117,7 +128,7 @@ Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) 
 
 ### Installation
 
-```
+```sh
 git clone https://github.com/Lumieducation/h5p-nodejs-library
 cd h5p-nodejs-library
 npm install
@@ -127,7 +138,7 @@ npm install
 
 You must transpile the TypeScript files to ES5 for the project to work (the TypeScript transpiler will be installed automatically if you run `npm install`):
 
-```
+```sh
 npm run build
 ```
 
@@ -135,7 +146,7 @@ npm run build
 
 After installation, you can run the tests with
 
-```
+```sh
 npm test
 ```
 
@@ -145,8 +156,8 @@ The library emits log messages with [debug](https://www.npmjs.com/package/debug)
 
 Example (for Linux):
 
-```
-$ DEBUG=h5p:* LOG_LEVEL=verbose node script.js
+```sh
+DEBUG=h5p:* LOG_LEVEL=verbose node script.js
 ```
 
 ### Other scripts
@@ -182,4 +193,3 @@ Read more about them at the following websites:
 -   CARO - https://blogs.uni-bremen.de/caroprojekt/
 -   University of Bremen - https://www.uni-bremen.de/en.html
 -   BMBF - https://www.bmbf.de/en/index.html
-

@@ -1,22 +1,26 @@
 # Handling AJAX requests
 
-## Configuring the endpoints
+## Handling requests with the Express adapter
 
-The H5P client (run in the browser by the user ) can be configured to use custom AJAX request endpoints. These can be configured in the config object. The relevant settings (including defaults) are:
+Your implementation must process requests to several endpoints and relay them to the H5PEditor or H5PPlayer objects. All Ajax endpoints are already implemented in the [Express adapter](../src/adapters/express.ts), which you can use like this:
 
 ```js
-const config = {
-    baseUrl: '/h5p', // a prefix added to all URLs
-    ajaxPath: '/ajax?action=', // URL prefix for all AJAX requests
-    libraryUrl: '/h5p/editor/', // path to static editor "core files" (not the content types!)
-    filesPath: '/h5p/content', // base path for content files (e.g. images, video)
-    ... // further configuration values
-}
+server.use(
+    // server is an object initialized with express()
+    '/h5p', // the route under which all the Ajax calls will be registered
+    H5P.adapters.express(
+        h5pEditor, // an H5P.H5PEditor object
+        path.resolve('h5p/core'), // the path to the h5p core files (of the player)
+        path.resolve('h5p/editor') // the path to the h5p core files (of the editor)
+    )
+);
 ```
 
-## Processing requests
+Note that the Express adapter does not include pages to create, editor, view, list or delete content!
 
-Your implementation must process requests to these endpoints and relay them to the H5PEditor or H5PPlayer objects:
+## Handling requests yourself
+
+If you choose to do so, you can also handle requests manually. You must then follow these specifications:
 
 ### Save Content
 
@@ -159,4 +163,23 @@ h5pEditor.uploadPackage(files.h5p.data, query.contentId, user)
         }
     }))
     .then(response => /** send response to browser **/)
+```
+
+## Configuring the routes to endpoints
+
+The H5P client (run in the browser by the user) can be configured to use custom AJAX request endpoints. These can be configured in the config object. The relevant settings (including defaults) are:
+
+```js
+const config = {
+    ajaxUrl: '/ajax?action=',   // URL prefix for all AJAX requests
+    baseUrl: '/h5p',            // a prefix added to all Ajax URLs
+    contentFilesUrl: '/content',// base path for content files (e.g. images, video)
+    coreUrl: '/core',           // URL of static player "core files"
+    downloadUrl: '/download',   // URL to download h5p packages
+    editorLibraryUrl: '/editor',// URL of static editor "core files" (not the content types!)
+    librariesUrl: '/libraries', // URL at which library files (= content types) can be retreived
+    paramsUrl: '/params'        // URL at which the paramteres (= content.json) of content can be retreived
+    playUrl: '/play'            // URL at which content can be displayed
+    ... // further configuration values
+}
 ```

@@ -2,9 +2,9 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
 
-import User from '../../examples/implementation/User';
-
 import { createH5PEditor } from '../helpers/H5PEditor';
+
+import User from '../../examples/User';
 
 describe('H5PEditor.saveH5P()', () => {
     it('can save all real-world examples from the content-type-hub', async done => {

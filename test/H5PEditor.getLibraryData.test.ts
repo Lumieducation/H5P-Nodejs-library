@@ -1,8 +1,8 @@
 import { withDir } from 'tmp-promise';
 
-import EditorConfig from '../examples/implementation/EditorConfig';
-import FileLibraryStorage from '../examples/implementation/FileLibraryStorage';
 import H5PEditor from '../src/H5PEditor';
+import EditorConfig from '../src/implementation/EditorConfig';
+import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 
 describe('aggregating data from library folders for the editor', () => {
@@ -13,7 +13,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -58,7 +57,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -102,7 +100,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -195,7 +192,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -295,7 +291,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -373,7 +368,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -446,7 +440,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null,
             null,
-            (library, name) => '',
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -568,7 +561,6 @@ describe('aggregating data from library folders for the editor', () => {
                     new FileLibraryStorage(tempDirPath),
                     null,
                     null,
-                    (library, name) => '',
                     null
                 );
 

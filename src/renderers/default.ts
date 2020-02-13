@@ -81,7 +81,7 @@ var ns = H5PEditor;
                     // $type.change();
                 },
                 type: 'GET',
-                url: 'params' + window.location.search
+                url: '${model.urlGenerator.parameters()}/' + H5PEditor.contentId + window.location.search
             });
         }
         $create.show();
@@ -124,6 +124,11 @@ var ns = H5PEditor;
                             'Content-Type': 'application/json'
                         },
                         type: 'POST'
+                    }).then((result) => {
+                        const parsedResult = JSON.parse(result)
+                        if(parsedResult.contentId) {
+                            window.location.href = '${model.urlGenerator.play()}/' + parsedResult.contentId;
+                        }
                     });
 
                     return event.preventDefault();

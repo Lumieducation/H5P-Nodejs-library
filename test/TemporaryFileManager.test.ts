@@ -3,13 +3,13 @@ import mockdate from 'mockdate';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
-
 import { withDir } from 'tmp-promise';
+
+import EditorConfig from '../src/implementation/EditorConfig';
+import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import TemporaryFileManager from '../src/TemporaryFileManager';
 
-import DirectoryTemporaryFileStorage from '../examples/implementation/DirectoryTemporaryFileStorage';
-import EditorConfig from '../examples/implementation/EditorConfig';
-import User from '../examples/implementation/User';
+import User from '../examples/User';
 
 describe('TemporaryFileManager', () => {
     it('stores files and lets you retrieve them', async () => {
