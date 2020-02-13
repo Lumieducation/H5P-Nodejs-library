@@ -12,6 +12,7 @@ import {
     IHubContentType,
     IInstalledLibrary,
     IKeyValueStorage,
+    ILibraryInstallResult,
     ITranslationService,
     IUser
 } from './types';
@@ -75,10 +76,13 @@ export default class ContentTypeInformationRepository {
     /**
      * Installs a library from the H5P Hub.
      * Throws H5PError exceptions if there are errors.
-     * @param {string} machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
-     * @returns {Promise<boolean>} true if the library was installed.
+     * @param machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
+     * @returns a list of libraries that were installed (includes dependent libraries). Empty if none were installed.
      */
-    public async install(machineName: string, user: IUser): Promise<boolean> {
+    public async install(
+        machineName: string,
+        user: IUser
+    ): Promise<ILibraryInstallResult[]> {
         log.info(
             `installing library ${machineName} from hub ${this.config.hubContentTypesEndpoint}`
         );
@@ -120,6 +124,8 @@ export default class ContentTypeInformationRepository {
             { responseType: 'stream' }
         );
 
+        let installedLibraries: ILibraryInstallResult[] = [];
+
         // withFile is supposed to clean up the temporary file after it has been used
         await withFile(
             async ({ path: tempPackagePath }) => {
@@ -140,14 +146,14 @@ export default class ContentTypeInformationRepository {
                     this.translationService,
                     this.config
                 );
-                await packageImporter.installLibrariesFromPackage(
+                installedLibraries = await packageImporter.installLibrariesFromPackage(
                     tempPackagePath
                 );
             },
             { postfix: '.h5p', keep: false }
         );
 
-        return true;
+        return installedLibraries;
     }
 
     /**
