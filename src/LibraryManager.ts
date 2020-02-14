@@ -9,8 +9,10 @@ import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
+    IFullLibraryName,
     IInstalledLibrary,
     ILibraryFileUrlResolver,
+    ILibraryInstallResult,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
@@ -134,38 +136,58 @@ export default class LibraryManager {
      * It does not delete the library files in the temporary directory.
      * The method does NOT validate the library! It must be validated before calling this method!
      * Throws an error if something went wrong and deletes the files already installed.
-     * @param {string} directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
-     * @returns {Promise<boolean>} true if successful, false if the library was not installed (without having encountered an error, e.g. because there already is a newer patch version installed)
+     * @param directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
+     * @returns a structure telling if a library was newly installed, updated or nothing happened (e.g. because there already is a newer patch version installed).
      */
     public async installFromDirectory(
         directory: string,
         restricted: boolean = false
-    ): Promise<boolean> {
+    ): Promise<ILibraryInstallResult> {
         log.info(`installing from directory ${directory}`);
         const newLibraryMetadata: ILibraryMetadata = await fsExtra.readJSON(
             `${directory}/library.json`
         );
+        const newVersion = {
+            machineName: newLibraryMetadata.machineName,
+            majorVersion: newLibraryMetadata.majorVersion,
+            minorVersion: newLibraryMetadata.minorVersion,
+            patchVersion: newLibraryMetadata.patchVersion
+        };
+
         if (await this.libraryExists(newLibraryMetadata)) {
             // Check if library is already installed.
-            if (await this.isPatchedLibrary(newLibraryMetadata)) {
+            let oldVersion: IFullLibraryName;
+            if (
+                // tslint:disable-next-line: no-conditional-assignment
+                (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
+            ) {
                 // Update the library if it is only a patch of an existing library
                 await this.updateLibrary(newLibraryMetadata, directory);
-                return true;
+                return {
+                    newVersion,
+                    oldVersion,
+                    type: 'patch'
+                };
             }
             // Skip installation of library if it has already been installed and the library is no patch for it.
-            return false;
+            return { type: 'none' };
         }
         // Install the library if it hasn't been installed before (treat different major/minor versions the same as a new library)
         await this.installLibrary(directory, newLibraryMetadata, restricted);
-        return true;
+        return {
+            newVersion,
+            type: 'new'
+        };
     }
 
     /**
      * Is the library a patched version of an existing library?
-     * @param {ILibraryMetadata} library The library the check
-     * @returns {Promise<boolean>} true if the library is a patched version of an existing library, false otherwise
+     * @param library The library the check
+     * @returns the full library name of the already installed version if there is a patched version of an existing library, undefined otherwise
      */
-    public async isPatchedLibrary(library: ILibraryMetadata): Promise<boolean> {
+    public async isPatchedLibrary(
+        library: IFullLibraryName
+    ): Promise<IFullLibraryName> {
         log.info(
             `checking if library ${LibraryName.toUberName(library)} is patched`
         );
@@ -173,7 +195,7 @@ export default class LibraryManager {
             library.machineName
         ]);
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
-            return false;
+            return undefined;
         }
         const libraryInfos = wrappedLibraryInfos[library.machineName];
 
@@ -183,12 +205,17 @@ export default class LibraryManager {
                 lib.minorVersion === library.minorVersion
             ) {
                 if (lib.patchVersion < library.patchVersion) {
-                    return true;
+                    return {
+                        machineName: lib.machineName,
+                        majorVersion: lib.majorVersion,
+                        minorVersion: lib.minorVersion,
+                        patchVersion: lib.patchVersion
+                    };
                 }
                 break;
             }
         }
-        return false;
+        return undefined;
     }
 
     /**

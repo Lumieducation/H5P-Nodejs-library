@@ -14,6 +14,7 @@ import {
     ContentId,
     IContentMetadata,
     IEditorConfig,
+    ILibraryInstallResult,
     ITranslationService,
     IUser
 } from './types';
@@ -118,7 +119,7 @@ export default class PackageImporter {
      * @param user The user who wants to upload the package.
      * @param contentId (optional) the content id to use for the package
      * @returns the newly assigned content id, the metadata (=h5p.json) and parameters (=content.json)
-     * inside the package
+     * inside the package and a list of installed libraries.
      */
     public async addPackageLibrariesAndContent(
         packagePath: string,
@@ -126,11 +127,17 @@ export default class PackageImporter {
         contentId?: ContentId
     ): Promise<{
         id: ContentId;
+        installedLibraries: ILibraryInstallResult[];
         metadata: IContentMetadata;
         parameters: any;
     }> {
         log.info(`adding content from ${packagePath} to system`);
-        const { id, metadata, parameters } = await this.processPackage(
+        const {
+            id,
+            metadata,
+            parameters,
+            installedLibraries
+        } = await this.processPackage(
             packagePath,
             {
                 copyMode: ContentCopyModes.Install,
@@ -144,7 +151,7 @@ export default class PackageImporter {
                 'Something went wrong when storing the package: no content id was assigned.'
             );
         }
-        return { id, metadata, parameters };
+        return { id, metadata, parameters, installedLibraries };
     }
 
     /**
@@ -154,12 +161,13 @@ export default class PackageImporter {
      * Throws errors if something goes wrong.
      * @param packagePath The full path to the H5P package file on the local disk.
      * @param user The user who wants to upload the package.
-     * @returns the metadata and parameters inside the package
+     * @returns the metadata and parameters inside the package and a list of installed libraries
      */
     public async addPackageLibrariesAndTemporaryFiles(
         packagePath: string,
         user: IUser
     ): Promise<{
+        installedLibraries: ILibraryInstallResult[];
         metadata: IContentMetadata;
         parameters: any;
     }> {
@@ -178,16 +186,18 @@ export default class PackageImporter {
      * Installs all libraries from the package. Assumes that the user calling this has the permission to install libraries!
      * Throws errors if something goes wrong.
      * @param {string} packagePath The full path to the H5P package file on the local disk.
-     * @returns {Promise<void>}
+     * @returns a list of the installed libraries
      */
     public async installLibrariesFromPackage(
         packagePath: string
-    ): Promise<void> {
+    ): Promise<ILibraryInstallResult[]> {
         log.info(`installing libraries from package ${packagePath}`);
-        await this.processPackage(packagePath, {
-            copyMode: ContentCopyModes.NoCopy,
-            installLibraries: true
-        });
+        return (
+            await this.processPackage(packagePath, {
+                copyMode: ContentCopyModes.NoCopy,
+                installLibraries: true
+            })
+        ).installedLibraries;
     }
 
     /**
@@ -197,7 +207,7 @@ export default class PackageImporter {
      * @param copyMode indicates if and how content should be installed
      * @param user (optional) the user who wants to copy content (only needed when copying content)
      * @returns the newly assigned content id (undefined if not saved permanently), the metadata (=h5p.json)
-     * and parameters (=content.json) inside the package
+     * and parameters (=content.json) inside the package. Also includes a list of libraries that were installed.
      */
     private async processPackage(
         packagePath: string,
@@ -209,6 +219,7 @@ export default class PackageImporter {
         contentId?: ContentId
     ): Promise<{
         id?: ContentId;
+        installedLibraries: ILibraryInstallResult[];
         metadata: IContentMetadata;
         parameters: any;
     }> {
@@ -217,6 +228,8 @@ export default class PackageImporter {
             this.translationService,
             this.config
         );
+        let installedLibraries: ILibraryInstallResult[] = [];
+
         try {
             // no need to check result as the validator throws an exception if there is an error
             await packageValidator.validatePackage(packagePath, false, true);
@@ -236,19 +249,25 @@ export default class PackageImporter {
 
                 // install all libraries
                 if (installLibraries) {
-                    await Promise.all(
-                        dirContent
-                            .filter(
-                                (dirEntry: string) =>
-                                    dirEntry !== 'h5p.json' &&
-                                    dirEntry !== 'content'
-                            )
-                            .map((dirEntry: string) =>
-                                this.libraryManager.installFromDirectory(
-                                    path.join(tempDirPath, dirEntry),
-                                    false
+                    installedLibraries = (
+                        await Promise.all(
+                            dirContent
+                                .filter(
+                                    (dirEntry: string) =>
+                                        dirEntry !== 'h5p.json' &&
+                                        dirEntry !== 'content'
                                 )
-                            )
+                                .map((dirEntry: string) =>
+                                    this.libraryManager.installFromDirectory(
+                                        path.join(tempDirPath, dirEntry),
+                                        false
+                                    )
+                                )
+                        )
+                    ).filter(
+                        installResult =>
+                            installResult !== undefined &&
+                            installResult.type !== 'none'
                     );
                 }
 
@@ -259,11 +278,14 @@ export default class PackageImporter {
                             'PackageImporter was initialized without a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                         );
                     }
-                    return await this.contentManager.copyContentFromDirectory(
-                        tempDirPath,
-                        user,
-                        contentId
-                    );
+                    return {
+                        ...(await this.contentManager.copyContentFromDirectory(
+                            tempDirPath,
+                            user,
+                            contentId
+                        )),
+                        installedLibraries
+                    };
                 }
 
                 // Copy temporary files to the repository
@@ -273,10 +295,13 @@ export default class PackageImporter {
                             'PackageImporter was initialized without a ContentStorer, but you want to copy content from a package. Pass a ContentStorer object to the the constructor!'
                         );
                     }
-                    return await this.contentStorer.copyFromDirectoryToTemporary(
-                        tempDirPath,
-                        user
-                    );
+                    return {
+                        ...(await this.contentStorer.copyFromDirectoryToTemporary(
+                            tempDirPath,
+                            user
+                        )),
+                        installedLibraries
+                    };
                 }
             } catch (error) {
                 // if we don't do this, finally weirdly just swallows the errors
@@ -293,6 +318,11 @@ export default class PackageImporter {
             }
         }
 
-        return { id: undefined, metadata: undefined, parameters: undefined };
+        return {
+            id: undefined,
+            installedLibraries,
+            metadata: undefined,
+            parameters: undefined
+        };
     }
 }

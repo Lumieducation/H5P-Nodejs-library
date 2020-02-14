@@ -31,6 +31,7 @@ import {
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
+    ILibraryInstallResult,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
@@ -101,13 +102,13 @@ export default class H5PEditor {
 
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
+    public contentTypeRepository: ContentTypeInformationRepository;
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
     public translationService: ITranslationService;
 
     private contentStorer: ContentStorer;
-    private contentTypeRepository: ContentTypeInformationRepository;
     private packageExporter: PackageExporter;
     private renderer: any;
     private translation: any;
@@ -324,10 +325,13 @@ export default class H5PEditor {
 
     /**
      * Installs a content type from the H5P Hub.
-     * @param {string} id The name of the content type to install (e.g. H5P.Test-1.0)
-     * @returns {Promise<true>} true if successful. Will throw errors if something goes wrong.
+     * @param id The name of the content type to install (e.g. H5P.Test-1.0)
+     * @returns a list of installed libraries if succcesful. Will throw errors if something goes wrong.
      */
-    public async installLibrary(id: string, user: IUser): Promise<boolean> {
+    public async installLibrary(
+        id: string,
+        user: IUser
+    ): Promise<ILibraryInstallResult[]> {
         return this.contentTypeRepository.install(id, user);
     }
 
@@ -463,12 +467,17 @@ export default class H5PEditor {
     public async uploadPackage(
         data: Buffer,
         user: IUser
-    ): Promise<{ metadata: IContentMetadata; parameters: any }> {
+    ): Promise<{
+        installedLibraries: ILibraryInstallResult[];
+        metadata: IContentMetadata;
+        parameters: any;
+    }> {
         log.info(`uploading package`);
         const dataStream: any = new stream.PassThrough();
         dataStream.end(data);
 
         let returnValues: {
+            installedLibraries: ILibraryInstallResult[];
             metadata: IContentMetadata;
             parameters: any;
         };
