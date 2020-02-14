@@ -20,6 +20,36 @@ export enum Permission {
 }
 
 /**
+ * A response that is sent back to an AJAX call.
+ */
+export interface IAjaxResponse {
+    /**
+     * Better description of the error and possibly also which action to take. Only to be filled out if success is false.
+     */
+    details?: string;
+    /**
+     * An machine readable error code that the client should be able to interpret. Only to be filled out if success is false.
+     */
+    errorCode?: string;
+    /**
+     * The HTTP status code of the request. (e.g. 200 or 404)
+     */
+    httpStatusCode?: number;
+    /**
+     * The localized error message. Only to be filled out if success is false.
+     */
+    message?: string;
+    /**
+     * True if the request was successful, false if something went wrong (errorCode and message should be filled in then).
+     */
+    success: boolean;
+    /**
+     * The actual payload. Only to be filled in if the request was succesful.
+     */
+    data: any;
+}
+
+/**
  * Assets are files required by a library to work. These include JavaScript, CSS files and translations.
  */
 export interface IAssets {
@@ -612,17 +642,17 @@ export interface ISemanticsEntry {
      * The object type of this entry.
      */
     type:
-        | 'file'
-        | 'text'
-        | 'number'
-        | 'boolean'
-        | 'group'
-        | 'list'
-        | 'select'
-        | 'library'
-        | 'image'
-        | 'video'
-        | 'audio';
+    | 'file'
+    | 'text'
+    | 'number'
+    | 'boolean'
+    | 'group'
+    | 'list'
+    | 'select'
+    | 'library'
+    | 'image'
+    | 'video'
+    | 'audio';
     /**
      * Name of the widget to use in the editor.
      */
