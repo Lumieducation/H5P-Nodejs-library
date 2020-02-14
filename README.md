@@ -1,7 +1,7 @@
 # H5P-Nodejs-library
 
 [![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master)
-[![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=doc/coverage-generator)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=doc/coverage-generator)
+[![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=master)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=master)
 
 This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
