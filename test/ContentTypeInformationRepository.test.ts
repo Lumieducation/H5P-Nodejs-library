@@ -39,7 +39,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -71,7 +70,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -104,7 +102,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -133,7 +130,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -159,7 +155,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -188,7 +183,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({})
@@ -227,7 +221,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({
@@ -267,7 +260,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         const repository = new ContentTypeInformationRepository(
             cache,
-            storage,
             libManager,
             config,
             new TranslationService({
@@ -316,7 +308,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                 await cache.updateIfNecessary();
                 const repository = new ContentTypeInformationRepository(
                     cache,
-                    storage,
                     libManager,
                     config,
                     new TranslationService({})

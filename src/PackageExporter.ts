@@ -8,14 +8,7 @@ import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
-import {
-    ContentId,
-    IContentMetadata,
-    IEditorConfig,
-    ITranslationService,
-    IUser,
-    Permission
-} from './types';
+import { ContentId, IContentMetadata, IUser, Permission } from './types';
 
 import Logger from './helpers/Logger';
 const log = new Logger('PackageExporter');
@@ -25,15 +18,11 @@ const log = new Logger('PackageExporter');
  */
 export default class PackageExporter {
     /**
-     * @param {LibraryManager} libraryManager
-     * @param {TranslationService} translationService
-     * @param {EditorConfig} config
-     * @param {ContentManager} contentManager (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
+     * @param libraryManager
+     * @param contentManager (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
      */
     constructor(
         private libraryManager: LibraryManager,
-        private translationService: ITranslationService,
-        private config: IEditorConfig,
         private contentManager: ContentManager = null
     ) {
         log.info(`initialize`);

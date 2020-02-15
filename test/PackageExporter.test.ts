@@ -45,8 +45,6 @@ export async function importAndExportPackage(
 
             const packageExporter = new PackageExporter(
                 libraryManager,
-                translationService,
-                config,
                 contentManager
             );
             const contentId = (

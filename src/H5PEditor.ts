@@ -69,7 +69,6 @@ export default class H5PEditor {
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
-            keyValueStorage,
             this.libraryManager,
             config,
             translationService
@@ -93,8 +92,6 @@ export default class H5PEditor {
         );
         this.packageExporter = new PackageExporter(
             this.libraryManager,
-            translationService,
-            config,
             this.contentManager
         );
     }

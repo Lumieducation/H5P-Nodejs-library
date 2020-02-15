@@ -7,7 +7,6 @@ import yauzlPromise from 'yauzl-promise';
 import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
-import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
 import {

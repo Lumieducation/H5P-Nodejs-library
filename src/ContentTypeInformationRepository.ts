@@ -11,7 +11,6 @@ import {
     IEditorConfig,
     IHubContentType,
     IInstalledLibrary,
-    IKeyValueStorage,
     ITranslationService,
     IUser
 } from './types';
@@ -31,15 +30,13 @@ const log = new Logger('ContentTypeInformationRepository');
 export default class ContentTypeInformationRepository {
     /**
      *
-     * @param {ContentTypeCache} contentTypeCache
-     * @param {IStorage} storage
-     * @param {LibraryManager} libraryManager
-     * @param {H5PEditorConfig} config
-     * @param {TranslationService} translationService
+     * @param contentTypeCache
+     * @param libraryManager
+     * @param config
+     * @param translationService
      */
     constructor(
         private contentTypeCache: ContentTypeCache,
-        private storage: IKeyValueStorage,
         private libraryManager: LibraryManager,
         private config: IEditorConfig,
         private translationService: ITranslationService
