@@ -143,7 +143,9 @@ export default class PackageExporter {
     ): Promise<void> {
         if (!(await this.contentManager.contentExists(contentId))) {
             throw new H5pError(
-                `Content can't be downloaded as no content with id ${contentId} exists.`
+                'download-content-not-found',
+                { contentId },
+                404
             );
         }
         if (
@@ -152,7 +154,9 @@ export default class PackageExporter {
             ).some(p => p === Permission.Download)
         ) {
             throw new H5pError(
-                `You do not have permission to download content with id ${contentId}`
+                'download-content-forbidden',
+                { contentId },
+                403
             );
         }
     }
@@ -177,9 +181,7 @@ export default class PackageExporter {
             contentStream.push(JSON.stringify(content));
             contentStream.push(null);
         } catch (error) {
-            throw new H5pError(
-                `Content can't be downloaded as the content data is unreadable.`
-            );
+            throw new H5pError('download-content-unreadable-data');
         }
         return contentStream;
     }
@@ -202,9 +204,7 @@ export default class PackageExporter {
             metadataStream.push(JSON.stringify(metadata));
             metadataStream.push(null);
         } catch (error) {
-            throw new H5pError(
-                `Content can't be downloaded as the content metadata is unreadable.`
-            );
+            throw new H5pError('download-content-unreadable-metadata');
         }
 
         return { metadata, metadataStream };

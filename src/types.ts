@@ -24,6 +24,10 @@ export enum Permission {
  */
 export interface IAjaxResponse {
     /**
+     * The actual payload. Only to be filled in if the request was succesful.
+     */
+    data: any;
+    /**
      * Better description of the error and possibly also which action to take. Only to be filled out if success is false.
      */
     details?: string;
@@ -43,10 +47,6 @@ export interface IAjaxResponse {
      * True if the request was successful, false if something went wrong (errorCode and message should be filled in then).
      */
     success: boolean;
-    /**
-     * The actual payload. Only to be filled in if the request was succesful.
-     */
-    data: any;
 }
 
 /**
@@ -642,17 +642,17 @@ export interface ISemanticsEntry {
      * The object type of this entry.
      */
     type:
-    | 'file'
-    | 'text'
-    | 'number'
-    | 'boolean'
-    | 'group'
-    | 'list'
-    | 'select'
-    | 'library'
-    | 'image'
-    | 'video'
-    | 'audio';
+        | 'file'
+        | 'text'
+        | 'number'
+        | 'boolean'
+        | 'group'
+        | 'list'
+        | 'select'
+        | 'library'
+        | 'image'
+        | 'video'
+        | 'audio';
     /**
      * Name of the widget to use in the editor.
      */

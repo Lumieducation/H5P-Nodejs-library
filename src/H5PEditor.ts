@@ -187,7 +187,9 @@ export default class H5PEditor {
 
         if (!(await this.libraryManager.libraryExists(library))) {
             throw new H5pError(
-                `Library ${LibraryName.toUberName(library)} was not found.`
+                'library-not-found',
+                { name: LibraryName.toUberName(library) },
+                404
             );
         }
 
@@ -433,7 +435,11 @@ export default class H5PEditor {
                 useWhitespace: true
             });
         } catch (error) {
-            throw new H5pError(`mainLibraryName is invalid: ${error.message}`);
+            throw new H5pError(
+                'invalid-main-library-name',
+                { message: error.message },
+                400
+            );
         }
 
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
@@ -479,11 +485,7 @@ export default class H5PEditor {
                 try {
                     await promisepipe(dataStream, writeStream);
                 } catch (error) {
-                    throw new H5pError(
-                        this.translationService.getTranslation(
-                            'upload-package-failed-tmp'
-                        )
-                    );
+                    throw new H5pError('upload-package-failed-tmp');
                 }
 
                 returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(

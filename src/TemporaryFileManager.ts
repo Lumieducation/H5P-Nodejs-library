@@ -134,9 +134,9 @@ export default class TemporaryFileManager {
         } while (attempts < 5 && exists); // only try 5 times
         if (exists) {
             log.error(`Cannot determine a unique filename for ${filename}`);
-            throw new H5pError(
-                `Cannot determine a unique filename for ${filename}`
-            );
+            throw new H5pError('error-generating-unique-temporary-filename', {
+                name: filename
+            });
         }
         return filenameAttempt;
     }

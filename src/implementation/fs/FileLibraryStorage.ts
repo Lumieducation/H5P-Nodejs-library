@@ -6,6 +6,7 @@ import promisepipe from 'promisepipe';
 import { Stream } from 'stream';
 
 import {
+    H5pError,
     IInstalledLibrary,
     ILibraryMetadata,
     ILibraryName,
@@ -44,10 +45,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
     ): Promise<boolean> {
         checkFilename(filename);
         if (!(await this.libraryExists(library))) {
-            throw new Error(
-                `Can't add file ${filename} to library ${LibraryName.toUberName(
-                    library
-                )} because the library metadata has not been installed.`
+            throw new H5pError(
+                'add-library-file-not-installed',
+                { filename, libraryName: LibraryName.toUberName(library) },
+                500
             );
         }
         const fullPath = this.getFullPath(library, filename);
@@ -65,11 +66,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async clearLibraryFiles(library: ILibraryName): Promise<void> {
         if (!(await this.libraryExists(library))) {
-            throw new Error(
-                `Can't clear library ${LibraryName.toUberName(
-                    library
-                )} because the library has not been installed.`
-            );
+            throw new H5pError('clear-library-not-found', {
+                libraryName: LibraryName.toUberName(library)
+            });
         }
         const fullLibraryPath = this.getDirectoryPath(library);
         const directoryEntries = (
@@ -174,11 +173,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
         const libPath = this.getDirectoryPath(library);
         if (await fsExtra.pathExists(libPath)) {
-            throw new Error(
-                `Library ${LibraryName.toUberName(
-                    library
-                )} has already been installed.`
-            );
+            throw new H5pError('install-library-already-installed', {
+                libraryName: LibraryName.toUberName(library)
+            });
         }
         try {
             await fsExtra.ensureDir(libPath);
@@ -223,10 +220,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async removeLibrary(library: ILibraryName): Promise<void> {
         const libPath = this.getDirectoryPath(library);
         if (!(await fsExtra.pathExists(libPath))) {
-            throw new Error(
-                `Library ${LibraryName.toUberName(
-                    library
-                )} is not installed on the system.`
+            throw new H5pError(
+                'remove-library-library-missing',
+                { libraryName: LibraryName.toUberName(library) },
+                404
             );
         }
         await fsExtra.remove(libPath);
@@ -245,10 +242,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
     ): Promise<IInstalledLibrary> {
         const libPath = this.getDirectoryPath(libraryMetadata);
         if (!(await fsExtra.pathExists(libPath))) {
-            throw new Error(
-                `Library ${LibraryName.toUberName(
-                    libraryMetadata
-                )} can't be updated as it hasn't been installed yet.`
+            throw new H5pError(
+                'update-library-library-missing',
+                { libraryName: LibraryName.toUberName(libraryMetadata) },
+                404
             );
         }
         await fsExtra.writeJSON(

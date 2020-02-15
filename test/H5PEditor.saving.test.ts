@@ -587,9 +587,7 @@ describe('H5PEditor', () => {
                         'abc',
                         user
                     )
-                ).rejects.toThrowError(
-                    'mainLibraryName is invalid: \'abc is not a valid H5P library name ("ubername"). You must follow this pattern: H5P.Example 1.0\''
-                );
+                ).rejects.toThrowError('invalid-main-library-name');
             },
             { keep: false, unsafeCleanup: true }
         );

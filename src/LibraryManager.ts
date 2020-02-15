@@ -4,8 +4,9 @@ import globPromise from 'glob-promise';
 import path from 'path';
 import { Stream } from 'stream';
 
+import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import { streamToString } from './helpers/StreamHelpers';
-
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
@@ -18,7 +19,6 @@ import {
     ISemanticsEntry
 } from './types';
 
-import Logger from './helpers/Logger';
 const log = new Logger('LibraryManager');
 
 /**
@@ -363,21 +363,21 @@ export default class LibraryManager {
                     library
                 )}: not installed.`
             );
-            throw new Error(
-                `Error in library ${LibraryName.toUberName(
-                    library
-                )}: not installed.`
-            );
+            throw new H5pError('library-consistency-check-not-installed', {
+                name: LibraryName.toUberName(library)
+            });
         }
 
         let metadata: ILibraryMetadata;
         try {
             metadata = await this.getJsonFile(library, 'library.json');
         } catch (error) {
-            throw new Error(
-                `Error in library ${LibraryName.toUberName(
-                    library
-                )}: library.json not readable: ${error.message}.`
+            throw new H5pError(
+                'library-consistency-check-library-json-unreadable',
+                {
+                    message: error.message,
+                    name: LibraryName.toUberName(library)
+                }
             );
         }
         if (metadata.preloadedJs) {
@@ -427,13 +427,10 @@ export default class LibraryManager {
             .filter((file: { status: boolean }) => !file.status)
             .map((file: { path: string }) => file.path);
         if (missingFiles.length > 0) {
-            let message = `Error(s) in library ${LibraryName.toUberName(
-                library
-            )}:\n`;
-            message += missingFiles
-                .map((file: string) => `${file} is missing.`)
-                .join('\n');
-            throw new Error(message);
+            throw new H5pError('library-consistency-check-file-missing', {
+                files: missingFiles,
+                name: LibraryName.toUberName(library)
+            });
         }
         return true;
     }

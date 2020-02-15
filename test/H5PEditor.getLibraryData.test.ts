@@ -566,7 +566,7 @@ describe('aggregating data from library folders for the editor', () => {
 
                 expect(
                     h5pEditor.getLibraryData('Foo', '1', '2')
-                ).rejects.toThrow('Library Foo-1.2 was not found.');
+                ).rejects.toThrow('library-not-found');
             },
             { keep: false, unsafeCleanup: true }
         );

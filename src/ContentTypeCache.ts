@@ -3,6 +3,8 @@ import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
 
+import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import {
     IEditorConfig,
     IHubContentType,
@@ -10,8 +12,6 @@ import {
     IRegistrationData,
     IUsageStatistics
 } from './types';
-
-import Logger from './helpers/Logger';
 
 const log = new Logger('ContentTypeCache');
 
@@ -108,13 +108,20 @@ export default class ContentTypeCache {
             qs.stringify(formData)
         );
         if (response.status !== 200) {
-            throw new Error(
-                `Could not fetch content type information from the H5P Hub. HTTP status ${response.status} ${response.statusText}`
+            throw new H5pError(
+                'error-communicating-with-hub',
+                {
+                    statusCode: response.status.toString(),
+                    statusText: response.statusText
+                },
+                504
             );
         }
         if (!response.data) {
-            throw new Error(
-                'Could not fetch content type information from the H5P Hub.'
+            throw new H5pError(
+                'error-communicating-with-hub-no-status',
+                {},
+                504
             );
         }
 
@@ -211,12 +218,17 @@ export default class ContentTypeCache {
             this.compileRegistrationData()
         );
         if (response.status !== 200) {
-            throw new Error(
-                `Could not register this site at the H5P Hub. HTTP status ${response.status} ${response.statusText}`
+            throw new H5pError(
+                'error-registering-at-hub',
+                {
+                    statusCode: response.status.toString(),
+                    statusText: response.statusText
+                },
+                500
             );
         }
         if (!response.data || !response.data.uuid) {
-            throw new Error('Could not register this site at the H5P Hub.');
+            throw new H5pError('error-registering-at-hub-no-status', {}, 500);
         }
         log.debug(`setting uuid to ${response.data.uuid}`);
         this.config.uuid = response.data.uuid;

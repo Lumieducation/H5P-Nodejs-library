@@ -61,12 +61,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 );
                 await expect(
                     storage.addContentFile(id + 1, 'test.png', null, user)
-                ).rejects.toEqual(
-                    new Error(
-                        `Cannot add file ${filename} to content with id ${id +
-                            1}: Content with this id does not exist.`
-                    )
-                );
+                ).rejects.toThrow(new Error('add-file-content-not-found'));
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -96,11 +91,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const storage = new FileContentStorage(tempDirPath);
                 await expect(
                     storage.deleteContent('1', new User())
-                ).rejects.toEqual(
-                    new Error(
-                        'Cannot delete content with id 1: It does not exist.'
-                    )
-                );
+                ).rejects.toEqual(new Error('delete-content-not-found'));
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -175,24 +166,16 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 stream1.push(null);
                 await expect(
                     storage.addContentFile(id, '../file1.txt', stream1, user)
-                ).rejects.toThrow(
-                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
-                );
+                ).rejects.toThrow('illegal-relative-filename');
                 await expect(
                     storage.contentFileExists(id, '../file1.txt')
-                ).rejects.toThrow(
-                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
-                );
+                ).rejects.toThrow('illegal-relative-filename');
                 await expect(
                     storage.deleteContentFile(id, '../file1.txt')
-                ).rejects.toThrow(
-                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
-                );
+                ).rejects.toThrow('illegal-relative-filename');
                 expect(() => {
                     storage.getContentFileStream(id, '../file1.txt', user);
-                }).toThrow(
-                    'Relative paths in filenames are not allowed: ../file1.txt is illegal'
-                );
+                }).toThrow('illegal-relative-filename');
             },
             { keep: false, unsafeCleanup: true }
         );

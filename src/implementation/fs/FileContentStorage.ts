@@ -7,6 +7,7 @@ import promisepipe from 'promisepipe';
 import { Stream } from 'stream';
 import {
     ContentId,
+    H5pError,
     IContentMetadata,
     IContentStorage,
     IUser,
@@ -55,8 +56,10 @@ export default class FileContentStorage implements IContentStorage {
                 path.join(this.contentPath, id.toString())
             ))
         ) {
-            throw new Error(
-                `Cannot add file ${filename} to content with id ${id}: Content with this id does not exist.`
+            throw new H5pError(
+                'add-file-content-not-found',
+                { filename, id },
+                404
             );
         }
 
@@ -124,7 +127,7 @@ export default class FileContentStorage implements IContentStorage {
             );
         } catch (error) {
             await fsExtra.remove(path.join(this.contentPath, id.toString()));
-            throw new Error(`Could not create content: ${error.message}`);
+            throw new H5pError('error-creating-content');
         }
         return id;
     }
@@ -144,7 +147,7 @@ export default class FileContentStorage implements IContentStorage {
             exists = await fsExtra.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
-            throw new Error('Could not generate id for new content.');
+            throw new H5pError('error-generating-content-id');
         }
         return id;
     }
@@ -162,9 +165,7 @@ export default class FileContentStorage implements IContentStorage {
                 path.join(this.contentPath, id.toString())
             ))
         ) {
-            throw new Error(
-                `Cannot delete content with id ${id}: It does not exist.`
-            );
+            throw new H5pError('delete-content-not-found', {}, 404);
         }
 
         await fsExtra.remove(path.join(this.contentPath, id.toString()));
@@ -186,8 +187,10 @@ export default class FileContentStorage implements IContentStorage {
             filename
         );
         if (!(await fsExtra.pathExists(absolutePath))) {
-            throw new Error(
-                `Cannot delete file ${filename} from content id ${contentId}: It does not exist.`
+            throw new H5pError(
+                'delete-content-file-not-found',
+                { filename },
+                404
             );
         }
         await fsExtra.remove(absolutePath);

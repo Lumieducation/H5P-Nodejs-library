@@ -216,7 +216,9 @@ export default class ContentManager {
             !(await this.contentStorage.contentFileExists(contentId, filename))
         ) {
             throw new H5pError(
-                `File ${filename} does not exist in ${contentId}`
+                'content-file-missing',
+                { filename, contentId },
+                404
             );
         }
         return this.contentStorage.getContentFileStream(
