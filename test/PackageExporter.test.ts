@@ -10,7 +10,6 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageExporter from '../src/PackageExporter';
 import PackageImporter from '../src/PackageImporter';
-import TranslationService from '../src/TranslationService';
 
 import User from '../examples/User';
 
@@ -33,12 +32,10 @@ export async function importAndExportPackage(
             const libraryManager = new LibraryManager(
                 new FileLibraryStorage(libraryDir)
             );
-            const translationService = new TranslationService({});
             const config = new EditorConfig(null);
 
             const packageImporter = new PackageImporter(
                 libraryManager,
-                translationService,
                 config,
                 contentManager
             );

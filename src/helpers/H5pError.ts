@@ -14,5 +14,6 @@ export default class H5pError extends Error {
         public debugMessage?: string
     ) {
         super(`${errorId}${debugMessage ? `: ${debugMessage}` : ''}`);
+        Object.setPrototypeOf(this, new.target.prototype); // need to restore the prototype chain
     }
 }

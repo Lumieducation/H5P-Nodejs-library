@@ -36,7 +36,7 @@
     "library-consistency-check-not-installed": "Can't check library consistency for %name as the library is not installed.",
     "library-consistency-check-library-json-unreadable": "Error in library %name: library.json not readable: %message",
     "library-consistency-check-file-missing": "Missing files in library %name: %files",
-    "invalid-ubername-pattern": "'%name%' is not a valid H5P library name (\"ubername\"). You must follow this pattern: %example'",
+    "invalid-ubername-pattern": "'%name' is not a valid H5P library name (\"ubername\"). You must follow this pattern: %example'",
     "download-content-not-found": "Content can't be downloaded as no content with id %contentId exists.",
     "download-content-forbidden": "You do not have permission to download content with id %contentId.",
     "download-content-unreadable-data": "Content can't be downloaded as the content data is unreadable.",

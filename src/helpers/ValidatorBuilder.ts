@@ -1,4 +1,4 @@
-import ValidationError from './ValidationError';
+import AggregateH5pError from './AggregateH5pError';
 
 /**
  * A ValidatorBuilder can be used to chain validation rules by calling addRule(...) multiple times
@@ -28,15 +28,15 @@ export class ValidatorBuilder {
         this.rules = [];
     }
 
-    private rules: ((content: any, error: ValidationError) => any)[];
+    private rules: ((content: any, error: AggregateH5pError) => any)[];
 
     /**
      * Adds a rule to the validator. Chain this method together to create complex validators.
-     * @param {(content: any, error: ValidationError) => any} rule rule to add
+     * @param {(content: any, error: AggregateH5pError) => any} rule rule to add
      * @returns {ValidatorBuilder}
      */
     public addRule(
-        rule: (content: any, error: ValidationError) => any
+        rule: (content: any, error: AggregateH5pError) => any
     ): ValidatorBuilder {
         this.rules.push(rule);
         return this;
@@ -45,12 +45,12 @@ export class ValidatorBuilder {
     /**
      * Adds a rule to the validator if the condition is met.
      * Chain this method together to create complex validators.
-     * @param {(content: any, error: ValidationError) => any} rule rule to add
+     * @param {(content: any, error: AggregateH5pError) => any} rule rule to add
      * @param {boolean} condition the condition (rule is added if it is true)
      * @returns {ValidatorBuilder}
      */
     public addRuleWhen(
-        rule: (content: any, error: ValidationError) => any,
+        rule: (content: any, error: AggregateH5pError) => any,
         condition: boolean
     ): ValidatorBuilder {
         if (condition) {
@@ -62,12 +62,12 @@ export class ValidatorBuilder {
     /**
      * Executes the validation.
      * @param {any} data The data to validate. This parameters is passed to the first rule as the first parameter.
-     * @param {ValidationError} error an optional error object. A new one is created if none is passed in here.
+     * @param {AggregateH5pError} error an optional error object. A new one is created if none is passed in here.
      * @returns {Promise<any>} Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
      */
     public async validate(
         data: any,
-        error: ValidationError = new ValidationError()
+        error: AggregateH5pError = new AggregateH5pError()
     ): Promise<any> {
         let returnValue = data;
         for (const rule of this.rules) {
@@ -81,10 +81,10 @@ export class ValidatorBuilder {
 /**
  * This rule throws the ValidationError object passed to it if there are any messages in it.
  * @param {any} data The data (ignored by this rule)
- * @param {ValidationError} error The error to throw if there are any
+ * @param {AggregateH5pError} error The error to throw if there are any
  * @returns {any} the unchanged data object
  */
-export function throwErrorsNowRule(data: any, error: ValidationError): any {
+export function throwErrorsNowRule(data: any, error: AggregateH5pError): any {
     if (error.hasErrors()) {
         throw error;
     }

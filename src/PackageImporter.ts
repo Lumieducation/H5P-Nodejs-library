@@ -9,13 +9,7 @@ import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
-import {
-    ContentId,
-    IContentMetadata,
-    IEditorConfig,
-    ITranslationService,
-    IUser
-} from './types';
+import { ContentId, IContentMetadata, IEditorConfig, IUser } from './types';
 
 import Logger from './helpers/Logger';
 
@@ -46,13 +40,11 @@ enum ContentCopyModes {
 export default class PackageImporter {
     /**
      * @param {LibraryManager} libraryManager
-     * @param {TranslationService} translationService
      * @param {EditorConfig} config
      * @param {ContentStorer} contentStorer
      */
     constructor(
         private libraryManager: LibraryManager,
-        private translationService: ITranslationService,
         private config: IEditorConfig,
         private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
@@ -210,10 +202,7 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`processing package ${packagePath}`);
-        const packageValidator = new PackageValidator(
-            this.translationService,
-            this.config
-        );
+        const packageValidator = new PackageValidator(this.config);
         // no need to check result as the validator throws an exception if there is an error
         await packageValidator.validatePackage(packagePath, false, true);
         // we don't use withDir here, to have better error handling (catch & finally block below)

@@ -4,7 +4,6 @@ import axiosMockAdapter from 'axios-mock-adapter';
 import H5PEditor from '../src/H5PEditor';
 import EditorConfig from '../src/implementation/EditorConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
-import TranslationService from '../src/TranslationService';
 
 import User from '../examples/User';
 
@@ -18,10 +17,6 @@ describe('H5PEditor: general', () => {
             config,
             null,
             null,
-            new TranslationService({
-                'hub-install-invalid-content-type':
-                    'hub-install-invalid-content-type'
-            }),
             null
         );
 
@@ -47,10 +42,6 @@ describe('H5PEditor: general', () => {
             config,
             null,
             null,
-            new TranslationService({
-                'hub-install-invalid-content-type':
-                    'hub-install-invalid-content-type'
-            }),
             null
         );
 

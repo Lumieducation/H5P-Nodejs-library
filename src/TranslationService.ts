@@ -1,8 +1,9 @@
 import escapeHtml from 'escape-html';
 
+import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import { ITranslationService } from './types';
 
-import Logger from './helpers/Logger';
 const log = new Logger('TranslationService');
 
 /**
@@ -26,14 +27,14 @@ export default class TranslationService implements ITranslationService {
     /**
      * Used to check if replacement keys conform to the required pattern.
      */
-    private replacementKeyRegex: RegExp = /(!|@|%)[a-z0-9-]+/i;
+    private replacementKeyRegex: RegExp = /^[a-zA-Z0-9\-]+$/i;
 
     /**
      * Gets the literal for the identifier and performs replacements of placeholders / variables.
-     * @param {string} id The identifier of the literal
-     * @param {[key: string]: string} replacements An object with the replacement variables in key-value format.
+     * @param id The identifier of the literal
+     * @param replacements An object with the replacement variables in key-value format.
      * Incidences of any key in this array are replaced with the corresponding value. Based
-     * on the first character of the key, the value is escaped and/or themed:
+     * on the replacement marker in the literal, the value is escaped and/or themed:
      *    - !variable inserted as is
      *    - &#064;variable escape plain text to HTML
      *    - %variable escape text to HTML and theme as a placeholder for user-submitted content
@@ -41,7 +42,8 @@ export default class TranslationService implements ITranslationService {
      */
     public getTranslation(
         id: string,
-        replacements: { [key: string]: string } = {}
+        language: string,
+        replacements: { [key: string]: string | string[] } = {}
     ): string {
         log.verbose(`getting translation ${id}`);
         let literal = this.getLiteral(id);
@@ -49,34 +51,49 @@ export default class TranslationService implements ITranslationService {
 
         // tslint:disable-next-line: forin
         for (const replacementKey in replacements) {
-            // skip keys that don't can't be replaced with regex
+            // skip keys that can't don't conform to the replacement key schema
             if (!this.replacementKeyRegex.test(replacementKey)) {
                 throw new Error(
-                    `The replacement key ${replacementKey} is malformed. A replacement key must start with one of these characters:!@%`
+                    `The replacement key ${replacementKey} is malformed. A replacement key must only contain letters, numbers and hyphens.`
                 );
             }
 
-            let valueToPutIn;
-            if (replacementKey[0] === '@') {
-                valueToPutIn = escapeHtml(replacements[replacementKey]);
-            } else if (replacementKey[0] === '%') {
-                valueToPutIn = `<em>${escapeHtml(
-                    replacements[replacementKey]
-                )}</em>`;
-            } else if (replacementKey[0] === '!') {
-                valueToPutIn = replacements[replacementKey];
-            } else {
-                throw new Error(
-                    `The replacement key ${replacementKey} is malformed. A replacement key must start with one of these characters:!@%`
-                );
-            }
+            const replacementValue: string =
+                replacements[replacementKey] instanceof Array
+                    ? (replacements[replacementKey] as string[]).join(' ')
+                    : (replacements[replacementKey] as string);
 
             literal = literal.replace(
-                new RegExp(replacementKey, 'g'),
-                valueToPutIn
+                new RegExp(`@${replacementKey}`, 'g'),
+                escapeHtml(replacementValue)
+            );
+            literal = literal.replace(
+                new RegExp(`%${replacementKey}`, 'g'),
+                `<em>${escapeHtml(replacementValue)}</em>`
+            );
+            literal = literal.replace(
+                new RegExp(`!${replacementKey}`, 'g'),
+                replacementValue
             );
         }
         return literal;
+    }
+
+    public translateExceptions<T>(func: () => T, language: string): T {
+        let returnValue: T;
+        try {
+            returnValue = func();
+        } catch (error) {
+            if (error instanceof H5pError) {
+                error.message = this.getTranslation(
+                    error.errorId,
+                    language,
+                    error.replacements
+                );
+            }
+            throw error;
+        }
+        return returnValue;
     }
 
     /**

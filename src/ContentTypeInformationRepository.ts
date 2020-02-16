@@ -33,13 +33,11 @@ export default class ContentTypeInformationRepository {
      * @param contentTypeCache
      * @param libraryManager
      * @param config
-     * @param translationService
      */
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
-        private config: IEditorConfig,
-        private translationService: ITranslationService
+        private config: IEditorConfig
     ) {
         log.info(`initialize`);
     }
@@ -120,7 +118,6 @@ export default class ContentTypeInformationRepository {
 
                 const packageImporter = new PackageImporter(
                     this.libraryManager,
-                    this.translationService,
                     this.config
                 );
                 await packageImporter.installLibrariesFromPackage(

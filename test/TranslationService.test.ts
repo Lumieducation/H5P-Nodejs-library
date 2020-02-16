@@ -17,26 +17,26 @@ describe('translation / localization service', () => {
 
     it('correctly returns translations', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
-        expect(t.getTranslation('key1')).toBe(localizedLiterals.key1);
-        expect(t.getTranslation('key5')).toBe(localizedLiterals.key5);
+        expect(t.getTranslation('key1', 'de')).toBe(localizedLiterals.key1);
+        expect(t.getTranslation('key5', 'de')).toBe(localizedLiterals.key5);
     });
 
     it('correctly returns fallback literals', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
-        expect(t.getTranslation('key4')).toBe(fallbackLiterals.key4);
+        expect(t.getTranslation('key4', 'de')).toBe(fallbackLiterals.key4);
     });
 
     it('returns an empty string if there is no literal', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
-        expect(t.getTranslation('key999')).toBe('');
+        expect(t.getTranslation('key999', 'de')).toBe('');
     });
 
     it('replaces ! placeholders', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
         expect(
-            t.getTranslation('key2', {
-                '!variable1': 'test1',
-                '!variable2': 'test2'
+            t.getTranslation('key2', 'de', {
+                variable1: 'test1',
+                variable2: 'test2'
             })
         ).toBe('local2 test1 local2 test2');
     });
@@ -44,9 +44,9 @@ describe('translation / localization service', () => {
     it('replaces @ placeholders', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
         expect(
-            t.getTranslation('key6', {
-                '@variable1': 'A < B',
-                '@variable2': 'C & A'
+            t.getTranslation('key6', 'de', {
+                variable1: 'A < B',
+                variable2: 'C & A'
             })
         ).toBe('local2 A &lt; B local2 C &amp; A');
     });
@@ -54,9 +54,9 @@ describe('translation / localization service', () => {
     it('replaces % placeholders', async () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
         expect(
-            t.getTranslation('key3', {
-                '%variable1': 'A < B',
-                '%variable2': 'C & A'
+            t.getTranslation('key3', 'de', {
+                variable1: 'A < B',
+                variable2: 'C & A'
             })
         ).toBe('local2 <em>A &lt; B</em> local2 <em>C &amp; A</em>');
     });
@@ -65,7 +65,7 @@ describe('translation / localization service', () => {
         const t = new TranslationService(fallbackLiterals, localizedLiterals);
 
         expect(() => {
-            t.getTranslation('key2', { key: 'value' });
+            t.getTranslation('key2', 'de', { '!`key': 'value' });
         }).toThrow(Error);
     });
 });

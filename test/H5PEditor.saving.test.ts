@@ -12,11 +12,10 @@ import {
     IKeyValueStorage,
     ILibraryFileUrlResolver,
     ILibraryStorage,
-    ITemporaryFileStorage,
-    ITranslationService
+    ITemporaryFileStorage
 } from '../src/types';
 
-import { fsImplementations, H5PEditor, TranslationService } from '../src';
+import { fsImplementations, H5PEditor } from '../src';
 import EditorConfig from '../src/implementation/EditorConfig';
 import PackageValidator from '../src/PackageValidator';
 
@@ -33,7 +32,6 @@ describe('H5PEditor', () => {
         libraryFileUrlResolver: ILibraryFileUrlResolver;
         libraryStorage: ILibraryStorage;
         temporaryStorage: ITemporaryFileStorage;
-        translationService: ITranslationService;
     } {
         const keyValueStorage = new fsImplementations.InMemoryStorage();
         const config = new EditorConfig(keyValueStorage);
@@ -43,7 +41,6 @@ describe('H5PEditor', () => {
         const contentStorage = new fsImplementations.FileContentStorage(
             path.join(tempPath, 'content')
         );
-        const translationService = new TranslationService({});
         const libraryFileUrlResolver = () => '';
         const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
             path.join(tempPath, 'tmp')
@@ -54,7 +51,6 @@ describe('H5PEditor', () => {
             config,
             libraryStorage,
             contentStorage,
-            translationService,
             temporaryStorage
         );
 
@@ -65,8 +61,7 @@ describe('H5PEditor', () => {
             keyValueStorage,
             libraryFileUrlResolver,
             libraryStorage,
-            temporaryStorage,
-            translationService
+            temporaryStorage
         };
     }
 
@@ -596,7 +591,7 @@ describe('H5PEditor', () => {
     it('saving content returns a valid H5P package', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const { h5pEditor, config } = createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -647,10 +642,7 @@ describe('H5PEditor', () => {
                         writeStream.close();
 
                         // check if saved H5P package is valid
-                        const validator = new PackageValidator(
-                            h5pEditor.translationService,
-                            h5pEditor.config
-                        );
+                        const validator = new PackageValidator(config);
                         await expect(
                             validator.validatePackage(h5pFilePath, true, true)
                         ).resolves.toEqual(true);

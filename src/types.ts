@@ -839,8 +839,9 @@ export interface ILibraryUsageStatistics {
 export interface ITranslationService {
     /**
      * Gets the literal for the identifier and performs replacements of placeholders / variables.
-     * @param {string} id The identifier of the literal
-     * @param {[key: string]: string} replacements An object with the replacement variables in key-value format.
+     * @param id The identifier of the literal
+     * @param language The language to translate into
+     * @param replacements An object with the replacement variables in key-value format.
      * Incidences of any key in this array are replaced with the corresponding value. Based
      * on the first character of the key, the value is escaped and/or themed:
      *    - !variable inserted as is
@@ -850,6 +851,7 @@ export interface ITranslationService {
      */
     getTranslation(
         id: string,
+        language: string,
         replacements?: { [key: string]: string }
     ): string;
 }

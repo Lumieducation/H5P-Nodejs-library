@@ -51,7 +51,6 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        translationService: ITranslationService,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -70,10 +69,8 @@ export default class H5PEditor {
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
-            config,
-            translationService
+            config
         );
-        this.translationService = translationService;
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
@@ -85,7 +82,6 @@ export default class H5PEditor {
         );
         this.packageImporter = new PackageImporter(
             this.libraryManager,
-            this.translationService,
             this.config,
             this.contentManager,
             this.contentStorer
@@ -101,7 +97,6 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
-    public translationService: ITranslationService;
 
     private contentStorer: ContentStorer;
     private contentTypeRepository: ContentTypeInformationRepository;

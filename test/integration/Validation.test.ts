@@ -3,7 +3,6 @@ import * as path from 'path';
 
 import EditorConfig from '../../src/implementation/EditorConfig';
 import PackageValidator from '../../src/PackageValidator';
-import TranslationService from '../../src/TranslationService';
 
 describe('validate all H5P files from the Hub', () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
@@ -18,16 +17,9 @@ describe('validate all H5P files from the Hub', () => {
 
     for (const file of files.filter(f => f.endsWith('.h5p'))) {
         it(`${file}`, async () => {
-            const englishStrings = await fsExtra.readJSON(
-                `${path.resolve('')}/src/translations/en.json`
-            );
-            const translationService = new TranslationService(
-                englishStrings,
-                englishStrings
-            );
             const config = new EditorConfig(null);
             config.contentWhitelist += ' html';
-            const validator = new PackageValidator(translationService, config);
+            const validator = new PackageValidator(config);
             await expect(
                 validator.validatePackage(`${directory}/${file}`)
             ).resolves.toBeDefined();
