@@ -40,9 +40,11 @@ import englishStrings from './translations/en.json';
 
 // Adapters
 import express from './adapters/express';
+import expressErrorHandler from './adapters/expressErrorHandler';
 
 const adapters = {
-    express
+    express,
+    expressErrorHandler
 };
 
 const fsImplementations = {

@@ -10,7 +10,7 @@ export default class H5pError extends Error {
     constructor(
         public errorId: string,
         public replacements: { [key: string]: string | string[] } = {},
-        public httpError: number = 500,
+        public httpStatusCode: number = 500,
         public debugMessage?: string
     ) {
         super(`${errorId}${debugMessage ? `: ${debugMessage}` : ''}`);

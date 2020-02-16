@@ -433,7 +433,7 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null,
+            null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 

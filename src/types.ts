@@ -852,7 +852,7 @@ export interface ITranslationService {
     getTranslation(
         id: string,
         language: string,
-        replacements?: { [key: string]: string }
+        replacements?: { [key: string]: string | string[] }
     ): string;
 }
 

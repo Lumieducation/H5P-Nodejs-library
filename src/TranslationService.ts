@@ -1,6 +1,5 @@
 import escapeHtml from 'escape-html';
 
-import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import { ITranslationService } from './types';
 
@@ -77,23 +76,6 @@ export default class TranslationService implements ITranslationService {
             );
         }
         return literal;
-    }
-
-    public translateExceptions<T>(func: () => T, language: string): T {
-        let returnValue: T;
-        try {
-            returnValue = func();
-        } catch (error) {
-            if (error instanceof H5pError) {
-                error.message = this.getTranslation(
-                    error.errorId,
-                    language,
-                    error.replacements
-                );
-            }
-            throw error;
-        }
-        return returnValue;
     }
 
     /**

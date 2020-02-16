@@ -76,6 +76,11 @@ const start = async () => {
 
     server.get('/', startPageRenderer(h5pEditor));
 
+    server.use(
+        h5pEditor.config.baseUrl,
+        H5P.adapters.expressErrorHandler(new H5P.TranslationService({}))
+    );
+
     const port = process.env.PORT || '8080';
     displayIps(port);
     server.listen(port);
