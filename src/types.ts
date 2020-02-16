@@ -834,29 +834,6 @@ export interface ILibraryUsageStatistics {
 }
 
 /**
- * The translation service localizes strings and performs replacements of variables.
- */
-export interface ITranslationService {
-    /**
-     * Gets the literal for the identifier and performs replacements of placeholders / variables.
-     * @param id The identifier of the literal
-     * @param language The language to translate into
-     * @param replacements An object with the replacement variables in key-value format.
-     * Incidences of any key in this array are replaced with the corresponding value. Based
-     * on the first character of the key, the value is escaped and/or themed:
-     *    - !variable inserted as is
-     *    - &#064;variable escape plain text to HTML
-     *    - %variable escape text to HTML and theme as a placeholder for user-submitted content
-     * @returns The literal translated into the language used by the user and with replacements.
-     */
-    getTranslation(
-        id: string,
-        language: string,
-        replacements?: { [key: string]: string | string[] }
-    ): string;
-}
-
-/**
  * This resolver loads data about a local library.
  */
 export type ILibraryLoader = (

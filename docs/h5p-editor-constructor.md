@@ -33,10 +33,6 @@ The `contentStorage` provides information about installed content and creates it
 const contentStorage = new FileContentStorage(`h5p/content`);
 ```
 
-## translationService
-
-Used to translates literals into the local language. It must implement the `ITranslationService` interface.
-
 ## temporaryStorage
 
 When the user uploads files in the H5P editor client, these files are not directly stored alongside the content, either because the content hasn't been saved before (and there is no contentId) or because this might create left-over files if these files aren't used after all. Instead the server stores these files in a temporary storage system and adds the '#tmp' tag to the files' path. When the editor client requests a file the system retrieves the file from temporary storage instead of the regular content storage.

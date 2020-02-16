@@ -36,7 +36,6 @@ import {
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';

@@ -11,7 +11,6 @@ import {
     IEditorConfig,
     IHubContentType,
     IInstalledLibrary,
-    ITranslationService,
     IUser
 } from './types';
 

@@ -5,7 +5,6 @@ import H5pError from './helpers/H5pError';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
-import TranslationService from './TranslationService';
 
 import EditorConfig from './implementation/EditorConfig';
 import fs from './implementation/fs';
@@ -29,7 +28,6 @@ import {
     ILibraryStorage,
     ITemporaryFile,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser,
     Permission
 } from './types';
@@ -63,7 +61,6 @@ export {
     InstalledLibrary,
     LibraryName,
     PackageExporter,
-    TranslationService,
     // interfaces
     ContentId,
     IContentMetadata,
@@ -77,7 +74,6 @@ export {
     ILibraryStorage,
     ITemporaryFile,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser,
     Permission,
     // assets

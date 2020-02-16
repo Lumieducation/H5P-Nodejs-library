@@ -1,14 +1,13 @@
 import escapeHtml from 'escape-html';
 
 import Logger from './helpers/Logger';
-import { ITranslationService } from './types';
 
 const log = new Logger('TranslationService');
 
 /**
  * Allows other components to get localizations of string literals.
  */
-export default class TranslationService implements ITranslationService {
+export default class TranslationService {
     /**
      * Initializes the translation service
      * @param {[key: string]: string} fallbackLanguageStrings An object with key-value pairs that consist of ids and translation strings for the ids. The fallback strings will be used if a language string can't be found in the localization.
