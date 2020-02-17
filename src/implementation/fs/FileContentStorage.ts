@@ -22,7 +22,9 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * @param {string} contentPath The absolute path to the directory where the content should be stored
      */
-    constructor(private contentPath: string) {}
+    constructor(private contentPath: string) {
+        fsExtra.ensureDirSync(contentPath);
+    }
 
     /**
      * Returns a random integer

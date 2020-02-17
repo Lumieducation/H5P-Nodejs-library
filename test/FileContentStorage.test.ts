@@ -41,10 +41,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
     });
 
     it('throws an error if the passed path is not writable', async () => {
-        const storage = new FileContentStorage('/*:%illegal-path');
-        await expect(
-            storage.createContent(createMetadataMock(), {}, new User())
-        ).rejects.toBeInstanceOf(Error);
+        expect(() => new FileContentStorage('/*:%illegal-path')).toThrow();
     });
 
     it('throws an error if you add content to non-existent contentId', async () => {

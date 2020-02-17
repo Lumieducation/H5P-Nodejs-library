@@ -23,7 +23,9 @@ export default class DirectoryTemporaryFileStorage
      * @param directory the directory in which the temporary files are stored.
      * Must be read- and write accessible
      */
-    constructor(private directory: string) {}
+    constructor(private directory: string) {
+        fsExtra.ensureDirSync(directory);
+    }
 
     public async deleteFile(filename: string, userId: string): Promise<void> {
         checkFilename(filename);

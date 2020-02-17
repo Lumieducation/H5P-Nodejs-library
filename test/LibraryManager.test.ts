@@ -35,15 +35,15 @@ describe('basic file library manager functionality', () => {
         const libraryObject = await libManager.getInstalled(['H5P.Example1']);
         expect(
             await libManager.isPatchedLibrary(libraryObject['H5P.Example1'][0])
-        ).toEqual(false);
+        ).toBeUndefined();
         libraryObject['H5P.Example1'][0].patchVersion += 1;
         expect(
             await libManager.isPatchedLibrary(libraryObject['H5P.Example1'][0])
-        ).toEqual(true);
+        ).toBeDefined();
         libraryObject['H5P.Example1'][0].patchVersion -= 2;
         expect(
             await libManager.isPatchedLibrary(libraryObject['H5P.Example1'][0])
-        ).toEqual(false);
+        ).toBeUndefined();
     });
 
     it("doesn't install libraries if a library is corrupt and leaves no traces", async () => {
@@ -89,7 +89,7 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.2'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toHaveProperty('type', 'new');
 
                 // try installing library version 1.1.1 (should fail)
                 await expect(
@@ -97,7 +97,7 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.1'),
                         false
                     )
-                ).resolves.toEqual(false);
+                ).resolves.toHaveProperty('type', 'none');
 
                 // check if library version 1.1.2 is still installed
                 const installedLibraries = await libManager.getInstalled([
@@ -120,7 +120,7 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.2'),
                         false
                     )
-                ).resolves.toEqual(false);
+                ).resolves.toMatchObject({ type: 'none' });
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -139,7 +139,7 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.1'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toHaveProperty('type', 'new');
 
                 // try installing library version 1.2.0 (should success)
                 await expect(
@@ -147,7 +147,15 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.2.0'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toMatchObject({
+                    newVersion: {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 2,
+                        patchVersion: 0
+                    },
+                    type: 'new'
+                });
 
                 // check if library version 1.1.2  and 1.2.0 are now installed
                 const installedLibraries = await libManager.getInstalled([
@@ -190,7 +198,7 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.1'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toMatchObject({ type: 'new' });
 
                 // try installing library version 1.1.2 (should success)
                 await expect(
@@ -198,7 +206,21 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.2'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toMatchObject({
+                    newVersion: {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1,
+                        patchVersion: 2
+                    },
+                    oldVersion: {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1,
+                        patchVersion: 1
+                    },
+                    type: 'patch'
+                });
 
                 // check if library version 1.1.2 is now installed
                 const installedLibraries = await libManager.getInstalled([
@@ -232,7 +254,9 @@ describe('basic file library manager functionality', () => {
                         path.resolve('test/data/patches/H5P.Example1-1.1.1'),
                         false
                     )
-                ).resolves.toEqual(true);
+                ).resolves.toMatchObject({
+                    type: 'new'
+                });
 
                 // try installing library version 1.1.3 (should fail)
                 await expect(

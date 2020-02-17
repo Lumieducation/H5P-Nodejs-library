@@ -24,11 +24,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * @param {string} librariesDirectory The path of the directory in the file system at which libraries are stored.
      */
-    constructor(librariesDirectory: string) {
-        this.librariesDirectory = librariesDirectory;
+    constructor(private librariesDirectory: string) {
+        fsExtra.ensureDirSync(librariesDirectory);
     }
-
-    private librariesDirectory: string;
 
     /**
      * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.

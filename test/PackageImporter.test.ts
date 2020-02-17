@@ -27,9 +27,19 @@ describe('package importer', () => {
                     libraryManager,
                     new EditorConfig(null)
                 );
-                await packageImporter.installLibrariesFromPackage(
+                const installedLibraryNames = await packageImporter.installLibrariesFromPackage(
                     path.resolve('test/data/validator/valid2.h5p')
                 );
+
+                expect(installedLibraryNames.length).toEqual(1);
+                expect(installedLibraryNames[0].type).toEqual('new');
+                expect(installedLibraryNames[0].oldVersion).toBeUndefined();
+                expect(installedLibraryNames[0].newVersion).toMatchObject({
+                    machineName: 'H5P.GreetingCard',
+                    majorVersion: 1,
+                    minorVersion: 0,
+                    patchVersion: 6
+                });
 
                 // Check if library was installed correctly
                 const installedLibraries = await libraryManager.getInstalled();

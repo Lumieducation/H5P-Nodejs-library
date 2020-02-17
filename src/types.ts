@@ -81,6 +81,16 @@ export interface ILibraryName {
     minorVersion: number;
 }
 
+export interface IFullLibraryName extends ILibraryName {
+    patchVersion: number;
+}
+
+export interface ILibraryInstallResult {
+    newVersion?: IFullLibraryName;
+    oldVersion?: IFullLibraryName;
+    type: 'new' | 'patch' | 'none';
+}
+
 /**
  * This is an author inside content metadata.
  */
@@ -685,7 +695,7 @@ export interface IInstalledLibrary extends ILibraryMetadata {
 /**
  * This interface represents the structure of library.json files.
  */
-export interface ILibraryMetadata extends ILibraryName {
+export interface ILibraryMetadata extends IFullLibraryName {
     author?: string;
     /**
      * The core API required to run the library.
@@ -703,7 +713,6 @@ export interface ILibraryMetadata extends ILibraryName {
         disable: 0 | 1;
         disableExtraTitleField: 0 | 1;
     };
-    patchVersion: number;
     preloadedCss?: IPath[];
     preloadedDependencies?: ILibraryName[];
     preloadedJs?: IPath[];
