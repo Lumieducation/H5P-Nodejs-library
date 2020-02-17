@@ -43,5 +43,6 @@
     "download-content-unreadable-metadata": "Content can't be downloaded as the content metadata is unreadable.",
     "import-package-no-id-assigned": "Something went wrong when storing the package: no content id was assigned.",
     "error-generating-unique-temporary-filename": "Cannot determine a unique filename for %name",
-    "temporary-file-not-found": "The file %filename is not accessible for user %userId or does not exist."
+    "temporary-file-not-found": "The file %filename is not accessible for user %userId or does not exist.",
+    "installed-and-updated-libraries": "Added %new new H5P libraries and updated %old old ones."
 }

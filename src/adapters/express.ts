@@ -106,6 +106,10 @@ export default function(
 
     router.post(h5pEditor.config.ajaxUrl, async (req, res) => {
         const { action } = req.query;
+
+        let updatedLibCount: number;
+        let installedLibCount: number;
+
         switch (action) {
             case 'libraries':
                 const libraryOverview = await h5pEditor.getLibraryOverview(
@@ -135,20 +139,40 @@ export default function(
                 res.status(200).json(uploadFileResponse);
                 break;
             case 'library-install':
-                await h5pEditor.installLibrary(req.query.id, req.user);
+                const installedLibs = await h5pEditor.installLibrary(
+                    req.query.id,
+                    req.user
+                );
+                updatedLibCount = installedLibs.filter(l => l.type === 'patch')
+                    .length;
+                installedLibCount = installedLibs.filter(l => l.type === 'new')
+                    .length;
+
                 const contentTypeCache = await h5pEditor.getContentTypeCache(
                     req.user
                 );
                 res.status(200).json({
                     data: contentTypeCache,
+                    message: req.t('installed-and-updated-libraries', {
+                        new: installedLibCount,
+                        old: updatedLibCount
+                    }),
                     success: true
                 });
                 break;
             case 'library-upload':
-                const { metadata, parameters } = await h5pEditor.uploadPackage(
-                    req.files.h5p.data,
-                    req.user
-                );
+                const {
+                    installedLibraries,
+                    metadata,
+                    parameters
+                } = await h5pEditor.uploadPackage(req.files.h5p.data, req.user);
+                updatedLibCount = installedLibraries.filter(
+                    l => l.type === 'patch'
+                ).length;
+                installedLibCount = installedLibraries.filter(
+                    l => l.type === 'new'
+                ).length;
+
                 const contentTypes = await h5pEditor.getContentTypeCache(
                     req.user
                 );
@@ -158,6 +182,10 @@ export default function(
                         contentTypes,
                         h5p: metadata
                     },
+                    message: req.t('installed-and-updated-libraries', {
+                        new: installedLibCount,
+                        old: updatedLibCount
+                    }),
                     success: true
                 });
                 break;
