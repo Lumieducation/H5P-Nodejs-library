@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 
 import * as H5P from '../';
+import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
 
 /**
  * This router implements all Ajax calls necessary for the H5P (editor) client to work.
@@ -17,6 +18,7 @@ export default function(
 ): express.Router {
     const router = express.Router();
 
+    // get library file
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
         async (req, res) => {
@@ -31,6 +33,7 @@ export default function(
         }
     );
 
+    // get content file
     router.get(
         `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
         async (req, res) => {
@@ -46,6 +49,7 @@ export default function(
         }
     );
 
+    // get temporary content file
     router.get(
         `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
         async (req, res) => {
@@ -61,41 +65,34 @@ export default function(
         }
     );
 
-    router.get(`${h5pEditor.config.paramsUrl}/:contentId`, (req, res) => {
-        h5pEditor
-            .loadH5P(req.params.contentId, req.user)
-            .then(content => {
-                res.status(200).json(content);
-            })
-            .catch(() => {
-                res.status(404).end();
-            });
+    // get parameters (= content.json) of content
+    router.get(`${h5pEditor.config.paramsUrl}/:contentId`, async (req, res) => {
+        const content = await h5pEditor.loadH5P(req.params.contentId, req.user);
+        res.status(200).json(content);
     });
 
-    router.get(h5pEditor.config.ajaxUrl, (req, res) => {
+    // get various things through the Ajax endpoint
+    router.get(h5pEditor.config.ajaxUrl, async (req, res) => {
         const { action } = req.query;
         const { majorVersion, minorVersion, machineName, language } = req.query;
 
         switch (action) {
             case 'content-type-cache':
-                h5pEditor
-                    .getContentTypeCache(req.user)
-                    .then(contentTypeCache => {
-                        res.status(200).json(contentTypeCache);
-                    });
+                const contentTypeCache = await h5pEditor.getContentTypeCache(
+                    req.user
+                );
+                res.status(200).json(contentTypeCache);
                 break;
 
             case 'libraries':
-                h5pEditor
-                    .getLibraryData(
-                        machineName,
-                        majorVersion,
-                        minorVersion,
-                        language
-                    )
-                    .then(library => {
-                        res.status(200).json(library);
-                    });
+                const library = await h5pEditor.getLibraryData(
+                    machineName,
+                    majorVersion,
+                    minorVersion,
+                    language
+                );
+                res.status(200).json(library);
+
                 break;
 
             default:
@@ -104,6 +101,7 @@ export default function(
         }
     });
 
+    // post various things through the Ajax endpoint
     router.post(h5pEditor.config.ajaxUrl, async (req, res) => {
         const { action } = req.query;
         switch (action) {
@@ -118,10 +116,9 @@ export default function(
                     req.body.libraries,
                     req.query.language
                 );
-                res.status(200).json({
-                    data: translationsResponse,
-                    success: true
-                });
+                res.status(200).json(
+                    new AjaxSuccessResponse(translationsResponse)
+                );
                 break;
             case 'files':
                 const uploadFileResponse = await h5pEditor.saveContentFile(
@@ -139,10 +136,7 @@ export default function(
                 const contentTypeCache = await h5pEditor.getContentTypeCache(
                     req.user
                 );
-                res.status(200).json({
-                    data: contentTypeCache,
-                    success: true
-                });
+                res.status(200).json(new AjaxSuccessResponse(contentTypeCache));
                 break;
             case 'library-upload':
                 const { metadata, parameters } = await h5pEditor.uploadPackage(
@@ -152,14 +146,13 @@ export default function(
                 const contentTypes = await h5pEditor.getContentTypeCache(
                     req.user
                 );
-                res.status(200).json({
-                    data: {
+                res.status(200).json(
+                    new AjaxSuccessResponse({
                         content: parameters,
                         contentTypes,
                         h5p: metadata
-                    },
-                    success: true
-                });
+                    })
+                );
                 break;
             default:
                 res.status(500).end('NOT IMPLEMENTED');
@@ -167,13 +160,16 @@ export default function(
         }
     });
 
+    // serve core files (= JavaScript + CSS from h5p-php-library)
     router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
 
+    // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
     router.use(
         h5pEditor.config.editorLibraryUrl,
         express.static(h5pEditorLibraryPath)
     );
 
+    // serve download links
     router.get(
         `${h5pEditor.config.downloadUrl}/:contentId`,
         async (req, res) => {

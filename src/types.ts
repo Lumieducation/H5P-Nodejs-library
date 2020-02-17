@@ -24,9 +24,9 @@ export enum Permission {
  */
 export interface IAjaxResponse {
     /**
-     * The actual payload. Only to be filled in if the request was succesful.
+     * The actual payload. Only to be filled in if the request was successful.
      */
-    data: any;
+    data?: any;
     /**
      * Better description of the error and possibly also which action to take. Only to be filled out if success is false.
      */
