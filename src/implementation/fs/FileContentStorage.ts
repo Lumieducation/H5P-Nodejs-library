@@ -129,7 +129,9 @@ export default class FileContentStorage implements IContentStorage {
             );
         } catch (error) {
             await fsExtra.remove(path.join(this.contentPath, id.toString()));
-            throw new H5pError('storage-file-implementations:error-creating-content');
+            throw new H5pError(
+                'storage-file-implementations:error-creating-content'
+            );
         }
         return id;
     }
@@ -149,7 +151,9 @@ export default class FileContentStorage implements IContentStorage {
             exists = await fsExtra.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
-            throw new H5pError('storage-file-implementations:error-generating-content-id');
+            throw new H5pError(
+                'storage-file-implementations:error-generating-content-id'
+            );
         }
         return id;
     }
@@ -167,7 +171,11 @@ export default class FileContentStorage implements IContentStorage {
                 path.join(this.contentPath, id.toString())
             ))
         ) {
-            throw new H5pError('storage-file-implementations:delete-content-not-found', {}, 404);
+            throw new H5pError(
+                'storage-file-implementations:delete-content-not-found',
+                {},
+                404
+            );
         }
 
         await fsExtra.remove(path.join(this.contentPath, id.toString()));

@@ -2,7 +2,12 @@ import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
 
-export default function errorHandler(err, req, res, next) {
+export default function errorHandler(
+    err: Error,
+    req: any,
+    res: any,
+    next: any
+): void {
     let statusCode = 500;
     let statusText = '';
 

@@ -64,9 +64,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async clearLibraryFiles(library: ILibraryName): Promise<void> {
         if (!(await this.libraryExists(library))) {
-            throw new H5pError('storage-file-implementations:clear-library-not-found', {
-                libraryName: LibraryName.toUberName(library)
-            });
+            throw new H5pError(
+                'storage-file-implementations:clear-library-not-found',
+                {
+                    libraryName: LibraryName.toUberName(library)
+                }
+            );
         }
         const fullLibraryPath = this.getDirectoryPath(library);
         const directoryEntries = (
@@ -171,9 +174,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
         const libPath = this.getDirectoryPath(library);
         if (await fsExtra.pathExists(libPath)) {
-            throw new H5pError('storage-file-implementations:install-library-already-installed', {
-                libraryName: LibraryName.toUberName(library)
-            });
+            throw new H5pError(
+                'storage-file-implementations:install-library-already-installed',
+                {
+                    libraryName: LibraryName.toUberName(library)
+                }
+            );
         }
         try {
             await fsExtra.ensureDir(libPath);

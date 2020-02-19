@@ -58,7 +58,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 );
                 await expect(
                     storage.addContentFile(id + 1, 'test.png', null, user)
-                ).rejects.toThrow(new Error('add-file-content-not-found'));
+                ).rejects.toThrow('storage-file-implementations:add-file-content-not-found');
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -88,7 +88,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const storage = new FileContentStorage(tempDirPath);
                 await expect(
                     storage.deleteContent('1', new User())
-                ).rejects.toEqual(new Error('delete-content-not-found'));
+                ).rejects.toEqual(new Error('storage-file-implementations:delete-content-not-found'));
             },
             { keep: false, unsafeCleanup: true }
         );

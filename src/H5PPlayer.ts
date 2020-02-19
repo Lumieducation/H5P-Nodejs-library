@@ -11,7 +11,7 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
-import defaultTranslation from '../assets/translations/player-client/en.json';
+import defaultTranslation from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
 
