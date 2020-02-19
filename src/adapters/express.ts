@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 
 import * as H5P from '../';
+import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
 import expressErrorHandler from './expressErrorHandler';
 
 /**
@@ -20,6 +21,7 @@ export default function(
 
     const wrap = fn => (...args) => fn(...args).catch(args[2]);
 
+    // get library file
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
         wrap(async (req, res) => {
@@ -34,6 +36,7 @@ export default function(
         })
     );
 
+    // get content file
     router.get(
         `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
         wrap(async (req, res) => {
@@ -49,6 +52,7 @@ export default function(
         })
     );
 
+    // get temporary content file
     router.get(
         `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
         wrap(async (req, res, next) => {
@@ -64,6 +68,7 @@ export default function(
         })
     );
 
+    // get parameters (= content.json) of content
     router.get(
         `${h5pEditor.config.paramsUrl}/:contentId`,
         wrap(async (req, res) => {
@@ -75,6 +80,7 @@ export default function(
         })
     );
 
+    // get various things through the Ajax endpoint
     router.get(
         h5pEditor.config.ajaxUrl,
         wrap(async (req, res) => {
@@ -102,6 +108,7 @@ export default function(
                         language
                     );
                     res.status(200).json(library);
+
                     break;
 
                 default:
@@ -111,6 +118,7 @@ export default function(
         })
     );
 
+    // post various things through the Ajax endpoint
     router.post(
         h5pEditor.config.ajaxUrl,
         wrap(async (req, res) => {
@@ -131,10 +139,9 @@ export default function(
                         req.body.libraries,
                         req.query.language
                     );
-                    res.status(200).json({
-                        data: translationsResponse,
-                        success: true
-                    });
+                    res.status(200).json(
+                        new AjaxSuccessResponse(translationsResponse)
+                    );
                     break;
                 case 'files':
                     const uploadFileResponse = await h5pEditor.saveContentFile(
@@ -162,14 +169,15 @@ export default function(
                     const contentTypeCache = await h5pEditor.getContentTypeCache(
                         req.user
                     );
-                    res.status(200).json({
-                        data: contentTypeCache,
-                        message: req.t('installed-and-updated-libraries', {
-                            new: installedLibCount,
-                            old: updatedLibCount
-                        }),
-                        success: true
-                    });
+                    res.status(200).json(
+                        new AjaxSuccessResponse(
+                            contentTypeCache,
+                            req.t('installed-and-updated-libraries', {
+                                new: installedLibCount,
+                                old: updatedLibCount
+                            })
+                        )
+                    );
                     break;
                 case 'library-upload':
                     const {
@@ -190,18 +198,19 @@ export default function(
                     const contentTypes = await h5pEditor.getContentTypeCache(
                         req.user
                     );
-                    res.status(200).json({
-                        data: {
-                            content: parameters,
-                            contentTypes,
-                            h5p: metadata
-                        },
-                        message: req.t('installed-and-updated-libraries', {
-                            new: installedLibCount,
-                            old: updatedLibCount
-                        }),
-                        success: true
-                    });
+                    res.status(200).json(
+                        new AjaxSuccessResponse(
+                            {
+                                content: parameters,
+                                contentTypes,
+                                h5p: metadata
+                            },
+                            req.t('installed-and-updated-libraries', {
+                                new: installedLibCount,
+                                old: updatedLibCount
+                            })
+                        )
+                    );
                     break;
                 default:
                     res.status(500).end('NOT IMPLEMENTED');
@@ -210,13 +219,16 @@ export default function(
         })
     );
 
+    // serve core files (= JavaScript + CSS from h5p-php-library)
     router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
 
+    // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
     router.use(
         h5pEditor.config.editorLibraryUrl,
         express.static(h5pEditorLibraryPath)
     );
 
+    // serve download links
     router.get(
         `${h5pEditor.config.downloadUrl}/:contentId`,
         wrap(async (req, res) => {

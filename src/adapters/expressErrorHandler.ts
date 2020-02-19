@@ -1,4 +1,5 @@
 import AggregateH5pError from '../helpers/AggregateH5pError';
+import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
 
 export default function errorHandler(err, req, res, next) {
@@ -17,5 +18,7 @@ export default function errorHandler(err, req, res, next) {
     } else {
         statusText = err.message;
     }
-    res.status(statusCode).end(statusText);
+    res.status(statusCode).json(
+        new AjaxErrorResponse('', statusCode, statusText)
+    );
 }
