@@ -59,7 +59,7 @@ export default class FileContentStorage implements IContentStorage {
             ))
         ) {
             throw new H5pError(
-                'add-file-content-not-found',
+                'storage-file-implementations:add-file-content-not-found',
                 { filename, id },
                 404
             );
@@ -129,7 +129,7 @@ export default class FileContentStorage implements IContentStorage {
             );
         } catch (error) {
             await fsExtra.remove(path.join(this.contentPath, id.toString()));
-            throw new H5pError('error-creating-content');
+            throw new H5pError('storage-file-implementations:error-creating-content');
         }
         return id;
     }
@@ -149,7 +149,7 @@ export default class FileContentStorage implements IContentStorage {
             exists = await fsExtra.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
-            throw new H5pError('error-generating-content-id');
+            throw new H5pError('storage-file-implementations:error-generating-content-id');
         }
         return id;
     }
@@ -167,7 +167,7 @@ export default class FileContentStorage implements IContentStorage {
                 path.join(this.contentPath, id.toString())
             ))
         ) {
-            throw new H5pError('delete-content-not-found', {}, 404);
+            throw new H5pError('storage-file-implementations:delete-content-not-found', {}, 404);
         }
 
         await fsExtra.remove(path.join(this.contentPath, id.toString()));
@@ -190,7 +190,7 @@ export default class FileContentStorage implements IContentStorage {
         );
         if (!(await fsExtra.pathExists(absolutePath))) {
             throw new H5pError(
-                'delete-content-file-not-found',
+                'storage-file-implementations:delete-content-file-not-found',
                 { filename },
                 404
             );

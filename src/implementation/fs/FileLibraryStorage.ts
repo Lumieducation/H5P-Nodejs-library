@@ -44,7 +44,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         checkFilename(filename);
         if (!(await this.libraryExists(library))) {
             throw new H5pError(
-                'add-library-file-not-installed',
+                'storage-file-implementations:add-library-file-not-installed',
                 { filename, libraryName: LibraryName.toUberName(library) },
                 500
             );
@@ -64,7 +64,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async clearLibraryFiles(library: ILibraryName): Promise<void> {
         if (!(await this.libraryExists(library))) {
-            throw new H5pError('clear-library-not-found', {
+            throw new H5pError('storage-file-implementations:clear-library-not-found', {
                 libraryName: LibraryName.toUberName(library)
             });
         }
@@ -171,7 +171,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
         const libPath = this.getDirectoryPath(library);
         if (await fsExtra.pathExists(libPath)) {
-            throw new H5pError('install-library-already-installed', {
+            throw new H5pError('storage-file-implementations:install-library-already-installed', {
                 libraryName: LibraryName.toUberName(library)
             });
         }
@@ -219,7 +219,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(library);
         if (!(await fsExtra.pathExists(libPath))) {
             throw new H5pError(
-                'remove-library-library-missing',
+                'storage-file-implementations:remove-library-library-missing',
                 { libraryName: LibraryName.toUberName(library) },
                 404
             );
@@ -241,7 +241,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(libraryMetadata);
         if (!(await fsExtra.pathExists(libPath))) {
             throw new H5pError(
-                'update-library-library-missing',
+                'storage-file-implementations:update-library-library-missing',
                 { libraryName: LibraryName.toUberName(libraryMetadata) },
                 404
             );

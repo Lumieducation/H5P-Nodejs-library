@@ -57,7 +57,7 @@ export default class DirectoryTemporaryFileStorage
         const filePath = this.getAbsoluteFilePath(user.id, filename);
         if (!(await fsExtra.pathExists(filePath))) {
             throw new H5pError(
-                'temporary-file-not-found',
+                'storage-file-implementations:temporary-file-not-found',
                 { filename, userId: user.id },
                 404
             );
