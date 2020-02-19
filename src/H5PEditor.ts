@@ -5,7 +5,7 @@ import stream from 'stream';
 import { withFile } from 'tmp-promise';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-import defaultTranslation from '../assets/translations/server/en.json';
+import defaultTranslation from '../assets/translations/player-client/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
@@ -590,8 +590,8 @@ export default class H5PEditor {
                         )
                     )
             },
-            filesPath: this.config.baseUrl + this.config.temporaryFilesUrl,
-            libraryUrl: this.config.baseUrl + this.config.editorLibraryUrl,
+            filesPath: this.urlGenerator.temporaryFiles(),
+            libraryUrl: this.urlGenerator.editorLibraryFiles(),
             nodeVersionId: contentId
         };
     }

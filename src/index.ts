@@ -32,10 +32,6 @@ import {
     Permission
 } from './types';
 
-// Assets
-
-import englishStrings from '../assets/translations/server/en.json';
-
 // Adapters
 import express from './adapters/express';
 import expressErrorHandler from './adapters/expressErrorHandler';
@@ -76,8 +72,6 @@ export {
     ITemporaryFileStorage,
     IUser,
     Permission,
-    // assets
-    englishStrings,
     // implementations
     EditorConfig,
     fs,
