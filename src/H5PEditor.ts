@@ -15,6 +15,7 @@ import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
@@ -41,8 +42,6 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
-import Logger from './helpers/Logger';
-
 const log = new Logger('Editor');
 
 export default class H5PEditor {
@@ -59,7 +58,7 @@ export default class H5PEditor {
         this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
-        this.translation = defaultTranslation;
+        this.clientTranslation = defaultTranslation;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -99,10 +98,10 @@ export default class H5PEditor {
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
 
+    private clientTranslation: any;
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: any;
-    private translation: any;
     private urlGenerator: UrlGenerator;
 
     /**
@@ -606,7 +605,7 @@ export default class H5PEditor {
             editor: this.getEditorIntegration(contentId),
             hubIsEnabled: true,
             l10n: {
-                H5P: this.translation
+                H5P: this.clientTranslation
             },
             postUserStatistics: false,
             saveFreq: false,
