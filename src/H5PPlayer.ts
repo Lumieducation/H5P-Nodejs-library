@@ -11,9 +11,9 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
+import defaultTranslation from '../assets/translations/player-client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
-import defaultTranslation from './translations/en.player.json';
 
 import Logger from './helpers/Logger';
 

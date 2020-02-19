@@ -34,7 +34,7 @@ import {
 
 // Assets
 
-import englishStrings from './translations/en.json';
+import englishStrings from '../assets/translations/server/en.json';
 
 // Adapters
 import express from './adapters/express';

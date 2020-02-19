@@ -5,7 +5,7 @@ import stream from 'stream';
 import { withFile } from 'tmp-promise';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-import defaultTranslation from '../assets/translations/en.json';
+import defaultTranslation from '../assets/translations/server/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
