@@ -1,4 +1,3 @@
-import { crc32 } from 'crc';
 import fsExtra, { ReadStream } from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
@@ -103,8 +102,21 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename the relative path inside the library
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
-    public getFileStream(library: ILibraryName, filename: string): ReadStream {
-        checkFilename(filename);
+    public async getFileStream(
+        library: ILibraryName,
+        filename: string
+    ): Promise<ReadStream> {
+        if (!await this.fileExists(library, filename)) {
+            throw new H5pError(
+                'library-file-missing',
+                {
+                    filename,
+                    library: LibraryName.toUberName(library)
+                },
+                404
+            );
+        }
+
         return fsExtra.createReadStream(
             path.join(
                 this.librariesDirectory,

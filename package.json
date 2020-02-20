@@ -92,6 +92,7 @@
         "shortid": "2.2.15",
         "source-map-support": "0.5.16",
         "stream-mock": "2.0.5",
+        "supertest": "^4.0.2",
         "ts-jest": "25.2.0",
         "ts-node": "8.6.2",
         "tslint": "5.20.1",

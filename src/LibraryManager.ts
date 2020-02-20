@@ -50,11 +50,11 @@ export default class LibraryManager {
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
-     * @param {ILibraryName} library library
-     * @param {string} filename the relative path inside the library
-     * @returns {ReadStream} a readable stream of the file's contents
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
      */
-    public getFileStream(library: ILibraryName, file: string): ReadStream {
+    public getFileStream(library: ILibraryName, file: string): Promise<ReadStream> {
         log.debug(
             `getting file ${file} from library ${LibraryName.toUberName(
                 library
