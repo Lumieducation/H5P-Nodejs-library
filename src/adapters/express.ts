@@ -127,6 +127,20 @@ export default function(
             let updatedLibCount: number;
             let installedLibCount: number;
 
+            const getLibraryResultText = (
+                installed: number,
+                updated: number
+            ): string =>
+                `${
+                    installed
+                        ? req.t('installed-libraries', { count: installed })
+                        : ''
+                } ${
+                    updated
+                        ? req.t('updated-libraries', { count: updated })
+                        : ''
+                }`.trim();
+
             switch (action) {
                 case 'libraries':
                     const libraryOverview = await h5pEditor.getLibraryOverview(
@@ -172,10 +186,12 @@ export default function(
                     res.status(200).json(
                         new AjaxSuccessResponse(
                             contentTypeCache,
-                            req.t('installed-and-updated-libraries', {
-                                new: installedLibCount,
-                                old: updatedLibCount
-                            })
+                            installedLibCount + updatedLibCount > 0
+                                ? getLibraryResultText(
+                                      installedLibCount,
+                                      updatedLibCount
+                                  )
+                                : undefined
                         )
                     );
                     break;
@@ -205,10 +221,12 @@ export default function(
                                 contentTypes,
                                 h5p: metadata
                             },
-                            req.t('installed-and-updated-libraries', {
-                                new: installedLibCount,
-                                old: updatedLibCount
-                            })
+                            installedLibCount + updatedLibCount > 0
+                                ? getLibraryResultText(
+                                      installedLibCount,
+                                      updatedLibCount
+                                  )
+                                : undefined
                         )
                     );
                     break;
