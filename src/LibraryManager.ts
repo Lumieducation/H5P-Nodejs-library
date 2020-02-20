@@ -54,7 +54,10 @@ export default class LibraryManager {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    public getFileStream(library: ILibraryName, file: string): Promise<ReadStream> {
+    public getFileStream(
+        library: ILibraryName,
+        file: string
+    ): Promise<ReadStream> {
         log.debug(
             `getting file ${file} from library ${LibraryName.toUberName(
                 library
