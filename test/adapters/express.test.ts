@@ -2,9 +2,14 @@ import express from 'express';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
+import axios from 'axios';
+import axiosMockAdapter from 'axios-mock-adapter';
+
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
+
+const axiosMock = new axiosMockAdapter(axios);
 
 describe('Express Ajax endpoint adapter', () => {
     const user: H5P.IUser = new User();
@@ -19,14 +24,20 @@ describe('Express Ajax endpoint adapter', () => {
         tempDir = tDir.path;
         cleanup = tDir.cleanup;
         h5pEditor = H5P.fs(
-            new H5P.EditorConfig(new H5P.fsImplementations.InMemoryStorage(), {
-                hubContentTypesEndpoint: '',
-                hubRegistrationEndpoint: ''
-            }),
+            new H5P.EditorConfig(new H5P.fsImplementations.InMemoryStorage()),
             path.resolve(path.join(tempDir, 'libraries')), // the path on the local disc where libraries should be stored
             path.resolve(path.join(tempDir, 'temporary-storage')), // the path on the local disc where temporary files (uploads) should be stored
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
         );
+        axiosMock
+            .onPost(h5pEditor.config.hubRegistrationEndpoint)
+            .reply(200, require('../data/content-type-cache/registration.json'));
+        axiosMock
+            .onPost(h5pEditor.config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                require('../data/content-type-cache/real-content-types.json')
+            );
         app.use((req, res, next) => {
             req.user = user;
             req.language = 'en';
@@ -61,7 +72,7 @@ describe('Express Ajax endpoint adapter', () => {
         expect(res.statusCode).toBe(404);
     });
 
-    it('should return 400 for not attempts to access files through relative paths', async () => {
+    it('should return 400 for illegal attempts to access files through relative paths', async () => {
         const res = await supertest(app).get(
             '/libraries/../../../../usr/bin/secret'
         );
@@ -112,5 +123,16 @@ describe('Express Ajax endpoint adapter', () => {
         expect(
             (await mockApp.get(`/params/${installResult.id}`)).statusCode
         ).toBe(200);
+    });
+
+    // content type cache endpoint
+    it('should return a valid content type cache', async () => {
+        const mockApp = supertest(app);
+        const result = await mockApp.get(`/ajax?action=content-type-cache`);
+        expect(result.statusCode).toBe(200);
+        const data = JSON.parse(result.text);
+        expect(data.apiVersion).toBeDefined();
+        expect(data.libraries).toBeDefined();
+        expect(data.outdated).toBeDefined();
     });
 });
