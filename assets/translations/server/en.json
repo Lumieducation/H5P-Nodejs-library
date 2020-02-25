@@ -46,5 +46,6 @@
     "installed-libraries_plural": "Added {{count}} new H5P libraries.",
     "updated-libraries": "Updated {{count}} old library.",
     "updated-libraries_plural": "Updated {{count}} old libraries.",
-    "library-file-missing": "The requested library file {{filename}} of library {{library}} does not exist."
+    "library-file-missing": "The requested library file {{filename}} of library {{library}} does not exist.",
+    "malformed-request": "The request sent by the client is malformed: {{error}}"
 }

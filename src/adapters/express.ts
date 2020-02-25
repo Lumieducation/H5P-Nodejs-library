@@ -158,11 +158,31 @@ export default function(
                     );
                     break;
                 case 'files':
+                    if (!req.body.field) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            { error: "'field' property is missing in request" },
+                            400
+                        );
+                    }
+                    let field: any;
+                    try {
+                        field = JSON.parse(req.body.field);
+                    } catch (e) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            {
+                                error:
+                                    "'field' property is malformed (must be in JSON)"
+                            },
+                            400
+                        );
+                    }
                     const uploadFileResponse = await h5pEditor.saveContentFile(
                         req.body.contentId === '0'
                             ? req.query.contentId
                             : req.body.contentId,
-                        JSON.parse(req.body.field),
+                        field,
                         req.files.file,
                         req.user
                     );

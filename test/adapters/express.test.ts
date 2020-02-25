@@ -1,10 +1,11 @@
+import axios from 'axios';
+import axiosMockAdapter from 'axios-mock-adapter';
+import bodyParser from 'body-parser';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
-import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
-
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
@@ -21,6 +22,18 @@ describe('Express Ajax endpoint adapter', () => {
     beforeEach(async () => {
         app = express();
         const tDir = await dir({ unsafeCleanup: true });
+
+        app.use(bodyParser.json());
+        app.use(
+            bodyParser.urlencoded({
+                extended: true
+            })
+        );
+        app.use(
+            fileUpload({
+                limits: { fileSize: 50 * 1024 * 1024 }
+            })
+        );
         tempDir = tDir.path;
         cleanup = tDir.cleanup;
         h5pEditor = H5P.fs(
@@ -31,7 +44,10 @@ describe('Express Ajax endpoint adapter', () => {
         );
         axiosMock
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
-            .reply(200, require('../data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require('../data/content-type-cache/registration.json')
+            );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
@@ -64,19 +80,19 @@ describe('Express Ajax endpoint adapter', () => {
 
     it('should return 404 for unspecified paths', async () => {
         const res = await supertest(app).get('/unused');
-        expect(res.statusCode).toBe(404);
+        expect(res.status).toBe(404);
     });
 
     it('should return 404 for not installed library files', async () => {
         const res = await supertest(app).get('/libraries/H5P.Test-1.0/test.js');
-        expect(res.statusCode).toBe(404);
+        expect(res.status).toBe(404);
     });
 
     it('should return 400 for illegal attempts to access files through relative paths', async () => {
         const res = await supertest(app).get(
             '/libraries/../../../../usr/bin/secret'
         );
-        expect(res.statusCode).toBe(400);
+        expect(res.status).toBe(400);
     });
 
     it('should return 200 for installed library files', async () => {
@@ -92,7 +108,27 @@ describe('Express Ajax endpoint adapter', () => {
         const res = await supertest(app).get(
             '/libraries/H5P.GreetingCard-1.0/greetingcard.js'
         );
-        expect(res.statusCode).toBe(200);
+        expect(res.status).toBe(200);
+    });
+
+    it('should return 200 when downloading package', async () => {
+        const installResult = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+            path.resolve('test/data/validator/valid2.h5p'),
+            user
+        );
+        const res = await supertest(app).get(`/download/${installResult.id}`);
+        expect(res.status).toBe(200);
+    });
+
+    it('should return the list of installed libraries', async () => {
+        await h5pEditor.packageImporter.installLibrariesFromPackage(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+
+        const getLibrariesResult = await supertest(app)
+            .post('/ajax?action=libraries')
+            .send('libraries%5B%5D=H5P.GreetingCard+1.0'); // this seems like the only way to send body arrays with supertest
+        expect(getLibrariesResult.status).toBe(200);
     });
 
     // content file endpoints
@@ -116,12 +152,73 @@ describe('Express Ajax endpoint adapter', () => {
 
         const mockApp = supertest(app);
         expect(
-            (await mockApp.get(`/content/${installResult.id}/earth.jpg`))
-                .statusCode
+            (await mockApp.get(`/content/${installResult.id}/earth.jpg`)).status
         ).toBe(200);
 
+        expect((await mockApp.get(`/params/${installResult.id}`)).status).toBe(
+            200
+        );
+    });
+
+    it('should allow uploads for existing content', async () => {
+        const installResult = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+            path.resolve('test/data/validator/valid2.h5p'),
+            user
+        );
+
+        const mockApp = supertest(app);
+        const res = await mockApp
+            .post('/ajax?action=files')
+            .field('contentId', installResult.id)
+            .field(
+                'field',
+                JSON.stringify({
+                    description:
+                        'Image shown on card, optional. Without this the card will show just the text.',
+                    label: 'Card image',
+                    name: 'image',
+                    optional: true,
+                    type: 'image'
+                })
+            )
+            .attach(
+                'file',
+                path.resolve('test/data/sample-content/content/earth.jpg')
+            );
+        expect(res.status).toBe(200);
+        const parsedRes = JSON.parse(res.text);
+        expect(parsedRes.path).toBeDefined();
+        expect(parsedRes.mime).toBeDefined();
         expect(
-            (await mockApp.get(`/params/${installResult.id}`)).statusCode
+            (await mockApp.get(`/temp-files/${parsedRes.path}`)).status
+        ).toBe(200);
+    });
+
+    it('should allow uploads for new content', async () => {
+        const mockApp = supertest(app);
+        const res = await mockApp
+            .post('/ajax?action=files')
+            .field(
+                'field',
+                JSON.stringify({
+                    description:
+                        'Image shown on card, optional. Without this the card will show just the text.',
+                    label: 'Card image',
+                    name: 'image',
+                    optional: true,
+                    type: 'image'
+                })
+            )
+            .attach(
+                'file',
+                path.resolve('test/data/sample-content/content/earth.jpg')
+            );
+        expect(res.status).toBe(200);
+        const parsedRes = JSON.parse(res.text);
+        expect(parsedRes.path).toBeDefined();
+        expect(parsedRes.mime).toBeDefined();
+        expect(
+            (await mockApp.get(`/temp-files/${parsedRes.path}`)).status
         ).toBe(200);
     });
 
@@ -129,10 +226,64 @@ describe('Express Ajax endpoint adapter', () => {
     it('should return a valid content type cache', async () => {
         const mockApp = supertest(app);
         const result = await mockApp.get(`/ajax?action=content-type-cache`);
-        expect(result.statusCode).toBe(200);
+        expect(result.status).toBe(200);
         const data = JSON.parse(result.text);
         expect(data.apiVersion).toBeDefined();
         expect(data.libraries).toBeDefined();
         expect(data.outdated).toBeDefined();
+    });
+
+    it('requesting non-existent temporary files should return 404', async () => {
+        const imageResult = await supertest(app).get(
+            `/temp-files/idontexist.png`
+        );
+        expect(imageResult.status).toBe(404);
+    });
+
+    describe('tests requiring uploaded files', () => {
+        let mockApp: supertest.SuperTest<supertest.Test>;
+        let uploadResult: any;
+        beforeEach(async () => {
+            mockApp = supertest(app);
+            uploadResult = await mockApp
+                .post(`/ajax?action=library-upload`)
+                .attach('h5p', path.resolve('test/data/validator/valid2.h5p'), {
+                    contentType: 'application/zip',
+                    filename: 'valid2.h5p'
+                });
+        });
+
+        it('should upload h5p packages successfully', async () => {
+            expect(uploadResult.status).toBe(200);
+            const returned = JSON.parse(uploadResult.text);
+            expect(returned.data.content).toMatchObject({
+                greeting: 'Hello world!',
+                image: {
+                    copyright: { license: 'U' },
+                    height: 300,
+                    width: 300
+                }
+            });
+            expect(returned.data.h5p).toMatchObject({
+                embedTypes: ['div'],
+                language: 'und',
+                license: 'U',
+                mainLibrary: 'H5P.GreetingCard',
+                preloadedDependencies: [
+                    {
+                        machineName: 'H5P.GreetingCard',
+                        majorVersion: '1',
+                        minorVersion: '0'
+                    }
+                ]
+            });
+        });
+
+        it('temporary files of uploaded packages should be accessible', async () => {
+            const returned = JSON.parse(uploadResult.text);
+            const imagePath = returned.data.content.image.path;
+            const imageResult = await mockApp.get(`/temp-files/${imagePath}`);
+            expect(imageResult.status).toBe(200);
+        });
     });
 });
