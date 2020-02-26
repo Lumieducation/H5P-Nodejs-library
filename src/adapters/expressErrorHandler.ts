@@ -19,12 +19,19 @@ export default function errorHandler(
 
     if (err instanceof H5pError) {
         statusCode = err.httpStatusCode;
-        statusText = req.t(err.errorId, err.replacements);
+        statusText =
+            req.t === undefined
+                ? err.errorId
+                : req.t(err.errorId, err.replacements);
     } else if (err instanceof AggregateH5pError) {
         statusCode = 400;
         statusText = err
             .getErrors()
-            .map(e => req.t(e.errorId, e.replacements))
+            .map(e =>
+                req.t === undefined
+                    ? e.errorId
+                    : req.t(e.errorId, e.replacements)
+            )
             .join('\n');
     } else {
         statusText = err.message;

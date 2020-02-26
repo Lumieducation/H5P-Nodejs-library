@@ -18,6 +18,20 @@ server.use(
 
 Note that the Express adapter does not include pages to create, editor, view, list or delete content!
 
+**IMPORTANT:** The adapter expects the requests object of Express to be extended like this:
+
+```ts
+{
+    user: IUser, // must be populated with information about the user (mostly id and access rights)
+    t: (errorId: string, replacements: {[key: string]: string }) => string 
+}
+```
+
+The function `t` must return the string for the errorId translated into the user's or the content's language.
+Replacements are added to the localized string with curly braces: {{replacement}}
+It is suggested you use [i18next](https://www.i18next.com/) for localization, but you can use any library, 
+as long as you make sure the function t is added to the request object.
+
 ## Handling requests yourself
 
 If you choose to do so, you can also handle requests manually. You must then follow these specifications:
