@@ -19,12 +19,17 @@ export default function(
 ): express.Router {
     const router = express.Router();
 
-    const wrap = fn => (...args) => fn(...args).catch(args[2]);
+    /**
+     * Calls the function passed to it and catches errors it throws. These arrows are then
+     * passed to the next(...) function for proper error handling.
+     * @param fn The function to call
+     */
+    const catchAndPassOnErrors = fn => (...args) => fn(...args).catch(args[2]);
 
     // get library file
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             const stream = await h5pEditor.libraryManager.getFileStream(
                 H5P.LibraryName.fromUberName(req.params.uberName),
                 req.params.file
@@ -39,7 +44,7 @@ export default function(
     // get content file
     router.get(
         `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             const stream = await h5pEditor.getContentFileStream(
                 req.params.id,
                 req.params.file,
@@ -55,7 +60,7 @@ export default function(
     // get temporary content file
     router.get(
         `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
-        wrap(async (req, res, next) => {
+        catchAndPassOnErrors(async (req, res, next) => {
             const stream = await h5pEditor.getContentFileStream(
                 undefined,
                 req.params.file,
@@ -71,7 +76,7 @@ export default function(
     // get parameters (= content.json) of content
     router.get(
         `${h5pEditor.config.paramsUrl}/:contentId`,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             const content = await h5pEditor.loadH5P(
                 req.params.contentId,
                 req.user
@@ -83,7 +88,7 @@ export default function(
     // get various things through the Ajax endpoint
     router.get(
         h5pEditor.config.ajaxUrl,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             const { action } = req.query;
             const {
                 majorVersion,
@@ -124,7 +129,7 @@ export default function(
     // client works and we can't change it.
     router.post(
         h5pEditor.config.ajaxUrl,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             const { action } = req.query;
 
             let updatedLibCount: number;
@@ -272,7 +277,7 @@ export default function(
     // serve download links
     router.get(
         `${h5pEditor.config.downloadUrl}/:contentId`,
-        wrap(async (req, res) => {
+        catchAndPassOnErrors(async (req, res) => {
             // set filename for the package with .h5p extension
             res.setHeader(
                 'Content-disposition',
