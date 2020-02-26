@@ -227,24 +227,24 @@ export default class H5PEditor {
 
     /**
      * Retrieves the installed languages for libraries
-     * @param libraryNames A list of libraries for which the language files should be retrieved.
+     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
      *                     In this list the names of the libraries don't use hyphens to separate
      *                     machine name and version.
      * @param language the language code to get the files for
      * @returns The strings of the language files
      */
     public async getLibraryLanguageFiles(
-        libraryNames: string[],
+        libraryUbernames: string[],
         language: string
     ): Promise<{ [key: string]: string }> {
         log.info(
-            `getting language files (${language}) for ${libraryNames.join(
+            `getting language files (${language}) for ${libraryUbernames.join(
                 ', '
             )}`
         );
         return (
             await Promise.all(
-                libraryNames.map(async name => {
+                libraryUbernames.map(async name => {
                     const lib = LibraryName.fromUberName(name, {
                         useWhitespace: true
                     });

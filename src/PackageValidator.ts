@@ -249,11 +249,15 @@ export default class PackageValidator {
                 `api version ${metadata.coreApi.majorVersion}.${metadata.coreApi.minorVersion} for ${libraryName} not supported`
             );
             error.addError(
-                new H5pError('api-version-unsupported', {
-                    component: libraryName,
-                    current: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`,
-                    required: `${metadata.coreApi.majorVersion}.${metadata.coreApi.minorVersion}`
-                })
+                new H5pError(
+                    'api-version-unsupported',
+                    {
+                        component: libraryName,
+                        current: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`,
+                        required: `${metadata.coreApi.majorVersion}.${metadata.coreApi.minorVersion}`
+                    },
+                    400
+                )
             );
         }
         return true;
@@ -425,9 +429,13 @@ export default class PackageValidator {
                 } catch (e) {
                     log.error(`file ${e.fileName} is not readable`);
                     error.addError(
-                        new H5pError('corrupt-file', {
-                            file: e.fileName
-                        })
+                        new H5pError(
+                            'corrupt-file',
+                            {
+                                file: e.fileName
+                            },
+                            400
+                        )
                     );
                 }
             }

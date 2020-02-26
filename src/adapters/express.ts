@@ -119,6 +119,9 @@ export default function(
     );
 
     // post various things through the Ajax endpoint
+    // Don't be confused by the fact that many of the requests dealt with here are not
+    // really POST requests, but look more like GET requests. This is simply how the H5P
+    // client works and we can't change it.
     router.post(
         h5pEditor.config.ajaxUrl,
         wrap(async (req, res) => {

@@ -157,7 +157,7 @@ describe('Express Ajax endpoint adapter', () => {
             }
         ]);
         // the test doesn't include the translations property, as the PHP H5P server doesn't add
-        // any value here.
+        // any value here. Our implementation does add the translation files, however.
     });
 
     it('should return 200 when downloading package', async () => {
@@ -178,6 +178,33 @@ describe('Express Ajax endpoint adapter', () => {
             .post('/ajax?action=libraries')
             .send('libraries%5B%5D=H5P.GreetingCard+1.0'); // this seems like the only way to send body arrays with supertest
         expect(getLibrariesResult.status).toBe(200);
+    });
+
+    it('should return translation files of requested libraries', async () => {
+        await h5pEditor.packageImporter.installLibrariesFromPackage(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+
+        const getTranslationsResult = await supertest(app)
+            .post('/ajax?action=translations')
+            .query({ language: 'fr' })
+            .send('libraries%5B%5D=H5P.GreetingCard+1.0'); // this seems like the only way to send body arrays with supertest
+        expect(getTranslationsResult.status).toBe(200);
+        const parsedResult = JSON.parse(getTranslationsResult.text).data;
+        expect(JSON.parse(parsedResult['H5P.GreetingCard 1.0'])).toMatchObject({
+            semantics: [
+                {
+                    default: 'Meilleurs voeux!',
+                    description:
+                        'Les félicitaions ou voeux qui seront affichés.',
+                    label: 'Texte des voeux'
+                },
+                {
+                    description: 'Image affichée sur le carte. Optionel.',
+                    label: 'Ajouter une image'
+                }
+            ]
+        });
     });
 
     // content file endpoints
@@ -287,6 +314,26 @@ describe('Express Ajax endpoint adapter', () => {
             `/temp-files/idontexist.png`
         );
         expect(imageResult.status).toBe(404);
+    });
+
+    it('should return the proper error message for validation errors when uploading H5P packages', async () => {
+        const mockApp = supertest(app);
+        const uploadResult = await mockApp
+            .post(`/ajax?action=library-upload`)
+            .attach(
+                'h5p',
+                path.resolve(
+                    'test/data/validator/invalid-language-file-json.h5p'
+                ),
+                {
+                    contentType: 'application/zip',
+                    filename: 'invalid-language-file-json.h5p'
+                }
+            );
+        expect(uploadResult.status).toBe(400);
+        expect(JSON.parse(uploadResult.text).message).toBe(
+            'invalid-language-file-json'
+        );
     });
 
     describe('tests requiring uploaded files', () => {
