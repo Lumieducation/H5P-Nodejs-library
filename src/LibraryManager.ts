@@ -302,7 +302,14 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            return await this.libraryStorage.getLanguageFiles(library);
+            const installedLanguages = await this.libraryStorage.getLanguageFiles(
+                library
+            );
+            // always include English as its the language of the semantics file
+            if (!installedLanguages.includes('en')) {
+                installedLanguages.push('en');
+            }
+            return installedLanguages;
         } catch (error) {
             log.warn(
                 `no languages found for library ${LibraryName.toUberName(

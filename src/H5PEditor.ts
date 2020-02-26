@@ -189,6 +189,7 @@ export default class H5PEditor {
             semantics,
             languageObject,
             languages,
+            installedLibrary,
             upgradeScriptPath
         ] = await Promise.all([
             this.loadAssets(
@@ -202,6 +203,7 @@ export default class H5PEditor {
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library),
+            this.libraryManager.loadLibrary(library),
             this.libraryManager.getUpgradesScriptPath(library)
         ]);
         return {
@@ -217,6 +219,7 @@ export default class H5PEditor {
                 minor: minorVersionAsNr
             },
             javascript: assets.scripts,
+            title: installedLibrary.title,
             translations: assets.translations,
             upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can return null
         };
@@ -617,13 +620,15 @@ export default class H5PEditor {
         };
     }
 
-    private loadAssets(
+    private async loadAssets(
         libraryName: ILibraryName,
         language: string,
         loaded: object = {}
     ): Promise<IAssets> {
         const key: string = LibraryName.toUberName(libraryName);
-        if (key in loaded) return Promise.resolve(null);
+        if (key in loaded) {
+            return null;
+        }
         loaded[key] = true;
 
         const assets: IAssets = {
@@ -632,60 +637,47 @@ export default class H5PEditor {
             translations: {}
         };
 
-        return Promise.all([
+        const [library, translation] = await Promise.all([
             this.libraryManager.loadLibrary(libraryName),
             this.libraryManager.loadLanguage(libraryName, language || 'en')
-        ])
-            .then(([library, translation]) =>
-                Promise.all([
-                    this.resolveDependencies(
-                        library.preloadedDependencies || [],
-                        language,
-                        loaded
-                    ),
-                    this.resolveDependencies(
-                        library.editorDependencies || [],
-                        language,
-                        loaded
-                    )
-                ]).then(combinedDependencies => {
-                    combinedDependencies.forEach(dependencies =>
-                        dependencies.forEach(dependency => {
-                            dependency.scripts.forEach(script =>
-                                assets.scripts.push(script)
-                            );
-                            dependency.styles.forEach(script =>
-                                assets.styles.push(script)
-                            );
-                            Object.keys(dependency.translations).forEach(k => {
-                                assets.translations[k] =
-                                    dependency.translations[k];
-                            });
-                        })
-                    );
-
-                    (library.preloadedJs || []).forEach(script =>
-                        assets.scripts.push(
-                            this.urlGenerator.libraryFile(
-                                libraryName,
-                                script.path
-                            )
-                        )
-                    );
-                    (library.preloadedCss || []).forEach(style =>
-                        assets.styles.push(
-                            this.urlGenerator.libraryFile(
-                                libraryName,
-                                style.path
-                            )
-                        )
-                    );
-                    assets.translations[libraryName.machineName] =
-                        translation || undefined;
-                })
+        ]);
+        const combinedDependencies = await Promise.all([
+            this.resolveDependencies(
+                library.preloadedDependencies || [],
+                language,
+                loaded
+            ),
+            this.resolveDependencies(
+                library.editorDependencies || [],
+                language,
+                loaded
             )
+        ]);
+        combinedDependencies.forEach(dependencies =>
+            dependencies.forEach(dependency => {
+                dependency.scripts.forEach(script =>
+                    assets.scripts.push(script)
+                );
+                dependency.styles.forEach(script => assets.styles.push(script));
+                Object.keys(dependency.translations).forEach(k => {
+                    assets.translations[k] = dependency.translations[k];
+                });
+            })
+        );
 
-            .then(() => assets);
+        (library.preloadedJs || []).forEach(script =>
+            assets.scripts.push(
+                this.urlGenerator.libraryFile(libraryName, script.path)
+            )
+        );
+        (library.preloadedCss || []).forEach(style =>
+            assets.styles.push(
+                this.urlGenerator.libraryFile(libraryName, style.path)
+            )
+        );
+        assets.translations[libraryName.machineName] = translation || undefined;
+
+        return assets;
     }
 
     private resolveDependencies(

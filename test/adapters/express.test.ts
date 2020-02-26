@@ -37,7 +37,9 @@ describe('Express Ajax endpoint adapter', () => {
         tempDir = tDir.path;
         cleanup = tDir.cleanup;
         h5pEditor = H5P.fs(
-            new H5P.EditorConfig(new H5P.fsImplementations.InMemoryStorage()),
+            new H5P.EditorConfig(new H5P.fsImplementations.InMemoryStorage(), {
+                baseUrl: ''
+            }),
             path.resolve(path.join(tempDir, 'libraries')), // the path on the local disc where libraries should be stored
             path.resolve(path.join(tempDir, 'temporary-storage')), // the path on the local disc where temporary files (uploads) should be stored
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
@@ -109,6 +111,53 @@ describe('Express Ajax endpoint adapter', () => {
             '/libraries/H5P.GreetingCard-1.0/greetingcard.js'
         );
         expect(res.status).toBe(200);
+    });
+
+    it('should return aggregated library data for installed libraries', async () => {
+        await h5pEditor.packageImporter.installLibrariesFromPackage(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+        const res = await supertest(app)
+            .get('/ajax?action=libraries')
+            .query({
+                language: 'en',
+                machineName: 'H5P.GreetingCard',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+        expect(res.status).toBe(200);
+        const parsedData = JSON.parse(res.text);
+        expect(parsedData.name).toBe('H5P.GreetingCard');
+        expect(parsedData.version).toMatchObject({ major: 1, minor: 0 });
+        expect(parsedData.title).toBe('Greeting Card');
+        expect(parsedData.css).toMatchObject([
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.css'
+        ]);
+        expect(parsedData.javascript).toMatchObject([
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.js'
+        ]);
+        expect(parsedData.languages.sort()).toMatchObject(
+            ['en', 'fr', 'nb'].sort()
+        );
+        expect(parsedData.semantics).toMatchObject([
+            {
+                default: 'Hello world!',
+                description: 'The greeting text displayed to the end user.',
+                label: 'Greeting text',
+                name: 'greeting',
+                type: 'text'
+            },
+            {
+                description:
+                    'Image shown on card, optional. Without this the card will show just the text.',
+                label: 'Card image',
+                name: 'image',
+                optional: true,
+                type: 'image'
+            }
+        ]);
+        // the test doesn't include the translations property, as the PHP H5P server doesn't add
+        // any value here.
     });
 
     it('should return 200 when downloading package', async () => {
