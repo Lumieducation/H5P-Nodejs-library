@@ -16,6 +16,8 @@ export default function errorHandler(
 ): void {
     let statusCode = 500;
     let statusText = '';
+    let detailsList;
+    let clientErrorId = '';
 
     if (err instanceof H5pError) {
         statusCode = err.httpStatusCode;
@@ -23,20 +25,28 @@ export default function errorHandler(
             req.t === undefined
                 ? err.errorId
                 : req.t(err.errorId, err.replacements);
-    } else if (err instanceof AggregateH5pError) {
-        statusCode = 400;
-        statusText = err
-            .getErrors()
-            .map(e =>
-                req.t === undefined
-                    ? e.errorId
-                    : req.t(e.errorId, e.replacements)
-            )
-            .join('\n');
+        clientErrorId = err.clientErrorId || '';
+
+        if (err instanceof AggregateH5pError) {
+            detailsList = err.getErrors().map(e => {
+                return {
+                    code: e.errorId,
+                    message:
+                        req.t === undefined
+                            ? e.errorId
+                            : req.t(e.errorId, e.replacements)
+                };
+            });
+        }
     } else {
         statusText = err.message;
     }
     res.status(statusCode).json(
-        new AjaxErrorResponse('', statusCode, statusText)
+        new AjaxErrorResponse(
+            clientErrorId,
+            statusCode,
+            statusText,
+            detailsList
+        )
     );
 }

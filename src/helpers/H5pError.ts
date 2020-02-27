@@ -11,7 +11,8 @@ export default class H5pError extends Error {
         public errorId: string,
         public replacements: { [key: string]: string | string[] } = {},
         public httpStatusCode: number = 500,
-        public debugMessage?: string
+        public debugMessage?: string,
+        public clientErrorId?: string
     ) {
         super(`${errorId}${debugMessage ? `: ${debugMessage}` : ''}`);
         Object.setPrototypeOf(this, new.target.prototype); // need to restore the prototype chain

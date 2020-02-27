@@ -15,7 +15,7 @@
     "invalid-schema-library-json-file": "The library.json file of the library {{name}} is invalid ({{reason}})",
     "library-missing-file": "The file &quot;{{file}}&quot; is missing from library: &quot;{{name}}&quot;",
     "invalid-semantics-json-file": "Invalid semantics.json file has been included in the library {{name}}",
-    "invalid-language-file": "Invalid language file {{file}} in library {{library}}'",
+    "invalid-language-file": "Invalid language file {{file}} in library '{{library}}'",
     "invalid-language-file-json": "The JSON of the language file {{file}} in the library {{library}} cannot be parsed",
     "library-directory-name-mismatch": "Library directory name must match machineName or machineName-majorVersion.minorVersion (from library.json). (Directory: {{directoryName}} , machineName: {{machineName}}, majorVersion: {{majorVersion}}, minorVersion: {{minorVersion}})",
     "error-creating-temporary-directory": "Could not create temporary directory to unpack H5P package",
@@ -47,5 +47,6 @@
     "updated-libraries": "Updated {{count}} old library.",
     "updated-libraries_plural": "Updated {{count}} old libraries.",
     "library-file-missing": "The requested library file {{filename}} of library {{library}} does not exist.",
-    "malformed-request": "The request sent by the client is malformed: {{error}}"
+    "malformed-request": "The request sent by the client is malformed: {{error}}",
+    "package-validation-failed": "Validating h5p package failed."
 }

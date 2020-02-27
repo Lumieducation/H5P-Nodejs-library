@@ -504,7 +504,7 @@ export default class PackageValidator {
         zipEntires: yauzlPromise.Entry[],
         error: AggregateH5pError
     ) => Promise<yauzlPromise.Entry[]> {
-        log.info(`checking if json is parseable`);
+        log.info(`checking if json is parsable`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: AggregateH5pError
@@ -528,12 +528,12 @@ export default class PackageValidator {
             try {
                 await this.tryParseJson(entry);
             } catch (jsonParseError) {
-                log.error(`json ${filename} is not parseable`);
+                log.error(`json ${filename} is not parsable`);
                 const err = new H5pError(
-                    errorId,
+                    errorId || jsonParseError.errorId,
                     errorReplacements,
                     400,
-                    jsonParseError.message
+                    jsonParseError.debugMessage
                 );
                 if (throwIfError) {
                     throw error.addError(err);
@@ -595,10 +595,9 @@ export default class PackageValidator {
                 log.error(`${errorIdJsonParse || jsonParseError.message}`);
                 throw error.addError(
                     new H5pError(
-                        errorIdJsonParse,
+                        errorIdJsonParse || jsonParseError.errorId,
                         errorReplacementsJsonParse,
-                        400,
-                        jsonParseError.message
+                        400
                     )
                 );
             }
@@ -714,7 +713,7 @@ export default class PackageValidator {
                 await this.tryParseJson(languageFileEntry);
             } catch (ignored) {
                 log.error(
-                    `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}: langauge json could not be parsed`
+                    `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}: language json could not be parsed`
                 );
                 error.addError(
                     new H5pError('invalid-language-file-json', {
@@ -912,7 +911,7 @@ export default class PackageValidator {
         try {
             return JSON.parse(content);
         } catch (ignored) {
-            log.error(`unable to parse package ${entry.fileName}`);
+            log.error(`unable to parse JSON file ${entry.fileName}`);
             throw new H5pError('unable-to-parse-package', {
                 fileName: entry.fileName
             });

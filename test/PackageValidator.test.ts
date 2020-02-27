@@ -23,7 +23,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve('')}/test/test.docx`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'missing-h5p-extension'
+            'package-validation-failed:missing-h5p-extension'
         );
     });
 
@@ -33,7 +33,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/corrupt_archive.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'unable-to-unzip'
+            'package-validation-failed:unable-to-unzip'
         );
     });
 
@@ -44,7 +44,7 @@ describe('validating H5P files', () => {
 
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'file-size-too-large'
+            'package-validation-failed:file-size-too-large'
         );
     });
 
@@ -55,7 +55,7 @@ describe('validating H5P files', () => {
 
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'total-size-too-large'
+            'package-validation-failed:total-size-too-large'
         );
     });
 
@@ -67,7 +67,7 @@ describe('validating H5P files', () => {
 
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'not-in-whitelist'
+            'package-validation-failed:not-in-whitelist'
         );
     });
 
@@ -81,10 +81,10 @@ describe('validating H5P files', () => {
 
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile1)).rejects.toThrow(
-            'unable-to-parse-package'
+            'package-validation-failed:unable-to-parse-package'
         );
         await expect(validator.validatePackage(h5pFile2)).rejects.toThrow(
-            'unable-to-parse-package'
+            'package-validation-failed:unable-to-parse-package'
         );
     });
 
@@ -94,7 +94,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/invalid-h5p-json-schema.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'invalid-h5p-json-file-2'
+            'package-validation-failed:invalid-h5p-json-file-2'
         );
     });
 
@@ -104,7 +104,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/malformed-library-directory.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'invalid-library-name'
+            'package-validation-failed:invalid-library-name'
         );
     });
 
@@ -114,7 +114,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/invalid-library-json.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'invalid-schema-library-json-file'
+            'package-validation-failed:invalid-schema-library-json-file'
         );
     });
 
@@ -124,7 +124,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/missing-preloaded-js.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'library-missing-file'
+            'package-validation-failed:library-missing-file'
         );
     });
 
@@ -134,7 +134,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/invalid-library-directory-name.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'library-directory-name-mismatch'
+            'package-validation-failed:library-directory-name-mismatch'
         );
     });
 
@@ -144,7 +144,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/invalid-language-file-json.h5p`;
         const validator = new PackageValidator(new EditorConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'invalid-language-file-json'
+            'package-validation-failed:invalid-language-file-json'
         );
     });
 
@@ -156,7 +156,7 @@ describe('validating H5P files', () => {
         config.coreApiVersion.minor = 1;
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'api-version-unsupported'
+            'package-validation-failed:api-version-unsupported'
         );
     });
 
@@ -167,7 +167,7 @@ describe('validating H5P files', () => {
         const config = new EditorConfig(null);
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'invalid-language-file'
+            'package-validation-failed:invalid-language-file'
         );
     });
 });

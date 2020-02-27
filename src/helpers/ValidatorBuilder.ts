@@ -67,7 +67,13 @@ export class ValidatorBuilder {
      */
     public async validate(
         data: any,
-        error: AggregateH5pError = new AggregateH5pError()
+        error: AggregateH5pError = new AggregateH5pError(
+            'package-validation-failed',
+            {},
+            400,
+            undefined,
+            'VALIDATION_FAILED'
+        )
     ): Promise<any> {
         let returnValue = data;
         for (const rule of this.rules) {

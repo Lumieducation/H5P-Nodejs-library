@@ -4,17 +4,25 @@ import H5pError from './H5pError';
  * An AggregateH5pError can be used to store error messages if the error that occurred first doesn't mean that
  * the execution has to be stopped stopped right away.
  */
-export default class AggregateH5pError extends Error {
+export default class AggregateH5pError extends H5pError {
     /**
-     * @param error (optional) the first error
+     * @param firstError (optional) the first error
      */
-    constructor(error?: H5pError) {
-        super('');
-        Object.setPrototypeOf(this, new.target.prototype); // needed to restore the prototype chain
-
-        if (error !== undefined) {
-            this.addError(error);
-        }
+    constructor(
+        errorId: string,
+        replacements: { [key: string]: string },
+        httpStatusCode: number,
+        debugMessage: string,
+        clientErrorId?: string
+    ) {
+        super(
+            errorId,
+            replacements,
+            httpStatusCode,
+            debugMessage,
+            clientErrorId
+        );
+        Object.setPrototypeOf(this, new.target.prototype); // need to restore the prototype chain
     }
 
     private errors: H5pError[] = [];
@@ -24,7 +32,9 @@ export default class AggregateH5pError extends Error {
      */
     public addError(error: H5pError): AggregateH5pError {
         this.errors.push(error);
-        this.message = this.getErrors().join(' ');
+        this.message = `${this.errorId}:${this.getErrors()
+            .map(e => e.message)
+            .join(',')}`;
         return this;
     }
 
