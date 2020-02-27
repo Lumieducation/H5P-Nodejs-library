@@ -46,14 +46,6 @@ const start = async () => {
             debug: process.env.DEBUG && process.env.DEBUG.includes('i18n'),
             defaultNS: 'server',
             fallbackLng: 'en',
-            interpolation: {
-                format: (value, format, lng) => {
-                    if (format === 'regular') {
-                        return value;
-                    }
-                    return `<em>${value}</em>`;
-                }
-            },
             ns: ['server', 'storage-file-implementations'],
             preload: ['en']
         });

@@ -334,10 +334,12 @@ describe('Express Ajax endpoint adapter', () => {
         expect(JSON.parse(uploadResult.text).message).toBe(
             'package-validation-failed'
         );
-        expect(JSON.parse(uploadResult.text).details).toMatchObject({
-            code: 'invalid-language-file-json',
-            message: 'invalid-language-file-json'
-        });
+        expect(JSON.parse(uploadResult.text).details).toMatchObject([
+            {
+                code: 'invalid-language-file-json',
+                message: 'invalid-language-file-json'
+            }
+        ]);
     });
 
     describe('tests requiring uploaded files', () => {
