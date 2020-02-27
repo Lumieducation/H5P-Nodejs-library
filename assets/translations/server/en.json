@@ -7,7 +7,7 @@
     "invalid-h5p-json-file": "A valid main h5p.json file is missing",
     "not-in-whitelist": "File &quot;{{filename}}&quot; not allowed. Only files with the following extensions are allowed: {{files-allowed}}.",
     "unable-to-read-package-file": "Unable to read file from the package: {{fileName}}",
-    "unable-to-parse-package": "Unable to parse JSON from the package: {{fileName}}",
+    "unable-to-parse-package": "Unable to parse JSON file from the package: {{fileName}}",
     "invalid-h5p-json-file-2": "The main h5p.json does not conform to the schema ({{reason}})",
     "api-version-unsupported": "The system was unable to install the {{component}} component from the package, it requires a newer version of the H5P plugin. This site is currently running version {{current}}, whereas the required version is {{required}} or higher. You should consider upgrading and then try again.",
     "invalid-library-name": "Invalid library name: {{name}}",

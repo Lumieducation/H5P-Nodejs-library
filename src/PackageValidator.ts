@@ -130,7 +130,7 @@ export default class PackageValidator {
     /**
      * Similar to path.join(...) but uses slashes (/) as separators regardless of OS.
      * We have to use slashes when dealing with zip files as the specification for zips require them. If the program
-     * runs on windows path.join(...) uses backslashes \ which don't work for zip files.
+     * runs on Windows path.join(...) uses backslashes \ which don't work for zip files.
      * @param {...string[]} parts The parts of the path to join
      * @returns {string} the full path
      */
@@ -504,7 +504,7 @@ export default class PackageValidator {
         zipEntires: yauzlPromise.Entry[],
         error: AggregateH5pError
     ) => Promise<yauzlPromise.Entry[]> {
-        log.info(`checking if json is parsable`);
+        log.info(`checking if json of ${filename} is parsable`);
         return async (
             zipEntries: yauzlPromise.Entry[],
             error: AggregateH5pError
@@ -531,7 +531,7 @@ export default class PackageValidator {
                 log.error(`json ${filename} is not parsable`);
                 const err = new H5pError(
                     errorId || jsonParseError.errorId,
-                    errorReplacements,
+                    errorId ? errorReplacements : jsonParseError.replacements,
                     400,
                     jsonParseError.debugMessage
                 );
@@ -553,7 +553,7 @@ export default class PackageValidator {
      * @param errorIdAnyError The id of the message that is emitted, when there is an error. (Allowed placeholders: %name, %reason)
      * @param errorIdJsonParse (optional) The message to output if the JSON file is not parsable (will default to a generíc error message)
      * @param returnContent (optional) If true, the rule will return an object with { zipEntries, jsonData } where jsonData contains the parsed JSON of the file
-     * @param errorReplacementsJsonParse (optional) The replacements to pass to error objects created in the method.
+     * @param errorReplacements (optional) The replacements to pass to error objects created in the method.
      * @return The rule (return value: An array of ZipEntries if returnContent == false, otherwise the JSON content is added to the return object)
      */
     private jsonMustConformToSchema(
@@ -562,7 +562,7 @@ export default class PackageValidator {
         errorIdAnyError: string,
         errorIdJsonParse?: string,
         returnContent: boolean = false,
-        errorReplacementsJsonParse: { [key: string]: string | string[] } = {}
+        errorReplacements: { [key: string]: string | string[] } = {}
     ): (
         zipEntries: yauzlPromise.Entry[],
         error: AggregateH5pError
@@ -596,21 +596,21 @@ export default class PackageValidator {
                 throw error.addError(
                     new H5pError(
                         errorIdJsonParse || jsonParseError.errorId,
-                        errorReplacementsJsonParse,
+                        errorIdJsonParse
+                            ? errorReplacements
+                            : jsonParseError.replacements,
                         400
                     )
                 );
             }
             if (!schemaValidator(jsonData)) {
                 log.error(`json ${filename} does not conform to schema`);
+                errorReplacements.reason = schemaValidator.errors
+                    .map(e => `${e.dataPath} ${e.message}`)
+                    .join(' ')
+                    .trim();
                 throw error.addError(
-                    new H5pError(errorIdAnyError, {
-                        name: entry.fileName,
-                        reason: schemaValidator.errors
-                            .map(e => `${e.dataPath} ${e.message}`)
-                            .join(' ')
-                            .trim()
-                    })
+                    new H5pError(errorIdAnyError, errorReplacements)
                 );
             }
             if (!returnContent) {
