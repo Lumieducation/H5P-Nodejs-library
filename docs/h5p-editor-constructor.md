@@ -2,7 +2,7 @@
 
 There are two ways of creating a H5PEditor object:
 
-- You can use the convenience function [`H5P.fs(...)`](/src/implementation/fs/index.ts) that use basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to contruct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
+- You can use the convenience function [`H5P.fs(...)`](/src/implementation/fs/index.ts) that use basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to construct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
 - You can construct it manually by calling `new H5P.H5PEditor(...)`. The constructor arguments are used to provide data storage services and settings. You can find the interfaces referenced in [`src/types.ts`](/src/types.ts).
 
 Explanation of the arguments of the constructor:

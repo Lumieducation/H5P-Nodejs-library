@@ -534,7 +534,7 @@ export default class LibraryManager {
      * @param {ILibraryName} libraryInfo the library object
      * @param {any} libraryMetadata the library metadata
      * @param {boolean} restricted true if the library can only be installed with a special permission
-     * @returns {IInstalledLibrary} the libray object (containing - among others - the id of the newly installed library)
+     * @returns {IInstalledLibrary} the library object (containing - among others - the id of the newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,

@@ -103,7 +103,7 @@ var ns = H5PEditor;
 
                 if (params.params !== undefined) {
                     // Validate mandatory main title. Prevent submitting if that's not set.
-                    // Deliberatly doing it after getParams(), so that any other validation
+                    // Deliberately doing it after getParams(), so that any other validation
                     // problems are also revealed
                     // if (!h5peditor.isMainTitleSet()) {
 

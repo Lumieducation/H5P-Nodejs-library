@@ -300,7 +300,7 @@ export default class ContentStorer {
         for (const file of oldFiles) {
             if (!newFiles.some(f => f === file)) {
                 log.debug(
-                    `Deleting unneccessary file ${file} from ${contentId}`
+                    `Deleting unnecessary file ${file} from ${contentId}`
                 );
                 try {
                     await this.contentManager.deleteContentFile(

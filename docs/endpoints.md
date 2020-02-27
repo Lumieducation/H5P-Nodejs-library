@@ -191,8 +191,8 @@ const config = {
     coreUrl: '/core',           // URL of static player "core files"
     downloadUrl: '/download',   // URL to download h5p packages
     editorLibraryUrl: '/editor',// URL of static editor "core files" (not the content types!)
-    librariesUrl: '/libraries', // URL at which library files (= content types) can be retreived
-    paramsUrl: '/params'        // URL at which the paramteres (= content.json) of content can be retreived
+    librariesUrl: '/libraries', // URL at which library files (= content types) can be retrieved
+    paramsUrl: '/params'        // URL at which the parameters (= content.json) of content can be retrieved
     playUrl: '/play'            // URL at which content can be displayed
     ... // further configuration values
 }

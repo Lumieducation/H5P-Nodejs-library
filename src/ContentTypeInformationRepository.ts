@@ -269,7 +269,7 @@ export default class ContentTypeInformationRepository {
      * @param {IInstalledLibrary} library
      */
     private libraryIsRestricted(library: IInstalledLibrary): boolean {
-        log.verbose(`checking if library ${library.machineName} is restriced`);
+        log.verbose(`checking if library ${library.machineName} is restricted`);
         if (this.config.enableLrsContentTypes) {
             return library.restricted;
         }

@@ -321,7 +321,7 @@ export default class H5PEditor {
     /**
      * Installs a content type from the H5P Hub.
      * @param id The name of the content type to install (e.g. H5P.Test-1.0)
-     * @returns a list of installed libraries if succcesful. Will throw errors if something goes wrong.
+     * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
      */
     public async installLibrary(
         id: string,
