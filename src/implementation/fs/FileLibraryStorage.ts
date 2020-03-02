@@ -1,4 +1,3 @@
-import { crc32 } from 'crc';
 import fsExtra, { ReadStream } from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
@@ -28,6 +27,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Files with this pattern are not returned when listing the directory contents. Can be used by classes
+     * extending FileLibraryStorage to hide internals.
+     */
+    protected ignoredFilePatterns: RegExp[] = [];
+
+    /**
      * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
      * Throws an error if something unexpected happens.
      * @param {ILibraryName} library The library that is being installed
@@ -48,7 +53,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 )} because the library metadata has not been installed.`
             );
         }
-        const fullPath = this.getFullPath(library, filename);
+
+        const fullPath = this.getFilePath(library, filename);
         await fsExtra.ensureDir(path.dirname(fullPath));
         const writeStream = fsExtra.createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
@@ -75,7 +81,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         ).filter(entry => entry !== 'library.json');
         await Promise.all(
             directoryEntries.map(entry =>
-                fsExtra.remove(this.getFullPath(library, entry))
+                fsExtra.remove(this.getFilePath(library, entry))
             )
         );
     }
@@ -91,7 +97,11 @@ export default class FileLibraryStorage implements ILibraryStorage {
         filename: string
     ): Promise<boolean> {
         checkFilename(filename);
-        return fsExtra.pathExists(this.getFullPath(library, filename));
+        if (this.isIgnored(filename)) {
+            return false;
+        }
+
+        return fsExtra.pathExists(this.getFilePath(library, filename));
     }
 
     /**
@@ -101,15 +111,15 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename the relative path inside the library
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
-    public getFileStream(library: ILibraryName, filename: string): ReadStream {
-        checkFilename(filename);
-        return fsExtra.createReadStream(
-            path.join(
-                this.librariesDirectory,
-                LibraryName.toUberName(library),
-                filename
-            )
-        );
+    public async getFileStream(
+        library: ILibraryName,
+        filename: string
+    ): Promise<ReadStream> {
+        if (!await this.fileExists(library, filename)) {
+            throw new Error('File does not exist.'); // TODO: add nicer H5P error
+        }
+
+        return fsExtra.createReadStream(this.getFilePath(library, filename));
     }
 
     /**
@@ -144,7 +154,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async getLanguageFiles(library: ILibraryName): Promise<string[]> {
         const files = await fsExtra.readdir(
-            this.getFullPath(library, 'language')
+            this.getFilePath(library, 'language')
         );
         return files
             .filter(file => path.extname(file) === '.json')
@@ -181,7 +191,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         try {
             await fsExtra.ensureDir(libPath);
             await fsExtra.writeJSON(
-                this.getFullPath(library, 'library.json'),
+                this.getFilePath(library, 'library.json'),
                 libraryMetadata
             );
             return library;
@@ -207,9 +217,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
-        return (await globPromise(path.join(libPath, '**/*.*'))).map(p =>
-            path.relative(libPath, p)
-        );
+        return (await globPromise(path.join(libPath, '**/*.*')))
+            .map(p => path.relative(libPath, p))
+            .filter(p => !this.isIgnored(p));
     }
 
     /**
@@ -250,7 +260,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
             );
         }
         await fsExtra.writeJSON(
-            this.getFullPath(libraryMetadata, 'library.json'),
+            this.getFilePath(libraryMetadata, 'library.json'),
             libraryMetadata
         );
         const newLibrary = InstalledLibrary.fromMetadata(libraryMetadata);
@@ -262,7 +272,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {ILibraryName} library
      * @returns {string} the absolute path to the directory
      */
-    private getDirectoryPath(library: ILibraryName): string {
+    protected getDirectoryPath(library: ILibraryName): string {
         return path.join(
             this.librariesDirectory,
             LibraryName.toUberName(library)
@@ -275,11 +285,19 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {string} filename
      * @returns {string} the absolute path to the file
      */
-    private getFullPath(library: ILibraryName, filename: string): string {
+    protected getFilePath(library: ILibraryName, filename: string): string {
         return path.join(
             this.librariesDirectory,
             LibraryName.toUberName(library),
             filename
         );
+    }
+
+    /**
+     * Checks if a filename is in the ignore list.
+     * @param filename the filename to check
+     */
+    private isIgnored(filename: string): boolean {
+        return this.ignoredFilePatterns.some(pattern => pattern.test(filename));
     }
 }
