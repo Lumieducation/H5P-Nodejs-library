@@ -115,7 +115,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<ReadStream> {
-        if (!await this.fileExists(library, filename)) {
+        if (!(await this.fileExists(library, filename))) {
             throw new Error('File does not exist.'); // TODO: add nicer H5P error
         }
 

@@ -125,7 +125,10 @@ export default class PackageExporter {
                 const files = await this.libraryManager.listFiles(dependency);
                 for (const file of files) {
                     outputZipFile.addReadStream(
-                        await this.libraryManager.getFileStream(dependency, file),
+                        await this.libraryManager.getFileStream(
+                            dependency,
+                            file
+                        ),
                         `${LibraryName.toUberName(dependency)}/${file}`
                     );
                 }
