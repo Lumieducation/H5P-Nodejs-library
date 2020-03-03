@@ -54,7 +54,7 @@ export default class LibraryManager {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    public getFileStream(
+    public async getFileStream(
         library: ILibraryName,
         file: string
     ): Promise<ReadStream> {
@@ -254,7 +254,7 @@ export default class LibraryManager {
      * @returns {Promise<boolean>} true if the passed library contains a version that is higher than the highest installed version, false otherwise
      */
     public async libraryHasUpgrade(
-        library: ILibraryMetadata
+        library: IFullLibraryName
     ): Promise<boolean> {
         log.verbose(
             `checking if library ${library.machineName}-${library.majorVersion}.${library.minorVersion} has an upgrade`

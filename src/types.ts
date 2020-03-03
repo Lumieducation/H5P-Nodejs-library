@@ -686,13 +686,13 @@ export interface IInstalledLibrary extends ILibraryMetadata {
      * Compares libraries by giving precedence to title, then major version, then minor version
      * @param otherLibrary
      */
-    compare(otherLibrary: ILibraryMetadata): number;
+    compare(otherLibrary: IInstalledLibrary): number;
 
     /**
      * Compares libraries by giving precedence to major version, then minor version, then patch version.
      * @param otherLibrary
      */
-    compareVersions(otherLibrary: ILibraryMetadata): number;
+    compareVersions(otherLibrary: IFullLibraryName): number;
 }
 
 /**
@@ -1082,28 +1082,55 @@ export type ILibraryFileUrlResolver = (
 
 /**
  * This objects carries information about content types that the user can select
- * from the H5P Hub.
+ * from the H5P Hub. The optional properties don't have to be set if a content type
+ * is only installed locally.
  */
 export interface IHubContentType {
-    categories: string[];
-    createdAt: number;
+    categories?: string[];
+    createdAt?: number;
     description: string;
-    example: string;
-    h5pMajorVersion: number;
-    h5pMinorVersion: number;
+    example?: string;
+    h5pMajorVersion?: number;
+    h5pMinorVersion?: number;
     icon: string;
-    isRecommended: boolean;
-    keywords: string[];
-    license: any;
+    isRecommended?: boolean;
+    keywords?: string[];
+    license?: any;
     machineName: string;
     majorVersion: number;
     minorVersion: number;
     owner: string;
     patchVersion: number;
-    popularity: number;
-    screenshots: any;
-    summary: string;
+    popularity?: number;
+    screenshots?: any;
+    summary?: string;
     title: string;
-    tutorial: string;
-    updatedAt: number;
+    tutorial?: string;
+    updatedAt?: number;
+}
+
+/**
+ * Carries information about the local installation status of a content type.
+ */
+export interface IHubContentTypeWithLocalInfo extends IHubContentType {
+    canInstall: boolean;
+    installed: boolean;
+    isUpToDate: boolean;
+    localMajorVersion: number;
+    localMinorVersion: number;
+    localPatchVersion: number;
+    restricted: boolean;
+}
+
+/**
+ * Information about the H5P Hub
+ */
+export interface IHubInfo {
+    apiVersion: { major: number; minor: number };
+    // tslint:disable-next-line: prefer-array-literal
+    details: Array<{ code: string; message: string }>;
+    libraries: IHubContentTypeWithLocalInfo[];
+    outdated: boolean;
+    recentlyUsed: any[];
+    user: string;
 }
