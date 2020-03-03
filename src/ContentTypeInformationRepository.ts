@@ -10,6 +10,8 @@ import PackageImporter from './PackageImporter';
 import {
     IEditorConfig,
     IHubContentType,
+    IHubContentTypeWithLocalInfo,
+    IHubInfo,
     IInstalledLibrary,
     IKeyValueStorage,
     ILibraryInstallResult,
@@ -51,19 +53,22 @@ export default class ContentTypeInformationRepository {
     /**
      * Gets the information about available content types with all the extra information as listed in the class description.
      */
-    public async get(user: IUser): Promise<any> {
+    public async get(user: IUser): Promise<IHubInfo> {
         log.info(`getting information about available content types`);
-        let cachedHubInfo = await this.contentTypeCache.get();
-        cachedHubInfo = await this.addUserAndInstallationSpecificInfo(
+        const cachedHubInfo = await this.contentTypeCache.get();
+        let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
             cachedHubInfo,
             user
         );
-        cachedHubInfo = await this.addLocalLibraries(cachedHubInfo, user);
+        hubInfoWithLocalInfo = await this.addLocalLibraries(
+            hubInfoWithLocalInfo,
+            user
+        );
 
         return {
             apiVersion: this.config.coreApiVersion,
             details: null, // TODO: implement this (= messages to user)
-            libraries: cachedHubInfo,
+            libraries: hubInfoWithLocalInfo,
             outdated:
                 (await this.contentTypeCache.isOutdated()) &&
                 (user.canInstallRecommended ||
@@ -163,9 +168,9 @@ export default class ContentTypeInformationRepository {
      * locally installed libraries.
      */
     private async addLocalLibraries(
-        hubInfo: any[],
+        hubInfo: IHubContentTypeWithLocalInfo[],
         user: IUser
-    ): Promise<any[]> {
+    ): Promise<IHubContentTypeWithLocalInfo[]> {
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
@@ -227,9 +232,9 @@ export default class ContentTypeInformationRepository {
      * @returns {Promise<any[]>} The hub information as passed into the method with added information.
      */
     private async addUserAndInstallationSpecificInfo(
-        hubInfo: any[],
+        hubInfo: IHubContentType[],
         user: IUser
-    ): Promise<any[]> {
+    ): Promise<IHubContentTypeWithLocalInfo[]> {
         log.info(`adding user and installation specific information`);
         const localLibsWrapped = await this.libraryManager.getInstalled();
         const localLibs = Object.keys(localLibsWrapped).map(
@@ -238,9 +243,18 @@ export default class ContentTypeInformationRepository {
                     localLibsWrapped[machineName].length - 1
                 ]
         );
-        await Promise.all(
+        return Promise.all(
             hubInfo.map(async hl => {
-                const hubLib = hl; // to avoid tslint from complaining about changing function parameters
+                const hubLib: IHubContentTypeWithLocalInfo = {
+                    ...hl,
+                    canInstall: false,
+                    installed: false,
+                    isUpToDate: false,
+                    localMajorVersion: 0,
+                    localMinorVersion: 0,
+                    localPatchVersion: 0,
+                    restricted: false
+                };
                 const localLib = localLibs.find(
                     l => l.machineName === hubLib.machineName
                 );
@@ -264,10 +278,9 @@ export default class ContentTypeInformationRepository {
                     hubLib.localMinorVersion = localLib.minorVersion;
                     hubLib.localPatchVersion = localLib.patchVersion;
                 }
+                return hubLib;
             })
         );
-
-        return hubInfo;
     }
 
     /**

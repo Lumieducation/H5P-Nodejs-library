@@ -1,4 +1,5 @@
 import {
+    IFullLibraryName,
     IInstalledLibrary,
     ILibraryMetadata,
     ILibraryName,
@@ -67,7 +68,7 @@ export default class InstalledLibrary implements IInstalledLibrary {
      * Compares libraries by giving precedence to title, then major version, then minor version
      * @param otherLibrary
      */
-    public compare(otherLibrary: InstalledLibrary): number {
+    public compare(otherLibrary: IInstalledLibrary): number {
         return (
             this.title.localeCompare(otherLibrary.title) ||
             this.majorVersion - otherLibrary.majorVersion ||
@@ -79,7 +80,7 @@ export default class InstalledLibrary implements IInstalledLibrary {
      * Compares libraries by giving precedence to major version, then minor version, then patch version.
      * @param otherLibrary
      */
-    public compareVersions(otherLibrary: InstalledLibrary): number {
+    public compareVersions(otherLibrary: IFullLibraryName): number {
         return (
             this.majorVersion - otherLibrary.majorVersion ||
             this.minorVersion - otherLibrary.minorVersion ||
