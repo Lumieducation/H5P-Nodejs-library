@@ -427,12 +427,11 @@ export interface ILibraryStorage {
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
-     * NOTE: THIS METHOD IS NOT ASYNC!
      * @param library library
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    getFileStream(library: ILibraryName, file: string): ReadStream;
+    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
 
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.

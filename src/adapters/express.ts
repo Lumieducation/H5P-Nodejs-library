@@ -20,7 +20,7 @@ export default function(
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
         async (req, res) => {
-            const stream = h5pEditor.libraryManager.getFileStream(
+            const stream = await h5pEditor.libraryManager.getFileStream(
                 H5P.LibraryName.fromUberName(req.params.uberName),
                 req.params.file
             );
