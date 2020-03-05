@@ -54,7 +54,7 @@ export class ContentScanner {
     /**
      * Walks through an element in the semantic tree of a library.
      * @param elementSemantics the semantic information for the current element
-     * @param elementParams the paramters for the current element (as in content.json)
+     * @param elementParams the parameters for the current element (as in content.json)
      * @param parentJsonPath the JSON path of the parent (example: .media.type)
      * @param callback a function that is executed for this element and for every child
      * @param doNotAddNameToJsonPath if true, the name of the current element will not appended to the JSON path

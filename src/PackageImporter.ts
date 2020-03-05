@@ -7,7 +7,6 @@ import yauzlPromise from 'yauzl-promise';
 import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
-import ValidationError from './helpers/ValidationError';
 import LibraryManager from './LibraryManager';
 import PackageValidator from './PackageValidator';
 import {
@@ -15,7 +14,6 @@ import {
     IContentMetadata,
     IEditorConfig,
     ILibraryInstallResult,
-    ITranslationService,
     IUser
 } from './types';
 
@@ -48,13 +46,11 @@ enum ContentCopyModes {
 export default class PackageImporter {
     /**
      * @param {LibraryManager} libraryManager
-     * @param {TranslationService} translationService
      * @param {EditorConfig} config
      * @param {ContentStorer} contentStorer
      */
     constructor(
         private libraryManager: LibraryManager,
-        private translationService: ITranslationService,
         private config: IEditorConfig,
         private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
@@ -147,9 +143,7 @@ export default class PackageImporter {
             contentId
         );
         if (id === undefined) {
-            throw new Error(
-                'Something went wrong when storing the package: no content id was assigned.'
-            );
+            throw new H5pError('import-package-no-id-assigned');
         }
         return { id, metadata, parameters, installedLibraries };
     }
@@ -224,98 +218,93 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`processing package ${packagePath}`);
-        const packageValidator = new PackageValidator(
-            this.translationService,
-            this.config
+        const packageValidator = new PackageValidator(this.config);
+        // no need to check result as the validator throws an exception if there is an error
+        await packageValidator.validatePackage(
+            packagePath,
+            copyMode === ContentCopyModes.Install ||
+                copyMode === ContentCopyModes.Temporary,
+            true
         );
+        // we don't use withDir here, to have better error handling (catch & finally block below)
+        const { path: tempDirPath } = await dir();
+
         let installedLibraries: ILibraryInstallResult[] = [];
 
         try {
-            // no need to check result as the validator throws an exception if there is an error
-            await packageValidator.validatePackage(packagePath, false, true);
-            // we don't use withDir here, to have better error handling (catch & finally block below)
-            const { path: tempDirPath } = await dir();
-            try {
-                await PackageImporter.extractPackage(packagePath, tempDirPath, {
-                    includeContent:
-                        copyMode === ContentCopyModes.Install ||
-                        copyMode === ContentCopyModes.Temporary,
-                    includeLibraries: installLibraries,
-                    includeMetadata:
-                        copyMode === ContentCopyModes.Install ||
-                        copyMode === ContentCopyModes.Temporary
-                });
-                const dirContent = await fsExtra.readdir(tempDirPath);
+            await PackageImporter.extractPackage(packagePath, tempDirPath, {
+                includeContent:
+                    copyMode === ContentCopyModes.Install ||
+                    copyMode === ContentCopyModes.Temporary,
+                includeLibraries: installLibraries,
+                includeMetadata:
+                    copyMode === ContentCopyModes.Install ||
+                    copyMode === ContentCopyModes.Temporary
+            });
+            const dirContent = await fsExtra.readdir(tempDirPath);
 
-                // install all libraries
-                if (installLibraries) {
-                    installedLibraries = (
-                        await Promise.all(
-                            dirContent
-                                .filter(
-                                    (dirEntry: string) =>
-                                        dirEntry !== 'h5p.json' &&
-                                        dirEntry !== 'content'
+            // install all libraries
+            if (installLibraries) {
+                installedLibraries = (
+                    await Promise.all(
+                        dirContent
+                            .filter(
+                                (dirEntry: string) =>
+                                    dirEntry !== 'h5p.json' &&
+                                    dirEntry !== 'content'
+                            )
+                            .map((dirEntry: string) =>
+                                this.libraryManager.installFromDirectory(
+                                    path.join(tempDirPath, dirEntry),
+                                    false
                                 )
-                                .map((dirEntry: string) =>
-                                    this.libraryManager.installFromDirectory(
-                                        path.join(tempDirPath, dirEntry),
-                                        false
-                                    )
-                                )
-                        )
-                    ).filter(
-                        installResult =>
-                            installResult !== undefined &&
-                            installResult.type !== 'none'
+                            )
+                    )
+                ).filter(
+                    installResult =>
+                        installResult !== undefined &&
+                        installResult.type !== 'none'
+                );
+            }
+
+            // Copy content files to the repository
+            if (copyMode === ContentCopyModes.Install) {
+                if (!this.contentManager) {
+                    throw new Error(
+                        'PackageImporter was initialized without a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
                     );
                 }
+                return {
+                    ...(await this.contentManager.copyContentFromDirectory(
+                        tempDirPath,
+                        user,
+                        contentId
+                    )),
+                    installedLibraries
+                };
+            }
 
-                // Copy content files to the repository
-                if (copyMode === ContentCopyModes.Install) {
-                    if (!this.contentManager) {
-                        throw new Error(
-                            'PackageImporter was initialized without a ContentManager, but you want to copy content from a package. Pass a ContentManager object to the the constructor!'
-                        );
-                    }
-                    return {
-                        ...(await this.contentManager.copyContentFromDirectory(
-                            tempDirPath,
-                            user,
-                            contentId
-                        )),
-                        installedLibraries
-                    };
+            // Copy temporary files to the repository
+            if (copyMode === ContentCopyModes.Temporary) {
+                if (!this.contentStorer) {
+                    throw new Error(
+                        'PackageImporter was initialized without a ContentStorer, but you want to copy content from a package. Pass a ContentStorer object to the the constructor!'
+                    );
                 }
-
-                // Copy temporary files to the repository
-                if (copyMode === ContentCopyModes.Temporary) {
-                    if (!this.contentStorer) {
-                        throw new Error(
-                            'PackageImporter was initialized without a ContentStorer, but you want to copy content from a package. Pass a ContentStorer object to the the constructor!'
-                        );
-                    }
-                    return {
-                        ...(await this.contentStorer.copyFromDirectoryToTemporary(
-                            tempDirPath,
-                            user
-                        )),
-                        installedLibraries
-                    };
-                }
-            } catch (error) {
-                // if we don't do this, finally weirdly just swallows the errors
-                throw error;
-            } finally {
-                // clean up temporary files in any case
-                await fsExtra.remove(tempDirPath);
+                return {
+                    ...(await this.contentStorer.copyFromDirectoryToTemporary(
+                        tempDirPath,
+                        user
+                    )),
+                    installedLibraries
+                };
             }
         } catch (error) {
-            if (error instanceof ValidationError) {
-                throw new H5pError(error.message); // TODO: create AJAX response?
-            } else {
-                throw error;
-            }
+            // if we don't do this, finally weirdly just swallows the errors
+            throw error;
+        } finally {
+            // clean up temporary files in any case
+            await fsExtra.remove(tempDirPath);
         }
 
         return {

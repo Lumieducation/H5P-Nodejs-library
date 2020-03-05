@@ -5,7 +5,7 @@ import stream from 'stream';
 import { withFile } from 'tmp-promise';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-import defaultTranslation from '../assets/translations/en.json';
+import defaultTranslation from '../assets/translations/client/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
@@ -15,6 +15,7 @@ import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
 import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
@@ -37,12 +38,9 @@ import {
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
-
-import Logger from './helpers/Logger';
 
 const log = new Logger('Editor');
 
@@ -52,7 +50,6 @@ export default class H5PEditor {
         public config: IEditorConfig,
         libraryStorage: ILibraryStorage,
         contentStorage: IContentStorage,
-        translationService: ITranslationService,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -61,7 +58,7 @@ export default class H5PEditor {
         this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
-        this.translation = defaultTranslation;
+        this.clientTranslation = defaultTranslation;
         this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -70,12 +67,9 @@ export default class H5PEditor {
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
-            keyValueStorage,
             this.libraryManager,
-            config,
-            translationService
+            config
         );
-        this.translationService = translationService;
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
@@ -87,15 +81,12 @@ export default class H5PEditor {
         );
         this.packageImporter = new PackageImporter(
             this.libraryManager,
-            this.translationService,
             this.config,
             this.contentManager,
             this.contentStorer
         );
         this.packageExporter = new PackageExporter(
             this.libraryManager,
-            translationService,
-            config,
             this.contentManager
         );
     }
@@ -106,12 +97,11 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
-    public translationService: ITranslationService;
 
+    private clientTranslation: any;
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: any;
-    private translation: any;
     private urlGenerator: UrlGenerator;
 
     /**
@@ -188,7 +178,9 @@ export default class H5PEditor {
 
         if (!(await this.libraryManager.libraryExists(library))) {
             throw new H5pError(
-                `Library ${LibraryName.toUberName(library)} was not found.`
+                'library-not-found',
+                { name: LibraryName.toUberName(library) },
+                404
             );
         }
 
@@ -197,6 +189,7 @@ export default class H5PEditor {
             semantics,
             languageObject,
             languages,
+            installedLibrary,
             upgradeScriptPath
         ] = await Promise.all([
             this.loadAssets(
@@ -210,6 +203,7 @@ export default class H5PEditor {
             this.libraryManager.loadSemantics(library),
             this.libraryManager.loadLanguage(library, language),
             this.libraryManager.listLanguages(library),
+            this.libraryManager.loadLibrary(library),
             this.libraryManager.getUpgradesScriptPath(library)
         ]);
         return {
@@ -225,6 +219,7 @@ export default class H5PEditor {
                 minor: minorVersionAsNr
             },
             javascript: assets.scripts,
+            title: installedLibrary.title,
             translations: assets.translations,
             upgradesScript: upgradeScriptPath // we don't check whether the path is null, as we can return null
         };
@@ -232,24 +227,24 @@ export default class H5PEditor {
 
     /**
      * Retrieves the installed languages for libraries
-     * @param libraryNames A list of libraries for which the language files should be retrieved.
+     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
      *                     In this list the names of the libraries don't use hyphens to separate
      *                     machine name and version.
      * @param language the language code to get the files for
      * @returns The strings of the language files
      */
     public async getLibraryLanguageFiles(
-        libraryNames: string[],
+        libraryUbernames: string[],
         language: string
     ): Promise<{ [key: string]: string }> {
         log.info(
-            `getting language files (${language}) for ${libraryNames.join(
+            `getting language files (${language}) for ${libraryUbernames.join(
                 ', '
             )}`
         );
         return (
             await Promise.all(
-                libraryNames.map(async name => {
+                libraryUbernames.map(async name => {
                     const lib = LibraryName.fromUberName(name, {
                         useWhitespace: true
                     });
@@ -326,7 +321,7 @@ export default class H5PEditor {
     /**
      * Installs a content type from the H5P Hub.
      * @param id The name of the content type to install (e.g. H5P.Test-1.0)
-     * @returns a list of installed libraries if succcesful. Will throw errors if something goes wrong.
+     * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
      */
     public async installLibrary(
         id: string,
@@ -437,7 +432,11 @@ export default class H5PEditor {
                 useWhitespace: true
             });
         } catch (error) {
-            throw new H5pError(`mainLibraryName is invalid: ${error.message}`);
+            throw new H5pError(
+                'invalid-main-library-name',
+                { message: error.message },
+                400
+            );
         }
 
         const h5pJson: IContentMetadata = await this.generateH5PJSON(
@@ -488,11 +487,7 @@ export default class H5PEditor {
                 try {
                     await promisepipe(dataStream, writeStream);
                 } catch (error) {
-                    throw new H5pError(
-                        this.translationService.getTranslation(
-                            'upload-package-failed-tmp'
-                        )
-                    );
+                    throw new H5pError('upload-package-failed-tmp');
                 }
 
                 returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
@@ -597,8 +592,8 @@ export default class H5PEditor {
                         )
                     )
             },
-            filesPath: this.config.baseUrl + this.config.temporaryFilesUrl,
-            libraryUrl: this.config.baseUrl + this.config.editorLibraryUrl,
+            filesPath: this.urlGenerator.temporaryFiles(),
+            libraryUrl: this.urlGenerator.editorLibraryFiles(),
             nodeVersionId: contentId
         };
     }
@@ -613,7 +608,7 @@ export default class H5PEditor {
             editor: this.getEditorIntegration(contentId),
             hubIsEnabled: true,
             l10n: {
-                H5P: this.translation
+                H5P: this.clientTranslation
             },
             postUserStatistics: false,
             saveFreq: false,
@@ -625,13 +620,15 @@ export default class H5PEditor {
         };
     }
 
-    private loadAssets(
+    private async loadAssets(
         libraryName: ILibraryName,
         language: string,
         loaded: object = {}
     ): Promise<IAssets> {
         const key: string = LibraryName.toUberName(libraryName);
-        if (key in loaded) return Promise.resolve(null);
+        if (key in loaded) {
+            return null;
+        }
         loaded[key] = true;
 
         const assets: IAssets = {
@@ -640,60 +637,47 @@ export default class H5PEditor {
             translations: {}
         };
 
-        return Promise.all([
+        const [library, translation] = await Promise.all([
             this.libraryManager.loadLibrary(libraryName),
             this.libraryManager.loadLanguage(libraryName, language || 'en')
-        ])
-            .then(([library, translation]) =>
-                Promise.all([
-                    this.resolveDependencies(
-                        library.preloadedDependencies || [],
-                        language,
-                        loaded
-                    ),
-                    this.resolveDependencies(
-                        library.editorDependencies || [],
-                        language,
-                        loaded
-                    )
-                ]).then(combinedDependencies => {
-                    combinedDependencies.forEach(dependencies =>
-                        dependencies.forEach(dependency => {
-                            dependency.scripts.forEach(script =>
-                                assets.scripts.push(script)
-                            );
-                            dependency.styles.forEach(script =>
-                                assets.styles.push(script)
-                            );
-                            Object.keys(dependency.translations).forEach(k => {
-                                assets.translations[k] =
-                                    dependency.translations[k];
-                            });
-                        })
-                    );
-
-                    (library.preloadedJs || []).forEach(script =>
-                        assets.scripts.push(
-                            this.urlGenerator.libraryFile(
-                                libraryName,
-                                script.path
-                            )
-                        )
-                    );
-                    (library.preloadedCss || []).forEach(style =>
-                        assets.styles.push(
-                            this.urlGenerator.libraryFile(
-                                libraryName,
-                                style.path
-                            )
-                        )
-                    );
-                    assets.translations[libraryName.machineName] =
-                        translation || undefined;
-                })
+        ]);
+        const combinedDependencies = await Promise.all([
+            this.resolveDependencies(
+                library.preloadedDependencies || [],
+                language,
+                loaded
+            ),
+            this.resolveDependencies(
+                library.editorDependencies || [],
+                language,
+                loaded
             )
+        ]);
+        combinedDependencies.forEach(dependencies =>
+            dependencies.forEach(dependency => {
+                dependency.scripts.forEach(script =>
+                    assets.scripts.push(script)
+                );
+                dependency.styles.forEach(script => assets.styles.push(script));
+                Object.keys(dependency.translations).forEach(k => {
+                    assets.translations[k] = dependency.translations[k];
+                });
+            })
+        );
 
-            .then(() => assets);
+        (library.preloadedJs || []).forEach(script =>
+            assets.scripts.push(
+                this.urlGenerator.libraryFile(libraryName, script.path)
+            )
+        );
+        (library.preloadedCss || []).forEach(style =>
+            assets.styles.push(
+                this.urlGenerator.libraryFile(libraryName, style.path)
+            )
+        );
+        assets.translations[libraryName.machineName] = translation || undefined;
+
+        return assets;
     }
 
     private resolveDependencies(

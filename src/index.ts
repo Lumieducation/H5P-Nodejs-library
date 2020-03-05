@@ -5,7 +5,6 @@ import H5pError from './helpers/H5pError';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
-import TranslationService from './TranslationService';
 
 import EditorConfig from './implementation/EditorConfig';
 import fs from './implementation/fs';
@@ -29,20 +28,17 @@ import {
     ILibraryStorage,
     ITemporaryFile,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser,
     Permission
 } from './types';
 
-// Assets
-
-import englishStrings from './translations/en.json';
-
 // Adapters
 import express from './adapters/express';
+import expressErrorHandler from './adapters/expressErrorHandler';
 
 const adapters = {
-    express
+    express,
+    expressErrorHandler
 };
 
 const fsImplementations = {
@@ -61,7 +57,6 @@ export {
     InstalledLibrary,
     LibraryName,
     PackageExporter,
-    TranslationService,
     // interfaces
     ContentId,
     IContentMetadata,
@@ -75,11 +70,8 @@ export {
     ILibraryStorage,
     ITemporaryFile,
     ITemporaryFileStorage,
-    ITranslationService,
     IUser,
     Permission,
-    // assets
-    englishStrings,
     // implementations
     EditorConfig,
     fs,

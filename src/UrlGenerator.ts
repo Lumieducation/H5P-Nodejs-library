@@ -18,6 +18,10 @@ export default class UrlGenerator {
         return `${this.config.baseUrl}${this.config.editorLibraryUrl}/${file}`;
     };
 
+    public editorLibraryFiles = (): string => {
+        return `${this.config.baseUrl}${this.config.editorLibraryUrl}/`;
+    };
+
     public libraryFile = (library: ILibraryName, file: string) => {
         return `${this.config.baseUrl}${this.config.librariesUrl}/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`;
     };
@@ -28,5 +32,9 @@ export default class UrlGenerator {
 
     public play = () => {
         return `${this.config.baseUrl}${this.config.playUrl}`;
+    };
+
+    public temporaryFiles = (): string => {
+        return this.config.baseUrl + this.config.temporaryFilesUrl;
     };
 }

@@ -13,9 +13,7 @@ import {
     IHubContentTypeWithLocalInfo,
     IHubInfo,
     IInstalledLibrary,
-    IKeyValueStorage,
     ILibraryInstallResult,
-    ITranslationService,
     IUser
 } from './types';
 
@@ -34,18 +32,14 @@ const log = new Logger('ContentTypeInformationRepository');
 export default class ContentTypeInformationRepository {
     /**
      *
-     * @param {ContentTypeCache} contentTypeCache
-     * @param {IStorage} storage
-     * @param {LibraryManager} libraryManager
-     * @param {H5PEditorConfig} config
-     * @param {TranslationService} translationService
+     * @param contentTypeCache
+     * @param libraryManager
+     * @param config
      */
     constructor(
         private contentTypeCache: ContentTypeCache,
-        private storage: IKeyValueStorage,
         private libraryManager: LibraryManager,
-        private config: IEditorConfig,
-        private translationService: ITranslationService
+        private config: IEditorConfig
     ) {
         log.info(`initialize`);
     }
@@ -93,11 +87,7 @@ export default class ContentTypeInformationRepository {
         );
         if (!machineName) {
             log.error(`content type ${machineName} not found`);
-            throw new H5pError(
-                this.translationService.getTranslation(
-                    'hub-install-no-content-type'
-                )
-            );
+            throw new H5pError('hub-install-no-content-type', {}, 404);
         }
 
         // Reject content types that are not listed in the hub
@@ -106,11 +96,7 @@ export default class ContentTypeInformationRepository {
             log.error(
                 `rejecting content type ${machineName}: content type is not listed in the hub ${this.config.hubContentTypesEndpoint}`
             );
-            throw new H5pError(
-                this.translationService.getTranslation(
-                    'hub-install-invalid-content-type'
-                )
-            );
+            throw new H5pError('hub-install-invalid-content-type', {}, 400);
         }
 
         // Reject installation of content types that the user has no permission to
@@ -118,9 +104,7 @@ export default class ContentTypeInformationRepository {
             log.warn(
                 `rejecting installation of content type ${machineName}: user has no permission`
             );
-            throw new H5pError(
-                this.translationService.getTranslation('hub-install-denied')
-            );
+            throw new H5pError('hub-install-denied', {}, 403);
         }
 
         // Download content type package from the Hub
@@ -139,16 +123,11 @@ export default class ContentTypeInformationRepository {
                     await promisepipe(response.data, writeStream);
                 } catch (error) {
                     log.error(error);
-                    throw new H5pError(
-                        this.translationService.getTranslation(
-                            'hub-install-download-failed'
-                        )
-                    );
+                    throw new H5pError('hub-install-download-failed', {}, 504);
                 }
 
                 const packageImporter = new PackageImporter(
                     this.libraryManager,
-                    this.translationService,
                     this.config
                 );
                 installedLibraries = await packageImporter.installLibrariesFromPackage(
@@ -303,7 +282,7 @@ export default class ContentTypeInformationRepository {
      * @param {IInstalledLibrary} library
      */
     private libraryIsRestricted(library: IInstalledLibrary): boolean {
-        log.verbose(`checking if library ${library.machineName} is restriced`);
+        log.verbose(`checking if library ${library.machineName} is restricted`);
         if (this.config.enableLrsContentTypes) {
             return library.restricted;
         }

@@ -61,9 +61,7 @@ describe('basic file library manager functionality', () => {
                         ),
                         false
                     )
-                ).rejects.toThrow(
-                    'Error(s) in library H5P.Example1-1.1:\ngreetingcard.js is missing.'
-                );
+                ).rejects.toThrow('library-consistency-check-file-missing');
 
                 // check if library version 1.1.2 is NOT installed
                 const installedLibraries = await libManager.getInstalled([
@@ -268,9 +266,7 @@ describe('basic file library manager functionality', () => {
                         ),
                         false
                     )
-                ).rejects.toThrow(
-                    'Error(s) in library H5P.Example1-1.1:\ngreetingcard.js is missing.'
-                );
+                ).rejects.toThrow('library-consistency-check-file-missing');
 
                 // check that library version 1.1.3 is NOT installed
                 const installedLibraries = await libManager.getInstalled([

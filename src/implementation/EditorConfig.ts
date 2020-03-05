@@ -9,7 +9,7 @@ export default class EditorConfig implements IEditorConfig {
      * @param storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
      * @param defaults default values to use instead of the ones set by this class
      */
-    constructor(storage?: IKeyValueStorage, defaults?: any) {
+    constructor(storage?: IKeyValueStorage, defaults?: Partial<IEditorConfig>) {
         this.storage = storage;
         if (defaults) {
             for (const key in defaults) {

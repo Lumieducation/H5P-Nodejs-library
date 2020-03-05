@@ -1,12 +1,18 @@
+import { H5pError } from '../../../src';
+
 export default function checkFilename(filename: string): void {
     if (/\.\.\//.test(filename)) {
-        throw new Error(
-            `Relative paths in filenames are not allowed: ${filename} is illegal`
+        throw new H5pError(
+            'storage-file-implementations:illegal-relative-filename',
+            { filename },
+            400
         );
     }
     if (filename.startsWith('/')) {
-        throw new Error(
-            `Absolute paths in filenames are not allowed: ${filename} is illegal`
+        throw new H5pError(
+            'storage-file-implementations:illegal-absolute-filename',
+            { filename },
+            400
         );
     }
 }

@@ -1,11 +1,10 @@
 import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
 import path from 'path';
 import shortid from 'shortid';
-import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import TemporaryFileManager from './TemporaryFileManager';
@@ -301,7 +300,7 @@ export default class ContentStorer {
         for (const file of oldFiles) {
             if (!newFiles.some(f => f === file)) {
                 log.debug(
-                    `Deleting unneccessary file ${file} from ${contentId}`
+                    `Deleting unnecessary file ${file} from ${contentId}`
                 );
                 try {
                     await this.contentManager.deleteContentFile(
@@ -408,8 +407,10 @@ export default class ContentStorer {
         } while (attempts < 5 && exists); // only try 5 times
         if (exists) {
             log.error(`Cannot determine a unique filename for ${filename}`);
-            throw new Error(
-                `Cannot determine a unique filename for ${filename}`
+            throw new H5pError(
+                'error-generating-unique-content-filename',
+                { filename },
+                500
             );
         }
         log.debug(`Unique filename is ${filenameAttempt}`);

@@ -58,7 +58,7 @@ const h5pEditor = H5P.fs(
 );
 ```
 
-and render the editor for content with a specific content ID with
+and render the editor for content (= the HTML user interface around the actual editor and the editor itself) with a specific content ID with
 
 ```js
 h5pEditor
@@ -119,6 +119,14 @@ The implementation needs to call several function regularly (comparable to a cro
 
 -   Call `H5PEditor.temporaryFileManager.cleanUp()` every 5 minutes. This checks which temporary files have expired and deletes them if necessary. It is important to do this, as temporary files are **not** automatically deleted when a piece of content is saved.
 -   Call `H5PEditor.contentTypeCache.updateIfNecessary()` every 12 hours. This will download information about the available content types from the H5P Hub. If you don't do this, users won't be shown new content types or updates to existing content types when they become available.
+
+### Handling errors
+
+If something goes wrong and a call to the library can't continue execution, it will normally throw either a `H5PError` or an `AggregateH5PError` (a collection of several errors). Both errors types represent errors that can be sent to the user to be displayed in the client (in the user's language). They don't include the English error message but an error id that you must translate yourself. Error ids and their English translations can be found in [`assets/translations`](/assets/translations). The translation strings follow the format used by (i18next)[https://i18next.com], but in theory you can use any localization library.
+
+Calls to the library might also throw regular `Error` objects. In this case the error is not caused by the business logic, but by some more basic functionality (file system, other library) or it might be an error that is addressed at the developer (i.e. because function parameters aren't correctly used).
+
+The Express adapter already deals with errors and returns proper HTTP status codes. Check out the implementation there for a guide how to deal with errors.
 
 ## Development & Testing
 

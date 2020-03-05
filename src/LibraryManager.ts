@@ -4,8 +4,9 @@ import globPromise from 'glob-promise';
 import path from 'path';
 import { Stream } from 'stream';
 
+import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 import { streamToString } from './helpers/StreamHelpers';
-
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
@@ -20,7 +21,6 @@ import {
     ISemanticsEntry
 } from './types';
 
-import Logger from './helpers/Logger';
 const log = new Logger('LibraryManager');
 
 /**
@@ -50,9 +50,9 @@ export default class LibraryManager {
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
-     * @param {ILibraryName} library library
-     * @param {string} filename the relative path inside the library
-     * @returns {ReadStream} a readable stream of the file's contents
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
      */
     public async getFileStream(
         library: ILibraryName,
@@ -302,7 +302,14 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            return await this.libraryStorage.getLanguageFiles(library);
+            const installedLanguages = await this.libraryStorage.getLanguageFiles(
+                library
+            );
+            // always include English as its the language of the semantics file
+            if (!installedLanguages.includes('en')) {
+                installedLanguages.push('en');
+            }
+            return installedLanguages;
         } catch (error) {
             log.warn(
                 `no languages found for library ${LibraryName.toUberName(
@@ -393,21 +400,21 @@ export default class LibraryManager {
                     library
                 )}: not installed.`
             );
-            throw new Error(
-                `Error in library ${LibraryName.toUberName(
-                    library
-                )}: not installed.`
-            );
+            throw new H5pError('library-consistency-check-not-installed', {
+                name: LibraryName.toUberName(library)
+            });
         }
 
         let metadata: ILibraryMetadata;
         try {
             metadata = await this.getJsonFile(library, 'library.json');
         } catch (error) {
-            throw new Error(
-                `Error in library ${LibraryName.toUberName(
-                    library
-                )}: library.json not readable: ${error.message}.`
+            throw new H5pError(
+                'library-consistency-check-library-json-unreadable',
+                {
+                    message: error.message,
+                    name: LibraryName.toUberName(library)
+                }
             );
         }
         if (metadata.preloadedJs) {
@@ -457,13 +464,10 @@ export default class LibraryManager {
             .filter((file: { status: boolean }) => !file.status)
             .map((file: { path: string }) => file.path);
         if (missingFiles.length > 0) {
-            let message = `Error(s) in library ${LibraryName.toUberName(
-                library
-            )}:\n`;
-            message += missingFiles
-                .map((file: string) => `${file} is missing.`)
-                .join('\n');
-            throw new Error(message);
+            throw new H5pError('library-consistency-check-file-missing', {
+                files: missingFiles,
+                name: LibraryName.toUberName(library)
+            });
         }
         return true;
     }
@@ -530,7 +534,7 @@ export default class LibraryManager {
      * @param {ILibraryName} libraryInfo the library object
      * @param {any} libraryMetadata the library metadata
      * @param {boolean} restricted true if the library can only be installed with a special permission
-     * @returns {IInstalledLibrary} the libray object (containing - among others - the id of the newly installed library)
+     * @returns {IInstalledLibrary} the library object (containing - among others - the id of the newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,

@@ -11,9 +11,9 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
+import defaultTranslation from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
-import defaultTranslation from './translations/en.player.json';
 
 import Logger from './helpers/Logger';
 
@@ -29,12 +29,11 @@ export default class H5PPlayer {
     ) {
         log.info('initialize');
         this.renderer = player;
-        this.translation = defaultTranslation;
+        this.clientTranslation = defaultTranslation;
         this.urlGenerator = new UrlGenerator(config);
     }
-
+    private clientTranslation: any;
     private renderer: any;
-    private translation: any;
     private urlGenerator: UrlGenerator;
 
     public generateIntegration(
@@ -62,7 +61,7 @@ export default class H5PPlayer {
                 }
             },
             l10n: {
-                H5P: this.translation
+                H5P: this.clientTranslation
             },
             postUserStatistics: false,
             saveFreq: false,

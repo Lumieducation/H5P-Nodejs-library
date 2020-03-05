@@ -10,7 +10,6 @@ import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../../src/LibraryManager';
 import PackageImporter from '../../src/PackageImporter';
-import TranslationService from '../../src/TranslationService';
 import { ContentId } from '../../src/types';
 
 import User from '../../examples/User';
@@ -60,7 +59,6 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         // install content & libraries
         const packageImporter = new PackageImporter(
             libraryManager,
-            new TranslationService({}),
             new EditorConfig(null),
             contentManager
         );

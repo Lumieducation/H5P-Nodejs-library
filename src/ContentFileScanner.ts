@@ -60,7 +60,7 @@ export class ContentFileScanner extends ContentScanner {
     private static urlRegExp = /^https?:\/\//;
 
     /**
-     * Loads the specified content from the ContentManager and scans its paramters (= content.json) for references
+     * Loads the specified content from the ContentManager and scans its parameters (= content.json) for references
      * to local files (= audio, video, images, generic files).
      * @param contentId the content to scan
      * @param user the user who wants to access the file

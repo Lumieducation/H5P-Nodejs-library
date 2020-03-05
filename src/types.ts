@@ -20,6 +20,36 @@ export enum Permission {
 }
 
 /**
+ * A response that is sent back to an AJAX call.
+ */
+export interface IAjaxResponse {
+    /**
+     * The actual payload. Only to be filled in if the request was successful.
+     */
+    data?: any;
+    /**
+     * Better description of the error and possibly also which action to take. Only to be filled out if success is false.
+     */
+    details?: string;
+    /**
+     * An machine readable error code that the client should be able to interpret. Only to be filled out if success is false.
+     */
+    errorCode?: string;
+    /**
+     * The HTTP status code of the request. (e.g. 200 or 404)
+     */
+    httpStatusCode?: number;
+    /**
+     * The localized error message. Only to be filled out if success is false.
+     */
+    message?: string;
+    /**
+     * True if the request was successful, false if something went wrong (errorCode and message should be filled in then).
+     */
+    success: boolean;
+}
+
+/**
  * Assets are files required by a library to work. These include JavaScript, CSS files and translations.
  */
 export interface IAssets {
@@ -42,7 +72,7 @@ export interface ILibraryName {
      */
     machineName: string;
     /**
-     * The major version of the libray (e.g. 1)
+     * The major version of the library (e.g. 1)
      */
     majorVersion: number;
     /**
@@ -154,7 +184,7 @@ export interface IEditorIntegration {
 }
 
 /**
- * This descripes the Path of JavaScript and CSS files in a library.json file.
+ * This describes the Path of JavaScript and CSS files in a library.json file.
  * This single property interface exists because the library.json file expects
  * this format.
  */
@@ -200,6 +230,10 @@ export interface ILibraryDetailedDataForClient {
      * The semantics object describing the structure of content of this type.
      */
     semantics: ISemanticsEntry[];
+    /**
+     * The human-readable title of the library.
+     */
+    title: string;
     /**
      * Used translation strings for the various libraries.
      */
@@ -391,7 +425,7 @@ export interface IContentStorage {
  * It is used to persist library information and files permanently.
  * Note that the library metadata and semantics are accessed regularly, so caching them is a good idea.
  * The library files will also be accessed frequently, so it makes sense to keep them in memory and not
- * access a harddisk every time they are downloaded.
+ * access a hard disk every time they are downloaded.
  * See the FileLibraryStorage sample implementation in the examples directory for more details.
  */
 export interface ILibraryStorage {
@@ -556,7 +590,7 @@ export interface ISemanticsEntry {
         size: any;
     };
     /**
-     * More important fields have a more promiment style in the editor.
+     * More important fields have a more prominent style in the editor.
      */
     importance?: 'low' | 'medium' | 'high';
     /**
@@ -812,27 +846,6 @@ export interface ILibraryUsageStatistics {
 }
 
 /**
- * The translation service localizes strings and performs replacements of variables.
- */
-export interface ITranslationService {
-    /**
-     * Gets the literal for the identifier and performs replacements of placeholders / variables.
-     * @param {string} id The identifier of the literal
-     * @param {[key: string]: string} replacements An object with the replacement variables in key-value format.
-     * Incidences of any key in this array are replaced with the corresponding value. Based
-     * on the first character of the key, the value is escaped and/or themed:
-     *    - !variable inserted as is
-     *    - &#064;variable escape plain text to HTML
-     *    - %variable escape text to HTML and theme as a placeholder for user-submitted content
-     * @returns The literal translated into the language used by the user and with replacements.
-     */
-    getTranslation(
-        id: string,
-        replacements?: { [key: string]: string }
-    ): string;
-}
-
-/**
  * This resolver loads data about a local library.
  */
 export type ILibraryLoader = (
@@ -1059,7 +1072,7 @@ export interface ITemporaryFileStorage {
 /**
  * This function returns the (relative) URL at which a file inside a library
  * can be accessed. It is used when URLs of library files must be inserted
- * (hardcoded) into data structures. The implementation must do this file ->
+ * (hard-coded) into data structures. The implementation must do this file ->
  * URL resolution, as it decides where the files can be accessed.
  */
 export type ILibraryFileUrlResolver = (

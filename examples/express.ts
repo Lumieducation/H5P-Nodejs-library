@@ -1,6 +1,9 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import i18next from 'i18next';
+import i18nextExpressMiddleware from 'i18next-express-middleware';
+import i18nextNodeFsBackend from 'i18next-node-fs-backend';
 import os from 'os';
 import path from 'path';
 
@@ -33,6 +36,20 @@ function displayIps(port: string): void {
 }
 
 const start = async () => {
+    await i18next
+        .use(i18nextNodeFsBackend)
+        .use(i18nextExpressMiddleware.LanguageDetector)
+        .init({
+            backend: {
+                loadPath: 'assets/translations/{{ns}}/{{lng}}.json'
+            },
+            debug: process.env.DEBUG && process.env.DEBUG.includes('i18n'),
+            defaultNS: 'server',
+            fallbackLng: 'en',
+            ns: ['server', 'storage-file-implementations'],
+            preload: ['en']
+        });
+
     const h5pEditor = H5P.fs(
         await new H5P.EditorConfig(
             new H5P.fsImplementations.JsonStorage(
@@ -62,6 +79,8 @@ const start = async () => {
         req.user = new User();
         next();
     });
+
+    server.use(i18nextExpressMiddleware.handle(i18next));
 
     server.use(
         h5pEditor.config.baseUrl,

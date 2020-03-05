@@ -12,7 +12,6 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -56,7 +55,6 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -97,7 +95,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
-            null,
             null,
             null,
             null
@@ -189,7 +186,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
-            null,
             null,
             null,
             null
@@ -290,7 +286,6 @@ describe('aggregating data from library folders for the editor', () => {
             new EditorConfig(null),
             null,
             null,
-            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -367,7 +362,6 @@ describe('aggregating data from library folders for the editor', () => {
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
-            null,
             null
         );
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
@@ -437,7 +431,6 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             // tslint:disable-next-line: prefer-object-spread
             Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
-            null,
             null,
             null,
             null
@@ -560,13 +553,12 @@ describe('aggregating data from library folders for the editor', () => {
                     new EditorConfig(null),
                     new FileLibraryStorage(tempDirPath),
                     null,
-                    null,
                     null
                 );
 
                 expect(
                     h5pEditor.getLibraryData('Foo', '1', '2')
-                ).rejects.toThrow('Library Foo-1.2 was not found.');
+                ).rejects.toThrow('library-not-found');
             },
             { keep: false, unsafeCleanup: true }
         );

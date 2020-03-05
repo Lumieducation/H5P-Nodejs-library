@@ -18,6 +18,20 @@ server.use(
 
 Note that the Express adapter does not include pages to create, editor, view, list or delete content!
 
+**IMPORTANT:** The adapter expects the requests object of Express to be extended like this:
+
+```ts
+{
+    user: IUser, // must be populated with information about the user (mostly id and access rights)
+    t: (errorId: string, replacements: {[key: string]: string }) => string 
+}
+```
+
+The function `t` must return the string for the errorId translated into the user's or the content's language.
+Replacements are added to the localized string with curly braces: {{replacement}}
+It is suggested you use [i18next](https://www.i18next.com/) for localization, but you can use any library, 
+as long as you make sure the function t is added to the request object.
+
 ## Handling requests yourself
 
 If you choose to do so, you can also handle requests manually. You must then follow these specifications:
@@ -177,8 +191,8 @@ const config = {
     coreUrl: '/core',           // URL of static player "core files"
     downloadUrl: '/download',   // URL to download h5p packages
     editorLibraryUrl: '/editor',// URL of static editor "core files" (not the content types!)
-    librariesUrl: '/libraries', // URL at which library files (= content types) can be retreived
-    paramsUrl: '/params'        // URL at which the paramteres (= content.json) of content can be retreived
+    librariesUrl: '/libraries', // URL at which library files (= content types) can be retrieved
+    paramsUrl: '/params'        // URL at which the parameters (= content.json) of content can be retrieved
     playUrl: '/play'            // URL at which content can be displayed
     ... // further configuration values
 }

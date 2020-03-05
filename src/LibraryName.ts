@@ -43,7 +43,7 @@ export default class LibraryName implements ILibraryName {
         }
     ): ILibraryName {
         if (!options.useHyphen && !options.useWhitespace) {
-            throw new H5pError(
+            throw new Error(
                 'You must call fromUberName with either the useHyphen or useWhitespace option, or both!'
             );
         }
@@ -66,8 +66,13 @@ export default class LibraryName implements ILibraryName {
                 example = 'H5P.Example 1.0';
             }
 
-            throw new Error(
-                `'${libraryName} is not a valid H5P library name ("ubername"). You must follow this pattern: ${example}'`
+            throw new H5pError(
+                'invalid-ubername-pattern',
+                {
+                    example,
+                    name: libraryName
+                },
+                400
             );
         }
 
