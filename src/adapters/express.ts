@@ -196,6 +196,41 @@ export default function(
                     );
                     res.status(200).json(uploadFileResponse);
                     break;
+                case 'filter':
+                    if (!req.body.libraryParameters) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            { error: 'libraryParameters missing' },
+                            400
+                        );
+                    }
+                    const {
+                        library: unfilteredLibrary,
+                        params: unfilteredParams,
+                        metadata: unfilteredMetadata
+                    } = JSON.parse(req.body.libraryParameters);
+
+                    if (
+                        !unfilteredLibrary ||
+                        !unfilteredParams ||
+                        !unfilteredMetadata
+                    ) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            { error: 'Property missing in libraryParameters' },
+                            400
+                        );
+                    }
+
+                    // TODO: properly filter params, this is just a hack to get uploading working
+
+                    res.status(200).json(
+                        new AjaxSuccessResponse({
+                            library: unfilteredLibrary,
+                            metadata: unfilteredMetadata,
+                            params: unfilteredParams
+                        })
+                    );
                 case 'library-install':
                     const installedLibs = await h5pEditor.installLibrary(
                         req.query.id,
