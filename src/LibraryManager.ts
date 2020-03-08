@@ -364,7 +364,6 @@ export default class LibraryManager {
                 library,
                 'library.json'
             );
-            libraryMetadata.libraryId = await this.libraryExists(library);
             return libraryMetadata;
         } catch (ignored) {
             log.warn(

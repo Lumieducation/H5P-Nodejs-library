@@ -131,13 +131,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
             );
         }
 
-        return fsExtra.createReadStream(
-            path.join(
-                this.librariesDirectory,
-                LibraryName.toUberName(library),
-                filename
-            )
-        );
+        return fsExtra.createReadStream(this.getFilePath(library, filename));
     }
 
     /**
