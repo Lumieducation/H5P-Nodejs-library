@@ -111,7 +111,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                     user
                 );
                 await expect(storage.contentExists(id)).resolves.toEqual(true);
-                const unusedId = await storage.createContentId();
+                const unusedId = "unused-123";
                 await expect(storage.contentExists(unusedId)).resolves.toEqual(
                     false
                 );

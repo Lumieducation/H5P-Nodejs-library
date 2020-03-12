@@ -137,28 +137,6 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<ContentId>} A unique content id
-     */
-    public async createContentId(): Promise<ContentId> {
-        let counter = 0;
-        let id;
-        let exists = false;
-        do {
-            id = FileContentStorage.getRandomInt(1, 2 ** 32);
-            counter += 1;
-            const p = path.join(this.contentPath, id.toString());
-            exists = await fsExtra.pathExists(p);
-        } while (exists && counter < 5); // try 5x and give up then
-        if (exists) {
-            throw new H5pError(
-                'storage-file-implementations:error-generating-content-id'
-            );
-        }
-        return id;
-    }
-
-    /**
      * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
      * @param {ContentId} id The content id to delete.
@@ -291,5 +269,27 @@ export default class FileContentStorage implements IContentStorage {
                 })
             )
         ).filter(content => content !== '');
+    }
+
+    /**
+     * Generates a unique content id that hasn't been used in the system so far.
+     * @returns {Promise<ContentId>} A unique content id
+     */
+    protected async createContentId(): Promise<ContentId> {
+        let counter = 0;
+        let id;
+        let exists = false;
+        do {
+            id = FileContentStorage.getRandomInt(1, 2 ** 32);
+            counter += 1;
+            const p = path.join(this.contentPath, id.toString());
+            exists = await fsExtra.pathExists(p);
+        } while (exists && counter < 5); // try 5x and give up then
+        if (exists) {
+            throw new H5pError(
+                'storage-file-implementations:error-generating-content-id'
+            );
+        }
+        return id;
     }
 }

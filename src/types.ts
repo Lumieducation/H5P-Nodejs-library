@@ -315,7 +315,7 @@ export interface IContentStorage {
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param contentId The id of the content to add the file to
      * @param filename The filename
-     * @param stream A readable stream that contains the data
+     * @param readStream A readable stream that contains the data
      * @param user The user who owns this object
      */
     addContentFile(
@@ -357,12 +357,6 @@ export interface IContentStorage {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId>;
-
-    /**
-     * Generates a unique content id that hasn't been used in the system so far.
-     * @returns A unique content id
-     */
-    createContentId(): Promise<ContentId>;
 
     /**
      * Deletes a content object and all its dependent files from the repository.
