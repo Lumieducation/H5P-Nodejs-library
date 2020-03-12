@@ -76,7 +76,9 @@ export default class LibraryManager {
         machineNames?: string[]
     ): Promise<{ [key: string]: IInstalledLibrary[] }> {
         log.verbose(`checking if libraries ${machineNames} are installed`);
-        let libraries = await this.libraryStorage.getInstalled(...machineNames);
+        let libraries = await this.libraryStorage.getInstalledLibraryNames(
+            ...machineNames
+        );
         libraries = (
             await Promise.all(
                 libraries.map(async libName => {
@@ -302,7 +304,7 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const installedLanguages = await this.libraryStorage.getLanguageFiles(
+            const installedLanguages = await this.libraryStorage.getLanguages(
                 library
             );
             // always include English as its the language of the semantics file
@@ -360,11 +362,7 @@ export default class LibraryManager {
     ): Promise<IInstalledLibrary> {
         try {
             log.debug(`loading library ${LibraryName.toUberName(library)}`);
-            const libraryMetadata = await this.getJsonFile(
-                library,
-                'library.json'
-            );
-            return libraryMetadata;
+            return this.libraryStorage.getLibrary(library);
         } catch (ignored) {
             log.warn(
                 `library ${LibraryName.toUberName(library)} is not installed`
@@ -406,7 +404,7 @@ export default class LibraryManager {
 
         let metadata: ILibraryMetadata;
         try {
-            metadata = await this.getJsonFile(library, 'library.json');
+            metadata = await this.libraryStorage.getLibrary(library);
         } catch (error) {
             throw new H5pError(
                 'library-consistency-check-library-json-unreadable',
@@ -496,7 +494,7 @@ export default class LibraryManager {
                 const readStream: Stream = fsExtra.createReadStream(
                     fileFullPath
                 );
-                return this.libraryStorage.addLibraryFile(
+                return this.libraryStorage.addFile(
                     libraryInfo,
                     fileLocalPath,
                     readStream
@@ -593,7 +591,7 @@ export default class LibraryManager {
                     newLibraryMetadata
                 )} from files`
             );
-            await this.libraryStorage.clearLibraryFiles(newLibraryMetadata);
+            await this.libraryStorage.clearFiles(newLibraryMetadata);
             await this.copyLibraryFiles(filesDirectory, newLibraryMetadata);
             await this.checkConsistency(newLibraryMetadata);
         } catch (error) {

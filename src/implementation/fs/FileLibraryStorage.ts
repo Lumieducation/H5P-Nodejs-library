@@ -3,6 +3,7 @@ import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { Stream } from 'stream';
+import { streamToString } from '../../helpers/StreamHelpers';
 
 import {
     H5pError,
@@ -21,10 +22,29 @@ import checkFilename from './filenameCheck';
 
 export default class FileLibraryStorage implements ILibraryStorage {
     /**
-     * @param {string} librariesDirectory The path of the directory in the file system at which libraries are stored.
+     * Gets the directory path of the specified library.
+     * @param {ILibraryName} library
+     * @returns {string} the absolute path to the directory
      */
-    constructor(private librariesDirectory: string) {
-        fsExtra.ensureDirSync(librariesDirectory);
+    protected getDirectoryPath(library: ILibraryName): string {
+        return path.join(
+            this.librariesDirectory,
+            LibraryName.toUberName(library)
+        );
+    }
+
+    /**
+     * Gets the path of any file of the specified library.
+     * @param {ILibraryName} library
+     * @param {string} filename
+     * @returns {string} the absolute path to the file
+     */
+    protected getFilePath(library: ILibraryName, filename: string): string {
+        return path.join(
+            this.librariesDirectory,
+            LibraryName.toUberName(library),
+            filename
+        );
     }
 
     /**
@@ -32,6 +52,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * extending FileLibraryStorage to hide internals.
      */
     protected ignoredFilePatterns: RegExp[] = [];
+    /**
+     * @param {string} librariesDirectory The path of the directory in the file system at which libraries are stored.
+     */
+    constructor(private librariesDirectory: string) {
+        fsExtra.ensureDirSync(librariesDirectory);
+    }
 
     /**
      * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
@@ -41,7 +67,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {Stream} stream The stream containing the file content
      * @returns {Promise<boolean>} true if successful
      */
-    public async addLibraryFile(
+    public async addFile(
         library: ILibraryName,
         filename: string,
         stream: Stream
@@ -68,7 +94,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {ILibraryName} library the library whose files should be deleted
      * @returns {Promise<void>}
      */
-    public async clearLibraryFiles(library: ILibraryName): Promise<void> {
+    public async clearFiles(library: ILibraryName): Promise<void> {
         if (!(await this.libraryExists(library))) {
             throw new H5pError(
                 'storage-file-implementations:clear-library-not-found',
@@ -139,7 +165,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param  {...string[]} machineNames (optional) only return libraries that have these machine names
      * @returns {Promise<ILibraryName[]>} the libraries installed
      */
-    public async getInstalled(
+    public async getInstalledLibraryNames(
         ...machineNames: string[]
     ): Promise<ILibraryName[]> {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
@@ -164,13 +190,35 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param {ILibraryName} library The library to get the languages for
      * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
      */
-    public async getLanguageFiles(library: ILibraryName): Promise<string[]> {
+    public async getLanguages(library: ILibraryName): Promise<string[]> {
         const files = await fsExtra.readdir(
             this.getFilePath(library, 'language')
         );
         return files
             .filter(file => path.extname(file) === '.json')
             .map(file => path.basename(file, '.json'));
+    }
+
+    /**
+     * Gets the library metadata (= content of library.json) of the library.
+     * @param library the library
+     * @returns the metadata
+     */
+    public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
+        if (!(await this.libraryExists(library))) {
+            throw new H5pError(
+                'storage-file-implementations:get-library-metadata-not-installed',
+                { libraryName: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        return InstalledLibrary.fromMetadata(
+            JSON.parse(
+                await streamToString(
+                    await this.getFileStream(library, 'library.json')
+                )
+            )
+        );
     }
 
     /**
@@ -278,32 +326,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
         );
         const newLibrary = InstalledLibrary.fromMetadata(libraryMetadata);
         return newLibrary;
-    }
-
-    /**
-     * Gets the directory path of the specified library.
-     * @param {ILibraryName} library
-     * @returns {string} the absolute path to the directory
-     */
-    protected getDirectoryPath(library: ILibraryName): string {
-        return path.join(
-            this.librariesDirectory,
-            LibraryName.toUberName(library)
-        );
-    }
-
-    /**
-     * Gets the path of any file of the specified library.
-     * @param {ILibraryName} library
-     * @param {string} filename
-     * @returns {string} the absolute path to the file
-     */
-    protected getFilePath(library: ILibraryName, filename: string): string {
-        return path.join(
-            this.librariesDirectory,
-            LibraryName.toUberName(library),
-            filename
-        );
     }
 
     /**

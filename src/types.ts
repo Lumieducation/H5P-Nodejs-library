@@ -438,9 +438,9 @@ export interface ILibraryStorage {
      * @param stream The stream containing the file content
      * @returns true if successful
      */
-    addLibraryFile(
+    addFile(
         library: ILibraryName,
-        fileLocalPath: string,
+        filename: string,
         readStream: Stream
     ): Promise<boolean>;
 
@@ -448,7 +448,7 @@ export interface ILibraryStorage {
      * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
      * @param library the library whose files should be deleted
      */
-    clearLibraryFiles(library: ILibraryName): Promise<void>;
+    clearFiles(library: ILibraryName): Promise<void>;
 
     /**
      * Check if the library contains a file.
@@ -472,14 +472,23 @@ export interface ILibraryStorage {
      * @param machineNames (optional) only return libraries that have these machine names
      * @returns the libraries installed
      */
-    getInstalled(...machineNames: string[]): Promise<ILibraryName[]>;
+    getInstalledLibraryNames(
+        ...machineNames: string[]
+    ): Promise<ILibraryName[]>;
 
     /**
      * Gets a list of installed language files for the library.
      * @param library The library to get the languages for
      * @returns The list of JSON files in the language folder (without the extension .json)
      */
-    getLanguageFiles(library: ILibraryName): Promise<string[]>;
+    getLanguages(library: ILibraryName): Promise<string[]>;
+
+    /**
+     * Gets the information about an installed library
+     * @param library the library
+     * @returns the metadata and information about the locally installed library
+     */
+    getLibrary(library: ILibraryName): Promise<IInstalledLibrary>;
 
     /**
      * Adds the metadata of the library to the repository and assigns a new id to the installed library.
