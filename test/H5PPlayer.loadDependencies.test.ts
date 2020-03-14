@@ -38,7 +38,7 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -104,7 +104,7 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -177,7 +177,7 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -243,7 +243,7 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -313,7 +313,7 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -390,7 +390,7 @@ describe('Loading dependencies', () => {
         );
 
         return h5p
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).styles.slice(2)).toEqual([
@@ -399,7 +399,7 @@ describe('Loading dependencies', () => {
                     '/baseUrl/libraryUrl/Foo-4.2/foo.css'
                 ]);
 
-                expect(h5p.getCoreScripts()).toEqual([
+                expect(h5p.listCoreScripts()).toEqual([
                     '/baseUrl/coreUrl/js/jquery.js',
                     '/baseUrl/coreUrl/js/h5p.js',
                     '/baseUrl/coreUrl/js/h5p-event-dispatcher.js',
@@ -411,7 +411,7 @@ describe('Loading dependencies', () => {
                     '/baseUrl/coreUrl/js/request-queue.js'
                 ]);
 
-                expect(h5p.getCoreStyles()).toEqual([
+                expect(h5p.listCoreStyles()).toEqual([
                     '/baseUrl/coreUrl/styles/h5p.css',
                     '/baseUrl/coreUrl/styles/h5p-confirmation-dialog.css'
                 ]);

@@ -166,7 +166,7 @@ describe('H5PEditor', () => {
                 );
 
                 // save the content
-                const contentId = await h5pEditor.saveH5P(
+                const contentId = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithoutImage,
                     mockupMetadata,
@@ -184,7 +184,7 @@ describe('H5PEditor', () => {
                 expect(contentId).not.toEqual('');
 
                 // get data we've stored previously and check if everything is in order
-                const { h5p, library, params } = await h5pEditor.loadH5P(
+                const { h5p, library, params } = await h5pEditor.getContent(
                     contentId,
                     user
                 );
@@ -213,7 +213,7 @@ describe('H5PEditor', () => {
                 );
 
                 // save content without an image
-                const contentId = await h5pEditor.saveH5P(
+                const contentId = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithoutImage,
                     mockupMetadata,
@@ -245,7 +245,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object
-                await h5pEditor.saveH5P(
+                await h5pEditor.saveOrUpdateContent(
                     contentId,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -254,7 +254,7 @@ describe('H5PEditor', () => {
                 );
 
                 // get data we've stored and check if the #tmp tag has been removed from the image
-                const { h5p, library, params } = await h5pEditor.loadH5P(
+                const { h5p, library, params } = await h5pEditor.getContent(
                     contentId,
                     user
                 );
@@ -270,7 +270,7 @@ describe('H5PEditor', () => {
                 ).resolves.toEqual(true);
 
                 // update content type without image
-                await h5pEditor.saveH5P(
+                await h5pEditor.saveOrUpdateContent(
                     contentId,
                     mockupParametersWithoutImage,
                     mockupMetadata,
@@ -326,7 +326,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object
-                const contentId1 = await h5pEditor.saveH5P(
+                const contentId1 = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -338,7 +338,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object a second time
-                const contentId2 = await h5pEditor.saveH5P(
+                const contentId2 = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -381,7 +381,7 @@ describe('H5PEditor', () => {
                 );
 
                 // save content without an image
-                const contentId = await h5pEditor.saveH5P(
+                const contentId = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithoutImage,
                     mockupMetadata,
@@ -425,7 +425,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object
-                await h5pEditor.saveH5P(
+                await h5pEditor.saveOrUpdateContent(
                     contentId,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -445,7 +445,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object a second time
-                await h5pEditor.saveH5P(
+                await h5pEditor.saveOrUpdateContent(
                     contentId,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -458,7 +458,7 @@ describe('H5PEditor', () => {
                 ).resolves.toEqual(true);
 
                 // the temporary file marker must not be present in the content parameters
-                const { params } = await h5pEditor.loadH5P(contentId, user);
+                const { params } = await h5pEditor.getContent(contentId, user);
                 expect(params.params.image.path).toEqual(cleanFilePath);
             },
             { keep: false, unsafeCleanup: true }
@@ -504,7 +504,7 @@ describe('H5PEditor', () => {
                 mockupParametersWithImage.image.path = savedFilePath;
 
                 // save the H5P content object
-                const contentId1 = await h5pEditor.saveH5P(
+                const contentId1 = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithImage,
                     mockupMetadata,
@@ -528,7 +528,7 @@ describe('H5PEditor', () => {
                         width: 300
                     }
                 };
-                const contentId2 = await h5pEditor.saveH5P(
+                const contentId2 = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     pastedMockupParametersWithImage,
                     mockupMetadata,
@@ -537,7 +537,7 @@ describe('H5PEditor', () => {
                 );
 
                 // check if newly saved content has a different file name than the original (to prevent collisions)
-                const { params: params2 } = await h5pEditor.loadH5P(
+                const { params: params2 } = await h5pEditor.getContent(
                     contentId2,
                     user
                 );
@@ -572,7 +572,7 @@ describe('H5PEditor', () => {
 
                 // save the content
                 await expect(
-                    h5pEditor.saveH5P(
+                    h5pEditor.saveOrUpdateContent(
                         undefined,
                         mockupParametersWithoutImage,
                         mockupMetadata,
@@ -599,7 +599,7 @@ describe('H5PEditor', () => {
                 );
 
                 // save the content
-                const contentId = await h5pEditor.saveH5P(
+                const contentId = await h5pEditor.saveOrUpdateContent(
                     undefined,
                     mockupParametersWithoutImage,
                     {
@@ -630,7 +630,7 @@ describe('H5PEditor', () => {
                                 resolve();
                             });
                         });
-                        await h5pEditor.exportPackage(
+                        await h5pEditor.exportContent(
                             contentId,
                             writeStream,
                             user

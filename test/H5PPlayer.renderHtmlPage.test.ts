@@ -160,7 +160,7 @@ describe('Rendering the HTML page', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect(
@@ -183,7 +183,7 @@ describe('Rendering the HTML page', () => {
             {},
             '<script src="/test" />'
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).customScripts).toBe(
@@ -205,7 +205,7 @@ describe('Rendering the HTML page', () => {
             { integration: 'test' } as any,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).integration.integration).toBe('test');
@@ -225,7 +225,7 @@ describe('Rendering the HTML page', () => {
             {} as any,
             { test: 'test' }
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect(

@@ -7,7 +7,10 @@ export default function render(
         const contentIds = await editor.contentManager.listContent();
         const contentObjects = await Promise.all(
             contentIds.map(async id => ({
-                content: await editor.contentManager.loadH5PJson(id, req.user),
+                content: await editor.contentManager.getContentMetadata(
+                    id,
+                    req.user
+                ),
                 id
             }))
         );

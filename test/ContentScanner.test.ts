@@ -59,7 +59,10 @@ export async function getContentDetails(
     contentManager: ContentManager
 ): Promise<{ mainLibraryName: ILibraryName; params: any }> {
     // load metadata for content
-    const contentMetadata = await contentManager.loadH5PJson(contentId, user);
+    const contentMetadata = await contentManager.getContentMetadata(
+        contentId,
+        user
+    );
 
     // get main library name
     const mainLibraryName = contentMetadata.preloadedDependencies.find(
@@ -67,7 +70,7 @@ export async function getContentDetails(
     );
 
     // load params
-    const params = await contentManager.loadContent(contentId, user);
+    const params = await contentManager.getContentParameters(contentId, user);
 
     return { mainLibraryName, params };
 }

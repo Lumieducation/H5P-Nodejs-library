@@ -7,15 +7,18 @@ export default function(h5pEditor: H5P.H5PEditor): express.Router {
 
     router.get(`${h5pEditor.config.playUrl}/:contentId`, (req, res) => {
         const libraryLoader = (lib, maj, min) =>
-            h5pEditor.libraryManager.loadLibrary(
+            h5pEditor.libraryManager.getLibrary(
                 new H5P.LibraryName(lib, maj, min)
             );
         Promise.all([
-            h5pEditor.contentManager.loadContent(
+            h5pEditor.contentManager.getContentParameters(
                 req.params.contentId,
                 req.user
             ),
-            h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
+            h5pEditor.contentManager.getContentMetadata(
+                req.params.contentId,
+                req.user
+            )
         ]).then(([contentObject, h5pObject]) =>
             new H5P.H5PPlayer(
                 libraryLoader as any,
@@ -35,7 +38,7 @@ export default function(h5pEditor: H5P.H5PEditor): express.Router {
     });
 
     router.post('/edit/:contentId', async (req, res) => {
-        const contentId = await h5pEditor.saveH5P(
+        const contentId = await h5pEditor.saveOrUpdateContent(
             req.params.contentId,
             req.body.params.params,
             req.body.params.metadata,
@@ -52,7 +55,7 @@ export default function(h5pEditor: H5P.H5PEditor): express.Router {
     });
 
     router.post('/new', async (req, res) => {
-        const contentId = await h5pEditor.saveH5P(
+        const contentId = await h5pEditor.saveOrUpdateContent(
             undefined,
             req.body.params.params,
             req.body.params.metadata,

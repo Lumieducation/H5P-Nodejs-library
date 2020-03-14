@@ -23,6 +23,32 @@ export default class TemporaryFileManager {
     }
 
     /**
+     * Saves a file to temporary storage. Assigns access permission to the
+     * user passed as an argument only.
+     * @param filename the original filename of the file to store
+     * @param dataStream the data of the file in a readable stream
+     * @param user the user who requests the file
+     * @returns the new filename (not equal to the filename passed to the
+     * method to unsure uniqueness)
+     */
+    public async addFile(
+        filename: string,
+        dataStream: ReadStream,
+        user: IUser
+    ): Promise<string> {
+        log.info(`Storing temporary file ${filename}`);
+        const uniqueFilename = await this.generateUniqueName(filename, user);
+        log.debug(`Assigned unique filename ${uniqueFilename}`);
+        const tmpFile = await this.storage.saveFile(
+            uniqueFilename,
+            dataStream,
+            user,
+            new Date(Date.now() + this.config.temporaryFileLifetime)
+        );
+        return tmpFile.filename;
+    }
+
+    /**
      * Removes temporary files that have expired.
      */
     public async cleanUp(): Promise<void> {
@@ -83,32 +109,6 @@ export default class TemporaryFileManager {
     }
 
     /**
-     * Saves a file to temporary storage. Assigns access permission to the
-     * user passed as an argument only.
-     * @param filename the original filename of the file to store
-     * @param dataStream the data of the file in a readable stream
-     * @param user the user who requests the file
-     * @returns the new filename (not equal to the filename passed to the
-     * method to unsure uniqueness)
-     */
-    public async saveFile(
-        filename: string,
-        dataStream: ReadStream,
-        user: IUser
-    ): Promise<string> {
-        log.info(`Storing temporary file ${filename}`);
-        const uniqueFilename = await this.generateUniqueName(filename, user);
-        log.debug(`Assigned unique filename ${uniqueFilename}`);
-        const tmpFile = await this.storage.saveFile(
-            uniqueFilename,
-            dataStream,
-            user,
-            new Date(Date.now() + this.config.temporaryFileLifetime)
-        );
-        return tmpFile.filename;
-    }
-
-    /**
      * Tries generating a unique filename for the file by appending a
      * id to it. Checks in storage if the filename already exists and
      * tries again if necessary.
@@ -117,7 +117,7 @@ export default class TemporaryFileManager {
      * @param user the user who is saving the file
      * @returns the unique filename
      */
-    private async generateUniqueName(
+    protected async generateUniqueName(
         filename: string,
         user: IUser
     ): Promise<string> {

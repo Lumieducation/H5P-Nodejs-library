@@ -67,43 +67,54 @@ export default class LibraryManager {
     }
 
     /**
-     * Get a list of the currently installed libraries.
-     * @param machineNames (if supplied) only return results for the machines names in the list
-     * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
-     * values are arrays of Library objects, which represent the different versions installed of this library.
+     * Gets the language file for the specified language.
+     * @param library
+     * @param language the language code
+     * @returns {Promise<any>} the decoded JSON data in the language file
      */
-    public async getInstalled(
-        machineNames?: string[]
-    ): Promise<{ [key: string]: IInstalledLibrary[] }> {
-        log.verbose(`checking if libraries ${machineNames} are installed`);
-        let libraries = await this.libraryStorage.getInstalledLibraryNames(
-            ...machineNames
-        );
-        libraries = (
-            await Promise.all(
-                libraries.map(async libName => {
-                    const installedLib = InstalledLibrary.fromName(libName);
-                    const info = await this.loadLibrary(libName);
-                    installedLib.patchVersion = info.patchVersion;
-                    installedLib.runnable = info.runnable;
-                    installedLib.title = info.title;
-                    return installedLib;
-                })
-            )
-        ).sort((lib1, lib2) => lib1.compare(lib2));
-
-        const returnObject = {};
-        for (const library of libraries) {
-            if (!returnObject[library.machineName]) {
-                returnObject[library.machineName] = [];
-            }
-            returnObject[library.machineName].push(library);
+    public async getLanguage(
+        library: ILibraryName,
+        language: string
+    ): Promise<any> {
+        try {
+            log.debug(
+                `loading language ${language} for library ${LibraryName.toUberName(
+                    library
+                )}`
+            );
+            return await this.getJsonFile(
+                library,
+                path.join('language', `${language}.json`)
+            );
+        } catch (ignored) {
+            log.debug(
+                `language '${language}' not found for ${LibraryName.toUberName(
+                    library
+                )}`
+            );
+            return null;
         }
-        return returnObject;
     }
 
     /**
-     * Returns a (relative) URL for a library file that can be used to hardcode
+     * Returns the information about the library that is contained in library.json.
+     * @param library The library to get (machineName, majorVersion and minorVersion is enough)
+     * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
+     */
+    public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
+        try {
+            log.debug(`loading library ${LibraryName.toUberName(library)}`);
+            return this.libraryStorage.getLibrary(library);
+        } catch (ignored) {
+            log.warn(
+                `library ${LibraryName.toUberName(library)} is not installed`
+            );
+            return undefined;
+        }
+    }
+
+    /**
+     * Returns a (relative) URL for a library file that can be used to hard-code
      * URLs of specific files if necessary. Avoid using this method when possible!
      * This method does NOT check if the file exists!
      * @param library the library for which the URL should be retrieved
@@ -117,6 +128,20 @@ export default class LibraryManager {
         const url = this.fileUrlResolver(library, file);
         log.debug(`URL resolved to ${url}`);
         return url;
+    }
+
+    /**
+     * Returns the content of semantics.json for the specified library.
+     * @param library
+     * @returns {Promise<any>} the content of semantics.json
+     */
+    public async getSemantics(
+        library: ILibraryName
+    ): Promise<ISemanticsEntry[]> {
+        log.debug(
+            `loading semantics for library ${LibraryName.toUberName(library)}`
+        );
+        return this.getJsonFile(library, 'semantics.json');
     }
 
     /**
@@ -196,7 +221,7 @@ export default class LibraryManager {
         log.info(
             `checking if library ${LibraryName.toUberName(library)} is patched`
         );
-        const wrappedLibraryInfos = await this.getInstalled([
+        const wrappedLibraryInfos = await this.listInstalledLibraries([
             library.machineName
         ]);
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
@@ -261,7 +286,7 @@ export default class LibraryManager {
         log.verbose(
             `checking if library ${library.machineName}-${library.majorVersion}.${library.minorVersion} has an upgrade`
         );
-        const wrappedLibraryInfos = await this.getInstalled([
+        const wrappedLibraryInfos = await this.listInstalledLibraries([
             library.machineName
         ]);
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
@@ -293,6 +318,42 @@ export default class LibraryManager {
     }
 
     /**
+     * Get a list of the currently installed libraries.
+     * @param machineNames (if supplied) only return results for the machines names in the list
+     * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
+     * values are arrays of Library objects, which represent the different versions installed of this library.
+     */
+    public async listInstalledLibraries(
+        machineNames?: string[]
+    ): Promise<{ [key: string]: IInstalledLibrary[] }> {
+        log.verbose(`checking if libraries ${machineNames} are installed`);
+        let libraries = await this.libraryStorage.getInstalledLibraryNames(
+            ...machineNames
+        );
+        libraries = (
+            await Promise.all(
+                libraries.map(async libName => {
+                    const installedLib = InstalledLibrary.fromName(libName);
+                    const info = await this.getLibrary(libName);
+                    installedLib.patchVersion = info.patchVersion;
+                    installedLib.runnable = info.runnable;
+                    installedLib.title = info.title;
+                    return installedLib;
+                })
+            )
+        ).sort((lib1, lib2) => lib1.compare(lib2));
+
+        const returnObject = {};
+        for (const library of libraries) {
+            if (!returnObject[library.machineName]) {
+                returnObject[library.machineName] = [];
+            }
+            returnObject[library.machineName].push(library);
+        }
+        return returnObject;
+    }
+
+    /**
      * Gets a list of translations that exist for this library.
      * @param library
      * @returns {Promise<string[]>} the language codes for translations of this library
@@ -320,69 +381,6 @@ export default class LibraryManager {
             );
             return [];
         }
-    }
-
-    /**
-     * Gets the language file for the specified language.
-     * @param library
-     * @param language the language code
-     * @returns {Promise<any>} the decoded JSON data in the language file
-     */
-    public async loadLanguage(
-        library: ILibraryName,
-        language: string
-    ): Promise<any> {
-        try {
-            log.debug(
-                `loading language ${language} for library ${LibraryName.toUberName(
-                    library
-                )}`
-            );
-            return await this.getJsonFile(
-                library,
-                path.join('language', `${language}.json`)
-            );
-        } catch (ignored) {
-            log.debug(
-                `language '${language}' not found for ${LibraryName.toUberName(
-                    library
-                )}`
-            );
-            return null;
-        }
-    }
-
-    /**
-     * Returns the information about the library that is contained in library.json.
-     * @param library The library to get (machineName, majorVersion and minorVersion is enough)
-     * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
-     */
-    public async loadLibrary(
-        library: ILibraryName
-    ): Promise<IInstalledLibrary> {
-        try {
-            log.debug(`loading library ${LibraryName.toUberName(library)}`);
-            return this.libraryStorage.getLibrary(library);
-        } catch (ignored) {
-            log.warn(
-                `library ${LibraryName.toUberName(library)} is not installed`
-            );
-            return undefined;
-        }
-    }
-
-    /**
-     * Returns the content of semantics.json for the specified library.
-     * @param library
-     * @returns {Promise<any>} the content of semantics.json
-     */
-    public async loadSemantics(
-        library: ILibraryName
-    ): Promise<ISemanticsEntry[]> {
-        log.debug(
-            `loading semantics for library ${LibraryName.toUberName(library)}`
-        );
-        return this.getJsonFile(library, 'semantics.json');
     }
 
     /**

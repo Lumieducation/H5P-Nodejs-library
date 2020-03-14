@@ -23,7 +23,7 @@ describe('TemporaryFileManager', () => {
                     new DirectoryTemporaryFileStorage(tempDirPath),
                     config
                 );
-                const newFilename = await tmpManager.saveFile(
+                const newFilename = await tmpManager.addFile(
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
@@ -63,7 +63,7 @@ describe('TemporaryFileManager', () => {
                     new DirectoryTemporaryFileStorage(tempDirPath),
                     config
                 );
-                const newFilename1 = await tmpManager.saveFile(
+                const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
@@ -72,7 +72,7 @@ describe('TemporaryFileManager', () => {
                     ),
                     user
                 );
-                const newFilename2 = await tmpManager.saveFile(
+                const newFilename2 = await tmpManager.addFile(
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
@@ -100,7 +100,7 @@ describe('TemporaryFileManager', () => {
                     );
 
                     // add file that will expire
-                    const expiringFilename = await tmpManager.saveFile(
+                    const expiringFilename = await tmpManager.addFile(
                         'expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
@@ -114,7 +114,7 @@ describe('TemporaryFileManager', () => {
                     mockdate.set(Date.now() + config.temporaryFileLifetime / 2);
 
                     // add second file that won't expire
-                    const nonExpiringFilename = await tmpManager.saveFile(
+                    const nonExpiringFilename = await tmpManager.addFile(
                         'non-expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
@@ -161,7 +161,7 @@ describe('TemporaryFileManager', () => {
                     new DirectoryTemporaryFileStorage(tempDirPath),
                     config
                 );
-                const newFilename1 = await tmpManager.saveFile(
+                const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(

@@ -5,6 +5,7 @@ import { withDir } from 'tmp-promise';
 import { createH5PEditor } from '../helpers/H5PEditor';
 
 import User from '../../examples/User';
+import { ContentMetadata } from '../../src/ContentMetadata';
 
 describe('H5PEditor.saveH5P()', () => {
     it('can save all real-world examples from the content-type-hub', async done => {
@@ -28,11 +29,11 @@ describe('H5PEditor.saveH5P()', () => {
                             user
                         );
 
-                        await h5pEditor.saveH5P(
+                        await h5pEditor.saveOrUpdateContent(
                             undefined,
                             parameters,
                             metadata,
-                            h5pEditor.getUbernameFromMetadata(metadata),
+                            ContentMetadata.toUbername(metadata),
                             user
                         );
 

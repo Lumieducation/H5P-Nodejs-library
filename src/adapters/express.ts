@@ -77,7 +77,7 @@ export default function(
     router.get(
         `${h5pEditor.config.paramsUrl}/:contentId`,
         catchAndPassOnErrors(async (req, res) => {
-            const content = await h5pEditor.loadH5P(
+            const content = await h5pEditor.getContent(
                 req.params.contentId,
                 req.user
             );
@@ -157,7 +157,7 @@ export default function(
                     res.status(200).json(libraryOverview);
                     break;
                 case 'translations':
-                    const translationsResponse = await h5pEditor.getLibraryLanguageFiles(
+                    const translationsResponse = await h5pEditor.listLibraryLanguageFiles(
                         req.body.libraries,
                         req.query.language
                     );
@@ -318,7 +318,7 @@ export default function(
                 'Content-disposition',
                 `attachment; filename=${req.params.contentId}.h5p`
             );
-            await h5pEditor.exportPackage(req.params.contentId, res, req.user);
+            await h5pEditor.exportContent(req.params.contentId, res, req.user);
         })
     );
 

@@ -34,51 +34,6 @@ export default class ContentStorer {
     private contentFileScanner: ContentFileScanner;
 
     /**
-     * Scans through the parameters of the content and copies all referenced files into
-     * temporary storage.
-     * @param packageDirectory
-     * @param user
-     * @returns the metadata and parameters of the content
-     */
-    public async copyFromDirectoryToTemporary(
-        packageDirectory: string,
-        user: IUser
-    ): Promise<{ metadata: IContentMetadata; parameters: any }> {
-        const metadata: IContentMetadata = await fsExtra.readJSON(
-            path.join(packageDirectory, 'h5p.json')
-        );
-        const parameters: ContentParameters = await fsExtra.readJSON(
-            path.join(packageDirectory, 'content', 'content.json')
-        );
-
-        const fileReferencesInParams = await this.contentFileScanner.scanForFiles(
-            parameters,
-            metadata.preloadedDependencies.find(
-                l => l.machineName === metadata.mainLibrary
-            )
-        );
-
-        for (const reference of fileReferencesInParams) {
-            const filepath = path.join(
-                packageDirectory,
-                'content',
-                reference.filePath
-            );
-            if (!(await fsExtra.pathExists(filepath))) {
-                continue;
-            }
-            const readStream = fsExtra.createReadStream(filepath);
-            const newFilename = await this.temporaryFileManager.saveFile(
-                reference.filePath,
-                readStream,
-                user
-            );
-            reference.context.params.path = `${newFilename}#tmp`;
-        }
-        return { metadata, parameters };
-    }
-
-    /**
      * Saves content in the persistence system. Also copies over files from temporary storage
      * or from other content if the content was pasted from there.
      * @param contentId the contentId (can be undefined if previously unsaved)
@@ -87,7 +42,7 @@ export default class ContentStorer {
      * @param mainLibraryName the library name
      * @param user the user who wants to save the file
      */
-    public async saveOrUpdateContent(
+    public async addOrUpdateContent(
         contentId: ContentId,
         parameters: any,
         metadata: IContentMetadata,
@@ -166,6 +121,51 @@ export default class ContentStorer {
         }
 
         return newContentId;
+    }
+
+    /**
+     * Scans through the parameters of the content and copies all referenced files into
+     * temporary storage.
+     * @param packageDirectory
+     * @param user
+     * @returns the metadata and parameters of the content
+     */
+    public async copyFromDirectoryToTemporary(
+        packageDirectory: string,
+        user: IUser
+    ): Promise<{ metadata: IContentMetadata; parameters: any }> {
+        const metadata: IContentMetadata = await fsExtra.readJSON(
+            path.join(packageDirectory, 'h5p.json')
+        );
+        const parameters: ContentParameters = await fsExtra.readJSON(
+            path.join(packageDirectory, 'content', 'content.json')
+        );
+
+        const fileReferencesInParams = await this.contentFileScanner.scanForFiles(
+            parameters,
+            metadata.preloadedDependencies.find(
+                l => l.machineName === metadata.mainLibrary
+            )
+        );
+
+        for (const reference of fileReferencesInParams) {
+            const filepath = path.join(
+                packageDirectory,
+                'content',
+                reference.filePath
+            );
+            if (!(await fsExtra.pathExists(filepath))) {
+                continue;
+            }
+            const readStream = fsExtra.createReadStream(filepath);
+            const newFilename = await this.temporaryFileManager.addFile(
+                reference.filePath,
+                readStream,
+                user
+            );
+            reference.context.params.path = `${newFilename}#tmp`;
+        }
+        return { metadata, parameters };
     }
 
     /**
@@ -352,11 +352,11 @@ export default class ContentStorer {
         contentId: string,
         user: IUser
     ): Promise<string[]> {
-        const oldParams = await this.contentManager.loadContent(
+        const oldParams = await this.contentManager.getContentParameters(
             contentId,
             user
         );
-        const oldMetadata = await this.contentManager.loadH5PJson(
+        const oldMetadata = await this.contentManager.getContentMetadata(
             contentId,
             user
         );

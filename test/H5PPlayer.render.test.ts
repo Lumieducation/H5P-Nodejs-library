@@ -13,7 +13,7 @@ describe('H5P.render()', () => {
             undefined,
             undefined
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect(model).toBeDefined();

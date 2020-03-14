@@ -88,7 +88,7 @@ describe('ContentFileScanner', () => {
                 expect(path.normalize(foundImages[0].filePath)).toEqual(
                     path.normalize('images/file-5885c18261805.jpg')
                 );
-                const parameters = await contentManager.loadContent(
+                const parameters = await contentManager.getContentParameters(
                     contentId,
                     user
                 );

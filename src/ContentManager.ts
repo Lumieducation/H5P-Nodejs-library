@@ -181,20 +181,6 @@ export default class ContentManager {
     }
 
     /**
-     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
-     * @param contentId the piece of content
-     * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
-     */
-    public async getContentFiles(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<string[]> {
-        log.info(`loading content files for ${contentId}`);
-        return this.contentStorage.listFiles(contentId, user);
-    }
-
-    /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param contentId the id of the content object that the file is attached to
      * @param filename the filename of the file to get
@@ -215,6 +201,36 @@ export default class ContentManager {
             );
         }
         return this.contentStorage.getFileStream(contentId, filename, user);
+    }
+
+    /**
+     * Returns the metadata (=contents of h5p.json) of a piece of content.
+     * @param contentId the content id
+     * @param user The user who wants to access the content
+     * @returns {Promise<any>}
+     */
+    public async getContentMetadata(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<IContentMetadata> {
+        // We don't directly return the h5p.json file content as
+        // we have to make sure it conforms to the schema.
+        return new ContentMetadata(
+            await this.getFileJson(contentId, 'h5p.json', user)
+        );
+    }
+
+    /**
+     * Returns the content object (=contents of content/content.json) of a piece of content.
+     * @param contentId the content id
+     * @param user The user who wants to access the content
+     * @returns {Promise<any>}
+     */
+    public async getContentParameters(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<ContentParameters> {
+        return this.getFileJson(contentId, 'content.json', user);
     }
 
     /**
@@ -241,33 +257,17 @@ export default class ContentManager {
     }
 
     /**
-     * Returns the content object (=contents of content/content.json) of a piece of content.
-     * @param contentId the content id
-     * @param user The user who wants to access the content
-     * @returns {Promise<any>}
+     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
-    public async loadContent(
+    public async listContentFiles(
         contentId: ContentId,
         user: IUser
-    ): Promise<ContentParameters> {
-        return this.getFileJson(contentId, 'content.json', user);
-    }
-
-    /**
-     * Returns the metadata (=contents of h5p.json) of a piece of content.
-     * @param contentId the content id
-     * @param user The user who wants to access the content
-     * @returns {Promise<any>}
-     */
-    public async loadH5PJson(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<IContentMetadata> {
-        // We don't directly return the h5p.json file content as
-        // we have to make sure it conforms to the schema.
-        return new ContentMetadata(
-            await this.getFileJson(contentId, 'h5p.json', user)
-        );
+    ): Promise<string[]> {
+        log.info(`loading content files for ${contentId}`);
+        return this.contentStorage.listFiles(contentId, user);
     }
 
     /**

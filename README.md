@@ -69,7 +69,7 @@ h5pEditor
 To use a custom renderer, change it with
 
 ```js
-h5pEditor.useRenderer(model => /** HTML string **/);
+h5pEditor.setRenderer(model => /** HTML string **/);
 ```
 
 See [the documentation page on constructing a `H5PEditor` object](docs/h5p-editor-constructor.md) for more details on how to instantiate the editor in a more customized way.

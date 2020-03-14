@@ -10,12 +10,12 @@ import {
     ILibraryName
 } from './types';
 import UrlGenerator from './UrlGenerator';
+import Logger from './helpers/Logger';
+import { ContentMetadata } from './ContentMetadata';
 
 import defaultTranslation from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
-
-import Logger from './helpers/Logger';
 
 const log = new Logger('Player');
 
@@ -57,7 +57,7 @@ export default class H5PPlayer {
                     },
                     fullScreen: false,
                     jsonContent: JSON.stringify(contentObject),
-                    library: this.getMainLibraryUbername(h5pObject)
+                    library: ContentMetadata.toUbername(h5pObject)
                 }
             },
             l10n: {
@@ -70,11 +70,11 @@ export default class H5PPlayer {
         };
     }
 
-    public getCoreScripts(): string[] {
+    public listCoreScripts(): string[] {
         return playerAssetList.scripts.core.map(this.urlGenerator.coreFile);
     }
 
-    public getCoreStyles(): string[] {
+    public listCoreStyles(): string[] {
         return playerAssetList.styles.core.map(this.urlGenerator.coreFile);
     }
 
@@ -87,23 +87,23 @@ export default class H5PPlayer {
         const model = {
             contentId,
             customScripts: this.customScripts,
-            downloadPath: this.generateDownloadPath(contentId),
+            downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
                 contentObject,
                 h5pObject
             ),
-            scripts: this.getCoreScripts(),
-            styles: this.getCoreStyles(),
+            scripts: this.listCoreScripts(),
+            styles: this.listCoreStyles(),
             translations: {}
         };
 
         const libraries = {};
-        return this.loadLibraries(
+        return this.getLibraries(
             h5pObject.preloadedDependencies || [],
             libraries
         ).then(() => {
-            this.loadAssets(
+            this.aggregateAssets(
                 h5pObject.preloadedDependencies || [],
                 model,
                 libraries
@@ -112,27 +112,13 @@ export default class H5PPlayer {
         });
     }
 
-    public useRenderer(renderer: any): H5PPlayer {
+    public setRenderer(renderer: any): H5PPlayer {
         log.info('changing renderer');
         this.renderer = renderer;
         return this;
     }
 
-    private generateDownloadPath(contentId: ContentId): string {
-        return this.urlGenerator.downloadPackage(contentId);
-    }
-
-    private getMainLibraryUbername(h5pObject: IContentMetadata): string {
-        const library = (h5pObject.preloadedDependencies || []).find(
-            lib => lib.machineName === h5pObject.mainLibrary
-        );
-
-        if (!library) return undefined;
-
-        return LibraryName.toUberName(library, { useWhitespace: true });
-    }
-
-    private loadAssets(
+    private aggregateAssets(
         dependencies: ILibraryName[],
         assets: IAssets,
         libraries: object = {},
@@ -149,7 +135,7 @@ export default class H5PPlayer {
 
             loaded[key] = true;
             const lib = libraries[key];
-            this.loadAssets(
+            this.aggregateAssets(
                 lib.preloadedDependencies || [],
                 assets,
                 libraries,
@@ -168,7 +154,11 @@ export default class H5PPlayer {
         });
     }
 
-    private loadLibraries(
+    private getDownloadPath(contentId: ContentId): string {
+        return this.urlGenerator.downloadPackage(contentId);
+    }
+
+    private getLibraries(
         dependencies: ILibraryName[],
         loaded: object
     ): Promise<void> {
@@ -190,10 +180,10 @@ export default class H5PPlayer {
 
                             if (key in loaded) return rslv();
 
-                            return this.loadLibrary(name, majVer, minVer).then(
+                            return this.getLibrary(name, majVer, minVer).then(
                                 lib => {
                                     loaded[key] = lib;
-                                    this.loadLibraries(
+                                    this.getLibraries(
                                         lib.preloadedDependencies || [],
                                         loaded
                                     ).then(() => rslv());
@@ -205,7 +195,7 @@ export default class H5PPlayer {
         });
     }
 
-    private loadLibrary(
+    private getLibrary(
         machineName: string,
         majorVersion: number,
         minorVersion: number

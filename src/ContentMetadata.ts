@@ -4,6 +4,7 @@ import {
     IContentMetadata,
     ILibraryName
 } from './types';
+import LibraryName from './LibraryName';
 
 /**
  * Content metadata object with defaults for required values and
@@ -19,7 +20,7 @@ export class ContentMetadata implements IContentMetadata {
             Object.assign(this, metadata);
         }
 
-        // Remove empty arrays for authors and changes, as this validates the
+        // Remove empty arrays for authors and changes, as this breaks the
         // H5P schema.
         if (this.authors && this.authors.length === 0) {
             this.authors = undefined;
@@ -50,4 +51,19 @@ export class ContentMetadata implements IContentMetadata {
     public w?: string;
     public yearsFrom?: string;
     public yearsTo?: string;
+
+    /**
+     * Determines the main library and returns the ubername for it (e.g. "H5P.Example 1.0").
+     * @param metadata the metadata object (=h5p.json)
+     * @returns the ubername with a whitespace as separator
+     */
+    public static toUbername(metadata: IContentMetadata): string {
+        const library = (metadata.preloadedDependencies || []).find(
+            dependency => dependency.machineName === metadata.mainLibrary
+        );
+        if (!library) {
+            return undefined;
+        }
+        return LibraryName.toUberName(library, { useWhitespace: true });
+    }
 }

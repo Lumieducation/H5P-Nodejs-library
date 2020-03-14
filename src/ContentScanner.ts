@@ -45,7 +45,7 @@ export class ContentScanner {
             )}`
         );
 
-        const mainSemantics = await this.libraryManager.loadSemantics(
+        const mainSemantics = await this.libraryManager.getSemantics(
             mainLibraryName
         );
         await this.walkSemanticsRecursive(mainSemantics, params, '$', callback);
@@ -127,7 +127,7 @@ export class ContentScanner {
                         useWhitespace: true
                     }
                 );
-                const subSemantics = await this.libraryManager.loadSemantics(
+                const subSemantics = await this.libraryManager.getSemantics(
                     subLibraryName
                 );
                 await this.walkSemanticsRecursive(

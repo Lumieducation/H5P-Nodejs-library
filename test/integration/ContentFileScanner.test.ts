@@ -100,7 +100,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
                 mainLibraryName
             );
 
-            const fileSystemFiles = await contentManager.getContentFiles(
+            const fileSystemFiles = await contentManager.listContentFiles(
                 contentId,
                 user
             );
@@ -109,7 +109,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
                 foundFiles.map(f => path.normalize(f.filePath)).sort()
             ).toEqual(fileSystemFiles.map(p => path.normalize(p)).sort());
 
-            const parameters = await contentManager.loadContent(
+            const parameters = await contentManager.getContentParameters(
                 contentId,
                 user
             );

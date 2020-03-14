@@ -217,12 +217,12 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             libManager,
             config
         );
-        await expect(repository.install(undefined, new User())).rejects.toThrow(
-            'hub-install-no-content-type'
-        );
-        await expect(repository.install('asd', new User())).rejects.toThrow(
-            'hub-install-invalid-content-type'
-        );
+        await expect(
+            repository.installContentType(undefined, new User())
+        ).rejects.toThrow('hub-install-no-content-type');
+        await expect(
+            repository.installContentType('asd', new User())
+        ).rejects.toThrow('hub-install-invalid-content-type');
     });
 
     it('install rejects unauthorized users', async () => {
@@ -254,14 +254,14 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         user.canInstallRecommended = false;
         user.canUpdateAndInstallLibraries = false;
-        await expect(repository.install('H5P.Blanks', user)).rejects.toThrow(
-            'hub-install-denied'
-        );
+        await expect(
+            repository.installContentType('H5P.Blanks', user)
+        ).rejects.toThrow('hub-install-denied');
 
         user.canInstallRecommended = true;
         user.canUpdateAndInstallLibraries = false;
         await expect(
-            repository.install('H5P.ImageHotspotQuestion', user)
+            repository.installContentType('H5P.ImageHotspotQuestion', user)
         ).rejects.toThrow('hub-install-denied');
     });
 
@@ -299,9 +299,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
                 axiosMock.restore(); // TODO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
                 await expect(
-                    repository.install('H5P.DragText', user)
+                    repository.installContentType('H5P.DragText', user)
                 ).resolves.toBeDefined();
-                const libs = await libManager.getInstalled();
+                const libs = await libManager.listInstalledLibraries();
                 expect(Object.keys(libs).length).toEqual(11); // TODO: must be adapted to changes in the Hub file
             },
             { keep: false, unsafeCleanup: true }

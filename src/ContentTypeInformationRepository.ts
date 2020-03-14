@@ -78,7 +78,7 @@ export default class ContentTypeInformationRepository {
      * @param machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
      * @returns a list of libraries that were installed (includes dependent libraries). Empty if none were installed.
      */
-    public async install(
+    public async installContentType(
         machineName: string,
         user: IUser
     ): Promise<ILibraryInstallResult[]> {
@@ -150,7 +150,7 @@ export default class ContentTypeInformationRepository {
         hubInfo: IHubContentTypeWithLocalInfo[],
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
                 machineName =>
@@ -215,7 +215,7 @@ export default class ContentTypeInformationRepository {
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
         log.info(`adding user and installation specific information`);
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped).map(
             machineName =>
                 localLibsWrapped[machineName][
