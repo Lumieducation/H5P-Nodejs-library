@@ -22,13 +22,13 @@ describe('FileContentStorage (repository that saves content objects to a local d
         await withDir(
             async ({ path: tempDirPath }) => {
                 const storage = new FileContentStorage(tempDirPath);
-                let id = await storage.createContent(
+                let id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     new User()
                 );
                 expect(typeof id).toBe('number');
-                id = await storage.createContent(
+                id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     new User(),
@@ -51,13 +51,13 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const filename = 'test.png';
                 const user = new User();
 
-                const id = await storage.createContent(
+                const id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     user
                 );
                 await expect(
-                    storage.addContentFile(id + 1, 'test.png', null, user)
+                    storage.addFile(id + 1, 'test.png', null, user)
                 ).rejects.toThrow(
                     'storage-file-implementations:add-file-content-not-found'
                 );
@@ -71,7 +71,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
             async ({ path: tempDirPath }) => {
                 const user = new User();
                 const storage = new FileContentStorage(tempDirPath);
-                const id = await storage.createContent(
+                const id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     user
@@ -105,13 +105,13 @@ describe('FileContentStorage (repository that saves content objects to a local d
             async ({ path: tempDirPath }) => {
                 const user = new User();
                 const storage = new FileContentStorage(tempDirPath);
-                const id = await storage.createContent(
+                const id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     user
                 );
                 await expect(storage.contentExists(id)).resolves.toEqual(true);
-                const unusedId = "unused-123";
+                const unusedId = 'unused-123';
                 await expect(storage.contentExists(unusedId)).resolves.toEqual(
                     false
                 );
@@ -125,7 +125,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
             async ({ path: tempDirPath }) => {
                 const user = new User();
                 const storage = new FileContentStorage(tempDirPath);
-                const id = await storage.createContent(
+                const id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     user
@@ -136,15 +136,15 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 };
                 stream1.push('dummy');
                 stream1.push(null);
-                await storage.addContentFile(id, 'file1.txt', stream1, user);
+                await storage.addFile(id, 'file1.txt', stream1, user);
                 const stream2 = new Readable();
                 stream2._read = () => {
                     return;
                 };
                 stream2.push('dummy');
                 stream2.push(null);
-                await storage.addContentFile(id, 'file2.txt', stream2, user);
-                const files = await storage.getContentFiles(id, user);
+                await storage.addFile(id, 'file2.txt', stream2, user);
+                const files = await storage.listFiles(id, user);
                 expect(files).toMatchObject(['file1.txt', 'file2.txt']);
             },
             { keep: false, unsafeCleanup: true }
@@ -156,7 +156,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
             async ({ path: tempDirPath }) => {
                 const user = new User();
                 const storage = new FileContentStorage(tempDirPath);
-                const id = await storage.createContent(
+                const id = await storage.addContent(
                     createMetadataMock(),
                     {},
                     user
@@ -168,16 +168,16 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 stream1.push('dummy');
                 stream1.push(null);
                 await expect(
-                    storage.addContentFile(id, '../file1.txt', stream1, user)
+                    storage.addFile(id, '../file1.txt', stream1, user)
                 ).rejects.toThrow('illegal-relative-filename');
                 await expect(
-                    storage.contentFileExists(id, '../file1.txt')
+                    storage.fileExists(id, '../file1.txt')
                 ).rejects.toThrow('illegal-relative-filename');
                 await expect(
-                    storage.deleteContentFile(id, '../file1.txt')
+                    storage.deleteFile(id, '../file1.txt')
                 ).rejects.toThrow('illegal-relative-filename');
                 expect(() => {
-                    storage.getContentFileStream(id, '../file1.txt', user);
+                    storage.getFileStream(id, '../file1.txt', user);
                 }).toThrow('illegal-relative-filename');
             },
             { keep: false, unsafeCleanup: true }

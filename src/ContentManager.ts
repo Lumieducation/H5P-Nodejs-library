@@ -50,12 +50,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<void> {
         log.info(`adding file ${filename} to content ${contentId}`);
-        return this.contentStorage.addContentFile(
-            contentId,
-            filename,
-            stream,
-            user
-        );
+        return this.contentStorage.addFile(contentId, filename, stream, user);
     }
 
     /**
@@ -78,7 +73,7 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string
     ): Promise<boolean> {
-        return this.contentStorage.contentFileExists(contentId, filename);
+        return this.contentStorage.fileExists(contentId, filename);
     }
 
     /**
@@ -108,7 +103,7 @@ export default class ContentManager {
                 path.relative(packageDirectory, file) !== 'content.json'
         );
 
-        const newContentId: ContentId = await this.contentStorage.createContent(
+        const newContentId: ContentId = await this.contentStorage.addContent(
             metadata,
             parameters,
             user,
@@ -123,7 +118,7 @@ export default class ContentManager {
                         file
                     );
                     log.debug(`adding ${file} to ${packageDirectory}`);
-                    return this.contentStorage.addContentFile(
+                    return this.contentStorage.addFile(
                         newContentId,
                         localPath,
                         readStream
@@ -153,7 +148,7 @@ export default class ContentManager {
         contentId?: ContentId
     ): Promise<ContentId> {
         log.info(`creating content for ${contentId}`);
-        return this.contentStorage.createContent(
+        return this.contentStorage.addContent(
             metadata,
             content,
             user,
@@ -182,7 +177,7 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string
     ): Promise<void> {
-        return this.contentStorage.deleteContentFile(contentId, filename);
+        return this.contentStorage.deleteFile(contentId, filename);
     }
 
     /**
@@ -196,7 +191,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<string[]> {
         log.info(`loading content files for ${contentId}`);
-        return this.contentStorage.getContentFiles(contentId, user);
+        return this.contentStorage.listFiles(contentId, user);
     }
 
     /**
@@ -212,20 +207,14 @@ export default class ContentManager {
         user: IUser
     ): Promise<ReadStream> {
         log.debug(`loading ${filename} for ${contentId}`);
-        if (
-            !(await this.contentStorage.contentFileExists(contentId, filename))
-        ) {
+        if (!(await this.contentStorage.fileExists(contentId, filename))) {
             throw new H5pError(
                 'content-file-missing',
                 { filename, contentId },
                 404
             );
         }
-        return this.contentStorage.getContentFileStream(
-            contentId,
-            filename,
-            user
-        );
+        return this.contentStorage.getFileStream(contentId, filename, user);
     }
 
     /**
@@ -294,7 +283,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<any> {
         log.debug(`loading ${file} for ${contentId}`);
-        const stream: Stream = this.contentStorage.getContentFileStream(
+        const stream: Stream = this.contentStorage.getFileStream(
             contentId,
             file,
             user

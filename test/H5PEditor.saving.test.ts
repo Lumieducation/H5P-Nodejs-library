@@ -266,7 +266,7 @@ describe('H5PEditor', () => {
 
                 // check if image is now in permanent storage
                 await expect(
-                    contentStorage.contentFileExists(contentId, newFilename)
+                    contentStorage.fileExists(contentId, newFilename)
                 ).resolves.toEqual(true);
 
                 // update content type without image
@@ -280,7 +280,7 @@ describe('H5PEditor', () => {
 
                 // check if file was deleted from storage
                 await expect(
-                    contentStorage.contentFileExists(contentId, newFilename)
+                    contentStorage.fileExists(contentId, newFilename)
                 ).resolves.toEqual(false);
             },
             { keep: false, unsafeCleanup: true }
@@ -355,10 +355,10 @@ describe('H5PEditor', () => {
                     savedFilePath.length - 4
                 );
                 await expect(
-                    contentStorage.contentFileExists(contentId1, cleanFilePath)
+                    contentStorage.fileExists(contentId1, cleanFilePath)
                 ).resolves.toEqual(true);
                 await expect(
-                    contentStorage.contentFileExists(contentId2, cleanFilePath)
+                    contentStorage.fileExists(contentId2, cleanFilePath)
                 ).resolves.toEqual(true);
             },
             { keep: false, unsafeCleanup: true }
@@ -454,7 +454,7 @@ describe('H5PEditor', () => {
                 );
                 // expect the image to be exist in the content
                 await expect(
-                    contentStorage.contentFileExists(contentId, cleanFilePath)
+                    contentStorage.fileExists(contentId, cleanFilePath)
                 ).resolves.toEqual(true);
 
                 // the temporary file marker must not be present in the content parameters
@@ -549,15 +549,12 @@ describe('H5PEditor', () => {
 
                 // check if first saved content still has content file
                 await expect(
-                    contentStorage.contentFileExists(
-                        contentId1,
-                        cleanSavedFilePath
-                    )
+                    contentStorage.fileExists(contentId1, cleanSavedFilePath)
                 ).resolves.toEqual(true);
 
                 // check if second saved content has copy of content file
                 await expect(
-                    contentStorage.contentFileExists(
+                    contentStorage.fileExists(
                         contentId2,
                         params2.params.image.path
                     )

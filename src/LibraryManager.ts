@@ -543,7 +543,7 @@ export default class LibraryManager {
                 libraryMetadata
             )} from ${fromDirectory}`
         );
-        const newLibraryInfo = await this.libraryStorage.installLibrary(
+        const newLibraryInfo = await this.libraryStorage.addLibrary(
             libraryMetadata,
             restricted
         );
@@ -557,7 +557,7 @@ export default class LibraryManager {
                     libraryMetadata
                 )}. Reverting installation.`
             );
-            await this.libraryStorage.removeLibrary(libraryMetadata);
+            await this.libraryStorage.deleteLibrary(libraryMetadata);
             throw error;
         }
         log.debug(
@@ -599,7 +599,7 @@ export default class LibraryManager {
             log.info(
                 `removing library ${LibraryName.toUberName(newLibraryMetadata)}`
             );
-            await this.libraryStorage.removeLibrary(newLibraryMetadata);
+            await this.libraryStorage.deleteLibrary(newLibraryMetadata);
             throw error;
         }
     }

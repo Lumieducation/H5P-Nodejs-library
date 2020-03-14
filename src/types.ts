@@ -312,13 +312,31 @@ export interface IUser {
  */
 export interface IContentStorage {
     /**
-     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
+     * Creates a content object in the repository. Content files (like images) are added to it later
+     * with addFile(...).
+     * Throws an error if something went wrong. In this case the calling method will remove all traces of
+     * the content and all changes are reverted.
+     * @param metadata The content metadata of the content (= h5p.json)
+     * @param content the content object (= content/content.json)
+     * @param user The user who owns this object.
+     * @param contentId (optional) The content id to use
+     * @returns The newly assigned content id
+     */
+    addContent(
+        metadata: IContentMetadata,
+        content: any,
+        user: IUser,
+        contentId?: ContentId
+    ): Promise<ContentId>;
+
+    /**
+     * Adds a content file to an existing content object. The content object has to be created with addContent(...) first.
      * @param contentId The id of the content to add the file to
      * @param filename The filename
      * @param readStream A readable stream that contains the data
-     * @param user The user who owns this object
+     * @param user (optional) The user who owns this object
      */
-    addContentFile(
+    addFile(
         contentId: ContentId,
         filename: string,
         readStream: Stream,
@@ -333,32 +351,6 @@ export interface IContentStorage {
     contentExists(contentId: ContentId): Promise<boolean>;
 
     /**
-     * Checks if a file exists.
-     * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get
-     * @returns true if the file exists
-     */
-    contentFileExists(contentId: ContentId, filename: string): Promise<boolean>;
-
-    /**
-     * Creates a content object in the repository. Content files (like images) are added to it later
-     * with addContentFile(...).
-     * Throws an error if something went wrong. In this case the calling method will remove all traces of
-     * the content and all changes are reverted.
-     * @param metadata The content metadata of the content (= h5p.json)
-     * @param content the content object (= content/content.json)
-     * @param user The user who owns this object.
-     * @param id (optional) The content id to use
-     * @returns The newly assigned content id
-     */
-    createContent(
-        metadata: IContentMetadata,
-        content: any,
-        user: IUser,
-        contentId?: ContentId
-    ): Promise<ContentId>;
-
-    /**
      * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
      * @param id The content id to delete.
@@ -371,15 +363,15 @@ export interface IContentStorage {
      * @param contentId the content object the file is attached to
      * @param filename the file to delete
      */
-    deleteContentFile(contentId: ContentId, filename: string): Promise<void>;
+    deleteFile(contentId: ContentId, filename: string): Promise<void>;
 
     /**
-     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
-     * @param contentId the piece of content
-     * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get
+     * @returns true if the file exists
      */
-    getContentFiles(contentId: ContentId, user: IUser): Promise<string[]>;
+    fileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
@@ -389,11 +381,7 @@ export interface IContentStorage {
      * @param user the user who wants to retrieve the content file
      * @returns the stream (that can be used to send the file to the user)
      */
-    getContentFileStream(
-        contentId: ContentId,
-        file: string,
-        user: IUser
-    ): ReadStream;
+    getFileStream(contentId: ContentId, file: string, user: IUser): ReadStream;
 
     /**
      * Returns an array of permissions that the user has on the piece of content
@@ -412,6 +400,14 @@ export interface IContentStorage {
      * @returns a list of contentIds
      */
     listContent(user?: IUser): Promise<ContentId[]>;
+
+    /**
+     * Gets the filenames of files added to the content with addFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
+     */
+    listFiles(contentId: ContentId, user: IUser): Promise<string[]>;
 }
 
 /**
@@ -424,8 +420,8 @@ export interface IContentStorage {
  */
 export interface ILibraryStorage {
     /**
-     * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
-     * Throws an error if something unexpected happens. In this case the method calling addLibraryFile(...) will clean
+     * Adds a library file to a library. The library metadata must have been installed with addLibrary(...) first.
+     * Throws an error if something unexpected happens. In this case the method calling addFile(...) will clean
      * up the partly installed library.
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
@@ -439,10 +435,30 @@ export interface ILibraryStorage {
     ): Promise<boolean>;
 
     /**
+     * Adds the metadata of the library to the repository and assigns a new id to the installed library.
+     * This dea is used later when the library must be referenced somewhere.
+     * Throws errors if something goes wrong.
+     * @param libraryMetadata The library metadata object (= content of library.json)
+     * @param restricted True if the library can only be used be users allowed to install restricted libraries.
+     * @returns The newly created library object to use when adding library files with addFile(...)
+     */
+    addLibrary(
+        libraryData: ILibraryMetadata,
+        restricted: boolean
+    ): Promise<IInstalledLibrary>;
+
+    /**
      * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
      * @param library the library whose files should be deleted
      */
     clearFiles(library: ILibraryName): Promise<void>;
+
+    /**
+     * Removes the library and all its files from the repository.
+     * Throws errors if something went wrong.
+     * @param library The library to remove.
+     */
+    deleteLibrary(library: ILibraryName): Promise<void>;
 
     /**
      * Check if the library contains a file.
@@ -485,19 +501,6 @@ export interface ILibraryStorage {
     getLibrary(library: ILibraryName): Promise<IInstalledLibrary>;
 
     /**
-     * Adds the metadata of the library to the repository and assigns a new id to the installed library.
-     * This dea is used later when the library must be referenced somewhere.
-     * Throws errors if something goes wrong.
-     * @param libraryMetadata The library metadata object (= content of library.json)
-     * @param restricted True if the library can only be used be users allowed to install restricted libraries.
-     * @returns The newly created library object to use when adding library files with addLibraryFile(...)
-     */
-    installLibrary(
-        libraryData: ILibraryMetadata,
-        restricted: boolean
-    ): Promise<IInstalledLibrary>;
-
-    /**
      * Checks if the library has been installed.
      * @param name the library name
      * @returns true if the library has been installed
@@ -512,16 +515,9 @@ export interface ILibraryStorage {
     listFiles(library: ILibraryName): Promise<string[]>;
 
     /**
-     * Removes the library and all its files from the repository.
-     * Throws errors if something went wrong.
-     * @param library The library to remove.
-     */
-    removeLibrary(library: ILibraryName): Promise<void>;
-
-    /**
      * Updates the library metadata. This is necessary when updating to a new patch version.
-     * After this clearLibraryFiles(...) is called by the LibraryManager to remove all old files.
-     * The next step is to add the patched files with addLibraryFile(...).
+     * After this clearFiles(...) is called by the LibraryManager to remove all old files.
+     * The next step is to add the patched files with addFile(...).
      * @param libraryMetadata the new library metadata
      * @returns The updated library object
      */

@@ -20,6 +20,27 @@ import checkFilename from './filenameCheck';
  */
 export default class FileContentStorage implements IContentStorage {
     /**
+     * Generates a unique content id that hasn't been used in the system so far.
+     * @returns {Promise<ContentId>} A unique content id
+     */
+    protected async createContentId(): Promise<ContentId> {
+        let counter = 0;
+        let id;
+        let exists = false;
+        do {
+            id = FileContentStorage.getRandomInt(1, 2 ** 32);
+            counter += 1;
+            const p = path.join(this.contentPath, id.toString());
+            exists = await fsExtra.pathExists(p);
+        } while (exists && counter < 5); // try 5x and give up then
+        if (exists) {
+            throw new H5pError(
+                'storage-file-implementations:error-generating-content-id'
+            );
+        }
+        return id;
+    }
+    /**
      * @param {string} contentPath The absolute path to the directory where the content should be stored
      */
     constructor(private contentPath: string) {
@@ -39,6 +60,44 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
+     * Creates a content object in the repository. Add files to it later with addContentFile(...).
+     * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
+     * @param {any} metadata The metadata of the content (= h5p.json)
+     * @param {any} content the content object (= content/content.json)
+     * @param {User} user The user who owns this object.
+     * @param {ContentId} id (optional) The content id to use
+     * @returns {Promise<ContentId>} The newly assigned content id
+     */
+    public async addContent(
+        metadata: IContentMetadata,
+        content: any,
+        user: IUser,
+        id?: ContentId
+    ): Promise<ContentId> {
+        if (id === undefined || id === null) {
+            // tslint:disable-next-line: no-parameter-reassignment
+            id = await this.createContentId();
+        }
+        try {
+            await fsExtra.ensureDir(path.join(this.contentPath, id.toString()));
+            await fsExtra.writeJSON(
+                path.join(this.contentPath, id.toString(), 'h5p.json'),
+                metadata
+            );
+            await fsExtra.writeJSON(
+                path.join(this.contentPath, id.toString(), 'content.json'),
+                content
+            );
+        } catch (error) {
+            await fsExtra.remove(path.join(this.contentPath, id.toString()));
+            throw new H5pError(
+                'storage-file-implementations:error-creating-content'
+            );
+        }
+        return id;
+    }
+
+    /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
      * @param {ContentId} id The id of the content to add the file to
      * @param {string} filename The filename
@@ -46,7 +105,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param {User} user The user who owns this object
      * @returns {Promise<void>}
      */
-    public async addContentFile(
+    public async addFile(
         id: ContentId,
         filename: string,
         stream: Stream,
@@ -83,60 +142,6 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Checks if a file exists.
-     * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get
-     * @returns true if the file exists
-     */
-    public async contentFileExists(
-        contentId: ContentId,
-        filename: string
-    ): Promise<boolean> {
-        checkFilename(filename);
-        return fsExtra.pathExists(
-            path.join(this.contentPath, contentId.toString(), filename)
-        );
-    }
-
-    /**
-     * Creates a content object in the repository. Add files to it later with addContentFile(...).
-     * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
-     * @param {any} metadata The metadata of the content (= h5p.json)
-     * @param {any} content the content object (= content/content.json)
-     * @param {User} user The user who owns this object.
-     * @param {ContentId} id (optional) The content id to use
-     * @returns {Promise<ContentId>} The newly assigned content id
-     */
-    public async createContent(
-        metadata: IContentMetadata,
-        content: any,
-        user: IUser,
-        id?: ContentId
-    ): Promise<ContentId> {
-        if (id === undefined || id === null) {
-            // tslint:disable-next-line: no-parameter-reassignment
-            id = await this.createContentId();
-        }
-        try {
-            await fsExtra.ensureDir(path.join(this.contentPath, id.toString()));
-            await fsExtra.writeJSON(
-                path.join(this.contentPath, id.toString(), 'h5p.json'),
-                metadata
-            );
-            await fsExtra.writeJSON(
-                path.join(this.contentPath, id.toString(), 'content.json'),
-                content
-            );
-        } catch (error) {
-            await fsExtra.remove(path.join(this.contentPath, id.toString()));
-            throw new H5pError(
-                'storage-file-implementations:error-creating-content'
-            );
-        }
-        return id;
-    }
-
-    /**
      * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
      * @param {ContentId} id The content id to delete.
@@ -164,7 +169,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param contentId the content object the file is attached to
      * @param filename the file to delete
      */
-    public async deleteContentFile(
+    public async deleteFile(
         contentId: ContentId,
         filename: string
     ): Promise<void> {
@@ -185,30 +190,19 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
-     * @param contentId the piece of content
-     * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
+     * Checks if a file exists.
+     * @param contentId The id of the content to add the file to
+     * @param filename the filename of the file to get
+     * @returns true if the file exists
      */
-    public async getContentFiles(
+    public async fileExists(
         contentId: ContentId,
-        user: IUser
-    ): Promise<string[]> {
-        const contentDirectoryPath = path.join(
-            this.contentPath,
-            contentId.toString()
+        filename: string
+    ): Promise<boolean> {
+        checkFilename(filename);
+        return fsExtra.pathExists(
+            path.join(this.contentPath, contentId.toString(), filename)
         );
-        const absolutePaths = await globPromise(
-            path.join(contentDirectoryPath, '**', '*.*'),
-            {
-                ignore: [
-                    path.join(contentDirectoryPath, 'content.json'),
-                    path.join(contentDirectoryPath, 'h5p.json')
-                ],
-                nodir: true
-            }
-        );
-        return absolutePaths.map(p => path.relative(contentDirectoryPath, p));
     }
 
     /**
@@ -218,7 +212,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param {User} user the user who wants to retrieve the content file
      * @returns {Stream}
      */
-    public getContentFileStream(
+    public getFileStream(
         id: ContentId,
         filename: string,
         user: IUser
@@ -272,24 +266,29 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<ContentId>} A unique content id
+     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
-    protected async createContentId(): Promise<ContentId> {
-        let counter = 0;
-        let id;
-        let exists = false;
-        do {
-            id = FileContentStorage.getRandomInt(1, 2 ** 32);
-            counter += 1;
-            const p = path.join(this.contentPath, id.toString());
-            exists = await fsExtra.pathExists(p);
-        } while (exists && counter < 5); // try 5x and give up then
-        if (exists) {
-            throw new H5pError(
-                'storage-file-implementations:error-generating-content-id'
-            );
-        }
-        return id;
+    public async listFiles(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<string[]> {
+        const contentDirectoryPath = path.join(
+            this.contentPath,
+            contentId.toString()
+        );
+        const absolutePaths = await globPromise(
+            path.join(contentDirectoryPath, '**', '*.*'),
+            {
+                ignore: [
+                    path.join(contentDirectoryPath, 'content.json'),
+                    path.join(contentDirectoryPath, 'h5p.json')
+                ],
+                nodir: true
+            }
+        );
+        return absolutePaths.map(p => path.relative(contentDirectoryPath, p));
     }
 }

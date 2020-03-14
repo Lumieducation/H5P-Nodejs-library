@@ -90,6 +90,47 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Adds the metadata of the library to the repository.
+     * Throws errors if something goes wrong.
+     * @param {ILibraryMetadata} libraryMetadata The library metadata object (= content of library.json)
+     * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
+     * @returns {Promise<IInstalledLibrary>} The newly created library object to use when adding library files with addFile(...)
+     */
+    public async addLibrary(
+        libraryMetadata: ILibraryMetadata,
+        restricted: boolean = false
+    ): Promise<IInstalledLibrary> {
+        const library = new InstalledLibrary(
+            libraryMetadata.machineName,
+            libraryMetadata.majorVersion,
+            libraryMetadata.minorVersion,
+            libraryMetadata.patchVersion,
+            restricted
+        );
+
+        const libPath = this.getDirectoryPath(library);
+        if (await fsExtra.pathExists(libPath)) {
+            throw new H5pError(
+                'storage-file-implementations:install-library-already-installed',
+                {
+                    libraryName: LibraryName.toUberName(library)
+                }
+            );
+        }
+        try {
+            await fsExtra.ensureDir(libPath);
+            await fsExtra.writeJSON(
+                this.getFilePath(library, 'library.json'),
+                libraryMetadata
+            );
+            return library;
+        } catch (error) {
+            await fsExtra.remove(libPath);
+            throw error;
+        }
+    }
+
+    /**
      * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
      * @param {ILibraryName} library the library whose files should be deleted
      * @returns {Promise<void>}
@@ -112,6 +153,24 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 fsExtra.remove(this.getFilePath(library, entry))
             )
         );
+    }
+
+    /**
+     * Removes the library and all its files from the repository.
+     * Throws errors if something went wrong.
+     * @param {ILibraryName} library The library to remove.
+     * @returns {Promise<void>}
+     */
+    public async deleteLibrary(library: ILibraryName): Promise<void> {
+        const libPath = this.getDirectoryPath(library);
+        if (!(await fsExtra.pathExists(libPath))) {
+            throw new H5pError(
+                'storage-file-implementations:remove-library-library-missing',
+                { libraryName: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        await fsExtra.remove(libPath);
     }
 
     /**
@@ -222,47 +281,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Adds the metadata of the library to the repository.
-     * Throws errors if something goes wrong.
-     * @param {ILibraryMetadata} libraryMetadata The library metadata object (= content of library.json)
-     * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
-     * @returns {Promise<IInstalledLibrary>} The newly created library object to use when adding library files with addLibraryFile(...)
-     */
-    public async installLibrary(
-        libraryMetadata: ILibraryMetadata,
-        restricted: boolean = false
-    ): Promise<IInstalledLibrary> {
-        const library = new InstalledLibrary(
-            libraryMetadata.machineName,
-            libraryMetadata.majorVersion,
-            libraryMetadata.minorVersion,
-            libraryMetadata.patchVersion,
-            restricted
-        );
-
-        const libPath = this.getDirectoryPath(library);
-        if (await fsExtra.pathExists(libPath)) {
-            throw new H5pError(
-                'storage-file-implementations:install-library-already-installed',
-                {
-                    libraryName: LibraryName.toUberName(library)
-                }
-            );
-        }
-        try {
-            await fsExtra.ensureDir(libPath);
-            await fsExtra.writeJSON(
-                this.getFilePath(library, 'library.json'),
-                libraryMetadata
-            );
-            return library;
-        } catch (error) {
-            await fsExtra.remove(libPath);
-            throw error;
-        }
-    }
-
-    /**
      * Checks if the library has been installed.
      * @param name the library name
      * @returns true if the library has been installed
@@ -284,27 +302,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Removes the library and all its files from the repository.
-     * Throws errors if something went wrong.
-     * @param {ILibraryName} library The library to remove.
-     * @returns {Promise<void>}
-     */
-    public async removeLibrary(library: ILibraryName): Promise<void> {
-        const libPath = this.getDirectoryPath(library);
-        if (!(await fsExtra.pathExists(libPath))) {
-            throw new H5pError(
-                'storage-file-implementations:remove-library-library-missing',
-                { libraryName: LibraryName.toUberName(library) },
-                404
-            );
-        }
-        await fsExtra.remove(libPath);
-    }
-
-    /**
      * Updates the library metadata.
      * This is necessary when updating to a new patch version.
-     * You also need to call clearLibraryFiles(...) to remove all old files during the update process and addLibraryFile(...)
+     * You also need to call clearFiles(...) to remove all old files during the update process and addFile(...)
      * to add the files of the patch.
      * @param {ILibraryMetadata} libraryMetadata the new library metadata
      * @returns {Promise<IInstalledLibrary>} The updated library object
