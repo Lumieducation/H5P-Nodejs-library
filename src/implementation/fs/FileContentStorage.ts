@@ -21,7 +21,7 @@ import checkFilename from './filenameCheck';
 export default class FileContentStorage implements IContentStorage {
     /**
      * Generates a unique content id that hasn't been used in the system so far.
-     * @returns {Promise<ContentId>} A unique content id
+     * @returns A unique content id
      */
     protected async createContentId(): Promise<ContentId> {
         let counter = 0;
@@ -51,7 +51,7 @@ export default class FileContentStorage implements IContentStorage {
      * Returns a random integer
      * @param min The minimum
      * @param max The maximum
-     * @returns {number} a random integer
+     * @returns a random integer
      */
     private static getRandomInt(min: number, max: number): number {
         const finalMin = Math.ceil(min);
@@ -66,7 +66,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param content the content object (= content/content.json)
      * @param user The user who owns this object.
      * @param id (optional) The content id to use
-     * @returns {Promise<ContentId>} The newly assigned content id
+     * @returns The newly assigned content id
      */
     public async addContent(
         metadata: IContentMetadata,
@@ -103,7 +103,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param filename The filename
      * @param stream A readable stream that contains the data
      * @param user The user who owns this object
-     * @returns {Promise<void>}
+     * @returns
      */
     public async addFile(
         id: ContentId,
@@ -146,7 +146,7 @@ export default class FileContentStorage implements IContentStorage {
      * Throws errors if something goes wrong.
      * @param id The content id to delete.
      * @param user The user who wants to delete the content
-     * @returns {Promise<void>}
+     * @returns
      */
     public async deleteContent(id: ContentId, user?: IUser): Promise<void> {
         if (
@@ -210,7 +210,7 @@ export default class FileContentStorage implements IContentStorage {
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
-     * @returns {Stream}
+     * @returns
      */
     public getFileStream(
         id: ContentId,

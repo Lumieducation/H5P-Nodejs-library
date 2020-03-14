@@ -143,7 +143,7 @@ export default class ContentTypeInformationRepository {
     /**
      *
      * @param hubInfo
-     * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about
+     * @returns The original hub information as passed into the method with appended information about
      * locally installed libraries.
      */
     private async addLocalLibraries(
@@ -208,7 +208,7 @@ export default class ContentTypeInformationRepository {
     /**
      * Adds information about installation status, restriction, right to install and up-to-dateness.
      * @param hubInfo
-     * @returns {Promise<any[]>} The hub information as passed into the method with added information.
+     * @returns The hub information as passed into the method with added information.
      */
     private async addUserAndInstallationSpecificInfo(
         hubInfo: IHubContentType[],

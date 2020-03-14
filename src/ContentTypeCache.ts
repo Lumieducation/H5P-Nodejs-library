@@ -77,7 +77,7 @@ export default class ContentTypeCache {
 
     /**
      * Creates an identifier for the running instance.
-     * @returns {string} id
+     * @returns id
      */
     private static generateLocalId(): string {
         log.debug(`generating local Id`);
@@ -155,7 +155,7 @@ export default class ContentTypeCache {
     /**
      * Returns the cache data.
      * @param machineNames (optional) The method only returns content type cache data for these machine names.
-     * @returns {Promise<IHubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
+     * @returns Cached hub data in a format in which the version objects are flattened into the main object,
      */
     public async get(...machineNames: string[]): Promise<IHubContentType[]> {
         log.info(`getting content types`);
@@ -188,7 +188,7 @@ export default class ContentTypeCache {
 
     /**
      * Checks if the cache is not up to date anymore (update interval exceeded).
-     * @returns {Promise<boolean>} true if cache is outdated, false if not
+     * @returns true if cache is outdated, false if not
      */
     public async isOutdated(): Promise<boolean> {
         log.info(`checking if content type cache is up to date`);
@@ -238,7 +238,7 @@ export default class ContentTypeCache {
 
     /**
      * Checks if the interval between updates has been exceeded and updates the cache if necessary.
-     * @returns {Promise<boolean>} true if cache was updated, false if not
+     * @returns true if cache was updated, false if not
      */
     public async updateIfNecessary(): Promise<boolean> {
         log.info(`checking if update is necessary`);

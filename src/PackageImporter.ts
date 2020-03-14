@@ -65,7 +65,7 @@ export default class PackageImporter {
      * @param includeLibraries If true, the library directories inside the package will be extracted.
      * @param includeContent If true, the content folder inside the package will be extracted.
      * @param includeMetadata If true, the h5p.json file inside the package will be extracted.
-     * @returns {Promise<void>}
+     * @returns
      */
     public static async extractPackage(
         packagePath: string,

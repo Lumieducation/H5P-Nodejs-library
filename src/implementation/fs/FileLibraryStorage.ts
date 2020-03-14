@@ -24,7 +24,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Gets the directory path of the specified library.
      * @param library
-     * @returns {string} the absolute path to the directory
+     * @returns the absolute path to the directory
      */
     protected getDirectoryPath(library: ILibraryName): string {
         return path.join(
@@ -37,7 +37,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Gets the path of any file of the specified library.
      * @param library
      * @param filename
-     * @returns {string} the absolute path to the file
+     * @returns the absolute path to the file
      */
     protected getFilePath(library: ILibraryName, filename: string): string {
         return path.join(
@@ -65,7 +65,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
      * @param stream The stream containing the file content
-     * @returns {Promise<boolean>} true if successful
+     * @returns true if successful
      */
     public async addFile(
         library: ILibraryName,
@@ -94,7 +94,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Throws errors if something goes wrong.
      * @param libraryMetadata The library metadata object (= content of library.json)
      * @param restricted True if the library can only be used be users allowed to install restricted libraries.
-     * @returns {Promise<IInstalledLibrary>} The newly created library object to use when adding library files with addFile(...)
+     * @returns The newly created library object to use when adding library files with addFile(...)
      */
     public async addLibrary(
         libraryMetadata: ILibraryMetadata,
@@ -133,7 +133,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
      * @param library the library whose files should be deleted
-     * @returns {Promise<void>}
+     * @returns
      */
     public async clearFiles(library: ILibraryName): Promise<void> {
         if (!(await this.libraryExists(library))) {
@@ -159,7 +159,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Removes the library and all its files from the repository.
      * Throws errors if something went wrong.
      * @param library The library to remove.
-     * @returns {Promise<void>}
+     * @returns
      */
     public async deleteLibrary(library: ILibraryName): Promise<void> {
         const libPath = this.getDirectoryPath(library);
@@ -177,7 +177,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Check if the library contains a file
      * @param library The library to check
      * @param filename
-     * @returns {Promise<boolean>} true if file exists in library, false otherwise
+     * @returns true if file exists in library, false otherwise
      */
     public async fileExists(
         library: ILibraryName,
@@ -196,7 +196,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library
-     * @returns {Promise<Stream>} a readable stream of the file's contents
+     * @returns a readable stream of the file's contents
      */
     public async getFileStream(
         library: ILibraryName,
@@ -222,7 +222,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
      * @param {...string[]} machineNames (optional) only return libraries that have these machine names
-     * @returns {Promise<ILibraryName[]>} the libraries installed
+     * @returns the libraries installed
      */
     public async getInstalledLibraryNames(
         ...machineNames: string[]
@@ -247,7 +247,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Gets a list of installed language files for the library.
      * @param library The library to get the languages for
-     * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
+     * @returns The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguages(library: ILibraryName): Promise<string[]> {
         const files = await fsExtra.readdir(
@@ -292,7 +292,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Gets a list of all library files that exist for this library.
      * @param library
-     * @returns {Promise<string[]>} all files that exist for the library
+     * @returns all files that exist for the library
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
@@ -307,7 +307,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * You also need to call clearFiles(...) to remove all old files during the update process and addFile(...)
      * to add the files of the patch.
      * @param libraryMetadata the new library metadata
-     * @returns {Promise<IInstalledLibrary>} The updated library object
+     * @returns The updated library object
      */
     public async updateLibrary(
         libraryMetadata: ILibraryMetadata

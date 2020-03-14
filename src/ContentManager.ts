@@ -41,7 +41,7 @@ export default class ContentManager {
      * @param filename The name of the content file
      * @param stream A readable stream that contains the data
      * @param user The user who owns this object
-     * @returns {Promise<void>}
+     * @returns
      */
     public async addContentFile(
         contentId: ContentId,
@@ -185,7 +185,7 @@ export default class ContentManager {
      * @param contentId the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
-     * @returns {Stream}
+     * @returns
      */
     public async getContentFileStream(
         contentId: ContentId,
@@ -207,7 +207,7 @@ export default class ContentManager {
      * Returns the metadata (=contents of h5p.json) of a piece of content.
      * @param contentId the content id
      * @param user The user who wants to access the content
-     * @returns {Promise<any>}
+     * @returns
      */
     public async getContentMetadata(
         contentId: ContentId,
@@ -224,7 +224,7 @@ export default class ContentManager {
      * Returns the content object (=contents of content/content.json) of a piece of content.
      * @param contentId the content id
      * @param user The user who wants to access the content
-     * @returns {Promise<any>}
+     * @returns
      */
     public async getContentParameters(
         contentId: ContentId,
@@ -275,7 +275,7 @@ export default class ContentManager {
      * @param contentId The id of the content object that the file is attached to
      * @param file The filename to get
      * @param user The user who wants to access this object
-     * @returns {Promise<any>}
+     * @returns
      */
     private async getFileJson(
         contentId: ContentId,
