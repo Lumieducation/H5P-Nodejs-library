@@ -26,7 +26,7 @@ const log = new Logger('ContentManager');
  */
 export default class ContentManager {
     /**
-     * @param {FileContentStorage} contentStorage The storage object
+     * @param  contentStorage The storage object
      */
     constructor(contentStorage: IContentStorage) {
         log.info('initialize');
@@ -37,10 +37,10 @@ export default class ContentManager {
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param {number} contentId The id of the content to add the file to
-     * @param {string} filename The name of the content file
-     * @param {Stream} stream A readable stream that contains the data
-     * @param {IUser} user The user who owns this object
+     * @param  contentId The id of the content to add the file to
+     * @param  filename The name of the content file
+     * @param  stream A readable stream that contains the data
+     * @param  user The user who owns this object
      * @returns {Promise<void>}
      */
     public async addContentFile(
@@ -196,9 +196,9 @@ export default class ContentManager {
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * @param {number} contentId the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get
-     * @param {IUser} user the user who wants to retrieve the content file
+     * @param  contentId the id of the content object that the file is attached to
+     * @param  filename the filename of the file to get
+     * @param  user the user who wants to retrieve the content file
      * @returns {Stream}
      */
     public async getContentFileStream(
@@ -242,8 +242,8 @@ export default class ContentManager {
 
     /**
      * Returns the content object (=contents of content/content.json) of a piece of content.
-     * @param {number} contentId the content id
-     * @param {IUser} user The user who wants to access the content
+     * @param  contentId the content id
+     * @param  user The user who wants to access the content
      * @returns {Promise<any>}
      */
     public async loadContent(
@@ -255,8 +255,8 @@ export default class ContentManager {
 
     /**
      * Returns the metadata (=contents of h5p.json) of a piece of content.
-     * @param {number} contentId the content id
-     * @param {IUser} user The user who wants to access the content
+     * @param  contentId the content id
+     * @param  user The user who wants to access the content
      * @returns {Promise<any>}
      */
     public async loadH5PJson(
@@ -272,9 +272,9 @@ export default class ContentManager {
 
     /**
      * Returns the decoded JSON data inside a file
-     * @param {number} contentId The id of the content object that the file is attached to
-     * @param {string} file The filename to get
-     * @param {IUser} user The user who wants to access this object
+     * @param  contentId The id of the content object that the file is attached to
+     * @param  file The filename to get
+     * @param  user The user who wants to access this object
      * @returns {Promise<any>}
      */
     private async getFileJson(

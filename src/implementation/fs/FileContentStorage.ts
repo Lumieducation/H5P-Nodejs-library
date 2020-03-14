@@ -41,7 +41,7 @@ export default class FileContentStorage implements IContentStorage {
         return id;
     }
     /**
-     * @param {string} contentPath The absolute path to the directory where the content should be stored
+     * @param  contentPath The absolute path to the directory where the content should be stored
      */
     constructor(private contentPath: string) {
         fsExtra.ensureDirSync(contentPath);
@@ -49,8 +49,8 @@ export default class FileContentStorage implements IContentStorage {
 
     /**
      * Returns a random integer
-     * @param {number} min The minimum
-     * @param {number} max The maximum
+     * @param  min The minimum
+     * @param  max The maximum
      * @returns {number} a random integer
      */
     private static getRandomInt(min: number, max: number): number {
@@ -62,10 +62,10 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).
      * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
-     * @param {any} metadata The metadata of the content (= h5p.json)
-     * @param {any} content the content object (= content/content.json)
-     * @param {User} user The user who owns this object.
-     * @param {ContentId} id (optional) The content id to use
+     * @param  metadata The metadata of the content (= h5p.json)
+     * @param  content the content object (= content/content.json)
+     * @param  user The user who owns this object.
+     * @param  id (optional) The content id to use
      * @returns {Promise<ContentId>} The newly assigned content id
      */
     public async addContent(
@@ -99,10 +99,10 @@ export default class FileContentStorage implements IContentStorage {
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param {ContentId} id The id of the content to add the file to
-     * @param {string} filename The filename
-     * @param {Stream} stream A readable stream that contains the data
-     * @param {User} user The user who owns this object
+     * @param  id The id of the content to add the file to
+     * @param  filename The filename
+     * @param  stream A readable stream that contains the data
+     * @param  user The user who owns this object
      * @returns {Promise<void>}
      */
     public async addFile(
@@ -144,8 +144,8 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
-     * @param {ContentId} id The content id to delete.
-     * @param {User} user The user who wants to delete the content
+     * @param  id The content id to delete.
+     * @param  user The user who wants to delete the content
      * @returns {Promise<void>}
      */
     public async deleteContent(id: ContentId, user?: IUser): Promise<void> {
@@ -207,9 +207,9 @@ export default class FileContentStorage implements IContentStorage {
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * @param {ContentId} id the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get
-     * @param {User} user the user who wants to retrieve the content file
+     * @param  id the id of the content object that the file is attached to
+     * @param  filename the filename of the file to get
+     * @param  user the user who wants to retrieve the content file
      * @returns {Stream}
      */
     public getFileStream(

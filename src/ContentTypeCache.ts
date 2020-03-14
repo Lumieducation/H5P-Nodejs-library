@@ -32,8 +32,8 @@ const log = new Logger('ContentTypeCache');
 export default class ContentTypeCache {
     /**
      *
-     * @param {EditorConfig} config The configuration to use.
-     * @param {IStorage} storage The storage object.
+     * @param  config The configuration to use.
+     * @param  storage The storage object.
      */
     constructor(config: IEditorConfig, storage: IKeyValueStorage) {
         log.info(`initialize`);
@@ -154,7 +154,7 @@ export default class ContentTypeCache {
 
     /**
      * Returns the cache data.
-     * @param {string[]} machineNames (optional) The method only returns content type cache data for these machine names.
+     * @param  machineNames (optional) The method only returns content type cache data for these machine names.
      * @returns {Promise<IHubContentType[]>} Cached hub data in a format in which the version objects are flattened into the main object,
      */
     public async get(...machineNames: string[]): Promise<IHubContentType[]> {

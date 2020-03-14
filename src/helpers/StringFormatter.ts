@@ -1,8 +1,8 @@
 /**
  * Converts a file size in bytes to a more human readable format.
  * (Source: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript)
- * @param {number} bytes
- * @param {number} decimals The decimals after the .
+ * @param  bytes
+ * @param  decimals The decimals after the .
  */
 export function formatBytes(bytes: number, decimals: number = 2): string {
     if (bytes === 0) return '0 Bytes';

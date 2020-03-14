@@ -23,7 +23,7 @@ import checkFilename from './filenameCheck';
 export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Gets the directory path of the specified library.
-     * @param {ILibraryName} library
+     * @param  library
      * @returns {string} the absolute path to the directory
      */
     protected getDirectoryPath(library: ILibraryName): string {
@@ -35,8 +35,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Gets the path of any file of the specified library.
-     * @param {ILibraryName} library
-     * @param {string} filename
+     * @param  library
+     * @param  filename
      * @returns {string} the absolute path to the file
      */
     protected getFilePath(library: ILibraryName, filename: string): string {
@@ -53,7 +53,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     protected ignoredFilePatterns: RegExp[] = [];
     /**
-     * @param {string} librariesDirectory The path of the directory in the file system at which libraries are stored.
+     * @param  librariesDirectory The path of the directory in the file system at which libraries are stored.
      */
     constructor(private librariesDirectory: string) {
         fsExtra.ensureDirSync(librariesDirectory);
@@ -62,9 +62,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Adds a library file to a library. The library metadata must have been installed with installLibrary(...) first.
      * Throws an error if something unexpected happens.
-     * @param {ILibraryName} library The library that is being installed
-     * @param {string} filename Filename of the file to add, relative to the library root
-     * @param {Stream} stream The stream containing the file content
+     * @param  library The library that is being installed
+     * @param  filename Filename of the file to add, relative to the library root
+     * @param  stream The stream containing the file content
      * @returns {Promise<boolean>} true if successful
      */
     public async addFile(
@@ -92,8 +92,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Adds the metadata of the library to the repository.
      * Throws errors if something goes wrong.
-     * @param {ILibraryMetadata} libraryMetadata The library metadata object (= content of library.json)
-     * @param {boolean} restricted True if the library can only be used be users allowed to install restricted libraries.
+     * @param  libraryMetadata The library metadata object (= content of library.json)
+     * @param  restricted True if the library can only be used be users allowed to install restricted libraries.
      * @returns {Promise<IInstalledLibrary>} The newly created library object to use when adding library files with addFile(...)
      */
     public async addLibrary(
@@ -132,7 +132,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
-     * @param {ILibraryName} library the library whose files should be deleted
+     * @param  library the library whose files should be deleted
      * @returns {Promise<void>}
      */
     public async clearFiles(library: ILibraryName): Promise<void> {
@@ -158,7 +158,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Removes the library and all its files from the repository.
      * Throws errors if something went wrong.
-     * @param {ILibraryName} library The library to remove.
+     * @param  library The library to remove.
      * @returns {Promise<void>}
      */
     public async deleteLibrary(library: ILibraryName): Promise<void> {
@@ -175,8 +175,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Check if the library contains a file
-     * @param {ILibraryName} library The library to check
-     * @param {string} filename
+     * @param  library The library to check
+     * @param  filename
      * @returns {Promise<boolean>} true if file exists in library, false otherwise
      */
     public async fileExists(
@@ -194,8 +194,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
-     * @param {ILibraryName} library library
-     * @param {string} filename the relative path inside the library
+     * @param  library library
+     * @param  filename the relative path inside the library
      * @returns {Promise<Stream>} a readable stream of the file's contents
      */
     public async getFileStream(
@@ -246,7 +246,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Gets a list of installed language files for the library.
-     * @param {ILibraryName} library The library to get the languages for
+     * @param  library The library to get the languages for
      * @returns {Promise<string[]>} The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguages(library: ILibraryName): Promise<string[]> {
@@ -291,7 +291,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
 
     /**
      * Gets a list of all library files that exist for this library.
-     * @param {ILibraryName} library
+     * @param  library
      * @returns {Promise<string[]>} all files that exist for the library
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
@@ -306,7 +306,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * This is necessary when updating to a new patch version.
      * You also need to call clearFiles(...) to remove all old files during the update process and addFile(...)
      * to add the files of the patch.
-     * @param {ILibraryMetadata} libraryMetadata the new library metadata
+     * @param  libraryMetadata the new library metadata
      * @returns {Promise<IInstalledLibrary>} The updated library object
      */
     public async updateLibrary(

@@ -2,7 +2,7 @@ import { Stream } from 'stream';
 
 /**
  * Returns the contents of a stream as a string
- * @param {Stream} stream the stream to read
+ * @param  stream the stream to read
  * @returns {Promise<string>}
  */
 export function streamToString(stream: Stream): Promise<string> {

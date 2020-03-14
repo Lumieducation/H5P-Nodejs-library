@@ -26,10 +26,10 @@ export default class LibraryName implements ILibraryName {
 
     /**
      * Creates a library object from a library name
-     * @param {string} libraryName The library name in a format "H5P.Example-1.0" or "H5P.Example 1.0" (see options)
-     * @param {boolean} restricted true if the library is restricted
-     * @param {boolean} useWhitespace true if the parser should accept names like "H5P.Library 1.0"
-     * @param {boolean} useHyphen true if the parser should accept names like "H5P.Library-1.0"
+     * @param  libraryName The library name in a format "H5P.Example-1.0" or "H5P.Example 1.0" (see options)
+     * @param  restricted true if the library is restricted
+     * @param  useWhitespace true if the parser should accept names like "H5P.Library 1.0"
+     * @param  useHyphen true if the parser should accept names like "H5P.Library-1.0"
      * @returns {Library} undefined if the name could not be parsed
      */
     public static fromUberName(
