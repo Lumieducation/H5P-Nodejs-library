@@ -142,7 +142,7 @@ export default class ContentTypeInformationRepository {
 
     /**
      *
-     * @param  hubInfo
+     * @param hubInfo
      * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about
      * locally installed libraries.
      */
@@ -207,7 +207,7 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Adds information about installation status, restriction, right to install and up-to-dateness.
-     * @param  hubInfo
+     * @param hubInfo
      * @returns {Promise<any[]>} The hub information as passed into the method with added information.
      */
     private async addUserAndInstallationSpecificInfo(
@@ -264,7 +264,7 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Checks if users can install library due to their rights.
-     * @param  library
+     * @param library
      */
     private canInstallLibrary(library: IHubContentType, user: IUser): boolean {
         log.verbose(
@@ -279,7 +279,7 @@ export default class ContentTypeInformationRepository {
     /**
      * Checks if the library is restricted e.g. because it is LRS dependent and the
      * admin has restricted them or because it was set as restricted individually.
-     * @param  library
+     * @param library
      */
     private libraryIsRestricted(library: IInstalledLibrary): boolean {
         log.verbose(`checking if library ${library.machineName} is restricted`);

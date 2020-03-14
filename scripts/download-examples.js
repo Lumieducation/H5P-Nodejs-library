@@ -4,8 +4,8 @@ const path = require('path');
 
 /**
  * Downloads H5P packages from the H5P Hub for testing purposes.
- * @param  contentTypeCacheFilePath Path to the JSON file in the test directory containing the content types to download (should be a copy of the one obtained by the ContentTypeCache from the Hub)
- * @param  directoryPath Path to a directory on the disk to save the downloaded H5P to.
+ * @param contentTypeCacheFilePath Path to the JSON file in the test directory containing the content types to download (should be a copy of the one obtained by the ContentTypeCache from the Hub)
+ * @param directoryPath Path to a directory on the disk to save the downloaded H5P to.
  */
 const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
     const machineNames = (await fs.readJSON(contentTypeCacheFilePath)).contentTypes.map(ct => ct.id);

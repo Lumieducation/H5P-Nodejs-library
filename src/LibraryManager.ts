@@ -31,7 +31,7 @@ const log = new Logger('LibraryManager');
 export default class LibraryManager {
     /**
      *
-     * @param  libraryStorage The library repository that persists library somewhere.
+     * @param libraryStorage The library repository that persists library somewhere.
      */
     constructor(
         private libraryStorage: ILibraryStorage,
@@ -68,7 +68,7 @@ export default class LibraryManager {
 
     /**
      * Get a list of the currently installed libraries.
-     * @param  machineNames (if supplied) only return results for the machines names in the list
+     * @param machineNames (if supplied) only return results for the machines names in the list
      * @returns {Promise<any>} An object which has properties with the existing library machine names. The properties'
      * values are arrays of Library objects, which represent the different versions installed of this library.
      */
@@ -234,8 +234,8 @@ export default class LibraryManager {
 
     /**
      * Check if the library contains a file
-     * @param  library The library to check
-     * @param  filename
+     * @param library The library to check
+     * @param filename
      * @return {Promise<boolean>} true if file exists in library, false otherwise
      */
     public async libraryFileExists(
@@ -252,7 +252,7 @@ export default class LibraryManager {
 
     /**
      * Checks if the given library has a higher version than the highest installed version.
-     * @param  library Library to compare against the highest locally installed version.
+     * @param library Library to compare against the highest locally installed version.
      * @returns {Promise<boolean>} true if the passed library contains a version that is higher than the highest installed version, false otherwise
      */
     public async libraryHasUpgrade(
@@ -294,7 +294,7 @@ export default class LibraryManager {
 
     /**
      * Gets a list of translations that exist for this library.
-     * @param  library
+     * @param library
      * @returns {Promise<string[]>} the language codes for translations of this library
      */
     public async listLanguages(library: ILibraryName): Promise<string[]> {
@@ -324,8 +324,8 @@ export default class LibraryManager {
 
     /**
      * Gets the language file for the specified language.
-     * @param  library
-     * @param  language the language code
+     * @param library
+     * @param language the language code
      * @returns {Promise<any>} the decoded JSON data in the language file
      */
     public async loadLanguage(
@@ -354,7 +354,7 @@ export default class LibraryManager {
 
     /**
      * Returns the information about the library that is contained in library.json.
-     * @param  library The library to get (machineName, majorVersion and minorVersion is enough)
+     * @param library The library to get (machineName, majorVersion and minorVersion is enough)
      * @returns {Promise<ILibrary>} the decoded JSON data or undefined if library is not installed
      */
     public async loadLibrary(
@@ -373,7 +373,7 @@ export default class LibraryManager {
 
     /**
      * Returns the content of semantics.json for the specified library.
-     * @param  library
+     * @param library
      * @returns {Promise<any>} the content of semantics.json
      */
     public async loadSemantics(
@@ -387,7 +387,7 @@ export default class LibraryManager {
 
     /**
      * Checks (as far as possible) if all necessary files are present for the library to run properly.
-     * @param  library The library to check
+     * @param library The library to check
      * @returns {Promise<boolean>} true if the library is ok. Throws errors if not.
      */
     private async checkConsistency(library: ILibraryName): Promise<boolean> {
@@ -432,8 +432,8 @@ export default class LibraryManager {
 
     /**
      * Checks if all files in the list are present in the library.
-     * @param  library The library to check
-     * @param  requiredFiles The files (relative paths in the library) that must be present
+     * @param library The library to check
+     * @param requiredFiles The files (relative paths in the library) that must be present
      * @returns {Promise<boolean>} true if all dependencies are present. Throws an error if any are missing.
      */
     private async checkFiles(
@@ -472,8 +472,8 @@ export default class LibraryManager {
     /**
      * Copies all library files from a directory (excludes library.json) to the storage.
      * Throws errors if something went wrong.
-     * @param  fromDirectory The directory to copy from
-     * @param  libraryInfo the library object
+     * @param fromDirectory The directory to copy from
+     * @param libraryInfo the library object
      * @returns {Promise<void>}
      */
     private async copyLibraryFiles(
@@ -505,8 +505,8 @@ export default class LibraryManager {
 
     /**
      * Gets the parsed contents of a library file that is JSON.
-     * @param  library
-     * @param  file
+     * @param library
+     * @param file
      * @returns {Promise<any|undefined>} The content or undefined if there was an error
      */
     private async getJsonFile(
@@ -527,10 +527,10 @@ export default class LibraryManager {
     /**
      * Installs a library and rolls back changes if the library installation failed.
      * Throws errors if something went wrong.
-     * @param  fromDirectory the local directory to install from
-     * @param  libraryInfo the library object
-     * @param  libraryMetadata the library metadata
-     * @param  restricted true if the library can only be installed with a special permission
+     * @param fromDirectory the local directory to install from
+     * @param libraryInfo the library object
+     * @param libraryMetadata the library metadata
+     * @param restricted true if the library can only be installed with a special permission
      * @returns {IInstalledLibrary} the library object (containing - among others - the id of the newly installed library)
      */
     private async installLibrary(
