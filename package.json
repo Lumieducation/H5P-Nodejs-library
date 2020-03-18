@@ -95,7 +95,7 @@
         "stream-mock": "2.0.5",
         "supertest": "4.0.2",
         "ts-jest": "25.2.1",
-        "ts-node": "8.6.2",
+        "ts-node": "8.7.0",
         "tslint": "6.1.0",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
