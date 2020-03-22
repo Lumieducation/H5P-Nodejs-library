@@ -115,7 +115,9 @@ export default class H5PPlayer {
      * Overrides the default renderer.
      * @param renderer
      */
-    public setRenderer(renderer: (model: IPlayerModel) => string | any): H5PPlayer {
+    public setRenderer(
+        renderer: (model: IPlayerModel) => string | any
+    ): H5PPlayer {
         log.info('changing renderer');
         this.renderer = renderer;
         return this;
