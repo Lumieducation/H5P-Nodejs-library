@@ -1,6 +1,7 @@
 import LibraryName from './LibraryName';
 import {
     ContentId,
+    ContentParameters,
     IAssets,
     IContentMetadata,
     IContentStorage,
@@ -8,7 +9,8 @@ import {
     IInstalledLibrary,
     IIntegration,
     ILibraryName,
-    ILibraryStorage
+    ILibraryStorage,
+    IPlayerModel
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -24,7 +26,8 @@ const log = new Logger('Player');
 export default class H5PPlayer {
     /**
      *
-     * @param libraryLoader a delegate that returns information about installed libraries
+     * @param libraryStorage the storage for libraries (can be read only)
+     * @param contentStorage the storage for content (can be read only)
      * @param config the configuration object
      * @param integrationObjectDefaults (optional) the default values to use for the integration object
      * @param globalCustomScripts (optional) references to these scripts will be added when rendering content
@@ -42,15 +45,21 @@ export default class H5PPlayer {
         this.urlGenerator = new UrlGenerator(config);
     }
     private clientTranslation: any;
-    private renderer: any;
+    private renderer: (model: IPlayerModel) => string;
     private urlGenerator: UrlGenerator;
 
     /**
+     * Creates a frame for displaying H5P content. You can customize this frame by calling setRenderer(...).
+     * It normally is enough to call this method with the content id. Only call it with parameters and metadata
+     * if don't want to use the IContentStorage object passed into the constructor.
+     * @param contentId the content id
+     * @param parameters (optional) the parameters of a piece of content (=content.json)
+     * @param metadata (optional) the metadata of a piece of content (=h5p.json)
      * @returns a HTML string that you can insert into your page
      */
     public async render(
         contentId: ContentId,
-        parameters?: any,
+        parameters?: ContentParameters,
         metadata?: IContentMetadata
     ): Promise<string> {
         log.info(`rendering page for ${contentId}`);
@@ -73,7 +82,7 @@ export default class H5PPlayer {
             throw new H5pError('h5p-player:content-missing', {}, 404);
         }
 
-        const model = {
+        const model: IPlayerModel = {
             contentId,
             customScripts: this.globalCustomScripts
                 .map(script => `<script src="${script}"/>`)
@@ -106,7 +115,7 @@ export default class H5PPlayer {
      * Overrides the default renderer.
      * @param renderer
      */
-    public setRenderer(renderer: any): H5PPlayer {
+    public setRenderer(renderer: (model: IPlayerModel) => string): H5PPlayer {
         log.info('changing renderer');
         this.renderer = renderer;
         return this;
@@ -152,8 +161,8 @@ export default class H5PPlayer {
 
     private generateIntegration(
         contentId: ContentId,
-        contentObject: any,
-        h5pObject: IContentMetadata
+        parameters: ContentParameters,
+        metadata: IContentMetadata
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
@@ -169,8 +178,8 @@ export default class H5PPlayer {
                         icon: false
                     },
                     fullScreen: false,
-                    jsonContent: JSON.stringify(contentObject),
-                    library: ContentMetadata.toUbername(h5pObject)
+                    jsonContent: JSON.stringify(parameters),
+                    library: ContentMetadata.toUbername(metadata)
                 }
             },
             l10n: {

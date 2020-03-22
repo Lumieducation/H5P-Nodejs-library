@@ -1155,3 +1155,13 @@ export interface IHubInfo {
     recentlyUsed: any[];
     user: string;
 }
+
+export interface IPlayerModel {
+    contentId: ContentParameters;
+    customScripts: string;
+    downloadPath: string;
+    integration: IIntegration;
+    scripts: string[];
+    styles: string[];
+    translations: any;
+}
