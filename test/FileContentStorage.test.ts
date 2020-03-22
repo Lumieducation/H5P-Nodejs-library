@@ -169,16 +169,24 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 stream1.push(null);
                 await expect(
                     storage.addFile(id, '../file1.txt', stream1, user)
-                ).rejects.toThrow('illegal-relative-filename');
+                ).rejects.toThrow(
+                    'storage-file-implementations:illegal-relative-filename'
+                );
                 await expect(
                     storage.fileExists(id, '../file1.txt')
-                ).rejects.toThrow('illegal-relative-filename');
+                ).rejects.toThrow(
+                    'storage-file-implementations:illegal-relative-filename'
+                );
                 await expect(
                     storage.deleteFile(id, '../file1.txt')
-                ).rejects.toThrow('illegal-relative-filename');
-                expect(() => {
-                    storage.getFileStream(id, '../file1.txt', user);
-                }).toThrow('illegal-relative-filename');
+                ).rejects.toThrow(
+                    'storage-file-implementations:illegal-relative-filename'
+                );
+                expect(
+                    storage.getFileStream(id, '../file1.txt', user)
+                ).rejects.toThrow(
+                    'storage-file-implementations:illegal-relative-filename'
+                );
             },
             { keep: false, unsafeCleanup: true }
         );

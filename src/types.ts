@@ -375,13 +375,35 @@ export interface IContentStorage {
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * NOTE: THIS METHOD IS NOT ASYNC!
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
      * @returns the stream (that can be used to send the file to the user)
      */
-    getFileStream(contentId: ContentId, file: string, user: IUser): ReadStream;
+    getFileStream(
+        contentId: ContentId,
+        file: string,
+        user: IUser
+    ): Promise<ReadStream>;
+
+    /**
+     * Returns the content metadata (=h5p.json) for a content id
+     * @param contentId the content id for which to retrieve the metadata
+     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @returns the metadata
+     */
+    getMetadata(contentId: ContentId, user?: IUser): Promise<IContentMetadata>;
+
+    /**
+     * Returns the content object (=content.json) for a content id
+     * @param contentId the content id for which to retrieve the metadata
+     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @returns the content object
+     */
+    getParameters(
+        contentId: ContentId,
+        user?: IUser
+    ): Promise<ContentParameters>;
 
     /**
      * Returns an array of permissions that the user has on the piece of content

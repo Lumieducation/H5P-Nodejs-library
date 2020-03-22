@@ -17,6 +17,7 @@ import InMemoryStorage from './implementation/InMemoryStorage';
 // Interfaces
 import {
     ContentId,
+    ContentParameters,
     IContentMetadata,
     IContentStorage,
     IEditorConfig,
@@ -59,6 +60,7 @@ export {
     PackageExporter,
     // interfaces
     ContentId,
+    ContentParameters,
     IContentMetadata,
     IContentStorage,
     IEditorConfig,

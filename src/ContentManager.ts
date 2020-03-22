@@ -193,13 +193,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<ReadStream> {
         log.debug(`loading ${filename} for ${contentId}`);
-        if (!(await this.contentStorage.fileExists(contentId, filename))) {
-            throw new H5pError(
-                'content-file-missing',
-                { filename, contentId },
-                404
-            );
-        }
+
         return this.contentStorage.getFileStream(contentId, filename, user);
     }
 
@@ -216,7 +210,7 @@ export default class ContentManager {
         // We don't directly return the h5p.json file content as
         // we have to make sure it conforms to the schema.
         return new ContentMetadata(
-            await this.getFileJson(contentId, 'h5p.json', user)
+            await this.contentStorage.getMetadata(contentId, user)
         );
     }
 
@@ -230,7 +224,7 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<ContentParameters> {
-        return this.getFileJson(contentId, 'content.json', user);
+        return this.contentStorage.getParameters(contentId, user);
     }
 
     /**
@@ -268,27 +262,5 @@ export default class ContentManager {
     ): Promise<string[]> {
         log.info(`loading content files for ${contentId}`);
         return this.contentStorage.listFiles(contentId, user);
-    }
-
-    /**
-     * Returns the decoded JSON data inside a file
-     * @param contentId The id of the content object that the file is attached to
-     * @param file The filename to get
-     * @param user The user who wants to access this object
-     * @returns
-     */
-    private async getFileJson(
-        contentId: ContentId,
-        file: string,
-        user: IUser
-    ): Promise<any> {
-        log.debug(`loading ${file} for ${contentId}`);
-        const stream: Stream = this.contentStorage.getFileStream(
-            contentId,
-            file,
-            user
-        );
-        const jsonString: string = await streamToString(stream);
-        return JSON.parse(jsonString);
     }
 }

@@ -3,6 +3,7 @@ import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import { streamToString } from '../../helpers/StreamHelpers';
 
 import { Stream } from 'stream';
 import {
@@ -11,7 +12,8 @@ import {
     IContentMetadata,
     IContentStorage,
     IUser,
-    Permission
+    Permission,
+    ContentParameters
 } from '../../../src';
 import checkFilename from './filenameCheck';
 
@@ -212,14 +214,54 @@ export default class FileContentStorage implements IContentStorage {
      * @param user the user who wants to retrieve the content file
      * @returns
      */
-    public getFileStream(
+    public async getFileStream(
         id: ContentId,
         filename: string,
         user: IUser
-    ): ReadStream {
-        checkFilename(filename);
+    ): Promise<ReadStream> {
+        if (!(await this.fileExists(id, filename))) {
+            throw new H5pError(
+                'content-file-missing',
+                { filename, contentId: id },
+                404
+            );
+        }
         return fsExtra.createReadStream(
             path.join(this.contentPath, id.toString(), filename)
+        );
+    }
+
+    /**
+     * Returns the content metadata (=h5p.json) for a content id
+     * @param contentId the content id for which to retrieve the metadata
+     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @returns the metadata
+     */
+    public async getMetadata(
+        contentId: string,
+        user?: IUser
+    ): Promise<IContentMetadata> {
+        return JSON.parse(
+            await streamToString(
+                await this.getFileStream(contentId, 'h5p.json', user)
+            )
+        );
+    }
+
+    /**
+     * Returns the parameters (=content.json) for a content id
+     * @param contentId the content id for which to retrieve the metadata
+     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @returns the parameters
+     */
+    public async getParameters(
+        contentId: string,
+        user?: IUser
+    ): Promise<ContentParameters> {
+        return JSON.parse(
+            await streamToString(
+                await this.getFileStream(contentId, 'content.json', user)
+            )
         );
     }
 
