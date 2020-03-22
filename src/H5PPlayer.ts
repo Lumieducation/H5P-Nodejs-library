@@ -45,7 +45,7 @@ export default class H5PPlayer {
         this.urlGenerator = new UrlGenerator(config);
     }
     private clientTranslation: any;
-    private renderer: (model: IPlayerModel) => string;
+    private renderer: (model: IPlayerModel) => string | any;
     private urlGenerator: UrlGenerator;
 
     /**
@@ -115,7 +115,7 @@ export default class H5PPlayer {
      * Overrides the default renderer.
      * @param renderer
      */
-    public setRenderer(renderer: (model: IPlayerModel) => string): H5PPlayer {
+    public setRenderer(renderer: (model: IPlayerModel) => string | any): H5PPlayer {
         log.info('changing renderer');
         this.renderer = renderer;
         return this;
