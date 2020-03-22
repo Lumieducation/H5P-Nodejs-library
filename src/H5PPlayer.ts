@@ -17,6 +17,7 @@ import { ContentMetadata } from './ContentMetadata';
 import defaultTranslation from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
+import H5pError from './helpers/H5pError';
 
 const log = new Logger('Player');
 
@@ -49,12 +50,28 @@ export default class H5PPlayer {
      */
     public async render(
         contentId: ContentId,
-        contentObject?: any,
-        contentMetadata?: IContentMetadata
+        parameters?: any,
+        metadata?: IContentMetadata
     ): Promise<string> {
         log.info(`rendering page for ${contentId}`);
 
-        // TODO: load contentObject and contentMetadata if not set
+        try {
+            if (!parameters) {
+                // tslint:disable-next-line: no-parameter-reassignment
+                parameters = await this.contentStorage.getParameters(contentId);
+            }
+        } catch (error) {
+            throw new H5pError('h5p-player:content-missing', {}, 404);
+        }
+
+        try {
+            if (!metadata) {
+                // tslint:disable-next-line: no-parameter-reassignment
+                metadata = await this.contentStorage.getMetadata(contentId);
+            }
+        } catch (error) {
+            throw new H5pError('h5p-player:content-missing', {}, 404);
+        }
 
         const model = {
             contentId,
@@ -64,8 +81,8 @@ export default class H5PPlayer {
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
-                contentObject,
-                contentMetadata
+                parameters,
+                metadata
             ),
             scripts: this.listCoreScripts(),
             styles: this.listCoreStyles(),
@@ -74,11 +91,11 @@ export default class H5PPlayer {
 
         const libraries = {};
         await this.getLibraries(
-            contentMetadata.preloadedDependencies || [],
+            metadata.preloadedDependencies || [],
             libraries
         );
         this.aggregateAssets(
-            contentMetadata.preloadedDependencies || [],
+            metadata.preloadedDependencies || [],
             model,
             libraries
         );
