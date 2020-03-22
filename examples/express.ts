@@ -50,15 +50,23 @@ const start = async () => {
             preload: ['en']
         });
 
+    const config = await new H5P.EditorConfig(
+        new H5P.fsImplementations.JsonStorage(
+            path.resolve('examples/config.json')
+        )
+    ).load();
+
     const h5pEditor = H5P.fs(
-        await new H5P.EditorConfig(
-            new H5P.fsImplementations.JsonStorage(
-                path.resolve('examples/config.json')
-            )
-        ).load(),
+        config,
         path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
         path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
         path.resolve('h5p/content') // the path on the local disc where content is stored
+    );
+
+    const h5pPlayer = new H5P.H5PPlayer(
+        h5pEditor.libraryStorage,
+        h5pEditor.contentStorage,
+        config
     );
 
     const server = express();
@@ -91,7 +99,7 @@ const start = async () => {
         )
     );
 
-    server.use(h5pEditor.config.baseUrl, expressRoutes(h5pEditor));
+    server.use(h5pEditor.config.baseUrl, expressRoutes(h5pEditor, h5pPlayer));
 
     server.get('/', startPageRenderer(h5pEditor));
 

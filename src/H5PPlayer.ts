@@ -3,11 +3,12 @@ import {
     ContentId,
     IAssets,
     IContentMetadata,
+    IContentStorage,
     IEditorConfig,
     IInstalledLibrary,
     IIntegration,
-    ILibraryLoader,
-    ILibraryName
+    ILibraryName,
+    ILibraryStorage
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -20,12 +21,19 @@ import player from './renderers/player';
 const log = new Logger('Player');
 
 export default class H5PPlayer {
+    /**
+     *
+     * @param libraryLoader a delegate that returns information about installed libraries
+     * @param config the configuration object
+     * @param integrationObjectDefaults (optional) the default values to use for the integration object
+     * @param globalCustomScripts (optional) references to these scripts will be added when rendering content
+     */
     constructor(
-        private libraryLoader: ILibraryLoader,
+        private libraryStorage: ILibraryStorage,
+        private contentStorage: IContentStorage,
         private config: IEditorConfig,
-        private integration: IIntegration,
-        private content: any,
-        private customScripts: string = ''
+        private integrationObjectDefaults?: IIntegration,
+        private globalCustomScripts: string[] = []
     ) {
         log.info('initialize');
         this.renderer = player;
@@ -36,62 +44,28 @@ export default class H5PPlayer {
     private renderer: any;
     private urlGenerator: UrlGenerator;
 
-    public generateIntegration(
+    /**
+     * @returns a HTML string that you can insert into your page
+     */
+    public async render(
         contentId: ContentId,
-        contentObject: any,
-        h5pObject: IContentMetadata
-    ): IIntegration {
-        // see https://h5p.org/creating-your-own-h5p-plugin
-        log.info(`generating integration for ${contentId}`);
-        return {
-            contents: {
-                [`cid-${contentId}`]: {
-                    ...this.content,
-                    displayOptions: {
-                        copy: false,
-                        copyright: false,
-                        embed: false,
-                        export: false,
-                        frame: false,
-                        icon: false
-                    },
-                    fullScreen: false,
-                    jsonContent: JSON.stringify(contentObject),
-                    library: ContentMetadata.toUbername(h5pObject)
-                }
-            },
-            l10n: {
-                H5P: this.clientTranslation
-            },
-            postUserStatistics: false,
-            saveFreq: false,
-            url: this.config.baseUrl,
-            ...this.integration
-        };
-    }
-
-    public listCoreScripts(): string[] {
-        return playerAssetList.scripts.core.map(this.urlGenerator.coreFile);
-    }
-
-    public listCoreStyles(): string[] {
-        return playerAssetList.styles.core.map(this.urlGenerator.coreFile);
-    }
-
-    public render(
-        contentId: ContentId,
-        contentObject: any,
-        h5pObject: IContentMetadata
+        contentObject?: any,
+        contentMetadata?: IContentMetadata
     ): Promise<string> {
         log.info(`rendering page for ${contentId}`);
+
+        // TODO: load contentObject and contentMetadata if not set
+
         const model = {
             contentId,
-            customScripts: this.customScripts,
+            customScripts: this.globalCustomScripts
+                .map(script => `<script src="${script}"/>`)
+                .join(),
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
                 contentObject,
-                h5pObject
+                contentMetadata
             ),
             scripts: this.listCoreScripts(),
             styles: this.listCoreStyles(),
@@ -99,19 +73,22 @@ export default class H5PPlayer {
         };
 
         const libraries = {};
-        return this.getLibraries(
-            h5pObject.preloadedDependencies || [],
+        await this.getLibraries(
+            contentMetadata.preloadedDependencies || [],
             libraries
-        ).then(() => {
-            this.aggregateAssets(
-                h5pObject.preloadedDependencies || [],
-                model,
-                libraries
-            );
-            return this.renderer(model);
-        });
+        );
+        this.aggregateAssets(
+            contentMetadata.preloadedDependencies || [],
+            model,
+            libraries
+        );
+        return this.renderer(model);
     }
 
+    /**
+     * Overrides the default renderer.
+     * @param renderer
+     */
     public setRenderer(renderer: any): H5PPlayer {
         log.info('changing renderer');
         this.renderer = renderer;
@@ -135,30 +112,65 @@ export default class H5PPlayer {
 
             loaded[key] = true;
             const lib = libraries[key];
-            this.aggregateAssets(
-                lib.preloadedDependencies || [],
-                assets,
-                libraries,
-                loaded
-            );
-            (lib.preloadedCss || []).forEach(asset =>
-                assets.styles.push(
-                    this.urlGenerator.libraryFile(dependency, asset.path)
-                )
-            );
-            (lib.preloadedJs || []).forEach(script =>
-                assets.scripts.push(
-                    this.urlGenerator.libraryFile(dependency, script.path)
-                )
-            );
+            if (lib) {
+                this.aggregateAssets(
+                    lib.preloadedDependencies || [],
+                    assets,
+                    libraries,
+                    loaded
+                );
+                (lib.preloadedCss || []).forEach(asset =>
+                    assets.styles.push(
+                        this.urlGenerator.libraryFile(dependency, asset.path)
+                    )
+                );
+                (lib.preloadedJs || []).forEach(script =>
+                    assets.scripts.push(
+                        this.urlGenerator.libraryFile(dependency, script.path)
+                    )
+                );
+            }
         });
+    }
+
+    private generateIntegration(
+        contentId: ContentId,
+        contentObject: any,
+        h5pObject: IContentMetadata
+    ): IIntegration {
+        // see https://h5p.org/creating-your-own-h5p-plugin
+        log.info(`generating integration for ${contentId}`);
+        return {
+            contents: {
+                [`cid-${contentId}`]: {
+                    displayOptions: {
+                        copy: false,
+                        copyright: false,
+                        embed: false,
+                        export: false,
+                        frame: false,
+                        icon: false
+                    },
+                    fullScreen: false,
+                    jsonContent: JSON.stringify(contentObject),
+                    library: ContentMetadata.toUbername(h5pObject)
+                }
+            },
+            l10n: {
+                H5P: this.clientTranslation
+            },
+            postUserStatistics: false,
+            saveFreq: false,
+            url: this.config.baseUrl,
+            ...this.integrationObjectDefaults
+        };
     }
 
     private getDownloadPath(contentId: ContentId): string {
         return this.urlGenerator.downloadPackage(contentId);
     }
 
-    private getLibraries(
+    private async getLibraries(
         dependencies: ILibraryName[],
         loaded: object
     ): Promise<void> {
@@ -167,35 +179,30 @@ export default class H5PPlayer {
                 .map(dep => LibraryName.toUberName(dep))
                 .join(', ')}`
         );
-        return new Promise(resolve => {
-            Promise.all(
-                dependencies.map(
-                    dependency =>
-                        new Promise(rslv => {
-                            const name = dependency.machineName;
-                            const majVer = dependency.majorVersion;
-                            const minVer = dependency.minorVersion;
+        await Promise.all(
+            dependencies.map(async dependency => {
+                const name = dependency.machineName;
+                const majVer = dependency.majorVersion;
+                const minVer = dependency.minorVersion;
 
-                            const key = LibraryName.toUberName(dependency);
+                const key = LibraryName.toUberName(dependency);
+                if (key in loaded) {
+                    return;
+                }
 
-                            if (key in loaded) return rslv();
-
-                            return this.getLibrary(name, majVer, minVer).then(
-                                lib => {
-                                    loaded[key] = lib;
-                                    this.getLibraries(
-                                        lib.preloadedDependencies || [],
-                                        loaded
-                                    ).then(() => rslv());
-                                }
-                            );
-                        })
-                )
-            ).then(() => resolve());
-        });
+                const lib = await this.getLibrary(name, majVer, minVer);
+                if (lib) {
+                    loaded[key] = lib;
+                    await this.getLibraries(
+                        lib.preloadedDependencies || [],
+                        loaded
+                    );
+                }
+            })
+        );
     }
 
-    private getLibrary(
+    private async getLibrary(
         machineName: string,
         majorVersion: number,
         minorVersion: number
@@ -203,8 +210,16 @@ export default class H5PPlayer {
         log.verbose(
             `loading library ${machineName}-${majorVersion}.${minorVersion}`
         );
-        return Promise.resolve(
-            this.libraryLoader(machineName, majorVersion, minorVersion)
+        return this.libraryStorage.getLibrary(
+            new LibraryName(machineName, majorVersion, minorVersion)
         );
+    }
+
+    private listCoreScripts(): string[] {
+        return playerAssetList.scripts.core.map(this.urlGenerator.coreFile);
+    }
+
+    private listCoreStyles(): string[] {
+        return playerAssetList.styles.core.map(this.urlGenerator.coreFile);
     }
 }

@@ -48,8 +48,8 @@ export default class H5PEditor {
     constructor(
         cache: IKeyValueStorage,
         public config: IEditorConfig,
-        libraryStorage: ILibraryStorage,
-        contentStorage: IContentStorage,
+        public libraryStorage: ILibraryStorage,
+        public contentStorage: IContentStorage,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');

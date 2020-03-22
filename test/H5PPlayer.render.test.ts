@@ -5,16 +5,11 @@ describe('H5P.render()', () => {
     it('should work with a callback', () => {
         const contentId = 'foo';
         const contentObject = {};
-        const h5pObject = {};
+        const metadata: any = {};
 
-        new H5PPlayer(
-            undefined,
-            new EditorConfig(undefined),
-            undefined,
-            undefined
-        )
+        new H5PPlayer(undefined, undefined, new EditorConfig(undefined))
             .setRenderer(model => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, contentObject, metadata)
             .then(model => {
                 expect(model).toBeDefined();
                 expect((model as any).contentId).toBe('foo');

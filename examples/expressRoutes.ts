@@ -2,35 +2,20 @@ import express from 'express';
 
 import * as H5P from '../src';
 
-export default function(h5pEditor: H5P.H5PEditor): express.Router {
+export default function(
+    h5pEditor: H5P.H5PEditor,
+    h5pPlayer: H5P.H5PPlayer
+): express.Router {
     const router = express.Router();
 
-    router.get(`${h5pEditor.config.playUrl}/:contentId`, (req, res) => {
-        const libraryLoader = (lib, maj, min) =>
-            h5pEditor.libraryManager.getLibrary(
-                new H5P.LibraryName(lib, maj, min)
-            );
-        Promise.all([
-            h5pEditor.contentManager.getContentParameters(
-                req.params.contentId,
-                req.user
-            ),
-            h5pEditor.contentManager.getContentMetadata(
-                req.params.contentId,
-                req.user
-            )
-        ]).then(([contentObject, h5pObject]) =>
-            new H5P.H5PPlayer(
-                libraryLoader as any,
-                h5pEditor.config,
-                null,
-                null,
-                null
-            )
-                .render(req.params.contentId, contentObject, h5pObject)
-                .then(h5pPage => res.end(h5pPage))
-                .catch(error => res.status(500).end(error.message))
-        );
+    router.get(`${h5pEditor.config.playUrl}/:contentId`, async (req, res) => {
+        try {
+            const h5pPage = await h5pPlayer.render(req.params.contentId);
+            res.send(h5pPage);
+            res.status(200).end();
+        } catch (error) {
+            res.status(500).end(error.message);
+        }
     });
 
     router.get('/edit/:contentId', async (req, res) => {
