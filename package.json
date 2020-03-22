@@ -66,7 +66,7 @@
     },
     "devDependencies": {
         "@semantic-release/git": "9.0.0",
-        "@semantic-release/github": "7.0.4",
+        "@semantic-release/github": "7.0.5",
         "@types/escape-html": "0.0.20",
         "@types/fs-extra": "8.1.0",
         "@types/jest": "25.1.4",
