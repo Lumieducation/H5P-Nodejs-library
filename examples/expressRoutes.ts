@@ -19,7 +19,9 @@ export default function(
     });
 
     router.get('/edit/:contentId', async (req, res) => {
-        h5pEditor.render(req.params.contentId).then(page => res.end(page));
+        const page = h5pEditor.render(req.params.contentId);
+        res.send(page);
+        res.status(200).end();
     });
 
     router.post('/edit/:contentId', async (req, res) => {
@@ -36,7 +38,9 @@ export default function(
     });
 
     router.get('/new', async (req, res) => {
-        h5pEditor.render(undefined).then(page => res.end(page));
+        const page = h5pEditor.render(undefined);
+        res.send(page);
+        res.status(200).end();
     });
 
     router.post('/new', async (req, res) => {
@@ -54,10 +58,7 @@ export default function(
 
     router.get('/delete/:contentId', async (req, res) => {
         try {
-            await h5pEditor.contentManager.deleteContent(
-                req.params.contentId,
-                req.user
-            );
+            await h5pEditor.deleteContent(req.params.contentId, req.user);
         } catch (error) {
             res.send(
                 `Error deleting content with id ${req.params.contentId}: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`

@@ -38,7 +38,8 @@ import {
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    IUser
+    IUser,
+    IHubInfo
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
@@ -105,6 +106,18 @@ export default class H5PEditor {
     private urlGenerator: UrlGenerator;
 
     /**
+     * Deletes a piece of content and all files dependent on it.
+     * @param contentId the piece of content to delete
+     * @param user the user who wants to delete it
+     */
+    public async deleteContent(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<void> {
+        return this.contentManager.deleteContent(contentId, user);
+    }
+
+    /**
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
      * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
      * @param contentId The contentId for which the package should be created.
@@ -122,6 +135,12 @@ export default class H5PEditor {
         );
     }
 
+    /**
+     * Returns all the data needed to editor or display content
+     * @param contentId the content id
+     * @param user (optional) the user who wants to access the content; if undefined, access will be granted
+     * @returns all relevant information for the content (you can send it back to the GET request for content)
+     */
     public async getContent(
         contentId: ContentId,
         user?: IUser
@@ -180,11 +199,18 @@ export default class H5PEditor {
         return this.temporaryFileManager.getFileStream(filename, user);
     }
 
-    public getContentTypeCache(user: IUser): Promise<any> {
+    /**
+     * Returns the content type cache for a specific user. This includes all available content types for the user (some
+     * might be restricted) and what the user can do with them (update, install from Hub).
+     */
+    public getContentTypeCache(user: IUser): Promise<IHubInfo> {
         log.info(`getting content type cache`);
         return this.contentTypeRepository.get(user);
     }
 
+    /**
+     * Returns detailed information about an installed library.
+     */
     public async getLibraryData(
         machineName: string,
         majorVersion: string,
@@ -250,6 +276,24 @@ export default class H5PEditor {
         };
     }
 
+    /**
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
+     */
+    public async getLibraryFileStream(
+        library: ILibraryName,
+        file: string
+    ): Promise<ReadStream> {
+        return this.libraryManager.getFileStream(library, file);
+    }
+
+    /**
+     * Gets a rough overview of information about the requested libraries.
+     * @param libraryNames
+     */
     public async getLibraryOverview(
         libraryNames: string[]
     ): Promise<ILibraryOverviewForClient[]> {
@@ -290,14 +334,14 @@ export default class H5PEditor {
 
     /**
      * Installs a content type from the H5P Hub.
-     * @param id The name of the content type to install (e.g. H5P.Test-1.0)
+     * @param libraryName The name of the content type to install (e.g. H5P.Test) Note that this is not a full ubername!
      * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
      */
-    public async installLibrary(
-        id: string,
+    public async installLibraryFromHub(
+        libraryName: string,
         user: IUser
     ): Promise<ILibraryInstallResult[]> {
-        return this.contentTypeRepository.installContentType(id, user);
+        return this.contentTypeRepository.installContentType(libraryName, user);
     }
 
     /**
@@ -340,7 +384,13 @@ export default class H5PEditor {
         }, {});
     }
 
-    public render(contentId: ContentId): Promise<string> {
+    /**
+     * Renders the content. This means that a frame in which the editor is displayed is generated and returned. You can
+     * override the default frame by calling setRenderer(...).
+     * @param contentId
+     * @returns the rendered frame that you can include in your website. Normally a string, but can be anything you want it to be if you override the renderer.
+     */
+    public render(contentId: ContentId): Promise<string | any> {
         log.info(`rendering ${contentId}`);
         const model = {
             integration: this.generateIntegration(contentId),
@@ -511,6 +561,33 @@ export default class H5PEditor {
         return Object.values(collect);
     }
 
+    private generateEditorIntegration(
+        contentId: ContentId
+    ): IEditorIntegration {
+        log.info(`generating integration for ${contentId}`);
+        return {
+            ...defaultEditorIntegration,
+            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
+            apiVersion: {
+                majorVersion: this.config.coreApiVersion.major,
+                minorVersion: this.config.coreApiVersion.minor
+            },
+            assets: {
+                css: this.listCoreStyles(),
+                js: editorAssetList.scripts.integrationCore
+                    .map(this.urlGenerator.coreFile)
+                    .concat(
+                        editorAssetList.scripts.editor.map(
+                            this.urlGenerator.editorLibraryFile
+                        )
+                    )
+            },
+            filesPath: this.urlGenerator.temporaryFiles(),
+            libraryUrl: this.urlGenerator.editorLibraryFiles(),
+            nodeVersionId: contentId
+        };
+    }
+
     private async generateH5PJson(
         metadata: IContentMetadata,
         libraryName: ILibraryName,
@@ -544,7 +621,7 @@ export default class H5PEditor {
                 setFinished: ''
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            editor: this.getEditorIntegration(contentId),
+            editor: this.generateEditorIntegration(contentId),
             hubIsEnabled: true,
             l10n: {
                 H5P: this.clientTranslation
@@ -556,31 +633,6 @@ export default class H5PEditor {
                 mail: '',
                 name: ''
             }
-        };
-    }
-
-    private getEditorIntegration(contentId: ContentId): IEditorIntegration {
-        log.info(`generating integration for ${contentId}`);
-        return {
-            ...defaultEditorIntegration,
-            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            apiVersion: {
-                majorVersion: this.config.coreApiVersion.major,
-                minorVersion: this.config.coreApiVersion.minor
-            },
-            assets: {
-                css: this.listCoreStyles(),
-                js: editorAssetList.scripts.integrationCore
-                    .map(this.urlGenerator.coreFile)
-                    .concat(
-                        editorAssetList.scripts.editor.map(
-                            this.urlGenerator.editorLibraryFile
-                        )
-                    )
-            },
-            filesPath: this.urlGenerator.temporaryFiles(),
-            libraryUrl: this.urlGenerator.editorLibraryFiles(),
-            nodeVersionId: contentId
         };
     }
 

@@ -31,7 +31,7 @@ describe('H5PEditor: general', () => {
             );
 
         await expect(
-            h5pEditor.installLibrary('XYZ', new User())
+            h5pEditor.installLibraryFromHub('XYZ', new User())
         ).rejects.toThrow('hub-install-invalid-content-type');
     });
 
@@ -60,7 +60,7 @@ describe('H5PEditor: general', () => {
 
         // we check against the error message as we we've told axios to reply with 500 to requests to the Hub endpoint.
         await expect(
-            h5pEditor.installLibrary('H5P.Example1', new User())
+            h5pEditor.installLibraryFromHub('H5P.Example1', new User())
         ).rejects.toThrow('Request failed with status code 500');
     });
 });

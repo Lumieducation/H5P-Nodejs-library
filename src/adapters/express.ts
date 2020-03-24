@@ -30,7 +30,7 @@ export default function(
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
         catchAndPassOnErrors(async (req, res) => {
-            const stream = await h5pEditor.libraryManager.getFileStream(
+            const stream = await h5pEditor.getLibraryFileStream(
                 H5P.LibraryName.fromUberName(req.params.uberName),
                 req.params.file
             );
@@ -232,7 +232,7 @@ export default function(
                         })
                     );
                 case 'library-install':
-                    const installedLibs = await h5pEditor.installLibrary(
+                    const installedLibs = await h5pEditor.installLibraryFromHub(
                         req.query.id,
                         req.user
                     );
