@@ -5,7 +5,7 @@
 
 This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
-Please note that this project is in a early stage. Things will not work as expected and the interfaces are not stable yet! If you have questions or want to contribute, feel free to open issues or pull requests.
+Please not that even if most functionality of H5P seems to work, there are parts which haven't been implemented yet or which might be faulty. This is particularly true for security concerns. The interfaces have reached some level of stability, but might still change in future major releases. If you have questions or want to contribute, feel free to open issues or pull requests.
 
 An example of how to integrate and use this library with [Express](https://expressjs.com/) can be found in [examples](examples/).
 
@@ -24,8 +24,7 @@ You can then open the URL http://localhost:8080 in any browser.
 
 ### Architecture
 
-To find out what this library provides for you and what you must implement on your own, check
-out the [architecture overview](docs/architecture.md) first.
+To find out what this library provides for you and what you must implement on your own, check out the [architecture overview](docs/architecture.md) first.
 
 ### Installation
 
@@ -36,6 +35,8 @@ npm install h5p-nodejs-library
 ```
 
 ### Writing your custom implementation
+
+_Note: The example snippets below use the [ES2017 async await language features](https://javascript.info/async-await) to simplify dealing with promises. You can still use the traditional .then(()=> {...}) style if you wish so._
 
 After installation, you can import the library in a JavaScript file with
 
@@ -61,9 +62,8 @@ const h5pEditor = H5P.fs(
 and render the editor for content (= the HTML user interface around the actual editor and the editor itself) with a specific content ID with
 
 ```js
-h5pEditor
-    .render(contentId)
-    .then(page => /** send page to browser **/);
+const page = await h5pEditor.render(contentId);
+// send the page to the browser
 ```
 
 To use a custom renderer, change it with
@@ -126,7 +126,7 @@ If something goes wrong and a call to the library can't continue execution, it w
 
 Calls to the library might also throw regular `Error` objects. In this case the error is not caused by the business logic, but by some more basic functionality (file system, other library) or it might be an error that is addressed at the developer (i.e. because function parameters aren't correctly used).
 
-The Express adapter already deals with errors and returns proper HTTP status codes. Check out the implementation there for a guide how to deal with errors.
+The Express adapter already catches errors, localizes them and returns proper HTTP status codes. Check out the implementation there for a guide how to deal with errors.
 
 ## Development & Testing
 

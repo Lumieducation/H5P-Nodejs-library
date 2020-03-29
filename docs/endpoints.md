@@ -23,13 +23,13 @@ Note that the Express adapter does not include pages to create, editor, view, li
 ```ts
 {
     user: IUser, // must be populated with information about the user (mostly id and access rights)
-    t: (errorId: string, replacements: {[key: string]: string }) => string 
+    t: (errorId: string, replacements: {[key: string]: string }) => string
 }
 ```
 
 The function `t` must return the string for the errorId translated into the user's or the content's language.
 Replacements are added to the localized string with curly braces: {{replacement}}
-It is suggested you use [i18next](https://www.i18next.com/) for localization, but you can use any library, 
+It is suggested you use [i18next](https://www.i18next.com/) for localization, but you can use any library,
 as long as you make sure the function t is added to the request object.
 
 ## Handling requests yourself
@@ -56,14 +56,15 @@ Its body is
 }
 ```
 
-The request data should be passed to `H5PEditor.saveH5P`
+The request data should be passed to `H5PEditor.saveOrUpdateContent`
 
 ```js
-h5pEditor.saveH5P(
+h5pEditor.saveOrUpdateContent(
     contentId, // (optional)
     body.params.params,
     body.params.metadata,
-    body.library
+    body.library,
+    user // add information about the current user
 );
 ```
 
@@ -74,11 +75,10 @@ h5pEditor.saveH5P(
 Requests information about a piece of content. Respond with
 
 ```js
-h5pEditor
-    .loadH5P(
-        contentId,
-        user)       // the requesting user
-    .then(content => /** send content to browser **/)
+const content = await h5pEditor.getContent(
+                        contentId,
+                        user);       // the requesting user
+/** send content to browser **/
 ```
 
 ### Get Content Type Cache
@@ -88,9 +88,9 @@ h5pEditor
 Requests available content types. Respond with
 
 ```js
-h5pEditor
-    .getContentTypeCache(user)
-    .then(types => /** send types to browser **/)
+const hubInfo = await h5pEditor
+    .getContentTypeCache(user);
+/** send hub info to browser **/
 ```
 
 ### Get Library Data
@@ -100,14 +100,13 @@ h5pEditor
 Requests data about a specific library. Respond with
 
 ```js
-h5pEditor
-    .getLibraryData(
+const libraryData = await h5pEditor.getLibraryData(
         machineName,
         majorVersion,
         minorVersion,
         language
-    )
-    .then(library => /** send library to browser **/);
+    );
+/** send library to browser **/
 ```
 
 ### Get Library Overview
@@ -117,9 +116,8 @@ h5pEditor
 requests overview information about the given libraries. Respond with
 
 ```js
-h5pEditor
-    .getLibraryOverview(body.libraries)
-    .then(libraries => /** send libraries to browser **/)
+const overview = await h5pEditor.getLibraryOverview(body.libraries);
+/** send overview to browser **/
 ```
 
 ### Save Content File
@@ -130,14 +128,14 @@ Sends a file to be saved under the given content ID.
 The ID can be passed in the query string of the body of the request.
 
 ```js
-h5pEditor
-    .saveContentFile(
+const response = h5pEditor.saveContentFile(
         body.contentId === '0'
             ? query.contentId
             : body.contentId,
         JSON.parse(body.field),
-        files.file)
-    .then(response => /** send response to browser **/);
+        files.file,
+        user);
+/** send response to browser **/
 ```
 
 ### Install Library
@@ -147,11 +145,10 @@ h5pEditor
 Requests for the given library to be installed. Handle with
 
 ```js
-h5pEditor
-    .installLibrary(libraryId, user)
-    .then(() => h5pEditor.getContentTypeCache(user))
-    .then(contentTypeCache => ({ success: true, data: contentTypeCache }))
-    .then(response => /** send response to browser **/)
+await h5pEditor.installLibraryFromHub(libraryId, user);
+const contentTypeCache = await h5pEditor.getContentTypeCache(user);
+const response = { success: true, data: contentTypeCache };
+/** send response to browser **/
 ```
 
 ### Upload Package
@@ -163,20 +160,17 @@ is used to upload a `.h5p` file, and install the containing libraries and conten
 Handle with
 
 ```js
-h5pEditor.uploadPackage(files.h5p.data, query.contentId, user)
-    .then(() => Promise.all([
-        h5pEditor.loadH5P(query.contentId),
-        h5pEditor.getContentTypeCache(user)
-    ]))
-    .then(([content, contentTypes]) => ({
+const result = await h5pEditor.uploadPackage(files.h5p.data, user);
+const contentTypeCache = await h5pEditor.getContentTypeCache(user);
+const response = {
         success: true,
         data: {
-            h5p: content.h5p,
-            content: content.params.params,
-            contentTypes
+            h5p: result.metadata,
+            content: result.parameters,
+            contentTypes: contentTypeCache
         }
-    }))
-    .then(response => /** send response to browser **/)
+};
+/** send response to browser **/
 ```
 
 ## Configuring the routes to endpoints
