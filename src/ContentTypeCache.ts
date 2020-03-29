@@ -25,7 +25,7 @@ const log = new Logger('ContentTypeCache');
  * Usage:
  * - Get the content type information by calling get().
  * - The method updateIfNecessary() should be called regularly, e.g. through a cron-job.
- * - Use contentTypeCacheRefreshInterval in the H5PEditorConfig object to set how often
+ * - Use contentTypeCacheRefreshInterval in the IH5PConfig object to set how often
  *   the update should be performed. You can also use forceUpdate() if you want to bypass the
  *   interval.
  */

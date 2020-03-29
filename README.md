@@ -48,7 +48,7 @@ and instantiate the editor with
 
 ```js
 const h5pEditor = H5P.fs(
-    await new H5P.EditorConfig(
+    await new H5P.H5PConfig(
         new H5P.fsImplementations.JsonStorage(
             path.resolve('examples/config.json') // the path on the local disc where the configuration file is stored
         )
@@ -106,7 +106,7 @@ Several aspects of your H5P server can be customized by creating your own implem
 The interfaces that can be implemented are:
 
 -   `IContentStorage`
--   `IEditorConfig`
+-   `IH5PConfig`
 -   `ILibraryStorage`
 -   `ITemporaryFileStorage`
 -   `IUser`
