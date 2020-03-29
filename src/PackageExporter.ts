@@ -77,7 +77,7 @@ export default class PackageExporter {
         outputZipFile: yazl.ZipFile
     ): Promise<void> {
         log.info(`adding content files to ${contentId}`);
-        const contentFiles = await this.contentManager.getContentFiles(
+        const contentFiles = await this.contentManager.listContentFiles(
             contentId,
             user
         );
@@ -162,7 +162,7 @@ export default class PackageExporter {
     ): Promise<Readable> {
         let contentStream: Readable;
         try {
-            const content = await this.contentManager.loadContent(
+            const content = await this.contentManager.getContentParameters(
                 contentId,
                 user
             );
@@ -188,7 +188,10 @@ export default class PackageExporter {
         let metadataStream: Readable;
         let metadata: IContentMetadata;
         try {
-            metadata = await this.contentManager.loadH5PJson(contentId, user);
+            metadata = await this.contentManager.getContentMetadata(
+                contentId,
+                user
+            );
             metadataStream = new Readable();
             metadataStream._read = () => {
                 return;

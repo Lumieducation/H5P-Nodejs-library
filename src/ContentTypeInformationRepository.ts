@@ -8,7 +8,7 @@ import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import {
-    IEditorConfig,
+    IH5PConfig,
     IHubContentType,
     IHubContentTypeWithLocalInfo,
     IHubInfo,
@@ -39,7 +39,7 @@ export default class ContentTypeInformationRepository {
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
-        private config: IEditorConfig
+        private config: IH5PConfig
     ) {
         log.info(`initialize`);
     }
@@ -78,7 +78,7 @@ export default class ContentTypeInformationRepository {
      * @param machineName The machine name of the library to install (must be listed in the Hub, otherwise rejected)
      * @returns a list of libraries that were installed (includes dependent libraries). Empty if none were installed.
      */
-    public async install(
+    public async installContentType(
         machineName: string,
         user: IUser
     ): Promise<ILibraryInstallResult[]> {
@@ -142,15 +142,15 @@ export default class ContentTypeInformationRepository {
 
     /**
      *
-     * @param {any[]} hubInfo
-     * @returns {Promise<any[]>} The original hub information as passed into the method with appended information about
+     * @param hubInfo
+     * @returns The original hub information as passed into the method with appended information about
      * locally installed libraries.
      */
     private async addLocalLibraries(
         hubInfo: IHubContentTypeWithLocalInfo[],
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
                 machineName =>
@@ -207,15 +207,15 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Adds information about installation status, restriction, right to install and up-to-dateness.
-     * @param {any[]} hubInfo
-     * @returns {Promise<any[]>} The hub information as passed into the method with added information.
+     * @param hubInfo
+     * @returns The hub information as passed into the method with added information.
      */
     private async addUserAndInstallationSpecificInfo(
         hubInfo: IHubContentType[],
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
         log.info(`adding user and installation specific information`);
-        const localLibsWrapped = await this.libraryManager.getInstalled();
+        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped).map(
             machineName =>
                 localLibsWrapped[machineName][
@@ -264,7 +264,7 @@ export default class ContentTypeInformationRepository {
 
     /**
      * Checks if users can install library due to their rights.
-     * @param {HubContentType} library
+     * @param library
      */
     private canInstallLibrary(library: IHubContentType, user: IUser): boolean {
         log.verbose(
@@ -279,7 +279,7 @@ export default class ContentTypeInformationRepository {
     /**
      * Checks if the library is restricted e.g. because it is LRS dependent and the
      * admin has restricted them or because it was set as restricted individually.
-     * @param {IInstalledLibrary} library
+     * @param library
      */
     private libraryIsRestricted(library: IInstalledLibrary): boolean {
         log.verbose(`checking if library ${library.machineName} is restricted`);

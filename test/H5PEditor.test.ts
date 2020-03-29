@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
 
 import H5PEditor from '../src/H5PEditor';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
 import User from '../examples/User';
@@ -11,7 +11,7 @@ describe('H5PEditor: general', () => {
     const axiosMock = new axiosMockAdapter(axios);
 
     it("updates ContentTypeCache if it hasn't been downloaded before", async () => {
-        const config = new EditorConfig(new InMemoryStorage());
+        const config = new H5PConfig(new InMemoryStorage());
         const h5pEditor = new H5PEditor(
             new InMemoryStorage(),
             config,
@@ -31,12 +31,12 @@ describe('H5PEditor: general', () => {
             );
 
         await expect(
-            h5pEditor.installLibrary('XYZ', new User())
+            h5pEditor.installLibraryFromHub('XYZ', new User())
         ).rejects.toThrow('hub-install-invalid-content-type');
     });
 
     it("updates ContentTypeCache if it hasn't been downloaded before and tries installing", async () => {
-        const config = new EditorConfig(new InMemoryStorage());
+        const config = new H5PConfig(new InMemoryStorage());
         const h5pEditor = new H5PEditor(
             new InMemoryStorage(),
             config,
@@ -60,7 +60,7 @@ describe('H5PEditor: general', () => {
 
         // we check against the error message as we we've told axios to reply with 500 to requests to the Hub endpoint.
         await expect(
-            h5pEditor.installLibrary('H5P.Example1', new User())
+            h5pEditor.installLibraryFromHub('H5P.Example1', new User())
         ).rejects.toThrow('Request failed with status code 500');
     });
 });

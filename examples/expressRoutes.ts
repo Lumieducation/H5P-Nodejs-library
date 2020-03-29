@@ -2,40 +2,30 @@ import express from 'express';
 
 import * as H5P from '../src';
 
-export default function(h5pEditor: H5P.H5PEditor): express.Router {
+export default function(
+    h5pEditor: H5P.H5PEditor,
+    h5pPlayer: H5P.H5PPlayer
+): express.Router {
     const router = express.Router();
 
-    router.get(`${h5pEditor.config.playUrl}/:contentId`, (req, res) => {
-        const libraryLoader = (lib, maj, min) =>
-            h5pEditor.libraryManager.loadLibrary(
-                new H5P.LibraryName(lib, maj, min)
-            );
-        Promise.all([
-            h5pEditor.contentManager.loadContent(
-                req.params.contentId,
-                req.user
-            ),
-            h5pEditor.contentManager.loadH5PJson(req.params.contentId, req.user)
-        ]).then(([contentObject, h5pObject]) =>
-            new H5P.H5PPlayer(
-                libraryLoader as any,
-                h5pEditor.config,
-                null,
-                null,
-                null
-            )
-                .render(req.params.contentId, contentObject, h5pObject)
-                .then(h5pPage => res.end(h5pPage))
-                .catch(error => res.status(500).end(error.message))
-        );
+    router.get(`${h5pEditor.config.playUrl}/:contentId`, async (req, res) => {
+        try {
+            const h5pPage = await h5pPlayer.render(req.params.contentId);
+            res.send(h5pPage);
+            res.status(200).end();
+        } catch (error) {
+            res.status(500).end(error.message);
+        }
     });
 
     router.get('/edit/:contentId', async (req, res) => {
-        h5pEditor.render(req.params.contentId).then(page => res.end(page));
+        const page = await h5pEditor.render(req.params.contentId);
+        res.send(page);
+        res.status(200).end();
     });
 
     router.post('/edit/:contentId', async (req, res) => {
-        const contentId = await h5pEditor.saveH5P(
+        const contentId = await h5pEditor.saveOrUpdateContent(
             req.params.contentId,
             req.body.params.params,
             req.body.params.metadata,
@@ -48,11 +38,25 @@ export default function(h5pEditor: H5P.H5PEditor): express.Router {
     });
 
     router.get('/new', async (req, res) => {
-        h5pEditor.render(undefined).then(page => res.end(page));
+        const page = await h5pEditor.render(undefined);
+        res.send(page);
+        res.status(200).end();
     });
 
     router.post('/new', async (req, res) => {
-        const contentId = await h5pEditor.saveH5P(
+        if (
+            !req.body.params ||
+            !req.body.params.params ||
+            !req.body.params.metadata ||
+            !req.body.library ||
+            !req.user
+        ) {
+            res.status(400)
+                .send('Malformed request')
+                .end();
+            return;
+        }
+        const contentId = await h5pEditor.saveOrUpdateContent(
             undefined,
             req.body.params.params,
             req.body.params.metadata,
@@ -66,10 +70,7 @@ export default function(h5pEditor: H5P.H5PEditor): express.Router {
 
     router.get('/delete/:contentId', async (req, res) => {
         try {
-            await h5pEditor.contentManager.deleteContent(
-                req.params.contentId,
-                req.user
-            );
+            await h5pEditor.deleteContent(req.params.contentId, req.user);
         } catch (error) {
             res.send(
                 `Error deleting content with id ${req.params.contentId}: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`

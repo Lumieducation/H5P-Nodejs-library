@@ -33,7 +33,7 @@ export class ValidatorBuilder {
     /**
      * Adds a rule to the validator. Chain this method together to create complex validators.
      * @param {(content: any, error: AggregateH5pError) => any} rule rule to add
-     * @returns {ValidatorBuilder}
+     * @returns
      */
     public addRule(
         rule: (content: any, error: AggregateH5pError) => any
@@ -46,8 +46,8 @@ export class ValidatorBuilder {
      * Adds a rule to the validator if the condition is met.
      * Chain this method together to create complex validators.
      * @param {(content: any, error: AggregateH5pError) => any} rule rule to add
-     * @param {boolean} condition the condition (rule is added if it is true)
-     * @returns {ValidatorBuilder}
+     * @param condition the condition (rule is added if it is true)
+     * @returns
      */
     public addRuleWhen(
         rule: (content: any, error: AggregateH5pError) => any,
@@ -61,9 +61,9 @@ export class ValidatorBuilder {
 
     /**
      * Executes the validation.
-     * @param {any} data The data to validate. This parameters is passed to the first rule as the first parameter.
-     * @param {AggregateH5pError} error an optional error object. A new one is created if none is passed in here.
-     * @returns {Promise<any>} Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
+     * @param data The data to validate. This parameters is passed to the first rule as the first parameter.
+     * @param error an optional error object. A new one is created if none is passed in here.
+     * @returns Returns the object that is returned by the last rule if everything is valid or throws a ValidationError if not
      */
     public async validate(
         data: any,
@@ -86,9 +86,9 @@ export class ValidatorBuilder {
 
 /**
  * This rule throws the ValidationError object passed to it if there are any messages in it.
- * @param {any} data The data (ignored by this rule)
- * @param {AggregateH5pError} error The error to throw if there are any
- * @returns {any} the unchanged data object
+ * @param data The data (ignored by this rule)
+ * @param error The error to throw if there are any
+ * @returns the unchanged data object
  */
 export function throwErrorsNowRule(data: any, error: AggregateH5pError): any {
     if (error.hasErrors()) {

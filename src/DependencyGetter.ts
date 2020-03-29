@@ -76,7 +76,7 @@ export default class DependencyGetter {
         }
         libraries.add(LibraryName.toUberName(library));
 
-        const metadata = await this.libraryManager.loadLibrary(library);
+        const metadata = await this.libraryManager.getLibrary(library);
         if (preloaded && metadata.preloadedDependencies) {
             await this.addDependenciesToSet(
                 metadata.preloadedDependencies,

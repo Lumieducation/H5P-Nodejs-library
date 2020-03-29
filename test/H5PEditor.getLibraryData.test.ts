@@ -1,7 +1,7 @@
 import { withDir } from 'tmp-promise';
 
 import H5PEditor from '../src/H5PEditor';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 
@@ -9,7 +9,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -19,13 +19,13 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage: () => Promise.resolve(null),
-            loadLibrary: () => {
+            getLanguage: () => Promise.resolve(null),
+            getLibrary: () => {
                 return Promise.resolve({
                     editorDependencies: []
                 });
             },
-            loadSemantics: () => Promise.resolve([])
+            getSemantics: () => Promise.resolve([])
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -52,7 +52,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes the semantics.json content', () => {
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -62,13 +62,13 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage: () => Promise.resolve(null),
-            loadLibrary: () => {
+            getLanguage: () => Promise.resolve(null),
+            getLibrary: () => {
                 return Promise.resolve({
                     editorDependencies: []
                 });
             },
-            loadSemantics: library => {
+            getSemantics: library => {
                 return Promise.resolve({
                     arbitrary: 'content',
                     machineName: library.machineName,
@@ -94,7 +94,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -104,8 +104,8 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage: () => Promise.resolve(null),
-            loadLibrary: ({ machineName }) => {
+            getLanguage: () => Promise.resolve(null),
+            getLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -164,7 +164,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadSemantics: () => Promise.resolve({})
+            getSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -185,7 +185,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -195,8 +195,8 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage: () => Promise.resolve(null),
-            loadLibrary: ({ machineName }) => {
+            getLanguage: () => Promise.resolve(null),
+            getLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -262,7 +262,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadSemantics: () => Promise.resolve({})
+            getSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -277,13 +277,13 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('loads the language', () => {
-        const loadLanguage = jest.fn(() => {
+        const getLanguage = jest.fn(() => {
             return Promise.resolve({ arbitrary: 'languageObject' });
         }) as jest.Mocked<any>;
 
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -293,8 +293,8 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage,
-            loadLibrary: ({ _machineName }) => {
+            getLanguage,
+            getLibrary: ({ _machineName }) => {
                 switch (_machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
@@ -322,7 +322,7 @@ describe('aggregating data from library folders for the editor', () => {
                         });
                 }
             },
-            loadSemantics: () => Promise.resolve({})
+            getSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -338,16 +338,16 @@ describe('aggregating data from library folders for the editor', () => {
                 expect(libraryData.language).toEqual({
                     arbitrary: 'languageObject'
                 });
-                expect(loadLanguage.mock.calls[1][0].machineName).toBe(
+                expect(getLanguage.mock.calls[1][0].machineName).toBe(
                     machineName
                 );
-                expect(loadLanguage.mock.calls[1][0].majorVersion).toBe(
+                expect(getLanguage.mock.calls[1][0].majorVersion).toBe(
                     majorVersion
                 );
-                expect(loadLanguage.mock.calls[1][0].minorVersion).toBe(
+                expect(getLanguage.mock.calls[1][0].minorVersion).toBe(
                     minorVersion
                 );
-                expect(loadLanguage.mock.calls[1][1]).toBe(language);
+                expect(getLanguage.mock.calls[1][1]).toBe(language);
             });
     });
 
@@ -359,7 +359,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -369,7 +369,7 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages,
-            loadLibrary: ({ _machineName }) => {
+            getLibrary: ({ _machineName }) => {
                 switch (_machineName) {
                     case 'H5PEditor.Test':
                         return Promise.resolve({
@@ -398,8 +398,8 @@ describe('aggregating data from library folders for the editor', () => {
                 }
             },
             // tslint:disable-next-line: object-literal-sort-keys
-            loadLanguage: () => Promise.resolve([]),
-            loadSemantics: () => Promise.resolve({})
+            getLanguage: () => Promise.resolve([]),
+            getSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -430,7 +430,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -440,8 +440,8 @@ describe('aggregating data from library folders for the editor', () => {
         Object.assign(libraryManager, {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
-            loadLanguage: () => Promise.resolve(null),
-            loadLibrary: ({ machineName }) => {
+            getLanguage: () => Promise.resolve(null),
+            getLibrary: ({ machineName }) => {
                 switch (machineName) {
                     case 'Foo':
                         return Promise.resolve({
@@ -530,7 +530,7 @@ describe('aggregating data from library folders for the editor', () => {
                         throw new Error('unspecified');
                 }
             },
-            loadSemantics: () => Promise.resolve({})
+            getSemantics: () => Promise.resolve({})
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -550,7 +550,7 @@ describe('aggregating data from library folders for the editor', () => {
             async ({ path: tempDirPath }) => {
                 const h5pEditor = new H5PEditor(
                     null,
-                    new EditorConfig(null),
+                    new H5PConfig(null),
                     new FileLibraryStorage(tempDirPath),
                     null,
                     null

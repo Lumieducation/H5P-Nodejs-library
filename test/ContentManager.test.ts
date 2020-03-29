@@ -91,13 +91,13 @@ describe('ContentManager', () => {
                     contentManager.contentExists(contentId)
                 ).resolves.toEqual(true);
 
-                const returnedMetadata = await contentManager.loadH5PJson(
+                const returnedMetadata = await contentManager.getContentMetadata(
                     contentId,
                     user
                 );
                 expect(returnedMetadata).toEqual(mockupMetadata);
 
-                const returnedParameters = await contentManager.loadContent(
+                const returnedParameters = await contentManager.getContentParameters(
                     contentId,
                     user
                 );
@@ -125,7 +125,7 @@ describe('ContentManager', () => {
                     contentManager.deleteContent(contentId, user)
                 ).resolves.toBeUndefined();
                 await expect(
-                    contentManager.loadH5PJson(contentId, user)
+                    contentManager.getContentMetadata(contentId, user)
                 ).rejects.toThrow();
             },
             { keep: false, unsafeCleanup: true }
@@ -164,7 +164,7 @@ describe('ContentManager', () => {
                 ).resolves.toEqual(true);
 
                 // check if file is in list
-                const addedFiles = await contentManager.getContentFiles(
+                const addedFiles = await contentManager.listContentFiles(
                     contentId,
                     user
                 );
@@ -186,7 +186,7 @@ describe('ContentManager', () => {
                 await contentManager.deleteContentFile(contentId, 'earth.jpg');
 
                 // check if list of content file is empty now
-                const remainingFiles = await contentManager.getContentFiles(
+                const remainingFiles = await contentManager.listContentFiles(
                     contentId,
                     user
                 );

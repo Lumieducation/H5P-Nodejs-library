@@ -27,7 +27,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
-    IEditorConfig,
+    IH5PConfig,
     IEditorIntegration,
     IIntegration,
     IKeyValueStorage,
@@ -38,18 +38,26 @@ import {
     ILibraryStorage,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    IUser
+    IUser,
+    IHubInfo
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
 const log = new Logger('Editor');
 
 export default class H5PEditor {
+    /**
+     * @param cache the cache is used to store key - value pairs that must be accessed often; values stored in it must be accessible by ALL instances of the editor (across machines)
+     * @param config the configuration values for the editor; note that the editor can also change these values and save them!
+     * @param libraryStorage the storage object for libraries
+     * @param contentStorage the storage object for content
+     * @param temporaryStorage the storage object for temporary files
+     */
     constructor(
-        keyValueStorage: IKeyValueStorage,
-        public config: IEditorConfig,
-        libraryStorage: ILibraryStorage,
-        contentStorage: IContentStorage,
+        protected cache: IKeyValueStorage,
+        public config: IH5PConfig,
+        public libraryStorage: ILibraryStorage,
+        public contentStorage: IContentStorage,
         temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
@@ -59,7 +67,7 @@ export default class H5PEditor {
 
         this.renderer = defaultRenderer;
         this.clientTranslation = defaultTranslation;
-        this.contentTypeCache = new ContentTypeCache(config, keyValueStorage);
+        this.contentTypeCache = new ContentTypeCache(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
             this.urlGenerator.libraryFile
@@ -105,12 +113,24 @@ export default class H5PEditor {
     private urlGenerator: UrlGenerator;
 
     /**
+     * Deletes a piece of content and all files dependent on it.
+     * @param contentId the piece of content to delete
+     * @param user the user who wants to delete it
+     */
+    public async deleteContent(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<void> {
+        return this.contentManager.deleteContent(contentId, user);
+    }
+
+    /**
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
      * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
      * @param contentId The contentId for which the package should be created.
      * @param outputStream The stream that the package is written to (e.g. the response stream fo Express)
      */
-    public async exportPackage(
+    public async exportContent(
         contentId: ContentId,
         outputStream: WriteStream,
         user: IUser
@@ -120,6 +140,38 @@ export default class H5PEditor {
             outputStream,
             user
         );
+    }
+
+    /**
+     * Returns all the data needed to editor or display content
+     * @param contentId the content id
+     * @param user (optional) the user who wants to access the content; if undefined, access will be granted
+     * @returns all relevant information for the content (you can send it back to the GET request for content)
+     */
+    public async getContent(
+        contentId: ContentId,
+        user?: IUser
+    ): Promise<{
+        h5p: IContentMetadata;
+        library: string;
+        params: {
+            metadata: IContentMetadata;
+            params: ContentParameters;
+        };
+    }> {
+        log.info(`loading h5p for ${contentId}`);
+        const [h5pJson, content] = await Promise.all([
+            this.contentManager.getContentMetadata(contentId, user),
+            this.contentManager.getContentParameters(contentId, user)
+        ]);
+        return {
+            h5p: h5pJson,
+            library: ContentMetadata.toUbername(h5pJson),
+            params: {
+                metadata: h5pJson,
+                params: content
+            }
+        };
     }
 
     /**
@@ -154,11 +206,18 @@ export default class H5PEditor {
         return this.temporaryFileManager.getFileStream(filename, user);
     }
 
-    public getContentTypeCache(user: IUser): Promise<any> {
+    /**
+     * Returns the content type cache for a specific user. This includes all available content types for the user (some
+     * might be restricted) and what the user can do with them (update, install from Hub).
+     */
+    public getContentTypeCache(user: IUser): Promise<IHubInfo> {
         log.info(`getting content type cache`);
         return this.contentTypeRepository.get(user);
     }
 
+    /**
+     * Returns detailed information about an installed library.
+     */
     public async getLibraryData(
         machineName: string,
         majorVersion: string,
@@ -192,7 +251,7 @@ export default class H5PEditor {
             installedLibrary,
             upgradeScriptPath
         ] = await Promise.all([
-            this.loadAssets(
+            this.listAssets(
                 new LibraryName(
                     machineName,
                     majorVersionAsNr,
@@ -200,16 +259,15 @@ export default class H5PEditor {
                 ),
                 language
             ),
-            this.libraryManager.loadSemantics(library),
-            this.libraryManager.loadLanguage(library, language),
+            this.libraryManager.getSemantics(library),
+            this.libraryManager.getLanguage(library, language),
             this.libraryManager.listLanguages(library),
-            this.libraryManager.loadLibrary(library),
+            this.libraryManager.getLibrary(library),
             this.libraryManager.getUpgradesScriptPath(library)
         ]);
         return {
             languages,
             semantics,
-            // tslint:disable-next-line: object-literal-sort-keys
             css: assets.styles,
             defaultLanguage: null,
             language: languageObject,
@@ -226,45 +284,23 @@ export default class H5PEditor {
     }
 
     /**
-     * Retrieves the installed languages for libraries
-     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
-     *                     In this list the names of the libraries don't use hyphens to separate
-     *                     machine name and version.
-     * @param language the language code to get the files for
-     * @returns The strings of the language files
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
      */
-    public async getLibraryLanguageFiles(
-        libraryUbernames: string[],
-        language: string
-    ): Promise<{ [key: string]: string }> {
-        log.info(
-            `getting language files (${language}) for ${libraryUbernames.join(
-                ', '
-            )}`
-        );
-        return (
-            await Promise.all(
-                libraryUbernames.map(async name => {
-                    const lib = LibraryName.fromUberName(name, {
-                        useWhitespace: true
-                    });
-                    return {
-                        languageJson: await this.libraryManager.loadLanguage(
-                            lib,
-                            language
-                        ),
-                        name
-                    };
-                })
-            )
-        ).reduce((builtObject: any, { languageJson, name }) => {
-            if (languageJson) {
-                builtObject[name] = JSON.stringify(languageJson);
-            }
-            return builtObject;
-        }, {});
+    public async getLibraryFileStream(
+        library: ILibraryName,
+        file: string
+    ): Promise<ReadStream> {
+        return this.libraryManager.getFileStream(library, file);
     }
 
+    /**
+     * Gets a rough overview of information about the requested libraries.
+     * @param libraryNames
+     */
     public async getLibraryOverview(
         libraryNames: string[]
     ): Promise<ILibraryOverviewForClient[]> {
@@ -281,87 +317,97 @@ export default class H5PEditor {
                     )
                     .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
                     .map(async lib => {
-                        const loadedLibrary = await this.libraryManager.loadLibrary(
-                            lib
-                        );
-                        if (!loadedLibrary) {
+                        try {
+                            const loadedLibrary = await this.libraryManager.getLibrary(
+                                lib
+                            );
+                            if (!loadedLibrary) {
+                                return undefined;
+                            }
+                            return {
+                                majorVersion: loadedLibrary.majorVersion,
+                                metadataSettings: null,
+                                minorVersion: loadedLibrary.minorVersion,
+                                name: loadedLibrary.machineName,
+                                restricted: false,
+                                runnable: loadedLibrary.runnable,
+                                title: loadedLibrary.title,
+                                tutorialUrl: '',
+                                uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
+                            };
+                        } catch (error) {
+                            // if a library can't be loaded the whole call should still succeed
                             return undefined;
                         }
-                        return {
-                            majorVersion: loadedLibrary.majorVersion,
-                            metadataSettings: null,
-                            minorVersion: loadedLibrary.minorVersion,
-                            name: loadedLibrary.machineName,
-                            restricted: false,
-                            runnable: loadedLibrary.runnable,
-                            title: loadedLibrary.title,
-                            tutorialUrl: '',
-                            uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
-                        };
                     })
             )
         ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
     }
 
     /**
-     * Determines the main library and returns the ubername for it (e.g. "H5P.Example 1.0").
-     * @param metadata the metadata object (=h5p.json)
-     * @returns the ubername with a whitespace as separator
+     * Installs a content type from the H5P Hub.
+     * @param libraryName The name of the content type to install (e.g. H5P.Test) Note that this is not a full ubername!
+     * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
      */
-    public getUbernameFromMetadata(metadata: IContentMetadata): string {
-        const library = (metadata.preloadedDependencies || []).find(
-            dependency => dependency.machineName === metadata.mainLibrary
-        );
-        if (!library) {
-            return '';
-        }
-        return LibraryName.toUberName(library, { useWhitespace: true });
+    public async installLibraryFromHub(
+        libraryName: string,
+        user: IUser
+    ): Promise<ILibraryInstallResult[]> {
+        return this.contentTypeRepository.installContentType(libraryName, user);
     }
 
     /**
-     * Installs a content type from the H5P Hub.
-     * @param id The name of the content type to install (e.g. H5P.Test-1.0)
-     * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
+     * Retrieves the installed languages for libraries
+     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
+     *                     In this list the names of the libraries don't use hyphens to separate
+     *                     machine name and version.
+     * @param language the language code to get the files for
+     * @returns The strings of the language files
      */
-    public async installLibrary(
-        id: string,
-        user: IUser
-    ): Promise<ILibraryInstallResult[]> {
-        return this.contentTypeRepository.install(id, user);
-    }
-
-    public async loadH5P(
-        contentId: ContentId,
-        user?: IUser
-    ): Promise<{
-        h5p: IContentMetadata;
-        library: string;
-        params: {
-            metadata: IContentMetadata;
-            params: ContentParameters;
-        };
-    }> {
-        log.info(`loading h5p for ${contentId}`);
-        const [h5pJson, content] = await Promise.all([
-            this.contentManager.loadH5PJson(contentId, user),
-            this.contentManager.loadContent(contentId, user)
-        ]);
-        return {
-            h5p: h5pJson,
-            library: this.getUbernameFromMetadata(h5pJson),
-            params: {
-                metadata: h5pJson,
-                params: content
+    public async listLibraryLanguageFiles(
+        libraryUbernames: string[],
+        language: string
+    ): Promise<{ [key: string]: string }> {
+        log.info(
+            `getting language files (${language}) for ${libraryUbernames.join(
+                ', '
+            )}`
+        );
+        return (
+            await Promise.all(
+                libraryUbernames.map(async name => {
+                    const lib = LibraryName.fromUberName(name, {
+                        useWhitespace: true
+                    });
+                    return {
+                        languageJson: await this.libraryManager.getLanguage(
+                            lib,
+                            language
+                        ),
+                        name
+                    };
+                })
+            )
+        ).reduce((builtObject: any, { languageJson, name }) => {
+            if (languageJson) {
+                builtObject[name] = JSON.stringify(languageJson);
             }
-        };
+            return builtObject;
+        }, {});
     }
 
-    public render(contentId: ContentId): Promise<string> {
+    /**
+     * Renders the content. This means that a frame in which the editor is displayed is generated and returned. You can
+     * override the default frame by calling setRenderer(...).
+     * @param contentId
+     * @returns the rendered frame that you can include in your website. Normally a string, but can be anything you want it to be if you override the renderer.
+     */
+    public render(contentId: ContentId): Promise<string | any> {
         log.info(`rendering ${contentId}`);
         const model = {
-            integration: this.integration(contentId),
-            scripts: this.getCoreScripts(),
-            styles: this.getCoreStyles(),
+            integration: this.generateIntegration(contentId),
+            scripts: this.listCoreScripts(),
+            styles: this.listCoreStyles(),
             urlGenerator: this.urlGenerator
         };
 
@@ -390,7 +436,7 @@ export default class H5PEditor {
         dataStream.end(file.data);
 
         log.info(`Putting content file ${file.name} into temporary storage`);
-        const tmpFilename = await this.temporaryFileManager.saveFile(
+        const tmpFilename = await this.temporaryFileManager.addFile(
             file.name,
             dataStream,
             user
@@ -412,7 +458,7 @@ export default class H5PEditor {
      * @param user the user who wants to save the piece of content
      * @returns the existing contentId or the newly assigned one
      */
-    public async saveH5P(
+    public async saveOrUpdateContent(
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
@@ -439,13 +485,13 @@ export default class H5PEditor {
             );
         }
 
-        const h5pJson: IContentMetadata = await this.generateH5PJSON(
+        const h5pJson: IContentMetadata = await this.generateH5PJson(
             metadata,
             parsedLibraryName,
             this.findLibraries(parameters)
         );
 
-        const newContentId = await this.contentStorer.saveOrUpdateContent(
+        const newContentId = await this.contentStorer.addOrUpdateContent(
             contentId,
             parameters,
             h5pJson,
@@ -453,6 +499,11 @@ export default class H5PEditor {
             user
         );
         return newContentId;
+    }
+
+    public setRenderer(renderer: any): H5PEditor {
+        this.renderer = renderer;
+        return this;
     }
 
     /**
@@ -501,11 +552,6 @@ export default class H5PEditor {
         return returnValues;
     }
 
-    public useRenderer(renderer: any): H5PEditor {
-        this.renderer = renderer;
-        return this;
-    }
-
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {
         if (typeof object !== 'object') {
             return collect;
@@ -527,14 +573,41 @@ export default class H5PEditor {
         return Object.values(collect);
     }
 
-    private async generateH5PJSON(
+    private generateEditorIntegration(
+        contentId: ContentId
+    ): IEditorIntegration {
+        log.info(`generating integration for ${contentId}`);
+        return {
+            ...defaultEditorIntegration,
+            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
+            apiVersion: {
+                majorVersion: this.config.coreApiVersion.major,
+                minorVersion: this.config.coreApiVersion.minor
+            },
+            assets: {
+                css: this.listCoreStyles(),
+                js: editorAssetList.scripts.integrationCore
+                    .map(this.urlGenerator.coreFile)
+                    .concat(
+                        editorAssetList.scripts.editor.map(
+                            this.urlGenerator.editorLibraryFile
+                        )
+                    )
+            },
+            filesPath: this.urlGenerator.temporaryFiles(),
+            libraryUrl: this.urlGenerator.editorLibraryFiles(),
+            nodeVersionId: contentId
+        };
+    }
+
+    private async generateH5PJson(
         metadata: IContentMetadata,
         libraryName: ILibraryName,
         contentDependencies: ILibraryName[] = []
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
 
-        const library = await this.libraryManager.loadLibrary(libraryName);
+        const library = await this.libraryManager.getLibrary(libraryName);
         const h5pJson: IContentMetadata = new ContentMetadata(
             metadata,
             { mainLibrary: library.machineName },
@@ -553,59 +626,14 @@ export default class H5PEditor {
         return h5pJson;
     }
 
-    private getCoreScripts(): string[] {
-        return editorAssetList.scripts.core
-            .map(this.urlGenerator.coreFile)
-            .concat(
-                editorAssetList.scripts.editor.map(
-                    this.urlGenerator.editorLibraryFile
-                )
-            );
-    }
-
-    private getCoreStyles(): string[] {
-        return editorAssetList.styles.core
-            .map(this.urlGenerator.coreFile)
-            .concat(
-                editorAssetList.styles.editor.map(
-                    this.urlGenerator.editorLibraryFile
-                )
-            );
-    }
-
-    private getEditorIntegration(contentId: ContentId): IEditorIntegration {
-        log.info(`generating integration for ${contentId}`);
-        return {
-            ...defaultEditorIntegration,
-            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            apiVersion: {
-                majorVersion: this.config.coreApiVersion.major,
-                minorVersion: this.config.coreApiVersion.minor
-            },
-            assets: {
-                css: this.getCoreStyles(),
-                js: editorAssetList.scripts.integrationCore
-                    .map(this.urlGenerator.coreFile)
-                    .concat(
-                        editorAssetList.scripts.editor.map(
-                            this.urlGenerator.editorLibraryFile
-                        )
-                    )
-            },
-            filesPath: this.urlGenerator.temporaryFiles(),
-            libraryUrl: this.urlGenerator.editorLibraryFiles(),
-            nodeVersionId: contentId
-        };
-    }
-
-    private integration(contentId: ContentId): IIntegration {
+    private generateIntegration(contentId: ContentId): IIntegration {
         return {
             ajax: {
                 contentUserData: '',
                 setFinished: ''
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            editor: this.getEditorIntegration(contentId),
+            editor: this.generateEditorIntegration(contentId),
             hubIsEnabled: true,
             l10n: {
                 H5P: this.clientTranslation
@@ -620,7 +648,7 @@ export default class H5PEditor {
         };
     }
 
-    private async loadAssets(
+    private async listAssets(
         libraryName: ILibraryName,
         language: string,
         loaded: object = {}
@@ -638,8 +666,8 @@ export default class H5PEditor {
         };
 
         const [library, translation] = await Promise.all([
-            this.libraryManager.loadLibrary(libraryName),
-            this.libraryManager.loadLanguage(libraryName, language || 'en')
+            this.libraryManager.getLibrary(libraryName),
+            this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
         const combinedDependencies = await Promise.all([
             this.resolveDependencies(
@@ -680,6 +708,26 @@ export default class H5PEditor {
         return assets;
     }
 
+    private listCoreScripts(): string[] {
+        return editorAssetList.scripts.core
+            .map(this.urlGenerator.coreFile)
+            .concat(
+                editorAssetList.scripts.editor.map(
+                    this.urlGenerator.editorLibraryFile
+                )
+            );
+    }
+
+    private listCoreStyles(): string[] {
+        return editorAssetList.styles.core
+            .map(this.urlGenerator.coreFile)
+            .concat(
+                editorAssetList.styles.editor.map(
+                    this.urlGenerator.editorLibraryFile
+                )
+            );
+    }
+
     private resolveDependencies(
         originalDependencies: ILibraryName[],
         language: string,
@@ -693,7 +741,7 @@ export default class H5PEditor {
         ) => {
             if (!dependency) return Promise.resolve(resolved);
 
-            return this.loadAssets(dependency, language, loaded)
+            return this.listAssets(dependency, language, loaded)
                 .then((assets: IAssets) =>
                     assets ? resolved.push(assets) : null
                 )

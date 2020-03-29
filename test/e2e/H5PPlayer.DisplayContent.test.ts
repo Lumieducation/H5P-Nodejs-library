@@ -6,8 +6,9 @@ import promiseQueue from 'promise-queue';
 import puppeteer from 'puppeteer';
 
 import H5PPlayer from '../../src/H5PPlayer';
-import EditorConfig from '../../src/implementation/EditorConfig';
+import H5PConfig from '../../src/implementation/H5PConfig';
 import PackageImporter from '../../src/PackageImporter';
+import { ILibraryName } from '../../src';
 
 const contentPath = `${path.resolve('')}/test/data/hub-content`;
 const extractedContentPath = `${path.resolve(
@@ -43,15 +44,18 @@ fs.readdir(contentPath, (fsError, files) => {
                 `/h5p/content/${name}`,
                 express.static(`${dir}/content`)
             );
-            const libraryLoader = (lib, maj, min) =>
-                Promise.resolve(
-                    require(`${dir}/${lib}-${maj}.${min}/library.json`)
-                );
+
+            const mockLibraryStorage: any = {
+                getLibrary: async (libName: ILibraryName) => {
+                    return require(`${dir}/${libName.machineName}-${libName.majorVersion}.${libName.minorVersion}/library.json`);
+                }
+            };
             const h5pObject = require(`${dir}/h5p.json`);
             const contentObject = require(`${dir}/content/content.json`);
             return new H5PPlayer(
-                libraryLoader as any,
-                new EditorConfig(undefined),
+                mockLibraryStorage,
+                undefined,
+                new H5PConfig(undefined),
                 undefined,
                 undefined
             )

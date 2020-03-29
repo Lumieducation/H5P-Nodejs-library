@@ -12,7 +12,7 @@ import PackageValidator from './PackageValidator';
 import {
     ContentId,
     IContentMetadata,
-    IEditorConfig,
+    IH5PConfig,
     ILibraryInstallResult,
     IUser
 } from './types';
@@ -45,13 +45,13 @@ enum ContentCopyModes {
  */
 export default class PackageImporter {
     /**
-     * @param {LibraryManager} libraryManager
-     * @param {EditorConfig} config
-     * @param {ContentStorer} contentStorer
+     * @param libraryManager
+     * @param config
+     * @param contentStorer
      */
     constructor(
         private libraryManager: LibraryManager,
-        private config: IEditorConfig,
+        private config: IH5PConfig,
         private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
     ) {
@@ -60,12 +60,12 @@ export default class PackageImporter {
 
     /**
      * Extracts a H5P package to the specified directory.
-     * @param {string} packagePath The full path to the H5P package file on the local disk
-     * @param {string} directoryPath The full path of the directory to which the package should be extracted
-     * @param {boolean} includeLibraries If true, the library directories inside the package will be extracted.
-     * @param {boolean} includeContent If true, the content folder inside the package will be extracted.
-     * @param {boolean} includeMetadata If true, the h5p.json file inside the package will be extracted.
-     * @returns {Promise<void>}
+     * @param packagePath The full path to the H5P package file on the local disk
+     * @param directoryPath The full path of the directory to which the package should be extracted
+     * @param includeLibraries If true, the library directories inside the package will be extracted.
+     * @param includeContent If true, the content folder inside the package will be extracted.
+     * @param includeMetadata If true, the h5p.json file inside the package will be extracted.
+     * @returns
      */
     public static async extractPackage(
         packagePath: string,
@@ -179,7 +179,7 @@ export default class PackageImporter {
     /**
      * Installs all libraries from the package. Assumes that the user calling this has the permission to install libraries!
      * Throws errors if something goes wrong.
-     * @param {string} packagePath The full path to the H5P package file on the local disk.
+     * @param packagePath The full path to the H5P package file on the local disk.
      * @returns a list of the installed libraries
      */
     public async installLibrariesFromPackage(

@@ -9,7 +9,7 @@ import InMemoryStorage from '../InMemoryStorage';
 export default class JsonStorage extends InMemoryStorage {
     /**
      * Initializes the JsonStorage. It's advised to use the async static factory method create(...) instead.
-     * @param {string} file Path to the JSON file (must be read- and writable)
+     * @param file Path to the JSON file (must be read- and writable)
      */
     constructor(file?: string) {
         super();
@@ -25,7 +25,7 @@ export default class JsonStorage extends InMemoryStorage {
     /**
      * Factory for a JsonStorage object that initializes the object.
      * Throws errors is something is wrong with the file (not accessible / can't be parsed).
-     * @param {string} file Path to the JSON file (must be read- and writeable)
+     * @param file Path to the JSON file (must be read- and writeable)
      */
     public static async create(file: string): Promise<JsonStorage> {
         const storage = new JsonStorage();
@@ -35,8 +35,8 @@ export default class JsonStorage extends InMemoryStorage {
 
     /**
      * Saves a key in the JSON file (supports nested values).
-     * @param {string} key
-     * @param {*} value
+     * @param key
+     * @param value
      */
     public async save(key: string, value: any): Promise<any> {
         const returnValue = await super.save(key, value);
@@ -46,7 +46,7 @@ export default class JsonStorage extends InMemoryStorage {
 
     /**
      * Initializes the storage by loading the JSON file.
-     * @param {string} file Path to the JSON file (must be read- and writeable)
+     * @param file Path to the JSON file (must be read- and writeable)
      */
     private async initialize(file: string): Promise<void> {
         this.storage = await fsExtra.readJSON(file);

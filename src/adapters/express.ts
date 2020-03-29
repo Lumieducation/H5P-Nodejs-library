@@ -30,7 +30,7 @@ export default function(
     router.get(
         `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
         catchAndPassOnErrors(async (req, res) => {
-            const stream = await h5pEditor.libraryManager.getFileStream(
+            const stream = await h5pEditor.getLibraryFileStream(
                 H5P.LibraryName.fromUberName(req.params.uberName),
                 req.params.file
             );
@@ -77,7 +77,7 @@ export default function(
     router.get(
         `${h5pEditor.config.paramsUrl}/:contentId`,
         catchAndPassOnErrors(async (req, res) => {
-            const content = await h5pEditor.loadH5P(
+            const content = await h5pEditor.getContent(
                 req.params.contentId,
                 req.user
             );
@@ -157,7 +157,7 @@ export default function(
                     res.status(200).json(libraryOverview);
                     break;
                 case 'translations':
-                    const translationsResponse = await h5pEditor.getLibraryLanguageFiles(
+                    const translationsResponse = await h5pEditor.listLibraryLanguageFiles(
                         req.body.libraries,
                         req.query.language
                     );
@@ -231,8 +231,16 @@ export default function(
                             params: unfilteredParams
                         })
                     );
+                    break;
                 case 'library-install':
-                    const installedLibs = await h5pEditor.installLibrary(
+                    if (!req.query || !req.query.id || !req.user) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            { error: 'Request Parameters incorrect.' },
+                            400
+                        );
+                    }
+                    const installedLibs = await h5pEditor.installLibraryFromHub(
                         req.query.id,
                         req.user
                     );
@@ -318,7 +326,7 @@ export default function(
                 'Content-disposition',
                 `attachment; filename=${req.params.contentId}.h5p`
             );
-            await h5pEditor.exportPackage(req.params.contentId, res, req.user);
+            await h5pEditor.exportContent(req.params.contentId, res, req.user);
         })
     );
 

@@ -5,7 +5,7 @@ import { withDir } from 'tmp-promise';
 
 import { ContentFileScanner } from '../src/ContentFileScanner';
 import ContentManager from '../src/ContentManager';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
@@ -42,7 +42,7 @@ describe('ContentFileScanner', () => {
         // install content & libraries
         const packageImporter = new PackageImporter(
             libraryManager,
-            new EditorConfig(null),
+            new H5PConfig(null),
             contentManager
         );
         const contentId = (
@@ -88,7 +88,7 @@ describe('ContentFileScanner', () => {
                 expect(path.normalize(foundImages[0].filePath)).toEqual(
                     path.normalize('images/file-5885c18261805.jpg')
                 );
-                const parameters = await contentManager.loadContent(
+                const parameters = await contentManager.getContentParameters(
                     contentId,
                     user
                 );

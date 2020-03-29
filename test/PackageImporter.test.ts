@@ -5,7 +5,7 @@ import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
@@ -25,7 +25,7 @@ describe('package importer', () => {
                 );
                 const packageImporter = new PackageImporter(
                     libraryManager,
-                    new EditorConfig(null)
+                    new H5PConfig(null)
                 );
                 const installedLibraryNames = await packageImporter.installLibrariesFromPackage(
                     path.resolve('test/data/validator/valid2.h5p')
@@ -42,7 +42,7 @@ describe('package importer', () => {
                 });
 
                 // Check if library was installed correctly
-                const installedLibraries = await libraryManager.getInstalled();
+                const installedLibraries = await libraryManager.listInstalledLibraries();
                 expect(installedLibraries['H5P.GreetingCard']).toBeDefined();
                 expect(installedLibraries['H5P.GreetingCard'].length).toEqual(
                     1
@@ -77,7 +77,7 @@ describe('package importer', () => {
                 );
                 const packageImporter = new PackageImporter(
                     libraryManager,
-                    new EditorConfig(null),
+                    new H5PConfig(null),
                     contentManager
                 );
                 const contentId = (
@@ -88,22 +88,25 @@ describe('package importer', () => {
                 ).id;
 
                 // Check if library was installed
-                const installedLibraries = await libraryManager.getInstalled();
+                const installedLibraries = await libraryManager.listInstalledLibraries();
                 expect(installedLibraries['H5P.GreetingCard']).toBeDefined();
 
                 // Check if metadata (h5p.json) was added correctly
                 expect(
-                    (await contentManager.loadH5PJson(contentId, user)).title
+                    (await contentManager.getContentMetadata(contentId, user))
+                        .title
                 ).toEqual('Greeting card');
                 expect(
-                    (await contentManager.loadH5PJson(contentId, user))
+                    (await contentManager.getContentMetadata(contentId, user))
                         .mainLibrary
                 ).toEqual('H5P.GreetingCard');
 
                 // Check if content (content/content.json) was added correctly
                 expect(
-                    ((await contentManager.loadContent(contentId, user)) as any)
-                        .greeting
+                    ((await contentManager.getContentParameters(
+                        contentId,
+                        user
+                    )) as any).greeting
                 ).toEqual('Hello world!');
                 const fileStream = await contentManager.getContentFileStream(
                     contentId,

@@ -7,13 +7,13 @@ There are two ways of creating a H5PEditor object:
 
 Explanation of the arguments of the constructor:
 
-## keyValueStore
+## cache
 
-The `keyValueStore` object is used by the `ContentTypeCache` to persist information about Content Types. It must be able to store arbitrary nested objects. It must implement the interface `IKeyValueStorage`.
+The `cache` object is used by the `ContentTypeCache` to persist information about content types. It might be also used for other functionality in the future. It must be able to store arbitrary nested objects and must implement the interface `IKeyValueStorage`. If used in a multi-machine or multi-process setup, the cache must be a single point of truth and work across all processes.
 
 ## config
 
-An object holding all configuration parameters as properties. It must implement the `IEditorConfig` interface. You can use the sample implementation in [`src/implementation/EditorConfig.ts`](/src/implementation/EditorConfig.ts).
+An object holding all configuration parameters as properties. It must implement the `IH5PConfig` interface. You can use the sample implementation in [`src/implementation/H5PConfig.ts`](/src/implementation/H5PConfig.ts).
 
 ## libraryStorage
 

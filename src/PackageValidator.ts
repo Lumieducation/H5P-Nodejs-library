@@ -12,7 +12,7 @@ import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { IEditorConfig } from './types';
+import { IH5PConfig } from './types';
 
 const log = new Logger('PackageValidator');
 
@@ -32,7 +32,7 @@ export default class PackageValidator {
     /**
      * @param configurationValues Object containing all required configuration parameters
      */
-    constructor(private config: IEditorConfig) {
+    constructor(private config: IH5PConfig) {
         log.info(`initialize`);
         this.contentExtensionWhitelist = config.contentWhitelist.split(' ');
         this.libraryExtensionWhitelist = config.libraryWhitelist
@@ -48,8 +48,8 @@ export default class PackageValidator {
 
     /**
      * Returns a list of top-level directories in the zip file
-     * @param {yauzlPromise.Entry[]} zipEntries
-     * @returns {string[]} list of top-level directories
+     * @param zipEntries
+     * @returns list of top-level directories
      */
     private static getTopLevelDirectories(
         zipEntries: yauzlPromise.Entry[]
@@ -72,8 +72,8 @@ export default class PackageValidator {
 
     /**
      * Checks if the passed filename has an extension that is in the passed list.
-     * @param {string} filename The filename to check
-     * @param {string[]} allowedExtensions A list of extensions to check against
+     * @param filename The filename to check
+     * @param allowedExtensions A list of extensions to check against
      */
     private static isAllowedFileExtension(
         filename: string,
@@ -101,8 +101,8 @@ export default class PackageValidator {
 
     /**
      * Checks if a zip file path is a directory
-     * @param {string} p the path to check
-     * @returns {boolean} true if directory, false if not
+     * @param p the path to check
+     * @returns true if directory, false if not
      */
     private static isDirectory(p: string): boolean {
         log.debug(`checking if ${p} is a directory`);
@@ -111,8 +111,8 @@ export default class PackageValidator {
 
     /**
      * Opens the zip archive.
-     * @param {string} file Path to file to open
-     * @returns {Promise<yauzlPromise.ZipFile>} Zip archive object or undefined if zip file cannot be opened.
+     * @param file Path to file to open
+     * @returns Zip archive object or undefined if zip file cannot be opened.
      */
     private static async openZipArchive(
         file: string
@@ -131,8 +131,8 @@ export default class PackageValidator {
      * Similar to path.join(...) but uses slashes (/) as separators regardless of OS.
      * We have to use slashes when dealing with zip files as the specification for zips require them. If the program
      * runs on Windows path.join(...) uses backslashes \ which don't work for zip files.
-     * @param {...string[]} parts The parts of the path to join
-     * @returns {string} the full path
+     * @param parts The parts of the path to join
+     * @returns the full path
      */
     private static pathJoin(...parts: string[]): string {
         const separator = '/';
@@ -142,10 +142,10 @@ export default class PackageValidator {
 
     /**
      * Validates the H5P package located at the path passed to the method.
-     * @param {string} h5pFile Path to H5P file to validate
-     * @param {boolean} checkContent If true, the method will check if the content in the package conforms to the standard
-     * @param {boolean} checkLibraries If true, the method will check if the libraries in the package conform to the standard
-     * @returns {Promise<any>} true if the package is valid. Will throw Errors with the error in Error.message if there is a validation error.
+     * @param h5pFile Path to H5P file to validate
+     * @param checkContent If true, the method will check if the content in the package conforms to the standard
+     * @param checkLibraries If true, the method will check if the libraries in the package conform to the standard
+     * @returns true if the package is valid. Will throw Errors with the error in Error.message if there is a validation error.
      */
     public async validatePackage(
         h5pFile: string,
@@ -221,9 +221,9 @@ export default class PackageValidator {
     /**
      * Checks if the core API version required in the metadata can be satisfied by the running instance.
      * @param {{coreApi: { majorVersion: number, minorVersion: number }}} metadata The object containing information about the required core version
-     * @param {string} libraryName The name of the library that is being checked.
-     * @param {AggregateH5pError} error The error object.
-     * @returns {boolean} true if the core API required in the metadata can be satisfied by the running instance. Also true if the metadata doesn't require any core API version.
+     * @param libraryName The name of the library that is being checked.
+     * @param error The error object.
+     * @returns true if the core API required in the metadata can be satisfied by the running instance. Also true if the metadata doesn't require any core API version.
      */
     private checkCoreVersion(
         metadata: { coreApi: { majorVersion: number; minorVersion: number } },
@@ -268,7 +268,7 @@ export default class PackageValidator {
      * in the whitelists.
      * Does NOT throw errors but appends them to the error object.
      * @param {(arg: string) => boolean} filter The filter function must return true if the filename passed to it should be checked
-     * @param {string[]} whitelist The file extensions that are allowed for files that match the filter
+     * @param whitelist The file extensions that are allowed for files that match the filter
      * @returns the rule
      */
     private fileExtensionMustBeAllowed(
@@ -356,9 +356,9 @@ export default class PackageValidator {
     /**
      * Checks file sizes (single files and all files combined)
      * Does NOT throw errors but appends them to the error object.
-     * @param {yauzlPromise.Entry[]} zipEntries The entries inside the h5p file
-     * @param {AggregateH5pError} error The error object to use
-     * @returns {Promise<yauzlPromise.Entry[]>} The unchanged zip entries
+     * @param zipEntries The entries inside the h5p file
+     * @param error The error object to use
+     * @returns The unchanged zip entries
      */
     private fileSizeMustBeWithinLimits = async (
         zipEntries: yauzlPromise.Entry[],
@@ -452,8 +452,8 @@ export default class PackageValidator {
         filter: (arg: any) => boolean
     ): (zipEntries: yauzlPromise.Entry[]) => Promise<yauzlPromise.Entry[]> {
         /**
-         * @param {yauzl.Entry[]} zipEntries The zip entries in the whole H5P package
-         * @returns {Promise<yauzl.Entry[]>} The zip entries without the filtered out entries
+         * @param zipEntries The zip entries in the whole H5P package
+         * @returns The zip entries without the filtered out entries
          */
         return async (
             zipEntries: yauzlPromise.Entry[]
@@ -623,9 +623,9 @@ export default class PackageValidator {
 
     /**
      * Validates the libraries inside the package.
-     * @param {yauzlPromise.Entry[]} zipEntries The entries inside the h5p file
+     * @param zipEntries The entries inside the h5p file
      * @param { AggregateH5pError} error The error object to use
-     * @returns {Promise<yauzlPromise.Entry[]>} The unchanged zip entries
+     * @returns The unchanged zip entries
      */
     private librariesMustBeValid = async (
         zipEntries: yauzlPromise.Entry[],
@@ -647,7 +647,7 @@ export default class PackageValidator {
 
     /**
      * Factory for a rule that checks if library's directory conforms to naming standards
-     * @param {string} libraryName The name of the library (directory)
+     * @param libraryName The name of the library (directory)
      * @returns the rule
      */
     private libraryDirectoryMustHaveValidName(
@@ -674,9 +674,9 @@ export default class PackageValidator {
 
     /**
      * Checks if the language files in the library have the correct naming schema and are valid JSON.
-     * @param {yauzlPromise.Entry[]} zipEntries zip entries in the package
-     * @param {any} jsonData jsonData of the library.json file.
-     * @param {AggregateH5pError} error The error object to use
+     * @param zipEntries zip entries in the package
+     * @param jsonData jsonData of the library.json file.
+     * @param error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
     private libraryLanguageFilesMustBeValid = async (
@@ -730,7 +730,7 @@ export default class PackageValidator {
      * Factory for a check that makes sure that the directory name of the library matches the name in
      * the library.json metadata.
      * Does not throw a ValidationError.
-     * @param {string} directoryName the name of the directory in the package this library is in
+     * @param directoryName the name of the directory in the package this library is in
      * @returns the rule
      */
     private libraryMustHaveMatchingDirectoryName(
@@ -743,9 +743,9 @@ export default class PackageValidator {
         error: AggregateH5pError
     ) => Promise<{ jsonData: any; zipEntries: yauzlPromise.Entry[] }> {
         /**
-         * @param {yauzl.Entry[]} zipEntries zip entries in the package
-         * @param {any} jsonData jsonData of the library.json file
-         * @param {AggregateH5pError} error The error object to use
+         * @param zipEntries zip entries in the package
+         * @param jsonData jsonData of the library.json file
+         * @param error The error object to use
          * @returns {Promise<{zipEntries: yauzl.Entry[], jsonData: any}>} the unchanged data passed to the rule
          */
         log.info(
@@ -786,9 +786,9 @@ export default class PackageValidator {
 
     /**
      * Checks if all JavaScript and CSS file references in the preloaded section of the library metadata are present in the package.
-     * @param {yauzlPromise.Entry[]} zipEntries zip entries in the package
-     * @param {any} jsonData data of the library.json file.
-     * @param {AggregateH5pError} error The error object to use
+     * @param zipEntries zip entries in the package
+     * @param jsonData data of the library.json file.
+     * @param error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
     private libraryPreloadedFilesMustExist = async (
@@ -835,9 +835,9 @@ export default class PackageValidator {
     /**
      * Checks if a library is compatible to the core version running.
      * Does not throw a ValidationError.
-     * @param {yauzlPromise.Entry[]} zipEntries zip entries in the package
-     * @param {any} jsonData jsonData of the library.json file.
-     * @param {AggregateH5pError} error The error object to use
+     * @param zipEntries zip entries in the package
+     * @param jsonData jsonData of the library.json file.
+     * @param error The error object to use
      * @returns {Promise<{zipEntries: yauzlPromise.Entry[], jsonData: any}>} the unchanged data passed to the rule
      */
     private mustBeCompatibleToCoreVersion = async (
@@ -861,9 +861,9 @@ export default class PackageValidator {
     /**
      * Checks if the package file ends with .h5p.
      * Throws an error.
-     * @param {string} h5pFile Path to the h5p file
-     * @param {AggregateH5pError} error The error object to use
-     * @returns {Promise<string>} Unchanged path to the h5p file
+     * @param h5pFile Path to the h5p file
+     * @param error The error object to use
+     * @returns Unchanged path to the h5p file
      */
     private mustHaveH5pExtension = async (
         h5pFile: string,
@@ -887,8 +887,8 @@ export default class PackageValidator {
     /**
      * Tries to open the file in the ZIP archive in memory and parse it as JSON. Will throw errors
      * if the file cannot be read or is no valid JSON.
-     * @param {yauzlPromise.Entry} entry The entry to read
-     * @returns {Promise<any>} The read JSON as an object
+     * @param entry The entry to read
+     * @returns The read JSON as an object
      */
     private async tryParseJson(entry: yauzlPromise.Entry): Promise<any> {
         log.verbose(`parsing json ${entry.fileName}`);
@@ -920,9 +920,9 @@ export default class PackageValidator {
 
     /**
      * Checks whether the library conforms to the standard and returns its data.
-     * @param {yauzlPromise.Entry[]} zipEntries All (relevant) zip entries of the package.
-     * @param {string} libraryName The name of the library to check
-     * @param {AggregateH5pError} error the error object
+     * @param zipEntries All (relevant) zip entries of the package.
+     * @param libraryName The name of the library to check
+     * @param error the error object
      * @returns {Promise< {semantics: any, hasIcon: boolean, language: any}|boolean >} the object from library.json with additional data from semantics.json, the language files and the icon.
      */
     private async validateLibrary(
@@ -971,9 +971,9 @@ export default class PackageValidator {
     /**
      * Makes sure the archive can be unzipped.
      * Throws an error.
-     * @param {string} h5pFile Path to the h5p file
-     * @param {AggregateH5pError} error The error object to use
-     * @returns {Promise<yauzlPromise.Entry[]>} The entries inside the zip archive
+     * @param h5pFile Path to the h5p file
+     * @param error The error object to use
+     * @returns The entries inside the zip archive
      */
     private zipArchiveMustBeValid = async (
         h5pFile: string,

@@ -1,5 +1,6 @@
 import H5PPlayer from '../src/H5PPlayer';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
+import { ILibraryName } from '../src/types';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {
@@ -9,12 +10,7 @@ describe('Rendering the HTML page', () => {
         };
         const h5pObject = {};
 
-        return new H5PPlayer(
-            undefined,
-            new EditorConfig(undefined),
-            undefined,
-            undefined
-        )
+        return new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
             .render(contentId, contentObject, h5pObject as any)
             .then(html => {
                 expect(html.replace(/ /g, '')).toBe(
@@ -154,13 +150,18 @@ describe('Rendering the HTML page', () => {
             ]
         };
 
+        const mockLibraryStorage: any = {
+            getLibrary: async (libName: ILibraryName) => {
+                return {};
+            }
+        };
+
         return new H5PPlayer(
-            () => Promise.resolve({}) as any,
-            new EditorConfig(undefined),
+            mockLibraryStorage,
             undefined,
-            undefined
+            new H5PConfig(undefined)
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect(
@@ -174,20 +175,24 @@ describe('Rendering the HTML page', () => {
         const contentObject = {};
         const h5pObject = {};
 
+        const mockLibraryStorage: any = {
+            getLibrary: async (libName: ILibraryName) => {
+                return {};
+            }
+        };
+
         return new H5PPlayer(
-            () => {
-                return {} as any;
-            },
-            new EditorConfig(undefined),
-            {} as any,
-            {},
-            '<script src="/test" />'
+            mockLibraryStorage,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            ['/test']
         )
-            .useRenderer(model => model)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).customScripts).toBe(
-                    '<script src="/test" />'
+                    '<script src="/test"/>'
                 );
             });
     });
@@ -197,40 +202,13 @@ describe('Rendering the HTML page', () => {
         const contentObject = {};
         const h5pObject = {};
 
-        return new H5PPlayer(
-            () => {
-                return {} as any;
-            },
-            new EditorConfig(undefined),
-            { integration: 'test' } as any,
-            undefined
-        )
-            .useRenderer(model => model)
+        return new H5PPlayer(undefined, undefined, new H5PConfig(undefined), {
+            integration: 'test'
+        } as any)
+            .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
                 expect((model as any).integration.integration).toBe('test');
-            });
-    });
-
-    it('includes custom content', () => {
-        const contentId = 'foo';
-        const contentObject = {};
-        const h5pObject = {};
-
-        return new H5PPlayer(
-            () => {
-                return {} as any;
-            },
-            new EditorConfig(undefined),
-            {} as any,
-            { test: 'test' }
-        )
-            .useRenderer(model => model)
-            .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
-                expect(
-                    (model as any).integration.contents['cid-foo'].test
-                ).toBe('test');
             });
     });
 
@@ -242,13 +220,11 @@ describe('Rendering the HTML page', () => {
         const h5pObject = {};
 
         return new H5PPlayer(
-            () => {
-                return {} as any;
-            },
-            new EditorConfig(undefined),
-            {} as any,
-            {},
-            '<script src="/test" />'
+            undefined,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            ['/test']
         )
             .render(contentId, contentObject, h5pObject as any)
             .then(html => {

@@ -3,7 +3,7 @@ import axiosMockAdapter from 'axios-mock-adapter';
 import mockdate from 'mockdate';
 
 import ContentTypeCache from '../src/ContentTypeCache';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
 const axiosMock = new axiosMockAdapter(axios);
@@ -11,7 +11,7 @@ const axiosMock = new axiosMockAdapter(axios);
 describe('registering the site at H5P Hub', () => {
     it('returns a uuid', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, undefined);
 
         axiosMock
@@ -25,7 +25,7 @@ describe('registering the site at H5P Hub', () => {
 
     it('fails with an error when URL is unreachable', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, undefined);
 
         config.uuid = '';
@@ -44,7 +44,7 @@ describe('registering the site at H5P Hub', () => {
 describe('getting H5P Hub content types', () => {
     it('should return an empty cache if it was not loaded yet', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         const cached = await cache.get();
@@ -52,7 +52,7 @@ describe('getting H5P Hub content types', () => {
     });
     it('loads content type information from the H5P Hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         axiosMock
@@ -76,7 +76,7 @@ describe('getting H5P Hub content types', () => {
     });
     it("doesn't overwrite existing cache if it fails to load a new one", async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         config.contentTypeCacheRefreshInterval = 1;
@@ -106,7 +106,7 @@ describe('getting H5P Hub content types', () => {
     });
     it('detects outdated state', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const cache = new ContentTypeCache(config, storage);
 
         config.contentTypeCacheRefreshInterval = 100;

@@ -1,10 +1,10 @@
-import { ContentId, IEditorConfig, ILibraryName } from './types';
+import { ContentId, IH5PConfig, ILibraryName } from './types';
 
 /**
  * This class generates URLs for files based on the URLs set in the configuration.
  */
 export default class UrlGenerator {
-    constructor(private config: IEditorConfig) {}
+    constructor(private config: IH5PConfig) {}
 
     public coreFile = (file: string) => {
         return `${this.config.baseUrl}${this.config.coreUrl}/${file}`;

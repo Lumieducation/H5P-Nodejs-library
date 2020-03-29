@@ -1,14 +1,14 @@
 import path from 'path';
 
 import H5PEditor from '../src/H5PEditor';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 
 describe('getting overview about multiple libraries', () => {
     it('returns basic information about single library', () => {
         return new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null
@@ -34,7 +34,7 @@ describe('getting overview about multiple libraries', () => {
     it('return information about multiple libraries', () => {
         return new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             new FileLibraryStorage(path.resolve('test/data/libraries')),
             null,
             null

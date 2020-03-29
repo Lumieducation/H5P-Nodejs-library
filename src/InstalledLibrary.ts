@@ -15,14 +15,16 @@ export default class InstalledLibrary implements IInstalledLibrary {
         public majorVersion: number,
         public minorVersion: number,
         public patchVersion: number,
-        public restricted: boolean = false
+        public restricted: boolean = false,
+        optionalProperties?: Partial<IInstalledLibrary>
     ) {
+        if (optionalProperties) {
+            Object.assign(this, optionalProperties);
+        }
         this.machineName = machineName;
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
         this.patchVersion = patchVersion;
-        this.title = undefined;
-        this.runnable = undefined;
         this.restricted = restricted;
     }
 
@@ -44,13 +46,14 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public title: string;
     public w?: number;
 
-    public static fromMetadata(name: ILibraryMetadata): InstalledLibrary {
+    public static fromMetadata(metadata: ILibraryMetadata): InstalledLibrary {
         return new InstalledLibrary(
-            name.machineName,
-            name.majorVersion,
-            name.minorVersion,
-            name.patchVersion,
-            undefined
+            metadata.machineName,
+            metadata.majorVersion,
+            metadata.minorVersion,
+            metadata.patchVersion,
+            undefined,
+            metadata
         );
     }
 

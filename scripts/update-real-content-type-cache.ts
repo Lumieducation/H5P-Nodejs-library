@@ -7,13 +7,13 @@ import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
 import ContentTypeCache from '../src/ContentTypeCache';
-import H5PEditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import { IKeyValueStorage } from '../src/types';
 
 const start = async () => {
     const keyValueStorage: IKeyValueStorage = new InMemoryStorage();
-    const config: H5PEditorConfig = new H5PEditorConfig(keyValueStorage);
+    const config: H5PConfig = new H5PConfig(keyValueStorage);
     config.uuid = '8de62c47-f335-42f6-909d-2d8f4b7fb7f5';
 
     const contentTypeCache: ContentTypeCache = new ContentTypeCache(

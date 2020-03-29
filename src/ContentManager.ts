@@ -26,7 +26,7 @@ const log = new Logger('ContentManager');
  */
 export default class ContentManager {
     /**
-     * @param {FileContentStorage} contentStorage The storage object
+     * @param contentStorage The storage object
      */
     constructor(contentStorage: IContentStorage) {
         log.info('initialize');
@@ -37,11 +37,11 @@ export default class ContentManager {
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
-     * @param {number} contentId The id of the content to add the file to
-     * @param {string} filename The name of the content file
-     * @param {Stream} stream A readable stream that contains the data
-     * @param {IUser} user The user who owns this object
-     * @returns {Promise<void>}
+     * @param contentId The id of the content to add the file to
+     * @param filename The name of the content file
+     * @param stream A readable stream that contains the data
+     * @param user The user who owns this object
+     * @returns
      */
     public async addContentFile(
         contentId: ContentId,
@@ -50,12 +50,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<void> {
         log.info(`adding file ${filename} to content ${contentId}`);
-        return this.contentStorage.addContentFile(
-            contentId,
-            filename,
-            stream,
-            user
-        );
+        return this.contentStorage.addFile(contentId, filename, stream, user);
     }
 
     /**
@@ -78,7 +73,7 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string
     ): Promise<boolean> {
-        return this.contentStorage.contentFileExists(contentId, filename);
+        return this.contentStorage.fileExists(contentId, filename);
     }
 
     /**
@@ -108,7 +103,7 @@ export default class ContentManager {
                 path.relative(packageDirectory, file) !== 'content.json'
         );
 
-        const newContentId: ContentId = await this.contentStorage.createContent(
+        const newContentId: ContentId = await this.contentStorage.addContent(
             metadata,
             parameters,
             user,
@@ -123,7 +118,7 @@ export default class ContentManager {
                         file
                     );
                     log.debug(`adding ${file} to ${packageDirectory}`);
-                    return this.contentStorage.addContentFile(
+                    return this.contentStorage.addFile(
                         newContentId,
                         localPath,
                         readStream
@@ -153,7 +148,7 @@ export default class ContentManager {
         contentId?: ContentId
     ): Promise<ContentId> {
         log.info(`creating content for ${contentId}`);
-        return this.contentStorage.createContent(
+        return this.contentStorage.addContent(
             metadata,
             content,
             user,
@@ -182,29 +177,15 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string
     ): Promise<void> {
-        return this.contentStorage.deleteContentFile(contentId, filename);
-    }
-
-    /**
-     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
-     * @param contentId the piece of content
-     * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
-     */
-    public async getContentFiles(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<string[]> {
-        log.info(`loading content files for ${contentId}`);
-        return this.contentStorage.getContentFiles(contentId, user);
+        return this.contentStorage.deleteFile(contentId, filename);
     }
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * @param {number} contentId the id of the content object that the file is attached to
-     * @param {string} filename the filename of the file to get
-     * @param {IUser} user the user who wants to retrieve the content file
-     * @returns {Stream}
+     * @param contentId the id of the content object that the file is attached to
+     * @param filename the filename of the file to get
+     * @param user the user who wants to retrieve the content file
+     * @returns
      */
     public async getContentFileStream(
         contentId: ContentId,
@@ -212,20 +193,38 @@ export default class ContentManager {
         user: IUser
     ): Promise<ReadStream> {
         log.debug(`loading ${filename} for ${contentId}`);
-        if (
-            !(await this.contentStorage.contentFileExists(contentId, filename))
-        ) {
-            throw new H5pError(
-                'content-file-missing',
-                { filename, contentId },
-                404
-            );
-        }
-        return this.contentStorage.getContentFileStream(
-            contentId,
-            filename,
-            user
+
+        return this.contentStorage.getFileStream(contentId, filename, user);
+    }
+
+    /**
+     * Returns the metadata (=contents of h5p.json) of a piece of content.
+     * @param contentId the content id
+     * @param user The user who wants to access the content
+     * @returns
+     */
+    public async getContentMetadata(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<IContentMetadata> {
+        // We don't directly return the h5p.json file content as
+        // we have to make sure it conforms to the schema.
+        return new ContentMetadata(
+            await this.contentStorage.getMetadata(contentId, user)
         );
+    }
+
+    /**
+     * Returns the content object (=contents of content/content.json) of a piece of content.
+     * @param contentId the content id
+     * @param user The user who wants to access the content
+     * @returns
+     */
+    public async getContentParameters(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<ContentParameters> {
+        return this.contentStorage.getParameters(contentId, user);
     }
 
     /**
@@ -252,54 +251,16 @@ export default class ContentManager {
     }
 
     /**
-     * Returns the content object (=contents of content/content.json) of a piece of content.
-     * @param {number} contentId the content id
-     * @param {IUser} user The user who wants to access the content
-     * @returns {Promise<any>}
+     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * @param contentId the piece of content
+     * @param user the user who wants to access the piece of content
+     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
      */
-    public async loadContent(
+    public async listContentFiles(
         contentId: ContentId,
         user: IUser
-    ): Promise<ContentParameters> {
-        return this.getFileJson(contentId, 'content.json', user);
-    }
-
-    /**
-     * Returns the metadata (=contents of h5p.json) of a piece of content.
-     * @param {number} contentId the content id
-     * @param {IUser} user The user who wants to access the content
-     * @returns {Promise<any>}
-     */
-    public async loadH5PJson(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<IContentMetadata> {
-        // We don't directly return the h5p.json file content as
-        // we have to make sure it conforms to the schema.
-        return new ContentMetadata(
-            await this.getFileJson(contentId, 'h5p.json', user)
-        );
-    }
-
-    /**
-     * Returns the decoded JSON data inside a file
-     * @param {number} contentId The id of the content object that the file is attached to
-     * @param {string} file The filename to get
-     * @param {IUser} user The user who wants to access this object
-     * @returns {Promise<any>}
-     */
-    private async getFileJson(
-        contentId: ContentId,
-        file: string,
-        user: IUser
-    ): Promise<any> {
-        log.debug(`loading ${file} for ${contentId}`);
-        const stream: Stream = this.contentStorage.getContentFileStream(
-            contentId,
-            file,
-            user
-        );
-        const jsonString: string = await streamToString(stream);
-        return JSON.parse(jsonString);
+    ): Promise<string[]> {
+        log.info(`loading content files for ${contentId}`);
+        return this.contentStorage.listFiles(contentId, user);
     }
 }
