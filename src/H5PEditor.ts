@@ -317,23 +317,28 @@ export default class H5PEditor {
                     )
                     .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
                     .map(async lib => {
-                        const loadedLibrary = await this.libraryManager.getLibrary(
-                            lib
-                        );
-                        if (!loadedLibrary) {
+                        try {
+                            const loadedLibrary = await this.libraryManager.getLibrary(
+                                lib
+                            );
+                            if (!loadedLibrary) {
+                                return undefined;
+                            }
+                            return {
+                                majorVersion: loadedLibrary.majorVersion,
+                                metadataSettings: null,
+                                minorVersion: loadedLibrary.minorVersion,
+                                name: loadedLibrary.machineName,
+                                restricted: false,
+                                runnable: loadedLibrary.runnable,
+                                title: loadedLibrary.title,
+                                tutorialUrl: '',
+                                uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
+                            };
+                        } catch (error) {
+                            // if a library can't be loaded the whole call should still succeed
                             return undefined;
                         }
-                        return {
-                            majorVersion: loadedLibrary.majorVersion,
-                            metadataSettings: null,
-                            minorVersion: loadedLibrary.minorVersion,
-                            name: loadedLibrary.machineName,
-                            restricted: false,
-                            runnable: loadedLibrary.runnable,
-                            title: loadedLibrary.title,
-                            tutorialUrl: '',
-                            uberName: `${loadedLibrary.machineName} ${loadedLibrary.majorVersion}.${loadedLibrary.minorVersion}`
-                        };
                     })
             )
         ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist

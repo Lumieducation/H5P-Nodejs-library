@@ -231,7 +231,15 @@ export default function(
                             params: unfilteredParams
                         })
                     );
+                    break;
                 case 'library-install':
+                    if (!req.query || !req.query.id || !req.user) {
+                        throw new H5P.H5pError(
+                            'malformed-request',
+                            { error: 'Request Parameters incorrect.' },
+                            400
+                        );
+                    }
                     const installedLibs = await h5pEditor.installLibraryFromHub(
                         req.query.id,
                         req.user
