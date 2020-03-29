@@ -6,7 +6,7 @@ import { withDir } from 'tmp-promise';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
@@ -18,7 +18,7 @@ const axiosMock = new axiosMockAdapter(axios);
 describe('Content type information repository (= connection to H5P Hub)', () => {
     it('gets content types from hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data`)
         );
@@ -50,7 +50,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
     });
     it("doesn't fail if update wasn't called", async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data`)
         );
@@ -81,7 +81,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('adds local libraries', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -108,7 +108,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('detects updates to local libraries', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -137,7 +137,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('returns local libraries if H5P Hub is unreachable', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -159,7 +159,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('sets LRS dependent content types to restricted', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -194,7 +194,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install rejects invalid machine names', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -227,7 +227,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install rejects unauthorized users', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
@@ -267,7 +267,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
     it('install content types from the hub', async () => {
         const storage = new InMemoryStorage();
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
 
         await withDir(
             async ({ path: tmpDir }) => {

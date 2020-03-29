@@ -5,7 +5,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
-    IEditorConfig,
+    IH5PConfig,
     IInstalledLibrary,
     IIntegration,
     ILibraryName,
@@ -35,7 +35,7 @@ export default class H5PPlayer {
     constructor(
         private libraryStorage: ILibraryStorage,
         private contentStorage: IContentStorage,
-        private config: IEditorConfig,
+        private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
         private globalCustomScripts: string[] = []
     ) {

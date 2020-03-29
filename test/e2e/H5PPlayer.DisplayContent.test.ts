@@ -6,7 +6,7 @@ import promiseQueue from 'promise-queue';
 import puppeteer from 'puppeteer';
 
 import H5PPlayer from '../../src/H5PPlayer';
-import EditorConfig from '../../src/implementation/EditorConfig';
+import H5PConfig from '../../src/implementation/H5PConfig';
 import PackageImporter from '../../src/PackageImporter';
 import { ILibraryName } from '../../src';
 
@@ -55,7 +55,7 @@ fs.readdir(contentPath, (fsError, files) => {
             return new H5PPlayer(
                 mockLibraryStorage,
                 undefined,
-                new EditorConfig(undefined),
+                new H5PConfig(undefined),
                 undefined,
                 undefined
             )

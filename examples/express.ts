@@ -50,7 +50,7 @@ const start = async () => {
             preload: ['en']
         });
 
-    const config = await new H5P.EditorConfig(
+    const config = await new H5P.H5PConfig(
         new H5P.fsImplementations.JsonStorage(
             path.resolve('examples/config.json')
         )

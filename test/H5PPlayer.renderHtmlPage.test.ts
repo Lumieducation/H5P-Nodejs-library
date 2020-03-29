@@ -1,5 +1,5 @@
 import H5PPlayer from '../src/H5PPlayer';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import { ILibraryName } from '../src/types';
 
 describe('Rendering the HTML page', () => {
@@ -10,7 +10,7 @@ describe('Rendering the HTML page', () => {
         };
         const h5pObject = {};
 
-        return new H5PPlayer(undefined, undefined, new EditorConfig(undefined))
+        return new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
             .render(contentId, contentObject, h5pObject as any)
             .then(html => {
                 expect(html.replace(/ /g, '')).toBe(
@@ -159,7 +159,7 @@ describe('Rendering the HTML page', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined)
+            new H5PConfig(undefined)
         )
             .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
@@ -184,7 +184,7 @@ describe('Rendering the HTML page', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             ['/test']
         )
@@ -202,12 +202,9 @@ describe('Rendering the HTML page', () => {
         const contentObject = {};
         const h5pObject = {};
 
-        return new H5PPlayer(
-            undefined,
-            undefined,
-            new EditorConfig(undefined),
-            { integration: 'test' } as any
-        )
+        return new H5PPlayer(undefined, undefined, new H5PConfig(undefined), {
+            integration: 'test'
+        } as any)
             .setRenderer(model => model)
             .render(contentId, contentObject, h5pObject as any)
             .then(model => {
@@ -225,7 +222,7 @@ describe('Rendering the HTML page', () => {
         return new H5PPlayer(
             undefined,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             ['/test']
         )

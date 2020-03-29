@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import JsonStorage from '../src/implementation/fs/JsonStorage';
 
 describe('JSON storage of configuration', () => {
@@ -9,7 +9,7 @@ describe('JSON storage of configuration', () => {
         const storage = await JsonStorage.create(
             path.resolve('test/data/configuration/valid-config.json')
         );
-        const config = new EditorConfig(storage);
+        const config = new H5PConfig(storage);
         await config.load();
         expect(config.hubRegistrationEndpoint).toBe('https://customhub');
         expect(config.hubContentTypesEndpoint).toBe(

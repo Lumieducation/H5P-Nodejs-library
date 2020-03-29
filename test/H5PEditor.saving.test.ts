@@ -8,7 +8,7 @@ import LibraryName from '../src/LibraryName';
 import {
     IContentMetadata,
     IContentStorage,
-    IEditorConfig,
+    IH5PConfig,
     IKeyValueStorage,
     ILibraryFileUrlResolver,
     ILibraryStorage,
@@ -16,7 +16,7 @@ import {
 } from '../src/types';
 
 import { fsImplementations, H5PEditor } from '../src';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import PackageValidator from '../src/PackageValidator';
 
 import User from '../examples/User';
@@ -25,7 +25,7 @@ describe('H5PEditor', () => {
     function createH5PEditor(
         tempPath: string
     ): {
-        config: IEditorConfig;
+        config: IH5PConfig;
         contentStorage: IContentStorage;
         h5pEditor: H5PEditor;
         keyValueStorage: IKeyValueStorage;
@@ -34,7 +34,7 @@ describe('H5PEditor', () => {
         temporaryStorage: ITemporaryFileStorage;
     } {
         const keyValueStorage = new fsImplementations.InMemoryStorage();
-        const config = new EditorConfig(keyValueStorage);
+        const config = new H5PConfig(keyValueStorage);
         const libraryStorage = new fsImplementations.FileLibraryStorage(
             path.join(tempPath, 'libraries')
         );

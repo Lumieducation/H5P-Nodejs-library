@@ -12,7 +12,7 @@ import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { IEditorConfig } from './types';
+import { IH5PConfig } from './types';
 
 const log = new Logger('PackageValidator');
 
@@ -32,7 +32,7 @@ export default class PackageValidator {
     /**
      * @param configurationValues Object containing all required configuration parameters
      */
-    constructor(private config: IEditorConfig) {
+    constructor(private config: IH5PConfig) {
         log.info(`initialize`);
         this.contentExtensionWhitelist = config.contentWhitelist.split(' ');
         this.libraryExtensionWhitelist = config.libraryWhitelist

@@ -1,5 +1,5 @@
 import H5PPlayer from '../src/H5PPlayer';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 
 describe('H5P.render()', () => {
     it('should work with a callback', () => {
@@ -7,7 +7,7 @@ describe('H5P.render()', () => {
         const contentObject = {};
         const metadata: any = {};
 
-        new H5PPlayer(undefined, undefined, new EditorConfig(undefined))
+        new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
             .setRenderer(model => model)
             .render(contentId, contentObject, metadata)
             .then(model => {

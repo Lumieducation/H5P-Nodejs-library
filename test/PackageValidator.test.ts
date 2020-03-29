@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import PackageValidator from '../src/PackageValidator';
 
 describe('validating H5P files', () => {
@@ -9,7 +9,7 @@ describe('validating H5P files', () => {
         const h5pFile2 = `${path.resolve('')}/test/data/validator/valid2.h5p`;
 
         try {
-            const validator = new PackageValidator(new EditorConfig(null));
+            const validator = new PackageValidator(new H5PConfig(null));
             let result = await validator.validatePackage(h5pFile1);
             expect(result).toBeDefined();
             result = await validator.validatePackage(h5pFile2);
@@ -21,7 +21,7 @@ describe('validating H5P files', () => {
 
     it('rejects files not ending with .h5p', async () => {
         const h5pFile = `${path.resolve('')}/test/test.docx`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:missing-h5p-extension'
         );
@@ -31,7 +31,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/corrupt_archive.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:unable-to-unzip'
         );
@@ -39,7 +39,7 @@ describe('validating H5P files', () => {
 
     it('rejects too large content', async () => {
         const h5pFile = `${path.resolve('')}/test/data/validator/valid2.h5p`;
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.maxFileSize = 1024;
 
         const validator = new PackageValidator(config);
@@ -50,7 +50,7 @@ describe('validating H5P files', () => {
 
     it('rejects too large total content size', async () => {
         const h5pFile = `${path.resolve('')}/test/data/validator/valid1.h5p`;
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.maxTotalSize = 10;
 
         const validator = new PackageValidator(config);
@@ -61,7 +61,7 @@ describe('validating H5P files', () => {
 
     it('rejects invalid file extensions', async () => {
         const h5pFile = `${path.resolve('')}/test/data/validator/valid2.h5p`;
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.libraryWhitelist = 'json js css';
         config.contentWhitelist = 'json';
 
@@ -79,7 +79,7 @@ describe('validating H5P files', () => {
             ''
         )}/test/data/validator/broken-content-json.h5p`;
 
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile1)).rejects.toThrow(
             'package-validation-failed:unable-to-parse-package'
         );
@@ -92,7 +92,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/invalid-h5p-json-schema.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:invalid-h5p-json-file-2'
         );
@@ -102,7 +102,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/malformed-library-directory.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:invalid-library-name'
         );
@@ -112,7 +112,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/invalid-library-json.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:invalid-schema-library-json-file'
         );
@@ -122,7 +122,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/missing-preloaded-js.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:library-missing-file'
         );
@@ -132,7 +132,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/invalid-library-directory-name.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:library-directory-name-mismatch'
         );
@@ -142,7 +142,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/invalid-language-file-json.h5p`;
-        const validator = new PackageValidator(new EditorConfig(null));
+        const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:invalid-language-file-json'
         );
@@ -152,7 +152,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/invalid-core-version.h5p`;
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.coreApiVersion.minor = 1;
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
@@ -164,7 +164,7 @@ describe('validating H5P files', () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/2-invalid-libraries.h5p`;
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         const validator = new PackageValidator(config);
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
             'package-validation-failed:invalid-language-file'

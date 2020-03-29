@@ -12,7 +12,7 @@ import PackageValidator from './PackageValidator';
 import {
     ContentId,
     IContentMetadata,
-    IEditorConfig,
+    IH5PConfig,
     ILibraryInstallResult,
     IUser
 } from './types';
@@ -51,7 +51,7 @@ export default class PackageImporter {
      */
     constructor(
         private libraryManager: LibraryManager,
-        private config: IEditorConfig,
+        private config: IH5PConfig,
         private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
     ) {

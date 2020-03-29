@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
 
 import H5PEditor from '../src/H5PEditor';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
 import User from '../examples/User';
@@ -11,7 +11,7 @@ describe('H5PEditor: general', () => {
     const axiosMock = new axiosMockAdapter(axios);
 
     it("updates ContentTypeCache if it hasn't been downloaded before", async () => {
-        const config = new EditorConfig(new InMemoryStorage());
+        const config = new H5PConfig(new InMemoryStorage());
         const h5pEditor = new H5PEditor(
             new InMemoryStorage(),
             config,
@@ -36,7 +36,7 @@ describe('H5PEditor: general', () => {
     });
 
     it("updates ContentTypeCache if it hasn't been downloaded before and tries installing", async () => {
-        const config = new EditorConfig(new InMemoryStorage());
+        const config = new H5PConfig(new InMemoryStorage());
         const h5pEditor = new H5PEditor(
             new InMemoryStorage(),
             config,

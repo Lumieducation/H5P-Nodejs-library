@@ -3,12 +3,12 @@ import path from 'path';
 import {
     H5PEditor,
     IContentStorage,
-    IEditorConfig,
+    IH5PConfig,
     IKeyValueStorage,
     ILibraryStorage,
     ITemporaryFileStorage
 } from '../../src';
-import EditorConfig from '../../src/implementation/EditorConfig';
+import H5PConfig from '../../src/implementation/H5PConfig';
 import DirectoryTemporaryFileStorage from '../../src/implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
@@ -17,7 +17,7 @@ import InMemoryStorage from '../../src/implementation/InMemoryStorage';
 export function createH5PEditor(
     tempPath: string
 ): {
-    config: IEditorConfig;
+    config: IH5PConfig;
     contentStorage: IContentStorage;
     h5pEditor: H5PEditor;
     keyValueStorage: IKeyValueStorage;
@@ -25,7 +25,7 @@ export function createH5PEditor(
     temporaryStorage: ITemporaryFileStorage;
 } {
     const keyValueStorage = new InMemoryStorage();
-    const config = new EditorConfig(keyValueStorage);
+    const config = new H5PConfig(keyValueStorage);
     const libraryStorage = new FileLibraryStorage(
         path.join(tempPath, 'libraries')
     );

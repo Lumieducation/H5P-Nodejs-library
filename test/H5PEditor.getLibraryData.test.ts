@@ -1,7 +1,7 @@
 import { withDir } from 'tmp-promise';
 
 import H5PEditor from '../src/H5PEditor';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 
@@ -9,7 +9,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('returns empty data', () => {
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -52,7 +52,7 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes the semantics.json content', () => {
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -94,7 +94,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -185,7 +185,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -283,7 +283,7 @@ describe('aggregating data from library folders for the editor', () => {
 
         const h5pEditor = new H5PEditor(
             null,
-            new EditorConfig(null),
+            new H5PConfig(null),
             null,
             null,
             null
@@ -359,7 +359,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -430,7 +430,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new EditorConfig(null), { baseUrl: '/h5p' }),
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -550,7 +550,7 @@ describe('aggregating data from library folders for the editor', () => {
             async ({ path: tempDirPath }) => {
                 const h5pEditor = new H5PEditor(
                     null,
-                    new EditorConfig(null),
+                    new H5PConfig(null),
                     new FileLibraryStorage(tempDirPath),
                     null,
                     null

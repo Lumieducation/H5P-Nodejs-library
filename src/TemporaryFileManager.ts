@@ -4,7 +4,7 @@ import shortid from 'shortid';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
-import { IEditorConfig, ITemporaryFileStorage, IUser } from './types';
+import { IH5PConfig, ITemporaryFileStorage, IUser } from './types';
 
 const log = new Logger('TemporaryFileManager');
 
@@ -17,7 +17,7 @@ export default class TemporaryFileManager {
      */
     constructor(
         private storage: ITemporaryFileStorage,
-        private config: IEditorConfig
+        private config: IH5PConfig
     ) {
         log.info('initialize');
     }

@@ -1,5 +1,5 @@
 import H5PPlayer from '../src/H5PPlayer';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import { ILibraryName } from '../src/types';
 
 describe('Loading dependencies', () => {
@@ -46,7 +46,7 @@ describe('Loading dependencies', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             undefined
         )
@@ -119,7 +119,7 @@ describe('Loading dependencies', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             undefined
         )
@@ -199,7 +199,7 @@ describe('Loading dependencies', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             undefined
         )
@@ -272,7 +272,7 @@ describe('Loading dependencies', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             undefined
         )
@@ -349,7 +349,7 @@ describe('Loading dependencies', () => {
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined),
+            new H5PConfig(undefined),
             undefined,
             undefined
         )
@@ -427,7 +427,7 @@ describe('Loading dependencies', () => {
         const h5p = new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new EditorConfig(undefined, {
+            new H5PConfig(undefined, {
                 baseUrl: '/baseUrl',
                 coreUrl: '/coreUrl',
                 librariesUrl: `/libraryUrl`

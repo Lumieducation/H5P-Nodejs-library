@@ -5,7 +5,7 @@ import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
 import { withDir } from 'tmp-promise';
 
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import TemporaryFileManager from '../src/TemporaryFileManager';
 
@@ -13,7 +13,7 @@ import User from '../examples/User';
 
 describe('TemporaryFileManager', () => {
     it('stores files and lets you retrieve them', async () => {
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.temporaryFileLifetime = 100000;
         const user = new User();
 
@@ -53,7 +53,7 @@ describe('TemporaryFileManager', () => {
         );
     });
     it('stores two files with same filename under unique names', async () => {
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.temporaryFileLifetime = 100000;
         const user = new User();
 
@@ -88,7 +88,7 @@ describe('TemporaryFileManager', () => {
         );
     });
     it('deletes expired files, but keep unexpired ones', async () => {
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.temporaryFileLifetime = 100000;
         const user = new User();
         try {
@@ -149,7 +149,7 @@ describe('TemporaryFileManager', () => {
         }
     });
     it('prevents unauthorized users from accessing a file', async () => {
-        const config = new EditorConfig(null);
+        const config = new H5PConfig(null);
         config.temporaryFileLifetime = 100000;
         const user1 = new User();
         const user2 = new User();

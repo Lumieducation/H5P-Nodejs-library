@@ -1,15 +1,15 @@
-import { IEditorConfig, IKeyValueStorage } from '../types';
+import { IH5PConfig, IKeyValueStorage } from '../types';
 
 /**
  * Stores configuration options and literals that are used throughout the system.
  * Also loads and saves the configuration of changeable values (only those as "user-configurable") in the storage object.
  */
-export default class EditorConfig implements IEditorConfig {
+export default class H5PConfig implements IH5PConfig {
     /**
      * @param storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
      * @param defaults default values to use instead of the ones set by this class
      */
-    constructor(storage?: IKeyValueStorage, defaults?: Partial<IEditorConfig>) {
+    constructor(storage?: IKeyValueStorage, defaults?: Partial<IH5PConfig>) {
         this.storage = storage;
         if (defaults) {
             for (const key in defaults) {
@@ -62,7 +62,7 @@ export default class EditorConfig implements IEditorConfig {
     /**
      * Loads all changeable settings from storage. (Should be called when the system initializes.)
      */
-    public async load(): Promise<EditorConfig> {
+    public async load(): Promise<H5PConfig> {
         await this.loadSettingFromStorage('fetchingDisabled');
         await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('siteType');

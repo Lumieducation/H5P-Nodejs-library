@@ -4,7 +4,7 @@ import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
 import { ContentScanner } from '../src/ContentScanner';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
@@ -38,7 +38,7 @@ async function createContentScanner(
     // install content & libraries
     const packageImporter = new PackageImporter(
         libraryManager,
-        new EditorConfig(null),
+        new H5PConfig(null),
         contentManager
     );
     const contentId = (

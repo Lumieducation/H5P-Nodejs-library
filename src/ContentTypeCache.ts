@@ -6,7 +6,7 @@ import * as qs from 'qs';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import {
-    IEditorConfig,
+    IH5PConfig,
     IHubContentType,
     IKeyValueStorage,
     IRegistrationData,
@@ -35,13 +35,13 @@ export default class ContentTypeCache {
      * @param config The configuration to use.
      * @param storage The storage object.
      */
-    constructor(config: IEditorConfig, storage: IKeyValueStorage) {
+    constructor(config: IH5PConfig, storage: IKeyValueStorage) {
         log.info(`initialize`);
         this.config = config;
         this.storage = storage;
     }
 
-    private config: IEditorConfig;
+    private config: IH5PConfig;
     private storage: IKeyValueStorage;
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.

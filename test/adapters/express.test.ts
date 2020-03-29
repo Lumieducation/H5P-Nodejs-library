@@ -37,7 +37,7 @@ describe('Express Ajax endpoint adapter', () => {
         tempDir = tDir.path;
         cleanup = tDir.cleanup;
         h5pEditor = H5P.fs(
-            new H5P.EditorConfig(new H5P.fsImplementations.InMemoryStorage(), {
+            new H5P.H5PConfig(new H5P.fsImplementations.InMemoryStorage(), {
                 baseUrl: ''
             }),
             path.resolve(path.join(tempDir, 'libraries')), // the path on the local disc where libraries should be stored

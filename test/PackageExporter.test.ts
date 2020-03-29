@@ -4,7 +4,7 @@ import { withDir, withFile } from 'tmp-promise';
 import yauzlPromise from 'yauzl-promise';
 
 import ContentManager from '../src/ContentManager';
-import EditorConfig from '../src/implementation/EditorConfig';
+import H5PConfig from '../src/implementation/H5PConfig';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
@@ -32,7 +32,7 @@ export async function importAndExportPackage(
             const libraryManager = new LibraryManager(
                 new FileLibraryStorage(libraryDir)
             );
-            const config = new EditorConfig(null);
+            const config = new H5PConfig(null);
 
             const packageImporter = new PackageImporter(
                 libraryManager,

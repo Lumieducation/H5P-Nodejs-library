@@ -27,7 +27,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
-    IEditorConfig,
+    IH5PConfig,
     IEditorIntegration,
     IIntegration,
     IKeyValueStorage,
@@ -46,9 +46,16 @@ import UrlGenerator from './UrlGenerator';
 const log = new Logger('Editor');
 
 export default class H5PEditor {
+    /**
+     * @param cache the cache is used to store key - value pairs that must be accessed often; values stored in it must be accessible by ALL instances of the editor (across machines)
+     * @param config the configuration values for the editor; note that the editor can also change these values and save them!
+     * @param libraryStorage the storage object for libraries
+     * @param contentStorage the storage object for content
+     * @param temporaryStorage the storage object for temporary files
+     */
     constructor(
-        cache: IKeyValueStorage,
-        public config: IEditorConfig,
+        protected cache: IKeyValueStorage,
+        public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
         temporaryStorage: ITemporaryFileStorage

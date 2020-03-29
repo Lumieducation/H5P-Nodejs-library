@@ -8,7 +8,7 @@ import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
 import PackageImporter from './PackageImporter';
 import {
-    IEditorConfig,
+    IH5PConfig,
     IHubContentType,
     IHubContentTypeWithLocalInfo,
     IHubInfo,
@@ -39,7 +39,7 @@ export default class ContentTypeInformationRepository {
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
-        private config: IEditorConfig
+        private config: IH5PConfig
     ) {
         log.info(`initialize`);
     }

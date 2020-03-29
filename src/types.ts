@@ -875,7 +875,7 @@ export type ILibraryLoader = (
     minorVersion: number
 ) => IInstalledLibrary;
 
-export interface IEditorConfig {
+export interface IH5PConfig {
     /**
      * URL prefix for all AJAX requests
      */

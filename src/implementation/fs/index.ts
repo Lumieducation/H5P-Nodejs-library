@@ -6,7 +6,7 @@ import FileContentStorage from './FileContentStorage';
 import FileLibraryStorage from './FileLibraryStorage';
 
 export default function h5pfs(
-    editorConfig: H5P.IEditorConfig,
+    config: H5P.IH5PConfig,
     librariesPath: string,
     temporaryStoragePath: string,
     contentPath: string,
@@ -14,7 +14,7 @@ export default function h5pfs(
 ): H5P.H5PEditor {
     return new H5P.H5PEditor(
         new InMemoryStorage(),
-        editorConfig,
+        config,
         new FileLibraryStorage(librariesPath),
         contentStorage || new FileContentStorage(contentPath),
         new DirectoryTemporaryFileStorage(temporaryStoragePath)
