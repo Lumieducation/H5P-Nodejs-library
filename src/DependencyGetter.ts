@@ -32,7 +32,7 @@ export default class DependencyGetter {
         log.info(
             `getting dependent libraries for ${libraries
                 .map(
-                    dep =>
+                    (dep) =>
                         `${dep.machineName}-${dep.majorVersion}.${dep.minorVersion}`
                 )
                 .join(', ')}`
@@ -49,7 +49,7 @@ export default class DependencyGetter {
                 dependencies
             );
         }
-        return Array.from(dependencies).map(str =>
+        return Array.from(dependencies).map((str) =>
             LibraryName.fromUberName(str)
         );
     }

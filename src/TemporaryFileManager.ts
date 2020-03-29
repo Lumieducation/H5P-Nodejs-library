@@ -56,13 +56,13 @@ export default class TemporaryFileManager {
         const temporaryFiles = await this.storage.listFiles();
         const now = Date.now();
         const filesToDelete = temporaryFiles.filter(
-            f => f.expiresAt.getTime() < now
+            (f) => f.expiresAt.getTime() < now
         );
         if (filesToDelete.length > 0) {
             log.debug(
                 `these temporary files have expired and will be deleted: ${filesToDelete
                     .map(
-                        f =>
+                        (f) =>
                             `${
                                 f.filename
                             } (expired at ${f.expiresAt.toISOString()})`
@@ -73,7 +73,7 @@ export default class TemporaryFileManager {
             log.debug('no temporary files have expired and must be deleted');
         }
         await Promise.all(
-            filesToDelete.map(f =>
+            filesToDelete.map((f) =>
                 this.storage.deleteFile(f.filename, f.ownedByUserId)
             )
         );

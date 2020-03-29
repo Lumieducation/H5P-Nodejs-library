@@ -143,7 +143,7 @@ export default class PackageExporter {
         if (
             !(
                 await this.contentManager.getUserPermissions(contentId, user)
-            ).some(p => p === Permission.Download)
+            ).some((p) => p === Permission.Download)
         ) {
             throw new H5pError(
                 'download-content-forbidden',

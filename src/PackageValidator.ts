@@ -56,7 +56,7 @@ export default class PackageValidator {
     ): string[] {
         log.verbose(
             `getting top level directories ${zipEntries
-                .map(entry => entry.fileName)
+                .map((entry) => entry.fileName)
                 .join(', ')}`
         );
         return Object.keys(
@@ -91,7 +91,7 @@ export default class PackageValidator {
         actualExtension = actualExtension.substr(1);
         if (
             allowedExtensions.some(
-                allowedExtension => allowedExtension === actualExtension
+                (allowedExtension) => allowedExtension === actualExtension
             )
         ) {
             return true;
@@ -161,7 +161,7 @@ export default class PackageValidator {
             .addRule(this.fileSizeMustBeWithinLimits)
             .addRule(
                 this.filterOutEntries(
-                    entry =>
+                    (entry) =>
                         path.basename(entry.fileName).startsWith('.') ||
                         path.basename(entry.fileName).startsWith('_') ||
                         path.basename(entry.fileName).endsWith('/')
@@ -169,14 +169,15 @@ export default class PackageValidator {
             )
             .addRuleWhen(
                 this.fileExtensionMustBeAllowed(
-                    name => name.startsWith('content/'),
+                    (name) => name.startsWith('content/'),
                     this.contentExtensionWhitelist
                 ),
                 checkContent
             )
             .addRuleWhen(
                 this.fileExtensionMustBeAllowed(
-                    name => name.includes('/') && !name.startsWith('content/'),
+                    (name) =>
+                        name.includes('/') && !name.startsWith('content/'),
                     this.libraryExtensionWhitelist
                 ),
                 checkLibraries
@@ -207,7 +208,7 @@ export default class PackageValidator {
             )
             .addRule(throwErrorsNowRule)
             .addRuleWhen(
-                this.filesMustBeReadable(filePath =>
+                this.filesMustBeReadable((filePath) =>
                     filePath.startsWith('content/')
                 ),
                 checkContent
@@ -338,7 +339,7 @@ export default class PackageValidator {
         ) => {
             if (
                 !zipEntries.find(
-                    e =>
+                    (e) =>
                         e.fileName.toLocaleLowerCase() ===
                         filename.toLocaleLowerCase()
                 )
@@ -414,7 +415,7 @@ export default class PackageValidator {
             error: AggregateH5pError
         ) => {
             for (const entry of zipEntries.filter(
-                e =>
+                (e) =>
                     filter(e.fileName.toLocaleLowerCase()) &&
                     !PackageValidator.isDirectory(e.fileName)
             )) {
@@ -458,7 +459,7 @@ export default class PackageValidator {
         return async (
             zipEntries: yauzlPromise.Entry[]
         ): Promise<yauzlPromise.Entry[]> => {
-            return zipEntries.filter(e => !filter(e));
+            return zipEntries.filter((e) => !filter(e));
         };
     }
 
@@ -510,7 +511,7 @@ export default class PackageValidator {
             error: AggregateH5pError
         ) => {
             const entry = zipEntries.find(
-                e =>
+                (e) =>
                     e.fileName.toLocaleLowerCase() ===
                     filename.toLocaleLowerCase()
             );
@@ -576,7 +577,7 @@ export default class PackageValidator {
             error: AggregateH5pError
         ) => {
             const entry = zipEntries.find(
-                e =>
+                (e) =>
                     e.fileName.toLocaleLowerCase() ===
                     filename.toLocaleLowerCase()
             );
@@ -606,7 +607,7 @@ export default class PackageValidator {
             if (!schemaValidator(jsonData)) {
                 log.error(`json ${filename} does not conform to schema`);
                 errorReplacements.reason = schemaValidator.errors
-                    .map(e => `${e.dataPath} ${e.message}`)
+                    .map((e) => `${e.dataPath} ${e.message}`)
                     .join(' ')
                     .trim();
                 throw error.addError(
@@ -637,8 +638,8 @@ export default class PackageValidator {
         );
         await Promise.all(
             topLevelDirectories
-                .filter(directory => directory !== 'content')
-                .map(directory =>
+                .filter((directory) => directory !== 'content')
+                .map((directory) =>
                     this.validateLibrary(zipEntries, directory, error)
                 )
         );
@@ -693,7 +694,7 @@ export default class PackageValidator {
         const languagePath = PackageValidator.pathJoin(uberName, 'language/');
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
         for (const languageFileEntry of zipEntries.filter(
-            e =>
+            (e) =>
                 e.fileName.startsWith(languagePath) &&
                 !PackageValidator.isDirectory(e.fileName)
         )) {
@@ -805,7 +806,7 @@ export default class PackageValidator {
         // check if all JavaScript files that must be preloaded are part of the package
         if (jsonData.preloadedJs) {
             await Promise.all(
-                jsonData.preloadedJs.map(file =>
+                jsonData.preloadedJs.map((file) =>
                     this.fileMustExist(
                         PackageValidator.pathJoin(uberName, file.path),
                         'library-missing-file',
@@ -819,7 +820,7 @@ export default class PackageValidator {
         // check if all CSS files that must be preloaded are part of the package
         if (jsonData.preloadedCss) {
             await Promise.all(
-                jsonData.preloadedCss.map(file =>
+                jsonData.preloadedCss.map((file) =>
                     this.fileMustExist(
                         PackageValidator.pathJoin(uberName, file.path),
                         'library-missing-file',

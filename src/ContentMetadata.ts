@@ -59,7 +59,7 @@ export class ContentMetadata implements IContentMetadata {
      */
     public static toUbername(metadata: IContentMetadata): string {
         const library = (metadata.preloadedDependencies || []).find(
-            dependency => dependency.machineName === metadata.mainLibrary
+            (dependency) => dependency.machineName === metadata.mainLibrary
         );
         if (!library) {
             return undefined;

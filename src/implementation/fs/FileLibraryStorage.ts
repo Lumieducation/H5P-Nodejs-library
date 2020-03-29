@@ -147,9 +147,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const fullLibraryPath = this.getDirectoryPath(library);
         const directoryEntries = (
             await fsExtra.readdir(fullLibraryPath)
-        ).filter(entry => entry !== 'library.json');
+        ).filter((entry) => entry !== 'library.json');
         await Promise.all(
-            directoryEntries.map(entry =>
+            directoryEntries.map((entry) =>
                 fsExtra.remove(this.getFilePath(library, entry))
             )
         );
@@ -232,15 +232,15 @@ export default class FileLibraryStorage implements ILibraryStorage {
             this.librariesDirectory
         );
         return libraryDirectories
-            .filter(name => nameRegex.test(name))
-            .map(name => {
+            .filter((name) => nameRegex.test(name))
+            .map((name) => {
                 return LibraryName.fromUberName(name);
             })
             .filter(
-                lib =>
+                (lib) =>
                     !machineNames ||
                     machineNames.length === 0 ||
-                    machineNames.some(mn => mn === lib.machineName)
+                    machineNames.some((mn) => mn === lib.machineName)
             );
     }
 
@@ -254,8 +254,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
             this.getFilePath(library, 'language')
         );
         return files
-            .filter(file => path.extname(file) === '.json')
-            .map(file => path.basename(file, '.json'));
+            .filter((file) => path.extname(file) === '.json')
+            .map((file) => path.basename(file, '.json'));
     }
 
     /**
@@ -297,8 +297,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
         return (await globPromise(path.join(libPath, '**/*.*')))
-            .map(p => path.relative(libPath, p))
-            .filter(p => !this.isIgnored(p));
+            .map((p) => path.relative(libPath, p))
+            .filter((p) => !this.isIgnored(p));
     }
 
     /**
@@ -333,6 +333,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param filename the filename to check
      */
     private isIgnored(filename: string): boolean {
-        return this.ignoredFilePatterns.some(pattern => pattern.test(filename));
+        return this.ignoredFilePatterns.some((pattern) =>
+            pattern.test(filename)
+        );
     }
 }

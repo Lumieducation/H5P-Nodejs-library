@@ -117,14 +117,12 @@ describe('Express Ajax endpoint adapter', () => {
         await h5pEditor.packageImporter.installLibrariesFromPackage(
             path.resolve('test/data/validator/valid2.h5p')
         );
-        const res = await supertest(app)
-            .get('/ajax?action=libraries')
-            .query({
-                language: 'en',
-                machineName: 'H5P.GreetingCard',
-                majorVersion: 1,
-                minorVersion: 0
-            });
+        const res = await supertest(app).get('/ajax?action=libraries').query({
+            language: 'en',
+            machineName: 'H5P.GreetingCard',
+            majorVersion: 1,
+            minorVersion: 0
+        });
         expect(res.status).toBe(200);
         const parsedData = JSON.parse(res.text);
         expect(parsedData.name).toBe('H5P.GreetingCard');

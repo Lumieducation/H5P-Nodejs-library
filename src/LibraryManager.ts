@@ -332,7 +332,7 @@ export default class LibraryManager {
         );
         libraries = (
             await Promise.all(
-                libraries.map(async libName => {
+                libraries.map(async (libName) => {
                     const installedLib = InstalledLibrary.fromName(libName);
                     const info = await this.getLibrary(libName);
                     installedLib.patchVersion = info.patchVersion;

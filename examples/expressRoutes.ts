@@ -2,7 +2,7 @@ import express from 'express';
 
 import * as H5P from '../src';
 
-export default function(
+export default function (
     h5pEditor: H5P.H5PEditor,
     h5pPlayer: H5P.H5PPlayer
 ): express.Router {
@@ -51,9 +51,7 @@ export default function(
             !req.body.library ||
             !req.user
         ) {
-            res.status(400)
-                .send('Malformed request')
-                .end();
+            res.status(400).send('Malformed request').end();
             return;
         }
         const contentId = await h5pEditor.saveOrUpdateContent(

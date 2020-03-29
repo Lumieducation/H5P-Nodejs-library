@@ -23,7 +23,7 @@ describe('basic file library manager functionality', () => {
                     }
                 )
             )
-                .map(d => LibraryName.toUberName(d))
+                .map((d) => LibraryName.toUberName(d))
                 .sort()
         ).toMatchObject([
             'Lib1-1.0',
@@ -42,7 +42,7 @@ describe('basic file library manager functionality', () => {
                     }
                 )
             )
-                .map(d => LibraryName.toUberName(d))
+                .map((d) => LibraryName.toUberName(d))
                 .sort()
         ).toMatchObject(['Lib1-1.0', 'Lib2-1.0', 'Lib3-1.0', 'Lib5-1.0']);
 
@@ -56,7 +56,7 @@ describe('basic file library manager functionality', () => {
                     }
                 )
             )
-                .map(d => LibraryName.toUberName(d))
+                .map((d) => LibraryName.toUberName(d))
                 .sort()
         ).toMatchObject(['Lib4-1.0', 'Lib5-1.0']);
 
@@ -70,7 +70,7 @@ describe('basic file library manager functionality', () => {
                     }
                 )
             )
-                .map(d => LibraryName.toUberName(d))
+                .map((d) => LibraryName.toUberName(d))
                 .sort()
         ).toMatchObject(['Lib5-1.0']);
     });

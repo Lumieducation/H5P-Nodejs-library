@@ -116,7 +116,7 @@ export default class ContentStorer {
             await this.deleteUnusedOldFiles(
                 newContentId,
                 filesInOldParams,
-                fileReferencesInNewParams.map(f => f.filePath)
+                fileReferencesInNewParams.map((f) => f.filePath)
             );
         }
 
@@ -144,7 +144,7 @@ export default class ContentStorer {
         const fileReferencesInParams = await this.contentFileScanner.scanForFiles(
             parameters,
             metadata.preloadedDependencies.find(
-                l => l.machineName === metadata.mainLibrary
+                (l) => l.machineName === metadata.mainLibrary
             )
         );
 
@@ -298,7 +298,7 @@ export default class ContentStorer {
         newFiles: string[]
     ): Promise<void> {
         for (const file of oldFiles) {
-            if (!newFiles.some(f => f === file)) {
+            if (!newFiles.some((f) => f === file)) {
                 log.debug(
                     `Deleting unnecessary file ${file} from ${contentId}`
                 );
@@ -332,7 +332,7 @@ export default class ContentStorer {
             if (ref.temporary) {
                 // We only save temporary file for later copying, however, if the there isn't already a file
                 // with the exact name. This might be the case if the user presses "save" twice.
-                if (!oldFiles.some(f => f === ref.filePath)) {
+                if (!oldFiles.some((f) => f === ref.filePath)) {
                     filesToCopyFromTemporaryStorage.push(ref.filePath);
                 }
                 // remove temporary file marker from parameters
@@ -364,10 +364,10 @@ export default class ContentStorer {
             await this.contentFileScanner.scanForFiles(
                 oldParams,
                 oldMetadata.preloadedDependencies.find(
-                    dep => dep.machineName === oldMetadata.mainLibrary
+                    (dep) => dep.machineName === oldMetadata.mainLibrary
                 )
             )
-        ).map(fi => fi.filePath);
+        ).map((fi) => fi.filePath);
     }
 
     /**

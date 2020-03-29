@@ -14,7 +14,7 @@ describe('getting overview about multiple libraries', () => {
             null
         )
             .getLibraryOverview(['H5P.Example1 1.1'])
-            .then(libraries =>
+            .then((libraries) =>
                 expect(libraries).toEqual([
                     {
                         majorVersion: 1,
@@ -41,8 +41,8 @@ describe('getting overview about multiple libraries', () => {
         )
             .getLibraryOverview(['H5P.Example1 1.1', 'H5P.Example3 2.1'])
 
-            .then(libraries => {
-                expect(libraries.map(l => l.uberName)).toEqual([
+            .then((libraries) => {
+                expect(libraries.map((l) => l.uberName)).toEqual([
                     'H5P.Example1 1.1',
                     'H5P.Example3 2.1'
                 ]);

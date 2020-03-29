@@ -153,18 +153,18 @@ export default class ContentTypeInformationRepository {
         const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
-                machineName =>
+                (machineName) =>
                     localLibsWrapped[machineName][
                         localLibsWrapped[machineName].length - 1
                     ]
             )
             .filter(
-                lib =>
+                (lib) =>
                     !hubInfo.some(
-                        hubLib => hubLib.machineName === lib.machineName
+                        (hubLib) => hubLib.machineName === lib.machineName
                     ) && lib.runnable
             )
-            .map(async localLib => {
+            .map(async (localLib) => {
                 return {
                     canInstall: false,
                     description: '',
@@ -197,7 +197,7 @@ export default class ContentTypeInformationRepository {
         log.info(
             `adding local libraries: ${finalLocalLibs
                 .map(
-                    lib =>
+                    (lib) =>
                         `${lib.machineName}-${lib.majorVersion}.${lib.minorVersion}`
                 )
                 .join(', ')}`
@@ -217,13 +217,13 @@ export default class ContentTypeInformationRepository {
         log.info(`adding user and installation specific information`);
         const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped).map(
-            machineName =>
+            (machineName) =>
                 localLibsWrapped[machineName][
                     localLibsWrapped[machineName].length - 1
                 ]
         );
         return Promise.all(
-            hubInfo.map(async hl => {
+            hubInfo.map(async (hl) => {
                 const hubLib: IHubContentTypeWithLocalInfo = {
                     ...hl,
                     canInstall: false,
@@ -235,7 +235,7 @@ export default class ContentTypeInformationRepository {
                     restricted: false
                 };
                 const localLib = localLibs.find(
-                    l => l.machineName === hubLib.machineName
+                    (l) => l.machineName === hubLib.machineName
                 );
                 if (!localLib) {
                     hubLib.installed = false;
@@ -288,7 +288,7 @@ export default class ContentTypeInformationRepository {
         }
         if (
             this.config.lrsContentTypes.some(
-                contentType => contentType === library.machineName
+                (contentType) => contentType === library.machineName
             )
         ) {
             return true;

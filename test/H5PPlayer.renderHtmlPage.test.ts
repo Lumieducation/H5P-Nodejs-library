@@ -12,7 +12,7 @@ describe('Rendering the HTML page', () => {
 
         return new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
             .render(contentId, contentObject, h5pObject as any)
-            .then(html => {
+            .then((html) => {
                 expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
                 <html class="h5p-iframe">
@@ -161,9 +161,9 @@ describe('Rendering the HTML page', () => {
             undefined,
             new H5PConfig(undefined)
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect(
                     (model as any).integration.contents['cid-foo'].library
                 ).toBe('Foo 4.2');
@@ -188,9 +188,9 @@ describe('Rendering the HTML page', () => {
             undefined,
             ['/test']
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).customScripts).toBe(
                     '<script src="/test"/>'
                 );
@@ -205,9 +205,9 @@ describe('Rendering the HTML page', () => {
         return new H5PPlayer(undefined, undefined, new H5PConfig(undefined), {
             integration: 'test'
         } as any)
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).integration.integration).toBe('test');
             });
     });
@@ -227,7 +227,7 @@ describe('Rendering the HTML page', () => {
             ['/test']
         )
             .render(contentId, contentObject, h5pObject as any)
-            .then(html => {
+            .then((html) => {
                 expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
                     <html class="h5p-iframe">

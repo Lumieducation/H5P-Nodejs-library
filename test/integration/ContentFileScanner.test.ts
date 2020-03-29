@@ -41,7 +41,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     user.canUpdateAndInstallLibraries = true;
 
     // We have to use beforeAll as describe(...) doesn't accept async functions
-    beforeAll(async done => {
+    beforeAll(async (done) => {
         tmpDir = await dir({ unsafeCleanup: true });
         tmpDirPath = tmpDir.path;
 
@@ -65,7 +65,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
 
         packageIdMap = new Map<string, ContentId>();
 
-        for (const file of h5pPackages.filter(f => f.endsWith('.h5p'))) {
+        for (const file of h5pPackages.filter((f) => f.endsWith('.h5p'))) {
             packageIdMap.set(
                 file,
                 (
@@ -85,7 +85,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         tmpDir.cleanup();
     });
 
-    for (const file of h5pPackages.filter(f => f.endsWith('.h5p'))) {
+    for (const file of h5pPackages.filter((f) => f.endsWith('.h5p'))) {
         it(`finds all files in ${file}`, async () => {
             const contentId = packageIdMap.get(file);
 
@@ -106,8 +106,8 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
             );
 
             expect(
-                foundFiles.map(f => path.normalize(f.filePath)).sort()
-            ).toEqual(fileSystemFiles.map(p => path.normalize(p)).sort());
+                foundFiles.map((f) => path.normalize(f.filePath)).sort()
+            ).toEqual(fileSystemFiles.map((p) => path.normalize(p)).sort());
 
             const parameters = await contentManager.getContentParameters(
                 contentId,

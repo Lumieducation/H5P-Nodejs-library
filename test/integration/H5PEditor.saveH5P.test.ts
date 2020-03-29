@@ -8,7 +8,7 @@ import User from '../../examples/User';
 import { ContentMetadata } from '../../src/ContentMetadata';
 
 describe('H5PEditor.saveH5P()', () => {
-    it('can save all real-world examples from the content-type-hub', async done => {
+    it('can save all real-world examples from the content-type-hub', async (done) => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const user = new User();
@@ -16,7 +16,7 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentTypes = await fsExtra.readdir(contentPath);
 
                 Promise.all(
-                    contentTypes.map(async contentType => {
+                    contentTypes.map(async (contentType) => {
                         const { h5pEditor } = createH5PEditor(tempDirPath);
 
                         const {

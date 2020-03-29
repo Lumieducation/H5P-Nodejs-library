@@ -12,7 +12,7 @@ import expressErrorHandler from './expressErrorHandler';
  * @param h5pCorePath the path on the local disk at which the core files (of the player) can be found
  * @param h5pEditorLibraryPath the path on the local disk at which the core files of the editor can be found
  */
-export default function(
+export default function (
     h5pEditor: H5P.H5PEditor,
     h5pCorePath: string,
     h5pEditorLibraryPath: string
@@ -24,7 +24,8 @@ export default function(
      * passed to the next(...) function for proper error handling.
      * @param fn The function to call
      */
-    const catchAndPassOnErrors = fn => (...args) => fn(...args).catch(args[2]);
+    const catchAndPassOnErrors = (fn) => (...args) =>
+        fn(...args).catch(args[2]);
 
     // get library file
     router.get(
@@ -245,10 +246,10 @@ export default function(
                         req.user
                     );
                     updatedLibCount = installedLibs.filter(
-                        l => l.type === 'patch'
+                        (l) => l.type === 'patch'
                     ).length;
                     installedLibCount = installedLibs.filter(
-                        l => l.type === 'new'
+                        (l) => l.type === 'new'
                     ).length;
 
                     const contentTypeCache = await h5pEditor.getContentTypeCache(
@@ -276,10 +277,10 @@ export default function(
                         req.user
                     );
                     updatedLibCount = installedLibraries.filter(
-                        l => l.type === 'patch'
+                        (l) => l.type === 'patch'
                     ).length;
                     installedLibCount = installedLibraries.filter(
-                        l => l.type === 'new'
+                        (l) => l.type === 'new'
                     ).length;
 
                     const contentTypes = await h5pEditor.getContentTypeCache(

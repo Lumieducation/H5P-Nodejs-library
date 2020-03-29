@@ -181,7 +181,7 @@ export default class ContentTypeCache {
         }
         return cache.filter((contentType: IHubContentType) =>
             machineNames.some(
-                machineName => machineName === contentType.machineName
+                (machineName) => machineName === contentType.machineName
             )
         );
     }

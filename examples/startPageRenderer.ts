@@ -6,7 +6,7 @@ export default function render(
     return async (req, res) => {
         const contentIds = await editor.contentManager.listContent();
         const contentObjects = await Promise.all(
-            contentIds.map(async id => ({
+            contentIds.map(async (id) => ({
                 content: await editor.contentManager.getContentMetadata(
                     id,
                     req.user
@@ -34,7 +34,7 @@ export default function render(
                 <div class="list-group">
                 ${contentObjects
                     .map(
-                        content =>
+                        (content) =>
                             `<div class="list-group-item">
                                 <div class="d-flex w-10">
                                     <div class="mr-auto p-2 align-self-center">

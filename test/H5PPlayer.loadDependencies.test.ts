@@ -50,9 +50,9 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).styles.slice(2)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css',
                     '/h5p/libraries/Foo-4.2/foo2.css',
@@ -86,7 +86,7 @@ describe('Loading dependencies', () => {
         };
         const mockLibraryStorage: any = {
             getLibrary: (libName: ILibraryName) =>
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     setTimeout(
                         () =>
                             resolve(
@@ -123,9 +123,9 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).styles.slice(2)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css',
                     '/h5p/libraries/Foo-4.2/foo2.css',
@@ -154,7 +154,7 @@ describe('Loading dependencies', () => {
         };
         const mockLibraryStorage: any = {
             getLibrary: (libName: ILibraryName) =>
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     setTimeout(
                         () =>
                             resolve(
@@ -203,9 +203,9 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).styles.slice(2)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css',
                     '/h5p/libraries/Bar-2.1/bar.css',
@@ -276,9 +276,9 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).styles.slice(2)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css',
                     '/h5p/libraries/Bar-2.1/bar.css',
@@ -353,9 +353,9 @@ describe('Loading dependencies', () => {
             undefined,
             undefined
         )
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
-            .then(model => {
+            .then((model) => {
                 expect((model as any).styles.slice(2)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css',
                     '/h5p/libraries/Bar-2.1/bar.css',
@@ -436,7 +436,7 @@ describe('Loading dependencies', () => {
             undefined
         );
 
-        h5p.setRenderer(m => m);
+        h5p.setRenderer((m) => m);
         const model: any = await h5p.render(
             contentId,
             contentObject,
