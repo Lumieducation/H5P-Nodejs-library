@@ -310,13 +310,13 @@ export default class H5PEditor {
         return (
             await Promise.all(
                 libraryNames
-                    .map(name =>
+                    .map((name) =>
                         LibraryName.fromUberName(name, {
                             useWhitespace: true
                         })
                     )
-                    .filter(lib => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
-                    .map(async lib => {
+                    .filter((lib) => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
+                    .map(async (lib) => {
                         try {
                             const loadedLibrary = await this.libraryManager.getLibrary(
                                 lib
@@ -341,7 +341,7 @@ export default class H5PEditor {
                         }
                     })
             )
-        ).filter(lib => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
+        ).filter((lib) => lib !== undefined); // we filter out undefined values as the last map return undefined values if a library doesn't exist
     }
 
     /**
@@ -375,7 +375,7 @@ export default class H5PEditor {
         );
         return (
             await Promise.all(
-                libraryUbernames.map(async name => {
+                libraryUbernames.map(async (name) => {
                     const lib = LibraryName.fromUberName(name, {
                         useWhitespace: true
                     });
@@ -681,24 +681,26 @@ export default class H5PEditor {
                 loaded
             )
         ]);
-        combinedDependencies.forEach(dependencies =>
-            dependencies.forEach(dependency => {
-                dependency.scripts.forEach(script =>
+        combinedDependencies.forEach((dependencies) =>
+            dependencies.forEach((dependency) => {
+                dependency.scripts.forEach((script) =>
                     assets.scripts.push(script)
                 );
-                dependency.styles.forEach(script => assets.styles.push(script));
-                Object.keys(dependency.translations).forEach(k => {
+                dependency.styles.forEach((script) =>
+                    assets.styles.push(script)
+                );
+                Object.keys(dependency.translations).forEach((k) => {
                     assets.translations[k] = dependency.translations[k];
                 });
             })
         );
 
-        (library.preloadedJs || []).forEach(script =>
+        (library.preloadedJs || []).forEach((script) =>
             assets.scripts.push(
                 this.urlGenerator.libraryFile(libraryName, script.path)
             )
         );
-        (library.preloadedCss || []).forEach(style =>
+        (library.preloadedCss || []).forEach((style) =>
             assets.styles.push(
                 this.urlGenerator.libraryFile(libraryName, style.path)
             )

@@ -19,7 +19,7 @@ const extractedContentPath = `${path.resolve(
 
 fs.readdir(contentPath, (fsError, files) => {
     Promise.all(
-        files.map(file => {
+        files.map((file) => {
             // tslint:disable-next-line: no-console
             console.log(`extracting: ${file}`);
             return PackageImporter.extractPackage(
@@ -60,8 +60,8 @@ fs.readdir(contentPath, (fsError, files) => {
                 undefined
             )
                 .render(name, contentObject, h5pObject)
-                .then(h5pPage => res.end(h5pPage))
-                .catch(error => res.status(500).end(error.message));
+                .then((h5pPage) => res.end(h5pPage))
+                .catch((error) => res.status(500).end(error.message));
         });
         server.use((error, req, res, next) => {
             if (error) {
@@ -73,7 +73,7 @@ fs.readdir(contentPath, (fsError, files) => {
         server.listen(8080, () => {
             // tslint:disable-next-line: no-console
             console.log(`server running on http://localhost: ${8080}`);
-            puppeteer.launch({ devtools: true }).then(browser => {
+            puppeteer.launch({ devtools: true }).then((browser) => {
                 fs.readdir(
                     extractedContentPath,
                     (fsExtractedError, extractedFiles) => {
@@ -82,8 +82,8 @@ fs.readdir(contentPath, (fsError, files) => {
                                 .add(
                                     () =>
                                         new Promise((resolve, reject) => {
-                                            browser.newPage().then(page => {
-                                                page.on('pageerror', msg => {
+                                            browser.newPage().then((page) => {
+                                                page.on('pageerror', (msg) => {
                                                     // tslint:disable-next-line: no-console
                                                     console.log(
                                                         `${file}: ERROR`,
@@ -115,7 +115,7 @@ fs.readdir(contentPath, (fsError, files) => {
                                             });
                                         })
                                 )
-                                .catch(error => {
+                                .catch((error) => {
                                     // tslint:disable-next-line: no-console
                                     console.log(error);
                                     process.exit(1);

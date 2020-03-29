@@ -183,11 +183,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const content = await repository.get(user);
         expect(content.libraries.length).toEqual(2);
         expect(
-            content.libraries.find(l => l.machineName === 'H5P.Example1')
+            content.libraries.find((l) => l.machineName === 'H5P.Example1')
                 .restricted
         ).toEqual(true);
         expect(
-            content.libraries.find(l => l.machineName === 'H5P.Example3')
+            content.libraries.find((l) => l.machineName === 'H5P.Example3')
                 .restricted
         ).toEqual(false);
     });

@@ -1,4 +1,4 @@
-export default model => `<html>
+export default (model) => `<html>
 <head>
 <meta charset="UTF-8">
 <script> window.H5PIntegration = parent.H5PIntegration || ${JSON.stringify(
@@ -7,10 +7,10 @@ export default model => `<html>
     2
 )}</script>
 ${model.styles
-    .map(style => `<link rel="stylesheet" href="${style}">`)
+    .map((style) => `<link rel="stylesheet" href="${style}">`)
     .join('\n    ')}
 ${model.scripts
-    .map(script => `<script src="${script}"></script>`)
+    .map((script) => `<script src="${script}"></script>`)
     .join('\n    ')}
 </head>
 <body>

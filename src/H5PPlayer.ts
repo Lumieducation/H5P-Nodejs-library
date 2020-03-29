@@ -85,7 +85,7 @@ export default class H5PPlayer {
         const model: IPlayerModel = {
             contentId,
             customScripts: this.globalCustomScripts
-                .map(script => `<script src="${script}"/>`)
+                .map((script) => `<script src="${script}"/>`)
                 .join(),
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
@@ -131,10 +131,10 @@ export default class H5PPlayer {
     ): void {
         log.verbose(
             `loading assets from dependencies: ${dependencies
-                .map(dep => LibraryName.toUberName(dep))
+                .map((dep) => LibraryName.toUberName(dep))
                 .join(', ')}`
         );
-        dependencies.forEach(dependency => {
+        dependencies.forEach((dependency) => {
             const key = LibraryName.toUberName(dependency);
             if (key in loaded) return;
 
@@ -147,12 +147,12 @@ export default class H5PPlayer {
                     libraries,
                     loaded
                 );
-                (lib.preloadedCss || []).forEach(asset =>
+                (lib.preloadedCss || []).forEach((asset) =>
                     assets.styles.push(
                         this.urlGenerator.libraryFile(dependency, asset.path)
                     )
                 );
-                (lib.preloadedJs || []).forEach(script =>
+                (lib.preloadedJs || []).forEach((script) =>
                     assets.scripts.push(
                         this.urlGenerator.libraryFile(dependency, script.path)
                     )
@@ -204,11 +204,11 @@ export default class H5PPlayer {
     ): Promise<void> {
         log.verbose(
             `loading libraries from dependencies: ${dependencies
-                .map(dep => LibraryName.toUberName(dep))
+                .map((dep) => LibraryName.toUberName(dep))
                 .join(', ')}`
         );
         await Promise.all(
-            dependencies.map(async dependency => {
+            dependencies.map(async (dependency) => {
                 const name = dependency.machineName;
                 const majVer = dependency.majorVersion;
                 const minVer = dependency.minorVersion;

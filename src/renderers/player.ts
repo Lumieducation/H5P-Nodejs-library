@@ -1,13 +1,13 @@
-export default model => `<!doctype html>
+export default (model) => `<!doctype html>
 <html class="h5p-iframe">
 <head>
     <meta charset="utf-8">
     
     ${model.styles
-        .map(style => `<link rel="stylesheet" href="${style}"/>`)
+        .map((style) => `<link rel="stylesheet" href="${style}"/>`)
         .join('\n    ')}
     ${model.scripts
-        .map(script => `<script src="${script}"></script>`)
+        .map((script) => `<script src="${script}"></script>`)
         .join('\n    ')}
 
     <script>

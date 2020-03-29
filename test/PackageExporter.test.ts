@@ -52,7 +52,7 @@ export async function importAndExportPackage(
             ).id;
 
             await withFile(
-                async fileResult => {
+                async (fileResult) => {
                     const writeStream = fsExtra.createWriteStream(
                         fileResult.path
                     );
@@ -71,14 +71,14 @@ export async function importAndExportPackage(
                                 packagePath
                             );
                             const oldEntries = (await oldZipFile.readEntries())
-                                .map(e => e.fileName)
+                                .map((e) => e.fileName)
                                 .sort();
 
                             const newZipFile = await yauzlPromise.open(
                                 fileResult.path
                             );
                             const newEntries = (await newZipFile.readEntries())
-                                .map(e => e.fileName)
+                                .map((e) => e.fileName)
                                 .sort();
 
                             expect(newEntries).toMatchObject(oldEntries);

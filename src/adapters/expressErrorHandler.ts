@@ -28,7 +28,7 @@ export default function errorHandler(
         clientErrorId = err.clientErrorId || '';
 
         if (err instanceof AggregateH5pError) {
-            detailsList = err.getErrors().map(e => {
+            detailsList = err.getErrors().map((e) => {
                 return {
                     code: e.errorId,
                     message:

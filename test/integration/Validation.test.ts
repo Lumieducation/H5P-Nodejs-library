@@ -15,7 +15,7 @@ describe('validate all H5P files from the Hub', () => {
         );
     }
 
-    for (const file of files.filter(f => f.endsWith('.h5p'))) {
+    for (const file of files.filter((f) => f.endsWith('.h5p'))) {
         it(`${file}`, async () => {
             const config = new H5PConfig(null);
             config.contentWhitelist += ' html';

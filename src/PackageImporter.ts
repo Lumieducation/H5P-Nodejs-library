@@ -261,7 +261,7 @@ export default class PackageImporter {
                             )
                     )
                 ).filter(
-                    installResult =>
+                    (installResult) =>
                         installResult !== undefined &&
                         installResult.type !== 'none'
                 );

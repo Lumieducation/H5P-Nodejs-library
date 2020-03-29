@@ -293,7 +293,7 @@ export default class FileContentStorage implements IContentStorage {
         const directories = await fsExtra.readdir(this.contentPath);
         return (
             await Promise.all(
-                directories.map(async dir => {
+                directories.map(async (dir) => {
                     if (
                         !(await fsExtra.pathExists(
                             path.join(this.contentPath, dir, 'h5p.json')
@@ -304,7 +304,7 @@ export default class FileContentStorage implements IContentStorage {
                     return dir;
                 })
             )
-        ).filter(content => content !== '');
+        ).filter((content) => content !== '');
     }
 
     /**
@@ -331,6 +331,6 @@ export default class FileContentStorage implements IContentStorage {
                 nodir: true
             }
         );
-        return absolutePaths.map(p => path.relative(contentDirectoryPath, p));
+        return absolutePaths.map((p) => path.relative(contentDirectoryPath, p));
     }
 }

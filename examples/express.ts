@@ -23,8 +23,8 @@ function displayIps(port: string): void {
     // tslint:disable-next-line: forin
     for (const devName in networkInterfaces) {
         networkInterfaces[devName]
-            .filter(int => !int.internal)
-            .forEach(int =>
+            .filter((int) => !int.internal)
+            .forEach((int) =>
                 // tslint:disable-next-line: no-console
                 console.log(
                     `http://${int.family === 'IPv6' ? '[' : ''}${int.address}${

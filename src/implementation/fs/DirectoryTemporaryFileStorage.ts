@@ -72,14 +72,14 @@ export default class DirectoryTemporaryFileStorage
         const users = user ? [user.id] : await fsExtra.readdir(this.directory);
         return (
             await Promise.all(
-                users.map(async u => {
+                users.map(async (u) => {
                     const filesOfUser = await fsExtra.readdir(
                         this.getAbsoluteUserDirectoryPath(u)
                     );
                     return Promise.all(
                         filesOfUser
-                            .filter(f => !f.endsWith('.metadata'))
-                            .map(f => this.getTemporaryFileInfo(f, u))
+                            .filter((f) => !f.endsWith('.metadata'))
+                            .map((f) => this.getTemporaryFileInfo(f, u))
                     );
                 })
             )

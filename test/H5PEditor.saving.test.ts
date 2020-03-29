@@ -625,11 +625,13 @@ describe('H5PEditor', () => {
                         const writeStream = fsExtra.createWriteStream(
                             h5pFilePath
                         );
-                        const packageFinishedPromise = new Promise(resolve => {
-                            writeStream.on('close', () => {
-                                resolve();
-                            });
-                        });
+                        const packageFinishedPromise = new Promise(
+                            (resolve) => {
+                                writeStream.on('close', () => {
+                                    resolve();
+                                });
+                            }
+                        );
                         await h5pEditor.exportContent(
                             contentId,
                             writeStream,

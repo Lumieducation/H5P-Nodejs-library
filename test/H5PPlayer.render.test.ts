@@ -8,9 +8,9 @@ describe('H5P.render()', () => {
         const metadata: any = {};
 
         new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
-            .setRenderer(model => model)
+            .setRenderer((model) => model)
             .render(contentId, contentObject, metadata)
-            .then(model => {
+            .then((model) => {
                 expect(model).toBeDefined();
                 expect((model as any).contentId).toBe('foo');
             });

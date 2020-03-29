@@ -66,7 +66,7 @@ export async function getContentDetails(
 
     // get main library name
     const mainLibraryName = contentMetadata.preloadedDependencies.find(
-        lib => lib.machineName === contentMetadata.mainLibrary
+        (lib) => lib.machineName === contentMetadata.mainLibrary
     );
 
     // load params
