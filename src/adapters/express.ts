@@ -23,20 +23,24 @@ export default function (
     const router = express.Router();
     const h5pController = new ExpressH5PController(h5pEditor);
 
+    const undefinedOrTrue = (option: boolean): boolean =>
+        option === undefined || option;
+
     /**
      * Calls the function passed to it and catches errors it throws. These arrows are then
      * passed to the next(...) function for proper error handling.
+     * You can disable error catching by setting options.handleErrors to false
      * @param fn The function to call
      */
     const catchAndPassOnErrors = (fn) => (...args) => {
-        if (options.handleErrors) {
+        if (undefinedOrTrue(options.handleErrors)) {
             return fn(...args).catch(args[2]);
         }
         return fn(...args);
     };
 
     // get library file
-    if (options.routeGetLibraryFile) {
+    if (undefinedOrTrue(options.routeGetLibraryFile)) {
         router.get(
             `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
             catchAndPassOnErrors(h5pController.getLibraryFile)
@@ -44,7 +48,7 @@ export default function (
     }
 
     // get content file
-    if (options.routeGetContentFile) {
+    if (undefinedOrTrue(options.routeGetContentFile)) {
         router.get(
             `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
             catchAndPassOnErrors(h5pController.getContentFile)
@@ -52,7 +56,7 @@ export default function (
     }
 
     // get temporary content file
-    if (options.routeGetTemporaryContentFile) {
+    if (undefinedOrTrue(options.routeGetTemporaryContentFile)) {
         router.get(
             `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
             catchAndPassOnErrors(h5pController.getTemporaryContentFile)
@@ -60,7 +64,7 @@ export default function (
     }
 
     // get parameters (= content.json) of content
-    if (options.routeGetParameters) {
+    if (undefinedOrTrue(options.routeGetParameters)) {
         router.get(
             `${h5pEditor.config.paramsUrl}/:contentId`,
             catchAndPassOnErrors(h5pController.getContentParameters)
@@ -68,7 +72,7 @@ export default function (
     }
 
     // get various things through the Ajax endpoint
-    if (options.routeGetAjax) {
+    if (undefinedOrTrue(options.routeGetAjax)) {
         router.get(
             h5pEditor.config.ajaxUrl,
             catchAndPassOnErrors(h5pController.getAjax)
@@ -79,7 +83,7 @@ export default function (
     // Don't be confused by the fact that many of the requests dealt with here are not
     // really POST requests, but look more like GET requests. This is simply how the H5P
     // client works and we can't change it.
-    if (options.routePostAjax) {
+    if (undefinedOrTrue(options.routePostAjax)) {
         router.post(
             h5pEditor.config.ajaxUrl,
             catchAndPassOnErrors(h5pController.postAjax)
@@ -87,12 +91,12 @@ export default function (
     }
 
     // serve core files (= JavaScript + CSS from h5p-php-library)
-    if (options.routeCoreFiles) {
+    if (undefinedOrTrue(options.routeCoreFiles)) {
         router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
     }
 
     // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
-    if (options.routeEditorCoreFiles) {
+    if (undefinedOrTrue(options.routeEditorCoreFiles)) {
         router.use(
             h5pEditor.config.editorLibraryUrl,
             express.static(h5pEditorLibraryPath)
@@ -100,14 +104,14 @@ export default function (
     }
 
     // serve download links
-    if (options.routeGetDownload) {
+    if (undefinedOrTrue(options.routeGetDownload)) {
         router.get(
             `${h5pEditor.config.downloadUrl}/:contentId`,
             catchAndPassOnErrors(h5pController.getDownload)
         );
     }
 
-    if (options.handleErrors) {
+    if (undefinedOrTrue(options.handleErrors)) {
         router.use(expressErrorHandler);
     }
 
