@@ -37,9 +37,11 @@ import {
 // Adapters
 import express from './adapters/express';
 import expressErrorHandler from './adapters/expressErrorHandler';
+import expressController from './adapters/expressController';
 
 const adapters = {
     express,
+    expressController,
     expressErrorHandler
 };
 
