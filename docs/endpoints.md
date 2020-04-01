@@ -11,12 +11,18 @@ server.use(
     H5P.adapters.express(
         h5pEditor, // an H5P.H5PEditor object
         path.resolve('h5p/core'), // the path to the h5p core files (of the player)
-        path.resolve('h5p/editor') // the path to the h5p core files (of the editor)
+        path.resolve('h5p/editor'), // the path to the h5p core files (of the editor)
+        options // the options are optional and can be left out
     )
 );
 ```
 
 Note that the Express adapter does not include pages to create, editor, view, list or delete content!
+
+You can customize which endpoints you want to use by setting the respective flags in the `options` object. By default,
+the adapter will handle **all** routes and you can turn individual ones off by setting `routeXX` to false. You can also
+turn off the error handling (`handleErrors: false`). Normally, the router will send back localized responses that the H5P
+client can understand. If you turn error handling off, the routes will throw errors that you have to handle yourself!
 
 **IMPORTANT:** The adapter expects the requests object of Express to be extended like this:
 
@@ -75,9 +81,7 @@ h5pEditor.saveOrUpdateContent(
 Requests information about a piece of content. Respond with
 
 ```js
-const content = await h5pEditor.getContent(
-                        contentId,
-                        user);       // the requesting user
+const content = await h5pEditor.getContent(contentId, user); // the requesting user
 /** send content to browser **/
 ```
 
@@ -88,8 +92,7 @@ const content = await h5pEditor.getContent(
 Requests available content types. Respond with
 
 ```js
-const hubInfo = await h5pEditor
-    .getContentTypeCache(user);
+const hubInfo = await h5pEditor.getContentTypeCache(user);
 /** send hub info to browser **/
 ```
 
@@ -101,11 +104,11 @@ Requests data about a specific library. Respond with
 
 ```js
 const libraryData = await h5pEditor.getLibraryData(
-        machineName,
-        majorVersion,
-        minorVersion,
-        language
-    );
+    machineName,
+    majorVersion,
+    minorVersion,
+    language
+);
 /** send library to browser **/
 ```
 
@@ -129,12 +132,11 @@ The ID can be passed in the query string of the body of the request.
 
 ```js
 const response = h5pEditor.saveContentFile(
-        body.contentId === '0'
-            ? query.contentId
-            : body.contentId,
-        JSON.parse(body.field),
-        files.file,
-        user);
+    body.contentId === '0' ? query.contentId : body.contentId,
+    JSON.parse(body.field),
+    files.file,
+    user
+);
 /** send response to browser **/
 ```
 
@@ -163,12 +165,12 @@ Handle with
 const result = await h5pEditor.uploadPackage(files.h5p.data, user);
 const contentTypeCache = await h5pEditor.getContentTypeCache(user);
 const response = {
-        success: true,
-        data: {
-            h5p: result.metadata,
-            content: result.parameters,
-            contentTypes: contentTypeCache
-        }
+    success: true,
+    data: {
+        h5p: result.metadata,
+        content: result.parameters,
+        contentTypes: contentTypeCache
+    }
 };
 /** send response to browser **/
 ```
