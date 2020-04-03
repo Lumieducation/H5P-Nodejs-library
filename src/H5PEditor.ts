@@ -1,8 +1,10 @@
 import { ReadStream, WriteStream } from 'fs';
-import fsExtra from 'fs-extra';
-import promisepipe from 'promisepipe';
-import stream from 'stream';
 import { withFile } from 'tmp-promise';
+import fsExtra from 'fs-extra';
+import mimeTypes from 'mime-types';
+import promisepipe from 'promisepipe';
+import sanitize from 'sanitize-filename';
+import stream from 'stream';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/client/en.json';
@@ -292,9 +294,9 @@ export default class H5PEditor {
      */
     public async getLibraryFileStream(
         library: ILibraryName,
-        file: string
+        filename: string
     ): Promise<ReadStream> {
-        return this.libraryManager.getFileStream(library, file);
+        return this.libraryManager.getFileStream(library, filename);
     }
 
     /**
@@ -432,12 +434,17 @@ export default class H5PEditor {
         },
         user: IUser
     ): Promise<{ mime: string; path: string }> {
+        let cleanFilename = sanitize(file.name).replace(' ', '_');
+        cleanFilename = this.addDirectoryByMimetype(cleanFilename);
+
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
 
-        log.info(`Putting content file ${file.name} into temporary storage`);
+        log.info(
+            `Putting content file ${cleanFilename} into temporary storage`
+        );
         const tmpFilename = await this.temporaryFileManager.addFile(
-            file.name,
+            cleanFilename,
             dataStream,
             user
         );
@@ -550,6 +557,28 @@ export default class H5PEditor {
         );
 
         return returnValues;
+    }
+
+    /**
+     * If a file is a video, an audio file or an image, the filename is suffixed
+     * with the corresponding directory (videos, audios, images).
+     * @param filename the filename including the file extension
+     * @returns the path including the directory; the same if the filename is not a video, audio file or image
+     */
+    private addDirectoryByMimetype(filename: string): string {
+        const mimetype = mimeTypes.lookup(filename);
+        if (mimetype !== false) {
+            if (mimetype.startsWith('video')) {
+                return `videos/${filename}`;
+            }
+            if (mimetype.startsWith('audio')) {
+                return `audios/${filename}`;
+            }
+            if (mimetype.startsWith('image')) {
+                return `images/${filename}`;
+            }
+        }
+        return filename;
     }
 
     private findLibraries(object: any, collect: any = {}): ILibraryName[] {

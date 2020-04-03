@@ -393,8 +393,9 @@ export default class ContentStorer {
         let attempts = 0;
         let filenameAttempt = '';
         let exists = false;
+        const dirname = path.dirname(actualFilename);
         do {
-            filenameAttempt = `${path.basename(
+            filenameAttempt = `${dirname ? `${dirname}/` : ''}${path.basename(
                 actualFilename,
                 path.extname(actualFilename)
             )}-${shortid()}${path.extname(actualFilename)}`;

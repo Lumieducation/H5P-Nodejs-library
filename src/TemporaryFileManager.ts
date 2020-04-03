@@ -124,8 +124,9 @@ export default class TemporaryFileManager {
         let attempts = 0;
         let filenameAttempt = '';
         let exists = false;
+        const dirname = path.dirname(filename);
         do {
-            filenameAttempt = `${path.basename(
+            filenameAttempt = `${dirname ? `${dirname}/` : ''}${path.basename(
                 filename,
                 path.extname(filename)
             )}-${shortid()}${path.extname(filename)}`;

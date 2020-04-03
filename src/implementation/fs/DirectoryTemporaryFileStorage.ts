@@ -2,6 +2,7 @@ import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import globPromise from 'glob-promise';
 
 import {
     H5pError,
@@ -34,11 +35,12 @@ export default class DirectoryTemporaryFileStorage
         await fsExtra.remove(filePath);
         await fsExtra.remove(`${filePath}.metadata`);
 
-        const directoryPath = this.getAbsoluteUserDirectoryPath(userId);
-        const userFiles = await fsExtra.readdir(directoryPath);
-        if (userFiles.length === 0) {
-            await fsExtra.rmdir(directoryPath);
+        const userDirectoryPath = this.getAbsoluteUserDirectoryPath(userId);
+        const fileDirectoryPath = path.dirname(filePath);
+        if (userDirectoryPath !== fileDirectoryPath) {
+            await this.deleteEmptyDirectory(fileDirectoryPath);
         }
+        await this.deleteEmptyDirectory(userDirectoryPath);
     }
 
     public async fileExists(filename: string, user: IUser): Promise<boolean> {
@@ -73,11 +75,15 @@ export default class DirectoryTemporaryFileStorage
         return (
             await Promise.all(
                 users.map(async (u) => {
-                    const filesOfUser = await fsExtra.readdir(
-                        this.getAbsoluteUserDirectoryPath(u)
+                    const filesOfUser = await globPromise(
+                        path.join(
+                            this.getAbsoluteUserDirectoryPath(u),
+                            '**/*.*'
+                        )
                     );
                     return Promise.all(
                         filesOfUser
+                            .map((f) => path.basename(f))
                             .filter((f) => !f.endsWith('.metadata'))
                             .map((f) => this.getTemporaryFileInfo(f, u))
                     );
@@ -97,6 +103,7 @@ export default class DirectoryTemporaryFileStorage
 
         await fsExtra.ensureDir(this.getAbsoluteUserDirectoryPath(user.id));
         const filePath = this.getAbsoluteFilePath(user.id, filename);
+        await fsExtra.ensureDir(path.dirname(filePath));
         const writeStream = fsExtra.createWriteStream(filePath);
         await promisepipe(dataStream, writeStream);
         await fsExtra.writeJSON(`${filePath}.metadata`, {
@@ -107,6 +114,13 @@ export default class DirectoryTemporaryFileStorage
             filename,
             ownedByUserId: user.id
         };
+    }
+
+    private async deleteEmptyDirectory(directory: string): Promise<void> {
+        const files = await fsExtra.readdir(directory);
+        if (files.length === 0) {
+            await fsExtra.rmdir(directory);
+        }
     }
 
     private getAbsoluteFilePath(userId: string, filename: string): string {
