@@ -17,6 +17,7 @@
             "scripts/h5p-hub-client.js",                        
             "scripts/h5peditor-semantic-structure.js",
             "scripts/h5peditor-library-selector.js",
+            "scripts/h5peditor-fullscreen-bar.js",
             "scripts/h5peditor-form.js",
             "scripts/h5peditor-text.js",
             "scripts/h5peditor-html.js",
