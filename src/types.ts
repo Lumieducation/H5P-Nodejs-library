@@ -332,7 +332,7 @@ export interface IContentStorage {
     /**
      * Adds a content file to an existing content object. The content object has to be created with addContent(...) first.
      * @param contentId The id of the content to add the file to
-     * @param filename The filename
+     * @param filename The filename; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param readStream A readable stream that contains the data
      * @param user (optional) The user who owns this object
      */
@@ -361,14 +361,14 @@ export interface IContentStorage {
     /**
      * Deletes a file from a content object.
      * @param contentId the content object the file is attached to
-     * @param filename the file to delete
+     * @param filename the file to delete; can be a path including subdirectories (e.g. 'images/xyz.png')
      */
     deleteFile(contentId: ContentId, filename: string): Promise<void>;
 
     /**
      * Checks if a file exists.
      * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get
+     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @returns true if the file exists
      */
     fileExists(contentId: ContentId, filename: string): Promise<boolean>;
@@ -376,7 +376,7 @@ export interface IContentStorage {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get
+     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user who wants to retrieve the content file
      * @returns the stream (that can be used to send the file to the user)
      */
@@ -427,7 +427,7 @@ export interface IContentStorage {
      * Gets the filenames of files added to the content with addFile(...) (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
+     * @returns a list of files that are used in the piece of content, e.g. ['images/image1.png', 'videos/video2.mp4', 'file.xyz']
      */
     listFiles(contentId: ContentId, user: IUser): Promise<string[]>;
 }
@@ -1031,7 +1031,7 @@ export interface ITemporaryFile {
      */
     expiresAt: Date;
     /**
-     * The name by which the file can be identified
+     * The name by which the file can be identified; can be a path including subdirectories (e.g. 'images/xyz.png')
      */
     filename: string;
     /**
@@ -1040,10 +1040,14 @@ export interface ITemporaryFile {
     ownedByUserId: string;
 }
 
+/**
+ * Stores files uploaded by the user in temporary storage. Note that filenames can be paths like
+ * 'images/xyz.png'!
+ */
 export interface ITemporaryFileStorage {
     /**
      * Deletes the file from temporary storage (e.g. because it has expired)
-     * @param filename the filename
+     * @param filename the filename; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param userId the user id
      * @returns true if deletion was successful
      */
@@ -1051,7 +1055,7 @@ export interface ITemporaryFileStorage {
 
     /**
      * Checks if a file exists in temporary storage.
-     * @param filename the filename to check
+     * @param filename the filename to check; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user for who to check
      * @returns true if file already exists
      */
@@ -1060,7 +1064,7 @@ export interface ITemporaryFileStorage {
     /**
      * Returns the contents of a file.
      * Must check for access permissions and throw an H5PError if a file is not accessible.
-     * @param filename the filename
+     * @param filename the filename; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user who accesses the file
      * @returns the stream containing the file's content
      */
@@ -1076,7 +1080,7 @@ export interface ITemporaryFileStorage {
 
     /**
      * Stores a file. Only the user who stores the file is allowed to access it later.
-     * @param filename the filename by which the file will be identified later
+     * @param filename the filename by which the file will be identified later; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param dataStream the stream containing the file's data
      * @param user the user who is allowed to access the file
      * @param expirationTime when the file ought to be deleted

@@ -434,7 +434,10 @@ export default class H5PEditor {
         },
         user: IUser
     ): Promise<{ mime: string; path: string }> {
+        // We must make sure to avoid illegal characters in filenames.
         let cleanFilename = sanitize(file.name).replace(' ', '_');
+        // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
+        // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
         const dataStream: any = new stream.PassThrough();
