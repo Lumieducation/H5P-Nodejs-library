@@ -188,13 +188,13 @@ export default class ContentStorer {
             // Check for relative paths
             log.debug(`Checking if file ${ref.filePath} is a relative path.`);
             const matches = ref.filePath.match(
-                /^\.\.\/content\/([\w\-._]+)\/([\w\-.\/_]+)$/
+                /^\.\.\/(content\/)?([\w\-._]+)\/([\w\-.\/_]+)$/
             );
             if (!matches || matches.length === 0) {
                 continue;
             }
-            const sourceContentId = matches[1];
-            const sourceFilename = matches[2];
+            const sourceContentId = matches[2];
+            const sourceFilename = matches[3];
 
             log.debug(
                 `Copying pasted file ${sourceFilename} from ${sourceContentId}.`
