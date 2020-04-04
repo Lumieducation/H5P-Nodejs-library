@@ -26,7 +26,7 @@ export default function (
 
     router.post('/edit/:contentId', async (req, res) => {
         const contentId = await h5pEditor.saveOrUpdateContent(
-            req.params.contentId,
+            req.params.contentId.toString(),
             req.body.params.params,
             req.body.params.metadata,
             req.body.library,

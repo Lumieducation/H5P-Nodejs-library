@@ -5,8 +5,6 @@ import * as path from 'path';
 import { Stream } from 'stream';
 
 import { ContentMetadata } from './ContentMetadata';
-import H5pError from './helpers/H5pError';
-import { streamToString } from './helpers/StreamHelpers';
 import {
     ContentId,
     ContentParameters,
