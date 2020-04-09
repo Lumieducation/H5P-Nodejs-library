@@ -5,10 +5,12 @@
         "enabled": true,
         "schedule": "every weekday"
     },
-    "automerge": true,
-    "major": {
-        "automerge": false
-    },
+    "packageRules": [
+        {
+            "updateTypes": ["minor", "patch", "pin", "digest"],
+            "automerge": true
+        }
+    ],
     "prConcurrentLimit": 0,
     "prHourlyLimit": 50,
     "semanticCommits": true,
