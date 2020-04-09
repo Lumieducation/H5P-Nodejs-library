@@ -90,7 +90,7 @@
         "body-parser": "1.19.0",
         "express": "4.17.1",
         "express-fileupload": "1.1.6",
-        "husky": "4.2.4",
+        "husky": "4.2.5",
         "i18next": "19.4.0",
         "i18next-express-middleware": "1.9.1",
         "i18next-node-fs-backend": "2.1.3",
