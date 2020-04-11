@@ -5,7 +5,7 @@
 
 This project is a re-implementation of the [H5P-Editor-PHP-library](https://github.com/h5p/h5p-editor-php-library) and [H5P-PHP-library](https://github.com/h5p/h5p-php-library) for Nodejs. It is written in TypeScript but can be used in JavaScript just as well.
 
-Please not that even if most functionality of H5P seems to work, there are parts which haven't been implemented yet or which might be faulty. This is particularly true for security concerns. The interfaces have reached some level of stability, but might still change in future major releases. If you have questions or want to contribute, feel free to open issues or pull requests.
+Please note that even if most functionality of H5P seems to work, **there are parts which haven't been implemented yet or which might be faulty.** This is particularly true for security concerns. For a more comprehensive list of what works and what doesn't, check out [the corresponding documentation page](docs/status.md). The interfaces have reached some level of stability, but might still change in future major releases. If you have questions or want to contribute, feel free to open issues or pull requests.
 
 An example of how to integrate and use this library with [Express](https://expressjs.com/) can be found in [examples](examples/).
 
@@ -122,7 +122,7 @@ The implementation needs to call several function regularly (comparable to a cro
 
 ### Handling errors
 
-If something goes wrong and a call to the library can't continue execution, it will normally throw either a `H5PError` or an `AggregateH5PError` (a collection of several errors). Both errors types represent errors that can be sent to the user to be displayed in the client (in the user's language). They don't include the English error message but an error id that you must translate yourself. Error ids and their English translations can be found in [`assets/translations`](/assets/translations). The translation strings follow the format used by (i18next)[https://i18next.com], but in theory you can use any localization library.
+If something goes wrong and a call to the library can't continue execution, it will normally throw either a `H5PError` or an `AggregateH5PError` (a collection of several errors). Both errors types represent errors that can be sent to the user to be displayed in the client (in the user's language). They don't include the English error message but an error id that you must translate yourself. Error ids and their English translations can be found in [`assets/translations`](/assets/translations). The translation strings follow the format used by [i18next](https://i18next.com), but in theory you can use any localization library.
 
 Calls to the library might also throw regular `Error` objects. In this case the error is not caused by the business logic, but by some more basic functionality (file system, other library) or it might be an error that is addressed at the developer (i.e. because function parameters aren't correctly used).
 
