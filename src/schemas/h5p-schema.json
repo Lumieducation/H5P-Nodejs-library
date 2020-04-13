@@ -81,7 +81,10 @@
         },
         "licenseExtras": {
             "type": "string",
-            "pattern": "^.{1,5000}$"
+            "regexp": {
+                "pattern": "^.{1,5000}$",
+                "flags": "s"
+            }
         },
         "yearsFrom": {
             "type": "string",
@@ -108,7 +111,10 @@
                     "log": {
                         "description": "The free text what was changed in the content",
                         "type": "string",
-                        "pattern": "^.{1,5000}$"
+                        "regexp": {
+                            "pattern": "^.{1,5000}$",
+                            "flags": "s"
+                        }
                     }
                 },
                 "required": ["date", "author", "log"]
@@ -116,7 +122,10 @@
         },
         "authorComments": {
             "type": "string",
-            "pattern": "^.{1,5000}$"
+            "regexp": {
+                "pattern": "^.{1,5000}$",
+                "flags": "s"
+            }
         },
         "w": {
             "type": "string",
