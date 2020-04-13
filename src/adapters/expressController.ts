@@ -137,10 +137,16 @@ export default class ExpressH5PController {
         ): string =>
             `${
                 installed
-                    ? req.t('installed-libraries', { count: installed })
+                    ? req.t
+                        ? req.t('installed-libraries', { count: installed })
+                        : `Installed ${installed} libraries.`
                     : ''
             } ${
-                updated ? req.t('updated-libraries', { count: updated }) : ''
+                updated
+                    ? req.t
+                        ? req.t('updated-libraries', { count: updated })
+                        : `Updated ${updated} libraries.`
+                    : ''
             }`.trim();
 
         switch (action) {
