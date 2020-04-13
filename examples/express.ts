@@ -71,7 +71,7 @@ const start = async () => {
 
     const server = express();
 
-    server.use(bodyParser.json());
+    server.use(bodyParser.json({ limit: '500mb' }));
     server.use(
         bodyParser.urlencoded({
             extended: true
@@ -79,7 +79,7 @@ const start = async () => {
     );
     server.use(
         fileUpload({
-            limits: { fileSize: 50 * 1024 * 1024 }
+            limits: { fileSize: h5pEditor.config.maxFileSize }
         })
     );
 

@@ -74,6 +74,7 @@
         "yazl": "^2.5.1"
     },
     "devDependencies": {
+        "@commitlint/config-conventional": "^8.3.4",
         "@semantic-release/git": "9.0.0",
         "@semantic-release/github": "7.0.5",
         "@types/escape-html": "0.0.20",
@@ -88,6 +89,7 @@
         "@types/yazl": "2.4.2",
         "axios-mock-adapter": "1.18.1",
         "body-parser": "1.19.0",
+        "commitlint": "^8.3.5",
         "express": "4.17.1",
         "express-fileupload": "1.1.6",
         "husky": "4.2.5",
