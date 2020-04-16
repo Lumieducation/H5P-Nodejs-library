@@ -192,7 +192,7 @@ describe('Rendering the HTML page', () => {
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
                 expect((model as any).customScripts).toBe(
-                    '<script src="/test"/>'
+                    '<script src="/test"></script>'
                 );
             });
     });
@@ -337,7 +337,7 @@ describe('Rendering the HTML page', () => {
                       "saveFreq": false,
                       "url": "/h5p"
                     };
-                        </script><script src="/test" />
+                        </script><script src="/test"></script>
                     </head>
                     <body>
                         <div class="h5p-content" data-content-id="foo"></div>
