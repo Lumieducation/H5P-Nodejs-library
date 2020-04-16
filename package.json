@@ -100,7 +100,7 @@
         "mockdate": "2.0.5",
         "prettier": "2.0.4",
         "promise-queue": "2.2.5",
-        "puppeteer": "2.1.1",
+        "puppeteer": "3.0.0",
         "semantic-release": "17.0.4",
         "shortid": "2.2.15",
         "source-map-support": "0.5.16",
