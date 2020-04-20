@@ -237,7 +237,7 @@ export interface IIntegration {
      * The cache buster appended to JavaScript and CSS files.
      * Example: ?q8idru
      */
-    pluginCacheBuster: string;
+    pluginCacheBuster?: string;
     postUserStatistics: boolean;
     reportingIsEnabled?: boolean;
     /**
@@ -267,12 +267,26 @@ export interface IEditorIntegration {
         css: string[];
         js: string[];
     };
+    basePath?: string;
+    baseUrl?: string;
+    contentId?: string;
+    contentLanguage?: string;
+    contentRelUrl?: string;
+    copyrightSemantics?: any;
+    editorRelUrl?: string;
+    fileIcon?: {
+        height: number;
+        path: string;
+        width: number;
+    };
     /**
      * The path where **temporary** files can be retrieved from.
      */
     filesPath: string;
     libraryUrl: string;
+    metadataSemantics?: any;
     nodeVersionId: ContentId;
+    relativeUrl?: string;
 }
 
 /**
