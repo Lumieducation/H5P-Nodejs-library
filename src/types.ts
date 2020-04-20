@@ -144,19 +144,111 @@ export interface IContentMetadata {
  */
 export interface IIntegration {
     ajax: {
+        /**
+         * The Ajax endpoint called when the user state has changed
+         * Example: /h5p-ajax/content-user-data/:contentId/:dataType/:subContentId?token=XYZ
+         */
         contentUserData: string;
+        /**
+         * An Ajax endpoint called when the user has finished the content.
+         * Example: /h5p-ajax/set-finished.json?token=XYZ
+         */
         setFinished: string;
     };
     ajaxPath: string;
-    contents?: any;
+    /**
+     * The base URL, e.g. https://example.org
+     */
+    baseUrl?: string;
+    /**
+     * The key must be of the form "cid-XXX", where XXX is the id of the content
+     */
+    contents?: {
+        [key: string]: {
+            contentUserData: {
+                /**
+                 * The state as a serialized JSON object.
+                 */
+                state: string;
+            }[];
+            displayOptions: {
+                copy: boolean;
+                copyright: boolean;
+                embed: boolean;
+                export: boolean;
+                frame: boolean;
+                icon: boolean;
+            };
+            /**
+             * The full embed code (<iframe>...</iframe> with absolute URLs).
+             * Example: <iframe src=\"https://example.org/h5p/embed/XXX\" width=\":w\" height=\":h\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>"
+             */
+            embedCode: string;
+            /**
+             * The download URL (absolute URL).
+             */
+            exportUrl: string;
+            fullScreen: '0' | '1';
+            jsonContent: string;
+            /**
+             * The ubername with whitespace as separator.
+             */
+            library: string;
+            mainId: string;
+            metadata: {
+                defaultLanguage: string;
+                license: string;
+                title: string;
+            };
+            /**
+             * A script html tag which can be included alongside the embed code
+             * to make the iframe size to the available width. Use absolute URLs.
+             * Example: <script src=\"https://example.org/h5p/library/js/h5p-resizer.js\" charset=\"UTF-8\"></script>
+             */
+            resizeCode: string;
+            /**
+             * The absolute URL to the current content.
+             */
+            url: string;
+        };
+    };
+    /**
+     * Can be null.
+     */
+    crossorigin?: any;
+    /**
+     * Can be null.
+     */
+    crossoriginCacheBuster?: any;
     editor?: IEditorIntegration;
     hubIsEnabled: boolean;
-    l10n: object;
+    l10n: {
+        H5P: any;
+    };
+    /**
+     * Can be null.
+     */
+    libraryConfig?: any;
+    /**
+     * The URL at which the core files are stored.
+     */
+    libraryUrl?: string;
+    /**
+     * The cache buster appended to JavaScript and CSS files.
+     * Example: ?q8idru
+     */
+    pluginCacheBuster: string;
     postUserStatistics: boolean;
+    reportingIsEnabled?: boolean;
     /**
      * Set to false to disable saving user state.
      */
     saveFreq: number | boolean;
+    /**
+     * The URL at which files can be accessed. Combined with the baseUrl by the
+     * client.
+     * Example. /h5p
+     */
     url: string;
     user: {
         mail: string;
