@@ -103,7 +103,7 @@
         "puppeteer": "3.0.1",
         "semantic-release": "17.0.7",
         "shortid": "2.2.15",
-        "source-map-support": "0.5.18",
+        "source-map-support": "0.5.19",
         "stream-mock": "2.0.5",
         "supertest": "4.0.2",
         "ts-jest": "25.4.0",
