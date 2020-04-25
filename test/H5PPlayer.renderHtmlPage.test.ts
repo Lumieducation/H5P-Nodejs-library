@@ -43,7 +43,7 @@ describe('Rendering the HTML page', () => {
                         "frame": false,
                         "icon": false
                       },
-                      "fullScreen": false,
+                      "fullScreen": "0",
                       "jsonContent": "{\\"my\\":\\"content\\"}"
                     }
                   },
@@ -258,7 +258,7 @@ describe('Rendering the HTML page', () => {
                             "frame": false,
                             "icon": false
                           },
-                          "fullScreen": false,
+                          "fullScreen": "0",
                           "jsonContent": "{\\"my\\":\\"content\\"}"
                         }
                       },

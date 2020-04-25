@@ -165,7 +165,7 @@ export interface IIntegration {
      */
     contents?: {
         [key: string]: {
-            contentUserData: {
+            contentUserData?: {
                 /**
                  * The state as a serialized JSON object.
                  */
@@ -183,19 +183,19 @@ export interface IIntegration {
              * The full embed code (<iframe>...</iframe> with absolute URLs).
              * Example: <iframe src=\"https://example.org/h5p/embed/XXX\" width=\":w\" height=\":h\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>"
              */
-            embedCode: string;
+            embedCode?: string;
             /**
              * The download URL (absolute URL).
              */
-            exportUrl: string;
+            exportUrl?: string;
             fullScreen: '0' | '1';
             jsonContent: string;
             /**
              * The ubername with whitespace as separator.
              */
             library: string;
-            mainId: string;
-            metadata: {
+            mainId?: string;
+            metadata?: {
                 defaultLanguage: string;
                 license: string;
                 title: string;
@@ -205,11 +205,11 @@ export interface IIntegration {
              * to make the iframe size to the available width. Use absolute URLs.
              * Example: <script src=\"https://example.org/h5p/library/js/h5p-resizer.js\" charset=\"UTF-8\"></script>
              */
-            resizeCode: string;
+            resizeCode?: string;
             /**
              * The absolute URL to the current content.
              */
-            url: string;
+            url?: string;
         };
     };
     /**
@@ -220,6 +220,16 @@ export interface IIntegration {
      * Can be null.
      */
     crossoriginCacheBuster?: any;
+    /**
+     * We pass certain configuration values to the client with the editor
+     * integration object. Note that the way to pass these values to the client
+     * is NOT standardized and in the PHP implementation it is not the same in
+     * the Drupal, Moodle and WordPress clients. For our NodeJS version
+     * we've decided to put the values into the integration object. The page
+     * created by the editor renderer has to extract these values and put
+     * them into the corresponding properties of the H5PEditor object!
+     * See /src/renderers/default.ts how this can be done!
+     */
     editor?: IEditorIntegration;
     hubIsEnabled: boolean;
     l10n: {
@@ -257,8 +267,12 @@ export interface IIntegration {
 }
 
 /**
- * The editor integration object is used to pass information to the H5P JavaScript
- * editor client about settings and constants of the server.
+ * The editor integration object is used to pass information to the page that
+ * is created by the renderer. Note that this object is NOT standard H5P
+ * behavior but specific to our NodeJS implementation.
+ * The editor view created by the renderer has to copy these values into the
+ * H5PEditor object! This is the responsibility of the implementation and NOT
+ * done by the H5P client automatically!
  */
 export interface IEditorIntegration {
     ajaxPath: string;
