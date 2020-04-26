@@ -1,6 +1,5 @@
-import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
-import { ILibraryName } from './types';
+import { ILibraryName, ILibraryStorage } from './types';
 
 import Logger from './helpers/Logger';
 const log = new Logger('DependencyGetter');
@@ -9,7 +8,7 @@ const log = new Logger('DependencyGetter');
  * Uses LibraryManager to get metadata for libraries.
  */
 export default class DependencyGetter {
-    constructor(private libraryManager: LibraryManager) {
+    constructor(private libraryStorage: ILibraryStorage) {
         log.info(`initialize`);
     }
 
@@ -76,7 +75,7 @@ export default class DependencyGetter {
         }
         libraries.add(LibraryName.toUberName(library));
 
-        const metadata = await this.libraryManager.getLibrary(library);
+        const metadata = await this.libraryStorage.getLibrary(library);
         if (preloaded && metadata.preloadedDependencies) {
             await this.addDependenciesToSet(
                 metadata.preloadedDependencies,

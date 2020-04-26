@@ -1,14 +1,18 @@
 import { WriteStream } from 'fs';
-import path from 'path';
 import { Readable } from 'stream';
 import yazl from 'yazl';
 
-import ContentManager from './ContentManager';
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
-import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
-import { ContentId, IContentMetadata, IUser, Permission } from './types';
+import {
+    ILibraryStorage,
+    IContentStorage,
+    ContentId,
+    IContentMetadata,
+    IUser,
+    Permission
+} from './types';
 
 import Logger from './helpers/Logger';
 const log = new Logger('PackageExporter');
@@ -18,12 +22,12 @@ const log = new Logger('PackageExporter');
  */
 export default class PackageExporter {
     /**
-     * @param libraryManager
-     * @param contentManager (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
+     * @param libraryStorage
+     * @param contentStorage (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
      */
     constructor(
-        private libraryManager: LibraryManager,
-        private contentManager: ContentManager = null
+        private libraryStorage: ILibraryStorage,
+        private contentStorage: IContentStorage = null
     ) {
         log.info(`initialize`);
     }
@@ -77,14 +81,14 @@ export default class PackageExporter {
         outputZipFile: yazl.ZipFile
     ): Promise<void> {
         log.info(`adding content files to ${contentId}`);
-        const contentFiles = await this.contentManager.listContentFiles(
+        const contentFiles = await this.contentStorage.listFiles(
             contentId,
             user
         );
 
         for (const contentFile of contentFiles) {
             outputZipFile.addReadStream(
-                await this.contentManager.getContentFileStream(
+                await this.contentStorage.getFileStream(
                     contentId,
                     contentFile,
                     user
@@ -103,7 +107,7 @@ export default class PackageExporter {
     ): Promise<void> {
         log.info(`adding library files`);
         {
-            const dependencyGetter = new DependencyGetter(this.libraryManager);
+            const dependencyGetter = new DependencyGetter(this.libraryStorage);
             const dependencies = await dependencyGetter.getDependentLibraries(
                 metadata.preloadedDependencies
                     .concat(metadata.editorDependencies || [])
@@ -111,10 +115,10 @@ export default class PackageExporter {
                 { editor: true, preloaded: true }
             );
             for (const dependency of dependencies) {
-                const files = await this.libraryManager.listFiles(dependency);
+                const files = await this.libraryStorage.listFiles(dependency);
                 for (const file of files) {
                     outputZipFile.addReadStream(
-                        await this.libraryManager.getFileStream(
+                        await this.libraryStorage.getFileStream(
                             dependency,
                             file
                         ),
@@ -133,7 +137,7 @@ export default class PackageExporter {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
-        if (!(await this.contentManager.contentExists(contentId))) {
+        if (!(await this.contentStorage.contentExists(contentId))) {
             throw new H5pError(
                 'download-content-not-found',
                 { contentId },
@@ -142,7 +146,7 @@ export default class PackageExporter {
         }
         if (
             !(
-                await this.contentManager.getUserPermissions(contentId, user)
+                await this.contentStorage.getUserPermissions(contentId, user)
             ).some((p) => p === Permission.Download)
         ) {
             throw new H5pError(
@@ -162,7 +166,7 @@ export default class PackageExporter {
     ): Promise<Readable> {
         let contentStream: Readable;
         try {
-            const content = await this.contentManager.getContentParameters(
+            const content = await this.contentStorage.getParameters(
                 contentId,
                 user
             );
@@ -188,10 +192,7 @@ export default class PackageExporter {
         let metadataStream: Readable;
         let metadata: IContentMetadata;
         try {
-            metadata = await this.contentManager.getContentMetadata(
-                contentId,
-                user
-            );
+            metadata = await this.contentStorage.getMetadata(contentId, user);
             metadataStream = new Readable();
             metadataStream._read = () => {
                 return;

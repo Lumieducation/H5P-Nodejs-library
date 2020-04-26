@@ -96,8 +96,8 @@ export default class H5PEditor {
             this.contentStorer
         );
         this.packageExporter = new PackageExporter(
-            this.libraryManager,
-            this.contentManager
+            this.libraryStorage,
+            this.contentStorage
         );
     }
 
