@@ -1,5 +1,5 @@
 import { ReadStream } from 'fs';
-import { Stream } from 'stream';
+import { Stream, Readable } from 'stream';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -16,6 +16,7 @@ export enum Permission {
     Download,
     Edit,
     Embed,
+    List,
     View
 }
 
@@ -363,7 +364,11 @@ export interface IContentStorage {
      * @param contentId the content object the file is attached to
      * @param filename the file to delete; can be a path including subdirectories (e.g. 'images/xyz.png')
      */
-    deleteFile(contentId: ContentId, filename: string): Promise<void>;
+    deleteFile(
+        contentId: ContentId,
+        filename: string,
+        user?: IUser
+    ): Promise<void>;
 
     /**
      * Checks if a file exists.
@@ -384,7 +389,7 @@ export interface IContentStorage {
         contentId: ContentId,
         file: string,
         user: IUser
-    ): Promise<ReadStream>;
+    ): Promise<Readable>;
 
     /**
      * Returns the content metadata (=h5p.json) for a content id

@@ -13,6 +13,9 @@ import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
+import MongoS3ContentStorage from './implementation/db/MongoS3ContentStorage';
+import initS3 from './implementation/db/initS3';
+import initMongo from './implementation/db/initMongo';
 
 // Interfaces
 import {
@@ -53,6 +56,12 @@ const fsImplementations = {
     JsonStorage
 };
 
+const dbImplementations = {
+    MongoS3ContentStorage,
+    initS3,
+    initMongo
+};
+
 export {
     // classes
     H5PEditor,
@@ -82,6 +91,7 @@ export {
     H5PConfig,
     fs,
     fsImplementations,
+    dbImplementations,
     // adapters
     adapters
 };
