@@ -111,7 +111,10 @@ The interfaces that can be implemented are:
 -   `ITemporaryFileStorage`
 -   `IUser`
 
-There are already default implementations that you can use. These are only for demonstration purposes and are not suitable to be used in a multi-user environment and not optimized for speed.
+There are already default implementations that you can use:
+
+-   The implementations in the `fs` folder store all data in the local file system and are only for demonstration purposes and not suitable to be used in a multi-user environment and not optimized for speed. You might be able to use them in a cluster setup by using a network storage.
+-   There is a implementation of the content storage for MongoDB and S3-compatible storage systems. Check it more information [in the documentation page](/docs/s3-mongodb-content-storage.md).
 
 ### Calling maintenance functions regularly
 

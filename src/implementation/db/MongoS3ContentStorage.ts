@@ -27,21 +27,20 @@ export default class MongoS3ContentStorage implements IContentStorage {
      * @param s3 the S3 content storage; Must be either set to a bucket or the
      * bucket must be specified in the options!
      * @param mongodb a MongoDB collection (read- and writable)
-     * @param options optional options
+     * @param options options
      */
     constructor(
         private s3: AWS.S3,
         private mongodb: MongoDB.Collection,
-        private options?: {
+        private options: {
             /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
             s3Acl?: string;
             /**
-             * The bucket to upload to and download from. Must be set if
-             * the bucket hasn't been specified when initializing the S3 client.
+             * The bucket to upload to and download from. (required)
              */
-            s3Bucket?: string;
+            s3Bucket: string;
         }
     ) {
         log.info('initialize');
