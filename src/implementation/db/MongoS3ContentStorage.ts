@@ -120,7 +120,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     creator: user.id
                 });
                 log.debug(`Content inserted into MongoDB.`);
-                return insertResult.insertedId;
+                return insertResult.insertedId.toString();
             }
 
             log.debug(
@@ -221,11 +221,13 @@ export default class MongoS3ContentStorage implements IContentStorage {
      */
     public async contentExists(contentId: ContentId): Promise<boolean> {
         log.debug(`Checking if content object with id ${contentId} exists.`);
-        if (
-            (await this.mongodb.countDocuments({
+        const foundDoc = await this.mongodb.findOne(
+            {
                 _id: new ObjectId(contentId)
-            })) >= 1
-        ) {
+            },
+            { projection: { _id: true } }
+        );
+        if (foundDoc) {
             log.debug(`Content object with id ${contentId} exists.`);
             return true;
         }
@@ -296,7 +298,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     }
                 }
             }
-            await this.mongodb.deleteOne({ _id: new ObjectId(contentId) });
+            if (
+                (await this.mongodb.deleteOne({ _id: new ObjectId(contentId) }))
+                    .deletedCount !== 1
+            ) {
+                throw new Error('MongoDB document could not be deleted.');
+            }
         } catch (error) {
             log.error(
                 `There was an error while deleting the content object: ${error.message}`
@@ -550,7 +557,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
         try {
             const cursor = this.mongodb.find({}, { projection: { _id: true } });
-            return cursor.map((doc) => doc._id).toArray();
+            return (await cursor.toArray()).map((match) => match._id.str);
         } catch (error) {
             log.error(
                 `Error while listing all ids of content objects: ${error.message}`
@@ -597,15 +604,17 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 log.debug(`Requesting list from S3 storage.`);
                 ret = await this.s3
                     .listObjectsV2({
-                        Bucket: this.options?.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.ContinuationToken
+                        Bucket: ret?.IsTruncated
+                            ? undefined
+                            : this.options?.s3Bucket,
+                        Prefix: ret?.IsTruncated ? undefined : prefix,
+                        ContinuationToken: ret?.NextContinuationToken
                     })
                     .promise();
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );
-            } while (ret.IsTruncated);
+            } while (ret.IsTruncated && ret.NextContinuationToken);
         } catch (error) {
             log.debug(
                 `There was an error while getting list of files from S3. This might not be a problem if no files were added to the content object.`
