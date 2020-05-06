@@ -557,7 +557,9 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
         try {
             const cursor = this.mongodb.find({}, { projection: { _id: true } });
-            return (await cursor.toArray()).map((match) => match._id.str);
+            return (await cursor.toArray()).map((match) =>
+                match._id.toHexString()
+            );
         } catch (error) {
             log.error(
                 `Error while listing all ids of content objects: ${error.message}`
