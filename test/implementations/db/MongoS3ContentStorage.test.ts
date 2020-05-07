@@ -1,3 +1,7 @@
+// Note: This test will be ignored by normal test runners. You must execute
+// npm run test:db to run it!
+// It requires a running MongoDB and S3 instance!
+
 import AWS from 'aws-sdk';
 import mongodb, { ObjectID } from 'mongodb';
 import fsExtra from 'fs-extra';
@@ -41,6 +45,7 @@ describe('MongoS3ContentStorage', () => {
     let collectionName: string;
     let counter = 0;
     let testId: string;
+    let storage: MongoS3ContentStorage;
 
     async function emptyAndDeleteBucket(bucketname: string): Promise<void> {
         try {
@@ -56,7 +61,7 @@ describe('MongoS3ContentStorage', () => {
         do {
             ret = await s3
                 .listObjectsV2({
-                    Bucket: ret?.IsTruncated ? undefined : bucketname,
+                    Bucket: bucketname,
                     ContinuationToken: ret?.NextContinuationToken
                 })
                 .promise();
@@ -109,6 +114,9 @@ describe('MongoS3ContentStorage', () => {
             // exist.
         }
         mongoCollection = mongo.collection(collectionName);
+        storage = new MongoS3ContentStorage(s3, mongoCollection, {
+            s3Bucket: bucketName
+        });
     });
 
     afterEach(async () => {
@@ -124,10 +132,7 @@ describe('MongoS3ContentStorage', () => {
         await mongoClient.close();
     });
 
-    it('initializes and returns empty values', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
+    it('initializes and returns empty values or throws exceptions', async () => {
         await expect(storage.listContent()).resolves.toEqual([]);
         await expect(
             storage.contentExists(new ObjectID().toHexString())
@@ -138,13 +143,15 @@ describe('MongoS3ContentStorage', () => {
         await expect(
             storage.fileExists(new ObjectID().toHexString(), 'test.jpg')
         ).resolves.toEqual(false);
+        await expect(
+            storage.getParameters(new ObjectID().toHexString())
+        ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
+        await expect(
+            storage.getMetadata(new ObjectID().toHexString())
+        ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
     });
 
     it('stores parameters and metadata and lets you retrieve them', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
-
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -159,11 +166,31 @@ describe('MongoS3ContentStorage', () => {
         expect(retrievedParameters).toMatchObject(stubParameters);
     });
 
-    it('deletes content objects', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
+    it('updates content objects', async () => {
+        const contentId = await storage.addContent(
+            stubMetadata,
+            stubParameters,
+            stubUser
+        );
+        const newMetadata = { ...stubMetadata, author: 'lumi' };
+        const newParameters = { ...stubParameters, newProperty: true };
 
+        const contentId2 = await storage.addContent(
+            newMetadata,
+            newParameters,
+            stubUser,
+            contentId
+        );
+        expect(contentId).toEqual(contentId2);
+
+        const retrievedMetadata = await storage.getMetadata(contentId);
+        expect(retrievedMetadata).toMatchObject(newMetadata);
+
+        const retrievedParameters = await storage.getParameters(contentId);
+        expect(retrievedParameters).toMatchObject(newParameters);
+    });
+
+    it('deletes content objects', async () => {
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -176,10 +203,6 @@ describe('MongoS3ContentStorage', () => {
     });
 
     it('lists added content', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
-
         const contentId1 = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -201,9 +224,6 @@ describe('MongoS3ContentStorage', () => {
     });
 
     it('adds files and returns stream to them', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -237,9 +257,6 @@ describe('MongoS3ContentStorage', () => {
     });
 
     it('adds 1005 files and returns a list with all of them', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -267,9 +284,6 @@ describe('MongoS3ContentStorage', () => {
     }, 120000);
 
     it('deletes added files from S3', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -313,10 +327,48 @@ describe('MongoS3ContentStorage', () => {
         ).rejects.toThrow();
     });
 
+    it('deletes added files when the content object is deleted', async () => {
+        const contentId = await storage.addContent(
+            stubMetadata,
+            stubParameters,
+            stubUser
+        );
+        const filename = 'testfile1.jpg';
+        expect(
+            s3
+                .headObject({
+                    Bucket: bucketName,
+                    Key: `${contentId}/${filename}`
+                })
+                .promise()
+        ).rejects.toThrow();
+        await storage.addFile(
+            contentId,
+            filename,
+            fsExtra.createReadStream(stubImagePath),
+            stubUser
+        );
+        expect(
+            s3
+                .headObject({
+                    Bucket: bucketName,
+                    Key: `${contentId}/${filename}`
+                })
+                .promise()
+        ).resolves.toBeDefined();
+
+        await storage.deleteContent(contentId);
+        expect(
+            s3
+                .headObject({
+                    Bucket: bucketName,
+                    Key: `${contentId}/${filename}`
+                })
+                .promise()
+        ).rejects.toThrow();
+    });
+
     it('rejects illegal characters in filenames', async () => {
-        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName
-        });
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,

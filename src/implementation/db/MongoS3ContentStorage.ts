@@ -620,11 +620,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 log.debug(`Requesting list from S3 storage.`);
                 ret = await this.s3
                     .listObjectsV2({
-                        Bucket: ret?.IsTruncated
-                            ? undefined
-                            : this.options?.s3Bucket,
-                        Prefix: ret?.IsTruncated ? undefined : prefix,
-                        ContinuationToken: ret?.NextContinuationToken
+                        Bucket: this.options?.s3Bucket,
+                        Prefix: prefix,
+                        ContinuationToken: ret?.NextContinuationToken,
+                        MaxKeys: 1000
                     })
                     .promise();
                 files = files.concat(
