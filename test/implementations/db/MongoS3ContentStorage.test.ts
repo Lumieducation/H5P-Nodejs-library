@@ -1,15 +1,17 @@
-import AWSMock from 'mock-aws-s3';
-import mongodb from 'mongo-mock';
-import { dir, DirectoryResult } from 'tmp-promise';
+import AWS from 'aws-sdk';
+import mongodb, { ObjectID } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
+import shortid from 'shortid';
 
 import MongoS3ContentStorage from '../../../src/implementation/db/MongoS3ContentStorage';
 import User from '../../../examples/User';
-import { ObjectID } from 'mongodb';
 import { IContentMetadata } from '../../../src/types';
+import initS3 from '../../../src/implementation/db/initS3';
+// tslint:disable-next-line: no-submodule-imports
+import { PromiseResult } from 'aws-sdk/lib/request';
 
 describe('MongoS3ContentStorage', () => {
     const stubMetadata: IContentMetadata = {
@@ -31,37 +33,95 @@ describe('MongoS3ContentStorage', () => {
         'test/data/sample-content/content/content.json'
     );
 
-    let tempDir: DirectoryResult;
-    let mongoClient;
-    let mongoCollection;
-    let s3: AWSMock.S3;
+    let mongo: mongodb.Db;
+    let mongoClient: mongodb.MongoClient;
+    let mongoCollection: mongodb.Collection<any>;
+    let s3: AWS.S3;
     let bucketName: string;
     let collectionName: string;
     let counter = 0;
+    let testId: string;
+
+    async function emptyAndDeleteBucket(bucketname: string): Promise<void> {
+        try {
+            await s3
+                .headBucket({
+                    Bucket: bucketName
+                })
+                .promise();
+        } catch {
+            return;
+        }
+        let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+        do {
+            ret = await s3
+                .listObjectsV2({
+                    Bucket: ret?.IsTruncated ? undefined : bucketname,
+                    ContinuationToken: ret?.NextContinuationToken
+                })
+                .promise();
+            await s3
+                .deleteObjects({
+                    Bucket: bucketname,
+                    Delete: {
+                        Objects: ret.Contents.map((c) => {
+                            return { Key: c.Key };
+                        })
+                    }
+                })
+                .promise();
+        } while (ret.IsTruncated);
+        await s3.deleteBucket({ Bucket: bucketname }).promise();
+    }
 
     beforeAll(async () => {
-        tempDir = await dir({ keep: false, unsafeCleanup: true });
-        AWSMock.config.basePath = tempDir.path;
-
-        mongodb.max_delay = 0;
-        mongoClient = await mongodb.MongoClient.connect(
-            'mongodb://localhost:2701/testdb'
-        );
+        testId = shortid().toLowerCase();
+        s3 = initS3({
+            accessKeyId: 'minioaccesskey',
+            secretAccessKey: 'miniosecret',
+            endpoint: 'http://127.0.0.1:9000',
+            s3ForcePathStyle: true,
+            signatureVersion: 'v4'
+        });
+        mongoClient = await mongodb.connect('mongodb://127.0.0.1:27017', {
+            auth: {
+                user: 'root',
+                password: 'h5pnodejs'
+            }
+        });
+        mongo = mongoClient.db('h5pintegrationtest');
     });
 
     beforeEach(async () => {
         counter += 1;
-        bucketName = `bucket${counter}`;
-        s3 = new AWSMock.S3({
-            params: { Bucket: bucketName }
-        });
-        collectionName = `collection${counter}`;
-        mongoCollection = mongoClient.collection(collectionName);
+        bucketName = `${testId}bucket${counter}`;
+        await emptyAndDeleteBucket(bucketName);
+        await s3
+            .createBucket({
+                Bucket: bucketName
+            })
+            .promise();
+        collectionName = `${testId}collection${counter}`;
+        try {
+            await mongo.dropCollection(collectionName);
+        } catch {
+            // We do nothing, as we just want to make sure the collection doesn't
+            // exist.
+        }
+        mongoCollection = mongo.collection(collectionName);
+    });
+
+    afterEach(async () => {
+        await emptyAndDeleteBucket(bucketName);
+        try {
+            await mongo.dropCollection(collectionName);
+        } catch {
+            // If a test didn't create a collection, it can't be deleted.
+        }
     });
 
     afterAll(async () => {
-        mongoClient.close();
-        tempDir.cleanup();
+        await mongoClient.close();
     });
 
     it('initializes and returns empty values', async () => {
@@ -99,9 +159,7 @@ describe('MongoS3ContentStorage', () => {
         expect(retrievedParameters).toMatchObject(stubParameters);
     });
 
-    // TODO: Uncomment. It looks like the Mongo Mock doesn't delete documents
-    // properly...
-    /*it('deletes content objects', async () => {
+    it('deletes content objects', async () => {
         const storage = new MongoS3ContentStorage(s3, mongoCollection, {
             s3Bucket: bucketName
         });
@@ -115,7 +173,7 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.contentExists(contentId)).resolves.toBe(true);
         await storage.deleteContent(contentId);
         await expect(storage.contentExists(contentId)).resolves.toBe(false);
-    });*/
+    });
 
     it('lists added content', async () => {
         const storage = new MongoS3ContentStorage(s3, mongoCollection, {
@@ -178,7 +236,7 @@ describe('MongoS3ContentStorage', () => {
         expect(onFinish1).toHaveBeenCalled();
     });
 
-    it('adds 100 files and returns a list with all of them', async () => {
+    it('adds 1005 files and returns a list with all of them', async () => {
         const storage = new MongoS3ContentStorage(s3, mongoCollection, {
             s3Bucket: bucketName
         });
@@ -189,7 +247,7 @@ describe('MongoS3ContentStorage', () => {
         );
 
         const files = [];
-        for (let number = 0; number < 100; number += 1) {
+        for (let number = 0; number < 1005; number += 1) {
             files.push(`file${number}.json`);
         }
         // TODO: We Should add 1001 files, because this means the S3 storage system will
@@ -253,5 +311,61 @@ describe('MongoS3ContentStorage', () => {
                 })
                 .promise()
         ).rejects.toThrow();
+    });
+
+    it('rejects illegal characters in filenames', async () => {
+        const storage = new MongoS3ContentStorage(s3, mongoCollection, {
+            s3Bucket: bucketName
+        });
+        const contentId = await storage.addContent(
+            stubMetadata,
+            stubParameters,
+            stubUser
+        );
+
+        const illegalCharacters = [
+            '&',
+            '$',
+            '@',
+            '=',
+            ';',
+            ':',
+            '+',
+            ' ',
+            ',',
+            '?',
+            '\\',
+            '{',
+            '^',
+            '}',
+            '%',
+            '`',
+            ']',
+            "'",
+            '"',
+            '>',
+            '[',
+            '~',
+            '<',
+            '#',
+            '|'
+        ];
+        for (const illegalCharacter of illegalCharacters) {
+            expect(
+                storage.addFile(
+                    contentId,
+                    illegalCharacter,
+                    undefined,
+                    stubUser
+                )
+            ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+        }
+        expect(
+            storage.addFile(contentId, '../../bin/bash', undefined, stubUser)
+        ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+
+        expect(
+            storage.addFile(contentId, '/bin/bash', undefined, stubUser)
+        ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
     });
 });

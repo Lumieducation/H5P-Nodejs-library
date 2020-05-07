@@ -94,6 +94,20 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 400
             );
         }
+
+        // See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+        // for a list of problematic characters. We filter all of them out
+        // expect for ranges of non-printable ASCII characters:
+        // &$@=;:+ ,?\\{^}%`]'">[~<#
+
+        if (/[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/.test(filename)) {
+            log.error(`Found illegal character in filename: ${filename}`);
+            throw new H5pError(
+                'mongo-s3-content-storage:illegal-filename',
+                { filename },
+                400
+            );
+        }
     }
 
     /**
