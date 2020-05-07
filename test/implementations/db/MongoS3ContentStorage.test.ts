@@ -8,11 +8,10 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
-import shortid from 'shortid';
 
 import MongoS3ContentStorage from '../../../src/implementation/db/MongoS3ContentStorage';
 import User from '../../../examples/User';
-import { IContentMetadata } from '../../../src/types';
+import { IContentMetadata, Permission } from '../../../src/types';
 import initS3 from '../../../src/implementation/db/initS3';
 // tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
@@ -80,7 +79,7 @@ describe('MongoS3ContentStorage', () => {
     }
 
     beforeAll(async () => {
-        testId = shortid().toLowerCase();
+        testId = new ObjectID().toHexString();
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
@@ -419,5 +418,19 @@ describe('MongoS3ContentStorage', () => {
         expect(
             storage.addFile(contentId, '/bin/bash', undefined, stubUser)
         ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+    });
+
+    it('rejects write operations for unprivileged users', async () => {
+        storage = new MongoS3ContentStorage(s3, mongoCollection, {
+            s3Bucket: bucketName,
+            getPermissions: async () => {
+                return [Permission.View];
+            }
+        });
+        await expect(
+            storage.addContent(stubMetadata, stubParameters, new User())
+        ).rejects.toThrowError(
+            'mongo-s3-content-storage:missing-write-permission'
+        );
     });
 });

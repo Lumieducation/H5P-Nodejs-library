@@ -34,6 +34,14 @@ export default class MongoS3ContentStorage implements IContentStorage {
         private mongodb: MongoDB.Collection,
         private options: {
             /**
+             * If set, the function is called to retrieve a list of permissions
+             * a user has on a certain content object.
+             */
+            getPermissions?: (
+                contentId: ContentId,
+                user: IUser
+            ) => Promise<Permission[]>;
+            /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
             s3Acl?: string;
@@ -125,6 +133,19 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
+        if (
+            !(await this.getUserPermissions(contentId, user)).includes(
+                Permission.Edit
+            )
+        ) {
+            log.error(`User tried add content without proper permissions.`);
+            throw new H5pError(
+                'mongo-s3-content-storage:missing-write-permission',
+                {},
+                403
+            );
+        }
+
         try {
             if (!contentId) {
                 log.debug(`Inserting new content into MongoDB.`);
@@ -542,6 +563,15 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser
     ): Promise<Permission[]> {
         log.debug(`Getting user permissions for content with id ${contentId}.`);
+        if (this.options?.getPermissions) {
+            log.debug(
+                `Using function passed in through constructor to get permissions.`
+            );
+            return this.options.getPermissions(contentId, user);
+        }
+        log.debug(
+            `No permission function set in constructor. Allowing everything.`
+        );
         return [
             Permission.Delete,
             Permission.Download,
