@@ -36,6 +36,8 @@ export default class MongoS3ContentStorage implements IContentStorage {
             /**
              * If set, the function is called to retrieve a list of permissions
              * a user has on a certain content object.
+             * This function can function as an adapter to your rights and
+             * privileges system.
              */
             getPermissions?: (
                 contentId: ContentId,
