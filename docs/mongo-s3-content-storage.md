@@ -94,8 +94,7 @@ these additional variables:
 An example call would be:
 
 ```sh
-CONTENTSTORAGE=mongos3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=miniosecret AWS_S3_ENDPOINT="http://127.0.0.1:9000" MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_D
-B=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs CONTENT_AWS_S3_BUCKET=testbucket1 CONTENT_MONGO_COLLECTION=h5p npm start
+CONTENTSTORAGE=mongos3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=miniosecret AWS_S3_ENDPOINT="http://127.0.0.1:9000" MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs CONTENT_AWS_S3_BUCKET=testbucket1 CONTENT_MONGO_COLLECTION=h5p npm start
 ```
 
 ## Customizing permissions
