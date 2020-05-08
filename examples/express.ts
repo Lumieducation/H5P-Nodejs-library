@@ -12,6 +12,8 @@ import expressRoutes from './expressRoutes';
 import startPageRenderer from './startPageRenderer';
 import User from './User';
 
+import dbImplementations from '../src/implementation/db';
+
 /**
  * Displays links to the server at all available IP addresses.
  * @param port The port at which the server can be accessed.
@@ -60,7 +62,19 @@ const start = async () => {
         config,
         path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
         path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
-        path.resolve('h5p/content') // the path on the local disc where content is stored
+        path.resolve('h5p/content'), // the path on the local disc where content is stored
+        process.env.CONTENTSTORAGE !== 'mongos3'
+            ? undefined
+            : new dbImplementations.MongoS3ContentStorage(
+                  dbImplementations.initS3({
+                      s3ForcePathStyle: true,
+                      signatureVersion: 'v4'
+                  }),
+                  (await dbImplementations.initMongo()).collection(
+                      process.env.CONTENT_MONGO_COLLECTION
+                  ),
+                  { s3Bucket: process.env.CONTENT_AWS_S3_BUCKET }
+              )
     );
 
     const h5pPlayer = new H5P.H5PPlayer(
