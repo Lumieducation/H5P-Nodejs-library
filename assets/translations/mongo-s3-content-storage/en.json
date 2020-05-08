@@ -1,0 +1,15 @@
+{
+    "mongo-replace-error": "There was an error while updating content in the database.",
+    "mongo-add-update-error": "There was an error while adding or updating content in the database.",
+    "missing-write-permission": "You do not have permission to change this content object.",
+    "missing-delete-permission": "You do not have permission to delete this content object.",
+    "missing-view-permission": "You do not have permission to view this content object.",
+    "missing-list-content-permission": "You do not have permission to list content objects.",
+    "s3-upload-error": "There was an error while uploading the file {{filename}} to storage.",
+    "deleting-content-error": "There was an error while deleting the content object.",
+    "deleting-file-error": "There was an error while the file {{filename}} from the content object.",
+    "content-not-found": "The content you're trying to access does not exist.",
+    "listing-content-error": "There was an error while getting the list of content objects",
+    "filename-too-long": "The filename is too long: {{filename}}",
+    "illegal-filename": "The filename {{filename}} is not allowed."
+}

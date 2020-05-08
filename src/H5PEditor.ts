@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
-import stream from 'stream';
+import stream, { Readable } from 'stream';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/client/en.json';
@@ -189,7 +189,7 @@ export default class H5PEditor {
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         // We have to try the regular content repository first and then fall back to the temporary storage.
         // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
         try {

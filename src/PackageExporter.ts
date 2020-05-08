@@ -1,5 +1,4 @@
 import { WriteStream } from 'fs';
-import path from 'path';
 import { Readable } from 'stream';
 import yazl from 'yazl';
 

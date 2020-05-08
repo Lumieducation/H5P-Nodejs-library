@@ -1,8 +1,7 @@
-import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import * as path from 'path';
-import { Stream } from 'stream';
+import { Stream, Readable } from 'stream';
 
 import { ContentMetadata } from './ContentMetadata';
 import {
@@ -189,7 +188,7 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.debug(`loading ${filename} for ${contentId}`);
 
         return this.contentStorage.getFileStream(contentId, filename, user);
