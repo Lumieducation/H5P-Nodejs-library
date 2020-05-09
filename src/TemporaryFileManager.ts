@@ -1,6 +1,7 @@
 import { ReadStream } from 'fs';
 import path from 'path';
 import shortid from 'shortid';
+import { Readable } from 'stream';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -103,7 +104,7 @@ export default class TemporaryFileManager {
     public async getFileStream(
         filename: string,
         user: IUser
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.info(`Getting temporary file ${filename}`);
         return this.storage.getFileStream(filename, user);
     }

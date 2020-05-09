@@ -13,6 +13,7 @@ import {
 } from '../../types';
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
+import { validateFilename } from './S3Utils';
 
 const log = new Logger('MongoS3ContentStorage');
 
@@ -75,49 +76,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
             );
         }
         return key;
-    }
-
-    /**
-     * Checks if the filename can be used in S3 storage. Throws errors if the
-     * filename is not valid
-     * @param filename the filename to check
-     * @returns no return value; throws errors if the filename is not valid
-     */
-    private static validateFilename(filename: string): void {
-        if (/\.\.\//.test(filename)) {
-            log.error(
-                `Relative paths in filenames are not allowed: ${filename} is illegal`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:illegal-filename',
-                { filename },
-                400
-            );
-        }
-        if (filename.startsWith('/')) {
-            log.error(
-                `Absolute paths in filenames are not allowed: ${filename} is illegal`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:illegal-filename',
-                { filename },
-                400
-            );
-        }
-
-        // See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
-        // for a list of problematic characters. We filter all of them out
-        // expect for ranges of non-printable ASCII characters:
-        // &$@=;:+ ,?\\{^}%`]'">[~<#
-
-        if (/[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/.test(filename)) {
-            log.error(`Found illegal character in filename: ${filename}`);
-            throw new H5pError(
-                'mongo-s3-content-storage:illegal-filename',
-                { filename },
-                400
-            );
-        }
     }
 
     /**
@@ -214,7 +172,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         log.debug(
             `Uploading file "${filename}" for content with id ${contentId} to S3 storage.`
         );
-        MongoS3ContentStorage.validateFilename(filename);
+        validateFilename(filename);
 
         if (
             !(await this.getUserPermissions(contentId, user)).includes(
@@ -234,9 +192,9 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .upload({
-                    ACL: this.options?.s3Acl ?? 'private',
+                    ACL: this.options.s3Acl ?? 'private',
                     Body: stream,
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename),
                     Metadata: {
                         owner: user.id
@@ -247,7 +205,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
             );
-            throw new H5pError(`s3-upload-error`, { filename }, 500);
+            throw new H5pError(
+                `mongo-s3-content-storage:s3-upload-error`,
+                { filename },
+                500
+            );
         }
     }
 
@@ -313,7 +275,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     );
                     const deleteFilesRes = await this.s3
                         .deleteObjects({
-                            Bucket: this.options?.s3Bucket,
+                            Bucket: this.options.s3Bucket,
                             Delete: {
                                 Objects: next1000Files.map((f) => {
                                     return {
@@ -384,7 +346,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .deleteObject({
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename)
                 })
                 .promise();
@@ -413,7 +375,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         log.debug(
             `Checking if file ${filename} exists in content with id ${contentId}.`
         );
-        MongoS3ContentStorage.validateFilename(filename);
+        validateFilename(filename);
 
         if (!contentId) {
             log.error(`ContentId not set!`);
@@ -427,7 +389,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .headObject({
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename)
                 })
                 .promise();
@@ -441,6 +403,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * Note: Make sure to handle the 'error' event of the Readable! This method
+     * does not check if the file exists in storage to avoid the extra request.
+     * However, this means that there will be an error when piping the Readable
+     * to the response if the file doesn't exist!
      * @param contentId the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
@@ -454,7 +420,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         log.debug(
             `Getting stream for file "${filename}" in content ${contentId}.`
         );
-        MongoS3ContentStorage.validateFilename(filename);
+        validateFilename(filename);
 
         if (!contentId) {
             log.error(`ContentId not set!`);
@@ -482,7 +448,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
         return this.s3
             .getObject({
-                Bucket: this.options?.s3Bucket,
+                Bucket: this.options.s3Bucket,
                 Key: MongoS3ContentStorage.getS3Key(contentId, filename)
             })
             .createReadStream();
@@ -565,7 +531,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser
     ): Promise<Permission[]> {
         log.debug(`Getting user permissions for content with id ${contentId}.`);
-        if (this.options?.getPermissions) {
+        if (this.options.getPermissions) {
             log.debug(
                 `Using function passed in through constructor to get permissions.`
             );
@@ -652,7 +618,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 log.debug(`Requesting list from S3 storage.`);
                 ret = await this.s3
                     .listObjectsV2({
-                        Bucket: this.options?.s3Bucket,
+                        Bucket: this.options.s3Bucket,
                         Prefix: prefix,
                         ContinuationToken: ret?.NextContinuationToken,
                         MaxKeys: 1000

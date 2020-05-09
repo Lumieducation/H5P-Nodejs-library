@@ -140,7 +140,9 @@ describe('TemporaryFileManager', () => {
                         nonExpiringFilename,
                         user
                     );
-                    stream.close(); // we have to close the stream, as the file must be deleted later
+                    if ((stream as any).close) {
+                        (stream as any).close(); // we have to close the stream, as the file must be deleted later
+                    }
                 },
                 { keep: false, unsafeCleanup: true }
             );

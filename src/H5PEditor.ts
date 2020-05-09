@@ -45,7 +45,7 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
-const log = new Logger('Editor');
+const log = new Logger('H5PEditor');
 
 export default class H5PEditor {
     /**
@@ -60,7 +60,7 @@ export default class H5PEditor {
         public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
-        temporaryStorage: ITemporaryFileStorage
+        public temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
 
@@ -435,7 +435,7 @@ export default class H5PEditor {
         user: IUser
     ): Promise<{ mime: string; path: string }> {
         // We must make sure to avoid illegal characters in filenames.
-        let cleanFilename = sanitize(file.name).replace(' ', '_');
+        let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);

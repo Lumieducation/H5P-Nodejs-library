@@ -5,6 +5,9 @@ to store the parameters and metadata of content objects and a S3-compatible
 storage system to store files (images, video, audio etc.). You can find it at
 [/src/implementation/db/MongoS3ContentStorage.ts](/src/implementation/db/MongoS3ContentStorage.ts).
 
+**Note:** You must create the S3 bucket manually before it can be used by
+`MongoS3ContentStorage`!
+
 ## Dependencies
 
 The implementation depends on these npm packages:
@@ -94,8 +97,7 @@ these additional variables:
 An example call would be:
 
 ```sh
-CONTENTSTORAGE=mongos3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=miniosecret AWS_S3_ENDPOINT="http://127.0.0.1:9000" MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_D
-B=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs CONTENT_AWS_S3_BUCKET=testbucket1 CONTENT_MONGO_COLLECTION=h5p npm start
+CONTENTSTORAGE=mongos3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=miniosecret AWS_S3_ENDPOINT="http://127.0.0.1:9000" MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs CONTENT_AWS_S3_BUCKET=testbucket1 CONTENT_MONGO_COLLECTION=h5p npm start
 ```
 
 ## Customizing permissions
