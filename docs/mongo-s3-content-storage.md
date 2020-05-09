@@ -5,6 +5,9 @@ to store the parameters and metadata of content objects and a S3-compatible
 storage system to store files (images, video, audio etc.). You can find it at
 [/src/implementation/db/MongoS3ContentStorage.ts](/src/implementation/db/MongoS3ContentStorage.ts).
 
+**Note:** You must create the S3 bucket manually before it can be used by
+`MongoS3ContentStorage`!
+
 ## Dependencies
 
 The implementation depends on these npm packages:
