@@ -6,14 +6,14 @@ import AWS from 'aws-sdk';
 import { ObjectID } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
-import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
+import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 
 import User from '../../../examples/User';
 import { Permission } from '../../../src/types';
 import initS3 from '../../../src/implementation/db/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
-import S3TemporaryStorage from '../../../src/implementation/db/S3TemporaryStorage';
+import S3TemporaryFileStorage from '../../../src/implementation/db/S3TemporaryFileStorage';
 import { H5PConfig } from '../../../src';
 
 describe('MongoS3ContentStorage', () => {
@@ -25,7 +25,7 @@ describe('MongoS3ContentStorage', () => {
     let bucketName: string;
     let counter = 0;
     let testId: string;
-    let storage: S3TemporaryStorage;
+    let storage: S3TemporaryFileStorage;
 
     beforeAll(async () => {
         testId = new ObjectID().toHexString();
@@ -47,7 +47,7 @@ describe('MongoS3ContentStorage', () => {
                 Bucket: bucketName
             })
             .promise();
-        storage = new S3TemporaryStorage(s3, {
+        storage = new S3TemporaryFileStorage(s3, {
             s3Bucket: bucketName
         });
     });
@@ -201,7 +201,7 @@ describe('MongoS3ContentStorage', () => {
     });
 
     it('rejects write operations for unprivileged users', async () => {
-        storage = new S3TemporaryStorage(s3, {
+        storage = new S3TemporaryFileStorage(s3, {
             s3Bucket: bucketName,
             getPermissions: async () => {
                 return [Permission.View];

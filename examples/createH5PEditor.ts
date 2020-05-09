@@ -14,7 +14,7 @@ import dbImplementations from '../src/implementation/db';
  * TEMPORARY_AWS_S3_BUCKET Specifies the bucket name for temporary file storage
  *
  * Further environment variables to set up MongoDB and S3 can be found in
- * docs/mongo-s3-content-storage.md and docs/s3-temporary-storage.md!
+ * docs/mongo-s3-content-storage.md and docs/s3-temporary-file-storage.md!
  * @param config the configuration object
  * @param localLibraryPath a path in the local filesystem in which the H5P libraries (content types) are stored
  * @param localContentPath a path in the local filesystem in which H5P content will be stored (only necessary if you want to use the local filesystem content storage class)
@@ -46,7 +46,7 @@ export default async function createH5PEditor(
                   { s3Bucket: process.env.CONTENT_AWS_S3_BUCKET }
               ),
         process.env.TEMPORARYSTORAGE === 's3'
-            ? new dbImplementations.S3TemporaryStorage(
+            ? new dbImplementations.S3TemporaryFileStorage(
                   dbImplementations.initS3({
                       s3ForcePathStyle: true,
                       signatureVersion: 'v4'
@@ -62,7 +62,7 @@ export default async function createH5PEditor(
     // sure temporary files expire.
     if (
         h5pEditor.temporaryStorage instanceof
-        dbImplementations.S3TemporaryStorage
+        dbImplementations.S3TemporaryFileStorage
     ) {
         await (h5pEditor.temporaryStorage as any).setBucketLifecycleConfiguration(
             h5pEditor.config

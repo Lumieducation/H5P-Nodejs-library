@@ -12,7 +12,7 @@ import { validateFilename } from './S3Utils';
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
 
-const log = new Logger('S3TemporaryStorage');
+const log = new Logger('S3TemporaryFileStorage');
 
 /**
  * This class stores temporary files in a S3-compatible storage system.
@@ -26,7 +26,7 @@ const log = new Logger('S3TemporaryStorage');
  * lifecycle configuration for the expiration time set in the config or you can
  * set up the policy in a more customized way manually.
  */
-export default class S3TemporaryStorage implements ITemporaryFileStorage {
+export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     constructor(
         private s3: AWS.S3,
         private options: {

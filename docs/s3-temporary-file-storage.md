@@ -5,10 +5,10 @@ S3-compatible storage system to store files (images, video, audio etc.) that are
 uploaded in the editor. These files are later copied to the permanent
 content storage once the users save their changes.
 You can find it at
-[/src/implementation/db/S3TemporaryStorage.ts](/src/implementation/db/S3TemporaryStorage.ts).
+[/src/implementation/db/S3TemporaryFileStorage.ts](/src/implementation/db/S3TemporaryFileStorage.ts).
 
 **Note:** You must create the S3 bucket manually before it can be used by
-`S3TemporaryStorage`!
+`S3TemporaryFileStorage`!
 
 ## Dependencies
 
@@ -39,7 +39,7 @@ package.
 Initialize the storage implementation like this:
 
 ```ts
-const temporaryStorage = new dbImplementations.S3TemporaryStorage(
+const temporaryStorage = new dbImplementations.S3TemporaryFileStorage(
     dbImplementations.initS3({
         accessKeyId: 's3accesskey', // optional if env. variable is set
         secretAccessKey: 's3accesssecret', // optional if env. variable is set
@@ -69,7 +69,7 @@ const temporaryStorage = new dbImplementations.S3TemporaryStorage(
 -   To achieve greater configurability, you can decide not to use `initS3` or
     and instantiate the required client yourself.
 
-## Using S3TemporaryStorage in the example
+## Using S3TemporaryFileStorage in the example
 
 The [example Express application](/examples/express.ts) can be configured to
 use the S3 temporary storage by setting the environment variables from above and
