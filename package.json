@@ -110,7 +110,7 @@
         "source-map-support": "0.5.19",
         "stream-mock": "2.0.5",
         "supertest": "4.0.2",
-        "ts-jest": "25.5.0",
+        "ts-jest": "25.5.1",
         "ts-node": "8.10.1",
         "tslint": "6.1.2",
         "tslint-config-airbnb": "5.11.2",
