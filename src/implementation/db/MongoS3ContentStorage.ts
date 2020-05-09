@@ -205,7 +205,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
             );
-            throw new H5pError(`s3-upload-error`, { filename }, 500);
+            throw new H5pError(
+                `mongo-s3-content-storage:s3-upload-error`,
+                { filename },
+                500
+            );
         }
     }
 
@@ -399,6 +403,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * Note: Make sure to handle the 'error' event of the Readable! This method
+     * does not check if the file exists in storage to avoid the extra request.
+     * However, this means that there will be an error when piping the Readable
+     * to the response if the file doesn't exist!
      * @param contentId the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file

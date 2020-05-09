@@ -14,21 +14,13 @@ export function validateFilename(filename: string): void {
         log.error(
             `Relative paths in filenames are not allowed: ${filename} is illegal`
         );
-        throw new H5pError(
-            'mongo-s3-content-storage:illegal-filename',
-            { filename },
-            400
-        );
+        throw new H5pError('illegal-filename', { filename }, 400);
     }
     if (filename.startsWith('/')) {
         log.error(
             `Absolute paths in filenames are not allowed: ${filename} is illegal`
         );
-        throw new H5pError(
-            'mongo-s3-content-storage:illegal-filename',
-            { filename },
-            400
-        );
+        throw new H5pError('illegal-filename', { filename }, 400);
     }
 
     // See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
@@ -38,10 +30,6 @@ export function validateFilename(filename: string): void {
 
     if (/[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/.test(filename)) {
         log.error(`Found illegal character in filename: ${filename}`);
-        throw new H5pError(
-            'mongo-s3-content-storage:illegal-filename',
-            { filename },
-            400
-        );
+        throw new H5pError('illegal-filename', { filename }, 400);
     }
 }

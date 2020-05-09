@@ -4,7 +4,8 @@ import {
     ITemporaryFileStorage,
     IUser,
     ITemporaryFile,
-    Permission
+    Permission,
+    IH5PConfig
 } from '../../types';
 import { ReadStream } from 'fs';
 import { validateFilename } from './S3Utils';
@@ -13,16 +14,38 @@ import H5pError from '../../helpers/H5pError';
 
 const log = new Logger('S3TemporaryStorage');
 
+/**
+ * This class stores temporary files in a S3-compatible storage system.
+ *
+ * IMPORTANT:
+ * The expiration (and automatic deletion) of files must be handled on bucket
+ * level. See https://aws.amazon.com/de/blogs/aws/amazon-s3-object-expiration/
+ * for details.
+ *
+ * You can call the method setBucketLifecycleConfiguration(...) to set up a
+ * lifecycle configuration for the expiration time set in the config or you can
+ * set up the policy in a more customized way manually.
+ */
 export default class S3TemporaryStorage implements ITemporaryFileStorage {
     constructor(
         private s3: AWS.S3,
         private options: {
+            /**
+             * This function is called to determine whether a user has access
+             * rights to a file stored in temporary storage. Returns a list
+             * of all permissions the user has on this file.
+             *
+             * Note: The Permissions enumeration is also used for content and
+             * includes more values than necessary for temporary storage. Only
+             * the values 'Edit', 'View' and 'Delete' are used in this class.
+             */
             getPermissions?: (
                 userId: string,
                 filename?: string
             ) => Promise<Permission[]>;
             /**
              * The ACL to use for uploaded content files. Defaults to private.
+             * See the S3 documentation for possible values.
              */
             s3Acl?: string;
             /**
@@ -31,18 +54,32 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
             s3Bucket: string;
         }
     ) {}
-    async deleteFile(filename: string, userId: string): Promise<void> {
+
+    /**
+     * Deletes the file from temporary storage.
+     * Throws errors of something goes wrong.
+     * @param filename the file to delete
+     * @param userId the user ID of the user who wants to delete the file
+     */
+    public async deleteFile(filename: string, userId: string): Promise<void> {
         log.debug(`Deleting file "${filename}" from temporary storage.`);
+        validateFilename(filename);
+
+        if (!filename) {
+            log.error(`Filename empty!`);
+            throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
+        }
+
         if (
             !(await this.getUserPermissions(userId, filename)).includes(
-                Permission.Edit
+                Permission.Delete
             )
         ) {
             log.error(
                 `User tried to delete a file from a temporary storage without proper permissions.`
             );
             throw new H5pError(
-                's3-temporary-storage:missing-write-permission',
+                's3-temporary-storage:missing-delete-permission',
                 {},
                 403
             );
@@ -66,7 +103,13 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
             );
         }
     }
-    async fileExists(filename: string, user: IUser): Promise<boolean> {
+
+    /**
+     * Checks if a file exists in temporary storage.
+     * @param filename the file to check
+     * @param user the user who wants to access the file
+     */
+    public async fileExists(filename: string, user: IUser): Promise<boolean> {
         log.debug(`Checking if file ${filename} exists in temporary storage.`);
         validateFilename(filename);
 
@@ -74,6 +117,12 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
             log.error(`Filename empty!`);
             return false;
         }
+
+        // TODO: Reconsider if we should really not check access rights.
+        // (They are currently not checked as the fileExists method is called
+        // to create unique filenames but the interface requires it to silently
+        // return 'false' if there is a access rights validation. This will lead
+        // to problems when determining unique filenames.)
 
         try {
             await this.s3
@@ -91,17 +140,27 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
         log.debug(`File "${filename}" does exist in temporary storage.`);
         return true;
     }
-    async getFileStream(filename: string, user: IUser): Promise<Readable> {
+
+    /**
+     * Returns a readable for a file.
+     *
+     * Note: Make sure to handle the 'error' event of the Readable! This method
+     * does not check if the file exists in storage to avoid the extra request.
+     * However, this means that there will be an error when piping the Readable
+     * to the response if the file doesn't exist!
+     * @param filename
+     * @param user
+     */
+    public async getFileStream(
+        filename: string,
+        user: IUser
+    ): Promise<Readable> {
         log.debug(`Getting stream for temporary file "${filename}".`);
         validateFilename(filename);
 
         if (!filename) {
             log.error(`Filename empty!`);
-            throw new H5pError(
-                's3-temporary-storage:content-not-found',
-                {},
-                404
-            );
+            throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
         }
 
         if (
@@ -127,6 +186,12 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
             .createReadStream();
     }
 
+    /**
+     * Checks if a user has access rights on file in temporary storage.
+     * @param userId
+     * @param filename
+     * @returns the list of permissions the user has on the file.
+     */
     public async getUserPermissions(
         userId: string,
         filename?: string
@@ -143,17 +208,29 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
         log.debug(
             `No permission function set in constructor. Allowing everything.`
         );
-        return [
-            Permission.Delete,
-            Permission.Edit,
-            Permission.List,
-            Permission.View
-        ];
+        return [Permission.Delete, Permission.Edit, Permission.View];
     }
-    async listFiles(user?: IUser): Promise<ITemporaryFile[]> {
+
+    /**
+     * Theoretically lists all files either in temporary storage in general
+     * or files which the user has stored in it.
+     *
+     * In the S3 implementation the method is not implemented, as S3 supports
+     * file expiration on the bucket level. This feature should be used instead
+     * of manually scanning for expired files.
+     */
+    public async listFiles(user?: IUser): Promise<ITemporaryFile[]> {
         // As S3 files expire automatically, we don't need to return any file here.
         return [];
     }
+
+    /**
+     * DSaves a file to temporary storage.
+     * @param filename
+     * @param dataStream
+     * @param user
+     * @param expirationTime
+     */
     public async saveFile(
         filename: string,
         dataStream: ReadStream,
@@ -162,6 +239,12 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
     ): Promise<ITemporaryFile> {
         log.debug(`Saving temporary file "${filename}."`);
         validateFilename(filename);
+
+        if (!filename) {
+            log.error(`Filename empty!`);
+            throw new H5pError('illegal-filename', {}, 400);
+        }
+
         if (
             !(await this.getUserPermissions(user.id, filename)).includes(
                 Permission.Edit
@@ -171,7 +254,7 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
                 `User tried upload file to temporary storage without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-temporary-storage:missing-write-permission',
+                's3-temporary-storage:missing-write-permission',
                 {},
                 403
             );
@@ -186,8 +269,7 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
                     Key: filename,
                     Metadata: {
                         creator: user.id
-                    },
-                    Expires: expirationTime
+                    }
                 })
                 .promise();
             return {
@@ -199,7 +281,93 @@ export default class S3TemporaryStorage implements ITemporaryFileStorage {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
             );
-            throw new H5pError(`s3-upload-error`, { filename }, 500);
+            throw new H5pError(
+                `s3-temporary-storage:s3-upload-error`,
+                { filename },
+                500
+            );
+        }
+    }
+
+    /**
+     * Makes sure the lifecycle configuration of the bucket is set in a way
+     * that files automatically expire after the time period set in the the
+     * configuration's 'temporaryFileLifetime' property.
+     *
+     * Note: S3's expiration policy only work with full days. The value in the
+     * configuration (which can be set in milliseconds) is rounded to the
+     * nearest day and will always be at least one day.
+     *
+     * This method will override all existing lifecycle configurations. If you
+     * need several custom lifecycle configurations, you must create them
+     * manually and NOT use this method.
+     * @param config
+     */
+    public async setBucketLifecycleConfiguration(
+        config: IH5PConfig
+    ): Promise<void> {
+        log.debug(
+            `Setting up object expiration for bucket ${this.options.s3Bucket}.`
+        );
+
+        const roundToNearestDay = (milliseconds: number): number => {
+            return Math.max(1, Math.round(milliseconds / (1000 * 60 * 24)));
+        };
+
+        let expirationNeedsToBeSet = false;
+        try {
+            const lifecycleConfiguration = await this.s3
+                .getBucketLifecycleConfiguration({
+                    Bucket: this.options.s3Bucket
+                })
+                .promise();
+            if (
+                !lifecycleConfiguration.Rules.some(
+                    (rule) =>
+                        rule.Filter?.Prefix === '' &&
+                        rule.Expiration.Days ===
+                            roundToNearestDay(config.temporaryFileLifetime) &&
+                        rule.Status === 'Enabled'
+                )
+            ) {
+                log.debug(
+                    `Old lifecycle configuration differs from the one set in the configuration.`
+                );
+                expirationNeedsToBeSet = true;
+            } else {
+                log.debug(
+                    `Old lifecycle configuration matches configuration file.`
+                );
+            }
+        } catch {
+            log.debug(`No old lifecycle configuration exists.`);
+            expirationNeedsToBeSet = true;
+        }
+        if (expirationNeedsToBeSet) {
+            log.debug(`Creating new lifecycle configuration for bucket.`);
+            try {
+                await this.s3
+                    .putBucketLifecycleConfiguration({
+                        Bucket: this.options.s3Bucket,
+                        LifecycleConfiguration: {
+                            Rules: [
+                                {
+                                    Status: 'Enabled',
+                                    Expiration: {
+                                        Days: roundToNearestDay(
+                                            config.temporaryFileLifetime
+                                        )
+                                    }
+                                }
+                            ]
+                        }
+                    })
+                    .promise();
+            } catch (error) {
+                log.error(
+                    `Could not set new lifecycle configuration: ${error.message}`
+                );
+            }
         }
     }
 }

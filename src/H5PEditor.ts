@@ -60,7 +60,7 @@ export default class H5PEditor {
         public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
-        temporaryStorage: ITemporaryFileStorage
+        public temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
 
