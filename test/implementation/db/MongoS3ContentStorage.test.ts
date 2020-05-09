@@ -13,8 +13,7 @@ import MongoS3ContentStorage from '../../../src/implementation/db/MongoS3Content
 import User from '../../../examples/User';
 import { IContentMetadata, Permission } from '../../../src/types';
 import initS3 from '../../../src/implementation/db/initS3';
-// tslint:disable-next-line: no-submodule-imports
-import { PromiseResult } from 'aws-sdk/lib/request';
+import { emptyAndDeleteBucket } from './s3-utils';
 
 describe('MongoS3ContentStorage', () => {
     const stubMetadata: IContentMetadata = {
@@ -46,38 +45,6 @@ describe('MongoS3ContentStorage', () => {
     let testId: string;
     let storage: MongoS3ContentStorage;
 
-    async function emptyAndDeleteBucket(bucketname: string): Promise<void> {
-        try {
-            await s3
-                .headBucket({
-                    Bucket: bucketName
-                })
-                .promise();
-        } catch {
-            return;
-        }
-        let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
-        do {
-            ret = await s3
-                .listObjectsV2({
-                    Bucket: bucketname,
-                    ContinuationToken: ret?.NextContinuationToken
-                })
-                .promise();
-            await s3
-                .deleteObjects({
-                    Bucket: bucketname,
-                    Delete: {
-                        Objects: ret.Contents.map((c) => {
-                            return { Key: c.Key };
-                        })
-                    }
-                })
-                .promise();
-        } while (ret.IsTruncated);
-        await s3.deleteBucket({ Bucket: bucketname }).promise();
-    }
-
     beforeAll(async () => {
         testId = new ObjectID().toHexString();
         s3 = initS3({
@@ -99,7 +66,7 @@ describe('MongoS3ContentStorage', () => {
     beforeEach(async () => {
         counter += 1;
         bucketName = `${testId}bucket${counter}`;
-        await emptyAndDeleteBucket(bucketName);
+        await emptyAndDeleteBucket(s3, bucketName);
         await s3
             .createBucket({
                 Bucket: bucketName
@@ -119,7 +86,7 @@ describe('MongoS3ContentStorage', () => {
     });
 
     afterEach(async () => {
-        await emptyAndDeleteBucket(bucketName);
+        await emptyAndDeleteBucket(s3, bucketName);
         try {
             await mongo.dropCollection(collectionName);
         } catch {
@@ -409,15 +376,15 @@ describe('MongoS3ContentStorage', () => {
                     undefined,
                     stubUser
                 )
-            ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+            ).rejects.toThrowError('illegal-filename');
         }
         expect(
             storage.addFile(contentId, '../../bin/bash', undefined, stubUser)
-        ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+        ).rejects.toThrowError('illegal-filename');
 
         expect(
             storage.addFile(contentId, '/bin/bash', undefined, stubUser)
-        ).rejects.toThrowError('mongo-s3-content-storage:illegal-filename');
+        ).rejects.toThrowError('illegal-filename');
     });
 
     it('rejects write operations for unprivileged users', async () => {

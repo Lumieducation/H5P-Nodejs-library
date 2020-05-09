@@ -192,9 +192,9 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .upload({
-                    ACL: this.options?.s3Acl ?? 'private',
+                    ACL: this.options.s3Acl ?? 'private',
                     Body: stream,
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename),
                     Metadata: {
                         owner: user.id
@@ -275,7 +275,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     );
                     const deleteFilesRes = await this.s3
                         .deleteObjects({
-                            Bucket: this.options?.s3Bucket,
+                            Bucket: this.options.s3Bucket,
                             Delete: {
                                 Objects: next1000Files.map((f) => {
                                     return {
@@ -346,7 +346,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .deleteObject({
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename)
                 })
                 .promise();
@@ -389,7 +389,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             await this.s3
                 .headObject({
-                    Bucket: this.options?.s3Bucket,
+                    Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename)
                 })
                 .promise();
@@ -448,7 +448,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
         return this.s3
             .getObject({
-                Bucket: this.options?.s3Bucket,
+                Bucket: this.options.s3Bucket,
                 Key: MongoS3ContentStorage.getS3Key(contentId, filename)
             })
             .createReadStream();
@@ -531,7 +531,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser
     ): Promise<Permission[]> {
         log.debug(`Getting user permissions for content with id ${contentId}.`);
-        if (this.options?.getPermissions) {
+        if (this.options.getPermissions) {
             log.debug(
                 `Using function passed in through constructor to get permissions.`
             );
@@ -618,7 +618,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 log.debug(`Requesting list from S3 storage.`);
                 ret = await this.s3
                     .listObjectsV2({
-                        Bucket: this.options?.s3Bucket,
+                        Bucket: this.options.s3Bucket,
                         Prefix: prefix,
                         ContinuationToken: ret?.NextContinuationToken,
                         MaxKeys: 1000
