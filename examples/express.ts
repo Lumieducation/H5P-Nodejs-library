@@ -58,13 +58,16 @@ const start = async () => {
         )
     ).load();
 
-    const h5pEditor = H5P.fs(
+    const h5pEditor = new H5P.H5PEditor(
+        new H5P.fsImplementations.InMemoryStorage(),
         config,
-        path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored
-        path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored
-        path.resolve('h5p/content'), // the path on the local disc where content is stored
+        new H5P.fsImplementations.FileLibraryStorage(
+            path.resolve('h5p/libraries') // the path on the local disc where libraries should be stored
+        ),
         process.env.CONTENTSTORAGE !== 'mongos3'
-            ? undefined
+            ? new H5P.fsImplementations.FileContentStorage(
+                  path.resolve('h5p/content') // the path on the local disc where content is stored
+              )
             : new dbImplementations.MongoS3ContentStorage(
                   dbImplementations.initS3({
                       s3ForcePathStyle: true,
@@ -74,8 +77,30 @@ const start = async () => {
                       process.env.CONTENT_MONGO_COLLECTION
                   ),
                   { s3Bucket: process.env.CONTENT_AWS_S3_BUCKET }
+              ),
+        process.env.TEMPORARYSTORAGE === 's3'
+            ? new dbImplementations.S3TemporaryStorage(
+                  dbImplementations.initS3({
+                      s3ForcePathStyle: true,
+                      signatureVersion: 'v4'
+                  }),
+                  { s3Bucket: process.env.TEMPORARY_AWS_S3_BUCKET }
+              )
+            : new H5P.fsImplementations.DirectoryTemporaryFileStorage(
+                  path.resolve('h5p/temporary-storage') // the path on the local disc where temporary files (uploads) should be stored
               )
     );
+
+    // Set bucket lifecycle configuration for S3 temporary storage to make
+    // sure temporary files expire.
+    if (
+        h5pEditor.temporaryStorage instanceof
+        dbImplementations.S3TemporaryStorage
+    ) {
+        await (h5pEditor.temporaryStorage as any).setBucketLifecycleConfiguration(
+            h5pEditor.config
+        );
+    }
 
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
