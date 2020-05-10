@@ -148,11 +148,17 @@ export interface IIntegration {
         /**
          * The Ajax endpoint called when the user state has changed
          * Example: /h5p-ajax/content-user-data/:contentId/:dataType/:subContentId?token=XYZ
+         * You can use these placeholders:
+         * :contentId
+         * :dataType
+         * :subContentId
+         * The H5P client will replace them with the actual values.
          */
         contentUserData: string;
         /**
          * An Ajax endpoint called when the user has finished the content.
          * Example: /h5p-ajax/set-finished.json?token=XYZ
+         * Only called when postUserStatistics is set to true.
          */
         setFinished: string;
     };
@@ -166,6 +172,15 @@ export interface IIntegration {
      */
     contents?: {
         [key: string]: {
+            /**
+             * Can be used to override the URL used for getting content files.
+             * It must be a URL to which the actual filenames can be appended.
+             * Do not end it with a slash!
+             * If it is a relative URL it will be appended to the hostname that
+             * is in use (this is done in the H5P client).
+             * If it is an absolute URL it will be used directly.
+             */
+            contentUrl?: string;
             contentUserData?: {
                 /**
                  * The state as a serialized JSON object.
@@ -202,6 +217,10 @@ export interface IIntegration {
                 title: string;
             };
             /**
+             * The parameters.
+             */
+            params?: any;
+            /**
              * A script html tag which can be included alongside the embed code
              * to make the iframe size to the available width. Use absolute URLs.
              * Example: <script src=\"https://example.org/h5p/library/js/h5p-resizer.js\" charset=\"UTF-8\"></script>
@@ -212,6 +231,19 @@ export interface IIntegration {
              */
             url?: string;
         };
+    };
+    /**
+     * The files in this list are references when creating iframes.
+     */
+    core?: {
+        /**
+         * A list of JavaScript files that make up the H5P core
+         */
+        scripts?: string[];
+        /**
+         * A list of CSS styles that make up the H5P core.
+         */
+        styles?: string[];
     };
     /**
      * Can be null.
@@ -232,14 +264,27 @@ export interface IIntegration {
      * See /src/renderers/default.ts how this can be done!
      */
     editor?: IEditorIntegration;
+    fullscreenDisabled?: 0 | 1;
     hubIsEnabled: boolean;
+    /**
+     * The localization strings. The namespace can for example be 'H5P'.
+     */
     l10n: {
-        H5P: any;
+        [namespace: string]: any;
     };
     /**
-     * Can be null.
+     * Can be null. Usage is unknown. the server might be able to customize
+     * library behavior by setting the library config for certain machine names,
+     * as the H5P client allows it to be called by executing
+     * H5P.getLibraryConfig(machineName). This means that libraries can retrieve
+     * configuration values from the server that way. The core never calls the
+     * method and none of the content types on the H5P hub do so...
+     * The Moodle implementation simply passed through a configuration value
+     * in this case.
      */
-    libraryConfig?: any;
+    libraryConfig?: {
+        [machineName: string]: any;
+    };
     /**
      * The URL at which the core files are stored.
      */
@@ -249,6 +294,10 @@ export interface IIntegration {
      * Example: ?q8idru
      */
     pluginCacheBuster?: string;
+    /**
+     * If set the URL specified in ajax.setFinished is called when the user is
+     * finished with a content object.
+     */
     postUserStatistics: boolean;
     reportingIsEnabled?: boolean;
     /**
@@ -256,12 +305,27 @@ export interface IIntegration {
      */
     saveFreq: number | boolean;
     /**
+     * Used when generating xAPI statements.
+     */
+    siteUrl?: string;
+    /**
      * The URL at which files can be accessed. Combined with the baseUrl by the
      * client.
      * Example. /h5p
      */
     url: string;
+    /**
+     * Used to override the auto-generated library URL (libraries means "content
+     * types" here). If this is unset, the H5P client will assume '/libraries'.
+     * Note that the URL is NOT appended to the url or baseUrl property!
+     */
+    urlLibraries?: string;
     user: {
+        /**
+         * Usage unknown.
+         */
+        canToggleViewOthersH5PContents?: 0 | 1;
+        id?: any;
         mail: string;
         name: string;
     };
