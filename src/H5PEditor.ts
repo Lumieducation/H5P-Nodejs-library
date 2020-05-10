@@ -30,7 +30,7 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
-    IEditorIntegration,
+    ILumiEditorIntegration,
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
@@ -607,7 +607,7 @@ export default class H5PEditor {
 
     private generateEditorIntegration(
         contentId: ContentId
-    ): IEditorIntegration {
+    ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
             ...defaultEditorIntegration,

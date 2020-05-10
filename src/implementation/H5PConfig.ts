@@ -23,6 +23,7 @@ export default class H5PConfig implements IH5PConfig {
     public ajaxUrl: string = '/ajax';
     public baseUrl: string = '/h5p';
     public contentFilesUrl: string = '/content';
+    public contentFilesUrlPlayerOverride: string;
     public contentTypeCacheRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
     public contentWhitelist: string =
         'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt';

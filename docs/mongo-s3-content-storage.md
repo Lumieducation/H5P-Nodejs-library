@@ -114,9 +114,40 @@ getPermissions = (
 ) => Promise<Permission[]>;
 ```
 
-The function receives the contentId of the object that is being accessed and the user who is trying to access it. It must return a list of permissions the user
+The function receives the contentId of the object that is being accessed and the
+user who is trying to access it. It must return a list of permissions the user
 has on this object. Your implementation of this function will probably be an
 adapter that hooks into your rights and permission system.
+
+## Increasing scalability by getting content files directly from S3
+
+In the default setup all resources used by H5P content in the **player** (images,
+video, ...) will be requested from the H5P server. The H5P server in turn will
+request the resources from S3 and relay the results. This means that in a high
+load scenario, there will be a lot of load on the H5P server to serve these
+static files. You can improve scalability by setting up the player to load
+content resources directly from the S3 bucket. For this you must grant read
+access on the bucket to anonymous users. If you have content that must not
+be accessible to the public (for e.g. copyright reasons), this is probably not
+an option.
+
+This currently only works for the player, not for the editor. Because of this
+you must still serve the 'get content file' route to make sure the editor can
+work with resources correctly.
+
+Steps:
+
+1. Grant read-only permission to anonymous users for your bucket with bucket
+   policies. See the [AWS documentation for details](https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html#example-bucket-policies-use-case-2).
+2. Set the configuration option `contentFilesUrlPlayerOverride` to point to your
+   S3 bucket. The URL must also include the contentID of the object. For this,
+   you must add the placeholder `{{contentId}}` to the configuration value. Examples:
+
+```ts
+contentFilesUrlPlayerOverride = 'https://bucket.s3server.com/{{contentId}}';
+// or
+contentFilesUrlPlayerOverride = 'https://s3server.com/bucket/{{contentId}}';
+```
 
 ## Developing and testing
 

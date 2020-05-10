@@ -263,7 +263,7 @@ export interface IIntegration {
      * them into the corresponding properties of the H5PEditor object!
      * See /src/renderers/default.ts how this can be done!
      */
-    editor?: IEditorIntegration;
+    editor?: ILumiEditorIntegration;
     fullscreenDisabled?: 0 | 1;
     hubIsEnabled: boolean;
     /**
@@ -339,6 +339,17 @@ export interface IIntegration {
  * H5PEditor object! This is the responsibility of the implementation and NOT
  * done by the H5P client automatically!
  */
+export interface ILumiEditorIntegration extends IEditorIntegration {
+    baseUrl?: string;
+    contentId?: string;
+    contentRelUrl?: string;
+    editorRelUrl?: string;
+    relativeUrl?: string;
+}
+
+/**
+ * This is the H5P standard editor integration interface.
+ */
 export interface IEditorIntegration {
     ajaxPath: string;
     apiVersion: { majorVersion: number; minorVersion: number };
@@ -347,25 +358,21 @@ export interface IEditorIntegration {
         js: string[];
     };
     basePath?: string;
-    baseUrl?: string;
-    contentId?: string;
-    contentLanguage?: string;
-    contentRelUrl?: string;
     copyrightSemantics?: any;
-    editorRelUrl?: string;
     fileIcon?: {
         height: number;
         path: string;
         width: number;
     };
     /**
-     * The path where **temporary** files can be retrieved from.
+     * The path at which **temporary** files can be retrieved from.
      */
     filesPath: string;
+    language?: string;
     libraryUrl: string;
     metadataSemantics?: any;
     nodeVersionId: ContentId;
-    relativeUrl?: string;
+    wysiwygButtons?: string[];
 }
 
 /**
@@ -1074,9 +1081,25 @@ export interface IH5PConfig {
      */
     baseUrl: string;
     /**
-     * base path for content files (e.g. images)
+     * Base path for content files (e.g. images). Used in the player and in
+     * the editor.
      */
     contentFilesUrl: string;
+
+    /**
+     * Base path for content files (e.g. images) IN THE PLAYER. It MUST direct
+     * to a URL at which the content files for THE CONTENT BEING DISPLAYED must
+     * be accessible. This means it must include the contentId of the object!
+     * You can insert the contentId using the placeholder {{contentId}}.
+     *
+     * Example:
+     * http://127.0.0.1:9000/s3bucket/${contentId}`
+     *
+     * You can use this URL to load content files from a different server, e.g.
+     * S3 storage. Note that this only work for the player and not the editor.
+     */
+    contentFilesUrlPlayerOverride: string;
+
     /**
      * Time after which the content type cache is considered to be outdated in milliseconds.
      * User-configurable.
