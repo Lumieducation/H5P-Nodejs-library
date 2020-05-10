@@ -249,6 +249,8 @@ describe('MongoS3ContentStorage', () => {
         expect(retrievedFiles.sort()).toMatchObject(files.sort());
     }, 120000);
 
+    // This test is sometimes a bit fragile (s.t. it works, s.t. it doesn't).
+    // We need to look into this.
     it('deletes added files from S3', async () => {
         const contentId = await storage.addContent(
             stubMetadata,

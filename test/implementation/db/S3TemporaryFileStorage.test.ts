@@ -112,6 +112,8 @@ describe('MongoS3ContentStorage', () => {
         expect(onFinish1).toHaveBeenCalled();
     });
 
+    // TODO: This test is a bit fragile (sometimes it fails, sometimes it doesn't)
+    // We need to look into this.
     it('deletes added files from S3', async () => {
         const filename = 'testfile1.jpg';
         expect(
