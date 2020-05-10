@@ -25,12 +25,10 @@ export default class ContentManager {
     /**
      * @param contentStorage The storage object
      */
-    constructor(contentStorage: IContentStorage) {
+    constructor(private contentStorage: IContentStorage) {
         log.info('initialize');
         this.contentStorage = contentStorage;
     }
-
-    private contentStorage: IContentStorage;
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.

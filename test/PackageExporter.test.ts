@@ -26,12 +26,10 @@ export async function importAndExportPackage(
             const user = new User();
             user.canUpdateAndInstallLibraries = true;
 
-            const contentManager = new ContentManager(
-                new FileContentStorage(contentDir)
-            );
-            const libraryManager = new LibraryManager(
-                new FileLibraryStorage(libraryDir)
-            );
+            const contentStorage = new FileContentStorage(contentDir);
+            const contentManager = new ContentManager(contentStorage);
+            const libraryStorage = new FileLibraryStorage(libraryDir);
+            const libraryManager = new LibraryManager(libraryStorage);
             const config = new H5PConfig(null);
 
             const packageImporter = new PackageImporter(
@@ -41,8 +39,8 @@ export async function importAndExportPackage(
             );
 
             const packageExporter = new PackageExporter(
-                libraryManager,
-                contentManager
+                libraryStorage,
+                contentStorage
             );
             const contentId = (
                 await packageImporter.addPackageLibrariesAndContent(
