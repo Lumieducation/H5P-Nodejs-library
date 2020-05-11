@@ -1,4 +1,4 @@
-import express from 'express';
+import { Router, static as ExpressStatic } from 'express';
 
 import { H5PEditor } from '../';
 import expressErrorHandler from './expressErrorHandler';
@@ -19,8 +19,8 @@ export default function (
     h5pCorePath: string,
     h5pEditorLibraryPath: string,
     options: ExpressRouterOptions = new ExpressRouterOptions()
-): express.Router {
-    const router = express.Router();
+): Router {
+    const router = Router();
     const h5pController = new ExpressH5PController(h5pEditor);
 
     const undefinedOrTrue = (option: boolean): boolean =>
@@ -92,14 +92,14 @@ export default function (
 
     // serve core files (= JavaScript + CSS from h5p-php-library)
     if (undefinedOrTrue(options.routeCoreFiles)) {
-        router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
+        router.use(h5pEditor.config.coreUrl, ExpressStatic(h5pCorePath));
     }
 
     // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
     if (undefinedOrTrue(options.routeEditorCoreFiles)) {
         router.use(
             h5pEditor.config.editorLibraryUrl,
-            express.static(h5pEditorLibraryPath)
+            ExpressStatic(h5pEditorLibraryPath)
         );
     }
 
