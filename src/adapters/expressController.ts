@@ -61,6 +61,9 @@ export default class ExpressH5PController {
         stream.on('end', () => {
             res.end();
         });
+        stream.on('error', (err) => {
+            res.status(404).end();
+        });
         stream.pipe(res.type(path.basename(req.params.file)));
     };
 
@@ -112,6 +115,9 @@ export default class ExpressH5PController {
         );
         stream.on('end', () => {
             res.end();
+        });
+        stream.on('error', (err) => {
+            res.status(404).end();
         });
         stream.pipe(res.type(path.basename(req.params.file)));
     };

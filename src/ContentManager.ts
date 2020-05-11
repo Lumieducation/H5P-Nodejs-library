@@ -1,8 +1,7 @@
-import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import * as path from 'path';
-import { Stream } from 'stream';
+import { Stream, Readable } from 'stream';
 
 import { ContentMetadata } from './ContentMetadata';
 import {
@@ -26,12 +25,10 @@ export default class ContentManager {
     /**
      * @param contentStorage The storage object
      */
-    constructor(contentStorage: IContentStorage) {
+    constructor(private contentStorage: IContentStorage) {
         log.info('initialize');
         this.contentStorage = contentStorage;
     }
-
-    private contentStorage: IContentStorage;
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
@@ -189,7 +186,7 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.debug(`loading ${filename} for ${contentId}`);
 
         return this.contentStorage.getFileStream(contentId, filename, user);

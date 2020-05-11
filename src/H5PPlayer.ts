@@ -179,9 +179,13 @@ export default class H5PPlayer {
                         frame: false,
                         icon: false
                     },
-                    fullScreen: false,
+                    fullScreen: '0',
                     jsonContent: JSON.stringify(parameters),
-                    library: ContentMetadata.toUbername(metadata)
+                    library: ContentMetadata.toUbername(metadata),
+                    contentUrl: this.config.contentFilesUrlPlayerOverride?.replace(
+                        '{{contentId}}',
+                        contentId
+                    )
                 }
             },
             l10n: {

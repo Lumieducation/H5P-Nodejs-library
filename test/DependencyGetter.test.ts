@@ -7,11 +7,11 @@ import LibraryName from '../src/LibraryName';
 
 describe('basic file library manager functionality', () => {
     it('determines dependencies of libraries', async () => {
-        const libManager = new LibraryManager(
-            new FileLibraryStorage(path.resolve('test/data/library-dependency'))
+        const storage = new FileLibraryStorage(
+            path.resolve('test/data/library-dependency')
         );
 
-        const dependencyGetter = new DependencyGetter(libManager);
+        const dependencyGetter = new DependencyGetter(storage);
 
         expect(
             (

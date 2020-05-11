@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
-import stream from 'stream';
+import stream, { Readable } from 'stream';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/client/en.json';
@@ -30,7 +30,7 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
-    IEditorIntegration,
+    ILumiEditorIntegration,
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
@@ -45,7 +45,7 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
-const log = new Logger('Editor');
+const log = new Logger('H5PEditor');
 
 export default class H5PEditor {
     /**
@@ -60,7 +60,7 @@ export default class H5PEditor {
         public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
-        temporaryStorage: ITemporaryFileStorage
+        public temporaryStorage: ITemporaryFileStorage
     ) {
         log.info('initialize');
 
@@ -96,8 +96,8 @@ export default class H5PEditor {
             this.contentStorer
         );
         this.packageExporter = new PackageExporter(
-            this.libraryManager,
-            this.contentManager
+            this.libraryStorage,
+            this.contentStorage
         );
     }
 
@@ -189,7 +189,7 @@ export default class H5PEditor {
         contentId: ContentId,
         filename: string,
         user: IUser
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         // We have to try the regular content repository first and then fall back to the temporary storage.
         // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
         try {
@@ -435,7 +435,7 @@ export default class H5PEditor {
         user: IUser
     ): Promise<{ mime: string; path: string }> {
         // We must make sure to avoid illegal characters in filenames.
-        let cleanFilename = sanitize(file.name).replace(' ', '_');
+        let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
@@ -607,7 +607,7 @@ export default class H5PEditor {
 
     private generateEditorIntegration(
         contentId: ContentId
-    ): IEditorIntegration {
+    ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
             ...defaultEditorIntegration,
