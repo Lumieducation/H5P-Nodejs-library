@@ -33,11 +33,13 @@ import {
     ILumiEditorIntegration,
     IIntegration,
     IKeyValueStorage,
+    IEditorModel,
     ILibraryDetailedDataForClient,
     ILibraryInstallResult,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
+    IUrlGenerator,
     ISemanticsEntry,
     ITemporaryFileStorage,
     IUser,
@@ -60,12 +62,12 @@ export default class H5PEditor {
         public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
-        public temporaryStorage: ITemporaryFileStorage
+        public temporaryStorage: ITemporaryFileStorage,
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
     ) {
         log.info('initialize');
 
         this.config = config;
-        this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
         this.clientTranslation = defaultTranslation;
@@ -111,8 +113,8 @@ export default class H5PEditor {
     private clientTranslation: any;
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
-    private renderer: any;
-    private urlGenerator: UrlGenerator;
+    private renderer: (model: IEditorModel) => string | any;
+   
 
     /**
      * Deletes a piece of content and all files dependent on it.
@@ -406,7 +408,7 @@ export default class H5PEditor {
      */
     public render(contentId: ContentId): Promise<string | any> {
         log.info(`rendering ${contentId}`);
-        const model = {
+        const model : IEditorModel = {
             integration: this.generateIntegration(contentId),
             scripts: this.listCoreScripts(),
             styles: this.listCoreStyles(),
@@ -511,7 +513,7 @@ export default class H5PEditor {
         return newContentId;
     }
 
-    public setRenderer(renderer: any): H5PEditor {
+    public setRenderer(renderer: (model: IEditorModel) => string | any): H5PEditor {
         this.renderer = renderer;
         return this;
     }

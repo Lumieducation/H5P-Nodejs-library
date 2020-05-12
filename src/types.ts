@@ -1,5 +1,6 @@
 import { ReadStream } from 'fs';
 import { Stream, Readable } from 'stream';
+import UrlGenerator from './UrlGenerator';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -1380,4 +1381,22 @@ export interface IPlayerModel {
     scripts: string[];
     styles: string[];
     translations: any;
+}
+
+export interface IEditorModel {
+    integration: IIntegration;
+    scripts: string[];
+    styles: string[];
+    urlGenerator: UrlGenerator;
+}
+
+export interface IUrlGenerator {
+    coreFile(file: string) : string;
+    downloadPackage (contentId: ContentId) : string;
+    editorLibraryFile (file: string): string ;
+    editorLibraryFiles (): string;
+    libraryFile (library: ILibraryName, file: string) : string;
+    parameters  () : string;
+    play (): string;
+    temporaryFiles  (): string;
 }
