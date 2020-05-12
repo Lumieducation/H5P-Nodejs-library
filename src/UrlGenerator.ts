@@ -1,4 +1,4 @@
-import { ContentId, IH5PConfig, ILibraryName,IUrlGenerator } from './types';
+import { ContentId, IH5PConfig, ILibraryName, IUrlGenerator } from './types';
 
 /**
  * This class generates URLs for files based on the URLs set in the configuration.
@@ -23,7 +23,9 @@ export default class UrlGenerator implements IUrlGenerator {
     };
 
     public libraryFile = (library: ILibraryName, file: string) => {
-        return `${this.getBaseUrl()}${this.config.librariesUrl}/${library.machineName}-${library.majorVersion}.${library.minorVersion}/${file}`;
+        return `${this.getBaseUrl()}${this.config.librariesUrl}/${
+            library.machineName
+        }-${library.majorVersion}.${library.minorVersion}/${file}`;
     };
 
     public parameters = () => {
@@ -38,5 +40,7 @@ export default class UrlGenerator implements IUrlGenerator {
         return this.getBaseUrl() + this.config.temporaryFilesUrl;
     };
 
-    protected getBaseUrl = () : string => { return this.config.baseUrl;}
+    protected getBaseUrl = (): string => {
+        return this.config.baseUrl;
+    };
 }

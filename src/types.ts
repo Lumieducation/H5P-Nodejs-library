@@ -1387,16 +1387,16 @@ export interface IEditorModel {
     integration: IIntegration;
     scripts: string[];
     styles: string[];
-    urlGenerator: UrlGenerator;
+    urlGenerator: IUrlGenerator;
 }
 
 export interface IUrlGenerator {
-    coreFile(file: string) : string;
-    downloadPackage (contentId: ContentId) : string;
-    editorLibraryFile (file: string): string ;
-    editorLibraryFiles (): string;
-    libraryFile (library: ILibraryName, file: string) : string;
-    parameters  () : string;
-    play (): string;
-    temporaryFiles  (): string;
+    coreFile(file: string): string;
+    downloadPackage(contentId: ContentId): string;
+    editorLibraryFile(file: string): string;
+    editorLibraryFiles(): string;
+    libraryFile(library: ILibraryName, file: string): string;
+    parameters(): string;
+    play(): string;
+    temporaryFiles(): string;
 }

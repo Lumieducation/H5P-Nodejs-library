@@ -114,7 +114,6 @@ export default class H5PEditor {
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
-   
 
     /**
      * Deletes a piece of content and all files dependent on it.
@@ -408,7 +407,7 @@ export default class H5PEditor {
      */
     public render(contentId: ContentId): Promise<string | any> {
         log.info(`rendering ${contentId}`);
-        const model : IEditorModel = {
+        const model: IEditorModel = {
             integration: this.generateIntegration(contentId),
             scripts: this.listCoreScripts(),
             styles: this.listCoreStyles(),
@@ -513,7 +512,9 @@ export default class H5PEditor {
         return newContentId;
     }
 
-    public setRenderer(renderer: (model: IEditorModel) => string | any): H5PEditor {
+    public setRenderer(
+        renderer: (model: IEditorModel) => string | any
+    ): H5PEditor {
         this.renderer = renderer;
         return this;
     }
