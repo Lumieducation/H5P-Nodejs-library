@@ -73,9 +73,16 @@ export default class DependencyGetter {
         if (libraries.has(LibraryName.toUberName(library))) {
             return null;
         }
+        let metadata;
+        try {
+            metadata = await this.libraryStorage.getLibrary(library);
+        } catch {
+            // We silently ignore missing libraries, as this can happen with
+            // 'fake libraries' used by the H5P client (= libraries which are
+            // referenced in the parameters, but don't exist)
+            return libraries;
+        }
         libraries.add(LibraryName.toUberName(library));
-
-        const metadata = await this.libraryStorage.getLibrary(library);
         if (preloaded && metadata.preloadedDependencies) {
             await this.addDependenciesToSet(
                 metadata.preloadedDependencies,

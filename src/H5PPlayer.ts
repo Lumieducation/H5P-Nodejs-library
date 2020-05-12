@@ -221,8 +221,14 @@ export default class H5PPlayer {
                 if (key in loaded) {
                     return;
                 }
-
-                const lib = await this.getLibrary(name, majVer, minVer);
+                let lib;
+                try {
+                    lib = await this.getLibrary(name, majVer, minVer);
+                } catch {
+                    log.info(
+                        `Could not find library ${name}-${majVer}.${minVer} in storage. Silently ignoring...`
+                    );
+                }
                 if (lib) {
                     loaded[key] = lib;
                     await this.getLibraries(
