@@ -764,9 +764,17 @@ export default class H5PEditor {
                 this.urlGenerator.libraryFile(libraryName, style.path)
             )
         );
-        assets.translations[libraryName.machineName] = translation
-            ? JSON.parse(translation)
-            : undefined;
+
+        let parsedLanguageObject: any;
+        try {
+            parsedLanguageObject = JSON.parse(translation);
+        } catch {
+            parsedLanguageObject = undefined;
+        }
+
+        if (parsedLanguageObject) {
+            assets.translations[libraryName.machineName] = parsedLanguageObject;
+        }
 
         return assets;
     }
