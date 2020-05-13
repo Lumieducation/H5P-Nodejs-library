@@ -61,6 +61,7 @@
         "escape-html": "^1.0.3",
         "fs-extra": "^9.0.0",
         "glob-promise": "^3.4.0",
+        "image-size": "^0.8.3",
         "jsonpath": "^1.0.2",
         "merge": "^1.2.1",
         "mime-types": "^2.1.26",

@@ -5,6 +5,7 @@ import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
 import stream, { Readable } from 'stream';
+import imageSize from 'image-size';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/client/en.json';
@@ -422,6 +423,7 @@ export default class H5PEditor {
      * the content hasn't been saved before.
      * @param field the semantic structure of the field the file is attached to.
      * @param file information about the uploaded file
+     * @returns information about the uploaded file
      */
     public async saveContentFile(
         contentId: ContentId,
@@ -433,7 +435,29 @@ export default class H5PEditor {
             size: number;
         },
         user: IUser
-    ): Promise<{ mime: string; path: string }> {
+    ): Promise<{
+        height?: number;
+        mime: string;
+        path: string;
+        width?: number;
+    }> {
+        // We extract the image size from the file as some content types need the dimensions
+        // of the image. It
+        let imageDimensions: {
+            height: number;
+            width: number;
+        };
+        try {
+            if (file.mimetype.startsWith('image/')) {
+                imageDimensions = imageSize.imageSize(file.data);
+            }
+        } catch (error) {
+            // A caught error means that the file format is not supported by image-size. This usually
+            // means that the file is corrupt.
+            log.debug(`Invalid image upload: ${error}`);
+            throw new H5pError('upload-validation-error', {}, 400);
+        }
+
         // We must make sure to avoid illegal characters in filenames.
         let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
@@ -442,7 +466,6 @@ export default class H5PEditor {
 
         const dataStream: any = new stream.PassThrough();
         dataStream.end(file.data);
-
         log.info(
             `Putting content file ${cleanFilename} into temporary storage`
         );
@@ -453,8 +476,10 @@ export default class H5PEditor {
         );
         log.debug(`New temporary filename is ${tmpFilename}`);
         return {
+            height: imageDimensions?.height,
             mime: file.mimetype,
-            path: `${tmpFilename}#tmp`
+            path: `${tmpFilename}#tmp`,
+            width: imageDimensions?.width
         };
     }
 
