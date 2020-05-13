@@ -19,7 +19,7 @@ export default function (
     });
 
     router.get('/edit/:contentId', async (req, res) => {
-        const page = await h5pEditor.render(req.params.contentId);
+        const page = await h5pEditor.render(req.params.contentId, 'de');
         res.send(page);
         res.status(200).end();
     });
@@ -38,7 +38,7 @@ export default function (
     });
 
     router.get('/new', async (req, res) => {
-        const page = await h5pEditor.render(undefined);
+        const page = await h5pEditor.render(undefined, 'de');
         res.send(page);
         res.status(200).end();
     });

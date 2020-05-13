@@ -383,7 +383,7 @@ export default class H5PEditor {
                         useWhitespace: true
                     });
                     return {
-                        languageJson: await this.libraryManager.getLanguage(
+                        languageString: await this.libraryManager.getLanguage(
                             lib,
                             language
                         ),
@@ -391,9 +391,9 @@ export default class H5PEditor {
                     };
                 })
             )
-        ).reduce((builtObject: any, { languageJson, name }) => {
-            if (languageJson) {
-                builtObject[name] = JSON.stringify(languageJson);
+        ).reduce((builtObject: any, { languageString, name }) => {
+            if (languageString) {
+                builtObject[name] = languageString;
             }
             return builtObject;
         }, {});
@@ -405,11 +405,14 @@ export default class H5PEditor {
      * @param contentId
      * @returns the rendered frame that you can include in your website. Normally a string, but can be anything you want it to be if you override the renderer.
      */
-    public render(contentId: ContentId): Promise<string | any> {
+    public render(
+        contentId: ContentId,
+        language: string = 'en'
+    ): Promise<string | any> {
         log.info(`rendering ${contentId}`);
         const model = {
-            integration: this.generateIntegration(contentId),
-            scripts: this.listCoreScripts(),
+            integration: this.generateIntegration(contentId, language),
+            scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
             urlGenerator: this.urlGenerator
         };
@@ -631,7 +634,8 @@ export default class H5PEditor {
     }
 
     private generateEditorIntegration(
-        contentId: ContentId
+        contentId: ContentId,
+        language: string
     ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
@@ -643,17 +647,12 @@ export default class H5PEditor {
             },
             assets: {
                 css: this.listCoreStyles(),
-                js: editorAssetList.scripts.integrationCore
-                    .map(this.urlGenerator.coreFile)
-                    .concat(
-                        editorAssetList.scripts.editor.map(
-                            this.urlGenerator.editorLibraryFile
-                        )
-                    )
+                js: this.listCoreScripts(language)
             },
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
-            nodeVersionId: contentId
+            nodeVersionId: contentId,
+            language
         };
     }
 
@@ -683,14 +682,17 @@ export default class H5PEditor {
         return h5pJson;
     }
 
-    private generateIntegration(contentId: ContentId): IIntegration {
+    private generateIntegration(
+        contentId: ContentId,
+        language: string
+    ): IIntegration {
         return {
             ajax: {
                 contentUserData: '',
                 setFinished: ''
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            editor: this.generateEditorIntegration(contentId),
+            editor: this.generateEditorIntegration(contentId, language),
             hubIsEnabled: true,
             l10n: {
                 H5P: this.clientTranslation
@@ -762,18 +764,22 @@ export default class H5PEditor {
                 this.urlGenerator.libraryFile(libraryName, style.path)
             )
         );
-        assets.translations[libraryName.machineName] = translation || undefined;
+        assets.translations[libraryName.machineName] = translation
+            ? JSON.parse(translation)
+            : undefined;
 
         return assets;
     }
 
-    private listCoreScripts(): string[] {
+    private listCoreScripts(language: string): string[] {
         return editorAssetList.scripts.core
             .map(this.urlGenerator.coreFile)
             .concat(
-                editorAssetList.scripts.editor.map(
-                    this.urlGenerator.editorLibraryFile
-                )
+                editorAssetList.scripts.editor
+                    .map((f) =>
+                        f.replace('language/en.js', `language/${language}.js`)
+                    )
+                    .map(this.urlGenerator.editorLibraryFile)
             );
     }
 
