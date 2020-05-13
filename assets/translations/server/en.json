@@ -49,5 +49,6 @@
     "unable-to-unzip": "The file you uploaded is not a valid HTML5 Package (We are unable to unzip it)",
     "updated-libraries_plural": "Updated {{count}} old libraries.",
     "updated-libraries": "Updated {{count}} old library.",
-    "upload-package-failed-tmp": "Could not save uploaded package to temporary file."
+    "upload-package-failed-tmp": "Could not save uploaded package to temporary file.",
+    "upload-validation-error": "The file you've uploaded is invalid."
 }
