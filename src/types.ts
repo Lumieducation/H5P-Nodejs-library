@@ -1381,5 +1381,3 @@ export interface IPlayerModel {
     styles: string[];
     translations: any;
 }
-
-export type IClientLanguageStorage = (language: string) => any;

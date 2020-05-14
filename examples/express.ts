@@ -16,7 +16,7 @@ import { displayIps } from './utils';
 const start = async () => {
     // We use i18next to localize messages sent to the user. You can use any
     // localization library you like.
-    await i18next
+    const translationFunction = await i18next
         .use(i18nextNodeFsBackend)
         .use(i18nextExpressMiddleware.LanguageDetector)
         .init({
@@ -28,10 +28,12 @@ const start = async () => {
             fallbackLng: 'en',
             ns: [
                 'client',
-                'server',
-                'storage-file-implementations',
+                'copyright-semantics',
+                'metadata-semantics',
                 'mongo-s3-content-storage',
-                's3-temporary-storage'
+                's3-temporary-storage',
+                'server',
+                'storage-file-implementations'
             ],
             preload: ['en']
         });
@@ -58,7 +60,9 @@ const start = async () => {
         path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content is stored. Only used / necessary if you use the local filesystem content storage class.
         path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
-        (language) => i18next.getResourceBundle(language, 'client')
+        (key, language) => {
+            return translationFunction(key, { lng: language });
+        }
     );
 
     // The H5PPlayer object is used to display H5P content.

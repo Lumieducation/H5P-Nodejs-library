@@ -8,7 +8,12 @@ import stream, { Readable } from 'stream';
 import imageSize from 'image-size';
 
 import defaultClientLanguageFile from '../assets/translations/client/en.json';
-import defaultEditorIntegration from '../assets/default_editor_integration.json';
+import defaultClientStrings from '../assets/defaultClientStrings.json';
+import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
+import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
+import defaultMetadataSemantics from '../assets/defaultMetadataSemantics.json';
+import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
+
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
@@ -42,10 +47,11 @@ import {
     ISemanticsEntry,
     ITemporaryFileStorage,
     IUser,
-    IHubInfo,
-    IClientLanguageStorage
+    IHubInfo
 } from './types';
 import UrlGenerator from './UrlGenerator';
+import SemanticsLocalizer from './SemanticsLocalizer';
+import { SimpleTranslator } from './helpers/SimpleTranslator';
 
 const log = new Logger('H5PEditor');
 
@@ -56,6 +62,7 @@ export default class H5PEditor {
      * @param libraryStorage the storage object for libraries
      * @param contentStorage the storage object for content
      * @param temporaryStorage the storage object for temporary files
+     * @param translationCallback a function that is called to retrieve translations of keys in a certain language; the keys use the i18next format (e.g. namespace:key).
      */
     constructor(
         protected cache: IKeyValueStorage,
@@ -63,7 +70,14 @@ export default class H5PEditor {
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
         public temporaryStorage: ITemporaryFileStorage,
-        private clientLanguageStorage?: IClientLanguageStorage
+        translationCallback: (
+            key: string,
+            language: string
+        ) => string = new SimpleTranslator({
+            client: defaultClientLanguageFile,
+            'metadata-semantics': defaultMetadataSemanticsLanguageFile,
+            'copyright-semantics': defaultCopyrightSemanticsLanguageFile
+        }).t
     ) {
         log.info('initialize');
 
@@ -101,6 +115,7 @@ export default class H5PEditor {
             this.libraryStorage,
             this.contentStorage
         );
+        this.semanticLocalizer = new SemanticsLocalizer(translationCallback);
     }
 
     public contentManager: ContentManager;
@@ -113,6 +128,7 @@ export default class H5PEditor {
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: any;
+    private semanticLocalizer: SemanticsLocalizer;
     private urlGenerator: UrlGenerator;
 
     /**
@@ -639,7 +655,6 @@ export default class H5PEditor {
     ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
-            ...defaultEditorIntegration,
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
             apiVersion: {
                 majorVersion: this.config.coreApiVersion.major,
@@ -649,8 +664,16 @@ export default class H5PEditor {
                 css: this.listCoreStyles(),
                 js: this.listCoreScripts(language)
             },
+            copyrightSemantics: this.semanticLocalizer.localize(
+                defaultCopyrightSemantics,
+                language
+            ),
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
+            metadataSemantics: this.semanticLocalizer.localize(
+                defaultMetadataSemantics,
+                language
+            ),
             nodeVersionId: contentId,
             language
         };
@@ -695,9 +718,11 @@ export default class H5PEditor {
             editor: this.generateEditorIntegration(contentId, language),
             hubIsEnabled: true,
             l10n: {
-                H5P:
-                    this.clientLanguageStorage(language) ??
-                    defaultClientLanguageFile
+                H5P: this.semanticLocalizer.localize(
+                    defaultClientStrings,
+                    language,
+                    true
+                )
             },
             postUserStatistics: false,
             saveFreq: false,
