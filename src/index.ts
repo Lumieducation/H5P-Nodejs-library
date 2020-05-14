@@ -18,6 +18,7 @@ import InMemoryStorage from './implementation/InMemoryStorage';
 import {
     ContentId,
     ContentParameters,
+    IClientLanguageStorage,
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
@@ -66,6 +67,7 @@ export {
     ContentParameters,
     IContentMetadata,
     IContentStorage,
+    IClientLanguageStorage,
     IH5PConfig,
     IInstalledLibrary,
     IKeyValueStorage,

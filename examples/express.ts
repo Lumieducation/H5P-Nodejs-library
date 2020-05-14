@@ -27,6 +27,7 @@ const start = async () => {
             defaultNS: 'server',
             fallbackLng: 'en',
             ns: [
+                'client',
                 'server',
                 'storage-file-implementations',
                 'mongo-s3-content-storage',
@@ -56,7 +57,8 @@ const start = async () => {
         config,
         path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content is stored. Only used / necessary if you use the local filesystem content storage class.
-        path.resolve('h5p/temporary-storage') // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
+        path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
+        (language) => i18next.getResourceBundle(language, 'client')
     );
 
     // The H5PPlayer object is used to display H5P content.

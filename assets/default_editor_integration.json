@@ -1,12 +1,4 @@
 {
-    "filesPath": "/filespath",
-    "fileIcon": {
-        "path": "http://lumi.education/editor/images/binary-file.png",
-        "width": 50,
-        "height": 50
-    },
-    "ajaxPath": "/ajaxPath",
-    "libraryUrl": "/libraryUrl",
     "copyrightSemantics": {
         "name": "copyright",
         "type": "group",
@@ -583,10 +575,5 @@
             "type": "text",
             "widget": "none"
         }
-    ],
-    "assets": {
-        "css": [],
-        "js": []
-    },
-    "deleteMessage": "Are you sure you wish to delete this content?"
+    ]
 }

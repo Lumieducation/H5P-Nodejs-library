@@ -7,8 +7,8 @@ import sanitize from 'sanitize-filename';
 import stream, { Readable } from 'stream';
 import imageSize from 'image-size';
 
+import defaultClientLanguageFile from '../assets/translations/client/en.json';
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
-import defaultTranslation from '../assets/translations/client/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
@@ -42,7 +42,8 @@ import {
     ISemanticsEntry,
     ITemporaryFileStorage,
     IUser,
-    IHubInfo
+    IHubInfo,
+    IClientLanguageStorage
 } from './types';
 import UrlGenerator from './UrlGenerator';
 
@@ -61,7 +62,8 @@ export default class H5PEditor {
         public config: IH5PConfig,
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
-        public temporaryStorage: ITemporaryFileStorage
+        public temporaryStorage: ITemporaryFileStorage,
+        private clientLanguageStorage?: IClientLanguageStorage
     ) {
         log.info('initialize');
 
@@ -69,7 +71,6 @@ export default class H5PEditor {
         this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
-        this.clientTranslation = defaultTranslation;
         this.contentTypeCache = new ContentTypeCache(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -109,7 +110,6 @@ export default class H5PEditor {
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
 
-    private clientTranslation: any;
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: any;
@@ -695,7 +695,9 @@ export default class H5PEditor {
             editor: this.generateEditorIntegration(contentId, language),
             hubIsEnabled: true,
             l10n: {
-                H5P: this.clientTranslation
+                H5P:
+                    this.clientLanguageStorage(language) ??
+                    defaultClientLanguageFile
             },
             postUserStatistics: false,
             saveFreq: false,

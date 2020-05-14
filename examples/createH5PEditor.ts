@@ -25,7 +25,8 @@ export default async function createH5PEditor(
     config: H5P.IH5PConfig,
     localLibraryPath: string,
     localContentPath?: string,
-    localTemporaryPath?: string
+    localTemporaryPath?: string,
+    clientLanguageStorage?: H5P.IClientLanguageStorage
 ): Promise<H5P.H5PEditor> {
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
@@ -55,7 +56,8 @@ export default async function createH5PEditor(
               )
             : new H5P.fsImplementations.DirectoryTemporaryFileStorage(
                   localTemporaryPath
-              )
+              ),
+        clientLanguageStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
