@@ -1381,3 +1381,16 @@ export interface IPlayerModel {
     styles: string[];
     translations: any;
 }
+
+/**
+ * The translation function is called to retrieve translation for keys.
+ * @param key the key for which a translation should be returned; Note that his
+ * is not the English string, but a identifier that can also be prefixed with a
+ * namespace (we follow the convention of the npm package i18next here).
+ * Examples:
+ *   - namespace1:key1
+ *   - anothernamespace:a-somewhat-longer-key
+ * @param language the language code to translate to (ISO 639-1)
+ * @returns the translated string
+ */
+export type ITranslationFunction = (key: string, language: string) => string;

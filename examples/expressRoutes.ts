@@ -4,7 +4,8 @@ import * as H5P from '../src';
 
 export default function (
     h5pEditor: H5P.H5PEditor,
-    h5pPlayer: H5P.H5PPlayer
+    h5pPlayer: H5P.H5PPlayer,
+    language: string = 'en'
 ): express.Router {
     const router = express.Router();
 
@@ -19,7 +20,7 @@ export default function (
     });
 
     router.get('/edit/:contentId', async (req, res) => {
-        const page = await h5pEditor.render(req.params.contentId, 'de');
+        const page = await h5pEditor.render(req.params.contentId, language);
         res.send(page);
         res.status(200).end();
     });
@@ -38,7 +39,7 @@ export default function (
     });
 
     router.get('/new', async (req, res) => {
-        const page = await h5pEditor.render(undefined, 'de');
+        const page = await h5pEditor.render(undefined, language);
         res.send(page);
         res.status(200).end();
     });

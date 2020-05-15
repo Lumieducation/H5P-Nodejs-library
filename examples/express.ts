@@ -120,7 +120,15 @@ const start = async () => {
     // - Editing content
     // - Saving content
     // - Deleting content
-    server.use(h5pEditor.config.baseUrl, expressRoutes(h5pEditor, h5pPlayer));
+    server.use(
+        h5pEditor.config.baseUrl,
+        expressRoutes(
+            h5pEditor,
+            h5pPlayer,
+            'de' // You can change the language of the editor here by setting
+            // the language code you need.
+        )
+    );
 
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.

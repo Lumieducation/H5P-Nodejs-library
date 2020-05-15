@@ -36,7 +36,7 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
-    ILumiEditorIntegration,
+    IHubInfo,
     IIntegration,
     IKeyValueStorage,
     ILibraryDetailedDataForClient,
@@ -44,10 +44,11 @@ import {
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
+    ILumiEditorIntegration,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    IUser,
-    IHubInfo
+    ITranslationFunction,
+    IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
@@ -57,12 +58,18 @@ const log = new Logger('H5PEditor');
 
 export default class H5PEditor {
     /**
-     * @param cache the cache is used to store key - value pairs that must be accessed often; values stored in it must be accessible by ALL instances of the editor (across machines)
-     * @param config the configuration values for the editor; note that the editor can also change these values and save them!
+     * @param cache the cache is used to store key - value pairs that must be
+     * accessed often; values stored in it must be accessible by ALL instances
+     * of the editor (across machines)
+     * @param config the configuration values for the editor; note that the
+     * editor can also change these values and save them!
      * @param libraryStorage the storage object for libraries
      * @param contentStorage the storage object for content
      * @param temporaryStorage the storage object for temporary files
-     * @param translationCallback a function that is called to retrieve translations of keys in a certain language; the keys use the i18next format (e.g. namespace:key).
+     * @param translationCallback a function that is called to retrieve
+     * translations of keys in a certain language; the keys use the i18next
+     * format (e.g. namespace:key). See the ITranslationFunction documentation
+     * for more details.
      */
     constructor(
         protected cache: IKeyValueStorage,
@@ -70,10 +77,9 @@ export default class H5PEditor {
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
         public temporaryStorage: ITemporaryFileStorage,
-        translationCallback: (
-            key: string,
-            language: string
-        ) => string = new SimpleTranslator({
+        translationCallback: ITranslationFunction = new SimpleTranslator({
+            // We use a simplistic translation function that is hard-wired to
+            // English if the implementation does not pass us a proper one.
             client: defaultClientLanguageFile,
             'metadata-semantics': defaultMetadataSemanticsLanguageFile,
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile

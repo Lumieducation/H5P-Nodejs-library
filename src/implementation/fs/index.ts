@@ -1,5 +1,5 @@
 import * as H5P from '../../';
-import { IContentStorage } from '../../types';
+import { IContentStorage, ITranslationFunction } from '../../types';
 import InMemoryStorage from '../InMemoryStorage';
 import DirectoryTemporaryFileStorage from './DirectoryTemporaryFileStorage';
 import FileContentStorage from './FileContentStorage';
@@ -11,7 +11,7 @@ export default function h5pfs(
     temporaryStoragePath: string,
     contentPath: string,
     contentStorage?: IContentStorage,
-    translationCallback?: (key: string, language: string) => string
+    translationCallback?: ITranslationFunction
 ): H5P.H5PEditor {
     return new H5P.H5PEditor(
         new InMemoryStorage(),

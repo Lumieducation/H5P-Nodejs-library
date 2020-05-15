@@ -27,7 +27,7 @@ export default async function createH5PEditor(
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
-    translationCallback?: (key: string, language: string) => string
+    translationCallback?: H5P.ITranslationFunction
 ): Promise<H5P.H5PEditor> {
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
