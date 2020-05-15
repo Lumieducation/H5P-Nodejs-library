@@ -115,7 +115,7 @@ export default class H5PEditor {
             this.libraryStorage,
             this.contentStorage
         );
-        this.semanticLocalizer = new SemanticsLocalizer(translationCallback);
+        this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
     }
 
     public contentManager: ContentManager;
@@ -128,7 +128,7 @@ export default class H5PEditor {
     private contentStorer: ContentStorer;
     private packageExporter: PackageExporter;
     private renderer: any;
-    private semanticLocalizer: SemanticsLocalizer;
+    private semanticsLocalizer: SemanticsLocalizer;
     private urlGenerator: UrlGenerator;
 
     /**
@@ -664,13 +664,13 @@ export default class H5PEditor {
                 css: this.listCoreStyles(),
                 js: this.listCoreScripts(language)
             },
-            copyrightSemantics: this.semanticLocalizer.localize(
+            copyrightSemantics: this.semanticsLocalizer.localize(
                 defaultCopyrightSemantics,
                 language
             ),
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
-            metadataSemantics: this.semanticLocalizer.localize(
+            metadataSemantics: this.semanticsLocalizer.localize(
                 defaultMetadataSemantics,
                 language
             ),
@@ -718,7 +718,7 @@ export default class H5PEditor {
             editor: this.generateEditorIntegration(contentId, language),
             hubIsEnabled: true,
             l10n: {
-                H5P: this.semanticLocalizer.localize(
+                H5P: this.semanticsLocalizer.localize(
                     defaultClientStrings,
                     language,
                     true
