@@ -52,7 +52,7 @@ import {
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
-import { SimpleTranslator } from './helpers/SimpleTranslator';
+import SimpleTranslator from './helpers/SimpleTranslator';
 
 const log = new Logger('H5PEditor');
 

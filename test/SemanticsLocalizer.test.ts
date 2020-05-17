@@ -2,7 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 
 import SemanticsLocalizer from '../src/SemanticsLocalizer';
-import { SimpleTranslator } from '../src/helpers/SimpleTranslator';
+import SimpleTranslator from '../src/helpers/SimpleTranslator';
 
 describe('SemanticsLocalizer', () => {
     it('localizes copyright semantics', async () => {

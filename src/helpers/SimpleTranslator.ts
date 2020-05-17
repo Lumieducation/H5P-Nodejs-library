@@ -4,7 +4,7 @@
  * when the implementation does not pass a translation function.
  * Uses namespaces but does not support multiple languages.
  */
-export class SimpleTranslator {
+export default class SimpleTranslator {
     /**
      * @param translationStrings an object containing all relevant translation strings
      * sorted by namespaces

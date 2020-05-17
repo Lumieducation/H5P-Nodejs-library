@@ -51,6 +51,18 @@ translation library you want as long as you make sure to pass a valid
 `translationCallback` to `H5PEditor` (case 3) and add the required `t(...)`
 function to `req` (case 4).
 
+### Initializing the JavaScript H5P client (in the browser)
+
+The H5P client must set the `H5PEditor.contentLanguage` property like this to
+localize the libraries when the editor is initialized :
+
+```js
+H5PEditor.contentLanguage = H5PIntegration.editor.language;
+```
+
+You should include this initialization routine in your "create" and "edit"
+views.
+
 ### Language detection
 
 While you can manually change the language used in the Express adapter with the
