@@ -2,8 +2,8 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import i18next from 'i18next';
-import i18nextExpressMiddleware from 'i18next-express-middleware';
-import i18nextNodeFsBackend from 'i18next-node-fs-backend';
+import i18nextHttpMiddleware from 'i18next-http-middleware';
+import i18nextFsBackend from 'i18next-fs-backend';
 import path from 'path';
 
 import * as H5P from '../src';
@@ -16,9 +16,13 @@ import { displayIps } from './utils';
 const start = async () => {
     // We use i18next to localize messages sent to the user. You can use any
     // localization library you like.
-    await i18next
-        .use(i18nextNodeFsBackend)
-        .use(i18nextExpressMiddleware.LanguageDetector)
+    const translationFunction = await i18next
+        .use(i18nextFsBackend)
+        .use(i18nextHttpMiddleware.LanguageDetector) // This will add the
+        // properties language and languages to the req object.
+        // See https://github.com/i18next/i18next-http-middleware#adding-own-detection-functionality
+        // how to detect language in your own fashion. You can also choose not
+        // to add a detector if you only want to use one language.
         .init({
             backend: {
                 loadPath: 'assets/translations/{{ns}}/{{lng}}.json'
@@ -27,12 +31,16 @@ const start = async () => {
             defaultNS: 'server',
             fallbackLng: 'en',
             ns: [
-                'server',
-                'storage-file-implementations',
+                'client',
+                'copyright-semantics',
+                'metadata-semantics',
                 'mongo-s3-content-storage',
-                's3-temporary-storage'
+                's3-temporary-storage',
+                'server',
+                'storage-file-implementations'
             ],
-            preload: ['en']
+            preload: ['en', 'de'] // If you don't use a language detector of
+            // i18next, you must preload all languages you want to use!
         });
 
     // Load the configuration file from the local file system
@@ -56,7 +64,10 @@ const start = async () => {
         config,
         path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content is stored. Only used / necessary if you use the local filesystem content storage class.
-        path.resolve('h5p/temporary-storage') // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
+        path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
+        (key, language) => {
+            return translationFunction(key, { lng: language });
+        }
     );
 
     // The H5PPlayer object is used to display H5P content.
@@ -94,7 +105,7 @@ const start = async () => {
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
     // (H5P.adapters.express) to function properly.
-    server.use(i18nextExpressMiddleware.handle(i18next));
+    server.use(i18nextHttpMiddleware.handle(i18next));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure
@@ -105,7 +116,11 @@ const start = async () => {
         H5P.adapters.express(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the files of the JavaScript client of the player are stored
-            path.resolve('h5p/editor') // the path on the local disc where the files of the JavaScript client of the editor are stored
+            path.resolve('h5p/editor'), // the path on the local disc where the files of the JavaScript client of the editor are stored
+            undefined,
+            'auto' // You can change the language of the editor here by setting
+            // the language code you need here. 'auto' means the route will try
+            // to use the language detected by the i18next language detector.
         )
     );
 
@@ -114,7 +129,16 @@ const start = async () => {
     // - Editing content
     // - Saving content
     // - Deleting content
-    server.use(h5pEditor.config.baseUrl, expressRoutes(h5pEditor, h5pPlayer));
+    server.use(
+        h5pEditor.config.baseUrl,
+        expressRoutes(
+            h5pEditor,
+            h5pPlayer,
+            'auto' // You can change the language of the editor here by setting
+            // the language code you need here. 'auto' means the route will try
+            // to use the language detected by the i18next language detector.
+        )
+    );
 
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.

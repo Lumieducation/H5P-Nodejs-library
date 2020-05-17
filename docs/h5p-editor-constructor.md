@@ -2,8 +2,8 @@
 
 There are two ways of creating a H5PEditor object:
 
-- You can use the convenience function [`H5P.fs(...)`](/src/implementation/fs/index.ts) that use basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to construct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
-- You can construct it manually by calling `new H5P.H5PEditor(...)`. The constructor arguments are used to provide data storage services and settings. You can find the interfaces referenced in [`src/types.ts`](/src/types.ts).
+-   You can use the convenience function [`H5P.fs(...)`](/src/implementation/fs/index.ts) that use basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to construct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
+-   You can construct it manually by calling `new H5P.H5PEditor(...)`. The constructor arguments are used to provide data storage services and settings. You can find the interfaces referenced in [`src/types.ts`](/src/types.ts).
 
 Explanation of the arguments of the constructor:
 
@@ -48,3 +48,24 @@ const temporaryStorage = new DirectoryTemporaryFileStorage(
 ```
 
 The sample implementation has a basic authentication mechanism built in that makes sure that only users who have created a file can access it later.
+
+## translationCallback (optional)
+
+If you want to localize certain aspects of the editor, you must pass in a
+function that returns translated strings for certain keys. This function in
+turn can call another translation library to perform the localization. We
+suggest using [i18next](https://www.npmjs.com/package/i18next) as the keys
+h5p-nodejs-library uses follow the conventions of i18next. You can still choose
+any translation library you like.
+
+```ts
+// Pass translationCallbackAdapter as a parameter to H5PEditor.
+const translationCallbackAdapter = (key, language) => {
+    return i18NextTranslationFunction(key, { lng: language });
+};
+```
+
+The editor will fallback to English if you don't pass any translation callback.
+
+Also see the [documentation page on localization](/docs/localization.md) for
+more details.

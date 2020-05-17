@@ -30,6 +30,7 @@ import {
     IPlayerModel,
     ITemporaryFile,
     ITemporaryFileStorage,
+    ITranslationFunction,
     IUser,
     Permission
 } from './types';
@@ -76,6 +77,7 @@ export {
     IPlayerModel,
     ITemporaryFile,
     ITemporaryFileStorage,
+    ITranslationFunction,
     IUser,
     Permission,
     // implementations

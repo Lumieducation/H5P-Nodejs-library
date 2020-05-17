@@ -2,9 +2,17 @@ import express from 'express';
 
 import * as H5P from '../src';
 
+/**
+ * @param h5pEditor
+ * @param h5pPlayer
+ * @param languageOverride the language to use. Set it to 'auto' to use the
+ * language set by a language detector in the req.language property.
+ * (recommended)
+ */
 export default function (
     h5pEditor: H5P.H5PEditor,
-    h5pPlayer: H5P.H5PPlayer
+    h5pPlayer: H5P.H5PPlayer,
+    languageOverride: string | 'auto' = 'auto'
 ): express.Router {
     const router = express.Router();
 
@@ -19,7 +27,12 @@ export default function (
     });
 
     router.get('/edit/:contentId', async (req, res) => {
-        const page = await h5pEditor.render(req.params.contentId);
+        const page = await h5pEditor.render(
+            req.params.contentId,
+            languageOverride === 'auto'
+                ? req.language ?? 'en'
+                : languageOverride
+        );
         res.send(page);
         res.status(200).end();
     });
@@ -38,7 +51,12 @@ export default function (
     });
 
     router.get('/new', async (req, res) => {
-        const page = await h5pEditor.render(undefined);
+        const page = await h5pEditor.render(
+            undefined,
+            languageOverride === 'auto'
+                ? req.language ?? 'en'
+                : languageOverride
+        );
         res.send(page);
         res.status(200).end();
     });

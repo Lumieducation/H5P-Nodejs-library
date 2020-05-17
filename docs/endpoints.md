@@ -12,7 +12,8 @@ server.use(
         h5pEditor, // an H5P.H5PEditor object
         path.resolve('h5p/core'), // the path to the h5p core files (of the player)
         path.resolve('h5p/editor'), // the path to the h5p core files (of the editor)
-        options // the options are optional and can be left out
+        routeOptions, // the options are optional and can be left out
+        languageOverride // (optional) can be used to override the language used by i18next http middleware
     )
 );
 ```
