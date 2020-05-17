@@ -22,23 +22,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -48,23 +48,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -74,23 +74,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -100,23 +100,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -126,23 +126,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -152,23 +152,23 @@
                         "versions": [
                             {
                                 "value": "4.0",
-                                "label": "metadata-semantics:4.0-international"
+                                "label": "metadata-semantics:40-international"
                             },
                             {
                                 "value": "3.0",
-                                "label": "metadata-semantics:3.0-unported"
+                                "label": "metadata-semantics:30-unported"
                             },
                             {
                                 "value": "2.5",
-                                "label": "metadata-semantics:2.5-generic"
+                                "label": "metadata-semantics:25-generic"
                             },
                             {
                                 "value": "2.0",
-                                "label": "metadata-semantics:2.0-generic"
+                                "label": "metadata-semantics:20-generic"
                             },
                             {
                                 "value": "1.0",
-                                "label": "metadata-semantics:1.0-generic"
+                                "label": "metadata-semantics:10-generic"
                             }
                         ]
                     },
@@ -201,12 +201,12 @@
         "options": [
             {
                 "value": "4.0",
-                "label": "metadata-semantics:4.0-international"
+                "label": "metadata-semantics:40-international"
             },
-            { "value": "3.0", "label": "metadata-semantics:3.0-unported" },
-            { "value": "2.5", "label": "metadata-semantics:2.5-generic" },
-            { "value": "2.0", "label": "metadata-semantics:2.0-generic" },
-            { "value": "1.0", "label": "metadata-semantics:1.0-generic" }
+            { "value": "3.0", "label": "metadata-semantics:30-unported" },
+            { "value": "2.5", "label": "metadata-semantics:25-generic" },
+            { "value": "2.0", "label": "metadata-semantics:20-generic" },
+            { "value": "1.0", "label": "metadata-semantics:10-generic" }
         ],
         "optional": true
     },
