@@ -2,8 +2,8 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import i18next from 'i18next';
-import i18nextExpressMiddleware from 'i18next-express-middleware';
-import i18nextNodeFsBackend from 'i18next-node-fs-backend';
+import i18nextHttpMiddleware from 'i18next-http-middleware';
+import i18nextFsBackend from 'i18next-fs-backend';
 import path from 'path';
 
 import * as H5P from '../src';
@@ -17,8 +17,8 @@ const start = async () => {
     // We use i18next to localize messages sent to the user. You can use any
     // localization library you like.
     const translationFunction = await i18next
-        .use(i18nextNodeFsBackend)
-        .use(i18nextExpressMiddleware.LanguageDetector)
+        .use(i18nextFsBackend)
+        .use(i18nextHttpMiddleware.LanguageDetector)
         .init({
             backend: {
                 loadPath: 'assets/translations/{{ns}}/{{lng}}.json'
@@ -100,7 +100,7 @@ const start = async () => {
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
     // (H5P.adapters.express) to function properly.
-    server.use(i18nextExpressMiddleware.handle(i18next));
+    server.use(i18nextHttpMiddleware.handle(i18next));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure
