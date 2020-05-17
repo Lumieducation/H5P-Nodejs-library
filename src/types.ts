@@ -829,7 +829,7 @@ export interface ISemanticsEntry {
      * (for number) the maximum number allowed
      * (for list) the maximum number of elements
      */
-    max?: number;
+    max?: number | string;
     /**
      * (for text) the maximum number of characters of the text
      */
@@ -838,7 +838,7 @@ export interface ISemanticsEntry {
      * (for number) the minimum number allowed
      * (for list) the minimum number of elements
      */
-    min?: number;
+    min?: number | string;
     /**
      * The internal name (e.g. for referencing it in code)
      */
@@ -853,6 +853,10 @@ export interface ISemanticsEntry {
      * of hyphens as separators)
      */
     options?: any[];
+    /**
+     * The text displayed in a text box if the user has entered nothing so far.
+     */
+    placeholder?: string;
     /**
      * (for text) the regexp pattern the text must match
      */

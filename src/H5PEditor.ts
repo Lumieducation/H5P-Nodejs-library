@@ -7,13 +7,12 @@ import sanitize from 'sanitize-filename';
 import stream, { Readable } from 'stream';
 import imageSize from 'image-size';
 
-import defaultClientLanguageFile from '../assets/translations/client/en.json';
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
-import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
 import defaultMetadataSemantics from '../assets/defaultMetadataSemantics.json';
+import defaultClientLanguageFile from '../assets/translations/client/en.json';
+import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
-
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 
@@ -132,6 +131,8 @@ export default class H5PEditor {
     public temporaryFileManager: TemporaryFileManager;
 
     private contentStorer: ContentStorer;
+    private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
+    private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: any;
     private semanticsLocalizer: SemanticsLocalizer;
@@ -561,6 +562,64 @@ export default class H5PEditor {
         return newContentId;
     }
 
+    /**
+     * By setting custom copyright semantics, you can customize what licenses
+     * are displayed when editing metadata of files.
+     *
+     * NOTE: It is unclear if copyrightSemantics is deprecated in the H5P
+     * client. Use setMetadataSemantics instead, which certainly works.
+     *
+     * NOTE: The semantic structure is localized before delivered to the H5P
+     * client. If you change it, you must either make sure there is a appropriate
+     * language file loaded in your translation library (and set one in the
+     * first place).
+     * @param copyrightSemantics a semantic structure similar to the one used in
+     * semantics.json of regular H5P libraries. See https://h5p.org/semantics
+     * for more documentation. However, you can only add one entry (which can
+     * be nested). See the file assets/defaultCopyrightSemantics.json for the
+     * default version which you can build on.
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
+    public setCopyrightSemantics(
+        copyrightSemantics: ISemanticsEntry
+    ): H5PEditor {
+        this.copyrightSemantics = copyrightSemantics;
+        return this;
+    }
+
+    /**
+     * By setting custom metadata semantics, you can customize what licenses are
+     * displayed when editing metadata of content object and files.
+     *
+     * NOTE: It is only trivial to change the license offered as a a selection
+     * to the editors. All other semantic entries CANNOT be changed, as the
+     * form displayed in the editor is hard-coded in h5peditor-metadata.js in
+     * the client. You'll have to replace this file with a custom implementation
+     * if you want to change more metadata.
+     *
+     * NOTE: The semantic structure is localized before delivered to the H5P
+     * client. If you change it, you must either make sure there is a appropriate
+     * language file loaded in your translation library (and set one in the
+     * first place).
+     * @param metadataSemantics a semantic structure similar to the one used in
+     * semantics.json of regular H5P libraries. See https://h5p.org/semantics
+     * for more documentation. See the file assets/defaultMetadataSemantics.json
+     * for the default version which you can build on
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
+    public setMetadataSemantics(
+        metadataSemantics: ISemanticsEntry[]
+    ): H5PEditor {
+        this.metadataSemantics = metadataSemantics;
+        return this;
+    }
+
+    /**
+     * By setting a custom renderer you can change the way the editor produces
+     * HTML output
+     * @param renderer
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
     public setRenderer(renderer: any): H5PEditor {
         this.renderer = renderer;
         return this;
@@ -671,13 +730,13 @@ export default class H5PEditor {
                 js: this.listCoreScripts(language)
             },
             copyrightSemantics: this.semanticsLocalizer.localize(
-                defaultCopyrightSemantics,
+                this.copyrightSemantics,
                 language
             ),
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
             metadataSemantics: this.semanticsLocalizer.localize(
-                defaultMetadataSemantics,
+                this.metadataSemantics,
                 language
             ),
             nodeVersionId: contentId,
