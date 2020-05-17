@@ -15,6 +15,7 @@ import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyri
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
+import supportedLanguageList from '../assets/editorLanguages.json';
 
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -799,6 +800,30 @@ export default class H5PEditor {
         };
     }
 
+    /**
+     * Returns a functions that replaces the h5p editor language file with the
+     * one for the language desired. Checks if the H5P editor core supports
+     * a language and falls back to English if it doesn't. Also removes region
+     * suffixes like the US in 'en-US' if it can't find a language file with
+     * the suffix.
+     * @param language
+     */
+    private getLanguageReplacer(language: string): (script: string) => string {
+        if (supportedLanguageList.includes(language)) {
+            return (f) =>
+                f.replace('language/en.js', `language/${language}.js`);
+        }
+        const languageWithRegion = language.replace(/-.+$/, '');
+        if (supportedLanguageList.includes(languageWithRegion)) {
+            return (f) =>
+                f.replace(
+                    'language/en.js',
+                    `language/${languageWithRegion}.js`
+                );
+        }
+        return (f) => f;
+    }
+
     private async listAssets(
         libraryName: ILibraryName,
         language: string,
@@ -872,13 +897,13 @@ export default class H5PEditor {
     }
 
     private listCoreScripts(language: string): string[] {
+        const replacer = this.getLanguageReplacer(language);
+
         return editorAssetList.scripts.core
             .map(this.urlGenerator.coreFile)
             .concat(
                 editorAssetList.scripts.editor
-                    .map((f) =>
-                        f.replace('language/en.js', `language/${language}.js`)
-                    )
+                    .map(replacer)
                     .map(this.urlGenerator.editorLibraryFile)
             );
     }

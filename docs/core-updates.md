@@ -14,4 +14,5 @@ As newer content type versions typically as require a new core version, we need 
     - `h5pVersion` (put in the version of the PHP libraries themselves (includes patch version, e.g.: 1.24.1))
 3. Change the README to reflect the new versions (download links to GitHub)
 4. Check if there are new JavaScript files in the core that are required to run the editor or the player. Add them to the `H5PPlayer.coreScripts()` or `H5PEditor.coreScripts()` methods in the respective files.
-5. Run all tests (including test:integration) to check if the everything still works as expected. (for example, inserting scripts might break tests)
+5. Run `npx ts-node scripts/generate-supported-language-list.ts` to update the list of languages the editor supports.
+6. Run all tests (including test:integration) to check if the everything still works as expected. (for example, inserting scripts might break tests)
