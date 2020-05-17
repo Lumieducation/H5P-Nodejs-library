@@ -51,7 +51,18 @@ translation library you want as long as you make sure to pass a valid
 `translationCallback` to `H5PEditor` (case 3) and add the required `t(...)`
 function to `req` (case 4).
 
-### Extending or changing the translating strings used by a h5p-nodejs-library server
+### Language detection
+
+While you can manually change the language used in the Express adapter with the
+`languageOverride` parameter, it is best to use a language detector, which makes
+sure the req.t method uses the required target language. The easiest way is to
+implement your own language detector in i18next as explained in their
+[documentation](https://github.com/i18next/i18next-http-middleware#adding-own-detection-functionality).
+Initialize i18next with this detector (which can also simply return a hard-coded
+language if you want to only support one), and the Express adapter will
+translate to this language.
+
+### Contributing to the translation strings
 
 H5P is constructed in a way that spreads out the localization effort. While the
 great majority of the language strings come packaged with the content types or

@@ -18,7 +18,11 @@ const start = async () => {
     // localization library you like.
     const translationFunction = await i18next
         .use(i18nextFsBackend)
-        .use(i18nextHttpMiddleware.LanguageDetector)
+        .use(i18nextHttpMiddleware.LanguageDetector) // This will add the
+        // properties language and languages to the req object.
+        // See https://github.com/i18next/i18next-http-middleware#adding-own-detection-functionality
+        // how to detect language in your own fashion. You can also choose not
+        // to add a detector if you only want to use one language.
         .init({
             backend: {
                 loadPath: 'assets/translations/{{ns}}/{{lng}}.json'
@@ -35,7 +39,8 @@ const start = async () => {
                 'server',
                 'storage-file-implementations'
             ],
-            preload: ['en']
+            preload: ['en', 'de'] // If you don't use a language detector of
+            // i18next, you must preload all languages you want to use!
         });
 
     // Load the configuration file from the local file system
@@ -111,7 +116,11 @@ const start = async () => {
         H5P.adapters.express(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the files of the JavaScript client of the player are stored
-            path.resolve('h5p/editor') // the path on the local disc where the files of the JavaScript client of the editor are stored
+            path.resolve('h5p/editor'), // the path on the local disc where the files of the JavaScript client of the editor are stored
+            undefined,
+            'auto' // You can change the language of the editor here by setting
+            // the language code you need here. 'auto' means the route will try
+            // to use the language detected by the i18next language detector.
         )
     );
 
@@ -125,8 +134,9 @@ const start = async () => {
         expressRoutes(
             h5pEditor,
             h5pPlayer,
-            'de' // You can change the language of the editor here by setting
-            // the language code you need.
+            'auto' // You can change the language of the editor here by setting
+            // the language code you need here. 'auto' means the route will try
+            // to use the language detected by the i18next language detector.
         )
     );
 
