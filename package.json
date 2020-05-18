@@ -81,7 +81,7 @@
         "@semantic-release/github": "7.0.6",
         "@types/escape-html": "1.0.0",
         "@types/fs-extra": "9.0.0",
-        "@types/jest": "25.2.2",
+        "@types/jest": "25.2.3",
         "@types/jsonpath": "0.2.0",
         "@types/mongodb": "3.5.17",
         "@types/shortid": "0.0.29",
