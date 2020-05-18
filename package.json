@@ -105,7 +105,7 @@
         "mongodb": "3.5.7",
         "prettier": "2.0.5",
         "promise-queue": "2.2.5",
-        "puppeteer": "3.0.4",
+        "puppeteer": "3.1.0",
         "semantic-release": "17.0.7",
         "shortid": "2.2.15",
         "source-map-support": "0.5.19",
