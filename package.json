@@ -99,7 +99,7 @@
         "husky": "4.2.5",
         "i18next": "19.4.4",
         "i18next-fs-backend": "1.0.3",
-        "i18next-http-middleware": "1.0.7",
+        "i18next-http-middleware": "1.1.0",
         "jest": "26.0.1",
         "mockdate": "2.0.5",
         "mongodb": "3.5.7",
