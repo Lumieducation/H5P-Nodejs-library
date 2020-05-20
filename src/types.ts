@@ -386,6 +386,14 @@ export interface IPath {
 }
 
 /**
+ * This describes the creation time and the size of a file
+ */
+export interface IFileStats {
+    size: number;
+    birthtime: Date;
+}
+
+/**
  * This is the structure of "data transfer objects" that are passed back to the
  * JavaScript client. It is used to return a lot of information about library
  * metadata, required files, translations etc.
@@ -584,6 +592,19 @@ export interface IContentStorage {
     ): Promise<Readable>;
 
     /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param user the user who wants to retrieve the content file
+     * @returns the stats of the file
+     */
+    getFileStats(
+        contentId: ContentId,
+        file: string,
+        user: IUser
+    ): Promise<IFileStats>;
+
+    /**
      * Returns the content metadata (=h5p.json) for a content id
      * @param contentId the content id for which to retrieve the metadata
      * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
@@ -695,6 +716,15 @@ export interface ILibraryStorage {
      * @returns a readable stream of the file's contents
      */
     getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
+
+    /**
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns the file statistic
+     */
+    getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
 
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.

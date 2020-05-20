@@ -1,5 +1,4 @@
-import { WriteStream } from 'fs';
-import { Readable } from 'stream';
+import { Writable, Readable } from 'stream';
 import yazl from 'yazl';
 
 import DependencyGetter from './DependencyGetter';
@@ -40,7 +39,7 @@ export default class PackageExporter {
      */
     public async createPackage(
         contentId: ContentId,
-        outputStream: WriteStream,
+        outputStream: Writable,
         user: IUser
     ): Promise<void> {
         log.info(`creating package for ${contentId}`);

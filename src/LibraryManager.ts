@@ -18,7 +18,8 @@ import {
     ILibraryName,
     ILibraryStorage,
     IPath,
-    ISemanticsEntry
+    ISemanticsEntry,
+    IFileStats
 } from './types';
 
 const log = new Logger('LibraryManager');
@@ -64,6 +65,25 @@ export default class LibraryManager {
             )}`
         );
         return this.libraryStorage.getFileStream(library, file);
+    }
+
+    /**
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
+     */
+    public async getFileStats(
+        library: ILibraryName,
+        file: string
+    ): Promise<IFileStats> {
+        log.debug(
+            `getting stats ${file} from library ${LibraryName.toUberName(
+                library
+            )}`
+        );
+        return this.libraryStorage.getFileStats(library, file);
     }
 
     /**

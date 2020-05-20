@@ -454,6 +454,14 @@ export default class MongoS3ContentStorage implements IContentStorage {
             .createReadStream();
     }
 
+    getFileStats(
+        contentId: string,
+        file: string,
+        user: IUser
+    ): Promise<import('../../types').IFileStats> {
+        return null;
+    }
+
     public async getMetadata(
         contentId: string,
         user?: IUser
