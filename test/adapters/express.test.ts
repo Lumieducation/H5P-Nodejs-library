@@ -11,10 +11,15 @@ import User from '../../examples/User';
 import * as H5P from '../../src';
 
 const axiosMock = new axiosMockAdapter(axios);
-
+interface RequestEx extends express.Request {
+    language: string;
+    languages: string;
+    t: (id: string, replacements: any) => string;
+    user: H5P.IUser;
+}
 describe('Express Ajax endpoint adapter', () => {
     const user: H5P.IUser = new User();
-    let app: express;
+    let app: express.Application;
     let cleanup: () => Promise<void>;
     let h5pEditor: H5P.H5PEditor;
     let tempDir: string;
@@ -56,7 +61,7 @@ describe('Express Ajax endpoint adapter', () => {
                 200,
                 require('../data/content-type-cache/real-content-types.json')
             );
-        app.use((req, res, next) => {
+        app.use((req: RequestEx, res, next) => {
             req.user = user;
             req.language = 'en';
             req.languages = 'en';

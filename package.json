@@ -51,6 +51,11 @@
             "name": "Jan Philip Schellenberg",
             "email": "jps@Lumi.education",
             "url": "http://Lumi.education"
+        },
+        {
+            "name": "Bo Biene",
+            "email": "biene@inray.de",
+            "url": "https://www.qm-team.de/mymento-kursportal/"
         }
     ],
     "dependencies": {
@@ -80,9 +85,11 @@
         "@semantic-release/git": "9.0.0",
         "@semantic-release/github": "7.0.6",
         "@types/escape-html": "1.0.0",
+        "@types/express": "^4.17.6",
         "@types/fs-extra": "9.0.1",
         "@types/jest": "25.2.3",
         "@types/jsonpath": "0.2.0",
+        "@types/mime-types": "^2.1.0",
         "@types/mongodb": "3.5.18",
         "@types/shortid": "0.0.29",
         "@types/stream-buffers": "3.0.3",

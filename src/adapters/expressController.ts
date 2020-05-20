@@ -1,8 +1,23 @@
 import * as express from 'express';
-import * as path from 'path';
-
 import { H5PEditor, LibraryName, H5pError } from './..';
+import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
+import { Readable } from 'stream';
+import { IFileStats, IRequestWithUser, IRequestWithTranslator } from '../types';
+
+interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
+    files: {
+        file: {
+            data: Buffer;
+            mimetype: string;
+            name: string;
+            size: number;
+        };
+        h5p: {
+            data: any;
+        };
+    };
+}
 
 /**
  * The methods in this class can be used to answer AJAX requests that are received by Express routers.
@@ -18,8 +33,8 @@ export default class ExpressH5PController {
      * Get various things through the Ajax endpoint.
      */
     public getAjax = async (
-        req: express.Request,
-        res: express.Result
+        req: IRequestWithUser,
+        res: express.Response
     ): Promise<void> => {
         const { action } = req.query;
         const { majorVersion, minorVersion, machineName, language } = req.query;
@@ -34,10 +49,10 @@ export default class ExpressH5PController {
 
             case 'libraries':
                 const library = await this.h5pEditor.getLibraryData(
-                    machineName,
-                    majorVersion,
-                    minorVersion,
-                    language
+                    machineName?.toString(),
+                    majorVersion?.toString(),
+                    minorVersion?.toString(),
+                    language?.toString()
                 );
                 res.status(200).json(library);
 
@@ -50,26 +65,20 @@ export default class ExpressH5PController {
     };
 
     public getContentFile = async (
-        req: express.Request,
-        res: express.Result
+        req: IRequestWithUser,
+        res: express.Response
     ): Promise<void> => {
         const stream = await this.h5pEditor.getContentFileStream(
             req.params.id,
             req.params.file,
             req.user
         );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.on('error', (err) => {
-            res.status(404).end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
+        this.pipeStreamToResponse(req.params.file, stream, res, null);
     };
 
     public getContentParameters = async (
-        req: express.Request,
-        res: express.Result
+        req: IRequestWithUser,
+        res: express.Response
     ): Promise<void> => {
         const content = await this.h5pEditor.getContent(
             req.params.contentId,
@@ -79,8 +88,8 @@ export default class ExpressH5PController {
     };
 
     public getDownload = async (
-        req: express.Request,
-        res: express.Result
+        req: IRequestWithUser,
+        res: express.Response
     ): Promise<void> => {
         // set filename for the package with .h5p extension
         res.setHeader(
@@ -92,34 +101,27 @@ export default class ExpressH5PController {
 
     public getLibraryFile = async (
         req: express.Request,
-        res: express.Result
+        res: express.Response
     ): Promise<void> => {
-        const stream = await this.h5pEditor.getLibraryFileStream(
-            LibraryName.fromUberName(req.params.uberName),
-            req.params.file
-        );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
+        const lib = LibraryName.fromUberName(req.params.uberName);
+        const [stats, stream] = await Promise.all([
+            this.h5pEditor.libraryManager.getFileStats(lib, req.params.file),
+            this.h5pEditor.getLibraryFileStream(lib, req.params.file)
+        ]);
+
+        this.pipeStreamToResponse(req.params.file, stream, res, stats);
     };
 
     public getTemporaryContentFile = async (
-        req: express.Request,
-        res: express.Result
+        req: IRequestWithUser,
+        res: express.Response
     ): Promise<void> => {
         const stream = await this.h5pEditor.getContentFileStream(
             undefined,
             req.params.file,
             req.user
         );
-        stream.on('end', () => {
-            res.end();
-        });
-        stream.on('error', (err) => {
-            res.status(404).end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
+        this.pipeStreamToResponse(req.params.file, stream, res);
     };
 
     /**
@@ -129,8 +131,8 @@ export default class ExpressH5PController {
      * client works and we can't change it.
      */
     public postAjax = async (
-        req: express.Request,
-        res: express.Result
+        req: IActionRequest,
+        res: express.Response
     ): Promise<void> => {
         const { action } = req.query;
 
@@ -165,7 +167,7 @@ export default class ExpressH5PController {
             case 'translations':
                 const translationsResponse = await this.h5pEditor.listLibraryLanguageFiles(
                     req.body.libraries,
-                    req.query.language
+                    req.query.language as string
                 );
                 res.status(200).json(
                     new AjaxSuccessResponse(translationsResponse)
@@ -247,7 +249,7 @@ export default class ExpressH5PController {
                     );
                 }
                 const installedLibs = await this.h5pEditor.installLibraryFromHub(
-                    req.query.id,
+                    req.query.id as string,
                     req.user
                 );
                 updatedLibCount = installedLibs.filter(
@@ -311,5 +313,26 @@ export default class ExpressH5PController {
                 res.status(500).end('NOT IMPLEMENTED');
                 break;
         }
+    };
+
+    private pipeStreamToResponse = (
+        filename: string,
+        readStream: Readable,
+        response: express.Response,
+        stats?: IFileStats
+    ) => {
+        const contentType = mimeLookup(filename) || 'application/octet-stream';
+        if (stats) {
+            response.writeHead(200, {
+                'Content-Type': contentType,
+                'Content-Length': stats.size
+            });
+        } else {
+            response.type(contentType);
+        }
+        readStream.on('error', (err) => {
+            response.status(404).end();
+        });
+        readStream.pipe(response);
     };
 }

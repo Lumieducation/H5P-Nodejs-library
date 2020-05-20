@@ -1,6 +1,8 @@
 import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
+import { Response, NextFunction } from 'express';
+import { IRequestWithTranslator } from '../';
 
 /**
  * An Express middleware that converts NodeJs error objects into error
@@ -16,9 +18,9 @@ import H5pError from '../helpers/H5pError';
 export default (languageOverride: string | 'auto' = 'auto') => {
     return async (
         err: Error | H5pError | AggregateH5pError,
-        req: any,
-        res: any,
-        next: any
+        req: IRequestWithTranslator,
+        res: Response,
+        next: NextFunction
     ): Promise<void> => {
         let statusCode = 500;
         let statusText = '';

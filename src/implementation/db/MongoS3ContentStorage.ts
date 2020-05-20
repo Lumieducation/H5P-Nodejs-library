@@ -8,6 +8,7 @@ import {
     ContentId,
     IContentMetadata,
     IContentStorage,
+    IFileStats,
     IUser,
     Permission
 } from '../../types';
@@ -399,6 +400,14 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
         log.debug(`File ${filename} does exist in ${contentId}.`);
         return true;
+    }
+
+    getFileStats(
+        contentId: string,
+        file: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        return null;
     }
 
     /**

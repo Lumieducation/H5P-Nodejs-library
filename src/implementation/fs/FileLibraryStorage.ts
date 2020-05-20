@@ -1,3 +1,4 @@
+import fileSystem from 'fs';
 import fsExtra, { ReadStream } from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
@@ -15,6 +16,7 @@ import {
     LibraryName
 } from '../../../src';
 import checkFilename from './filenameCheck';
+import { IFileStats } from '../../types';
 
 /**
  * Stores libraries in a directory.
@@ -28,7 +30,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     protected getDirectoryPath(library: ILibraryName): string {
         return path.join(
-            this.librariesDirectory,
+            this.getLibrariesDirectory(),
             LibraryName.toUberName(library)
         );
     }
@@ -41,10 +43,18 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     protected getFilePath(library: ILibraryName, filename: string): string {
         return path.join(
-            this.librariesDirectory,
+            this.getLibrariesDirectory(),
             LibraryName.toUberName(library),
             filename
         );
+    }
+
+    /**
+     * Get the base path of the libraries
+     * @returns the base library path
+     */
+    protected getLibrariesDirectory(): string {
+        return this.librariesDirectory;
     }
 
     /**
@@ -55,7 +65,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * @param librariesDirectory The path of the directory in the file system at which libraries are stored.
      */
-    constructor(private librariesDirectory: string) {
+    constructor(protected librariesDirectory: string) {
         fsExtra.ensureDirSync(librariesDirectory);
     }
 
@@ -192,6 +202,33 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Returns a information about a library file.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns the file stats
+     */
+    public async getFileStats(
+        library: ILibraryName,
+        filename: string
+    ): Promise<IFileStats> {
+        if (
+            !(await this.fileExists(library, filename)) ||
+            this.isIgnored(filename)
+        ) {
+            throw new H5pError(
+                'library-file-missing',
+                {
+                    filename,
+                    library: LibraryName.toUberName(library)
+                },
+                404
+            );
+        }
+        return fsExtra.stat(this.getFilePath(library, filename));
+    }
+
+    /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
@@ -215,7 +252,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 404
             );
         }
-
         return fsExtra.createReadStream(this.getFilePath(library, filename));
     }
 
@@ -229,7 +265,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     ): Promise<ILibraryName[]> {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
         const libraryDirectories = await fsExtra.readdir(
-            this.librariesDirectory
+            this.getLibrariesDirectory()
         );
         return libraryDirectories
             .filter((name) => nameRegex.test(name))

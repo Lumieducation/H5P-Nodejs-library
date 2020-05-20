@@ -69,3 +69,10 @@ The editor will fallback to English if you don't pass any translation callback.
 
 Also see the [documentation page on localization](/docs/localization.md) for
 more details.
+
+## urlGenerator (optional)
+
+if you need to overwrite the logic to create the urls per request you can pass a custom url generator.
+It is possible to inherit from UrlGenerator and overwrite the getBaseUrl function if needed.
+
+See [H5PServer](https://github.com/BoBiene/H5PServer) for an implementation sample using the urlGenerator.
