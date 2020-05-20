@@ -28,6 +28,14 @@ export default (languageOverride: string | 'auto' = 'auto') => {
         let clientErrorId = '';
 
         if (err instanceof H5pError) {
+            if (
+                req.t &&
+                req.i18n &&
+                languageOverride &&
+                languageOverride !== 'auto'
+            ) {
+                await req.i18n.changeLanguage(languageOverride);
+            }
             statusCode = err.httpStatusCode;
             statusText =
                 req.t === undefined
