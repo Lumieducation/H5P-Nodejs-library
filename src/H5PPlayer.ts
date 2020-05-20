@@ -10,7 +10,8 @@ import {
     IIntegration,
     ILibraryName,
     ILibraryStorage,
-    IPlayerModel
+    IPlayerModel,
+    IUrlGenerator
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -37,16 +38,15 @@ export default class H5PPlayer {
         private contentStorage: IContentStorage,
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
-        private globalCustomScripts: string[] = []
+        private globalCustomScripts: string[] = [],
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
     ) {
         log.info('initialize');
         this.renderer = player;
         this.clientTranslation = defaultTranslation;
-        this.urlGenerator = new UrlGenerator(config);
     }
     private clientTranslation: any;
     private renderer: (model: IPlayerModel) => string | any;
-    private urlGenerator: UrlGenerator;
 
     /**
      * Creates a frame for displaying H5P content. You can customize this frame by calling setRenderer(...).
@@ -61,7 +61,7 @@ export default class H5PPlayer {
         contentId: ContentId,
         parameters?: ContentParameters,
         metadata?: IContentMetadata
-    ): Promise<string> {
+    ): Promise<string | any> {
         log.info(`rendering page for ${contentId}`);
 
         try {
