@@ -322,7 +322,7 @@ export default class ExpressH5PController {
         stats?: IFileStats
     ) => {
         const contentType = mimeLookup(filename) || 'application/octet-stream';
-        if (stats !== undefined) {
+        if (stats) {
             response.writeHead(200, {
                 'Content-Type': contentType,
                 'Content-Length': stats.size
