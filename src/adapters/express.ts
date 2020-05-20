@@ -18,13 +18,19 @@ import ExpressRouterOptions from './expressRouterOptions';
  * @param h5pEditor the editor object
  * @param h5pCorePath the path on the local disk at which the core files (of the player) can be found
  * @param h5pEditorLibraryPath the path on the local disk at which the core files of the editor can be found
- * @param options sets which routes you want and how to handle errors
+ * @param routeOptions sets which routes you want and how to handle errors
+ * @param languageOverride the language to use when returning errors.
+ * Only has an effect if you use the i18next http middleware, as it relies on
+ * req.i18n.changeLanguage to be present. Defaults to auto, which means the
+ * a language detector must have detected language and req.t translated to the
+ * detected language.
  */
 export default function (
     h5pEditor: H5PEditor,
     h5pCorePath: string,
     h5pEditorLibraryPath: string,
-    options: ExpressRouterOptions = new ExpressRouterOptions()
+    routeOptions: ExpressRouterOptions = new ExpressRouterOptions(),
+    languageOverride: string | 'auto' = 'auto'
 ): Router {
     const router = Router();
     const h5pController = new ExpressH5PController(h5pEditor);
@@ -41,7 +47,7 @@ export default function (
     const catchAndPassOnErrors = (
         fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>
     ) => async (req: Request, res: Response, next: NextFunction) => {
-        if (undefinedOrTrue(options.handleErrors)) {
+        if (undefinedOrTrue(routeOptions.handleErrors)) {
             try {
                 return await fn(req, res);
             } catch (error) {
@@ -53,7 +59,7 @@ export default function (
     };
 
     // get library file
-    if (undefinedOrTrue(options.routeGetLibraryFile)) {
+    if (undefinedOrTrue(routeOptions.routeGetLibraryFile)) {
         router.get(
             `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
             catchAndPassOnErrors(h5pController.getLibraryFile)
@@ -61,7 +67,7 @@ export default function (
     }
 
     // get content file
-    if (undefinedOrTrue(options.routeGetContentFile)) {
+    if (undefinedOrTrue(routeOptions.routeGetContentFile)) {
         router.get(
             `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
             catchAndPassOnErrors(h5pController.getContentFile)
@@ -69,7 +75,7 @@ export default function (
     }
 
     // get temporary content file
-    if (undefinedOrTrue(options.routeGetTemporaryContentFile)) {
+    if (undefinedOrTrue(routeOptions.routeGetTemporaryContentFile)) {
         router.get(
             `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
             catchAndPassOnErrors(h5pController.getTemporaryContentFile)
@@ -77,7 +83,7 @@ export default function (
     }
 
     // get parameters (= content.json) of content
-    if (undefinedOrTrue(options.routeGetParameters)) {
+    if (undefinedOrTrue(routeOptions.routeGetParameters)) {
         router.get(
             `${h5pEditor.config.paramsUrl}/:contentId`,
             catchAndPassOnErrors(h5pController.getContentParameters)
@@ -85,7 +91,7 @@ export default function (
     }
 
     // get various things through the Ajax endpoint
-    if (undefinedOrTrue(options.routeGetAjax)) {
+    if (undefinedOrTrue(routeOptions.routeGetAjax)) {
         router.get(
             h5pEditor.config.ajaxUrl,
             catchAndPassOnErrors(h5pController.getAjax)
@@ -96,7 +102,7 @@ export default function (
     // Don't be confused by the fact that many of the requests dealt with here are not
     // really POST requests, but look more like GET requests. This is simply how the H5P
     // client works and we can't change it.
-    if (undefinedOrTrue(options.routePostAjax)) {
+    if (undefinedOrTrue(routeOptions.routePostAjax)) {
         router.post(
             h5pEditor.config.ajaxUrl,
             catchAndPassOnErrors(h5pController.postAjax)
@@ -104,12 +110,12 @@ export default function (
     }
 
     // serve core files (= JavaScript + CSS from h5p-php-library)
-    if (undefinedOrTrue(options.routeCoreFiles)) {
+    if (undefinedOrTrue(routeOptions.routeCoreFiles)) {
         router.use(h5pEditor.config.coreUrl, ExpressStatic(h5pCorePath));
     }
 
     // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
-    if (undefinedOrTrue(options.routeEditorCoreFiles)) {
+    if (undefinedOrTrue(routeOptions.routeEditorCoreFiles)) {
         router.use(
             h5pEditor.config.editorLibraryUrl,
             ExpressStatic(h5pEditorLibraryPath)
@@ -117,15 +123,15 @@ export default function (
     }
 
     // serve download links
-    if (undefinedOrTrue(options.routeGetDownload)) {
+    if (undefinedOrTrue(routeOptions.routeGetDownload)) {
         router.get(
             `${h5pEditor.config.downloadUrl}/:contentId`,
             catchAndPassOnErrors(h5pController.getDownload)
         );
     }
 
-    if (undefinedOrTrue(options.handleErrors)) {
-        router.use(expressErrorHandler);
+    if (undefinedOrTrue(routeOptions.handleErrors)) {
+        router.use(expressErrorHandler(languageOverride));
     }
 
     return router;

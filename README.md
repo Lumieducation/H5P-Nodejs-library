@@ -132,13 +132,17 @@ Calls to the library might also throw regular `Error` objects. In this case the 
 
 The Express adapter already catches errors, localizes them and returns proper HTTP status codes. Check out the implementation there for a guide how to deal with errors.
 
+### Localization
+
+This library supports localization. See the [respective documentation page](/docs/localization.md) for more details.
+
 ## Development & Testing
 
 ### Prerequisites
 
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/) >= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use Windows, you must use bash (comes with Git for windows) as a command shell (otherwise scripts won't run).
 
-### Installation
+### Installation for development purposes
 
 ```sh
 git clone https://github.com/Lumieducation/h5p-nodejs-library

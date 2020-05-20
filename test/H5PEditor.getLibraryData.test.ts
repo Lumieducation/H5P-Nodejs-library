@@ -278,7 +278,7 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('loads the language', () => {
         const getLanguage = jest.fn(() => {
-            return Promise.resolve({ arbitrary: 'languageObject' });
+            return Promise.resolve("{arbitrary: 'languageObject'}");
         }) as jest.Mocked<any>;
 
         const h5pEditor = new H5PEditor(
@@ -335,9 +335,9 @@ describe('aggregating data from library folders for the editor', () => {
         return h5pEditor
             .getLibraryData('Foo', '1', '2', language)
             .then((libraryData) => {
-                expect(libraryData.language).toEqual({
-                    arbitrary: 'languageObject'
-                });
+                expect(libraryData.language).toEqual(
+                    "{arbitrary: 'languageObject'}"
+                );
                 expect(getLanguage.mock.calls[1][0].machineName).toBe(
                     machineName
                 );

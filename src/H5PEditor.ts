@@ -5,11 +5,17 @@ import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
 import { PassThrough, Writable, Readable } from 'stream';
+import imageSize from 'image-size';
 
-import defaultEditorIntegration from '../assets/default_editor_integration.json';
-import defaultTranslation from '../assets/translations/client/en.json';
+import defaultClientStrings from '../assets/defaultClientStrings.json';
+import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
+import defaultMetadataSemantics from '../assets/defaultMetadataSemantics.json';
+import defaultClientLanguageFile from '../assets/translations/client/en.json';
+import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
+import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
+import supportedLanguageList from '../assets/editorLanguages.json';
 
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -30,7 +36,7 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
-    ILumiEditorIntegration,
+    IHubInfo,
     IIntegration,
     IKeyValueStorage,
     IEditorModel,
@@ -39,23 +45,33 @@ import {
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
+    ILumiEditorIntegration,
     IUrlGenerator,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    IUser,
-    IHubInfo
+    ITranslationFunction,
+    IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
+import SemanticsLocalizer from './SemanticsLocalizer';
+import SimpleTranslator from './helpers/SimpleTranslator';
 
 const log = new Logger('H5PEditor');
 
 export default class H5PEditor {
     /**
-     * @param cache the cache is used to store key - value pairs that must be accessed often; values stored in it must be accessible by ALL instances of the editor (across machines)
-     * @param config the configuration values for the editor; note that the editor can also change these values and save them!
+     * @param cache the cache is used to store key - value pairs that must be
+     * accessed often; values stored in it must be accessible by ALL instances
+     * of the editor (across machines)
+     * @param config the configuration values for the editor; note that the
+     * editor can also change these values and save them!
      * @param libraryStorage the storage object for libraries
      * @param contentStorage the storage object for content
      * @param temporaryStorage the storage object for temporary files
+     * @param translationCallback a function that is called to retrieve
+     * translations of keys in a certain language; the keys use the i18next
+     * format (e.g. namespace:key). See the ITranslationFunction documentation
+     * for more details.
      */
     constructor(
         protected cache: IKeyValueStorage,
@@ -63,6 +79,13 @@ export default class H5PEditor {
         public libraryStorage: ILibraryStorage,
         public contentStorage: IContentStorage,
         public temporaryStorage: ITemporaryFileStorage,
+        translationCallback: ITranslationFunction = new SimpleTranslator({
+            // We use a simplistic translation function that is hard-wired to
+            // English if the implementation does not pass us a proper one.
+            client: defaultClientLanguageFile,
+            'metadata-semantics': defaultMetadataSemanticsLanguageFile,
+            'copyright-semantics': defaultCopyrightSemanticsLanguageFile
+        }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config)
     ) {
         log.info('initialize');
@@ -70,7 +93,6 @@ export default class H5PEditor {
         this.config = config;
 
         this.renderer = defaultRenderer;
-        this.clientTranslation = defaultTranslation;
         this.contentTypeCache = new ContentTypeCache(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -101,6 +123,7 @@ export default class H5PEditor {
             this.libraryStorage,
             this.contentStorage
         );
+        this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
     }
 
     public contentManager: ContentManager;
@@ -110,10 +133,12 @@ export default class H5PEditor {
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
 
-    private clientTranslation: any;
     private contentStorer: ContentStorer;
+    private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
+    private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
+    private semanticsLocalizer: SemanticsLocalizer;
 
     /**
      * Deletes a piece of content and all files dependent on it.
@@ -383,7 +408,7 @@ export default class H5PEditor {
                         useWhitespace: true
                     });
                     return {
-                        languageJson: await this.libraryManager.getLanguage(
+                        languageString: await this.libraryManager.getLanguage(
                             lib,
                             language
                         ),
@@ -391,9 +416,9 @@ export default class H5PEditor {
                     };
                 })
             )
-        ).reduce((builtObject: any, { languageJson, name }) => {
-            if (languageJson) {
-                builtObject[name] = JSON.stringify(languageJson);
+        ).reduce((builtObject: any, { languageString, name }) => {
+            if (languageString) {
+                builtObject[name] = languageString;
             }
             return builtObject;
         }, {});
@@ -405,11 +430,14 @@ export default class H5PEditor {
      * @param contentId
      * @returns the rendered frame that you can include in your website. Normally a string, but can be anything you want it to be if you override the renderer.
      */
-    public render(contentId: ContentId): Promise<string | any> {
+    public render(
+        contentId: ContentId,
+        language: string = 'en'
+    ): Promise<string | any> {
         log.info(`rendering ${contentId}`);
         const model: IEditorModel = {
-            integration: this.generateIntegration(contentId),
-            scripts: this.listCoreScripts(),
+            integration: this.generateIntegration(contentId, language),
+            scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
             urlGenerator: this.urlGenerator
         };
@@ -423,6 +451,7 @@ export default class H5PEditor {
      * the content hasn't been saved before.
      * @param field the semantic structure of the field the file is attached to.
      * @param file information about the uploaded file
+     * @returns information about the uploaded file
      */
     public async saveContentFile(
         contentId: ContentId,
@@ -434,7 +463,29 @@ export default class H5PEditor {
             size: number;
         },
         user: IUser
-    ): Promise<{ mime: string; path: string }> {
+    ): Promise<{
+        height?: number;
+        mime: string;
+        path: string;
+        width?: number;
+    }> {
+        // We extract the image size from the file as some content types need the dimensions
+        // of the image. It
+        let imageDimensions: {
+            height: number;
+            width: number;
+        };
+        try {
+            if (file.mimetype.startsWith('image/')) {
+                imageDimensions = imageSize.imageSize(file.data);
+            }
+        } catch (error) {
+            // A caught error means that the file format is not supported by image-size. This usually
+            // means that the file is corrupt.
+            log.debug(`Invalid image upload: ${error}`);
+            throw new H5pError('upload-validation-error', {}, 400);
+        }
+
         // We must make sure to avoid illegal characters in filenames.
         let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
@@ -443,7 +494,6 @@ export default class H5PEditor {
 
         const dataStream: any = new PassThrough();
         dataStream.end(file.data);
-
         log.info(
             `Putting content file ${cleanFilename} into temporary storage`
         );
@@ -454,8 +504,10 @@ export default class H5PEditor {
         );
         log.debug(`New temporary filename is ${tmpFilename}`);
         return {
+            height: imageDimensions?.height,
             mime: file.mimetype,
-            path: `${tmpFilename}#tmp`
+            path: `${tmpFilename}#tmp`,
+            width: imageDimensions?.width
         };
     }
 
@@ -540,6 +592,64 @@ export default class H5PEditor {
         return { id: newContentId, metadata: h5pJson };
     }
 
+    /**
+     * By setting custom copyright semantics, you can customize what licenses
+     * are displayed when editing metadata of files.
+     *
+     * NOTE: It is unclear if copyrightSemantics is deprecated in the H5P
+     * client. Use setMetadataSemantics instead, which certainly works.
+     *
+     * NOTE: The semantic structure is localized before delivered to the H5P
+     * client. If you change it, you must either make sure there is a appropriate
+     * language file loaded in your translation library (and set one in the
+     * first place).
+     * @param copyrightSemantics a semantic structure similar to the one used in
+     * semantics.json of regular H5P libraries. See https://h5p.org/semantics
+     * for more documentation. However, you can only add one entry (which can
+     * be nested). See the file assets/defaultCopyrightSemantics.json for the
+     * default version which you can build on.
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
+    public setCopyrightSemantics(
+        copyrightSemantics: ISemanticsEntry
+    ): H5PEditor {
+        this.copyrightSemantics = copyrightSemantics;
+        return this;
+    }
+
+    /**
+     * By setting custom metadata semantics, you can customize what licenses are
+     * displayed when editing metadata of content object and files.
+     *
+     * NOTE: It is only trivial to change the license offered as a a selection
+     * to the editors. All other semantic entries CANNOT be changed, as the
+     * form displayed in the editor is hard-coded in h5peditor-metadata.js in
+     * the client. You'll have to replace this file with a custom implementation
+     * if you want to change more metadata.
+     *
+     * NOTE: The semantic structure is localized before delivered to the H5P
+     * client. If you change it, you must either make sure there is a appropriate
+     * language file loaded in your translation library (and set one in the
+     * first place).
+     * @param metadataSemantics a semantic structure similar to the one used in
+     * semantics.json of regular H5P libraries. See https://h5p.org/semantics
+     * for more documentation. See the file assets/defaultMetadataSemantics.json
+     * for the default version which you can build on
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
+    public setMetadataSemantics(
+        metadataSemantics: ISemanticsEntry[]
+    ): H5PEditor {
+        this.metadataSemantics = metadataSemantics;
+        return this;
+    }
+
+    /**
+     * By setting a custom renderer you can change the way the editor produces
+     * HTML output
+     * @param renderer
+     * @returns the H5PEditor object that you can use to chain method calls
+     */
     public setRenderer(
         renderer: (model: IEditorModel) => string | any
     ): H5PEditor {
@@ -637,11 +747,11 @@ export default class H5PEditor {
     }
 
     private generateEditorIntegration(
-        contentId: ContentId
+        contentId: ContentId,
+        language: string
     ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
-            ...defaultEditorIntegration,
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
             apiVersion: {
                 majorVersion: this.config.coreApiVersion.major,
@@ -649,17 +759,20 @@ export default class H5PEditor {
             },
             assets: {
                 css: this.listCoreStyles(),
-                js: editorAssetList.scripts.integrationCore
-                    .map(this.urlGenerator.coreFile)
-                    .concat(
-                        editorAssetList.scripts.editor.map(
-                            this.urlGenerator.editorLibraryFile
-                        )
-                    )
+                js: this.listCoreScripts(language)
             },
+            copyrightSemantics: this.semanticsLocalizer.localize(
+                this.copyrightSemantics,
+                language
+            ),
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
-            nodeVersionId: contentId
+            metadataSemantics: this.semanticsLocalizer.localize(
+                this.metadataSemantics,
+                language
+            ),
+            nodeVersionId: contentId,
+            language
         };
     }
 
@@ -689,17 +802,24 @@ export default class H5PEditor {
         return h5pJson;
     }
 
-    private generateIntegration(contentId: ContentId): IIntegration {
+    private generateIntegration(
+        contentId: ContentId,
+        language: string
+    ): IIntegration {
         return {
             ajax: {
                 contentUserData: '',
                 setFinished: ''
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            editor: this.generateEditorIntegration(contentId),
+            editor: this.generateEditorIntegration(contentId, language),
             hubIsEnabled: true,
             l10n: {
-                H5P: this.clientTranslation
+                H5P: this.semanticsLocalizer.localize(
+                    defaultClientStrings,
+                    language,
+                    true
+                )
             },
             postUserStatistics: false,
             saveFreq: false,
@@ -709,6 +829,30 @@ export default class H5PEditor {
                 name: ''
             }
         };
+    }
+
+    /**
+     * Returns a functions that replaces the h5p editor language file with the
+     * one for the language desired. Checks if the H5P editor core supports
+     * a language and falls back to English if it doesn't. Also removes region
+     * suffixes like the US in 'en-US' if it can't find a language file with
+     * the suffix.
+     * @param language
+     */
+    private getLanguageReplacer(language: string): (script: string) => string {
+        if (supportedLanguageList.includes(language)) {
+            return (f) =>
+                f.replace('language/en.js', `language/${language}.js`);
+        }
+        const languageWithRegion = language.replace(/-.+$/, '');
+        if (supportedLanguageList.includes(languageWithRegion)) {
+            return (f) =>
+                f.replace(
+                    'language/en.js',
+                    `language/${languageWithRegion}.js`
+                );
+        }
+        return (f) => f;
     }
 
     private async listAssets(
@@ -768,18 +912,30 @@ export default class H5PEditor {
                 this.urlGenerator.libraryFile(libraryName, style.path)
             )
         );
-        assets.translations[libraryName.machineName] = translation || undefined;
+
+        let parsedLanguageObject: any;
+        try {
+            parsedLanguageObject = JSON.parse(translation);
+        } catch {
+            parsedLanguageObject = undefined;
+        }
+
+        if (parsedLanguageObject) {
+            assets.translations[libraryName.machineName] = parsedLanguageObject;
+        }
 
         return assets;
     }
 
-    private listCoreScripts(): string[] {
+    private listCoreScripts(language: string): string[] {
+        const replacer = this.getLanguageReplacer(language);
+
         return editorAssetList.scripts.core
             .map(this.urlGenerator.coreFile)
             .concat(
-                editorAssetList.scripts.editor.map(
-                    this.urlGenerator.editorLibraryFile
-                )
+                editorAssetList.scripts.editor
+                    .map(replacer)
+                    .map(this.urlGenerator.editorLibraryFile)
             );
     }
 

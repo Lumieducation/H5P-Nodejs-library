@@ -15,7 +15,7 @@ import { IFileStats } from 'src/types';
  * HTTP interface the H5P client uses and we can't change it.
  */
 export default class ExpressH5PController {
-    constructor(protected h5pEditor: H5PEditor) { }
+    constructor(protected h5pEditor: H5PEditor) {}
 
     /**
      * Get various things through the Ajax endpoint.
@@ -170,13 +170,13 @@ export default class ExpressH5PController {
                         ? req['t']('installed-libraries', { count: installed })
                         : `Installed ${installed} libraries.`
                     : ''
-                } ${
+            } ${
                 updated
                     ? req['t']
                         ? req['t']('updated-libraries', { count: updated })
                         : `Updated ${updated} libraries.`
                     : ''
-                }`.trim();
+            }`.trim();
 
         switch (action) {
             case 'libraries':
@@ -288,9 +288,9 @@ export default class ExpressH5PController {
                         contentTypeCache,
                         installedLibCount + updatedLibCount > 0
                             ? getLibraryResultText(
-                                installedLibCount,
-                                updatedLibCount
-                            )
+                                  installedLibCount,
+                                  updatedLibCount
+                              )
                             : undefined
                     )
                 );
@@ -323,9 +323,9 @@ export default class ExpressH5PController {
                         },
                         installedLibCount + updatedLibCount > 0
                             ? getLibraryResultText(
-                                installedLibCount,
-                                updatedLibCount
-                            )
+                                  installedLibCount,
+                                  updatedLibCount
+                              )
                             : undefined
                     )
                 );

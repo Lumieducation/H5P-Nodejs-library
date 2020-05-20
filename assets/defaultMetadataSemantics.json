@@ -1,0 +1,330 @@
+[
+    {
+        "name": "title",
+        "type": "text",
+        "label": "metadata-semantics:title",
+        "placeholder": "metadata-semantics:title-placeholder"
+    },
+    {
+        "name": "license",
+        "type": "select",
+        "label": "metadata-semantics:license",
+        "default": "U",
+        "options": [
+            { "value": "U", "label": "metadata-semantics:undisclosed" },
+            {
+                "type": "optgroup",
+                "label": "metadata-semantics:creative-commons",
+                "options": [
+                    {
+                        "value": "CC BY",
+                        "label": "metadata-semantics:CC-BY",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC BY-SA",
+                        "label": "metadata-semantics:CC-BY-SA",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC BY-ND",
+                        "label": "metadata-semantics:CC-BY-ND",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC BY-NC",
+                        "label": "metadata-semantics:CC-BY-NC",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC BY-NC-SA",
+                        "label": "metadata-semantics:CC-BY-NC-SA",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC BY-NC-ND",
+                        "label": "metadata-semantics:CC-BY-NC-ND",
+                        "versions": [
+                            {
+                                "value": "4.0",
+                                "label": "metadata-semantics:40-international"
+                            },
+                            {
+                                "value": "3.0",
+                                "label": "metadata-semantics:30-unported"
+                            },
+                            {
+                                "value": "2.5",
+                                "label": "metadata-semantics:25-generic"
+                            },
+                            {
+                                "value": "2.0",
+                                "label": "metadata-semantics:20-generic"
+                            },
+                            {
+                                "value": "1.0",
+                                "label": "metadata-semantics:10-generic"
+                            }
+                        ]
+                    },
+                    {
+                        "value": "CC0 1.0",
+                        "label": "metadata-semantics:CC0"
+                    },
+                    {
+                        "value": "CC PDM",
+                        "label": "metadata-semantics:PDM"
+                    }
+                ]
+            },
+            {
+                "value": "GNU GPL",
+                "label": "metadata-semantics:GPLv3"
+            },
+            { "value": "PD", "label": "metadata-semantics:public-domain" },
+            {
+                "value": "ODC PDDL",
+                "label": "metadata-semantics:public-domain-dedication-and-licence"
+            },
+            { "value": "C", "label": "metadata-semantics:copyright" }
+        ]
+    },
+    {
+        "name": "licenseVersion",
+        "type": "select",
+        "label": "metadata-semantics:license-version",
+        "options": [
+            {
+                "value": "4.0",
+                "label": "metadata-semantics:40-international"
+            },
+            { "value": "3.0", "label": "metadata-semantics:30-unported" },
+            { "value": "2.5", "label": "metadata-semantics:25-generic" },
+            { "value": "2.0", "label": "metadata-semantics:20-generic" },
+            { "value": "1.0", "label": "metadata-semantics:10-generic" }
+        ],
+        "optional": true
+    },
+    {
+        "name": "yearFrom",
+        "type": "number",
+        "label": "metadata-semantics:years-from",
+        "placeholder": "metadata-semantics:years-from-placeholder",
+        "min": "-9999",
+        "max": "9999",
+        "optional": true
+    },
+    {
+        "name": "yearTo",
+        "type": "number",
+        "label": "metadata-semantics:years-to",
+        "placeholder": "metadata-semantics:years-to-placeholder",
+        "min": "-9999",
+        "max": "9999",
+        "optional": true
+    },
+    {
+        "name": "source",
+        "type": "text",
+        "label": "metadata-semantics:source",
+        "placeholder": "metadata-semantics:source-placeholder",
+        "optional": true
+    },
+    {
+        "name": "authors",
+        "type": "list",
+        "field": {
+            "name": "author",
+            "type": "group",
+            "fields": [
+                {
+                    "label": "metadata-semantics:author-name",
+                    "name": "name",
+                    "optional": true,
+                    "type": "text"
+                },
+                {
+                    "name": "role",
+                    "type": "select",
+                    "label": "metadata-semantics:author-role",
+                    "default": "Author",
+                    "options": [
+                        {
+                            "value": "Author",
+                            "label": "metadata-semantics:author"
+                        },
+                        {
+                            "value": "Editor",
+                            "label": "metadata-semantics:editor"
+                        },
+                        {
+                            "value": "Licensee",
+                            "label": "metadata-semantics:licensee"
+                        },
+                        {
+                            "value": "Originator",
+                            "label": "metadata-semantics:originator"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "licenseExtras",
+        "type": "text",
+        "widget": "textarea",
+        "label": "metadata-semantics:license-extras",
+        "optional": true,
+        "description": "metadata-semantics:license-extras-description"
+    },
+    {
+        "name": "changes",
+        "type": "list",
+        "field": {
+            "name": "change",
+            "type": "group",
+            "label": "metadata-semantics:changelog",
+            "fields": [
+                {
+                    "name": "date",
+                    "type": "text",
+                    "label": "metadata-semantics:date",
+                    "optional": true
+                },
+                {
+                    "name": "author",
+                    "type": "text",
+                    "label": "metadata-semantics:changed-by",
+                    "optional": true
+                },
+                {
+                    "name": "log",
+                    "type": "text",
+                    "widget": "textarea",
+                    "label": "metadata-semantics:change-description",
+                    "placeholder": "metadata-semantics:change-description-placeholder",
+                    "optional": true
+                }
+            ]
+        }
+    },
+    {
+        "name": "authorComments",
+        "type": "text",
+        "widget": "textarea",
+        "label": "metadata-semantics:author-comments",
+        "description": "metadata-semantics:author-comments-description",
+        "optional": true
+    },
+    {
+        "name": "contentType",
+        "type": "text",
+        "widget": "none"
+    }
+]

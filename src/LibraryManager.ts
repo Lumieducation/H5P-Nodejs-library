@@ -90,22 +90,24 @@ export default class LibraryManager {
      * Gets the language file for the specified language.
      * @param library
      * @param language the language code
-     * @returns the decoded JSON data in the language file
+     * @returns a string with the contents language file; null if the library
+     * isn't localized to the language
      */
     public async getLanguage(
         library: ILibraryName,
         language: string
-    ): Promise<any> {
+    ): Promise<string> {
         try {
             log.debug(
                 `loading language ${language} for library ${LibraryName.toUberName(
                     library
                 )}`
             );
-            return await this.getJsonFile(
+            const stream = await this.getFileStream(
                 library,
-                path.join('language', `${language}.json`)
+                `language/${language}.json`
             );
+            return streamToString(stream);
         } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(

@@ -1,0 +1,250 @@
+{
+    "name": "copyright",
+    "type": "group",
+    "label": "copyright-semantics:copyright-information",
+    "fields": [
+        {
+            "name": "title",
+            "type": "text",
+            "label": "copyright-semantics:title",
+            "placeholder": "copyright-semantics:title-placeholder",
+            "optional": true
+        },
+        {
+            "name": "author",
+            "type": "text",
+            "label": "copyright-semantics:author",
+            "placeholder": "copyright-semantics:author-placeholder",
+            "optional": true
+        },
+        {
+            "name": "year",
+            "type": "text",
+            "label": "copyright-semantics:years",
+            "placeholder": "copyright-semantics:years-placeholder",
+            "optional": true
+        },
+        {
+            "name": "source",
+            "type": "text",
+            "label": "copyright-semantics:source",
+            "placeholder": "copyright-semantics:source-placeholder",
+            "optional": true,
+            "regexp": {
+                "pattern": "^http[s]?://.+",
+                "modifiers": "i"
+            }
+        },
+        {
+            "name": "license",
+            "type": "select",
+            "label": "copyright-semantics:license",
+            "default": "U",
+            "options": [
+                {
+                    "value": "U",
+                    "label": "copyright-semantics:undisclosed"
+                },
+                {
+                    "value": "CC BY",
+                    "label": "copyright-semantics:attribution",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "CC BY-SA",
+                    "label": "copyright-semantics:attribution-sharealike",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "CC BY-ND",
+                    "label": "copyright-semantics:attribution-noderivs",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "CC BY-NC",
+                    "label": "copyright-semantics:attribution-noncommercial",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "CC BY-NC-SA",
+                    "label": "copyright-semantics:attribution-noncommercial-sharealike",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "CC BY-NC-ND",
+                    "label": "copyright-semantics:attribution-noncommercial-noderivs",
+                    "versions": [
+                        {
+                            "value": "4.0",
+                            "label": "copyright-semantics:40-international"
+                        },
+                        {
+                            "value": "3.0",
+                            "label": "copyright-semantics:30-unported"
+                        },
+                        {
+                            "value": "2.5",
+                            "label": "copyright-semantics:25-generic"
+                        },
+                        {
+                            "value": "2.0",
+                            "label": "copyright-semantics:20-generic"
+                        },
+                        {
+                            "value": "1.0",
+                            "label": "copyright-semantics:10-generic"
+                        }
+                    ]
+                },
+                {
+                    "value": "GNU GPL",
+                    "label": "copyright-semantics:general-public-license",
+                    "versions": [
+                        {
+                            "value": "v3",
+                            "label": "copyright-semantics:gpl-version-3"
+                        },
+                        {
+                            "value": "v2",
+                            "label": "copyright-semantics:gpl-version-2"
+                        },
+                        {
+                            "value": "v1",
+                            "label": "copyright-semantics:gpl-version-1"
+                        }
+                    ]
+                },
+                {
+                    "value": "PD",
+                    "label": "copyright-semantics:public-domain",
+                    "versions": [
+                        {
+                            "value": "-",
+                            "label": "copyright-semantics:pd-no-version"
+                        },
+                        {
+                            "value": "CC0 1.0",
+                            "label": "copyright-semantics:CC0-1.0-universal"
+                        },
+                        {
+                            "value": "CC PDM",
+                            "label": "copyright-semantics:public-domain-mark"
+                        }
+                    ]
+                },
+                { "value": "C", "label": "copyright-semantics:copyright" }
+            ]
+        },
+        {
+            "name": "version",
+            "type": "select",
+            "label": "copyright-semantics:license-version",
+            "options": []
+        }
+    ]
+}

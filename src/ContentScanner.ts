@@ -1,4 +1,3 @@
-import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
