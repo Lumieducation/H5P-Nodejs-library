@@ -72,7 +72,7 @@ more details.
 
 ## urlGenerator (optional)
 
-if you need to overrite the logic to create the urls per request you can pass a custom urlGenerator.
+if you need to overwrite the logic to create the urls per request you can pass a custom url generator.
 It is possible to inherit from UrlGenerator and overwrite the getBaseUrl function if needed.
 
 See [H5PServer](https://github.com/BoBiene/H5PServer) for an implementation sample using the urlGenerator.
