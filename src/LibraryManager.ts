@@ -55,25 +55,6 @@ export default class LibraryManager {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    public async getFileStream(
-        library: ILibraryName,
-        file: string
-    ): Promise<ReadStream> {
-        log.debug(
-            `getting file ${file} from library ${LibraryName.toUberName(
-                library
-            )}`
-        );
-        return this.libraryStorage.getFileStream(library, file);
-    }
-
-    /**
-     * Returns a readable stream of a library file's contents.
-     * Throws an exception if the file does not exist.
-     * @param library library
-     * @param filename the relative path inside the library
-     * @returns a readable stream of the file's contents
-     */
     public async getFileStats(
         library: ILibraryName,
         file: string
@@ -84,6 +65,25 @@ export default class LibraryManager {
             )}`
         );
         return this.libraryStorage.getFileStats(library, file);
+    }
+
+    /**
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
+     */
+    public async getFileStream(
+        library: ILibraryName,
+        file: string
+    ): Promise<ReadStream> {
+        log.debug(
+            `getting file ${file} from library ${LibraryName.toUberName(
+                library
+            )}`
+        );
+        return this.libraryStorage.getFileStream(library, file);
     }
 
     /**

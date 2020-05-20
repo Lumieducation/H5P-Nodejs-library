@@ -5,7 +5,21 @@ import { H5PEditor, LibraryName, H5pError } from './..';
 
 import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
-import { IFileStats } from 'src/types';
+import { IFileStats, IRequestWithUser, IRequestWithTranslator } from '../types';
+
+interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
+    files: {
+        file: {
+            data: Buffer;
+            mimetype: string;
+            name: string;
+            size: number;
+        };
+        h5p: {
+            data: any;
+        };
+    };
+}
 
 /**
  * The methods in this class can be used to answer AJAX requests that are received by Express routers.
@@ -21,7 +35,7 @@ export default class ExpressH5PController {
      * Get various things through the Ajax endpoint.
      */
     public getAjax = async (
-        req: express.Request,
+        req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
         const { action } = req.query;
@@ -30,7 +44,7 @@ export default class ExpressH5PController {
         switch (action) {
             case 'content-type-cache':
                 const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    req['user']
+                    req.user
                 );
                 res.status(200).json(contentTypeCache);
                 break;
@@ -53,13 +67,13 @@ export default class ExpressH5PController {
     };
 
     public getContentFile = async (
-        req: express.Request,
+        req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
         const stream = await this.h5pEditor.getContentFileStream(
             req.params.id,
             req.params.file,
-            req['user']
+            req.user
         );
 
         stream.on('error', (err) => {
@@ -69,18 +83,18 @@ export default class ExpressH5PController {
     };
 
     public getContentParameters = async (
-        req: express.Request,
+        req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
         const content = await this.h5pEditor.getContent(
             req.params.contentId,
-            req['user']
+            req.user
         );
         res.status(200).json(content);
     };
 
     public getDownload = async (
-        req: express.Request,
+        req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
         // set filename for the package with .h5p extension
@@ -88,31 +102,7 @@ export default class ExpressH5PController {
             'Content-disposition',
             `attachment; filename=${req.params.contentId}.h5p`
         );
-        await this.h5pEditor.exportContent(
-            req.params.contentId,
-            res,
-            req['user']
-        );
-    };
-
-    private pipeStreamToResponse = (
-        contentType: string,
-        readStream: Readable,
-        response: express.Response,
-        stats?: IFileStats
-    ) => {
-        if (stats !== undefined) {
-            response.writeHead(200, {
-                'Content-Type': contentType,
-                'Content-Length': stats.size
-            });
-        } else {
-            response.type(contentType);
-        }
-        readStream.on('error', (err) => {
-            response.status(404).end();
-        });
-        readStream.pipe(response);
+        await this.h5pEditor.exportContent(req.params.contentId, res, req.user);
     };
 
     public getLibraryFile = async (
@@ -134,13 +124,13 @@ export default class ExpressH5PController {
     };
 
     public getTemporaryContentFile = async (
-        req: express.Request,
+        req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
         const stream = await this.h5pEditor.getContentFileStream(
             undefined,
             req.params.file,
-            req['user']
+            req.user
         );
         this.pipeStreamToResponse(path.basename(req.params.file), stream, res);
     };
@@ -152,7 +142,7 @@ export default class ExpressH5PController {
      * client works and we can't change it.
      */
     public postAjax = async (
-        req: express.Request,
+        req: IActionRequest,
         res: express.Response
     ): Promise<void> => {
         const { action } = req.query;
@@ -166,14 +156,14 @@ export default class ExpressH5PController {
         ): string =>
             `${
                 installed
-                    ? req['t']
-                        ? req['t']('installed-libraries', { count: installed })
+                    ? req.t
+                        ? req.t('installed-libraries', { count: installed })
                         : `Installed ${installed} libraries.`
                     : ''
             } ${
                 updated
-                    ? req['t']
-                        ? req['t']('updated-libraries', { count: updated })
+                    ? req.t
+                        ? req.t('updated-libraries', { count: updated })
                         : `Updated ${updated} libraries.`
                     : ''
             }`.trim();
@@ -220,8 +210,8 @@ export default class ExpressH5PController {
                         ? req.query.contentId
                         : req.body.contentId,
                     field,
-                    req['files'].file,
-                    req['user']
+                    req.files.file,
+                    req.user
                 );
                 res.status(200).json(uploadFileResponse);
                 break;
@@ -262,7 +252,7 @@ export default class ExpressH5PController {
                 );
                 break;
             case 'library-install':
-                if (!req.query || !req.query.id || !req['user']) {
+                if (!req.query || !req.query.id || !req.user) {
                     throw new H5pError(
                         'malformed-request',
                         { error: 'Request Parameters incorrect.' },
@@ -271,7 +261,7 @@ export default class ExpressH5PController {
                 }
                 const installedLibs = await this.h5pEditor.installLibraryFromHub(
                     req.query.id as string,
-                    req['user']
+                    req.user
                 );
                 updatedLibCount = installedLibs.filter(
                     (l) => l.type === 'patch'
@@ -281,7 +271,7 @@ export default class ExpressH5PController {
                 ).length;
 
                 const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    req['user']
+                    req.user
                 );
                 res.status(200).json(
                     new AjaxSuccessResponse(
@@ -301,8 +291,8 @@ export default class ExpressH5PController {
                     metadata,
                     parameters
                 } = await this.h5pEditor.uploadPackage(
-                    req['files'].h5p.data,
-                    req['user']
+                    req.files.h5p.data,
+                    req.user
                 );
                 updatedLibCount = installedLibraries.filter(
                     (l) => l.type === 'patch'
@@ -312,7 +302,7 @@ export default class ExpressH5PController {
                 ).length;
 
                 const contentTypes = await this.h5pEditor.getContentTypeCache(
-                    req['user']
+                    req.user
                 );
                 res.status(200).json(
                     new AjaxSuccessResponse(
@@ -334,5 +324,25 @@ export default class ExpressH5PController {
                 res.status(500).end('NOT IMPLEMENTED');
                 break;
         }
+    };
+
+    private pipeStreamToResponse = (
+        contentType: string,
+        readStream: Readable,
+        response: express.Response,
+        stats?: IFileStats
+    ) => {
+        if (stats !== undefined) {
+            response.writeHead(200, {
+                'Content-Type': contentType,
+                'Content-Length': stats.size
+            });
+        } else {
+            response.type(contentType);
+        }
+        readStream.on('error', (err) => {
+            response.status(404).end();
+        });
+        readStream.pipe(response);
     };
 }

@@ -97,8 +97,8 @@ const start = async () => {
     // object to be present in requests.
     // In your real implementation you would create the object using sessions,
     // JSON webtokens or some other means.
-    server.use((req, res, next) => {
-        req['user'] = new User();
+    server.use((req: H5P.IRequestWithUser, res, next) => {
+        req.user = new User();
         next();
     });
 

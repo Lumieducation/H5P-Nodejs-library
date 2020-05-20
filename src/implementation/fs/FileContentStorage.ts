@@ -224,33 +224,8 @@ export default class FileContentStorage implements IContentStorage {
             return fsExtra.pathExists(
                 path.join(this.getContentPath(), contentId.toString(), filename)
             );
-        } else {
-            return false;
         }
-    }
-
-    /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get
-     * @param user the user who wants to retrieve the content file
-     * @returns
-     */
-    public async getFileStream(
-        id: ContentId,
-        filename: string,
-        user: IUser
-    ): Promise<ReadStream> {
-        if (!(await this.fileExists(id, filename))) {
-            throw new H5pError(
-                'content-file-missing',
-                { filename, contentId: id },
-                404
-            );
-        }
-        return fsExtra.createReadStream(
-            path.join(this.getContentPath(), id.toString(), filename)
-        );
+        return false;
     }
 
     /**
@@ -273,6 +248,30 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
         return fsExtra.stat(
+            path.join(this.getContentPath(), id.toString(), filename)
+        );
+    }
+
+    /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get
+     * @param user the user who wants to retrieve the content file
+     * @returns
+     */
+    public async getFileStream(
+        id: ContentId,
+        filename: string,
+        user: IUser
+    ): Promise<ReadStream> {
+        if (!(await this.fileExists(id, filename))) {
+            throw new H5pError(
+                'content-file-missing',
+                { filename, contentId: id },
+                404
+            );
+        }
+        return fsExtra.createReadStream(
             path.join(this.getContentPath(), id.toString(), filename)
         );
     }

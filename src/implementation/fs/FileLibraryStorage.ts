@@ -206,33 +206,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library
-     * @returns a readable stream of the file's contents
-     */
-    public async getFileStream(
-        library: ILibraryName,
-        filename: string
-    ): Promise<ReadStream> {
-        if (
-            !(await this.fileExists(library, filename)) ||
-            this.isIgnored(filename)
-        ) {
-            throw new H5pError(
-                'library-file-missing',
-                {
-                    filename,
-                    library: LibraryName.toUberName(library)
-                },
-                404
-            );
-        }
-        return fsExtra.createReadStream(this.getFilePath(library, filename));
-    }
-
-    /**
-     * Returns a readable stream of a library file's contents.
-     * Throws an exception if the file does not exist.
-     * @param library library
-     * @param filename the relative path inside the library
      * @returns the file stats
      */
     public async getFileStats(
@@ -253,6 +226,33 @@ export default class FileLibraryStorage implements ILibraryStorage {
             );
         }
         return fsExtra.stat(this.getFilePath(library, filename));
+    }
+
+    /**
+     * Returns a readable stream of a library file's contents.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns a readable stream of the file's contents
+     */
+    public async getFileStream(
+        library: ILibraryName,
+        filename: string
+    ): Promise<ReadStream> {
+        if (
+            !(await this.fileExists(library, filename)) ||
+            this.isIgnored(filename)
+        ) {
+            throw new H5pError(
+                'library-file-missing',
+                {
+                    filename,
+                    library: LibraryName.toUberName(library)
+                },
+                404
+            );
+        }
+        return fsExtra.createReadStream(this.getFilePath(library, filename));
     }
 
     /**

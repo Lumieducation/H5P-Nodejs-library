@@ -401,6 +401,14 @@ export default class MongoS3ContentStorage implements IContentStorage {
         return true;
     }
 
+    getFileStats(
+        contentId: string,
+        file: string,
+        user: IUser
+    ): Promise<import('../../types').IFileStats> {
+        return null;
+    }
+
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * Note: Make sure to handle the 'error' event of the Readable! This method
@@ -452,14 +460,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 Key: MongoS3ContentStorage.getS3Key(contentId, filename)
             })
             .createReadStream();
-    }
-
-    getFileStats(
-        contentId: string,
-        file: string,
-        user: IUser
-    ): Promise<import('../../types').IFileStats> {
-        return null;
     }
 
     public async getMetadata(

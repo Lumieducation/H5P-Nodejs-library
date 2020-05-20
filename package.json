@@ -51,6 +51,11 @@
             "name": "Jan Philip Schellenberg",
             "email": "jps@Lumi.education",
             "url": "http://Lumi.education"
+        },
+        {
+            "name": "Bo Biene",
+            "email": "biene@inray.de",
+            "url": "https://www.qm-team.de/mymento-kursportal/"
         }
     ],
     "dependencies": {

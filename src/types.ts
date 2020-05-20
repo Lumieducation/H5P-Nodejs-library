@@ -1,5 +1,6 @@
 import { ReadStream } from 'fs';
 import { Stream, Readable } from 'stream';
+import { Request } from 'express';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -388,8 +389,8 @@ export interface IPath {
  * This describes the creation time and the size of a file
  */
 export interface IFileStats {
-    size: number;
     birthtime: Date;
+    size: number;
 }
 
 /**
@@ -582,19 +583,6 @@ export interface IContentStorage {
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user who wants to retrieve the content file
-     * @returns the stream (that can be used to send the file to the user)
-     */
-    getFileStream(
-        contentId: ContentId,
-        file: string,
-        user: IUser
-    ): Promise<Readable>;
-
-    /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
-     * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
-     * @param user the user who wants to retrieve the content file
      * @returns the stats of the file
      */
     getFileStats(
@@ -602,6 +590,19 @@ export interface IContentStorage {
         file: string,
         user: IUser
     ): Promise<IFileStats>;
+
+    /**
+     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param user the user who wants to retrieve the content file
+     * @returns the stream (that can be used to send the file to the user)
+     */
+    getFileStream(
+        contentId: ContentId,
+        file: string,
+        user: IUser
+    ): Promise<Readable>;
 
     /**
      * Returns the content metadata (=h5p.json) for a content id
@@ -712,18 +713,18 @@ export interface ILibraryStorage {
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library
-     * @returns a readable stream of the file's contents
+     * @returns the file statistic
      */
-    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
+    getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
 
     /**
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library
-     * @returns the file statistic
+     * @returns a readable stream of the file's contents
      */
-    getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
+    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
 
     /**
      * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
@@ -1446,3 +1447,14 @@ export interface IUrlGenerator {
  * @returns the translated string
  */
 export type ITranslationFunction = (key: string, language: string) => string;
+
+export interface IRequestWithLanguage extends Request {
+    language: string;
+}
+export interface IRequestWithUser extends Request {
+    user: IUser;
+}
+
+export interface IRequestWithTranslator extends Request {
+    t: (errorId: string, replacements: any) => string;
+}

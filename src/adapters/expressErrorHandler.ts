@@ -1,7 +1,8 @@
 import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { IRequestWithTranslator } from '../';
 
 /**
  * An Express middleware that converts NodeJs error objects into error
@@ -17,7 +18,7 @@ import { Request, Response, NextFunction } from 'express';
 export default (languageOverride: string | 'auto' = 'auto') => {
     return async (
         err: Error | H5pError | AggregateH5pError,
-        req: Request,
+        req: IRequestWithTranslator,
         res: Response,
         next: NextFunction
     ): Promise<void> => {
@@ -29,9 +30,9 @@ export default (languageOverride: string | 'auto' = 'auto') => {
         if (err instanceof H5pError) {
             statusCode = err.httpStatusCode;
             statusText =
-                req['t'] === undefined
+                req.t === undefined
                     ? err.errorId
-                    : req['t'](err.errorId, err.replacements);
+                    : req.t(err.errorId, err.replacements);
             clientErrorId = err.clientErrorId || '';
 
             if (err instanceof AggregateH5pError) {
@@ -39,9 +40,9 @@ export default (languageOverride: string | 'auto' = 'auto') => {
                     return {
                         code: e.errorId,
                         message:
-                            req['t'] === undefined
+                            req.t === undefined
                                 ? e.errorId
-                                : req['t'](e.errorId, e.replacements)
+                                : req.t(e.errorId, e.replacements)
                     };
                 });
             }

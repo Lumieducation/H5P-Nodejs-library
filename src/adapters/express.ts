@@ -53,9 +53,8 @@ export default function (
             } catch (error) {
                 return next(error);
             }
-        } else {
-            return await fn(req, res);
         }
+        return fn(req, res);
     };
 
     // get library file
