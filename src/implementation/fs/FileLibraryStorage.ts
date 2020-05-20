@@ -202,7 +202,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Returns a readable stream of a library file's contents.
+     * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library

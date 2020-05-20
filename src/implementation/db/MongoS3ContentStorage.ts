@@ -8,6 +8,7 @@ import {
     ContentId,
     IContentMetadata,
     IContentStorage,
+    IFileStats,
     IUser,
     Permission
 } from '../../types';
@@ -405,7 +406,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         contentId: string,
         file: string,
         user: IUser
-    ): Promise<import('../../types').IFileStats> {
+    ): Promise<IFileStats> {
         return null;
     }
 

@@ -579,11 +579,11 @@ export interface IContentStorage {
     fileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * Returns information about a content file (e.g. image or video) inside a piece of content.
      * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param filename the filename of the file to get information about
      * @param user the user who wants to retrieve the content file
-     * @returns the stats of the file
+     * @returns
      */
     getFileStats(
         contentId: ContentId,
@@ -709,11 +709,11 @@ export interface ILibraryStorage {
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
 
     /**
-     * Returns a readable stream of a library file's contents.
+     * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
      * @param filename the relative path inside the library
-     * @returns the file statistic
+     * @returns the file stats
      */
     getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
 
