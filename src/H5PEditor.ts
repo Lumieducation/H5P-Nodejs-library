@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
-import stream, { Readable } from 'stream';
+import { PassThrough, Writable, Readable } from 'stream';
 
 import defaultEditorIntegration from '../assets/default_editor_integration.json';
 import defaultTranslation from '../assets/translations/client/en.json';
@@ -135,7 +135,7 @@ export default class H5PEditor {
      */
     public async exportContent(
         contentId: ContentId,
-        outputStream: WriteStream,
+        outputStream: Writable,
         user: IUser
     ): Promise<void> {
         return this.packageExporter.createPackage(
@@ -441,7 +441,7 @@ export default class H5PEditor {
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
-        const dataStream: any = new stream.PassThrough();
+        const dataStream: any = new PassThrough();
         dataStream.end(file.data);
 
         log.info(
@@ -476,6 +476,34 @@ export default class H5PEditor {
         mainLibraryName: string,
         user: IUser
     ): Promise<ContentId> {
+        return (
+            await this.saveOrUpdateContentReturnMetaData(
+                contentId,
+                parameters,
+                metadata,
+                mainLibraryName,
+                user
+            )
+        ).id;
+    }
+
+    /**
+     * Stores new content or updates existing content.
+     * Copies over files from temporary storage if necessary.
+     * @param contentId the contentId of existing content (undefined or previously unsaved content)
+     * @param parameters the content parameters (=content.json)
+     * @param metadata the content metadata (~h5p.json)
+     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
+     * @param user the user who wants to save the piece of content
+     * @returns the existing contentId or the newly assigned one and the metatdata
+     */
+    public async saveOrUpdateContentReturnMetaData(
+        contentId: ContentId,
+        parameters: ContentParameters,
+        metadata: IContentMetadata,
+        mainLibraryName: string,
+        user: IUser
+    ): Promise<{ id: string; metadata: IContentMetadata }> {
         if (contentId !== undefined) {
             log.info(`saving h5p content for ${contentId}`);
         } else {
@@ -509,7 +537,7 @@ export default class H5PEditor {
             parsedLibraryName,
             user
         );
-        return newContentId;
+        return { id: newContentId, metadata: h5pJson };
     }
 
     public setRenderer(
@@ -536,7 +564,7 @@ export default class H5PEditor {
         parameters: any;
     }> {
         log.info(`uploading package`);
-        const dataStream: any = new stream.PassThrough();
+        const dataStream: any = new PassThrough();
         dataStream.end(data);
 
         let returnValues: {
