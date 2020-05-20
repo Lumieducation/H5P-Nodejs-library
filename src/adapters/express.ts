@@ -1,4 +1,10 @@
-import { Router, static as ExpressStatic } from 'express';
+import {
+    Router,
+    static as ExpressStatic,
+    Request,
+    Response,
+    NextFunction
+} from 'express';
 
 import { H5PEditor } from '../';
 import expressErrorHandler from './expressErrorHandler';
@@ -32,11 +38,18 @@ export default function (
      * You can disable error catching by setting options.handleErrors to false
      * @param fn The function to call
      */
-    const catchAndPassOnErrors = (fn) => (...args) => {
+    const catchAndPassOnErrors = (
+        fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>
+    ) => async (req: Request, res: Response, next: NextFunction) => {
         if (undefinedOrTrue(options.handleErrors)) {
-            return fn(...args).catch(args[2]);
+            try {
+                return await fn(req, res);
+            } catch (error) {
+                return next(error);
+            }
+        } else {
+            return await fn(req, res);
         }
-        return fn(...args);
     };
 
     // get library file

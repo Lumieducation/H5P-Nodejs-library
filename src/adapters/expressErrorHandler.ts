@@ -1,6 +1,7 @@
 import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
+import { Request, Response, NextFunction } from 'express';
 
 /**
  * An Express middleware that converts NodeJs error objects into error
@@ -10,9 +11,9 @@ import H5pError from '../helpers/H5pError';
  */
 export default function errorHandler(
     err: Error | H5pError | AggregateH5pError,
-    req: any,
-    res: any,
-    next: any
+    req: Request,
+    res: Response,
+    next: NextFunction
 ): void {
     let statusCode = 500;
     let statusText = '';
@@ -22,9 +23,9 @@ export default function errorHandler(
     if (err instanceof H5pError) {
         statusCode = err.httpStatusCode;
         statusText =
-            req.t === undefined
+            req['t'] === undefined
                 ? err.errorId
-                : req.t(err.errorId, err.replacements);
+                : req['t'](err.errorId, err.replacements);
         clientErrorId = err.clientErrorId || '';
 
         if (err instanceof AggregateH5pError) {
@@ -32,9 +33,9 @@ export default function errorHandler(
                 return {
                     code: e.errorId,
                     message:
-                        req.t === undefined
+                        req['t'] === undefined
                             ? e.errorId
-                            : req.t(e.errorId, e.replacements)
+                            : req['t'](e.errorId, e.replacements)
                 };
             });
         }
@@ -49,4 +50,5 @@ export default function errorHandler(
             detailsList
         )
     );
+    res.end();
 }

@@ -87,7 +87,7 @@ const start = async () => {
     // In your real implementation you would create the object using sessions,
     // JSON webtokens or some other means.
     server.use((req, res, next) => {
-        req.user = new User();
+        req['user'] = new User();
         next();
     });
 

@@ -30,7 +30,7 @@ export default function (
             req.body.params.params,
             req.body.params.metadata,
             req.body.library,
-            req.user
+            req['user']
         );
 
         res.send(JSON.stringify({ contentId }));
@@ -49,7 +49,7 @@ export default function (
             !req.body.params.params ||
             !req.body.params.metadata ||
             !req.body.library ||
-            !req.user
+            !req['user']
         ) {
             res.status(400).send('Malformed request').end();
             return;
@@ -59,7 +59,7 @@ export default function (
             req.body.params.params,
             req.body.params.metadata,
             req.body.library,
-            req.user
+            req['user']
         );
 
         res.send(JSON.stringify({ contentId }));
@@ -68,7 +68,7 @@ export default function (
 
     router.get('/delete/:contentId', async (req, res) => {
         try {
-            await h5pEditor.deleteContent(req.params.contentId, req.user);
+            await h5pEditor.deleteContent(req.params.contentId, req['user']);
         } catch (error) {
             res.send(
                 `Error deleting content with id ${req.params.contentId}: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
