@@ -1456,8 +1456,8 @@ export interface IRequestWithUser extends Request {
 }
 
 export interface IRequestWithTranslator extends Request {
-    t: (errorId: string, replacements: any) => string;
     i18n: {
         changeLanguage(language: string): Promise<void>;
     };
+    t: (errorId: string, replacements: any) => string;
 }

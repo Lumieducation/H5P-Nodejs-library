@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { H5PEditor, LibraryName, H5pError } from './..';
-import { lookup as mimeLokup } from 'mime-types';
+import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
 import { IFileStats, IRequestWithUser, IRequestWithTranslator } from '../types';
@@ -316,12 +316,12 @@ export default class ExpressH5PController {
     };
 
     private pipeStreamToResponse = (
-        fileName: string,
+        filename: string,
         readStream: Readable,
         response: express.Response,
         stats?: IFileStats
     ) => {
-        const contentType = mimeLokup(fileName) || 'application/octet-stream';
+        const contentType = mimeLookup(filename) || 'application/octet-stream';
         if (stats !== undefined) {
             response.writeHead(200, {
                 'Content-Type': contentType,
