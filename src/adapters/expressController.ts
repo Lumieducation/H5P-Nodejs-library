@@ -1,8 +1,6 @@
 import * as express from 'express';
-import * as path from 'path';
-
 import { H5PEditor, LibraryName, H5pError } from './..';
-
+import { lookup as mimeLokup } from 'mime-types';
 import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
 import { IFileStats, IRequestWithUser, IRequestWithTranslator } from '../types';
@@ -75,11 +73,7 @@ export default class ExpressH5PController {
             req.params.file,
             req.user
         );
-
-        stream.on('error', (err) => {
-            res.status(404).end();
-        });
-        stream.pipe(res.type(path.basename(req.params.file)));
+        this.pipeStreamToResponse(req.params.file, stream, res, null);
     };
 
     public getContentParameters = async (
@@ -115,12 +109,7 @@ export default class ExpressH5PController {
             this.h5pEditor.getLibraryFileStream(lib, req.params.file)
         ]);
 
-        this.pipeStreamToResponse(
-            path.basename(req.params.file),
-            stream,
-            res,
-            stats
-        );
+        this.pipeStreamToResponse(req.params.file, stream, res, stats);
     };
 
     public getTemporaryContentFile = async (
@@ -132,7 +121,7 @@ export default class ExpressH5PController {
             req.params.file,
             req.user
         );
-        this.pipeStreamToResponse(path.basename(req.params.file), stream, res);
+        this.pipeStreamToResponse(req.params.file, stream, res);
     };
 
     /**
@@ -327,11 +316,12 @@ export default class ExpressH5PController {
     };
 
     private pipeStreamToResponse = (
-        contentType: string,
+        fileName: string,
         readStream: Readable,
         response: express.Response,
         stats?: IFileStats
     ) => {
+        const contentType = mimeLokup(fileName) || 'application/octet-stream';
         if (stats !== undefined) {
             response.writeHead(200, {
                 'Content-Type': contentType,
