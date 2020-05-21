@@ -15,7 +15,7 @@ import {
     Permission,
     ContentParameters
 } from '../../../src';
-import checkFilename from './filenameCheck';
+import { checkFilename, sanitizeFilename } from './filenameUtils';
 import { IFileStats } from '../../types';
 
 /**
@@ -54,10 +54,31 @@ export default class FileContentStorage implements IContentStorage {
 
     /**
      * @param contentPath The absolute path to the directory where the content should be stored
+     * @param maxPathLength how long paths can be in the filesystem (Differs
+     * between Windows, Linux and MacOS, so check out the limitation of your
+     * system!)
      */
-    constructor(protected contentPath: string) {
+    constructor(
+        protected contentPath: string,
+        options?: { maxPathLength?: number }
+    ) {
         fsExtra.ensureDirSync(contentPath);
+        this.maxFileLength =
+            (options?.maxPathLength ?? 255) - (contentPath.length + 1) - 23;
+        // we subtract 23 for the contentId (12), unique ids appended to
+        // the file (8) and path separators (3)
+
+        if (this.maxFileLength < 20) {
+            throw new Error(
+                'The path of content directory is too long to add files to it. Put the directory into a different location.'
+            );
+        }
     }
+
+    /**
+     * Indicates how long files can be.
+     */
+    private maxFileLength: number;
 
     /**
      * Returns a random integer
@@ -377,5 +398,17 @@ export default class FileContentStorage implements IContentStorage {
             }
         );
         return absolutePaths.map((p) => path.relative(contentDirectoryPath, p));
+    }
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    public sanitizeFilename(filename: string): string {
+        return sanitizeFilename(filename, this.maxFileLength);
     }
 }

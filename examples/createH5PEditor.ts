@@ -45,7 +45,15 @@ export default async function createH5PEditor(
                   (await dbImplementations.initMongo()).collection(
                       process.env.CONTENT_MONGO_COLLECTION
                   ),
-                  { s3Bucket: process.env.CONTENT_AWS_S3_BUCKET }
+                  {
+                      s3Bucket: process.env.CONTENT_AWS_S3_BUCKET,
+                      maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
+                          ? Number.parseInt(
+                                process.env.AWS_S3_MAX_FILE_LENGTH,
+                                10
+                            )
+                          : undefined
+                  }
               ),
         process.env.TEMPORARYSTORAGE === 's3'
             ? new dbImplementations.S3TemporaryFileStorage(
@@ -53,7 +61,15 @@ export default async function createH5PEditor(
                       s3ForcePathStyle: true,
                       signatureVersion: 'v4'
                   }),
-                  { s3Bucket: process.env.TEMPORARY_AWS_S3_BUCKET }
+                  {
+                      s3Bucket: process.env.TEMPORARY_AWS_S3_BUCKET,
+                      maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
+                          ? Number.parseInt(
+                                process.env.AWS_S3_MAX_FILE_LENGTH,
+                                10
+                            )
+                          : undefined
+                  }
               )
             : new H5P.fsImplementations.DirectoryTemporaryFileStorage(
                   localTemporaryPath

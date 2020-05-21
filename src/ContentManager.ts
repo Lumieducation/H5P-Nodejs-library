@@ -74,6 +74,8 @@ export default class ContentManager {
     /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
      * It does not check whether the user has permissions to save content.
+     * @deprecated The method should not be used as it anymore, as there might
+     * be issues with invalid filenames!
      * @param packageDirectory The absolute path containing the package (the directory containing h5p.json)
      * @param user The user who is adding the package.
      * @param contentId (optional) The content id to use for the package
@@ -257,5 +259,12 @@ export default class ContentManager {
     ): Promise<string[]> {
         log.info(`loading content files for ${contentId}`);
         return this.contentStorage.listFiles(contentId, user);
+    }
+
+    public sanitizeFilename(filename: string): string {
+        if (this.contentStorage.sanitizeFilename) {
+            return this.contentStorage.sanitizeFilename(filename);
+        }
+        return filename;
     }
 }

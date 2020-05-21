@@ -648,6 +648,19 @@ export interface IContentStorage {
      * @returns a list of files that are used in the piece of content, e.g. ['images/image1.png', 'videos/video2.mp4', 'file.xyz']
      */
     listFiles(contentId: ContentId, user: IUser): Promise<string[]>;
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * Note: file names will be appended with a 9 character long unique id,
+     * so you must make sure to shorten long filenames accordingly!
+     * If you do not implement this method, there will be no sanitization!
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    sanitizeFilename?(filename: string): string;
 }
 
 /**
@@ -1324,6 +1337,15 @@ export interface ITemporaryFileStorage {
      * @returns a list of information about the files
      */
     listFiles(user?: IUser): Promise<ITemporaryFile[]>;
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize
+     * @returns the clean filename
+     */
+    sanitizeFilename?(filename: string): string;
 
     /**
      * Stores a file. Only the user who stores the file is allowed to access it later.

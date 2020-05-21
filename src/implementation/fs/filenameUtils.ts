@@ -1,6 +1,7 @@
-import { H5pError } from '../../../src';
+import { H5pError } from '../..';
+import { generalizedSanitizeFilename } from '../utils';
 
-export default function checkFilename(filename: string): void {
+export function checkFilename(filename: string): void {
     if (/\.\.\//.test(filename)) {
         throw new H5pError(
             'storage-file-implementations:illegal-relative-filename',
@@ -15,4 +16,8 @@ export default function checkFilename(filename: string): void {
             400
         );
     }
+}
+
+export function sanitizeFilename(filename: string, maxLength: number): string {
+    return generalizedSanitizeFilename(filename, /<>:"\|\?\*/g, maxLength);
 }

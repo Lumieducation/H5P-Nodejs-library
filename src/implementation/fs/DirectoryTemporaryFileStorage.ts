@@ -10,7 +10,7 @@ import {
     ITemporaryFileStorage,
     IUser
 } from '../../../src';
-import checkFilename from './filenameCheck';
+import { checkFilename, sanitizeFilename } from './filenameUtils';
 
 /**
  * Stores temporary files in directories on the disk.
@@ -23,10 +23,27 @@ export default class DirectoryTemporaryFileStorage
     /**
      * @param directory the directory in which the temporary files are stored.
      * Must be read- and write accessible
+     * @param maxPathLength how long paths can be in the filesystem (Differs
+     * between Windows, Linux and MacOS, so check out the limitation of your
+     * system!)
      */
-    constructor(private directory: string) {
+    constructor(
+        private directory: string,
+        options?: { maxPathLength?: number }
+    ) {
         fsExtra.ensureDirSync(directory);
+        this.maxFileLength =
+            (options?.maxPathLength ?? 255) - (directory.length + 1) - 40;
+        // we subtract 40 for the contentId (12), the unique id attached to the
+        // file (8), the .metadata suffix (9), userIds (8) and separators (3).
+        if (this.maxFileLength < 20) {
+            throw new Error(
+                'The path of the temporary files directory is too long to add files to it. Put the directory into a different location.'
+            );
+        }
     }
+
+    private maxFileLength: number;
 
     public async deleteFile(filename: string, userId: string): Promise<void> {
         checkFilename(filename);
@@ -90,6 +107,18 @@ export default class DirectoryTemporaryFileStorage
                 })
             )
         ).reduce((prev, curr) => prev.concat(curr), []);
+    }
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    public sanitizeFilename(filename: string): string {
+        return sanitizeFilename(filename, this.maxFileLength);
     }
 
     public async saveFile(

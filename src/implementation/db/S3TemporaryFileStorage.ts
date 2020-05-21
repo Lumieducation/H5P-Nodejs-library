@@ -8,7 +8,7 @@ import {
     IH5PConfig
 } from '../../types';
 import { ReadStream } from 'fs';
-import { validateFilename } from './S3Utils';
+import { validateFilename, sanitizeFilename } from './S3Utils';
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
 
@@ -44,6 +44,12 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                 filename?: string
             ) => Promise<Permission[]>;
             /**
+             * Indicates how long keys in S3 can be. Defaults to 1024. (S3
+             * supports 1024 characters, other systems such as Minio might only
+             * support 255 on Windows).
+             */
+            maxKeyLength?: number;
+            /**
              * The ACL to use for uploaded content files. Defaults to private.
              * See the S3 documentation for possible values.
              */
@@ -53,7 +59,22 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
              */
             s3Bucket: string;
         }
-    ) {}
+    ) {
+        log.info('initialize');
+
+        this.maxKeyLength =
+            options?.maxKeyLength !== undefined
+                ? options.maxKeyLength - 22
+                : 1002;
+        // By default we shorten to 1002 as S3 supports a maximum of 1024
+        // characters and we need to account for contentIds (12), unique ids
+        // appended to the name (8) and separators (2).
+    }
+
+    /**
+     * Indicates how long keys can be.
+     */
+    private maxKeyLength: number;
 
     /**
      * Deletes the file from temporary storage.
@@ -222,6 +243,18 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     public async listFiles(user?: IUser): Promise<ITemporaryFile[]> {
         // As S3 files expire automatically, we don't need to return any file here.
         return [];
+    }
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    public sanitizeFilename(filename: string): string {
+        return sanitizeFilename(filename, this.maxKeyLength);
     }
 
     /**

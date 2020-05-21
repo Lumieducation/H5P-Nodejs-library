@@ -111,6 +111,8 @@ export default class PackageImporter {
      * This is __NOT__ what you want if the user is just uploading a package in the editor client!
      *
      * Throws errors if something goes wrong.
+     * @deprecated The method should not be used as it anymore, as there might
+     * be issues with invalid filenames!
      * @param packagePath The full path to the H5P package file on the local disk.
      * @param user The user who wants to upload the package.
      * @param contentId (optional) the content id to use for the package

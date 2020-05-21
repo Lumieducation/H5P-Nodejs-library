@@ -15,7 +15,7 @@ import {
     InstalledLibrary,
     LibraryName
 } from '../../../src';
-import checkFilename from './filenameCheck';
+import { checkFilename } from './filenameUtils';
 import { IFileStats } from '../../types';
 
 /**

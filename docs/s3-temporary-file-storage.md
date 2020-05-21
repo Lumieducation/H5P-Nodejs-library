@@ -68,6 +68,10 @@ const temporaryStorage = new dbImplementations.S3TemporaryFileStorage(
     you can set any custom configuration values you want.
 -   To achieve greater configurability, you can decide not to use `initS3` or
     and instantiate the required client yourself.
+-   While Amazon S3 supports keys with up to 1024 characters, some other S3
+    systems such as Minio might only support less in certain situations. To
+    cater for these system you can set the option `maxKeyLength` to the value
+    you need. It defaults to 1024.
 
 ## Using S3TemporaryFileStorage in the example
 
