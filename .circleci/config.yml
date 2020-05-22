@@ -64,7 +64,7 @@ jobs:
                   paths:
                       - ./node_modules
             - run: npm run test:integration
-    player-e2e-test:
+    e2e-tests:
         docker:
             - image: circleci/node:10-browsers-legacy
         steps:
@@ -76,7 +76,7 @@ jobs:
                   key: dependency-cache-{{ checksum "package.json" }}
                   paths:
                       - ./node_modules
-            - run: npm run test:e2e:player
+            - run: npm run test:e2e
     release:
         docker:
             - image: 'circleci/node:latest'
@@ -97,7 +97,7 @@ workflows:
             - lint
             - format
             - unit-tests
-            - player-e2e-test
+            - e2e-tests
             - integration-tests
             - release:
                   requires:
@@ -105,5 +105,5 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - player-e2e-test
+                      - e2e-tests
                       - integration-tests
