@@ -25,7 +25,6 @@
         "stop:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml down",
         "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=2 --logHeapUsage",
-        "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
         "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=2 --logHeapUsage",
