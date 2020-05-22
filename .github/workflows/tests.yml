@@ -8,7 +8,7 @@ jobs:
 
         strategy:
             matrix:
-                os: [ubuntu-latest, macos-latest, windows-latest]
+                os: [ubuntu-latest, macos-latest]
                 node-version: [10.x]
 
         steps:
@@ -29,6 +29,8 @@ jobs:
               with:
                   path: test/data/hub-content
                   key: h5p-hub-content-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
+            - name: Download content files from H5P Hub
+              run: npm run download:content
             - name: format
               run: npm run format:check
             - name: lint
@@ -46,3 +48,40 @@ jobs:
               run: npm run test:e2e
               env:
                   CI: true
+    coverage:
+        name: Coverage generator
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Use Node.js 10.x
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 10.x
+
+            - name: Cache node modules
+              uses: actions/cache@v1
+              with:
+                  path: node_modules
+                  key: npm-${{ runner.OS }}-build-${{ hashFiles('package-lock.json') }}
+
+            - name: install + build
+              run: npm ci
+
+            - name: Cache H5P examples
+              uses: actions/cache@v1
+              with:
+                  path: test/data/hub-content
+                  key: h5p-hub-content-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
+
+            - name: Download content files from H5P Hub
+              run: npm run download:content
+
+            - name: npm test:coverage
+              run: npm run test:coverage
+
+            - name: Coveralls
+              uses: coverallsapp/github-action@master
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
