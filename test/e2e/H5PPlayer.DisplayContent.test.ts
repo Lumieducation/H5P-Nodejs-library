@@ -49,6 +49,6 @@ describe('e2e test: play content', () => {
                 waitUntil: ['networkidle0', 'load']
             });
             expect(errorHandler).not.toHaveBeenCalled();
-        }, 10000);
+        }, 30000);
     }
 });
