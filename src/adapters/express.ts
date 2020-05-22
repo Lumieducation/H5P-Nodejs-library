@@ -1,4 +1,10 @@
-import express from 'express';
+import {
+    Router,
+    static as ExpressStatic,
+    Request,
+    Response,
+    NextFunction
+} from 'express';
 
 import { H5PEditor } from '../';
 import expressErrorHandler from './expressErrorHandler';
@@ -25,8 +31,8 @@ export default function (
     h5pEditorLibraryPath: string,
     routeOptions: ExpressRouterOptions = new ExpressRouterOptions(),
     languageOverride: string | 'auto' = 'auto'
-): express.Router {
-    const router = express.Router();
+): Router {
+    const router = Router();
     const h5pController = new ExpressH5PController(h5pEditor);
 
     const undefinedOrTrue = (option: boolean): boolean =>
@@ -38,11 +44,17 @@ export default function (
      * You can disable error catching by setting options.handleErrors to false
      * @param fn The function to call
      */
-    const catchAndPassOnErrors = (fn) => (...args) => {
+    const catchAndPassOnErrors = (
+        fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>
+    ) => async (req: Request, res: Response, next: NextFunction) => {
         if (undefinedOrTrue(routeOptions.handleErrors)) {
-            return fn(...args).catch(args[2]);
+            try {
+                return await fn(req, res);
+            } catch (error) {
+                return next(error);
+            }
         }
-        return fn(...args);
+        return fn(req, res);
     };
 
     // get library file
@@ -98,14 +110,14 @@ export default function (
 
     // serve core files (= JavaScript + CSS from h5p-php-library)
     if (undefinedOrTrue(routeOptions.routeCoreFiles)) {
-        router.use(h5pEditor.config.coreUrl, express.static(h5pCorePath));
+        router.use(h5pEditor.config.coreUrl, ExpressStatic(h5pCorePath));
     }
 
     // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
     if (undefinedOrTrue(routeOptions.routeEditorCoreFiles)) {
         router.use(
             h5pEditor.config.editorLibraryUrl,
-            express.static(h5pEditorLibraryPath)
+            ExpressStatic(h5pEditorLibraryPath)
         );
     }
 

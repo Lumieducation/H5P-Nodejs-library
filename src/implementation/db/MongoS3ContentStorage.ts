@@ -8,12 +8,13 @@ import {
     ContentId,
     IContentMetadata,
     IContentStorage,
+    IFileStats,
     IUser,
     Permission
 } from '../../types';
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
-import { validateFilename } from './S3Utils';
+import { validateFilename, sanitizeFilename } from './S3Utils';
 
 const log = new Logger('MongoS3ContentStorage');
 
@@ -45,6 +46,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 user: IUser
             ) => Promise<Permission[]>;
             /**
+             * Indicates how long keys in S3 can be. Defaults to 1024. (S3
+             * supports 1024 characters, other systems such as Minio might only
+             * support 255 on Windows).
+             */
+            maxKeyLength?: number;
+            /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
             s3Acl?: string;
@@ -55,7 +62,19 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
     ) {
         log.info('initialize');
+        this.maxKeyLength =
+            options?.maxKeyLength !== undefined
+                ? options.maxKeyLength - 22
+                : 1002;
+        // By default we shorten to 1002 as S3 supports a maximum of 1024
+        // characters and we need to account for contentIds (12), unique ids
+        // appended to the name (8) and separators (2).
     }
+
+    /**
+     * Indicates how long keys can be.
+     */
+    private maxKeyLength: number;
 
     /**
      * Generates the S3 key for a file in a content object
@@ -402,6 +421,22 @@ export default class MongoS3ContentStorage implements IContentStorage {
     }
 
     /**
+     * Returns information about a content file (e.g. image or video) inside a
+     * piece of content.
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get information about
+     * @param user the user who wants to retrieve the content file
+     * @returns
+     */
+    getFileStats(
+        contentId: string,
+        file: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        return null;
+    }
+
+    /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * Note: Make sure to handle the 'error' event of the Readable! This method
      * does not check if the file exists in storage to avoid the extra request.
@@ -636,5 +671,17 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
         log.debug(`Found ${files.length} file(s) in S3.`);
         return files;
+    }
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    public sanitizeFilename(filename: string): string {
+        return sanitizeFilename(filename, this.maxKeyLength);
     }
 }

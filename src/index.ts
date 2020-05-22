@@ -32,6 +32,9 @@ import {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUser,
+    IRequestWithUser,
+    IRequestWithLanguage,
+    IRequestWithTranslator,
     Permission
 } from './types';
 
@@ -79,6 +82,9 @@ export {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUser,
+    IRequestWithUser,
+    IRequestWithLanguage,
+    IRequestWithTranslator,
     Permission,
     // implementations
     H5PConfig,

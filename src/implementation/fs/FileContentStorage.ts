@@ -15,7 +15,8 @@ import {
     Permission,
     ContentParameters
 } from '../../../src';
-import checkFilename from './filenameCheck';
+import { checkFilename, sanitizeFilename } from './filenameUtils';
+import { IFileStats } from '../../types';
 
 /**
  * Persists content to the disk.
@@ -32,7 +33,7 @@ export default class FileContentStorage implements IContentStorage {
         do {
             id = FileContentStorage.getRandomInt(1, 2 ** 32);
             counter += 1;
-            const p = path.join(this.contentPath, id.toString());
+            const p = path.join(this.getContentPath(), id.toString());
             exists = await fsExtra.pathExists(p);
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
@@ -42,12 +43,42 @@ export default class FileContentStorage implements IContentStorage {
         }
         return id;
     }
+
+    /**
+     * Gets the base path of the content
+     * @returns the base content-path
+     */
+    protected getContentPath(): string {
+        return this.contentPath;
+    }
+
     /**
      * @param contentPath The absolute path to the directory where the content should be stored
+     * @param maxPathLength how long paths can be in the filesystem (Differs
+     * between Windows, Linux and MacOS, so check out the limitation of your
+     * system!)
      */
-    constructor(private contentPath: string) {
+    constructor(
+        protected contentPath: string,
+        options?: { maxPathLength?: number }
+    ) {
         fsExtra.ensureDirSync(contentPath);
+        this.maxFileLength =
+            (options?.maxPathLength ?? 255) - (contentPath.length + 1) - 23;
+        // we subtract 23 for the contentId (12), unique ids appended to
+        // the file (8) and path separators (3)
+
+        if (this.maxFileLength < 20) {
+            throw new Error(
+                'The path of content directory is too long to add files to it. Put the directory into a different location.'
+            );
+        }
     }
+
+    /**
+     * Indicates how long files can be.
+     */
+    private maxFileLength: number;
 
     /**
      * Returns a random integer
@@ -81,17 +112,21 @@ export default class FileContentStorage implements IContentStorage {
             id = await this.createContentId();
         }
         try {
-            await fsExtra.ensureDir(path.join(this.contentPath, id.toString()));
+            await fsExtra.ensureDir(
+                path.join(this.getContentPath(), id.toString())
+            );
             await fsExtra.writeJSON(
-                path.join(this.contentPath, id.toString(), 'h5p.json'),
+                path.join(this.getContentPath(), id.toString(), 'h5p.json'),
                 metadata
             );
             await fsExtra.writeJSON(
-                path.join(this.contentPath, id.toString(), 'content.json'),
+                path.join(this.getContentPath(), id.toString(), 'content.json'),
                 content
             );
         } catch (error) {
-            await fsExtra.remove(path.join(this.contentPath, id.toString()));
+            await fsExtra.remove(
+                path.join(this.getContentPath(), id.toString())
+            );
             throw new H5pError(
                 'storage-file-implementations:error-creating-content'
             );
@@ -116,7 +151,7 @@ export default class FileContentStorage implements IContentStorage {
         checkFilename(filename);
         if (
             !(await fsExtra.pathExists(
-                path.join(this.contentPath, id.toString())
+                path.join(this.getContentPath(), id.toString())
             ))
         ) {
             throw new H5pError(
@@ -126,7 +161,11 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
 
-        const fullPath = path.join(this.contentPath, id.toString(), filename);
+        const fullPath = path.join(
+            this.getContentPath(),
+            id.toString(),
+            filename
+        );
         await fsExtra.ensureDir(path.dirname(fullPath));
         const writeStream = fsExtra.createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
@@ -139,7 +178,7 @@ export default class FileContentStorage implements IContentStorage {
      */
     public async contentExists(contentId: ContentId): Promise<boolean> {
         return fsExtra.pathExists(
-            path.join(this.contentPath, contentId.toString())
+            path.join(this.getContentPath(), contentId.toString())
         );
     }
 
@@ -153,7 +192,7 @@ export default class FileContentStorage implements IContentStorage {
     public async deleteContent(id: ContentId, user?: IUser): Promise<void> {
         if (
             !(await fsExtra.pathExists(
-                path.join(this.contentPath, id.toString())
+                path.join(this.getContentPath(), id.toString())
             ))
         ) {
             throw new H5pError(
@@ -163,7 +202,7 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
 
-        await fsExtra.remove(path.join(this.contentPath, id.toString()));
+        await fsExtra.remove(path.join(this.getContentPath(), id.toString()));
     }
 
     /**
@@ -177,7 +216,7 @@ export default class FileContentStorage implements IContentStorage {
     ): Promise<void> {
         checkFilename(filename);
         const absolutePath = path.join(
-            this.contentPath,
+            this.getContentPath(),
             contentId.toString(),
             filename
         );
@@ -202,8 +241,35 @@ export default class FileContentStorage implements IContentStorage {
         filename: string
     ): Promise<boolean> {
         checkFilename(filename);
-        return fsExtra.pathExists(
-            path.join(this.contentPath, contentId.toString(), filename)
+        if (contentId !== undefined) {
+            return fsExtra.pathExists(
+                path.join(this.getContentPath(), contentId.toString(), filename)
+            );
+        }
+        return false;
+    }
+
+    /**
+     * Returns information about a content file (e.g. image or video) inside a piece of content.
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get information about
+     * @param user the user who wants to retrieve the content file
+     * @returns
+     */
+    public async getFileStats(
+        id: ContentId,
+        filename: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        if (!(await this.fileExists(id, filename))) {
+            throw new H5pError(
+                'content-file-missing',
+                { filename, contentId: id },
+                404
+            );
+        }
+        return fsExtra.stat(
+            path.join(this.getContentPath(), id.toString(), filename)
         );
     }
 
@@ -227,7 +293,7 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
         return fsExtra.createReadStream(
-            path.join(this.contentPath, id.toString(), filename)
+            path.join(this.getContentPath(), id.toString(), filename)
         );
     }
 
@@ -290,13 +356,13 @@ export default class FileContentStorage implements IContentStorage {
      * @returns a list of contentIds
      */
     public async listContent(user?: IUser): Promise<ContentId[]> {
-        const directories = await fsExtra.readdir(this.contentPath);
+        const directories = await fsExtra.readdir(this.getContentPath());
         return (
             await Promise.all(
                 directories.map(async (dir) => {
                     if (
                         !(await fsExtra.pathExists(
-                            path.join(this.contentPath, dir, 'h5p.json')
+                            path.join(this.getContentPath(), dir, 'h5p.json')
                         ))
                     ) {
                         return '';
@@ -318,7 +384,7 @@ export default class FileContentStorage implements IContentStorage {
         user: IUser
     ): Promise<string[]> {
         const contentDirectoryPath = path.join(
-            this.contentPath,
+            this.getContentPath(),
             contentId.toString()
         );
         const absolutePaths = await globPromise(
@@ -332,5 +398,17 @@ export default class FileContentStorage implements IContentStorage {
             }
         );
         return absolutePaths.map((p) => path.relative(contentDirectoryPath, p));
+    }
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    public sanitizeFilename(filename: string): string {
+        return sanitizeFilename(filename, this.maxFileLength);
     }
 }

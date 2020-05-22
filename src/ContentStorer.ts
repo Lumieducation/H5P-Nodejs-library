@@ -395,6 +395,7 @@ export default class ContentStorer {
         let attempts = 0;
         let filenameAttempt = '';
         let exists = false;
+        actualFilename = this.contentManager.sanitizeFilename(actualFilename);
         const dirname = path.dirname(actualFilename);
         do {
             filenameAttempt = `${dirname ? `${dirname}/` : ''}${path.basename(

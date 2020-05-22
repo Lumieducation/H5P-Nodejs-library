@@ -125,14 +125,17 @@ export default class TemporaryFileManager {
         let attempts = 0;
         let filenameAttempt = '';
         let exists = false;
-        const dirname = path.dirname(filename);
+        const cleanedFilename = this.storage.sanitizeFilename
+            ? this.storage.sanitizeFilename(filename)
+            : filename;
+        const dirname = path.dirname(cleanedFilename);
         do {
             filenameAttempt = `${
                 dirname && dirname !== '.' ? `${dirname}/` : ''
             }${path.basename(
-                filename,
-                path.extname(filename)
-            )}-${shortid()}${path.extname(filename)}`;
+                cleanedFilename,
+                path.extname(cleanedFilename)
+            )}-${shortid()}${path.extname(cleanedFilename)}`;
             exists = await this.storage.fileExists(filenameAttempt, user);
             attempts += 1;
         } while (attempts < 5 && exists); // only try 5 times

@@ -1,5 +1,6 @@
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
+import { generalizedSanitizeFilename } from '../utils';
 
 const log = new Logger('S3Utils');
 
@@ -32,4 +33,15 @@ export function validateFilename(filename: string): void {
         log.error(`Found illegal character in filename: ${filename}`);
         throw new H5pError('illegal-filename', { filename }, 400);
     }
+}
+
+export function sanitizeFilename(
+    filename: string,
+    maxFileLength: number
+): string {
+    return generalizedSanitizeFilename(
+        filename,
+        /[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/g,
+        maxFileLength
+    );
 }

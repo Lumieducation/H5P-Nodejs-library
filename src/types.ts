@@ -1,5 +1,6 @@
 import { ReadStream } from 'fs';
 import { Stream, Readable } from 'stream';
+import { Request } from 'express';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -385,6 +386,14 @@ export interface IPath {
 }
 
 /**
+ * This describes the creation time and the size of a file
+ */
+export interface IFileStats {
+    birthtime: Date;
+    size: number;
+}
+
+/**
  * This is the structure of "data transfer objects" that are passed back to the
  * JavaScript client. It is used to return a lot of information about library
  * metadata, required files, translations etc.
@@ -570,6 +579,19 @@ export interface IContentStorage {
     fileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
+     * Returns information about a content file (e.g. image or video) inside a piece of content.
+     * @param id the id of the content object that the file is attached to
+     * @param filename the filename of the file to get information about
+     * @param user the user who wants to retrieve the content file
+     * @returns
+     */
+    getFileStats(
+        contentId: ContentId,
+        file: string,
+        user: IUser
+    ): Promise<IFileStats>;
+
+    /**
      * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
@@ -626,6 +648,19 @@ export interface IContentStorage {
      * @returns a list of files that are used in the piece of content, e.g. ['images/image1.png', 'videos/video2.mp4', 'file.xyz']
      */
     listFiles(contentId: ContentId, user: IUser): Promise<string[]>;
+
+    /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * Note: file names will be appended with a 9 character long unique id,
+     * so you must make sure to shorten long filenames accordingly!
+     * If you do not implement this method, there will be no sanitization!
+     * @param filename the filename to sanitize; this can be a relative path
+     * (e.g. "images/image1.png")
+     * @returns the clean filename
+     */
+    sanitizeFilename?(filename: string): string;
 }
 
 /**
@@ -685,6 +720,15 @@ export interface ILibraryStorage {
      * @returns true if file exists in library, false otherwise
      */
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
+
+    /**
+     * Returns a information about a library file.
+     * Throws an exception if the file does not exist.
+     * @param library library
+     * @param filename the relative path inside the library
+     * @returns the file stats
+     */
+    getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
 
     /**
      * Returns a readable stream of a library file's contents.
@@ -1295,6 +1339,15 @@ export interface ITemporaryFileStorage {
     listFiles(user?: IUser): Promise<ITemporaryFile[]>;
 
     /**
+     * Removes invalid characters from filenames and enforces other filename
+     * rules required by the storage implementation (e.g. filename length
+     * restrictions).
+     * @param filename the filename to sanitize
+     * @returns the clean filename
+     */
+    sanitizeFilename?(filename: string): string;
+
+    /**
      * Stores a file. Only the user who stores the file is allowed to access it later.
      * @param filename the filename by which the file will be identified later; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param dataStream the stream containing the file's data
@@ -1386,6 +1439,24 @@ export interface IPlayerModel {
     translations: any;
 }
 
+export interface IEditorModel {
+    integration: IIntegration;
+    scripts: string[];
+    styles: string[];
+    urlGenerator: IUrlGenerator;
+}
+
+export interface IUrlGenerator {
+    coreFile(file: string): string;
+    downloadPackage(contentId: ContentId): string;
+    editorLibraryFile(file: string): string;
+    editorLibraryFiles(): string;
+    libraryFile(library: ILibraryName, file: string): string;
+    parameters(): string;
+    play(): string;
+    temporaryFiles(): string;
+}
+
 /**
  * The translation function is called to retrieve translation for keys.
  * @param key the key for which a translation should be returned; Note that his
@@ -1398,3 +1469,17 @@ export interface IPlayerModel {
  * @returns the translated string
  */
 export type ITranslationFunction = (key: string, language: string) => string;
+
+export interface IRequestWithLanguage extends Request {
+    language: string;
+}
+export interface IRequestWithUser extends Request {
+    user: IUser;
+}
+
+export interface IRequestWithTranslator extends Request {
+    i18n: {
+        changeLanguage(language: string): Promise<void>;
+    };
+    t: (errorId: string, replacements: any) => string;
+}

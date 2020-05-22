@@ -2,32 +2,36 @@
     "name": "h5p-nodejs-library",
     "version": "2.0.0",
     "description": "The H5P-Nodejs-library is a port of the H5P-Editor-PHP-library and the H5P-PHP-Library for Nodejs.",
+    "license": "GPL-3.0-or-later",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
     },
     "scripts": {
-        "start": "npx ts-node examples/express.ts",
-        "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core && npm run build",
-        "build": "npx tsc -p ./tsconfig.build.json && cp -r src/schemas build/src/schemas",
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
-        "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build",
-        "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
-        "download:core": "sh scripts/install.sh",
+        "build": "npx tsc -p ./tsconfig.build.json && cp -r src/schemas build/src/schemas",
+        "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
         "clear": "rm -rf test/data/hub-content && rm -rf h5p/temporary-storage && rm test/data/content-type-cache/real-content-types.json",
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
-        "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
-        "lint": "npx tslint --project tsconfig.json --config tslint.json",
-        "test": "jest --testTimeout=120000 --logHeapUsage --maxWorkers=2",
-        "test:watch": "jest --watch",
-        "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
-        "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
-        "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
-        "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=2 --logHeapUsage",
-        "test:db": "npx jest --config jest.db.config.js --maxWorkers=2 --logHeapUsage",
+        "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
+        "download:core": "sh scripts/install.sh",
         "format:check": "npx prettier --check \"{src,test,examples}/**/*.ts\"",
         "format": "npx prettier --write \"{src,test,examples}/**/*.ts\"",
-        "semantic-release": "semantic-release"
+        "lint": "npx tslint --project tsconfig.json --config tslint.json",
+        "prepare": "npm run download:content-type-cache && npm run download:content && npm run download:core && npm run build",
+        "semantic-release": "semantic-release",
+        "start:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d",
+        "start": "npx ts-node examples/express.ts",
+        "stop:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml down",
+        "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
+        "test:db": "npx jest --config jest.db.config.js --maxWorkers=2 --logHeapUsage",
+        "test:e2e:player": "./node_modules/.bin/ts-node test/e2e/H5PPlayer.DisplayContent.test.ts",
+        "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
+        "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
+        "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=2 --logHeapUsage",
+        "test:watch": "jest --watch",
+        "test": "jest --testTimeout=120000 --logHeapUsage --maxWorkers=2",
+        "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build"
     },
     "release": {
         "branch": "master"
@@ -51,6 +55,11 @@
             "name": "Jan Philip Schellenberg",
             "email": "jps@Lumi.education",
             "url": "http://Lumi.education"
+        },
+        {
+            "name": "Bo Biene",
+            "email": "biene@inray.de",
+            "url": "https://www.qm-team.de/mymento-kursportal/"
         }
     ],
     "dependencies": {
@@ -80,9 +89,11 @@
         "@semantic-release/git": "9.0.0",
         "@semantic-release/github": "7.0.6",
         "@types/escape-html": "1.0.0",
-        "@types/fs-extra": "9.0.0",
+        "@types/express": "4.17.6",
+        "@types/fs-extra": "9.0.1",
         "@types/jest": "25.2.3",
         "@types/jsonpath": "0.2.0",
+        "@types/mime-types": "2.1.0",
         "@types/mongodb": "3.5.18",
         "@types/puppeteer": "^2.1.0",
         "@types/shortid": "0.0.29",
@@ -91,7 +102,7 @@
         "@types/yargs": "15.0.5",
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
-        "aws-sdk": "2.679.0",
+        "aws-sdk": "2.682.0",
         "axios-mock-adapter": "1.18.1",
         "body-parser": "1.19.0",
         "commitlint": "8.3.5",
@@ -100,9 +111,9 @@
         "husky": "4.2.5",
         "i18next": "19.4.4",
         "i18next-fs-backend": "1.0.3",
-        "i18next-http-middleware": "1.1.0",
+        "i18next-http-middleware": "1.2.0",
         "jest": "26.0.1",
-        "mockdate": "2.0.5",
+        "mockdate": "3.0.2",
         "mongodb": "3.5.7",
         "prettier": "2.0.5",
         "promise-queue": "2.2.5",
@@ -118,7 +129,7 @@
         "tslint": "6.1.2",
         "tslint-config-airbnb": "5.11.2",
         "tslint-config-prettier": "1.18.0",
-        "typescript": "3.9.2"
+        "typescript": "3.9.3"
     },
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts"

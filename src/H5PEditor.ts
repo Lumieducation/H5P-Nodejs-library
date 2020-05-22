@@ -4,7 +4,7 @@ import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
 import sanitize from 'sanitize-filename';
-import stream, { Readable } from 'stream';
+import { PassThrough, Writable, Readable } from 'stream';
 import imageSize from 'image-size';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
@@ -39,12 +39,14 @@ import {
     IHubInfo,
     IIntegration,
     IKeyValueStorage,
+    IEditorModel,
     ILibraryDetailedDataForClient,
     ILibraryInstallResult,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
     ILumiEditorIntegration,
+    IUrlGenerator,
     ISemanticsEntry,
     ITemporaryFileStorage,
     ITranslationFunction,
@@ -83,12 +85,12 @@ export default class H5PEditor {
             client: defaultClientLanguageFile,
             'metadata-semantics': defaultMetadataSemanticsLanguageFile,
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
-        }).t
+        }).t,
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
     ) {
         log.info('initialize');
 
         this.config = config;
-        this.urlGenerator = new UrlGenerator(config);
 
         this.renderer = defaultRenderer;
         this.contentTypeCache = new ContentTypeCache(config, cache);
@@ -135,9 +137,8 @@ export default class H5PEditor {
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
     private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
-    private renderer: any;
+    private renderer: (model: IEditorModel) => string | any;
     private semanticsLocalizer: SemanticsLocalizer;
-    private urlGenerator: UrlGenerator;
 
     /**
      * Deletes a piece of content and all files dependent on it.
@@ -159,7 +160,7 @@ export default class H5PEditor {
      */
     public async exportContent(
         contentId: ContentId,
-        outputStream: WriteStream,
+        outputStream: Writable,
         user: IUser
     ): Promise<void> {
         return this.packageExporter.createPackage(
@@ -434,7 +435,7 @@ export default class H5PEditor {
         language: string = 'en'
     ): Promise<string | any> {
         log.info(`rendering ${contentId}`);
-        const model = {
+        const model: IEditorModel = {
             integration: this.generateIntegration(contentId, language),
             scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
@@ -491,7 +492,7 @@ export default class H5PEditor {
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
-        const dataStream: any = new stream.PassThrough();
+        const dataStream: any = new PassThrough();
         dataStream.end(file.data);
         log.info(
             `Putting content file ${cleanFilename} into temporary storage`
@@ -527,6 +528,34 @@ export default class H5PEditor {
         mainLibraryName: string,
         user: IUser
     ): Promise<ContentId> {
+        return (
+            await this.saveOrUpdateContentReturnMetaData(
+                contentId,
+                parameters,
+                metadata,
+                mainLibraryName,
+                user
+            )
+        ).id;
+    }
+
+    /**
+     * Stores new content or updates existing content.
+     * Copies over files from temporary storage if necessary.
+     * @param contentId the contentId of existing content (undefined or previously unsaved content)
+     * @param parameters the content parameters (=content.json)
+     * @param metadata the content metadata (~h5p.json)
+     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
+     * @param user the user who wants to save the piece of content
+     * @returns the existing contentId or the newly assigned one and the metatdata
+     */
+    public async saveOrUpdateContentReturnMetaData(
+        contentId: ContentId,
+        parameters: ContentParameters,
+        metadata: IContentMetadata,
+        mainLibraryName: string,
+        user: IUser
+    ): Promise<{ id: string; metadata: IContentMetadata }> {
         if (contentId !== undefined) {
             log.info(`saving h5p content for ${contentId}`);
         } else {
@@ -560,7 +589,7 @@ export default class H5PEditor {
             parsedLibraryName,
             user
         );
-        return newContentId;
+        return { id: newContentId, metadata: h5pJson };
     }
 
     /**
@@ -621,7 +650,9 @@ export default class H5PEditor {
      * @param renderer
      * @returns the H5PEditor object that you can use to chain method calls
      */
-    public setRenderer(renderer: any): H5PEditor {
+    public setRenderer(
+        renderer: (model: IEditorModel) => string | any
+    ): H5PEditor {
         this.renderer = renderer;
         return this;
     }
@@ -643,7 +674,7 @@ export default class H5PEditor {
         parameters: any;
     }> {
         log.info(`uploading package`);
-        const dataStream: any = new stream.PassThrough();
+        const dataStream: any = new PassThrough();
         dataStream.end(data);
 
         let returnValues: {
