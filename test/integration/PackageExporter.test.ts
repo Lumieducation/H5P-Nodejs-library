@@ -17,6 +17,6 @@ describe('PackageExporter (integration tests with examples from H5P Hub)', () =>
     for (const file of files.filter((f) => f.endsWith('.h5p'))) {
         it(`importing ${file} and exporting it again produces the same result`, async () => {
             await importAndExportPackage(path.join(directory, file));
-        }, 20000);
+        });
     }
 });
