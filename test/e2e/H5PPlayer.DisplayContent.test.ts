@@ -30,6 +30,8 @@ describe('e2e test: play content', () => {
 
     for (const file of fsExtra.readdirSync(examplesPath)) {
         it(`playing ${file}`, async () => {
+            // tslint:disable-next-line: no-console
+            console.log(`Performing test ${file}`);
             const contentId = await exportPackage(
                 path.join(examplesPath, file),
                 librariesPath,
