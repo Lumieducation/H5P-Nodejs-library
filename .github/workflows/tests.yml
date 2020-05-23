@@ -58,6 +58,8 @@ jobs:
               run: npm run test:e2e
               env:
                   CI: true
+                  DEBUG: h5p*:Manager
+                  LOG_LEVEL: debug
 
     release:
         name: Release to NPM
