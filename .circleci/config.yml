@@ -14,6 +14,8 @@ jobs:
                       - ./node_modules
                       - ./h5p
                       - ./build
+                      - ./test/data/content-type-cache/real-content-types.json
+            - run: npm run download:content            
             - save_cache:
                   key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
