@@ -17,7 +17,7 @@ jobs:
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./h5p            
+                      - ./h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
@@ -36,6 +36,7 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run lint
+
     format:
         docker:
             - image: circleci/node:10
@@ -49,6 +50,7 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run format:check
+
     unit-tests:
         docker:
             - image: circleci/node:10
@@ -62,6 +64,7 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test
+
     integration-tests:
         docker:
             - image: circleci/node:10
@@ -75,6 +78,7 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test:integration
+
     e2e-tests:
         docker:
             - image: circleci/node:10-browsers
@@ -88,17 +92,19 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test:e2e
+
     release:
         docker:
-            - image: 'circleci/node:latest'
+            - image: 'circleci/node:10'
         steps:
             - checkout
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - restore_cache:
-                  key: modules-build-cache-{{ checksum "package-lock.json" }}            
+                  key: modules-build-cache-{{ checksum "package-lock.json" }}
             - run:
                   name: release
                   command: npm run semantic-release || true
+
 workflows:
     version: 2
     h5peditor:
