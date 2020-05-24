@@ -15,11 +15,27 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
+        
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+          path: node_modules
+          key: npm-${{ runner.OS }}-build-${{ hashFiles('package-lock.json') }}
 
-    - name: npm install, npm run test:coverage
-      run: |
-        npm install
-        npm run test:coverage
+    - name: npm install
+      run: npm install
+
+    - name: Cache H5P examples
+      uses: actions/cache@v1
+      with:
+          path: test/data/hub-content
+          key: h5p-hub-content-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
+
+    - name: Download H5P Hub content types
+      run: npm run download:content
+    
+    - name: Run tests
+      run: npm run test:coverage
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
