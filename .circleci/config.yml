@@ -7,16 +7,16 @@ jobs:
             - checkout
             - run: npm ci
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - save_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
                   paths:
                       - ./node_modules
                       - ./h5p
                       - ./build
             - run: npm run download:content            
             - save_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
                       - ./test/data/hub-content
 
@@ -26,10 +26,10 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
             - run: npm run download:content-type-cache
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run lint
     format:
         docker:
@@ -37,10 +37,10 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
             - run: npm run download:content-type-cache
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run format:check
     unit-tests:
         docker:
@@ -48,10 +48,10 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
             - run: npm run download:content-type-cache
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test
     integration-tests:
         docker:
@@ -59,10 +59,10 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
             - run: npm run download:content-type-cache
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test:integration
     e2e-tests:
         docker:
@@ -70,10 +70,10 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: dependency-cache-{{ checksum "package-lock.json" }}
+                  key: install-cache-{{ checksum "package-lock.json" }}
             - run: npm run download:content-type-cache
             - restore_cache:
-                  key: h5p-hub-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run test:e2e
     release:
         docker:
