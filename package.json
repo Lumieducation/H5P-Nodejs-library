@@ -117,7 +117,7 @@
         "prettier": "2.0.5",
         "promise-queue": "2.2.5",
         "puppeteer": "3.1.0",
-        "semantic-release": "17.0.7",
+        "semantic-release": "17.0.8",
         "shortid": "2.2.15",
         "source-map-support": "0.5.19",
         "start-server-and-test": "1.11.0",
