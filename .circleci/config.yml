@@ -79,8 +79,8 @@ jobs:
         steps:
             - checkout
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            - restore_cache:
-                  key: modules-cache-{{ checksum "package-lock.json" }}
+            - attach_workspace:
+                  at: .
             - run:
                   name: release
                   command: npm run semantic-release || true
