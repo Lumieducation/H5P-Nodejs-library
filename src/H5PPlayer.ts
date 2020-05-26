@@ -86,7 +86,7 @@ export default class H5PPlayer {
             contentId,
             customScripts: this.globalCustomScripts
                 .map((script) => `<script src="${script}"></script>`)
-                .join(),
+                .join('\n'),
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
@@ -187,6 +187,12 @@ export default class H5PPlayer {
                         contentId
                     )
                 }
+            },
+            core: {
+                scripts: this.listCoreScripts().concat(
+                    this.globalCustomScripts
+                ),
+                styles: this.listCoreStyles()
             },
             l10n: {
                 H5P: this.clientTranslation
