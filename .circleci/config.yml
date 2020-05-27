@@ -1,8 +1,10 @@
 version: 2.1
+
 orbs:
     coveralls: coveralls/coveralls@1.0.6
+
 jobs:
-    install+build:
+    install-build:
         docker:
             - image: circleci/node:10
         steps:
@@ -110,29 +112,29 @@ workflows:
     version: 2
     h5peditor:
         jobs:
-            - install+build
+            - install-build
             - lint:
                   requires:
-                      - install+build
+                      - install-build
             - format:
                   requires:
-                      - install+build
+                      - install-build
             - unit-tests:
                   requires:
-                      - install+build
+                      - install-build
             - e2e-tests:
                   requires:
-                      - install+build
+                      - install-build
             - integration-tests:
                   requires:
-                      - install+build
+                      - install-build
             - coverage-done:
                   requires:
                       - unit-tests
                       - integration-tests
             - release:
                   requires:
-                      - install+build
+                      - install-build
                       - lint
                       - format
                       - unit-tests
