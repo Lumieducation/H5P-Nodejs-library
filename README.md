@@ -22,11 +22,11 @@ You can then open the URL http://localhost:8080 in any browser.
 
 ## Trying out the demo on Docker
 
-Make sure you have [`git`](https://git-scm.com/), [`docker`](https://www.docker.com/) installed.
+Make sure you have [`git`](https://git-scm.com/) and [`docker`](https://www.docker.com/) installed.
 
 1. Clone the repository with git
-2. `docker build -t <your-username/h5p-nodejs-library .`
-3. `docker run -p 3000:8080 -d <your-username/h5p-nodejs-library`
+2. `docker build -t <your-username>/h5p-nodejs-library .`
+3. `docker run -p 3000:8080 -d <your-username>/h5p-nodejs-library`
 
 You can then open the URL http://localhost:3000 in any browser.
 
