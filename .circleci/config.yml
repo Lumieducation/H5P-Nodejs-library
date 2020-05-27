@@ -7,6 +7,8 @@ jobs:
             - checkout
             - restore_cache:
                   key: modules-cache-{{ checksum "package-lock.json" }}
+            - restore_cache:
+                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
             - run: npm install
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
@@ -15,6 +17,10 @@ jobs:
                   key: modules-cache-{{ checksum "package-lock.json" }}
                   paths:
                       - ./node_modules
+            - save_cache:
+                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
+                  paths:
+                      - ./h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
