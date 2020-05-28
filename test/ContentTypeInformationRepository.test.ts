@@ -3,6 +3,7 @@ import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';
+import fsExtra from 'fs-extra';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import ContentTypeInformationRepository from '../src/ContentTypeInformationRepository';
@@ -290,6 +291,19 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                         require('./data/content-type-cache/real-content-types.json')
                     );
 
+                axiosMock
+                    .onGet(`${config.hubContentTypesEndpoint}H5P.DragText`)
+                    .reply(() => {
+                        return [
+                            200,
+                            fsExtra.createReadStream(
+                                path.resolve(
+                                    'test/data/example-packages/H5P.DragText.h5p'
+                                )
+                            )
+                        ];
+                    });
+
                 await cache.updateIfNecessary();
                 const repository = new ContentTypeInformationRepository(
                     cache,
@@ -297,7 +311,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     config
                 );
 
-                axiosMock.restore(); // TODO: It would be nicer if the download of the Hub File could be mocked as well, but this is not possible as axios-mock-adapter doesn't support stream yet ()
                 await expect(
                     repository.installContentType('H5P.DragText', user)
                 ).resolves.toBeDefined();
