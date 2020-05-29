@@ -481,6 +481,15 @@ export default class MongoS3ContentStorage implements IContentStorage {
             );
         }
 
+        if (!(await this.fileExists(contentId, filename))) {
+            log.error(`File not found!`);
+            throw new H5pError(
+                'mongo-s3-content-storage:file-not-found',
+                {},
+                404
+            );
+        }
+
         return this.s3
             .getObject({
                 Bucket: this.options.s3Bucket,
