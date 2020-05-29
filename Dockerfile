@@ -1,21 +1,15 @@
-FROM node:alpine
+FROM node:lts
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+RUN mkdir -p /opt/h5p
+WORKDIR /opt/h5p
 
-RUN mkdir -p /usr/local/lib/node_modules && chown -R node:node /usr/local/lib/node_modules
-
-WORKDIR /home/node/app
-
-COPY . .
-
-RUN npm install -g typescript
+COPY . ./
 
 RUN npm install
-
-RUN npm build
-
-USER node
+RUN npm run download:content-type-cache
+RUN npm run download:content
+RUN npm run download:core
+RUN npm run build
 
 EXPOSE 8080
-
 CMD [ "npm", "start" ]
