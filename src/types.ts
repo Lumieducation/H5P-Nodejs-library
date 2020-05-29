@@ -463,7 +463,7 @@ export interface ILibraryOverviewForClient {
     minorVersion: number;
     name: string;
     restricted: boolean;
-    runnable: boolean;
+    runnable: boolean | 0 | 1;
     title: string;
     tutorialUrl: string;
     /**
@@ -770,6 +770,14 @@ export interface ILibraryStorage {
     libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
+     * Returns a list of library addons that are installed in the system.
+     * Addons are libraries that have the property 'addTo' in their metadata.
+     * ILibraryStorage implementation CAN but NEED NOT implement the method.
+     * If it is not implemented, addons won't be available in the system.
+     */
+    listAddons?(): Promise<ILibraryMetadata[]>;
+
+    /**
      * Gets a list of all library files that exist for this library.
      * @param library
      * @returns all files that exist for the library
@@ -964,6 +972,36 @@ export interface IInstalledLibrary extends ILibraryMetadata {
  * This interface represents the structure of library.json files.
  */
 export interface ILibraryMetadata extends IFullLibraryName {
+    /**
+     * Addons can be added to other content types by
+     */
+    addTo?: {
+        content?: {
+            types?: {
+                text?: {
+                    /**
+                     * If any string property in the parameters matches the regex,
+                     * the addon will be activated for the content.
+                     */
+                    regex?: string;
+                };
+            }[];
+        };
+        /**
+         * Contains cases in which the library should be added to the editor.
+         *
+         * This is an extension to the H5P library metadata structure made by
+         * h5p-nodejs-library. That way addons can specify to which editors
+         * they should be added in general. The PHP implementation hard-codes
+         * this list into the server, which we want to avoid here.
+         */
+        editor: {
+            /**
+             * A list of machine names in which the addon should be added.
+             */
+            machineNames: string[];
+        };
+    };
     author?: string;
     /**
      * The core API required to run the library.
@@ -984,7 +1022,7 @@ export interface ILibraryMetadata extends IFullLibraryName {
     preloadedCss?: IPath[];
     preloadedDependencies?: ILibraryName[];
     preloadedJs?: IPath[];
-    runnable: boolean;
+    runnable: boolean | 0 | 1;
     title: string;
     w?: number;
 }

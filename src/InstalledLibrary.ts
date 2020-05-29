@@ -42,7 +42,7 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public preloadedCss?: IPath[];
     public preloadedDependencies?: ILibraryName[];
     public preloadedJs?: IPath[];
-    public runnable: boolean;
+    public runnable: boolean | 0 | 1;
     public title: string;
     public w?: number;
 

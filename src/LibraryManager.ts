@@ -327,6 +327,13 @@ export default class LibraryManager {
         return false;
     }
 
+    public async listAddons(): Promise<ILibraryMetadata[]> {
+        if (this.libraryStorage.listAddons) {
+            return this.libraryStorage.listAddons();
+        }
+        return [];
+    }
+
     /**
      * Gets a list of files that exist in the library.
      * @param library the library for which the files should be listed

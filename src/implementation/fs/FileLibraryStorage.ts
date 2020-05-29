@@ -325,6 +325,17 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return fsExtra.pathExists(this.getDirectoryPath(name));
     }
 
+    public async listAddons(): Promise<ILibraryMetadata[]> {
+        const installedLibraries = await this.getInstalledLibraryNames();
+        return (
+            await Promise.all(
+                installedLibraries.map((addonName) =>
+                    this.getLibrary(addonName)
+                )
+            )
+        ).filter((library) => library.addTo !== undefined);
+    }
+
     /**
      * Gets a list of all library files that exist for this library.
      * @param library

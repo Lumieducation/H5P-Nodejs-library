@@ -1,4 +1,4 @@
-import { ReadStream, WriteStream } from 'fs';
+import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
 import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
@@ -35,21 +35,22 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IEditorModel,
     IH5PConfig,
     IHubInfo,
     IIntegration,
     IKeyValueStorage,
-    IEditorModel,
     ILibraryDetailedDataForClient,
     ILibraryInstallResult,
+    ILibraryMetadata,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
     ILumiEditorIntegration,
-    IUrlGenerator,
     ISemanticsEntry,
     ITemporaryFileStorage,
     ITranslationFunction,
+    IUrlGenerator,
     IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
@@ -832,6 +833,37 @@ export default class H5PEditor {
     }
 
     /**
+     * Returns a list of addons that should be used for the library
+     * @param machineName the library identified by its machine name
+     * @returns a list of addons
+     */
+    private async getAddonsForLibrary(
+        machineName: string
+    ): Promise<ILibraryMetadata[]> {
+        log.debug('Getting list of installed addons.');
+        const installedAddons = await this.libraryManager.listAddons();
+
+        const neededAddons = [];
+        for (const installedAddon of installedAddons) {
+            // The property addTo.editor.machineNames is a custom
+            // h5p-nodejs-library extension.
+            if (
+                installedAddon.addTo?.editor?.machineNames?.includes(
+                    machineName
+                )
+            ) {
+                log.debug(
+                    `Addon ${LibraryName.toUberName(
+                        installedAddon
+                    )} will be added to the editor.`
+                );
+                neededAddons.push(installedAddon);
+            }
+        }
+        return neededAddons;
+    }
+
+    /**
      * Returns a functions that replaces the h5p editor language file with the
      * one for the language desired. Checks if the H5P editor core supports
      * a language and falls back to English if it doesn't. Also removes region
@@ -876,6 +908,11 @@ export default class H5PEditor {
             this.libraryManager.getLibrary(libraryName),
             this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
+
+        const addonsForLibrary = await this.getAddonsForLibrary(
+            library.machineName
+        );
+
         const combinedDependencies = await Promise.all([
             this.resolveDependencies(
                 library.preloadedDependencies || [],
@@ -886,7 +923,10 @@ export default class H5PEditor {
                 library.editorDependencies || [],
                 language,
                 loaded
-            )
+            ),
+            addonsForLibrary
+                ? this.resolveDependencies(addonsForLibrary, language, loaded)
+                : undefined
         ]);
         combinedDependencies.forEach((dependencies) =>
             dependencies.forEach((dependency) => {

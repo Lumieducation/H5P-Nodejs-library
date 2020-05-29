@@ -11,7 +11,8 @@ import {
     ILibraryName,
     ILibraryStorage,
     IPlayerModel,
-    IUrlGenerator
+    IUrlGenerator,
+    ILibraryMetadata
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -98,16 +99,14 @@ export default class H5PPlayer {
             translations: {}
         };
 
+        const dependencies = (metadata.preloadedDependencies || []).concat(
+            await this.getAddonsForParameters(parameters)
+        );
+
         const libraries = {};
-        await this.getLibraries(
-            metadata.preloadedDependencies || [],
-            libraries
-        );
-        this.aggregateAssets(
-            metadata.preloadedDependencies || [],
-            model,
-            libraries
-        );
+        await this.getLibraries(dependencies, libraries);
+
+        this.aggregateAssets(dependencies, model, libraries);
         return this.renderer(model);
     }
 
@@ -161,6 +160,37 @@ export default class H5PPlayer {
         });
     }
 
+    /**
+     * Scans the parameters for occurances of the regex pattern in any string
+     * property.
+     * @param parameters the parameters (= content.json)
+     * @param regex the regex to look for
+     * @returns true if the regex occurs in a string inside the parametres
+     */
+    private checkIfRegexIsInParameters(
+        parameters: any,
+        regex: RegExp
+    ): boolean {
+        const type = typeof parameters;
+        if (type === 'string') {
+            if (regex.test(parameters)) {
+                return true;
+            }
+        } else if (type === 'object') {
+            // tslint:disable-next-line: forin
+            for (const property in parameters) {
+                const found = this.checkIfRegexIsInParameters(
+                    parameters[property],
+                    regex
+                );
+                if (found) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private generateIntegration(
         contentId: ContentId,
         parameters: ContentParameters,
@@ -202,6 +232,71 @@ export default class H5PPlayer {
             url: this.config.baseUrl,
             ...this.integrationObjectDefaults
         };
+    }
+
+    /**
+     * Determines which addons should be used for the parameters. It will scan
+     * the parameters for patterns specified by installed addons.
+     * @param parameters the parameters to scan
+     * @returns a list of addons that should be used
+     */
+    private async getAddonsForParameters(
+        parameters: any
+    ): Promise<ILibraryMetadata[]> {
+        log.debug('Getting list of installed addons.');
+        let installedAddons: ILibraryMetadata[] = [];
+        if (this.libraryStorage.listAddons) {
+            installedAddons = await this.libraryStorage.listAddons();
+        }
+
+        log.debug('Checking which of the addons must be used for the content.');
+        const addonsToAdd: { [key: string]: ILibraryMetadata } = {};
+        for (const installedAddon of installedAddons) {
+            if (!installedAddon.addTo?.content?.types) {
+                continue;
+            }
+
+            for (const types of installedAddon.addTo.content.types) {
+                if (types.text) {
+                    // The regex pattern in the metadata is specified like this:
+                    // /mypattern/ or /mypattern/g
+                    // Because of this we must extract the actual pattern and
+                    // the flags and pass them to the constructor of RegExp.
+                    const matches = /^\/(.+?)\/([gimy]+)?$/.exec(
+                        types.text.regex
+                    );
+                    if (matches.length < 1) {
+                        log.error(
+                            `The addon ${LibraryName.toUberName(
+                                installedAddon
+                            )} contains an invalid regexp pattern in the addTo selector: ${
+                                types.text.regex
+                            }. This will be silently ignored, but the addon will never be used!`
+                        );
+                        continue;
+                    }
+
+                    if (
+                        this.checkIfRegexIsInParameters(
+                            parameters,
+                            new RegExp(matches[1], matches[2])
+                        )
+                    ) {
+                        log.debug(
+                            `Adding addon ${LibraryName.toUberName(
+                                installedAddon
+                            )} to dependencies as the regexp pattern ${
+                                types.text.regex
+                            } was found in the parameters.`
+                        );
+                        addonsToAdd[
+                            installedAddon.machineName
+                        ] = installedAddon;
+                    }
+                }
+            }
+        }
+        return Object.values(addonsToAdd);
     }
 
     private getDownloadPath(contentId: ContentId): string {
