@@ -245,7 +245,7 @@ export default class H5PPlayer {
     ): Promise<ILibraryMetadata[]> {
         log.debug('Getting list of installed addons.');
         let installedAddons: ILibraryMetadata[] = [];
-        if (this.libraryStorage.listAddons) {
+        if (this.libraryStorage?.listAddons) {
             installedAddons = await this.libraryStorage.listAddons();
         }
 
