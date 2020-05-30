@@ -202,6 +202,19 @@ export default class ContentStorer {
 
             // If something goes wrong we simply remove the file from the reference.
             try {
+                // We check for the unlikely case that the content file does not exist in the system anymore.
+                if (
+                    !(await this.contentManager.contentFileExists(
+                        sourceContentId,
+                        sourceFilename
+                    ))
+                ) {
+                    log.error(
+                        `The file ${sourceFilename} does not exist in contentId ${contentId} when pasting. This should not happen. Silently ignoring this and removing the file reference...`
+                    );
+                    throw new Error('pasted file not found');
+                }
+
                 const sourceFileStream = await this.contentManager.getContentFileStream(
                     sourceContentId,
                     sourceFilename,
