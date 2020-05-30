@@ -1,15 +1,10 @@
 FROM node:lts
 
-RUN mkdir -p /opt/h5p
-WORKDIR /opt/h5p
-
-COPY . ./
-
+USER node
+RUN mkdir /home/node/h5p-nodejs-library
+WORKDIR /home/node/h5p-nodejs-library
+COPY --chown=node:node . ./
 RUN npm install
-RUN npm run download:content-type-cache
-RUN npm run download:content
-RUN npm run download:core
-RUN npm run build
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
