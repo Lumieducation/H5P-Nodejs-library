@@ -13,22 +13,33 @@ describe('e2e test: play content', () => {
     let page: puppeteer.Page;
 
     beforeAll(async () => {
-        browser = await puppeteer.launch({});
+        browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--headless',
+                '--no-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-gpu'
+            ],
+            ignoreDefaultArgs: ['--mute-audio']
+        });
+        page = await browser.newPage();
+        await page.setCacheEnabled(false);
+        await page.setUserAgent(
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
+        );
     });
 
     afterAll(async () => {
+        await page.close();
         await browser.close();
     });
 
-    beforeEach(async () => {
-        page = await browser.newPage();
-    });
-
-    afterEach(async () => {
-        await page.close();
-    });
-
-    for (const file of fsExtra.readdirSync(examplesPath)) {
+    for (const file of fsExtra
+        .readdirSync(examplesPath)
+        // We ignore H5P.Audio as the requests for the OGG file is never resolved in some cases
+        // See #553 for more details.
+        .filter((f) => f !== 'H5P.Audio.h5p')) {
         it(`playing ${file}`, async () => {
             const contentId = await exportPackage(
                 path.join(examplesPath, file),
@@ -46,7 +57,7 @@ describe('e2e test: play content', () => {
                 errorHandler();
             });
             await page.goto(`http://localhost:8080/h5p/play/${contentId}`, {
-                waitUntil: ['networkidle0', 'load']
+                waitUntil: ['load', 'networkidle0']
             });
             expect(errorHandler).not.toHaveBeenCalled();
         }, 10000);
