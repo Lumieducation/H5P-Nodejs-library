@@ -35,7 +35,11 @@ describe('e2e test: play content', () => {
         await browser.close();
     });
 
-    for (const file of fsExtra.readdirSync(examplesPath)) {
+    for (const file of fsExtra
+        .readdirSync(examplesPath)
+        // We ignore H5P.Audio as the requests for the OGG file is never resolved in some cases
+        // See #553 for more details.
+        .filter((f) => f !== 'H5P.Audio.h5p')) {
         it(`playing ${file}`, async () => {
             const contentId = await exportPackage(
                 path.join(examplesPath, file),
