@@ -219,18 +219,20 @@ export default class H5PEditor {
     ): Promise<Readable> {
         // We have to try the regular content repository first and then fall back to the temporary storage.
         // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
-        try {
-            // we don't directly return the result of the getters as try - catch would not work then
-            const returnStream = await this.contentManager.getContentFileStream(
-                contentId,
-                filename,
-                user
-            );
-            return returnStream;
-        } catch (error) {
-            log.debug(
-                `Couldn't find file ${filename} in storage. Trying temporary storage.`
-            );
+        if (contentId) {
+            try {
+                // we don't directly return the result of the getters as try - catch would not work then
+                const returnStream = await this.contentManager.getContentFileStream(
+                    contentId,
+                    filename,
+                    user
+                );
+                return returnStream;
+            } catch (error) {
+                log.debug(
+                    `Couldn't find file ${filename} in storage. Trying temporary storage.`
+                );
+            }
         }
         return this.temporaryFileManager.getFileStream(filename, user);
     }

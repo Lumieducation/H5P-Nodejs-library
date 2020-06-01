@@ -2,7 +2,9 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 
 import PackageImporter from '../../../src/PackageImporter';
+import logger from '../../../src/helpers/Logger';
 
+const log = new logger('exportPackage');
 /**
  * Extracts the files in a h5p package into the appropriate directories on the
  * disk. This function can be used to prepare e2e tests with the file storage
@@ -55,10 +57,15 @@ export default async function (
         for (const file of await fsExtra.readdir(realContentPath)) {
             await fsExtra.move(
                 path.join(realContentPath, file),
-                path.join(contentPackageRoot, file)
+                path.join(contentPackageRoot, file),
+                { overwrite: true }
             );
         }
         await fsExtra.remove(realContentPath);
+    } else {
+        log.error(
+            `Error when extracting content from ${h5pPackagePath}. No content directory.`
+        );
     }
     return contentId;
 }
