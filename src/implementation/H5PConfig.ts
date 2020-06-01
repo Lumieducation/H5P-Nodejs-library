@@ -41,6 +41,7 @@ export default class H5PConfig implements IH5PConfig {
         'https://api.h5p.org/v1/content-types/';
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
     public librariesUrl: string = '/libraries';
+    public libraryConfig: { [machineName: string]: any };
     public libraryWhitelist: string = 'js css';
     public lrsContentTypes: string[] = [
         'H5P.Questionnaire',
@@ -73,6 +74,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
         await this.loadSettingFromStorage('enableLrsContentTypes');
         await this.loadSettingFromStorage('contentWhitelist');
+        await this.loadSettingFromStorage('libraryConfig');
         await this.loadSettingFromStorage('libraryWhitelist');
         await this.loadSettingFromStorage('maxFileSize');
         await this.loadSettingFromStorage('maxTotalSize');
@@ -92,6 +94,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
         await this.saveSettingToStorage('enableLrsContentTypes');
         await this.saveSettingToStorage('contentWhitelist');
+        await this.saveSettingToStorage('libraryConfig');
         await this.saveSettingToStorage('libraryWhitelist');
         await this.saveSettingToStorage('maxFileSize');
         await this.saveSettingToStorage('maxTotalSize');

@@ -1251,6 +1251,13 @@ export interface IH5PConfig {
      */
     librariesUrl: string;
     /**
+     * (optional) You can set server-wide custom settings for some libraries
+     * by setting the values here. As far as we know, this is currently only
+     * supported by H5P.MathDisplay. See https://h5p.org/mathematical-expressions
+     * for more information.
+     */
+    libraryConfig?: { [machineName: string]: any };
+    /**
      * A list of file extensions allowed for library files. (File extensions without . and
      * separated by whitespaces.)
      * (All extensions allowed for content files are also automatically allowed for libraries).

@@ -824,6 +824,7 @@ export default class H5PEditor {
                     true
                 )
             },
+            libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
             url: this.config.baseUrl,

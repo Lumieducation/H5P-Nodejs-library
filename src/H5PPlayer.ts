@@ -227,6 +227,7 @@ export default class H5PPlayer {
             l10n: {
                 H5P: this.clientTranslation
             },
+            libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
             url: this.config.baseUrl,
