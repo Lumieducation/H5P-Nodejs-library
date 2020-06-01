@@ -565,6 +565,46 @@ describe('H5PEditor', () => {
         );
     });
 
+    it('ignores relative paths in content', async () => {
+        // This tests deals with the unlikely case that something went
+        // wrong after pasting a file into the new content. For example the
+        // source could have been deleted after the image was pasted. This can
+        // lead to unresolved relative paths remaining in the "path" property of
+        // images, videos, etc. The library should remove references to relative
+        // paths it can't resolve.
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } = createH5PEditor(
+                    tempDirPath
+                );
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                mockupParametersWithImage.image.path =
+                    '../deletedContent/images/image.jpg';
+
+                // save the H5P content object
+                const contentId = await h5pEditor.saveOrUpdateContent(
+                    undefined,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                const newParameters = await h5pEditor.getContent(contentId);
+                expect(newParameters.params.params.image.path).toEqual('');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
     it('returns a helpful error if libraryName is invalid', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {

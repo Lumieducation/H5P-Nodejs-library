@@ -243,6 +243,7 @@ export default class ContentStorer {
                     `Could not copy file ${sourceFilename} from ${sourceContentId}: ${error}. Removing the reference in the pasted content.`
                 );
                 ref.context.params.path = '';
+                changedSomething = true;
             }
         }
         return changedSomething;
