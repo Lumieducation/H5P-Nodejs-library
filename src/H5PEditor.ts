@@ -846,7 +846,8 @@ export default class H5PEditor {
         log.debug('Getting list of installed addons.');
         const installedAddons = await this.libraryManager.listAddons();
 
-        const neededAddons = [];
+        const neededAddons: ILibraryMetadata[] = [];
+        // add addons that are required by the H5P library metadata extension
         for (const installedAddon of installedAddons) {
             // The property addTo.editor.machineNames is a custom
             // h5p-nodejs-library extension.
@@ -863,6 +864,33 @@ export default class H5PEditor {
                 neededAddons.push(installedAddon);
             }
         }
+        // add addons that are required by the server configuration
+        if (this.config.editorAddons && this.config.editorAddons[machineName]) {
+            for (const addonMachineName of this.config.editorAddons[
+                machineName
+            ]) {
+                const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
+                    [addonMachineName]
+                );
+                if (
+                    !neededAddons
+                        .map((a) => a.machineName)
+                        .includes(addonMachineName) &&
+                    installedAddonVersions[addonMachineName] !== undefined
+                ) {
+                    log.debug(
+                        `Addon ${addonMachineName} will be added to the editor.`
+                    );
+
+                    neededAddons.push(
+                        installedAddonVersions[addonMachineName].sort()[
+                            installedAddonVersions[addonMachineName].length - 1
+                        ]
+                    );
+                }
+            }
+        }
+
         return neededAddons;
     }
 

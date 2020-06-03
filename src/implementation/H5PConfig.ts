@@ -33,6 +33,9 @@ export default class H5PConfig implements IH5PConfig {
     };
     public coreUrl: string = '/core';
     public downloadUrl: string = '/download';
+    public editorAddons?: {
+        [machineName: string]: string[];
+    };
     public editorLibraryUrl: string = '/editor';
     public enableLrsContentTypes: boolean = true;
     public fetchingDisabled: 0 | 1 = 0;
@@ -65,6 +68,7 @@ export default class H5PConfig implements IH5PConfig {
      * Loads all changeable settings from storage. (Should be called when the system initializes.)
      */
     public async load(): Promise<H5PConfig> {
+        await this.loadSettingFromStorage('editorAddons');
         await this.loadSettingFromStorage('fetchingDisabled');
         await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('siteType');
@@ -85,6 +89,7 @@ export default class H5PConfig implements IH5PConfig {
      * Saves all changeable settings to storage. (Should be called when a setting was changed.)
      */
     public async save(): Promise<void> {
+        await this.saveSettingToStorage('editorAddons');
         await this.saveSettingToStorage('fetchingDisabled');
         await this.saveSettingToStorage('uuid');
         await this.saveSettingToStorage('siteType');

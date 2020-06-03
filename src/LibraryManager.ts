@@ -354,7 +354,7 @@ export default class LibraryManager {
      */
     public async listInstalledLibraries(
         machineNames?: string[]
-    ): Promise<{ [key: string]: IInstalledLibrary[] }> {
+    ): Promise<{ [machineName: string]: IInstalledLibrary[] }> {
         log.verbose(`checking if libraries ${machineNames} are installed`);
         let libraries = await this.libraryStorage.getInstalledLibraryNames(
             ...machineNames

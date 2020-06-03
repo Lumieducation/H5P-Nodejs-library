@@ -1205,7 +1205,6 @@ export interface IH5PConfig {
         major: number;
         minor: number;
     };
-
     /**
      * Path to the H5P core files directory.
      */
@@ -1214,6 +1213,17 @@ export interface IH5PConfig {
      * Path to the downloadable H5P packages.
      */
     downloadUrl: string;
+    /**
+     * You can specify which addons should be added to which library here.
+     */
+    editorAddons?: {
+        /**
+         * The property name is the machine mame to which to add addons.
+         * The string array contains the machine names of addons that should
+         * be added.
+         */
+        [machineName: string]: string[];
+    };
     /**
      * Path to editor "core files"
      */
