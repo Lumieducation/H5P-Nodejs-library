@@ -146,6 +146,10 @@ The Express adapter already catches errors, localizes them and returns proper HT
 
 This library supports localization. See the [respective documentation page](/docs/localization.md) for more details.
 
+### Customization
+
+An application using h5p-nodejs-library can customize the way H5P behaves in several ways. See [the documentation page on customization](/docs/customization.md) for more details.
+
 ## Development & Testing
 
 ### Prerequisites
@@ -178,12 +182,12 @@ npm test
 
 ### Debugging
 
-The library emits log messages with [debug](https://www.npmjs.com/package/debug). To see those messages you have to set the environment variable `DEBUG` to `h5p:*`. There are several log levels. By default you'll only see the messages sent with the level `info`. To get the verbose log, set the environment variable `LOG_LEVEL` to verbose (mind the capitalization).
+The library emits log messages with [debug](https://www.npmjs.com/package/debug). To see those messages you have to set the environment variable `DEBUG` to `h5p:*`. There are several log levels. By default you'll only see the messages sent with the level `info`. To get the verbose log, set the environment variable `LOG_LEVEL` to debug (mind the capitalization).
 
 Example (for Linux):
 
 ```sh
-DEBUG=h5p:* LOG_LEVEL=verbose node script.js
+DEBUG=h5p:* LOG_LEVEL=debug node script.js
 ```
 
 ### Other scripts
