@@ -19,7 +19,7 @@ assets/
 release.config.js
 renovate.json
 tslint.json
-tsconfig.*.json
+tsconfig*.json
 Dockerfile
 commitlint.config.js
 .dockerignore
