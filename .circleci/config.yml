@@ -1,107 +1,120 @@
-version: 2
+version: 2.1
+
 jobs:
-    install+build:
+    install-build:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
+            - restore_cache:
+                  key: modules-cache-{{ checksum "package-lock.json" }}
+            - restore_cache:
+                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
+            - run: npm install
+            - restore_cache:
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+            - run: npm run download:content
+            - save_cache:
+                  key: modules-cache-{{ checksum "package-lock.json" }}
                   paths:
                       - ./node_modules
+            - save_cache:
+                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
+                  paths:
+                      - ./h5p
+            - save_cache:
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  paths:
+                      - ./test/data/hub-content
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - node_modules
+                      - h5p
+                      - test/data/content-type-cache/real-content-types.json
+                      - test/data/hub-content
+                      - build
+
     lint:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
+            - attach_workspace:
+                  at: .
             - run: npm run lint
+
     format:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
+            - attach_workspace:
+                  at: .
             - run: npm run format:check
+
     unit-tests:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
+            - attach_workspace:
+                  at: .
             - run: npm run test
+
     integration-tests:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
+            - attach_workspace:
+                  at: .
             - run: npm run test:integration
+
     e2e-tests:
         docker:
-            - image: circleci/node:10-browsers-legacy
+            - image: circleci/node:10-browsers
         steps:
             - checkout
-            - restore_cache: # special step to restore the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-            - run: npm ci
-            - save_cache: # special step to save the dependency cache
-                  key: dependency-cache-{{ checksum "package.json" }}
-                  paths:
-                      - ./node_modules
+            - attach_workspace:
+                  at: .
             - run: npm run test:e2e
+
     release:
         docker:
-            - image: 'circleci/node:latest'
+            - image: 'circleci/node:10'
         steps:
             - checkout
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            - run:
-                  name: install
-                  command: npm install
+            - attach_workspace:
+                  at: .
             - run:
                   name: release
                   command: npm run semantic-release || true
+
 workflows:
     version: 2
     h5peditor:
         jobs:
-            - install+build
-            - lint
-            - format
-            - unit-tests
-            - e2e-tests
-            - integration-tests
+            - install-build
+            - lint:
+                  requires:
+                      - install-build
+            - format:
+                  requires:
+                      - install-build
+            - unit-tests:
+                  requires:
+                      - install-build
+            - e2e-tests:
+                  requires:
+                      - install-build
+            - integration-tests:
+                  requires:
+                      - install-build
             - release:
                   requires:
-                      - install+build
+                      - install-build
                       - lint
                       - format
                       - unit-tests
