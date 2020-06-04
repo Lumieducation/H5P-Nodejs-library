@@ -11,6 +11,7 @@ describe('e2e test: play content', () => {
 
     let browser: puppeteer.Browser;
     let page: puppeteer.Page;
+    let errorFunction;
 
     beforeAll(async () => {
         browser = await puppeteer.launch({
@@ -50,12 +51,16 @@ describe('e2e test: play content', () => {
                 }
             );
 
+            if (errorFunction) {
+                page.removeListener('pageerror', errorFunction);
+            }
             const errorHandler = jest.fn();
-            page.on('pageerror', (error) => {
+            errorFunction = (error) => {
                 // tslint:disable-next-line: no-console
                 console.error(`Error when playing ${file}: ${error}`);
                 errorHandler();
-            });
+            };
+            page.on('pageerror', errorFunction);
             await page.goto(`http://localhost:8080/h5p/play/${contentId}`, {
                 waitUntil: ['load', 'networkidle0']
             });
