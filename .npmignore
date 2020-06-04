@@ -9,8 +9,7 @@ test/
 .gitignore
 .prettierrc
 CODE-OF-CONDUCT.md
-jest.config.js
-jest.integration.config.js
+jest.*.js
 __tests__
 .env
 src/
@@ -20,6 +19,7 @@ assets/
 release.config.js
 renovate.json
 tslint.json
-tsconfig.base.json
-tsconfig.build.json
-tsconfig.json
+tsconfig*.json
+Dockerfile
+commitlint.config.js
+.dockerignore
