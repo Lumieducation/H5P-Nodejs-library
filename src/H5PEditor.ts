@@ -854,7 +854,8 @@ export default class H5PEditor {
             if (
                 installedAddon.addTo?.editor?.machineNames?.includes(
                     machineName
-                )
+                ) ||
+                installedAddon.addTo?.editor?.machineNames?.includes('*')
             ) {
                 log.debug(
                     `Addon ${LibraryName.toUberName(
@@ -865,29 +866,30 @@ export default class H5PEditor {
             }
         }
         // add addons that are required by the server configuration
-        if (this.config.editorAddons && this.config.editorAddons[machineName]) {
-            for (const addonMachineName of this.config.editorAddons[
-                machineName
-            ]) {
-                const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                    [addonMachineName]
-                );
-                if (
-                    !neededAddons
-                        .map((a) => a.machineName)
-                        .includes(addonMachineName) &&
-                    installedAddonVersions[addonMachineName] !== undefined
-                ) {
-                    log.debug(
-                        `Addon ${addonMachineName} will be added to the editor.`
-                    );
+        const configRequestedAddons = [
+            ...(this.config.editorAddons?.[machineName] ?? []),
+            ...(this.config.editorAddons?.['*'] ?? [])
+        ];
 
-                    neededAddons.push(
-                        installedAddonVersions[addonMachineName].sort()[
-                            installedAddonVersions[addonMachineName].length - 1
-                        ]
-                    );
-                }
+        for (const addonMachineName of configRequestedAddons) {
+            const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
+                [addonMachineName]
+            );
+            if (
+                !neededAddons
+                    .map((a) => a.machineName)
+                    .includes(addonMachineName) &&
+                installedAddonVersions[addonMachineName] !== undefined
+            ) {
+                log.debug(
+                    `Addon ${addonMachineName} will be added to the editor.`
+                );
+
+                neededAddons.push(
+                    installedAddonVersions[addonMachineName].sort()[
+                        installedAddonVersions[addonMachineName].length - 1
+                    ]
+                );
             }
         }
 

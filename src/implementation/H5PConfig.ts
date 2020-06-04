@@ -55,6 +55,9 @@ export default class H5PConfig implements IH5PConfig {
     public paramsUrl: string = '/params';
     public platformName: string = 'H5P-Editor-NodeJs';
     public platformVersion: string = '0.10';
+    public playerAddons?: {
+        [machineName: string]: string[];
+    };
     public playUrl: string = '/play';
     public sendUsageStatistics: boolean = false;
     public siteType: 'local' | 'network' | 'internet' = 'local';
@@ -68,20 +71,21 @@ export default class H5PConfig implements IH5PConfig {
      * Loads all changeable settings from storage. (Should be called when the system initializes.)
      */
     public async load(): Promise<H5PConfig> {
-        await this.loadSettingFromStorage('editorAddons');
-        await this.loadSettingFromStorage('fetchingDisabled');
-        await this.loadSettingFromStorage('uuid');
-        await this.loadSettingFromStorage('siteType');
-        await this.loadSettingFromStorage('sendUsageStatistics');
-        await this.loadSettingFromStorage('hubRegistrationEndpoint');
-        await this.loadSettingFromStorage('hubContentTypesEndpoint');
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
-        await this.loadSettingFromStorage('enableLrsContentTypes');
         await this.loadSettingFromStorage('contentWhitelist');
+        await this.loadSettingFromStorage('editorAddons');
+        await this.loadSettingFromStorage('enableLrsContentTypes');
+        await this.loadSettingFromStorage('fetchingDisabled');
+        await this.loadSettingFromStorage('hubContentTypesEndpoint');
+        await this.loadSettingFromStorage('hubRegistrationEndpoint');
         await this.loadSettingFromStorage('libraryConfig');
         await this.loadSettingFromStorage('libraryWhitelist');
         await this.loadSettingFromStorage('maxFileSize');
         await this.loadSettingFromStorage('maxTotalSize');
+        await this.loadSettingFromStorage('playerAddons');
+        await this.loadSettingFromStorage('sendUsageStatistics');
+        await this.loadSettingFromStorage('siteType');
+        await this.loadSettingFromStorage('uuid');
         return this;
     }
 
@@ -89,20 +93,21 @@ export default class H5PConfig implements IH5PConfig {
      * Saves all changeable settings to storage. (Should be called when a setting was changed.)
      */
     public async save(): Promise<void> {
-        await this.saveSettingToStorage('editorAddons');
-        await this.saveSettingToStorage('fetchingDisabled');
-        await this.saveSettingToStorage('uuid');
-        await this.saveSettingToStorage('siteType');
-        await this.saveSettingToStorage('sendUsageStatistics');
-        await this.saveSettingToStorage('hubRegistrationEndpoint');
-        await this.saveSettingToStorage('hubContentTypesEndpoint');
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
-        await this.saveSettingToStorage('enableLrsContentTypes');
         await this.saveSettingToStorage('contentWhitelist');
+        await this.saveSettingToStorage('editorAddons');
+        await this.saveSettingToStorage('enableLrsContentTypes');
+        await this.saveSettingToStorage('fetchingDisabled');
+        await this.saveSettingToStorage('hubContentTypesEndpoint');
+        await this.saveSettingToStorage('hubRegistrationEndpoint');
         await this.saveSettingToStorage('libraryConfig');
         await this.saveSettingToStorage('libraryWhitelist');
         await this.saveSettingToStorage('maxFileSize');
         await this.saveSettingToStorage('maxTotalSize');
+        await this.saveSettingToStorage('playerAddons');
+        await this.saveSettingToStorage('sendUsageStatistics');
+        await this.saveSettingToStorage('siteType');
+        await this.saveSettingToStorage('uuid');
     }
 
     /**

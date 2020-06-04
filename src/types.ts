@@ -995,7 +995,21 @@ export interface ILibraryMetadata extends IFullLibraryName {
          * they should be added in general. The PHP implementation hard-codes
          * this list into the server, which we want to avoid here.
          */
-        editor: {
+        editor?: {
+            /**
+             * A list of machine names in which the addon should be added.
+             */
+            machineNames: string[];
+        };
+        /**
+         * Contains cases in which the library should be added to the player.
+         *
+         * This is an extension to the H5P library metadata structure made by
+         * h5p-nodejs-library. That way addons can specify to which editors
+         * they should be added in general. The PHP implementation hard-codes
+         * this list into the server, which we want to avoid here.
+         */
+        player?: {
             /**
              * A list of machine names in which the addon should be added.
              */
@@ -1300,6 +1314,17 @@ export interface IH5PConfig {
      * Not user-configurable but should be overridden by custom custom implementations.
      */
     platformVersion: string;
+    /**
+     * You can specify which addons should be added to which library in the player here.
+     */
+    playerAddons?: {
+        /**
+         * The property name is the machine mame to which to add addons.
+         * The string array contains the machine names of addons that should
+         * be added.
+         */
+        [machineName: string]: string[];
+    };
     /**
      * The Url at which content can be displayed.
      */

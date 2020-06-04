@@ -23,7 +23,18 @@ it below:
 
 **Player:** The MathDisplay addon will automatically be used in the player
 whenever needed, as the server scans content for a search string specified by
-the addon.
+the addon. You can also force the use of addons by setting the configuration
+property `playerAddons` of your configuration:
+
+```JSON
+{
+    // ... further configuration values ...
+    "playerAddons": {
+        "H5P.CoursePresentation": ["H5P.MathDisplay"]
+    }
+    // ... further configuration values ...
+}
+```
 
 **Editor:** The MathDisplay addon will **not** be automatically enabled in the
 editor. There are two ways to enable it:
