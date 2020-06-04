@@ -47,6 +47,23 @@ describe('Rendering the HTML page', () => {
                       "jsonContent": "{\\"my\\":\\"content\\"}"
                     }
                   },
+                  "core":{
+                    "scripts":[
+                    "/h5p/core/js/jquery.js",
+                    "/h5p/core/js/h5p.js",
+                    "/h5p/core/js/h5p-event-dispatcher.js",
+                    "/h5p/core/js/h5p-x-api-event.js",
+                    "/h5p/core/js/h5p-x-api.js",
+                    "/h5p/core/js/h5p-content-type.js",
+                    "/h5p/core/js/h5p-confirmation-dialog.js",
+                    "/h5p/core/js/h5p-action-bar.js",
+                    "/h5p/core/js/request-queue.js"
+                    ],
+                    "styles":[
+                    "/h5p/core/styles/h5p.css",
+                    "/h5p/core/styles/h5p-confirmation-dialog.css"
+                    ]
+                    },
                   "l10n": {
                     "H5P": {
                         "fullscreen": "Fullscreen",
@@ -123,6 +140,7 @@ describe('Rendering the HTML page', () => {
                   "url": "/h5p"
                 };
                     </script>
+
                 </head>
                 <body>
                     <div class="h5p-content" data-content-id="foo"></div>
@@ -262,6 +280,24 @@ describe('Rendering the HTML page', () => {
                           "jsonContent": "{\\"my\\":\\"content\\"}"
                         }
                       },
+                      "core":{
+                          "scripts":[
+                          "/h5p/core/js/jquery.js",
+                          "/h5p/core/js/h5p.js",
+                          "/h5p/core/js/h5p-event-dispatcher.js",
+                          "/h5p/core/js/h5p-x-api-event.js",
+                          "/h5p/core/js/h5p-x-api.js",
+                          "/h5p/core/js/h5p-content-type.js",
+                          "/h5p/core/js/h5p-confirmation-dialog.js",
+                          "/h5p/core/js/h5p-action-bar.js",
+                          "/h5p/core/js/request-queue.js",
+                          "/test"
+                          ],
+                          "styles":[
+                          "/h5p/core/styles/h5p.css",
+                          "/h5p/core/styles/h5p-confirmation-dialog.css"
+                          ]
+                          },
                       "l10n": {
                         "H5P": {
                             "fullscreen": "Fullscreen",
@@ -337,7 +373,8 @@ describe('Rendering the HTML page', () => {
                       "saveFreq": false,
                       "url": "/h5p"
                     };
-                        </script><script src="/test"></script>
+                        </script>
+                        <script src="/test"></script>
                     </head>
                     <body>
                         <div class="h5p-content" data-content-id="foo"></div>
