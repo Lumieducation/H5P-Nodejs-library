@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-    coveralls: coveralls/coveralls@1.0.6
-
 jobs:
     install-build:
         docker:
@@ -63,10 +60,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: Unit Tests
+            - run: npm run test
 
     integration-tests:
         docker:
@@ -75,10 +69,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:integration -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: Integration Tests
+            - run: npm run test:integration
 
     e2e-tests:
         docker:
@@ -88,13 +79,6 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test:e2e
-
-    coverage-done:
-        docker:
-            - image: circleci/node:10
-        steps:
-            - coveralls/upload:
-                  parallel_finished: true
 
     release:
         docker:
@@ -128,10 +112,6 @@ workflows:
             - integration-tests:
                   requires:
                       - install-build
-            - coverage-done:
-                  requires:
-                      - unit-tests
-                      - integration-tests
             - release:
                   requires:
                       - install-build
