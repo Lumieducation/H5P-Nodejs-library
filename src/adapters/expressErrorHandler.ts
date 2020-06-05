@@ -1,8 +1,33 @@
 import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { IRequestWithTranslator } from '../';
+
+export function undefinedOrTrue(option: boolean): boolean {
+    return option === undefined || option;
+}
+
+/**
+ * Calls the function passed to it and catches errors it throws. These errors
+ * are then passed to the next(...) function for proper error handling.
+ * You can disable error catching by setting options.handleErrors to false
+ * @param fn The function to call
+ * @param handleErrors whether to handle errors
+ */
+export const catchAndPassOnErrors = (
+    fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>,
+    handleErrors: boolean
+) => async (req: Request, res: Response, next: NextFunction) => {
+    if (undefinedOrTrue(handleErrors)) {
+        try {
+            return await fn(req, res);
+        } catch (error) {
+            return next(error);
+        }
+    }
+    return fn(req, res);
+};
 
 /**
  * An Express middleware that converts NodeJs error objects into error
@@ -15,7 +40,8 @@ import { IRequestWithTranslator } from '../';
  * a language detector must have detected language and req.t translated to the
  * detected language.
  */
-export default (languageOverride: string | 'auto' = 'auto') => {
+// tslint:disable-next-line: typedef
+export function errorHandler(languageOverride: string | 'auto' = 'auto') {
     return async (
         err: Error | H5pError | AggregateH5pError,
         req: IRequestWithTranslator,
@@ -66,4 +92,4 @@ export default (languageOverride: string | 'auto' = 'auto') => {
             )
         );
     };
-};
+}

@@ -39,14 +39,14 @@ import {
 } from './types';
 
 // Adapters
-import express from './adapters/express';
-import expressErrorHandler from './adapters/expressErrorHandler';
-import expressController from './adapters/expressController';
+import express from './adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
+import { errorHandler } from './adapters/expressErrorHandler';
+import expressController from './adapters/H5PAjaxRouter/H5PAjaxExpressController';
 
 const adapters = {
     express,
     expressController,
-    expressErrorHandler
+    expressErrorHandler: errorHandler
 };
 
 const fsImplementations = {

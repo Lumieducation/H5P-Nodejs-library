@@ -1,7 +1,7 @@
 /**
  * Allows you to choose which routes you want in the Express Router
  */
-export default class ExpressRouterOptions {
+export default class H5PAjaxExpressRouterOptions {
     public handleErrors?: boolean = true;
     public routeCoreFiles?: boolean = true;
     public routeEditorCoreFiles?: boolean = true;
