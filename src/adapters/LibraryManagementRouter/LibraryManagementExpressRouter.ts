@@ -15,15 +15,77 @@ export default function (
     languageOverride: string | 'auto' = 'auto'
 ): Router {
     const router = Router();
-    const h5pController = new LibraryManagementExpressController(h5pEditor);
+    const controller = new LibraryManagementExpressController(h5pEditor);
 
-    // get library file
-    /*if (undefinedOrTrue(routeOptions.routeGetLibraryFile)) {
+    if (undefinedOrTrue(routeOptions.routeGetLibraries)) {
         router.get(
-            `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
-            catchAndPassOnErrors(h5pController.xxx, routeOptions.handleErrors)
+            `/`,
+            catchAndPassOnErrors(
+                controller.getLibraries,
+                routeOptions.handleErrors
+            )
         );
-    }*/
+    }
+
+    if (undefinedOrTrue(routeOptions.routePostLibraries)) {
+        router.post(
+            `/`,
+            catchAndPassOnErrors(
+                controller.postLibraries,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routeGetLibrary)) {
+        router.get(
+            `/:machinename`,
+            catchAndPassOnErrors(
+                controller.getLibrary,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routePatchLibrary)) {
+        router.patch(
+            `/:machinename`,
+            catchAndPassOnErrors(
+                controller.patchLibrary,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routeDeleteLibrary)) {
+        router.delete(
+            `/:machinename`,
+            catchAndPassOnErrors(
+                controller.deleteLibrary,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routePostLibraryUpdateContent)) {
+        router.post(
+            `/:machinename/update-content`,
+            catchAndPassOnErrors(
+                controller.postLibraryUpdateContent,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routePostContentTypeCacheUpdate)) {
+        router.get(
+            `/content-type-cache/update`,
+            catchAndPassOnErrors(
+                controller.postLibrariesContentTypeCacheUpdate,
+                routeOptions.handleErrors
+            )
+        );
+    }
 
     if (undefinedOrTrue(routeOptions.handleErrors)) {
         router.use(errorHandler(languageOverride));
