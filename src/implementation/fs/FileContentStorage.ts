@@ -16,7 +16,7 @@ import {
     ContentParameters
 } from '../../../src';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
-import { IFileStats } from '../../types';
+import { IFileStats, ILibraryName } from '../../types';
 
 /**
  * Persists content to the disk.
@@ -329,6 +329,12 @@ export default class FileContentStorage implements IContentStorage {
                 await this.getFileStream(contentId, 'content.json', user)
             )
         );
+    }
+
+    public async getUsage(
+        library: ILibraryName
+    ): Promise<{ asDependency: number; asMainLibrary: number }> {
+        throw new Error('not implemented');
     }
 
     /**

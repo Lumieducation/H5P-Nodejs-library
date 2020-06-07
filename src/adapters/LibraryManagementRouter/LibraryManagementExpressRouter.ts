@@ -15,7 +15,10 @@ export default function (
     languageOverride: string | 'auto' = 'auto'
 ): Router {
     const router = Router();
-    const controller = new LibraryManagementExpressController(h5pEditor);
+    const controller = new LibraryManagementExpressController(
+        h5pEditor.libraryManager,
+        h5pEditor.contentManager
+    );
 
     if (undefinedOrTrue(routeOptions.routeGetLibraries)) {
         router.get(

@@ -623,6 +623,10 @@ export interface IContentStorage {
         user?: IUser
     ): Promise<ContentParameters>;
 
+    getUsage(
+        library: ILibraryName
+    ): Promise<{ asDependency: number; asMainLibrary: number }>;
+
     /**
      * Returns an array of permissions that the user has on the piece of content
      * @param contentId the content id to check
@@ -720,6 +724,8 @@ export interface ILibraryStorage {
      * @returns true if file exists in library, false otherwise
      */
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
+
+    getDependentsCount(library: ILibraryName): Promise<number>;
 
     /**
      * Returns a information about a library file.
@@ -962,10 +968,15 @@ export interface IInstalledLibrary extends ILibraryMetadata {
     compare(otherLibrary: IInstalledLibrary): number;
 
     /**
-     * Compares libraries by giving precedence to major version, then minor version, then patch version.
+     * Compares libraries by giving precedence to major version, then minor version, then if present patch version.
      * @param otherLibrary
+     * @returns a negative value: if this library is older than the other library
+     * a positive value: if this library is newer than the other library
+     * zero: if both libraries are the same (or if it can't be determined, because the patch version is missing in the other library)
      */
-    compareVersions(otherLibrary: IFullLibraryName): number;
+    compareVersions(
+        otherLibrary: ILibraryName & { patchVersion?: number }
+    ): number;
 }
 
 /**

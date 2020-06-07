@@ -1,11 +1,15 @@
 import * as express from 'express';
 
-import H5PEditor from '../../H5PEditor';
 import { IInstalledLibrary, IHubInfo } from '../../types';
 import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
+import LibraryManager from '../../LibraryManager';
+import ContentManager from '../../ContentManager';
 
 export default class LibraryManagementExpressController {
-    constructor(protected h5pEditor: H5PEditor) {}
+    constructor(
+        protected libraryManager: LibraryManager,
+        protected contentManager: ContentManager
+    ) {}
 
     /**
      * Deletes a library.
@@ -34,7 +38,47 @@ export default class LibraryManagementExpressController {
         req: express.Request,
         res: express.Response<ILibraryManagementOverviewItem[]>
     ): Promise<void> => {
-        return;
+        const libraryNames = await this.libraryManager.libraryStorage.getInstalledLibraryNames();
+        const libraryMetadata = await Promise.all(
+            libraryNames.map((lib) => this.libraryManager.getLibrary(lib))
+        );
+        const ret = await Promise.all(
+            libraryMetadata.map(async (metadata) => {
+                const usage = await this.contentManager.contentStorage.getUsage(
+                    metadata
+                );
+                const dependentsCount = await this.libraryManager.libraryStorage.getDependentsCount(
+                    metadata
+                );
+                return {
+                    title: metadata.title,
+                    majorVersion: metadata.majorVersion,
+                    minorVersion: metadata.minorVersion,
+                    patchVersion: metadata.patchVersion,
+                    isAddon: metadata.addTo !== undefined,
+                    restricted: metadata.restricted,
+                    // tslint:disable-next-line: triple-equals
+                    runnable: metadata.runnable == true,
+                    instancesCount: usage.asMainLibrary,
+                    instancesAsDependencyCount: usage.asDependency,
+                    dependentsCount,
+                    canBeDeleted:
+                        usage.asDependency +
+                            usage.asMainLibrary +
+                            dependentsCount ===
+                        0,
+                    // libraries can be updated if there is an installed library
+                    // with the same machine name but a greater version
+                    canBeUpdated: libraryNames.some(
+                        (ln) =>
+                            ln.machineName === metadata.machineName &&
+                            metadata.compareVersions(ln) < 0
+                    )
+                };
+            })
+        );
+
+        res.send(ret).status(200);
     };
 
     /**
@@ -50,9 +94,9 @@ export default class LibraryManagementExpressController {
         req: express.Request<{ ubername: string }>,
         res: express.Response<
             IInstalledLibrary & {
-                dependentOnBy: number;
-                instances: number;
-                instancesAsDependency: number;
+                dependentsCount: number;
+                instancesAsDependencyCount: number;
+                instancesCount: number;
                 isAddon: boolean;
             }
         >

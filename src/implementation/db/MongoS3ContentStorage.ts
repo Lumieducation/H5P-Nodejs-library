@@ -10,7 +10,8 @@ import {
     IContentStorage,
     IFileStats,
     IUser,
-    Permission
+    Permission,
+    ILibraryName
 } from '../../types';
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
@@ -553,6 +554,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 404
             );
         }
+    }
+
+    public async getUsage(
+        library: ILibraryName
+    ): Promise<{ asDependency: number; asMainLibrary: number }> {
+        throw new Error('not implemented');
     }
 
     /**

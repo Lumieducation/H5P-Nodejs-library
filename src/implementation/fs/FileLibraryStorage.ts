@@ -201,6 +201,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return fsExtra.pathExists(this.getFilePath(library, filename));
     }
 
+    public async getDependentsCount(library: ILibraryName): Promise<number> {
+        throw new Error('not implemented');
+    }
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.

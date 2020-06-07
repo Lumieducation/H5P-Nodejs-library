@@ -35,7 +35,7 @@ export default class LibraryManager {
      * @param libraryStorage The library repository that persists library somewhere.
      */
     constructor(
-        private libraryStorage: ILibraryStorage,
+        public libraryStorage: ILibraryStorage,
         /**
          * Gets URLs at which a file in a library can be downloaded. Must be passed
          * through from the implementation.
