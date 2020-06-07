@@ -56,6 +56,7 @@ import {
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
+import DependencyGetter from './DependencyGetter';
 
 const log = new Logger('H5PEditor');
 
@@ -125,6 +126,7 @@ export default class H5PEditor {
             this.contentStorage
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
+        this.dependencyGetter = new DependencyGetter(libraryStorage);
     }
 
     public contentManager: ContentManager;
@@ -136,6 +138,7 @@ export default class H5PEditor {
 
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
+    private dependencyGetter: DependencyGetter;
     private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
@@ -579,10 +582,10 @@ export default class H5PEditor {
             );
         }
 
-        const h5pJson: IContentMetadata = await this.generateH5PJson(
+        const h5pJson: IContentMetadata = await this.generateContentMetadata(
             metadata,
             parsedLibraryName,
-            this.findLibraries(parameters)
+            this.findLibrariesInParameters(parameters)
         );
 
         const newContentId = await this.contentStorer.addOrUpdateContent(
@@ -744,25 +747,65 @@ export default class H5PEditor {
         return filename;
     }
 
-    private findLibraries(object: any, collect: any = {}): ILibraryName[] {
-        if (typeof object !== 'object') {
+    /**
+     * Recursively crawls through the parameters and finds usages of libraries.
+     * @param parameters the parameters to scan
+     * @param collect a collecting object used by the recursion. Do not use
+     * @returns a list of libraries that are referenced in the parameters
+     */
+    private findLibrariesInParameters(
+        parameters: any,
+        collect: any = {}
+    ): ILibraryName[] {
+        if (typeof parameters !== 'object') {
             return collect;
         }
 
-        Object.keys(object).forEach((key: string) => {
-            if (key === 'library' && typeof object[key] === 'string') {
-                if (object[key].match(/.+ \d+\.\d+/)) {
-                    collect[object[key]] = LibraryName.fromUberName(
-                        object[key],
-                        { useWhitespace: true }
+        Object.keys(parameters).forEach((key: string) => {
+            if (key === 'library' && typeof parameters[key] === 'string') {
+                if (parameters[key].match(/.+ \d+\.\d+/)) {
+                    collect[parameters[key]] = LibraryName.fromUberName(
+                        parameters[key],
+                        {
+                            useWhitespace: true
+                        }
                     );
                 }
             } else {
-                this.findLibraries(object[key], collect);
+                this.findLibrariesInParameters(parameters[key], collect);
             }
         });
 
         return Object.values(collect);
+    }
+
+    private async generateContentMetadata(
+        metadata: IContentMetadata,
+        mainLibrary: ILibraryName,
+        contentDependencies: ILibraryName[] = []
+    ): Promise<IContentMetadata> {
+        log.info(`generating h5p.json`);
+
+        const mainLibraryMetadata = await this.libraryManager.getLibrary(
+            mainLibrary
+        );
+        const newMetadata: IContentMetadata = new ContentMetadata(
+            metadata,
+            { mainLibrary: mainLibraryMetadata.machineName },
+            {
+                preloadedDependencies: [
+                    ...(await this.dependencyGetter.getDependentLibraries(
+                        [...contentDependencies, mainLibrary],
+                        {
+                            preloaded: true
+                        },
+                        [mainLibrary]
+                    )),
+                    mainLibrary
+                ]
+            }
+        );
+        return newMetadata;
     }
 
     private generateEditorIntegration(
@@ -793,32 +836,6 @@ export default class H5PEditor {
             nodeVersionId: contentId,
             language
         };
-    }
-
-    private async generateH5PJson(
-        metadata: IContentMetadata,
-        libraryName: ILibraryName,
-        contentDependencies: ILibraryName[] = []
-    ): Promise<IContentMetadata> {
-        log.info(`generating h5p.json`);
-
-        const library = await this.libraryManager.getLibrary(libraryName);
-        const h5pJson: IContentMetadata = new ContentMetadata(
-            metadata,
-            { mainLibrary: library.machineName },
-            {
-                preloadedDependencies: [
-                    ...contentDependencies,
-                    ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
-                    {
-                        machineName: library.machineName,
-                        majorVersion: library.majorVersion,
-                        minorVersion: library.minorVersion
-                    }
-                ]
-            }
-        );
-        return h5pJson;
     }
 
     private generateIntegration(

@@ -131,6 +131,11 @@ export interface IContentMetadata {
     mainLibrary: string;
     metaDescription?: string;
     metaKeywords?: string;
+    /**
+     * A flat list of all dependencies required for the content to be displayed.
+     * Note that this list is a flat representation of the full dependency tree
+     * that is created by looking up all dependencies of the main library.
+     */
     preloadedDependencies: ILibraryName[];
     source?: string;
     title: string;

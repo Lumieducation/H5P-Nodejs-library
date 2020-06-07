@@ -18,6 +18,7 @@ export default class DependencyGetter {
      * @param dynamic include dependencies that are part of the dynamicDependencies property or used in the content
      * @param editor include dependencies that are listed in editorDependencies
      * @param preloaded include regular dependencies that are included in preloadedDependencies
+     * @param doNotAdd libraries in this list will not be added to the dependency list
      * @returns a list of libraries
      */
     public async getDependentLibraries(
@@ -26,7 +27,8 @@ export default class DependencyGetter {
             dynamic = false,
             editor = false,
             preloaded = false
-        }: { dynamic?: boolean; editor?: boolean; preloaded?: boolean }
+        }: { dynamic?: boolean; editor?: boolean; preloaded?: boolean },
+        doNotAdd?: ILibraryName[]
     ): Promise<ILibraryName[]> {
         log.info(
             `getting dependent libraries for ${libraries
@@ -45,7 +47,8 @@ export default class DependencyGetter {
                     library.minorVersion
                 ),
                 { preloaded, editor, dynamic },
-                dependencies
+                dependencies,
+                doNotAdd
             );
         }
         return Array.from(dependencies).map((str) =>
@@ -66,7 +69,8 @@ export default class DependencyGetter {
             editor = false,
             preloaded = false
         }: { dynamic: boolean; editor: boolean; preloaded: boolean },
-        libraries: Set<string>
+        libraries: Set<string>,
+        doNotAdd?: ILibraryName[]
     ): Promise<Set<string>> {
         log.debug(`adding dependencies recursively`);
         // we use strings to make equality comparison easier
@@ -82,7 +86,9 @@ export default class DependencyGetter {
             // referenced in the parameters, but don't exist)
             return libraries;
         }
-        libraries.add(LibraryName.toUberName(library));
+        if (!doNotAdd?.some((dna) => LibraryName.equal(dna, library))) {
+            libraries.add(LibraryName.toUberName(library));
+        }
         if (preloaded && metadata.preloadedDependencies) {
             await this.addDependenciesToSet(
                 metadata.preloadedDependencies,
@@ -121,7 +127,8 @@ export default class DependencyGetter {
             editor = false,
             preloaded = false
         }: { dynamic: boolean; editor: boolean; preloaded: boolean },
-        libraries: Set<string>
+        libraries: Set<string>,
+        doNotAdd?: LibraryName[]
     ): Promise<void> {
         log.info(`adding dependencies to set`);
         for (const dependency of dependencies) {
@@ -132,7 +139,8 @@ export default class DependencyGetter {
                     dependency.minorVersion
                 ),
                 { preloaded, editor, dynamic },
-                libraries
+                libraries,
+                doNotAdd
             );
         }
     }
