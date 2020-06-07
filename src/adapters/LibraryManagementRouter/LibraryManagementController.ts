@@ -5,6 +5,7 @@ import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
 import ContentManager from '../../ContentManager';
 import LibraryManager from '../../LibraryManager';
 import LibraryName from '../../LibraryName';
+import H5pError from '../../helpers/H5pError';
 
 export default class LibraryManagementExpressController {
     constructor(
@@ -25,7 +26,43 @@ export default class LibraryManagementExpressController {
         req: express.Request<{ ubername: string }>,
         res: express.Response
     ): Promise<void> => {
-        return;
+        // Check for correct ubername
+        const libraryName = LibraryName.fromUberName(req.params.ubername);
+        if (libraryName === undefined) {
+            throw new H5pError(
+                'invalid-ubername',
+                { name: req.params.ubername },
+                400
+            );
+        }
+
+        // Check if library is installed
+        if (
+            !(await this.libraryManager.libraryStorage.isInstalled(libraryName))
+        ) {
+            throw new H5pError(
+                'library-missing',
+                { library: req.params.ubername },
+                404
+            );
+        }
+
+        // Check if library can be safely deleted
+        const usage = await this.contentManager.contentStorage.getUsage(
+            libraryName
+        );
+        const dependentsCount = await this.libraryManager.libraryStorage.getDependentsCount(
+            libraryName
+        );
+        if (usage.asDependency + usage.asMainLibrary + dependentsCount > 0) {
+            throw new H5pError(
+                'library-used',
+                { library: req.params.ubername },
+                423
+            );
+        }
+        await this.libraryManager.libraryStorage.deleteLibrary(libraryName);
+        res.status(204).send();
     };
 
     /**

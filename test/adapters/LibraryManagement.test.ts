@@ -9,6 +9,7 @@ import supertest from 'supertest';
 import User from '../../examples/User';
 import * as H5P from '../../src';
 import { ILibraryManagementOverviewItem } from '../../src/adapters/LibraryManagementRouter/LibraryManagementTypes';
+import LibraryName from '../../src/LibraryName';
 
 interface RequestEx extends express.Request {
     language: string;
@@ -65,7 +66,7 @@ describe('Express Library Management endpoint adapter', () => {
         tempDir = '';
     });
 
-    // library management endpoints
+    // GET /libraries endpoint
 
     it('should return 200 with empty library list if no library was installed', async () => {
         const res = await supertest(app).get('/');
@@ -115,5 +116,68 @@ describe('Express Library Management endpoint adapter', () => {
                 a.machineName.localeCompare(b.machineName)
             )
         ).toEqual(libraryInformation);
+    });
+
+    // DELETE /libraries/123 endpoint
+
+    it('should delete unused libraries', async () => {
+        // We install the Greeting Card content type.
+        const fileBuffer = fsExtra.readFileSync(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+        const { installedLibraries } = await h5pEditor.uploadPackage(
+            fileBuffer,
+            user,
+            {
+                onlyInstallLibraries: true
+            }
+        );
+        // Make sure all libraries were installed as expected.
+        expect(installedLibraries.length).toEqual(1);
+
+        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+        expect(res.status).toBe(204);
+        const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+        expect(stillInstalledLibraries.length).toEqual(0);
+    });
+
+    it('should reject invalid ubernames', async () => {
+        const res = await supertest(app).delete('/H5P.GreetingCard');
+        expect(res.status).toBe(400);
+    });
+
+    it('should detect missing libraries', async () => {
+        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+        expect(res.status).toBe(404);
+    });
+
+    it('should reject deleting used libraries', async () => {
+        // We install the Greeting Card content type and its content.
+        const fileBuffer = fsExtra.readFileSync(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+        const {
+            installedLibraries,
+            metadata,
+            parameters
+        } = await h5pEditor.uploadPackage(fileBuffer, user);
+
+        // Make sure all libraries were installed as expected.
+        expect(installedLibraries.length).toEqual(1);
+        await h5pEditor.saveOrUpdateContent(
+            undefined,
+            parameters,
+            metadata,
+            LibraryName.toUberName(metadata.preloadedDependencies[0], {
+                useWhitespace: true
+            }),
+            user
+        );
+
+        // Try deleting a library that is used by content.
+        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+        expect(res.status).toBe(423);
+        const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+        expect(stillInstalledLibraries.length).toEqual(1);
     });
 });

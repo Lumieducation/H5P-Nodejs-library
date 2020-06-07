@@ -773,6 +773,8 @@ export interface ILibraryStorage {
      */
     getLibrary(library: ILibraryName): Promise<IInstalledLibrary>;
 
+    isInstalled(library: ILibraryName): Promise<boolean>;
+
     /**
      * Checks if the library has been installed.
      * @param name the library name

@@ -334,6 +334,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
         );
     }
 
+    public async isInstalled(library: ILibraryName): Promise<boolean> {
+        return fsExtra.pathExists(this.getFilePath(library, 'library.json'));
+    }
+
     /**
      * Checks if the library has been installed.
      * @param name the library name
