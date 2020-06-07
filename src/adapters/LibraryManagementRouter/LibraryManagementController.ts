@@ -2,8 +2,9 @@ import * as express from 'express';
 
 import { IInstalledLibrary, IHubInfo } from '../../types';
 import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
-import LibraryManager from '../../LibraryManager';
 import ContentManager from '../../ContentManager';
+import LibraryManager from '../../LibraryManager';
+import LibraryName from '../../LibraryName';
 
 export default class LibraryManagementExpressController {
     constructor(
@@ -39,9 +40,12 @@ export default class LibraryManagementExpressController {
         res: express.Response<ILibraryManagementOverviewItem[]>
     ): Promise<void> => {
         const libraryNames = await this.libraryManager.libraryStorage.getInstalledLibraryNames();
-        const libraryMetadata = await Promise.all(
-            libraryNames.map((lib) => this.libraryManager.getLibrary(lib))
-        );
+        const libraryMetadata = (
+            await Promise.all(
+                libraryNames.map((lib) => this.libraryManager.getLibrary(lib))
+            )
+        ).sort((a, b) => a.compare(b));
+
         const ret = await Promise.all(
             libraryMetadata.map(async (metadata) => {
                 const usage = await this.contentManager.contentStorage.getUsage(
@@ -52,11 +56,14 @@ export default class LibraryManagementExpressController {
                 );
                 return {
                     title: metadata.title,
+                    machineName: metadata.machineName,
                     majorVersion: metadata.majorVersion,
                     minorVersion: metadata.minorVersion,
                     patchVersion: metadata.patchVersion,
                     isAddon: metadata.addTo !== undefined,
                     restricted: metadata.restricted,
+                    // We coerce the inconsistent H5P type boolean | 0 | 1 into
+                    // boolean.
                     // tslint:disable-next-line: triple-equals
                     runnable: metadata.runnable == true,
                     instancesCount: usage.asMainLibrary,

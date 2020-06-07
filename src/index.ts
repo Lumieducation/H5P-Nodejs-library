@@ -42,11 +42,13 @@ import {
 import express from './adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
 import { errorHandler } from './adapters/expressErrorHandler';
 import expressController from './adapters/H5PAjaxRouter/H5PAjaxExpressController';
+import LibraryManagementExpressRouter from './adapters/LibraryManagementRouter/LibraryManagementExpressRouter';
 
 const adapters = {
     express,
     expressController,
-    expressErrorHandler: errorHandler
+    expressErrorHandler: errorHandler,
+    LibraryManagementExpressRouter
 };
 
 const fsImplementations = {

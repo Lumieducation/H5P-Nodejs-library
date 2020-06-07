@@ -17,6 +17,7 @@ import {
 } from '../../../src';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
 import { IFileStats, ILibraryName } from '../../types';
+import { hasDependencyOn } from '../../helpers/DependencyChecker';
 
 /**
  * Persists content to the disk.
@@ -331,10 +332,30 @@ export default class FileContentStorage implements IContentStorage {
         );
     }
 
+    // TODO: optimize
     public async getUsage(
         library: ILibraryName
     ): Promise<{ asDependency: number; asMainLibrary: number }> {
-        throw new Error('not implemented');
+        let asDependency = 0;
+        let asMainLibrary = 0;
+
+        const contentIds = await this.listContent();
+        // We don't use Promise.all here as this would possibly overwhelm the
+        // available memory space.
+        for (const contentId of contentIds) {
+            const contentMetadata = await this.getMetadata(contentId);
+            const isMainLibrary =
+                contentMetadata.mainLibrary === library.machineName;
+            if (hasDependencyOn(contentMetadata, library)) {
+                if (isMainLibrary) {
+                    asMainLibrary += 1;
+                } else {
+                    asDependency += 1;
+                }
+            }
+        }
+
+        return { asDependency, asMainLibrary };
     }
 
     /**

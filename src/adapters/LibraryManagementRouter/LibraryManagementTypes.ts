@@ -5,6 +5,7 @@ export interface ILibraryManagementOverviewItem {
     instancesAsDependencyCount: number;
     instancesCount: number;
     isAddon: boolean;
+    machineName: string;
     majorVersion: number;
     minorVersion: number;
     patchVersion: number;

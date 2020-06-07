@@ -666,15 +666,23 @@ export default class H5PEditor {
      * returns the actual content information for the editor to process.
      * Throws errors if something goes wrong.
      * @param data the raw data of the h5p package as a buffer
-     * @returns the content information extracted from the package
+     * @param user the user who is uploading the package
+     * @param options (optional) further options:
+     * @param onlyInstallLibraries true if content should be disregarded
+     * @returns the content information extracted from the package. The metadata
+     * and parameters property will be undefined if onlyInstallLibraries was set
+     * to true.
      */
     public async uploadPackage(
         data: Buffer,
-        user: IUser
+        user: IUser,
+        options?: {
+            onlyInstallLibraries?: boolean;
+        }
     ): Promise<{
         installedLibraries: ILibraryInstallResult[];
-        metadata: IContentMetadata;
-        parameters: any;
+        metadata?: IContentMetadata;
+        parameters?: any;
     }> {
         log.info(`uploading package`);
         const dataStream: any = new PassThrough();
@@ -682,8 +690,8 @@ export default class H5PEditor {
 
         let returnValues: {
             installedLibraries: ILibraryInstallResult[];
-            metadata: IContentMetadata;
-            parameters: any;
+            metadata?: IContentMetadata;
+            parameters?: any;
         };
 
         await withFile(
@@ -695,10 +703,18 @@ export default class H5PEditor {
                     throw new H5pError('upload-package-failed-tmp');
                 }
 
-                returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
-                    tempPackagePath,
-                    user
-                );
+                if (options?.onlyInstallLibraries) {
+                    returnValues = {
+                        installedLibraries: await this.packageImporter.installLibrariesFromPackage(
+                            tempPackagePath
+                        )
+                    };
+                } else {
+                    returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
+                        tempPackagePath,
+                        user
+                    );
+                }
             },
             { postfix: '.h5p', keep: false }
         );

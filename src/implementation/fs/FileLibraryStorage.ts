@@ -17,6 +17,7 @@ import {
 } from '../../../src';
 import { checkFilename } from './filenameUtils';
 import { IFileStats } from '../../types';
+import { hasDependencyOn } from '../../helpers/DependencyChecker';
 
 /**
  * Stores libraries in a directory.
@@ -201,8 +202,21 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return fsExtra.pathExists(this.getFilePath(library, filename));
     }
 
+    // TODO: optimize
     public async getDependentsCount(library: ILibraryName): Promise<number> {
-        throw new Error('not implemented');
+        let counter = 0;
+
+        const librariesNames = await this.getInstalledLibraryNames();
+        const librariesMetadata = await Promise.all(
+            librariesNames.map((lib) => this.getLibrary(lib))
+        );
+        for (const libraryMetadata of librariesMetadata) {
+            if (hasDependencyOn(libraryMetadata, library)) {
+                counter += 1;
+            }
+        }
+
+        return counter;
     }
 
     /**
