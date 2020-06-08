@@ -1,18 +1,20 @@
 import * as express from 'express';
 
-import { IInstalledLibrary, IHubInfo, ILibraryName } from '../../types';
+import { IInstalledLibrary, ILibraryName } from '../../types';
 import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
 import ContentManager from '../../ContentManager';
 import ContentTypeCache from '../../ContentTypeCache';
 import H5pError from '../../helpers/H5pError';
 import LibraryManager from '../../LibraryManager';
 import LibraryName from '../../LibraryName';
+import H5PEditor from '../../H5PEditor';
 
 export default class LibraryManagementExpressController {
     constructor(
         protected libraryManager: LibraryManager,
         protected contentManager: ContentManager,
-        protected contentTypeCache: ContentTypeCache
+        protected contentTypeCache: ContentTypeCache,
+        protected h5pEditor: H5PEditor
     ) {}
 
     /**
@@ -105,7 +107,7 @@ export default class LibraryManagementExpressController {
             })
         );
 
-        res.send(ret).status(200);
+        res.status(200).json(ret);
     };
 
     /**
@@ -118,7 +120,7 @@ export default class LibraryManagementExpressController {
         }>
     ): Promise<void> => {
         const lastUpdate = await this.contentTypeCache.getLastUpdate();
-        res.status(200).send({
+        res.status(200).json({
             lastUpdate: lastUpdate === undefined ? null : lastUpdate
         });
     };
@@ -149,7 +151,7 @@ export default class LibraryManagementExpressController {
             this.contentManager.contentStorage.getUsage(libraryName),
             this.libraryManager.libraryStorage.getDependentsCount(libraryName)
         ]);
-        res.status(200).send({
+        res.status(200).json({
             ...metadata,
             dependentsCount,
             instancesCount: usage.asMainLibrary,
@@ -213,7 +215,23 @@ export default class LibraryManagementExpressController {
         },
         res: express.Response<{ installed: number; updated: number }>
     ): Promise<void> => {
-        return;
+        if (!req.files?.file?.data) {
+            throw new H5pError('malformed-request', {}, 400);
+        }
+
+        const { installedLibraries } = await this.h5pEditor.uploadPackage(
+            req.files.file.data,
+            undefined,
+            {
+                onlyInstallLibraries: true
+            }
+        );
+
+        res.status(200).json({
+            installed: installedLibraries.filter((l) => l.type === 'new')
+                .length,
+            updated: installedLibraries.filter((l) => l.type === 'patch').length
+        });
     };
 
     /**
@@ -231,7 +249,7 @@ export default class LibraryManagementExpressController {
     ): Promise<void> => {
         await this.contentTypeCache.forceUpdate();
         const lastUpdate = await this.contentTypeCache.getLastUpdate();
-        res.status(200).send({ lastUpdate });
+        res.status(200).json({ lastUpdate });
     };
 
     /**

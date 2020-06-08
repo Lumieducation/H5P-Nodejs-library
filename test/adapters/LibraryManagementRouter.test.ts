@@ -331,4 +331,60 @@ describe('Express Library Management endpoint adapter', () => {
             expect(res2.body.lastUpdate).toBeGreaterThan(Date.now() - 20000);
         });
     });
+
+    describe('POST /libraries', () => {
+        it('rejects malformed requests', async () => {
+            const mockApp = supertest(app);
+            const res = await mockApp
+                .post('/')
+                .attach(
+                    'anotherfile',
+                    path.resolve('test/data/validator/valid2.h5p')
+                );
+
+            expect(res.status).toBe(400);
+        });
+
+        it('rejects invalid libraries', async () => {
+            const mockApp = supertest(app);
+            const res = await mockApp
+                .post('/')
+                .attach(
+                    'file',
+                    path.resolve('test/data/validator/invalid-library-json.h5p')
+                );
+
+            expect(res.status).toBe(400);
+        });
+
+        it('installs valid uploaded libraries', async () => {
+            const mockApp = supertest(app);
+            const res = await mockApp
+                .post('/')
+                .attach('file', path.resolve('test/data/validator/valid2.h5p'));
+
+            expect(res.status).toBe(200);
+            expect(res.body.installed).toEqual(1);
+            expect(res.body.updated).toEqual(0);
+            expect(
+                (await h5pEditor.libraryStorage.getInstalledLibraryNames())
+                    .length
+            ).toEqual(1);
+            expect(
+                (await h5pEditor.contentManager.listContent()).length
+            ).toEqual(0);
+        });
+
+        it('installs uploaded libraries even if content is invalid', async () => {
+            const mockApp = supertest(app);
+            const res = await mockApp
+                .post('/')
+                .attach(
+                    'file',
+                    path.resolve('test/data/validator/broken-content-json.h5p')
+                );
+
+            expect(res.status).toBe(200);
+        });
+    });
 });

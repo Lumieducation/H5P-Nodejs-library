@@ -18,7 +18,8 @@ export default function (
     const controller = new LibraryManagementExpressController(
         h5pEditor.libraryManager,
         h5pEditor.contentManager,
-        h5pEditor.contentTypeCache
+        h5pEditor.contentTypeCache,
+        h5pEditor
     );
 
     if (undefinedOrTrue(routeOptions.routeGetLibraries)) {

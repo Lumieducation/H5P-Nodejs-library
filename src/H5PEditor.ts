@@ -669,7 +669,8 @@ export default class H5PEditor {
      * returns the actual content information for the editor to process.
      * Throws errors if something goes wrong.
      * @param data the raw data of the h5p package as a buffer
-     * @param user the user who is uploading the package
+     * @param user the user who is uploading the package; optional if onlyInstallLibraries
+     * is set to true
      * @param options (optional) further options:
      * @param onlyInstallLibraries true if content should be disregarded
      * @returns the content information extracted from the package. The metadata
@@ -678,7 +679,7 @@ export default class H5PEditor {
      */
     public async uploadPackage(
         data: Buffer,
-        user: IUser,
+        user?: IUser,
         options?: {
             onlyInstallLibraries?: boolean;
         }
