@@ -253,26 +253,6 @@ export default class LibraryManagementExpressController {
     };
 
     /**
-     * Updates all content object of the specified library to the newest
-     * version.
-     *
-     * Used HTTP status codes:
-     * - 200 if successful
-     * - 400 if library name is not a valid ubername
-     * - 404 if the library was not found
-     * - 500 if there was an internal error
-     */
-    public postLibraryUpdateContent = async (
-        req: express.Request<{ ubername: string }>,
-        res: express.Response<{
-            library: ILibraryManagementOverviewItem;
-            updated: number;
-        }>
-    ): Promise<void> => {
-        return;
-    };
-
-    /**
      * Checks if the ubername is valid and if the library is installed.
      * Throws H5pErrors if the name is invalid (400) or the library is not
      * installed (404).

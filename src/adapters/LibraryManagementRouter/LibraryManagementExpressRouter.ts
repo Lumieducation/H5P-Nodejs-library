@@ -72,16 +72,6 @@ export default function (
         );
     }
 
-    if (undefinedOrTrue(routeOptions.routePostLibraryUpdateContent)) {
-        router.post(
-            `/:ubername/update-content`,
-            catchAndPassOnErrors(
-                controller.postLibraryUpdateContent,
-                routeOptions.handleErrors
-            )
-        );
-    }
-
     if (undefinedOrTrue(routeOptions.routePostContentTypeCacheUpdate)) {
         router.post(
             `/content-type-cache/update`,

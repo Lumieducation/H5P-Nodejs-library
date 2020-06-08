@@ -10,5 +10,4 @@ export default class LibraryManagementExpressRouterOptions {
     public routePatchLibrary?: boolean = true;
     public routePostContentTypeCacheUpdate?: boolean = true;
     public routePostLibraries?: boolean = true;
-    public routePostLibraryUpdateContent?: boolean = true;
 }
