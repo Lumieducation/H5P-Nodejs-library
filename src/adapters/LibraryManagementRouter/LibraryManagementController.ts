@@ -146,7 +146,7 @@ export default class LibraryManagementExpressController {
      * libraries to restricted or back.
      *
      * Used HTTP status codes:
-     * - 200 if successful
+     * - 204 if successful
      * - 400 if library name is not a valid ubername
      * - 404 if the library was not found
      * - 500 if there was an internal error
@@ -159,7 +159,19 @@ export default class LibraryManagementExpressController {
         >,
         res: express.Response<ILibraryManagementOverviewItem>
     ): Promise<void> => {
-        return;
+        const libraryName = await this.checkLibrary(req.params.ubername);
+        if (
+            req.body.restricted === undefined ||
+            typeof req.body.restricted !== 'boolean'
+        ) {
+            throw new H5pError('invalid-patch-request', undefined, 400);
+        }
+
+        await this.libraryManager.libraryStorage.setRestricted(
+            libraryName,
+            req.body.restricted
+        );
+        res.status(204).send();
     };
 
     /**

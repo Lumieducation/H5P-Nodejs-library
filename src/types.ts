@@ -797,6 +797,8 @@ export interface ILibraryStorage {
      */
     listFiles(library: ILibraryName): Promise<string[]>;
 
+    setRestricted(library: ILibraryName, restricted: boolean): Promise<void>;
+
     /**
      * Updates the library metadata. This is necessary when updating to a new patch version.
      * After this clearFiles(...) is called by the LibraryManager to remove all old files.

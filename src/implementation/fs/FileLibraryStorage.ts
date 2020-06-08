@@ -370,6 +370,33 @@ export default class FileLibraryStorage implements ILibraryStorage {
             .filter((p) => !this.isIgnored(p));
     }
 
+    public async setRestricted(
+        library: ILibraryName,
+        restricted: boolean
+    ): Promise<void> {
+        const metadata = await this.getLibrary(library);
+        if (metadata.restricted === restricted) {
+            return;
+        }
+        metadata.restricted = restricted;
+
+        try {
+            await fsExtra.writeJSON(
+                this.getFilePath(library, 'library.json'),
+                metadata
+            );
+        } catch (error) {
+            throw new H5pError(
+                'error-updating-metadata',
+                {
+                    libraryName: LibraryName.toUberName(library),
+                    error: error.message
+                },
+                500
+            );
+        }
+    }
+
     /**
      * Updates the library metadata.
      * This is necessary when updating to a new patch version.

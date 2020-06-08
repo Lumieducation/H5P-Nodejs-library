@@ -193,7 +193,7 @@ describe('Express Library Management endpoint adapter', () => {
         });
 
         it('should return 200 and details of the installed library', async () => {
-            // We install the Course Presentation content type.
+            // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
                 path.resolve('test/data/validator/valid2.h5p')
             );
@@ -235,6 +235,63 @@ describe('Express Library Management endpoint adapter', () => {
                 instancesCount: 0,
                 isAddon: false
             });
+        });
+    });
+
+    describe('PATCH /libraries/123 endpoint', () => {
+        it('should reject invalid ubernames', async () => {
+            const res = await supertest(app).patch('/H5P.GreetingCard');
+            expect(res.status).toBe(400);
+        });
+
+        it('should detect missing libraries', async () => {
+            const res = await supertest(app).patch('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(404);
+        });
+
+        it('should detect invalid bodies', async () => {
+            // We install the Greeting Card content type.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
+            const { installedLibraries } = await h5pEditor.uploadPackage(
+                fileBuffer,
+                user,
+                {
+                    onlyInstallLibraries: true
+                }
+            );
+
+            const res1 = await supertest(app)
+                .patch('/H5P.GreetingCard-1.0')
+                .send({ otherProperty: true });
+            expect(res1.status).toBe(400);
+
+            const res2 = await supertest(app)
+                .patch('/H5P.GreetingCard-1.0')
+                .send({ restricted: 1 });
+            expect(res2.status).toBe(400);
+        });
+
+        it('should return 200 and details of the installed library', async () => {
+            // We install the Greeting Card content type.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
+            const { installedLibraries } = await h5pEditor.uploadPackage(
+                fileBuffer,
+                user,
+                {
+                    onlyInstallLibraries: true
+                }
+            );
+            // Make sure all libraries were installed as expected.
+            expect(installedLibraries.length).toEqual(1);
+
+            const res = await supertest(app)
+                .patch('/H5P.GreetingCard-1.0')
+                .send({ restricted: true });
+            expect(res.status).toBe(204);
         });
     });
 });
