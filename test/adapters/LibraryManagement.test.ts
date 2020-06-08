@@ -66,118 +66,175 @@ describe('Express Library Management endpoint adapter', () => {
         tempDir = '';
     });
 
-    // GET /libraries endpoint
+    describe('GET /libraries endpoint', () => {
+        it('should return 200 with empty library list if no library was installed', async () => {
+            const res = await supertest(app).get('/');
+            expect(res.status).toBe(200);
+            expect(res.body).toEqual([]);
+        });
 
-    it('should return 200 with empty library list if no library was installed', async () => {
-        const res = await supertest(app).get('/');
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual([]);
-    });
+        it('should return 200 and a list of installed libraries', async () => {
+            // We install the Course Presentation content type.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid1.h5p')
+            );
+            const { installedLibraries } = await h5pEditor.uploadPackage(
+                fileBuffer,
+                user,
+                {
+                    onlyInstallLibraries: true
+                }
+            );
+            // Make sure all libraries were installed as expected.
+            expect(installedLibraries.length).toEqual(68);
 
-    it('should return 200 and a list of installed libraries', async () => {
-        // We install the Course Presentation content type.
-        const fileBuffer = fsExtra.readFileSync(
-            path.resolve('test/data/validator/valid1.h5p')
-        );
-        const { installedLibraries } = await h5pEditor.uploadPackage(
-            fileBuffer,
-            user,
-            {
-                onlyInstallLibraries: true
+            const res = await supertest(app).get('/');
+            expect(res.status).toBe(200);
+            expect(res.body.length).toEqual(installedLibraries.length);
+
+            const libraryInformation = res.body as ILibraryManagementOverviewItem[];
+            for (const lib of libraryInformation) {
+                expect(lib).toHaveProperty('title');
+                expect(lib).toHaveProperty('machineName');
+                expect(lib).toHaveProperty('majorVersion');
+                expect(lib).toHaveProperty('majorVersion');
+                expect(lib).toHaveProperty('minorVersion');
+                expect(lib).toHaveProperty('patchVersion');
+                expect(lib).toHaveProperty('isAddon');
+                expect(lib).toHaveProperty('restricted');
+                expect(lib).toHaveProperty('runnable');
+                expect(lib).toHaveProperty('instancesCount');
+                expect(lib).toHaveProperty('instancesAsDependencyCount');
+                expect(lib).toHaveProperty('dependentsCount');
+                expect(lib).toHaveProperty('canBeDeleted');
+                expect(lib).toHaveProperty('canBeUpdated');
             }
-        );
-        // Make sure all libraries were installed as expected.
-        expect(installedLibraries.length).toEqual(68);
 
-        const res = await supertest(app).get('/');
-        expect(res.status).toBe(200);
-        expect(res.body.length).toEqual(installedLibraries.length);
-
-        const libraryInformation = res.body as ILibraryManagementOverviewItem[];
-        for (const lib of libraryInformation) {
-            expect(lib).toHaveProperty('title');
-            expect(lib).toHaveProperty('machineName');
-            expect(lib).toHaveProperty('majorVersion');
-            expect(lib).toHaveProperty('majorVersion');
-            expect(lib).toHaveProperty('minorVersion');
-            expect(lib).toHaveProperty('patchVersion');
-            expect(lib).toHaveProperty('isAddon');
-            expect(lib).toHaveProperty('restricted');
-            expect(lib).toHaveProperty('runnable');
-            expect(lib).toHaveProperty('instancesCount');
-            expect(lib).toHaveProperty('instancesAsDependencyCount');
-            expect(lib).toHaveProperty('dependentsCount');
-            expect(lib).toHaveProperty('canBeDeleted');
-            expect(lib).toHaveProperty('canBeUpdated');
-        }
-
-        expect(
-            libraryInformation.sort((a, b) =>
-                a.machineName.localeCompare(b.machineName)
-            )
-        ).toEqual(libraryInformation);
+            expect(
+                libraryInformation.sort((a, b) =>
+                    a.machineName.localeCompare(b.machineName)
+                )
+            ).toEqual(libraryInformation);
+        });
     });
 
-    // DELETE /libraries/123 endpoint
+    describe('DELETE /libraries/123 endpoint', () => {
+        it('should delete unused libraries', async () => {
+            // We install the Greeting Card content type.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
+            const { installedLibraries } = await h5pEditor.uploadPackage(
+                fileBuffer,
+                user,
+                {
+                    onlyInstallLibraries: true
+                }
+            );
+            // Make sure all libraries were installed as expected.
+            expect(installedLibraries.length).toEqual(1);
 
-    it('should delete unused libraries', async () => {
-        // We install the Greeting Card content type.
-        const fileBuffer = fsExtra.readFileSync(
-            path.resolve('test/data/validator/valid2.h5p')
-        );
-        const { installedLibraries } = await h5pEditor.uploadPackage(
-            fileBuffer,
-            user,
-            {
-                onlyInstallLibraries: true
-            }
-        );
-        // Make sure all libraries were installed as expected.
-        expect(installedLibraries.length).toEqual(1);
+            const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(204);
+            const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+            expect(stillInstalledLibraries.length).toEqual(0);
+        });
 
-        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
-        expect(res.status).toBe(204);
-        const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
-        expect(stillInstalledLibraries.length).toEqual(0);
+        it('should reject invalid ubernames', async () => {
+            const res = await supertest(app).delete('/H5P.GreetingCard');
+            expect(res.status).toBe(400);
+        });
+
+        it('should detect missing libraries', async () => {
+            const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(404);
+        });
+
+        it('should reject deleting used libraries', async () => {
+            // We install the Greeting Card content type and its content.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
+            const {
+                installedLibraries,
+                metadata,
+                parameters
+            } = await h5pEditor.uploadPackage(fileBuffer, user);
+
+            // Make sure all libraries were installed as expected.
+            expect(installedLibraries.length).toEqual(1);
+            await h5pEditor.saveOrUpdateContent(
+                undefined,
+                parameters,
+                metadata,
+                LibraryName.toUberName(metadata.preloadedDependencies[0], {
+                    useWhitespace: true
+                }),
+                user
+            );
+
+            // Try deleting a library that is used by content.
+            const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(423);
+            const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+            expect(stillInstalledLibraries.length).toEqual(1);
+        });
     });
 
-    it('should reject invalid ubernames', async () => {
-        const res = await supertest(app).delete('/H5P.GreetingCard');
-        expect(res.status).toBe(400);
-    });
+    describe('GET /libraries/123 endpoint', () => {
+        it('should reject invalid ubernames', async () => {
+            const res = await supertest(app).get('/H5P.GreetingCard');
+            expect(res.status).toBe(400);
+        });
 
-    it('should detect missing libraries', async () => {
-        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
-        expect(res.status).toBe(404);
-    });
+        it('should detect missing libraries', async () => {
+            const res = await supertest(app).get('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(404);
+        });
 
-    it('should reject deleting used libraries', async () => {
-        // We install the Greeting Card content type and its content.
-        const fileBuffer = fsExtra.readFileSync(
-            path.resolve('test/data/validator/valid2.h5p')
-        );
-        const {
-            installedLibraries,
-            metadata,
-            parameters
-        } = await h5pEditor.uploadPackage(fileBuffer, user);
+        it('should return 200 and details of the installed library', async () => {
+            // We install the Course Presentation content type.
+            const fileBuffer = fsExtra.readFileSync(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
+            const { installedLibraries } = await h5pEditor.uploadPackage(
+                fileBuffer,
+                user,
+                {
+                    onlyInstallLibraries: true
+                }
+            );
+            // Make sure all libraries were installed as expected.
+            expect(installedLibraries.length).toEqual(1);
 
-        // Make sure all libraries were installed as expected.
-        expect(installedLibraries.length).toEqual(1);
-        await h5pEditor.saveOrUpdateContent(
-            undefined,
-            parameters,
-            metadata,
-            LibraryName.toUberName(metadata.preloadedDependencies[0], {
-                useWhitespace: true
-            }),
-            user
-        );
-
-        // Try deleting a library that is used by content.
-        const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
-        expect(res.status).toBe(423);
-        const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
-        expect(stillInstalledLibraries.length).toEqual(1);
+            const res = await supertest(app).get('/H5P.GreetingCard-1.0');
+            expect(res.status).toBe(200);
+            expect(res.body).toMatchObject({
+                title: 'Greeting Card',
+                description: 'Displays a greeting card',
+                majorVersion: 1,
+                minorVersion: 0,
+                patchVersion: 6,
+                runnable: 1,
+                author: 'Joubel AS',
+                license: 'MIT',
+                machineName: 'H5P.GreetingCard',
+                preloadedJs: [
+                    {
+                        path: 'greetingcard.js'
+                    }
+                ],
+                preloadedCss: [
+                    {
+                        path: 'greetingcard.css'
+                    }
+                ],
+                restricted: false,
+                dependentsCount: 0,
+                instancesAsDependencyCount: 0,
+                instancesCount: 0,
+                isAddon: false
+            });
+        });
     });
 });

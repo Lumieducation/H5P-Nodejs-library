@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { IInstalledLibrary, IHubInfo } from '../../types';
+import { IInstalledLibrary, IHubInfo, ILibraryName } from '../../types';
 import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
 import ContentManager from '../../ContentManager';
 import LibraryManager from '../../LibraryManager';
@@ -26,26 +26,7 @@ export default class LibraryManagementExpressController {
         req: express.Request<{ ubername: string }>,
         res: express.Response
     ): Promise<void> => {
-        // Check for correct ubername
-        const libraryName = LibraryName.fromUberName(req.params.ubername);
-        if (libraryName === undefined) {
-            throw new H5pError(
-                'invalid-ubername',
-                { name: req.params.ubername },
-                400
-            );
-        }
-
-        // Check if library is installed
-        if (
-            !(await this.libraryManager.libraryStorage.isInstalled(libraryName))
-        ) {
-            throw new H5pError(
-                'library-missing',
-                { library: req.params.ubername },
-                404
-            );
-        }
+        const libraryName = await this.checkLibrary(req.params.ubername);
 
         // Check if library can be safely deleted
         const usage = await this.contentManager.contentStorage.getUsage(
@@ -145,7 +126,19 @@ export default class LibraryManagementExpressController {
             }
         >
     ): Promise<void> => {
-        return;
+        const libraryName = await this.checkLibrary(req.params.ubername);
+        const [metadata, usage, dependentsCount] = await Promise.all([
+            this.libraryManager.getLibrary(libraryName),
+            this.contentManager.contentStorage.getUsage(libraryName),
+            this.libraryManager.libraryStorage.getDependentsCount(libraryName)
+        ]);
+        res.status(200).send({
+            ...metadata,
+            dependentsCount,
+            instancesCount: usage.asMainLibrary,
+            instancesAsDependencyCount: usage.asDependency,
+            isAddon: metadata.addTo !== undefined
+        });
     };
 
     /**
@@ -229,4 +222,27 @@ export default class LibraryManagementExpressController {
     ): Promise<void> => {
         return;
     };
+
+    /**
+     * Checks if the ubername is valid and if the library is installed.
+     * Throws H5pErrors if the name is invalid (400) or the library is not
+     * installed (404).
+     * @param ubername the ubername to check
+     * @returns the parsed library name
+     */
+    private async checkLibrary(ubername: string): Promise<ILibraryName> {
+        // Check for correct ubername
+        const libraryName = LibraryName.fromUberName(ubername);
+        if (libraryName === undefined) {
+            throw new H5pError('invalid-ubername', { name: ubername }, 400);
+        }
+
+        // Check if library is installed
+        if (
+            !(await this.libraryManager.libraryStorage.isInstalled(libraryName))
+        ) {
+            throw new H5pError('library-missing', { library: ubername }, 404);
+        }
+        return libraryName;
+    }
 }
