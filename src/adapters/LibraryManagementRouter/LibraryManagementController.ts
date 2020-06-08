@@ -3,14 +3,16 @@ import * as express from 'express';
 import { IInstalledLibrary, IHubInfo, ILibraryName } from '../../types';
 import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
 import ContentManager from '../../ContentManager';
+import ContentTypeCache from '../../ContentTypeCache';
+import H5pError from '../../helpers/H5pError';
 import LibraryManager from '../../LibraryManager';
 import LibraryName from '../../LibraryName';
-import H5pError from '../../helpers/H5pError';
 
 export default class LibraryManagementExpressController {
     constructor(
         protected libraryManager: LibraryManager,
-        protected contentManager: ContentManager
+        protected contentManager: ContentManager,
+        protected contentTypeCache: ContentTypeCache
     ) {}
 
     /**
@@ -104,6 +106,21 @@ export default class LibraryManagementExpressController {
         );
 
         res.send(ret).status(200);
+    };
+
+    /**
+     * Returns the last update of the content type cache.
+     */
+    public getLibrariesContentTypeCacheUpdate = async (
+        req: express.Request,
+        res: express.Response<{
+            lastUpdate: Date | null;
+        }>
+    ): Promise<void> => {
+        const lastUpdate = await this.contentTypeCache.getLastUpdate();
+        res.status(200).send({
+            lastUpdate: lastUpdate === undefined ? null : lastUpdate
+        });
     };
 
     /**
@@ -210,9 +227,11 @@ export default class LibraryManagementExpressController {
      */
     public postLibrariesContentTypeCacheUpdate = async (
         req: express.Request,
-        res: express.Response<IHubInfo>
+        res: express.Response<{ lastUpdate: Date }>
     ): Promise<void> => {
-        return;
+        await this.contentTypeCache.forceUpdate();
+        const lastUpdate = await this.contentTypeCache.getLastUpdate();
+        res.status(200).send({ lastUpdate });
     };
 
     /**

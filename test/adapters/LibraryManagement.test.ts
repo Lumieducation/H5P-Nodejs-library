@@ -1,4 +1,6 @@
 import { dir } from 'tmp-promise';
+import axios from 'axios';
+import axiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
@@ -10,6 +12,8 @@ import User from '../../examples/User';
 import * as H5P from '../../src';
 import { ILibraryManagementOverviewItem } from '../../src/adapters/LibraryManagementRouter/LibraryManagementTypes';
 import LibraryName from '../../src/LibraryName';
+
+const axiosMock = new axiosMockAdapter(axios);
 
 interface RequestEx extends express.Request {
     language: string;
@@ -50,6 +54,20 @@ describe('Express Library Management endpoint adapter', () => {
             path.resolve(path.join(tempDir, 'temporary-storage')), // the path on the local disc where temporary files (uploads) should be stored
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
         );
+
+        axiosMock
+            .onPost(h5pEditor.config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                require('../data/content-type-cache/registration.json')
+            );
+        axiosMock
+            .onPost(h5pEditor.config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                require('../data/content-type-cache/real-content-types.json')
+            );
+
         app.use((req: RequestEx, res, next) => {
             req.user = user;
             req.language = 'en';
@@ -292,6 +310,25 @@ describe('Express Library Management endpoint adapter', () => {
                 .patch('/H5P.GreetingCard-1.0')
                 .send({ restricted: true });
             expect(res.status).toBe(204);
+        });
+    });
+
+    describe('/libraries/content-type-cache/update', () => {
+        it('should update the cache on POST', async () => {
+            const res = await supertest(app).post('/content-type-cache/update');
+            expect(res.status).toBe(200);
+            expect(res.body.lastUpdate).toBeGreaterThan(Date.now() - 20000);
+        });
+        it('should retrieve a null value for last update date on GET without prior content type cache update', async () => {
+            const res1 = await supertest(app).get('/content-type-cache/update');
+            expect(res1.status).toBe(200);
+            expect(res1.body.lastUpdate).toEqual(null);
+        });
+        it('should retrieve a value for last update date on GET with prior content type cache update', async () => {
+            await h5pEditor.getContentTypeCache(user);
+            const res2 = await supertest(app).get('/content-type-cache/update');
+            expect(res2.status).toBe(200);
+            expect(res2.body.lastUpdate).toBeGreaterThan(Date.now() - 20000);
         });
     });
 });

@@ -17,7 +17,8 @@ export default function (
     const router = Router();
     const controller = new LibraryManagementExpressController(
         h5pEditor.libraryManager,
-        h5pEditor.contentManager
+        h5pEditor.contentManager,
+        h5pEditor.contentTypeCache
     );
 
     if (undefinedOrTrue(routeOptions.routeGetLibraries)) {
@@ -81,10 +82,20 @@ export default function (
     }
 
     if (undefinedOrTrue(routeOptions.routePostContentTypeCacheUpdate)) {
-        router.get(
+        router.post(
             `/content-type-cache/update`,
             catchAndPassOnErrors(
                 controller.postLibrariesContentTypeCacheUpdate,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routeGetContentTypeCacheUpdate)) {
+        router.get(
+            `/content-type-cache/update`,
+            catchAndPassOnErrors(
+                controller.getLibrariesContentTypeCacheUpdate,
                 routeOptions.handleErrors
             )
         );

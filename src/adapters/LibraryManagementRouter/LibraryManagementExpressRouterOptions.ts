@@ -4,6 +4,7 @@
 export default class LibraryManagementExpressRouterOptions {
     public handleErrors?: boolean = true;
     public routeDeleteLibrary?: boolean = true;
+    public routeGetContentTypeCacheUpdate?: boolean = true;
     public routeGetLibraries?: boolean = true;
     public routeGetLibrary?: boolean = true;
     public routePatchLibrary?: boolean = true;
