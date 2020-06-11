@@ -10,7 +10,10 @@ const log = new Logger('S3Utils');
  * @param filename the filename to check
  * @returns no return value; throws errors if the filename is not valid
  */
-export function validateFilename(filename: string): void {
+export function validateFilename(
+    filename: string,
+    invalidCharactersRegExp?: RegExp
+): void {
     if (/\.\.\//.test(filename)) {
         log.error(
             `Relative paths in filenames are not allowed: ${filename} is illegal`
@@ -29,19 +32,31 @@ export function validateFilename(filename: string): void {
     // expect for ranges of non-printable ASCII characters:
     // &$@=;:+ ,?\\{^}%`]'">[~<#
 
-    if (/[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/.test(filename)) {
+    if (/[^A-Za-z0-9\-._!()\/]/.test(filename)) {
         log.error(`Found illegal character in filename: ${filename}`);
         throw new H5pError('illegal-filename', { filename }, 400);
     }
 }
 
+/**
+ * Sanitizes a filename or path by shortening it to the specified maximum length
+ * and removing the invalid characters in the RegExp. If you don't specify a
+ * RegExp a very strict invalid character list will be used that only leaves
+ * alphanumeric filenames untouched.
+ * @param filename the filename or path (with UNIX slash separator) to sanitize
+ * @param maxFileLength the filename will be shortened to this length
+ * @param invalidCharactersRegExp these characters will be removed from the
+ * filename
+ * @returns the cleaned filename
+ */
 export function sanitizeFilename(
     filename: string,
-    maxFileLength: number
+    maxFileLength: number,
+    invalidCharactersRegExp?: RegExp
 ): string {
     return generalizedSanitizeFilename(
         filename,
-        /[&\$@=;:\+\s,\?\\\{\^\}%`\]'">\[~<#|]/g,
+        invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()\/]/g,
         maxFileLength
     );
 }
