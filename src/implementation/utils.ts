@@ -17,17 +17,28 @@ export function generalizedSanitizeFilename(
     // We keep / and \ as the "filename" can be a relative path with
     // directories. We don't use the sanitize-filename package, as it
     // also removes directory separators.
-    const cleanedFilename = filename.replace(invalidCharacterRegex, '');
+    let cleanedFilename = filename.replace(invalidCharacterRegex, '');
 
-    // Second, shorten the filename if it is too long.
+    // Should the filename only contain the extension now (because all
+    // characters of the basename were invalid), we add a generic filename.
+    let extension = path.extname(cleanedFilename);
+    let basename = path.basename(cleanedFilename, extension);
+    const dirname = path.dirname(cleanedFilename);
+    if (extension === '') {
+        extension = basename;
+        basename = 'file';
+        cleanedFilename = `${dirname}/${basename}${extension}`;
+    }
+
+    // Shorten the filename if it is too long.
     const numberOfCharactersToCut = cleanedFilename.length - maxLength;
     if (numberOfCharactersToCut < 0) {
         return cleanedFilename;
     }
 
-    const extension = path.extname(cleanedFilename);
-    const dirname = path.dirname(cleanedFilename);
-    const basename = path.basename(cleanedFilename);
-    const finalLength = Math.max(1, basename.length - numberOfCharactersToCut);
-    return path.join(dirname, `${basename.substr(0, finalLength)}${extension}`);
+    const finalBasenameLength = Math.max(
+        1,
+        basename.length - numberOfCharactersToCut
+    );
+    return `${dirname}/${basename.substr(0, finalBasenameLength)}${extension}`;
 }
