@@ -93,7 +93,7 @@
         "@types/jest": "26.0.0",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
-        "@types/mongodb": "3.5.22",
+        "@types/mongodb": "3.5.23",
         "@types/puppeteer": "3.0.0",
         "@types/shortid": "0.0.29",
         "@types/stream-buffers": "3.0.3",
