@@ -35,7 +35,8 @@ import {
     IRequestWithUser,
     IRequestWithLanguage,
     IRequestWithTranslator,
-    Permission
+    Permission,
+    ILibraryManagementOverviewItem
 } from './types';
 
 // Adapters
@@ -79,6 +80,7 @@ export {
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
+    ILibraryManagementOverviewItem,
     IPlayerModel,
     ITemporaryFile,
     ITemporaryFileStorage,

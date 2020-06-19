@@ -151,6 +151,11 @@ const start = async () => {
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
 
+    server.use(
+        '/components',
+        express.static(path.resolve('build/examples/components'))
+    );
+
     const port = process.env.PORT || '8080';
 
     // For developer convenience we display a list of IPs, the server is running

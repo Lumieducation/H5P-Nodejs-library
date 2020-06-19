@@ -1,7 +1,10 @@
 import * as express from 'express';
 
-import { IInstalledLibrary, ILibraryName } from '../../types';
-import { ILibraryManagementOverviewItem } from './LibraryManagementTypes';
+import {
+    IInstalledLibrary,
+    ILibraryName,
+    ILibraryManagementOverviewItem
+} from '../../types';
 import ContentManager from '../../ContentManager';
 import ContentTypeCache from '../../ContentTypeCache';
 import H5pError from '../../helpers/H5pError';
@@ -176,7 +179,7 @@ export default class LibraryManagementExpressController {
             any,
             { restricted: boolean }
         >,
-        res: express.Response<ILibraryManagementOverviewItem>
+        res: express.Response
     ): Promise<void> => {
         const libraryName = await this.checkLibrary(req.params.ubername);
         if (

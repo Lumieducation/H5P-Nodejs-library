@@ -46,13 +46,15 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public title: string;
     public w?: number;
 
-    public static fromMetadata(metadata: ILibraryMetadata): InstalledLibrary {
+    public static fromMetadata(
+        metadata: ILibraryMetadata & { restricted?: boolean }
+    ): InstalledLibrary {
         return new InstalledLibrary(
             metadata.machineName,
             metadata.majorVersion,
             metadata.minorVersion,
             metadata.patchVersion,
-            undefined,
+            metadata.restricted,
             metadata
         );
     }

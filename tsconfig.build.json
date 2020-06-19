@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "include": ["src/**/*.ts", "examples/**/*.ts"],
+    "exclude": ["examples/components/**"],
     "compilerOptions": {
         "declaration": true,
         "outDir": "./build"

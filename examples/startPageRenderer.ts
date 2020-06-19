@@ -19,18 +19,21 @@ export default function render(
         <html>
         <head>
             <meta charset="utf-8">
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" crossorigin="anonymous"></script>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" crossorigin="anonymous">
             <title>H5P NodeJs Demo</title>
         </head>
         <body>
             <div class="container">
                 <h1>H5P NodeJs Demo</h1>
-                <div class="alert alert-warning">This demo is for debugging and demonstration purposes only and not suitable for production use!</div>
+                <div class="alert alert-warning">This demo is for debugging and demonstration purposes only and not suitable for production use!</div>                
+                <h2>
+                    <span class="fa fa-file"></span> Existing content
+                </h2>
                 <a class="btn btn-primary my-2" href="${
                     editor.config.baseUrl
                 }/new"><span class="fa fa-plus-circle m-2"></span>Create new content</a>
-                <h2>Existing content</h2>
                 <div class="list-group">
                 ${contentObjects
                     .map(
@@ -75,7 +78,28 @@ export default function render(
                     )
                     .join('')}
                 </div>
+                <hr/>
+                <div id="library-admin-container">
+                </div>
             </div>
+
+            <script>
+                requirejs.config({
+                    baseUrl: "assets/js",
+                    paths: {
+                        react: 'https://unpkg.com/react@16/umd/react.development',
+                        "react-dom": 'https://unpkg.com/react-dom@16/umd/react-dom.development'
+                    }
+                });
+                requirejs([
+                    "react",
+                    "react-dom",
+                    "./components/LibraryAdminComponent.js"], 
+                    function (React, ReactDOM, LibraryAdmin) {
+                        const domContainer = document.querySelector('#library-admin-container');
+                        ReactDOM.render(React.createElement(LibraryAdmin.default), domContainer);
+                    });                
+            </script>
         </body>
         `);
     };
