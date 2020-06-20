@@ -44,12 +44,14 @@ import express from './adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
 import { errorHandler } from './adapters/expressErrorHandler';
 import expressController from './adapters/H5PAjaxRouter/H5PAjaxExpressController';
 import LibraryAdministrationExpressRouter from './adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
+import ContentTypeCacheExpressRouter from './adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 
 const adapters = {
     express,
     expressController,
     expressErrorHandler: errorHandler,
-    LibraryAdministrationExpressRouter
+    LibraryAdministrationExpressRouter,
+    ContentTypeCacheExpressRouter
 };
 
 const fsImplementations = {

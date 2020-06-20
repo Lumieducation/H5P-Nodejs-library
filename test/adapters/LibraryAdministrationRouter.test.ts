@@ -22,7 +22,7 @@ interface RequestEx extends express.Request {
     user: H5P.IUser;
 }
 
-describe('Express Library Management endpoint adapter', () => {
+describe('Express Library Administration endpoint adapter', () => {
     const user: H5P.IUser = new User();
     let app: express.Application;
     let cleanup: () => Promise<void>;
@@ -310,25 +310,6 @@ describe('Express Library Management endpoint adapter', () => {
                 .patch('/H5P.GreetingCard-1.0')
                 .send({ restricted: true });
             expect(res.status).toBe(204);
-        });
-    });
-
-    describe('/libraries/content-type-cache/update', () => {
-        it('should update the cache on POST', async () => {
-            const res = await supertest(app).post('/content-type-cache/update');
-            expect(res.status).toBe(200);
-            expect(res.body.lastUpdate).toBeGreaterThan(Date.now() - 20000);
-        });
-        it('should retrieve a null value for last update date on GET without prior content type cache update', async () => {
-            const res1 = await supertest(app).get('/content-type-cache/update');
-            expect(res1.status).toBe(200);
-            expect(res1.body.lastUpdate).toEqual(null);
-        });
-        it('should retrieve a value for last update date on GET with prior content type cache update', async () => {
-            await h5pEditor.getContentTypeCache(user);
-            const res2 = await supertest(app).get('/content-type-cache/update');
-            expect(res2.status).toBe(200);
-            expect(res2.body.lastUpdate).toBeGreaterThan(Date.now() - 20000);
         });
     });
 
