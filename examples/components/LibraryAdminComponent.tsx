@@ -10,6 +10,7 @@ import {
     ILibraryViewModel,
     LibraryAdministrationService
 } from './LibraryAdministrationService.js';
+import ContentTypeCacheService from './ContentTypeCacheService.js';
 
 export default class LibraryAdmin extends React.Component {
     constructor(props: any) {
@@ -20,7 +21,12 @@ export default class LibraryAdmin extends React.Component {
             libraryInfo: null,
             updatingCache: null
         };
-        this.service = new LibraryAdministrationService('h5p/libraries');
+        this.librariesService = new LibraryAdministrationService(
+            'h5p/libraries'
+        );
+        this.contentTypeCacheService = new ContentTypeCacheService(
+            'h5p/content-type-cache'
+        );
     }
 
     public state: {
@@ -29,14 +35,17 @@ export default class LibraryAdmin extends React.Component {
         updatingCache: boolean;
     };
 
-    private service: LibraryAdministrationService;
+    private contentTypeCacheService: ContentTypeCacheService;
+    private librariesService: LibraryAdministrationService;
 
     public closeDetails(library: ILibraryViewModel): void {
         this.updateLibraryState(library, { isShowingDetails: false });
     }
 
     public async componentDidMount(): Promise<void> {
-        const libraryInfo = await this.service.getLibraries();
+        const lastCacheUpdate = await this.contentTypeCacheService.getCacheUpdate();
+        this.setState({ lastCacheUpdate });
+        const libraryInfo = await this.librariesService.getLibraries();
         this.setState({ libraryInfo });
     }
 
@@ -46,7 +55,7 @@ export default class LibraryAdmin extends React.Component {
         });
 
         try {
-            await this.service.deleteLibrary(library);
+            await this.librariesService.deleteLibrary(library);
             const libraryIndex = this.state.libraryInfo.indexOf(newState);
             this.setState({
                 libraryInfo: this.state.libraryInfo
@@ -258,7 +267,7 @@ export default class LibraryAdmin extends React.Component {
     public async restrict(
         library: ILibraryAdministrationOverviewItem
     ): Promise<void> {
-        const newLibrary = await this.service.patchLibrary(library, {
+        const newLibrary = await this.librariesService.patchLibrary(library, {
             restricted: !library.restricted
         });
         this.updateLibraryState(library, newLibrary);
@@ -270,7 +279,7 @@ export default class LibraryAdmin extends React.Component {
         });
 
         if (!library.details) {
-            const details = await this.service.getLibrary(library);
+            const details = await this.librariesService.getLibrary(library);
             this.updateLibraryState(newState, {
                 details
             });
@@ -280,7 +289,7 @@ export default class LibraryAdmin extends React.Component {
     public async updateCache(): Promise<void> {
         this.setState({ updatingCache: true });
         try {
-            const lastUpdate = await this.service.postUpdateCache();
+            const lastUpdate = await this.contentTypeCacheService.postUpdateCache();
             this.setState({
                 lastCacheUpdate: lastUpdate,
                 updatingCache: false

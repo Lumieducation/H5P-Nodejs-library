@@ -33,18 +33,6 @@ export class LibraryAdministrationService {
         );
     }
 
-    public async getCacheUpdate(): Promise<Date> {
-        const response = await fetch(
-            `${this.baseUrl}/content-type-cache/update`
-        );
-        if (response.ok) {
-            return new Date((await response.json()).lastUpdate);
-        }
-        throw new Error(
-            `Could not get content type cache update date: ${response.status} - ${response.statusText}`
-        );
-    }
-
     public async getLibraries(): Promise<ILibraryViewModel[]> {
         const response = await fetch(this.baseUrl);
         if (response.ok) {
@@ -95,21 +83,6 @@ export class LibraryAdministrationService {
         }
         throw new Error(
             `Could not patch library: ${response.status} - ${response.statusText}`
-        );
-    }
-
-    public async postUpdateCache(): Promise<Date> {
-        const response = await fetch(
-            `${this.baseUrl}/content-type-cache/update`,
-            {
-                method: 'POST'
-            }
-        );
-        if (response.ok) {
-            return new Date((await response.json()).lastUpdate);
-        }
-        throw new Error(
-            `Could not update content type cache: ${response.status} - ${response.statusText}`
         );
     }
 }
