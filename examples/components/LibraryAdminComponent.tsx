@@ -3,10 +3,7 @@ import React from 'react';
 
 // We reference the build directory here directly referencing the TS index
 // file would include the whole library in the build for the client
-import type {
-    IInstalledLibrary,
-    ILibraryManagementOverviewItem
-} from '../../build/src';
+import type { ILibraryManagementOverviewItem } from '../../build/src';
 
 import LibraryDetails from './LibraryDetailsComponent.js';
 import {
@@ -15,10 +12,11 @@ import {
 } from './LibraryManagementService.js';
 
 export default class LibraryAdmin extends React.Component {
-    constructor(props) {
+    constructor(props: any) {
         super(props);
+
         this.state = {
-            lastCacheUpdate: new Date(),
+            lastCacheUpdate: null,
             libraryInfo: null,
             updatingCache: null
         };
@@ -33,82 +31,38 @@ export default class LibraryAdmin extends React.Component {
 
     private service: LibraryManagementService;
 
-    public closeDetails(
-        library: ILibraryManagementOverviewItem & {
-            isShowingDetails?: boolean;
-        }
-    ) {
-        const libraryIndex = this.state.libraryInfo.indexOf(library);
-        this.setState({
-            libraryInfo: [
-                ...this.state.libraryInfo.slice(0, libraryIndex),
-                {
-                    ...library,
-                    isShowingDetails: false
-                },
-                ...this.state.libraryInfo.slice(libraryIndex + 1)
-            ]
-        });
+    public closeDetails(library: ILibraryViewModel): void {
+        this.updateLibraryState(library, { isShowingDetails: false });
     }
 
-    public async componentDidMount() {
+    public async componentDidMount(): Promise<void> {
+        const libraryInfo = await this.service.getLibraries();
+        this.setState({ libraryInfo });
+    }
+
+    public async deleteLibrary(library: ILibraryViewModel): Promise<void> {
+        const newState = this.updateLibraryState(library, {
+            isDeleting: true
+        });
+
         try {
-            const libraries = await this.service.getLibraries();
-            this.setState({ libraryInfo: libraries });
+            await this.service.deleteLibrary(library);
+            const libraryIndex = this.state.libraryInfo.indexOf(newState);
+            this.setState({
+                libraryInfo: this.state.libraryInfo
+                    .slice(0, libraryIndex)
+                    .concat(this.state.libraryInfo.slice(libraryIndex + 1))
+            });
         } catch {
-            this.setState({ libraryInfo: null });
+            this.updateLibraryState(newState, { isDeleting: false });
         }
     }
 
-    public deleteLibrary(
-        library: ILibraryManagementOverviewItem & {
-            isDeleting?: boolean;
-        }
-    ) {
-        const libraryIndex = this.state.libraryInfo.indexOf(library);
-        this.setState({
-            libraryInfo: [
-                ...this.state.libraryInfo.slice(0, libraryIndex),
-                {
-                    ...library,
-                    isDeleting: true
-                },
-                ...this.state.libraryInfo.slice(libraryIndex + 1)
-            ]
-        });
-
-        const xhttp = new XMLHttpRequest();
-        xhttp.open(
-            'DELETE',
-            `h5p/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}`,
-            true
-        );
-        xhttp.onreadystatechange = () => {
-            if (xhttp.readyState === 4 && xhttp.status === 204) {
-                this.setState({
-                    libraryInfo: this.state.libraryInfo
-                        .slice(0, libraryIndex)
-                        .concat(this.state.libraryInfo.slice(libraryIndex + 1))
-                });
-            } else {
-                this.setState({
-                    libraryInfo: [
-                        ...this.state.libraryInfo.slice(0, libraryIndex),
-                        {
-                            ...library,
-                            isDeleting: false
-                        },
-                        ...this.state.libraryInfo.slice(libraryIndex + 1)
-                    ]
-                });
-            }
-        };
-        xhttp.send();
+    public fileSelected(): void {
+        return;
     }
 
-    public fileSelected(event) {}
-
-    public render() {
+    public render(): React.ReactNode {
         return (
             <div>
                 <div>
@@ -122,7 +76,10 @@ export default class LibraryAdmin extends React.Component {
                         outdated, you can manually fetch it here.
                     </p>
                     <div>
-                        Last update: {this.state.lastCacheUpdate.toString()}
+                        Last update:{' '}
+                        {this.state.lastCacheUpdate
+                            ? this.state.lastCacheUpdate.toString()
+                            : 'Loading...'}
                     </div>
                     <button
                         onClick={() => this.updateCache()}
@@ -155,7 +112,7 @@ export default class LibraryAdmin extends React.Component {
                                     type="file"
                                     id="file2"
                                     hidden
-                                    onChange={(e) => this.fileSelected(e)}
+                                    onChange={(e) => this.fileSelected()}
                                 ></input>
                             </label>
                         </div>
@@ -298,99 +255,59 @@ export default class LibraryAdmin extends React.Component {
         );
     }
 
-    public restrict(library: ILibraryManagementOverviewItem) {
-        const xhttp = new XMLHttpRequest();
-        xhttp.open(
-            'PATCH',
-            `h5p/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}`,
-            true
-        );
-        xhttp.onreadystatechange = () => {
-            if (xhttp.readyState === 4 && xhttp.status === 204) {
-                const libraryIndex = this.state.libraryInfo.indexOf(library);
-                this.setState({
-                    libraryInfo: [
-                        ...this.state.libraryInfo.slice(0, libraryIndex),
-                        { ...library, restricted: !library.restricted },
-                        ...this.state.libraryInfo.slice(libraryIndex + 1)
-                    ]
-                });
-            }
-        };
-        xhttp.setRequestHeader(
-            'Content-Type',
-            'application/json;charset=UTF-8'
-        );
-        xhttp.send(JSON.stringify({ restricted: !library.restricted }));
+    public async restrict(
+        library: ILibraryManagementOverviewItem
+    ): Promise<void> {
+        const newLibrary = await this.service.patchLibrary(library, {
+            restricted: !library.restricted
+        });
+        this.updateLibraryState(library, newLibrary);
     }
 
-    public showDetails(
-        library: ILibraryManagementOverviewItem & {
-            details?: IInstalledLibrary & {
-                dependentsCount: number;
-                instancesAsDependencyCount: number;
-                instancesCount: number;
-                isAddon: boolean;
-            };
-            isShowingDetails?: boolean;
-        }
-    ) {
-        const libraryIndex = this.state.libraryInfo.indexOf(library);
-        this.setState({
-            libraryInfo: [
-                ...this.state.libraryInfo.slice(0, libraryIndex),
-                {
-                    ...library,
-                    isShowingDetails: true
-                },
-                ...this.state.libraryInfo.slice(libraryIndex + 1)
-            ]
+    public async showDetails(library: ILibraryViewModel): Promise<void> {
+        const newState = this.updateLibraryState(library, {
+            isShowingDetails: true
         });
 
         if (!library.details) {
-            const xhttp = new XMLHttpRequest();
-            xhttp.open(
-                'GET',
-                `h5p/libraries/${library.machineName}-${library.majorVersion}.${library.minorVersion}`,
-                true
-            );
-            xhttp.onreadystatechange = (ev) => {
-                if (xhttp.readyState === 4 && xhttp.status === 200) {
-                    this.setState({
-                        libraryInfo: [
-                            ...this.state.libraryInfo.slice(0, libraryIndex),
-                            {
-                                ...library,
-                                isShowingDetails: true,
-                                details: JSON.parse(xhttp.responseText)
-                            },
-                            ...this.state.libraryInfo.slice(libraryIndex + 1)
-                        ]
-                    });
-                }
-            };
-            xhttp.send();
+            const details = await this.service.getLibrary(library);
+            this.updateLibraryState(newState, {
+                details
+            });
         }
     }
 
-    public updateCache() {
+    public async updateCache(): Promise<void> {
         this.setState({ updatingCache: true });
-        const xhttp = new XMLHttpRequest();
-        xhttp.open('POST', 'h5p/libraries/content-type-cache/update', true);
-        xhttp.onreadystatechange = () => {
-            if (xhttp.readyState === 4 && xhttp.status === 200) {
-                this.setState({
-                    lastCacheUpdate: new Date(
-                        JSON.parse(xhttp.responseText).lastUpdate
-                    ),
-                    updatingCache: false
-                });
-            } else {
-                this.setState({
-                    updatingCache: false
-                });
-            }
+        try {
+            const lastUpdate = await this.service.postUpdateCache();
+            this.setState({
+                lastCacheUpdate: lastUpdate,
+                updatingCache: false
+            });
+        } catch {
+            this.setState({
+                updatingCache: false
+            });
+        }
+    }
+
+    private updateLibraryState(
+        library: ILibraryViewModel,
+        changes: Partial<ILibraryViewModel>
+    ): ILibraryViewModel {
+        const libraryIndex = this.state.libraryInfo.indexOf(library);
+        const newState = {
+            ...library,
+            ...changes
         };
-        xhttp.send();
+        this.setState({
+            libraryInfo: [
+                ...this.state.libraryInfo.slice(0, libraryIndex),
+                newState,
+                ...this.state.libraryInfo.slice(libraryIndex + 1)
+            ]
+        });
+        return newState;
     }
 }

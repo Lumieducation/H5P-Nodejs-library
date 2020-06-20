@@ -42,6 +42,26 @@ export default function (
         );
     }
 
+    if (undefinedOrTrue(routeOptions.routePostContentTypeCacheUpdate)) {
+        router.post(
+            `/content-type-cache/update`,
+            catchAndPassOnErrors(
+                controller.postLibrariesContentTypeCacheUpdate,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routeGetContentTypeCacheUpdate)) {
+        router.get(
+            `/content-type-cache/update`,
+            catchAndPassOnErrors(
+                controller.getLibrariesContentTypeCacheUpdate,
+                routeOptions.handleErrors
+            )
+        );
+    }
+
     if (undefinedOrTrue(routeOptions.routeGetLibrary)) {
         router.get(
             `/:ubername`,
@@ -67,26 +87,6 @@ export default function (
             `/:ubername`,
             catchAndPassOnErrors(
                 controller.deleteLibrary,
-                routeOptions.handleErrors
-            )
-        );
-    }
-
-    if (undefinedOrTrue(routeOptions.routePostContentTypeCacheUpdate)) {
-        router.post(
-            `/content-type-cache/update`,
-            catchAndPassOnErrors(
-                controller.postLibrariesContentTypeCacheUpdate,
-                routeOptions.handleErrors
-            )
-        );
-    }
-
-    if (undefinedOrTrue(routeOptions.routeGetContentTypeCacheUpdate)) {
-        router.get(
-            `/content-type-cache/update`,
-            catchAndPassOnErrors(
-                controller.getLibrariesContentTypeCacheUpdate,
                 routeOptions.handleErrors
             )
         );
