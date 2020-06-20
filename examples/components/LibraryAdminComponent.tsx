@@ -3,13 +3,13 @@ import React from 'react';
 
 // We reference the build directory here directly referencing the TS index
 // file would include the whole library in the build for the client
-import type { ILibraryManagementOverviewItem } from '../../build/src';
+import type { ILibraryAdministrationOverviewItem } from '../../build/src';
 
 import LibraryDetails from './LibraryDetailsComponent.js';
 import {
     ILibraryViewModel,
-    LibraryManagementService
-} from './LibraryManagementService.js';
+    LibraryAdministrationService
+} from './LibraryAdministrationService.js';
 
 export default class LibraryAdmin extends React.Component {
     constructor(props: any) {
@@ -20,7 +20,7 @@ export default class LibraryAdmin extends React.Component {
             libraryInfo: null,
             updatingCache: null
         };
-        this.service = new LibraryManagementService('h5p/libraries');
+        this.service = new LibraryAdministrationService('h5p/libraries');
     }
 
     public state: {
@@ -29,7 +29,7 @@ export default class LibraryAdmin extends React.Component {
         updatingCache: boolean;
     };
 
-    private service: LibraryManagementService;
+    private service: LibraryAdministrationService;
 
     public closeDetails(library: ILibraryViewModel): void {
         this.updateLibraryState(library, { isShowingDetails: false });
@@ -256,7 +256,7 @@ export default class LibraryAdmin extends React.Component {
     }
 
     public async restrict(
-        library: ILibraryManagementOverviewItem
+        library: ILibraryAdministrationOverviewItem
     ): Promise<void> {
         const newLibrary = await this.service.patchLibrary(library, {
             restricted: !library.restricted

@@ -36,20 +36,20 @@ import {
     IRequestWithLanguage,
     IRequestWithTranslator,
     Permission,
-    ILibraryManagementOverviewItem
+    ILibraryAdministrationOverviewItem
 } from './types';
 
 // Adapters
 import express from './adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
 import { errorHandler } from './adapters/expressErrorHandler';
 import expressController from './adapters/H5PAjaxRouter/H5PAjaxExpressController';
-import LibraryManagementExpressRouter from './adapters/LibraryManagementRouter/LibraryManagementExpressRouter';
+import LibraryAdministrationExpressRouter from './adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
 
 const adapters = {
     express,
     expressController,
     expressErrorHandler: errorHandler,
-    LibraryManagementExpressRouter
+    LibraryAdministrationExpressRouter
 };
 
 const fsImplementations = {
@@ -80,7 +80,7 @@ export {
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
-    ILibraryManagementOverviewItem,
+    ILibraryAdministrationOverviewItem,
     IPlayerModel,
     ITemporaryFile,
     ITemporaryFileStorage,

@@ -1584,7 +1584,7 @@ export interface IRequestWithTranslator extends Request {
     t: (errorId: string, replacements: any) => string;
 }
 
-export interface ILibraryManagementOverviewItem {
+export interface ILibraryAdministrationOverviewItem {
     canBeDeleted: boolean;
     canBeUpdated: boolean;
     dependentsCount: number;

@@ -1,25 +1,28 @@
 import { Router } from 'express';
 
 import { H5PEditor } from '../..';
-import LibraryManagementExpressController from './LibraryManagementController';
-import LibraryManagementExpressRouterOptions from './LibraryManagementExpressRouterOptions';
+import LibraryAdministrationExpressController from './LibraryAdministrationController';
+import LibraryAdministrationExpressRouterOptions from './LibraryAdministrationExpressRouterOptions';
 import {
     errorHandler,
     catchAndPassOnErrors,
     undefinedOrTrue
 } from '../expressErrorHandler';
+import LibraryAdministration from '../../LibraryAdministration';
 
 export default function (
     h5pEditor: H5PEditor,
-    routeOptions: LibraryManagementExpressRouterOptions = new LibraryManagementExpressRouterOptions(),
+    routeOptions: LibraryAdministrationExpressRouterOptions = new LibraryAdministrationExpressRouterOptions(),
     languageOverride: string | 'auto' = 'auto'
 ): Router {
     const router = Router();
-    const controller = new LibraryManagementExpressController(
-        h5pEditor.libraryManager,
-        h5pEditor.contentManager,
+    const controller = new LibraryAdministrationExpressController(
         h5pEditor.contentTypeCache,
-        h5pEditor
+        h5pEditor,
+        new LibraryAdministration(
+            h5pEditor.libraryManager,
+            h5pEditor.contentManager
+        )
     );
 
     if (undefinedOrTrue(routeOptions.routeGetLibraries)) {

@@ -1,9 +1,9 @@
 import type {
     IInstalledLibrary,
-    ILibraryManagementOverviewItem
+    ILibraryAdministrationOverviewItem
 } from '../../build/src';
 
-export interface ILibraryViewModel extends ILibraryManagementOverviewItem {
+export interface ILibraryViewModel extends ILibraryAdministrationOverviewItem {
     details?: IInstalledLibrary & {
         dependentsCount: number;
         instancesAsDependencyCount: number;
@@ -14,7 +14,7 @@ export interface ILibraryViewModel extends ILibraryManagementOverviewItem {
     isShowingDetails?: boolean;
 }
 
-export class LibraryManagementService {
+export class LibraryAdministrationService {
     constructor(private baseUrl: string) {}
 
     public async deleteLibrary(library: ILibraryViewModel): Promise<void> {

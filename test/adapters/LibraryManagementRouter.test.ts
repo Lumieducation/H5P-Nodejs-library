@@ -10,7 +10,7 @@ import supertest from 'supertest';
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
-import { ILibraryManagementOverviewItem } from '../../src/adapters/LibraryManagementRouter/LibraryManagementTypes';
+import { ILibraryAdministrationOverviewItem } from '../../src/types';
 import LibraryName from '../../src/LibraryName';
 
 const axiosMock = new axiosMockAdapter(axios);
@@ -75,7 +75,7 @@ describe('Express Library Management endpoint adapter', () => {
             req.t = (id, replacements) => id;
             next();
         });
-        app.use(H5P.adapters.LibraryManagementExpressRouter(h5pEditor));
+        app.use(H5P.adapters.LibraryAdministrationExpressRouter(h5pEditor));
     });
 
     afterEach(async () => {
@@ -110,7 +110,7 @@ describe('Express Library Management endpoint adapter', () => {
             expect(res.status).toBe(200);
             expect(res.body.length).toEqual(installedLibraries.length);
 
-            const libraryInformation = res.body as ILibraryManagementOverviewItem[];
+            const libraryInformation = res.body as ILibraryAdministrationOverviewItem[];
             for (const lib of libraryInformation) {
                 expect(lib).toHaveProperty('title');
                 expect(lib).toHaveProperty('machineName');

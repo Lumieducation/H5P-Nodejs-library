@@ -1,7 +1,7 @@
 /**
  * Allows you to choose which routes you want in the Express Router
  */
-export default class LibraryManagementExpressRouterOptions {
+export default class LibraryAdministrationExpressRouterOptions {
     public handleErrors?: boolean = true;
     public routeDeleteLibrary?: boolean = true;
     public routeGetContentTypeCacheUpdate?: boolean = true;

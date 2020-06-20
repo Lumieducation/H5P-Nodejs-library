@@ -140,11 +140,11 @@ const start = async () => {
         )
     );
 
-    // The LibraryManagementExpress routes are REST endpoints that offer library
+    // The LibraryAdministrationExpress routes are REST endpoints that offer library
     // management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
-        H5P.adapters.LibraryManagementExpressRouter(h5pEditor)
+        H5P.adapters.LibraryAdministrationExpressRouter(h5pEditor)
     );
 
     // The startPageRenderer displays a list of content objects and shows
