@@ -85,4 +85,23 @@ export class LibraryAdministrationService {
             `Could not patch library: ${response.status} - ${response.statusText}`
         );
     }
+
+    public async postPackage(
+        file: File
+    ): Promise<{ installed: number; updated: number }> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(this.baseUrl, {
+            method: 'POST',
+            body: formData
+        });
+        if (response.ok) {
+            const result = await response.json();
+            return { installed: result.installed, updated: result.updated };
+        }
+        throw new Error(
+            `Could not upload package with libraries: ${response.status} - ${response.statusText}`
+        );
+    }
 }

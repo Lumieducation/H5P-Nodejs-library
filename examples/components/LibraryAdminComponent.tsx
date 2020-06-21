@@ -16,7 +16,9 @@ export default class LibraryAdmin extends React.Component {
         super(props);
 
         this.state = {
-            libraryInfo: null
+            isUploading: false,
+            libraryInfo: null,
+            message: null
         };
         this.librariesService = new LibraryAdministrationService(
             'h5p/libraries'
@@ -24,7 +26,12 @@ export default class LibraryAdmin extends React.Component {
     }
 
     public state: {
+        isUploading: boolean;
         libraryInfo: ILibraryViewModel[];
+        message: {
+            text: string;
+            type: 'primary' | 'success' | 'danger';
+        };
     };
 
     private librariesService: LibraryAdministrationService;
@@ -51,13 +58,47 @@ export default class LibraryAdmin extends React.Component {
                     .slice(0, libraryIndex)
                     .concat(this.state.libraryInfo.slice(libraryIndex + 1))
             });
+            this.displayMessage(
+                `Successfully deleted library ${library.title} (${library.majorVersion}.${library.minorVersion}).`
+            );
         } catch {
+            this.displayMessage(
+                `Error deleting library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
+                'danger'
+            );
             this.updateLibraryState(newState, { isDeleting: false });
         }
     }
 
-    public fileSelected(): void {
-        return;
+    public async fileSelected(files: FileList): Promise<void> {
+        if (!files[0]) {
+            return;
+        }
+        try {
+            this.setState({ isUploading: true });
+            const {
+                installed,
+                updated
+            } = await this.librariesService.postPackage(files[0]);
+            if (installed + updated === 0) {
+                this.displayMessage(
+                    'Upload successful, but no libraries were installed or updated. The content type is probably already installed on the system.'
+                );
+                return;
+            }
+            this.displayMessage(
+                `Successfully installed ${installed} and updated ${updated} libraries.`,
+                'success'
+            );
+        } catch {
+            this.displayMessage(`Error while uploading package.`, 'danger');
+            return;
+        } finally {
+            this.setState({ isUploading: false });
+        }
+        this.setState({ libraryInfo: null });
+        const libraryInfo = await this.librariesService.getLibraries();
+        this.setState({ libraryInfo });
     }
 
     public render(): React.ReactNode {
@@ -69,18 +110,37 @@ export default class LibraryAdmin extends React.Component {
                 </h2>
                 <form>
                     <div className="form-group">
-                        <label className="btn btn-primary">
-                            <span className="fa fa-upload m-2"></span> Upload
-                            libraries
+                        <label
+                            className={`btn btn-primary ${
+                                this.state.isUploading ? 'disabled' : ''
+                            }`}
+                        >
+                            {this.state.isUploading ? (
+                                <div
+                                    className="spinner-border spinner-border-sm m-2 align-middle"
+                                    role="status"
+                                ></div>
+                            ) : (
+                                <span className="fa fa-upload m-2"></span>
+                            )}{' '}
+                            Upload libraries
                             <input
+                                disabled={this.state.isUploading}
                                 type="file"
                                 id="file2"
                                 hidden
-                                onChange={(e) => this.fileSelected()}
+                                onChange={(e) =>
+                                    this.fileSelected(e.target.files)
+                                }
                             ></input>
                         </label>
                     </div>
                 </form>
+                {this.state.message ? (
+                    <div className={`alert alert-${this.state.message.type}`}>
+                        {this.state.message.text}
+                    </div>
+                ) : null}
                 {this.state.libraryInfo === null ? (
                     <div>
                         <div
@@ -213,10 +273,24 @@ export default class LibraryAdmin extends React.Component {
     public async restrict(
         library: ILibraryAdministrationOverviewItem
     ): Promise<void> {
-        const newLibrary = await this.librariesService.patchLibrary(library, {
-            restricted: !library.restricted
-        });
-        this.updateLibraryState(library, newLibrary);
+        try {
+            const newLibrary = await this.librariesService.patchLibrary(
+                library,
+                {
+                    restricted: !library.restricted
+                }
+            );
+            this.updateLibraryState(library, newLibrary);
+            this.displayMessage(
+                `Successfully set restricted property of library ${library.title} (${library.majorVersion}.${library.minorVersion}) to ${newLibrary.restricted}.`,
+                'success'
+            );
+        } catch {
+            this.displayMessage(
+                `Error setting restricted proeprty of library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
+                'danger'
+            );
+        }
     }
 
     public async showDetails(library: ILibraryViewModel): Promise<void> {
@@ -225,11 +299,30 @@ export default class LibraryAdmin extends React.Component {
         });
 
         if (!library.details) {
-            const details = await this.librariesService.getLibrary(library);
-            this.updateLibraryState(newState, {
-                details
-            });
+            try {
+                const details = await this.librariesService.getLibrary(library);
+                this.updateLibraryState(newState, {
+                    details
+                });
+            } catch {
+                this.displayMessage(
+                    `Error getting detailed information about library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
+                    'danger'
+                );
+            }
         }
+    }
+
+    private displayMessage(
+        text: string,
+        type: 'primary' | 'success' | 'danger' = 'primary'
+    ): void {
+        this.setState({
+            message: {
+                text,
+                type
+            }
+        });
     }
 
     private updateLibraryState(
