@@ -79,8 +79,9 @@ export default function render(
                     .join('')}
                 </div>
                 <hr/>
-                <div id="library-admin-container">
-                </div>
+                <div id="content-type-cache-container"></div>
+                <hr/>
+                <div id="library-admin-container"></div>
             </div>
 
             <script>
@@ -94,10 +95,13 @@ export default function render(
                 requirejs([
                     "react",
                     "react-dom",
-                    "./components/LibraryAdminComponent.js"], 
-                    function (React, ReactDOM, LibraryAdmin) {
-                        const domContainer = document.querySelector('#library-admin-container');
-                        ReactDOM.render(React.createElement(LibraryAdmin.default), domContainer);
+                    "./components/LibraryAdminComponent.js",
+                    "./components/ContentTypeCacheComponent.js"], 
+                    function (React, ReactDOM, LibraryAdmin, ContentTypeCache) {
+                        const libraryAdminContainer = document.querySelector('#library-admin-container');
+                        ReactDOM.render(React.createElement(LibraryAdmin.default), libraryAdminContainer);
+                        const contentTypeCacheContainer = document.querySelector('#content-type-cache-container');
+                        ReactDOM.render(React.createElement(ContentTypeCache.default), contentTypeCacheContainer);
                     });                
             </script>
         </body>
