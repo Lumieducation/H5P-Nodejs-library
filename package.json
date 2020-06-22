@@ -108,7 +108,7 @@
         "express": "4.17.1",
         "express-fileupload": "1.1.6",
         "husky": "4.2.5",
-        "i18next": "19.5.0",
+        "i18next": "19.5.1",
         "i18next-fs-backend": "1.0.6",
         "i18next-http-middleware": "2.1.2",
         "jest": "26.0.1",
