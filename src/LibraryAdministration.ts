@@ -112,9 +112,9 @@ export default class LibraryAdministration {
             throw new H5pError('invalid-patch-request', undefined, 400);
         }
 
-        await this.libraryManager.libraryStorage.setRestricted(
+        await this.libraryManager.libraryStorage.updateAdditionalMetadata(
             libraryName,
-            restricted
+            { restricted }
         );
     }
 

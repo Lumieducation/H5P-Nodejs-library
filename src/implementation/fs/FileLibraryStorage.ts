@@ -16,7 +16,7 @@ import {
     LibraryName
 } from '../../../src';
 import { checkFilename } from './filenameUtils';
-import { IFileStats } from '../../types';
+import { IFileStats, IAdditionalLibraryMetadata } from '../../types';
 import { hasDependencyOn } from '../../helpers/DependencyChecker';
 
 /**
@@ -370,21 +370,41 @@ export default class FileLibraryStorage implements ILibraryStorage {
             .filter((p) => !this.isIgnored(p));
     }
 
-    public async setRestricted(
+    /**
+     * Updates the additional metadata properties that is added to the
+     * stored libraries. This metadata can be used to customize behavior like
+     * restricting libraries to specific users.
+     * @param library the library for which the metadata should be updated
+     * @param additionalMetadata the metadata to update
+     * @returns true if the additionalMetadata object contained real changes
+     * and if they were successfully saved; false if there were not changes.
+     * Throws an error if saving was not possible.
+     */
+    public async updateAdditionalMetadata(
         library: ILibraryName,
-        restricted: boolean
-    ): Promise<void> {
+        additionalMetadata: Partial<IAdditionalLibraryMetadata>
+    ): Promise<boolean> {
         const metadata = await this.getLibrary(library);
-        if (metadata.restricted === restricted) {
-            return;
+
+        // We set dirty to true if there is an actual update in the
+        // additional metadata.
+        let dirty = false;
+        for (const property of Object.keys(additionalMetadata)) {
+            if (additionalMetadata[property] !== metadata[property]) {
+                metadata[property] = additionalMetadata[property];
+                dirty = true;
+            }
         }
-        metadata.restricted = restricted;
+        if (!dirty) {
+            return false;
+        }
 
         try {
             await fsExtra.writeJSON(
                 this.getFilePath(library, 'library.json'),
                 metadata
             );
+            return true;
         } catch (error) {
             throw new H5pError(
                 'error-updating-metadata',
@@ -400,8 +420,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
     /**
      * Updates the library metadata.
      * This is necessary when updating to a new patch version.
-     * You also need to call clearFiles(...) to remove all old files during the update process and addFile(...)
-     * to add the files of the patch.
+     * You also need to call clearFiles(...) to remove all old files
+     * during the update process and addFile(...) to add the files of
+     * the patch.
      * @param libraryMetadata the new library metadata
      * @returns The updated library object
      */

@@ -730,6 +730,11 @@ export interface ILibraryStorage {
      */
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
 
+    /**
+     * Returns the number of libraries that depend on this library.
+     * @param library the library to check
+     * @returns the number of libraries that depend on this library.
+     */
     getDependentsCount(library: ILibraryName): Promise<number>;
 
     /**
@@ -773,6 +778,11 @@ export interface ILibraryStorage {
      */
     getLibrary(library: ILibraryName): Promise<IInstalledLibrary>;
 
+    /**
+     * Checks if a library is installed.
+     * @param library the library to check
+     * @returns true if the library is installed
+     */
     isInstalled(library: ILibraryName): Promise<boolean>;
 
     /**
@@ -797,7 +807,23 @@ export interface ILibraryStorage {
      */
     listFiles(library: ILibraryName): Promise<string[]>;
 
-    setRestricted(library: ILibraryName, restricted: boolean): Promise<void>;
+    /**
+     * Updates the additional metadata properties that is added to the
+     * stored libraries. This metadata can be used to customize behavior like
+     * restricting libraries to specific users.
+     *
+     * Implementations should avoid updating the metadata if the additional
+     * metadata if nothing has changed.
+     * @param library the library for which the metadata should be updated
+     * @param additionalMetadata the metadata to update
+     * @returns true if the additionalMetadata object contained real changes
+     * and if they were successfully saved; false if there were not changes.
+     * Throws an error if saving was not possible.
+     */
+    updateAdditionalMetadata(
+        library: ILibraryName,
+        additionalMetadata: Partial<IAdditionalLibraryMetadata>
+    ): Promise<boolean>;
 
     /**
      * Updates the library metadata. This is necessary when updating to a new patch version.
@@ -961,15 +987,23 @@ export interface ISemanticsEntry {
 }
 
 /**
- * Objects of this interface represent installed libraries that have an id.
+ * This is metadata of a library that is not part of the H5P specification. The
+ * data can be used to customize behaviour of h5p-nodejs-library.
  */
-export interface IInstalledLibrary extends ILibraryMetadata {
+export interface IAdditionalLibraryMetadata {
     /**
      * If set to true, the library can only be used be users who have this special
      * privilege.
      */
     restricted: boolean;
+}
 
+/**
+ * Objects of this interface represent installed libraries that have an id.
+ */
+export interface IInstalledLibrary
+    extends ILibraryMetadata,
+        IAdditionalLibraryMetadata {
     /**
      * Compares libraries by giving precedence to title, then major version, then minor version
      * @param otherLibrary

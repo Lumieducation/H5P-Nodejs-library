@@ -291,7 +291,7 @@ describe('Express Library Administration endpoint adapter', () => {
             expect(res2.status).toBe(400);
         });
 
-        it('should return 200 and details of the installed library', async () => {
+        it('should return 204 when updating restricted', async () => {
             // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
                 path.resolve('test/data/validator/valid2.h5p')
