@@ -731,7 +731,19 @@ export interface ILibraryStorage {
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
 
     /**
-     * Returns the number of libraries that depend on this library.
+     * Counts how often libraries are listed in the dependencies of other
+     * libraries and returns a list of the number.
+     * @returns an object with ubernames as key.
+     * Example:
+     * {
+     *   'H5P.Example': 10
+     * }
+     * This means that H5P.Example is used by 10 other libraries.
+     */
+    getAllDependentsCount(): Promise<{ [ubername: string]: number }>;
+
+    /**
+     * Returns the number of libraries that depend on this (single) library.
      * @param library the library to check
      * @returns the number of libraries that depend on this library.
      */

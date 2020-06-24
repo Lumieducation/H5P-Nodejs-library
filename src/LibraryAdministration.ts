@@ -38,14 +38,15 @@ export default class LibraryAdministration {
             )
         ).sort((a, b) => a.compare(b));
 
+        const dependents = await this.libraryManager.libraryStorage.getAllDependentsCount();
+
         return Promise.all(
             libraryMetadata.map(async (metadata) => {
                 const usage = await this.contentManager.contentStorage.getUsage(
                     metadata
                 );
-                const dependentsCount = await this.libraryManager.libraryStorage.getDependentsCount(
-                    metadata
-                );
+                const dependentsCount =
+                    dependents[LibraryName.toUberName(metadata)] ?? 0;
                 return {
                     title: metadata.title,
                     machineName: metadata.machineName,

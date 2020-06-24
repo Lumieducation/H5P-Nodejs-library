@@ -202,21 +202,46 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return fsExtra.pathExists(this.getFilePath(library, filename));
     }
 
-    // TODO: optimize
-    public async getDependentsCount(library: ILibraryName): Promise<number> {
-        let counter = 0;
-
+    /**
+     * Counts how often libraries are listed in the dependencies of other
+     * libraries and returns a list of the number.
+     * @returns an object with ubernames as key.
+     * Example:
+     * {
+     *   'H5P.Example': 10
+     * }
+     * This means that H5P.Example is used by 10 other libraries.
+     */
+    public async getAllDependentsCount(): Promise<{
+        [ubername: string]: number;
+    }> {
+        const returnObject = {};
         const librariesNames = await this.getInstalledLibraryNames();
         const librariesMetadata = await Promise.all(
             librariesNames.map((lib) => this.getLibrary(lib))
         );
         for (const libraryMetadata of librariesMetadata) {
-            if (hasDependencyOn(libraryMetadata, library)) {
-                counter += 1;
+            for (const dependency of (
+                libraryMetadata.preloadedDependencies ?? []
+            )
+                .concat(libraryMetadata.editorDependencies ?? [])
+                .concat(libraryMetadata.dynamicDependencies ?? [])) {
+                const ubername = LibraryName.toUberName(dependency);
+                returnObject[ubername] = (returnObject[ubername] ?? 0) + 1;
             }
         }
 
-        return counter;
+        return returnObject;
+    }
+
+    /**
+     * Returns the number of libraries that depend on this (single) library.
+     * @param library the library to check
+     * @returns the number of libraries that depend on this library.
+     */
+    public async getDependentsCount(library: ILibraryName): Promise<number> {
+        const allDependencies = await this.getAllDependentsCount();
+        return allDependencies[LibraryName.toUberName(library)] ?? 0;
     }
 
     /**
