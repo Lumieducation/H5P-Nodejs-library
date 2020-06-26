@@ -215,11 +215,40 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async getAllDependentsCount(): Promise<{
         [ubername: string]: number;
     }> {
-        const returnObject = {};
         const librariesNames = await this.getInstalledLibraryNames();
         const librariesMetadata = await Promise.all(
             librariesNames.map((lib) => this.getLibrary(lib))
         );
+
+        // the metadata map allows faster access to libraries by ubername
+        const librariesMetadataMap: {
+            [ubername: string]: IInstalledLibrary;
+        } = librariesMetadata.reduce((prev, curr) => {
+            prev[LibraryName.toUberName(curr)] = curr;
+            return prev;
+        }, {});
+
+        // Remove circular dependencies caused by editor dependencies in
+        // content types like H5P.InteractiveVideo.
+        for (const libraryMetadata of librariesMetadata) {
+            for (const dependency of libraryMetadata.editorDependencies ?? []) {
+                const ubername = LibraryName.toUberName(dependency);
+                const index = librariesMetadataMap[
+                    ubername
+                ].preloadedDependencies?.findIndex((ln) =>
+                    LibraryName.equal(ln, libraryMetadata)
+                );
+                if (index >= 0) {
+                    librariesMetadataMap[ubername].preloadedDependencies.splice(
+                        index,
+                        1
+                    );
+                }
+            }
+        }
+
+        // Count dependencies
+        const dependencies = {};
         for (const libraryMetadata of librariesMetadata) {
             for (const dependency of (
                 libraryMetadata.preloadedDependencies ?? []
@@ -227,11 +256,11 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 .concat(libraryMetadata.editorDependencies ?? [])
                 .concat(libraryMetadata.dynamicDependencies ?? [])) {
                 const ubername = LibraryName.toUberName(dependency);
-                returnObject[ubername] = (returnObject[ubername] ?? 0) + 1;
+                dependencies[ubername] = (dependencies[ubername] ?? 0) + 1;
             }
         }
 
-        return returnObject;
+        return dependencies;
     }
 
     /**

@@ -733,6 +733,15 @@ export interface ILibraryStorage {
     /**
      * Counts how often libraries are listed in the dependencies of other
      * libraries and returns a list of the number.
+     *
+     * Note: Implementations should not count circular dependencies that are
+     * caused by editorDependencies. Example: H5P.InteractiveVideo has
+     * H5PEditor.InteractiveVideo in its editor dependencies.
+     * H5PEditor.Interactive video has H5P.InteractiveVideo in its preloaded
+     * dependencies. In this case H5P.InteractiveVideo should get a dependency
+     * count of 0 and H5PEditor.InteractiveVideo should have 1. That way it is
+     * still possible to delete the library from storage.
+     *
      * @returns an object with ubernames as key.
      * Example:
      * {
