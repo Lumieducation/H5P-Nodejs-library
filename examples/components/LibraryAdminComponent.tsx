@@ -41,8 +41,7 @@ export default class LibraryAdmin extends React.Component {
     }
 
     public async componentDidMount(): Promise<void> {
-        const libraryInfo = await this.librariesService.getLibraries();
-        this.setState({ libraryInfo });
+        return this.updateList();
     }
 
     public async deleteLibrary(library: ILibraryViewModel): Promise<void> {
@@ -61,12 +60,14 @@ export default class LibraryAdmin extends React.Component {
             this.displayMessage(
                 `Successfully deleted library ${library.title} (${library.majorVersion}.${library.minorVersion}).`
             );
+            await this.updateList();
         } catch {
             this.displayMessage(
                 `Error deleting library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
                 'danger'
             );
             this.updateLibraryState(newState, { isDeleting: false });
+            await this.updateList();
         }
     }
 
@@ -311,6 +312,11 @@ export default class LibraryAdmin extends React.Component {
                 );
             }
         }
+    }
+
+    public async updateList(): Promise<void> {
+        const libraryInfo = await this.librariesService.getLibraries();
+        this.setState({ libraryInfo });
     }
 
     private displayMessage(
