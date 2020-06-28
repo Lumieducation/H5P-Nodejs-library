@@ -16,6 +16,7 @@ import {
 import Logger from '../../helpers/Logger';
 import H5pError from '../../helpers/H5pError';
 import { validateFilename, sanitizeFilename } from './S3Utils';
+import LibraryName from '../../LibraryName';
 
 const log = new Logger('MongoS3ContentStorage');
 
@@ -556,10 +557,73 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
     }
 
+    /**
+     * Calculates how often a library is in use.
+     * @param library the library for which to calculate usage.
+     * @returns asDependency: how often the library is used as subcontent in
+     * content; asMainLibrary: how often the library is used as a main library
+     */
     public async getUsage(
         library: ILibraryName
     ): Promise<{ asDependency: number; asMainLibrary: number }> {
-        throw new Error('not implemented');
+        const [asMainLibrary, asDependency] = await Promise.all([
+            this.mongodb.count({
+                $and: [
+                    { 'metadata.mainLibrary': library.machineName },
+                    {
+                        'metadata.preloadedDependencies': {
+                            $elemMatch: {
+                                machineName: library.machineName,
+                                majorVersion: library.majorVersion,
+                                minorVersion: library.minorVersion
+                            }
+                        }
+                    }
+                ]
+            }),
+            this.mongodb.count({
+                $and: [
+                    {
+                        mainLibraryUbername: {
+                            $ne: LibraryName.toUberName(library)
+                        }
+                    },
+                    {
+                        $or: [
+                            {
+                                'metadata.preloadedDependencies': {
+                                    $elemMatch: {
+                                        machineName: library.machineName,
+                                        majorVersion: library.majorVersion,
+                                        minorVersion: library.minorVersion
+                                    }
+                                }
+                            },
+                            {
+                                'metadata.dynamicDependencies': {
+                                    $elemMatch: {
+                                        machineName: library.machineName,
+                                        majorVersion: library.majorVersion,
+                                        minorVersion: library.minorVersion
+                                    }
+                                }
+                            },
+                            {
+                                'metadata.editorDependencies': {
+                                    $elemMatch: {
+                                        machineName: library.machineName,
+                                        majorVersion: library.majorVersion,
+                                        minorVersion: library.minorVersion
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            })
+        ]);
+
+        return { asMainLibrary, asDependency };
     }
 
     /**
