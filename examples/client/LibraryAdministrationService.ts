@@ -1,8 +1,13 @@
+// We reference the build directory (which contains a .d.ts file) to avoid
+// including the whole server part of the library in the build of the client.
 import type {
     IInstalledLibrary,
     ILibraryAdministrationOverviewItem
 } from '../../build/src';
 
+/**
+ * The data model used to display the library list.
+ */
 export interface ILibraryViewModel extends ILibraryAdministrationOverviewItem {
     details?: IInstalledLibrary & {
         dependentsCount: number;
@@ -14,6 +19,9 @@ export interface ILibraryViewModel extends ILibraryAdministrationOverviewItem {
     isShowingDetails?: boolean;
 }
 
+/**
+ *
+ */
 export class LibraryAdministrationService {
     constructor(private baseUrl: string) {}
 

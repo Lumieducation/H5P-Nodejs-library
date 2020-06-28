@@ -159,8 +159,8 @@ const start = async () => {
     server.get('/', startPageRenderer(h5pEditor));
 
     server.use(
-        '/components',
-        express.static(path.resolve('build/examples/components'))
+        '/client',
+        express.static(path.resolve('build/examples/client'))
     );
 
     const port = process.env.PORT || '8080';

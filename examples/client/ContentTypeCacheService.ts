@@ -1,6 +1,12 @@
+/**
+ * This service performs queries at the REST endpoint of the content type cache.
+ */
 export default class ContentTypeCacheService {
     constructor(private baseUrl: string) {}
 
+    /**
+     * Gets the last update date and time.
+     */
     public async getCacheUpdate(): Promise<Date> {
         const response = await fetch(`${this.baseUrl}/update`);
         if (response.ok) {
@@ -12,6 +18,10 @@ export default class ContentTypeCacheService {
         );
     }
 
+    /**
+     * Triggers a content type cache update that will contact the H5P Hub and
+     * retrieve the latest content type list.
+     */
     public async postUpdateCache(): Promise<Date> {
         const response = await fetch(`${this.baseUrl}/update`, {
             method: 'POST'

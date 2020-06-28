@@ -3,8 +3,19 @@ import React from 'react';
 
 import ContentTypeCacheService from './ContentTypeCacheService.js';
 
+/**
+ * This components provides a UI for checking the last update time of the
+ * content type cache und updating manually when necessary.
+ *
+ * It uses Bootstrap 4 to layout the component. You can override or replace the
+ * render() method to customize looks.
+ */
 export default class ContentTypeCacheComponent extends React.Component {
-    constructor(props: any) {
+    /**
+     * @param endpointurl the URL of the REST content type cache administration
+     * endpoint
+     */
+    constructor(props: { endpointUrl: string }) {
         super(props);
 
         this.state = {
@@ -12,7 +23,7 @@ export default class ContentTypeCacheComponent extends React.Component {
             updatingCache: null
         };
         this.contentTypeCacheService = new ContentTypeCacheService(
-            'h5p/content-type-cache'
+            props.endpointUrl
         );
     }
 
@@ -21,7 +32,7 @@ export default class ContentTypeCacheComponent extends React.Component {
         updatingCache: boolean;
     };
 
-    private contentTypeCacheService: ContentTypeCacheService;
+    protected contentTypeCacheService: ContentTypeCacheService;
 
     public async componentDidMount(): Promise<void> {
         const lastCacheUpdate = await this.contentTypeCacheService.getCacheUpdate();
@@ -67,7 +78,7 @@ export default class ContentTypeCacheComponent extends React.Component {
         );
     }
 
-    public async updateCache(): Promise<void> {
+    protected async updateCache(): Promise<void> {
         this.setState({ updatingCache: true });
         try {
             const lastUpdate = await this.contentTypeCacheService.postUpdateCache();

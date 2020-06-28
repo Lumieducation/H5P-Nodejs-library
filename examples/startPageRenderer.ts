@@ -95,13 +95,13 @@ export default function render(
                 requirejs([
                     "react",
                     "react-dom",
-                    "./components/LibraryAdminComponent.js",
-                    "./components/ContentTypeCacheComponent.js"], 
+                    "./client/LibraryAdminComponent.js",
+                    "./client/ContentTypeCacheComponent.js"], 
                     function (React, ReactDOM, LibraryAdmin, ContentTypeCache) {
                         const libraryAdminContainer = document.querySelector('#library-admin-container');
-                        ReactDOM.render(React.createElement(LibraryAdmin.default), libraryAdminContainer);
+                        ReactDOM.render(React.createElement(LibraryAdmin.default, { endpointUrl: 'h5p/libraries' }), libraryAdminContainer);
                         const contentTypeCacheContainer = document.querySelector('#content-type-cache-container');
-                        ReactDOM.render(React.createElement(ContentTypeCache.default), contentTypeCacheContainer);
+                        ReactDOM.render(React.createElement(ContentTypeCache.default, { endpointUrl: 'h5p/content-type-cache' }), contentTypeCacheContainer);
                     });                
             </script>
         </body>

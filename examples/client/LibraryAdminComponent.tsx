@@ -1,105 +1,55 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import React from 'react';
 
-// We reference the build directory here directly referencing the TS index
-// file would include the whole library in the build for the client
+// We reference the build directory (which contains a .d.ts file) to avoid
+// including the whole server part of the library in the build of the client.
 import type { ILibraryAdministrationOverviewItem } from '../../build/src';
 
+// The .js references are necessary for requireJs to work in the browser.
 import LibraryDetails from './LibraryDetailsComponent.js';
 import {
     ILibraryViewModel,
     LibraryAdministrationService
 } from './LibraryAdministrationService.js';
 
+/**
+ * The components displays a list with the currently installed libraries. It
+ * offers basic administration functions like deleting libraries, showing more
+ * details of an installed library and uploading new libraries.
+ *
+ * It uses Bootstrap 4 to layout the component. You can override or replace the
+ * render() method to customize looks.
+ */
 export default class LibraryAdmin extends React.Component {
-    constructor(props: any) {
+    /**
+     * @param endpointUrl the URL of the REST library administration endpoint.
+     */
+    constructor(props: { endpointUrl: string }) {
         super(props);
 
         this.state = {
             isUploading: false,
-            libraryInfo: null,
+            libraries: null,
             message: null
         };
         this.librariesService = new LibraryAdministrationService(
-            'h5p/libraries'
+            props.endpointUrl
         );
     }
 
     public state: {
         isUploading: boolean;
-        libraryInfo: ILibraryViewModel[];
+        libraries: ILibraryViewModel[];
         message: {
             text: string;
             type: 'primary' | 'success' | 'danger';
         };
     };
 
-    private librariesService: LibraryAdministrationService;
-
-    public closeDetails(library: ILibraryViewModel): void {
-        this.updateLibraryState(library, { isShowingDetails: false });
-    }
+    protected librariesService: LibraryAdministrationService;
 
     public async componentDidMount(): Promise<void> {
         return this.updateList();
-    }
-
-    public async deleteLibrary(library: ILibraryViewModel): Promise<void> {
-        const newState = this.updateLibraryState(library, {
-            isDeleting: true
-        });
-
-        try {
-            await this.librariesService.deleteLibrary(library);
-            const libraryIndex = this.state.libraryInfo.indexOf(newState);
-            this.setState({
-                libraryInfo: this.state.libraryInfo
-                    .slice(0, libraryIndex)
-                    .concat(this.state.libraryInfo.slice(libraryIndex + 1))
-            });
-            this.displayMessage(
-                `Successfully deleted library ${library.title} (${library.majorVersion}.${library.minorVersion}).`
-            );
-            await this.updateList();
-        } catch {
-            this.displayMessage(
-                `Error deleting library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
-                'danger'
-            );
-            this.updateLibraryState(newState, { isDeleting: false });
-            await this.updateList();
-        }
-    }
-
-    public async fileSelected(files: FileList): Promise<void> {
-        if (!files[0]) {
-            return;
-        }
-        try {
-            this.setState({ isUploading: true });
-            const {
-                installed,
-                updated
-            } = await this.librariesService.postPackage(files[0]);
-            if (installed + updated === 0) {
-                this.displayMessage(
-                    'Upload successful, but no libraries were installed or updated. The content type is probably already installed on the system.'
-                );
-                return;
-            }
-            this.displayMessage(
-                `Successfully installed ${installed} and updated ${updated} libraries.`,
-                'success'
-            );
-        } catch {
-            this.displayMessage(`Error while uploading package.`, 'danger');
-            return;
-        } finally {
-            this.setState({ isUploading: false });
-        }
-        this.setState({ libraryInfo: null });
-        const libraryInfo = await this.librariesService.getLibraries();
-        this.setState({ libraryInfo });
     }
 
     public render(): React.ReactNode {
@@ -142,7 +92,7 @@ export default class LibraryAdmin extends React.Component {
                         {this.state.message.text}
                     </div>
                 ) : null}
-                {this.state.libraryInfo === null ? (
+                {this.state.libraries === null ? (
                     <div>
                         <div
                             className="spinner-grow spinner-grow-sm text-primary align-middle mr-2"
@@ -173,7 +123,7 @@ export default class LibraryAdmin extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.libraryInfo?.map((info) => (
+                                {this.state.libraries?.map((info) => (
                                     <React.Fragment
                                         key={`${info.machineName}-${info.majorVersion}.${info.minorVersion}`}
                                     >
@@ -271,7 +221,69 @@ export default class LibraryAdmin extends React.Component {
         );
     }
 
-    public async restrict(
+    protected closeDetails(library: ILibraryViewModel): void {
+        this.updateLibraryState(library, { isShowingDetails: false });
+    }
+
+    protected async deleteLibrary(library: ILibraryViewModel): Promise<void> {
+        const newState = this.updateLibraryState(library, {
+            isDeleting: true
+        });
+
+        try {
+            await this.librariesService.deleteLibrary(library);
+            const libraryIndex = this.state.libraries.indexOf(newState);
+            this.setState({
+                libraries: this.state.libraries
+                    .slice(0, libraryIndex)
+                    .concat(this.state.libraries.slice(libraryIndex + 1))
+            });
+            this.displayMessage(
+                `Successfully deleted library ${library.title} (${library.majorVersion}.${library.minorVersion}).`
+            );
+            await this.updateList();
+        } catch {
+            this.displayMessage(
+                `Error deleting library ${library.title} (${library.majorVersion}.${library.minorVersion}).`,
+                'danger'
+            );
+            this.updateLibraryState(newState, { isDeleting: false });
+            await this.updateList();
+        }
+    }
+
+    protected async fileSelected(files: FileList): Promise<void> {
+        if (!files[0]) {
+            return;
+        }
+        try {
+            this.setState({ isUploading: true });
+            const {
+                installed,
+                updated
+            } = await this.librariesService.postPackage(files[0]);
+            if (installed + updated === 0) {
+                this.displayMessage(
+                    'Upload successful, but no libraries were installed or updated. The content type is probably already installed on the system.'
+                );
+                return;
+            }
+            this.displayMessage(
+                `Successfully installed ${installed} and updated ${updated} libraries.`,
+                'success'
+            );
+        } catch {
+            this.displayMessage(`Error while uploading package.`, 'danger');
+            return;
+        } finally {
+            this.setState({ isUploading: false });
+        }
+        this.setState({ libraries: null });
+        const libraries = await this.librariesService.getLibraries();
+        this.setState({ libraries });
+    }
+
+    protected async restrict(
         library: ILibraryAdministrationOverviewItem
     ): Promise<void> {
         try {
@@ -294,7 +306,7 @@ export default class LibraryAdmin extends React.Component {
         }
     }
 
-    public async showDetails(library: ILibraryViewModel): Promise<void> {
+    protected async showDetails(library: ILibraryViewModel): Promise<void> {
         const newState = this.updateLibraryState(library, {
             isShowingDetails: true
         });
@@ -315,11 +327,11 @@ export default class LibraryAdmin extends React.Component {
     }
 
     public async updateList(): Promise<void> {
-        const libraryInfo = await this.librariesService.getLibraries();
-        this.setState({ libraryInfo });
+        const libraries = await this.librariesService.getLibraries();
+        this.setState({ libraries });
     }
 
-    private displayMessage(
+    protected displayMessage(
         text: string,
         type: 'primary' | 'success' | 'danger' = 'primary'
     ): void {
@@ -331,20 +343,20 @@ export default class LibraryAdmin extends React.Component {
         });
     }
 
-    private updateLibraryState(
+    protected updateLibraryState(
         library: ILibraryViewModel,
         changes: Partial<ILibraryViewModel>
     ): ILibraryViewModel {
-        const libraryIndex = this.state.libraryInfo.indexOf(library);
+        const libraryIndex = this.state.libraries.indexOf(library);
         const newState = {
             ...library,
             ...changes
         };
         this.setState({
-            libraryInfo: [
-                ...this.state.libraryInfo.slice(0, libraryIndex),
+            libraries: [
+                ...this.state.libraries.slice(0, libraryIndex),
                 newState,
-                ...this.state.libraryInfo.slice(libraryIndex + 1)
+                ...this.state.libraries.slice(libraryIndex + 1)
             ]
         });
         return newState;
