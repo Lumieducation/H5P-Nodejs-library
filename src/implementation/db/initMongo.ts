@@ -41,8 +41,9 @@ export default async (
             process.env.MONGODB_URL ?? url,
             {
                 auth,
-                ignoreUndefined: true // this is important as otherwise MongoDB
+                ignoreUndefined: true, // this is important as otherwise MongoDB
                 // stores null for deliberately set undefined values!
+                useUnifiedTopology: true
             }
         );
 

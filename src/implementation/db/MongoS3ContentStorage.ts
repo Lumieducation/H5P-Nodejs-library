@@ -567,7 +567,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         library: ILibraryName
     ): Promise<{ asDependency: number; asMainLibrary: number }> {
         const [asMainLibrary, asDependency] = await Promise.all([
-            this.mongodb.count({
+            this.mongodb.countDocuments({
                 $and: [
                     { 'metadata.mainLibrary': library.machineName },
                     {
@@ -581,7 +581,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     }
                 ]
             }),
-            this.mongodb.count({
+            this.mongodb.countDocuments({
                 $and: [
                     {
                         mainLibraryUbername: {
