@@ -332,7 +332,12 @@ export default class FileContentStorage implements IContentStorage {
         );
     }
 
-    // TODO: optimize
+    /**
+     * Calculates how often a library is in use.
+     * @param library the library for which to calculate usage.
+     * @returns asDependency: how often the library is used as subcontent in
+     * content; asMainLibrary: how often the library is used as a main library
+     */
     public async getUsage(
         library: ILibraryName
     ): Promise<{ asDependency: number; asMainLibrary: number }> {

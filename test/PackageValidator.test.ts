@@ -124,7 +124,7 @@ describe('validating H5P files', () => {
         )}/test/data/validator/missing-preloaded-js.h5p`;
         const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'package-validation-failed:library-missing-file'
+            'package-validation-failed:library-file-missing'
         );
     });
 

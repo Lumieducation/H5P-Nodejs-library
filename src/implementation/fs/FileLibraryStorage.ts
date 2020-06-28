@@ -1,4 +1,3 @@
-import fileSystem from 'fs';
 import fsExtra, { ReadStream } from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
@@ -17,7 +16,6 @@ import {
 } from '../../../src';
 import { checkFilename } from './filenameUtils';
 import { IFileStats, IAdditionalLibraryMetadata } from '../../types';
-import { hasDependencyOn } from '../../helpers/DependencyChecker';
 
 /**
  * Stores libraries in a directory.
@@ -388,6 +386,11 @@ export default class FileLibraryStorage implements ILibraryStorage {
         );
     }
 
+    /**
+     * Checks if a library is installed in the system.
+     * @param library the library to check
+     * @returns true if installed, false if not
+     */
     public async isInstalled(library: ILibraryName): Promise<boolean> {
         return fsExtra.pathExists(this.getFilePath(library, 'library.json'));
     }
@@ -401,6 +404,10 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return fsExtra.pathExists(this.getDirectoryPath(name));
     }
 
+    /**
+     * Returns a list of library addons that are installed in the system.
+     * Addons are libraries that have the property 'addTo' in their metadata.
+     */
     public async listAddons(): Promise<ILibraryMetadata[]> {
         const installedLibraries = await this.getInstalledLibraryNames();
         return (
@@ -461,9 +468,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
             return true;
         } catch (error) {
             throw new H5pError(
-                'error-updating-metadata',
+                'storage-file-implementations:error-updating-metadata',
                 {
-                    libraryName: LibraryName.toUberName(library),
+                    library: LibraryName.toUberName(library),
                     error: error.message
                 },
                 500

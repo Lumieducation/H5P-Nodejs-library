@@ -8,12 +8,24 @@ import {
     IInstalledLibrary
 } from './types';
 
+/**
+ * This class has methods that perform library administration, i.e, deleted
+ * libraries. All parameters undergo validation and proper exceptions are thrown
+ * when something went wrong.
+ */
 export default class LibraryAdministration {
     constructor(
         protected libraryManager: LibraryManager,
         protected contentManager: ContentManager
     ) {}
 
+    /**
+     * Deletes a library.
+     *
+     * Throws H5pError with HTTP status code 423 if the library cannot be
+     * deleted because it is still in use.
+     * @param ubername the ubername of the library to delete
+     */
     public async deleteLibrary(ubername: string): Promise<void> {
         const libraryName = await this.checkLibrary(ubername);
 
@@ -30,6 +42,11 @@ export default class LibraryAdministration {
         await this.libraryManager.libraryStorage.deleteLibrary(libraryName);
     }
 
+    /**
+     * Lists all installed libraries. This operation can be relatively costly
+     * as it has to go through the whole library metadata and calculate
+     * usage of libraries across all content objects on the system.
+     */
     public async getLibraries(): Promise<ILibraryAdministrationOverviewItem[]> {
         const libraryNames = await this.libraryManager.libraryStorage.getInstalledLibraryNames();
         const libraryMetadata = (
@@ -79,13 +96,30 @@ export default class LibraryAdministration {
         );
     }
 
+    /**
+     * Returns detailed information about the library and its use.
+     * @param ubername
+     */
     public async getLibrary(
         ubername: string
     ): Promise<
         IInstalledLibrary & {
+            /**
+             * How many libraries depend on this library.
+             */
             dependentsCount: number;
+            /**
+             * How often this library is used in content objects, but only as a
+             * dependency.
+             */
             instancesAsDependencyCount: number;
+            /**
+             * How often this library is used in content object as main library.
+             */
             instancesCount: number;
+            /**
+             * Whether the library is an addon.
+             */
             isAddon: boolean;
         }
     > {
@@ -104,6 +138,11 @@ export default class LibraryAdministration {
         };
     }
 
+    /**
+     * Changes the restricted status of a library
+     * @param ubername the library's ubername you want to change
+     * @param restricted the new value
+     */
     public async restrictLibrary(
         ubername: string,
         restricted: boolean
@@ -130,7 +169,11 @@ export default class LibraryAdministration {
         // Check for correct ubername
         const libraryName = LibraryName.fromUberName(ubername);
         if (libraryName === undefined) {
-            throw new H5pError('invalid-ubername', { name: ubername }, 400);
+            throw new H5pError(
+                'invalid-ubername-pattern',
+                { name: ubername },
+                400
+            );
         }
 
         // Check if library is installed
