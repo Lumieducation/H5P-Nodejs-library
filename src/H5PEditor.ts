@@ -861,6 +861,8 @@ export default class H5PEditor {
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
+            libraryUrl: this.urlGenerator.coreFile('js'),
+            pluginCacheBuster: '', // TODO make dynamic
             url: this.config.baseUrl,
             user: {
                 mail: '',

@@ -292,7 +292,7 @@ export interface IIntegration {
         [machineName: string]: any;
     };
     /**
-     * The URL at which the core files are stored.
+     * The URL at which the core **JavaScript** files are stored.
      */
     libraryUrl?: string;
     /**
