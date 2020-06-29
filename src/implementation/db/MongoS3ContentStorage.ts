@@ -48,6 +48,13 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 user: IUser
             ) => Promise<Permission[]>;
             /**
+             * These characters will be removed from files that are saved to S3.
+             * There is a very strict default list that basically only leaves
+             * alphanumeric filenames intact. Should you need more relaxed
+             * settings you can specify them here.
+             */
+            invalidCharactersRegexp?: RegExp;
+            /**
              * Indicates how long keys in S3 can be. Defaults to 1024. (S3
              * supports 1024 characters, other systems such as Minio might only
              * support 255 on Windows).
@@ -753,6 +760,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
      * @returns the clean filename
      */
     public sanitizeFilename(filename: string): string {
-        return sanitizeFilename(filename, this.maxKeyLength);
+        return sanitizeFilename(
+            filename,
+            this.maxKeyLength,
+            this.options?.invalidCharactersRegexp
+        );
     }
 }

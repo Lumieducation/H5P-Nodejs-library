@@ -55,13 +55,24 @@ export default class FileContentStorage implements IContentStorage {
 
     /**
      * @param contentPath The absolute path to the directory where the content should be stored
-     * @param maxPathLength how long paths can be in the filesystem (Differs
-     * between Windows, Linux and MacOS, so check out the limitation of your
-     * system!)
      */
     constructor(
         protected contentPath: string,
-        options?: { maxPathLength?: number }
+        protected options?: {
+            /**
+             * These characters will be removed from files that are saved to S3.
+             * There is a very strict default list that basically only leaves
+             * alphanumeric filenames intact. Should you need more relaxed
+             * settings you can specify them here.
+             */
+            invalidCharactersRegexp?: RegExp;
+            /*
+             * How long paths can be in the filesystem (Differs between Windows,
+             * Linux and MacOS, so check out the limitation of your
+             * system!)
+             */
+            maxPathLength?: number;
+        }
     ) {
         fsExtra.ensureDirSync(contentPath);
         this.maxFileLength =
@@ -441,6 +452,10 @@ export default class FileContentStorage implements IContentStorage {
      * @returns the clean filename
      */
     public sanitizeFilename(filename: string): string {
-        return sanitizeFilename(filename, this.maxFileLength);
+        return sanitizeFilename(
+            filename,
+            this.maxFileLength,
+            this.options?.invalidCharactersRegexp
+        );
     }
 }
