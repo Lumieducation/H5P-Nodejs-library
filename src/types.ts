@@ -131,6 +131,11 @@ export interface IContentMetadata {
     mainLibrary: string;
     metaDescription?: string;
     metaKeywords?: string;
+    /**
+     * A flat list of all dependencies required for the content to be displayed.
+     * Note that this list is a flat representation of the full dependency tree
+     * that is created by looking up all dependencies of the main library.
+     */
     preloadedDependencies: ILibraryName[];
     source?: string;
     title: string;
@@ -287,7 +292,7 @@ export interface IIntegration {
         [machineName: string]: any;
     };
     /**
-     * The URL at which the core files are stored.
+     * The URL at which the core **JavaScript** files are stored.
      */
     libraryUrl?: string;
     /**
@@ -463,7 +468,7 @@ export interface ILibraryOverviewForClient {
     minorVersion: number;
     name: string;
     restricted: boolean;
-    runnable: boolean;
+    runnable: boolean | 0 | 1;
     title: string;
     tutorialUrl: string;
     /**
@@ -624,6 +629,16 @@ export interface IContentStorage {
     ): Promise<ContentParameters>;
 
     /**
+     * Calculates how often a library is in use.
+     * @param library the library for which to calculate usage.
+     * @returns asDependency: how often the library is used as subcontent in
+     * content; asMainLibrary: how often the library is used as a main library
+     */
+    getUsage(
+        library: ILibraryName
+    ): Promise<{ asDependency: number; asMainLibrary: number }>;
+
+    /**
      * Returns an array of permissions that the user has on the piece of content
      * @param contentId the content id to check
      * @param user the user who wants to access the piece of content
@@ -722,6 +737,34 @@ export interface ILibraryStorage {
     fileExists(library: ILibraryName, filename: string): Promise<boolean>;
 
     /**
+     * Counts how often libraries are listed in the dependencies of other
+     * libraries and returns a list of the number.
+     *
+     * Note: Implementations should not count circular dependencies that are
+     * caused by editorDependencies. Example: H5P.InteractiveVideo has
+     * H5PEditor.InteractiveVideo in its editor dependencies.
+     * H5PEditor.Interactive video has H5P.InteractiveVideo in its preloaded
+     * dependencies. In this case H5P.InteractiveVideo should get a dependency
+     * count of 0 and H5PEditor.InteractiveVideo should have 1. That way it is
+     * still possible to delete the library from storage.
+     *
+     * @returns an object with ubernames as key.
+     * Example:
+     * {
+     *   'H5P.Example': 10
+     * }
+     * This means that H5P.Example is used by 10 other libraries.
+     */
+    getAllDependentsCount(): Promise<{ [ubername: string]: number }>;
+
+    /**
+     * Returns the number of libraries that depend on this (single) library.
+     * @param library the library to check
+     * @returns the number of libraries that depend on this library.
+     */
+    getDependentsCount(library: ILibraryName): Promise<number>;
+
+    /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
@@ -763,6 +806,13 @@ export interface ILibraryStorage {
     getLibrary(library: ILibraryName): Promise<IInstalledLibrary>;
 
     /**
+     * Checks if a library is installed.
+     * @param library the library to check
+     * @returns true if the library is installed
+     */
+    isInstalled(library: ILibraryName): Promise<boolean>;
+
+    /**
      * Checks if the library has been installed.
      * @param name the library name
      * @returns true if the library has been installed
@@ -770,11 +820,37 @@ export interface ILibraryStorage {
     libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
+     * Returns a list of library addons that are installed in the system.
+     * Addons are libraries that have the property 'addTo' in their metadata.
+     * ILibraryStorage implementation CAN but NEED NOT implement the method.
+     * If it is not implemented, addons won't be available in the system.
+     */
+    listAddons?(): Promise<ILibraryMetadata[]>;
+
+    /**
      * Gets a list of all library files that exist for this library.
      * @param library
      * @returns all files that exist for the library
      */
     listFiles(library: ILibraryName): Promise<string[]>;
+
+    /**
+     * Updates the additional metadata properties that is added to the
+     * stored libraries. This metadata can be used to customize behavior like
+     * restricting libraries to specific users.
+     *
+     * Implementations should avoid updating the metadata if the additional
+     * metadata if nothing has changed.
+     * @param library the library for which the metadata should be updated
+     * @param additionalMetadata the metadata to update
+     * @returns true if the additionalMetadata object contained real changes
+     * and if they were successfully saved; false if there were not changes.
+     * Throws an error if saving was not possible.
+     */
+    updateAdditionalMetadata(
+        library: ILibraryName,
+        additionalMetadata: Partial<IAdditionalLibraryMetadata>
+    ): Promise<boolean>;
 
     /**
      * Updates the library metadata. This is necessary when updating to a new patch version.
@@ -938,15 +1014,23 @@ export interface ISemanticsEntry {
 }
 
 /**
- * Objects of this interface represent installed libraries that have an id.
+ * This is metadata of a library that is not part of the H5P specification. The
+ * data can be used to customize behaviour of h5p-nodejs-library.
  */
-export interface IInstalledLibrary extends ILibraryMetadata {
+export interface IAdditionalLibraryMetadata {
     /**
      * If set to true, the library can only be used be users who have this special
      * privilege.
      */
     restricted: boolean;
+}
 
+/**
+ * Objects of this interface represent installed libraries that have an id.
+ */
+export interface IInstalledLibrary
+    extends ILibraryMetadata,
+        IAdditionalLibraryMetadata {
     /**
      * Compares libraries by giving precedence to title, then major version, then minor version
      * @param otherLibrary
@@ -954,16 +1038,65 @@ export interface IInstalledLibrary extends ILibraryMetadata {
     compare(otherLibrary: IInstalledLibrary): number;
 
     /**
-     * Compares libraries by giving precedence to major version, then minor version, then patch version.
+     * Compares libraries by giving precedence to major version, then minor version, then if present patch version.
      * @param otherLibrary
+     * @returns a negative value: if this library is older than the other library
+     * a positive value: if this library is newer than the other library
+     * zero: if both libraries are the same (or if it can't be determined, because the patch version is missing in the other library)
      */
-    compareVersions(otherLibrary: IFullLibraryName): number;
+    compareVersions(
+        otherLibrary: ILibraryName & { patchVersion?: number }
+    ): number;
 }
 
 /**
  * This interface represents the structure of library.json files.
  */
 export interface ILibraryMetadata extends IFullLibraryName {
+    /**
+     * Addons can be added to other content types by
+     */
+    addTo?: {
+        content?: {
+            types?: {
+                text?: {
+                    /**
+                     * If any string property in the parameters matches the regex,
+                     * the addon will be activated for the content.
+                     */
+                    regex?: string;
+                };
+            }[];
+        };
+        /**
+         * Contains cases in which the library should be added to the editor.
+         *
+         * This is an extension to the H5P library metadata structure made by
+         * h5p-nodejs-library. That way addons can specify to which editors
+         * they should be added in general. The PHP implementation hard-codes
+         * this list into the server, which we want to avoid here.
+         */
+        editor?: {
+            /**
+             * A list of machine names in which the addon should be added.
+             */
+            machineNames: string[];
+        };
+        /**
+         * Contains cases in which the library should be added to the player.
+         *
+         * This is an extension to the H5P library metadata structure made by
+         * h5p-nodejs-library. That way addons can specify to which editors
+         * they should be added in general. The PHP implementation hard-codes
+         * this list into the server, which we want to avoid here.
+         */
+        player?: {
+            /**
+             * A list of machine names in which the addon should be added.
+             */
+            machineNames: string[];
+        };
+    };
     author?: string;
     /**
      * The core API required to run the library.
@@ -984,7 +1117,7 @@ export interface ILibraryMetadata extends IFullLibraryName {
     preloadedCss?: IPath[];
     preloadedDependencies?: ILibraryName[];
     preloadedJs?: IPath[];
-    runnable: boolean;
+    runnable: boolean | 0 | 1;
     title: string;
     w?: number;
 }
@@ -1167,7 +1300,6 @@ export interface IH5PConfig {
         major: number;
         minor: number;
     };
-
     /**
      * Path to the H5P core files directory.
      */
@@ -1176,6 +1308,17 @@ export interface IH5PConfig {
      * Path to the downloadable H5P packages.
      */
     downloadUrl: string;
+    /**
+     * You can specify which addons should be added to which library here.
+     */
+    editorAddons?: {
+        /**
+         * The property name is the machine mame to which to add addons.
+         * The string array contains the machine names of addons that should
+         * be added.
+         */
+        [machineName: string]: string[];
+    };
     /**
      * Path to editor "core files"
      */
@@ -1213,6 +1356,13 @@ export interface IH5PConfig {
      */
     librariesUrl: string;
     /**
+     * (optional) You can set server-wide custom settings for some libraries
+     * by setting the values here. As far as we know, this is currently only
+     * supported by H5P.MathDisplay. See https://h5p.org/mathematical-expressions
+     * for more information.
+     */
+    libraryConfig?: { [machineName: string]: any };
+    /**
      * A list of file extensions allowed for library files. (File extensions without . and
      * separated by whitespaces.)
      * (All extensions allowed for content files are also automatically allowed for libraries).
@@ -1245,6 +1395,17 @@ export interface IH5PConfig {
      * Not user-configurable but should be overridden by custom custom implementations.
      */
     platformVersion: string;
+    /**
+     * You can specify which addons should be added to which library in the player here.
+     */
+    playerAddons?: {
+        /**
+         * The property name is the machine mame to which to add addons.
+         * The string array contains the machine names of addons that should
+         * be added.
+         */
+        [machineName: string]: string[];
+    };
     /**
      * The Url at which content can be displayed.
      */
@@ -1482,4 +1643,20 @@ export interface IRequestWithTranslator extends Request {
         changeLanguage(language: string): Promise<void>;
     };
     t: (errorId: string, replacements: any) => string;
+}
+
+export interface ILibraryAdministrationOverviewItem {
+    canBeDeleted: boolean;
+    canBeUpdated: boolean;
+    dependentsCount: number;
+    instancesAsDependencyCount: number;
+    instancesCount: number;
+    isAddon: boolean;
+    machineName: string;
+    majorVersion: number;
+    minorVersion: number;
+    patchVersion: number;
+    restricted: boolean;
+    runnable: boolean;
+    title: string;
 }

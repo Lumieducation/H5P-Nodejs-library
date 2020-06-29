@@ -25,7 +25,7 @@ export default class ContentManager {
     /**
      * @param contentStorage The storage object
      */
-    constructor(private contentStorage: IContentStorage) {
+    constructor(public contentStorage: IContentStorage) {
         log.info('initialize');
         this.contentStorage = contentStorage;
     }

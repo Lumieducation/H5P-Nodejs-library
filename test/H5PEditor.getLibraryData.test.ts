@@ -17,6 +17,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
@@ -60,6 +61,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
@@ -102,6 +104,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
@@ -193,6 +196,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
@@ -291,6 +295,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage,
@@ -367,6 +372,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages,
             getLibrary: ({ _machineName }) => {
@@ -438,6 +444,7 @@ describe('aggregating data from library folders for the editor', () => {
         const libraryManager = new LibraryManager(new FileLibraryStorage(''));
 
         Object.assign(libraryManager, {
+            listAddons: () => Promise.resolve([]),
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),

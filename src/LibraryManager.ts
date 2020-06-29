@@ -35,7 +35,7 @@ export default class LibraryManager {
      * @param libraryStorage The library repository that persists library somewhere.
      */
     constructor(
-        private libraryStorage: ILibraryStorage,
+        public libraryStorage: ILibraryStorage,
         /**
          * Gets URLs at which a file in a library can be downloaded. Must be passed
          * through from the implementation.
@@ -327,6 +327,13 @@ export default class LibraryManager {
         return false;
     }
 
+    public async listAddons(): Promise<ILibraryMetadata[]> {
+        if (this.libraryStorage.listAddons) {
+            return this.libraryStorage.listAddons();
+        }
+        return [];
+    }
+
     /**
      * Gets a list of files that exist in the library.
      * @param library the library for which the files should be listed
@@ -347,7 +354,7 @@ export default class LibraryManager {
      */
     public async listInstalledLibraries(
         machineNames?: string[]
-    ): Promise<{ [key: string]: IInstalledLibrary[] }> {
+    ): Promise<{ [machineName: string]: IInstalledLibrary[] }> {
         log.verbose(`checking if libraries ${machineNames} are installed`);
         let libraries = await this.libraryStorage.getInstalledLibraryNames(
             ...machineNames

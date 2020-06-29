@@ -187,6 +187,15 @@ export default class ContentTypeCache {
     }
 
     /**
+     * Returns the date and time of the last update of the cache.
+     * @returns the date and time; undefined if the cache was never updated before.
+     */
+    public async getLastUpdate(): Promise<Date> {
+        const lastUpdate = await this.storage.load('contentTypeCacheUpdate');
+        return lastUpdate;
+    }
+
+    /**
      * Checks if the cache is not up to date anymore (update interval exceeded).
      * @returns true if cache is outdated, false if not
      */

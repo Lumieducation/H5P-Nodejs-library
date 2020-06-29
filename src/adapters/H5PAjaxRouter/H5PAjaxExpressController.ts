@@ -1,9 +1,13 @@
 import * as express from 'express';
-import { H5PEditor, LibraryName, H5pError } from './..';
+import { H5PEditor, LibraryName, H5pError } from '../..';
 import { lookup as mimeLookup } from 'mime-types';
-import AjaxSuccessResponse from '../helpers/AjaxSuccessResponse';
+import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
-import { IFileStats, IRequestWithUser, IRequestWithTranslator } from '../types';
+import {
+    IFileStats,
+    IRequestWithUser,
+    IRequestWithTranslator
+} from '../../types';
 
 interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
     files: {
@@ -26,7 +30,7 @@ interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
  * requests, ALL methods except getDownload deal with AJAX requests. This confusion is caused by the
  * HTTP interface the H5P client uses and we can't change it.
  */
-export default class ExpressH5PController {
+export default class H5PAjaxExpressController {
     constructor(protected h5pEditor: H5PEditor) {}
 
     /**

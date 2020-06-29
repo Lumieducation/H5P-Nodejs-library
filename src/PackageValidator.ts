@@ -809,9 +809,9 @@ export default class PackageValidator {
                 jsonData.preloadedJs.map((file) =>
                     this.fileMustExist(
                         PackageValidator.pathJoin(uberName, file.path),
-                        'library-missing-file',
+                        'library-file-missing',
                         false,
-                        { file: file.path, name: uberName }
+                        { filename: file.path, library: uberName }
                     )(zipEntries, error)
                 )
             );
@@ -823,9 +823,9 @@ export default class PackageValidator {
                 jsonData.preloadedCss.map((file) =>
                     this.fileMustExist(
                         PackageValidator.pathJoin(uberName, file.path),
-                        'library-missing-file',
+                        'library-file-missing',
                         false,
-                        { file: file.path, name: uberName }
+                        { filename: file.path, library: uberName }
                     )(zipEntries, error)
                 )
             );

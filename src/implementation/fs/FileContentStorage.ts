@@ -16,7 +16,8 @@ import {
     ContentParameters
 } from '../../../src';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
-import { IFileStats } from '../../types';
+import { IFileStats, ILibraryName } from '../../types';
+import { hasDependencyOn } from '../../helpers/DependencyChecker';
 
 /**
  * Persists content to the disk.
@@ -340,6 +341,37 @@ export default class FileContentStorage implements IContentStorage {
                 await this.getFileStream(contentId, 'content.json', user)
             )
         );
+    }
+
+    /**
+     * Calculates how often a library is in use.
+     * @param library the library for which to calculate usage.
+     * @returns asDependency: how often the library is used as subcontent in
+     * content; asMainLibrary: how often the library is used as a main library
+     */
+    public async getUsage(
+        library: ILibraryName
+    ): Promise<{ asDependency: number; asMainLibrary: number }> {
+        let asDependency = 0;
+        let asMainLibrary = 0;
+
+        const contentIds = await this.listContent();
+        // We don't use Promise.all here as this would possibly overwhelm the
+        // available memory space.
+        for (const contentId of contentIds) {
+            const contentMetadata = await this.getMetadata(contentId);
+            const isMainLibrary =
+                contentMetadata.mainLibrary === library.machineName;
+            if (hasDependencyOn(contentMetadata, library)) {
+                if (isMainLibrary) {
+                    asMainLibrary += 1;
+                } else {
+                    asDependency += 1;
+                }
+            }
+        }
+
+        return { asDependency, asMainLibrary };
     }
 
     /**

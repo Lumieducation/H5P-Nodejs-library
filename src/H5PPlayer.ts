@@ -11,7 +11,8 @@ import {
     ILibraryName,
     ILibraryStorage,
     IPlayerModel,
-    IUrlGenerator
+    IUrlGenerator,
+    ILibraryMetadata
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -21,6 +22,7 @@ import defaultTranslation from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
 import H5pError from './helpers/H5pError';
+import LibraryManager from './LibraryManager';
 
 const log = new Logger('Player');
 
@@ -44,8 +46,13 @@ export default class H5PPlayer {
         log.info('initialize');
         this.renderer = player;
         this.clientTranslation = defaultTranslation;
+        this.libraryManager = new LibraryManager(
+            libraryStorage,
+            urlGenerator.libraryFile
+        );
     }
     private clientTranslation: any;
+    private libraryManager: LibraryManager;
     private renderer: (model: IPlayerModel) => string | any;
 
     /**
@@ -98,16 +105,34 @@ export default class H5PPlayer {
             translations: {}
         };
 
+        log.debug('Getting list of installed addons.');
+        let installedAddons: ILibraryMetadata[] = [];
+        if (this.libraryStorage?.listAddons) {
+            installedAddons = await this.libraryStorage.listAddons();
+        }
+        // We remove duplicates from the dependency list by converting it to
+        // a set and then back.
+        const dependencies = Array.from(
+            new Set(
+                (metadata.preloadedDependencies || [])
+                    .concat(
+                        await this.getAddonsByParameters(
+                            parameters,
+                            installedAddons
+                        )
+                    )
+                    .concat(
+                        await this.getAddonsByLibrary(
+                            metadata.mainLibrary,
+                            installedAddons
+                        )
+                    )
+            )
+        );
         const libraries = {};
-        await this.getLibraries(
-            metadata.preloadedDependencies || [],
-            libraries
-        );
-        this.aggregateAssets(
-            metadata.preloadedDependencies || [],
-            model,
-            libraries
-        );
+        await this.getLibraries(dependencies, libraries);
+
+        this.aggregateAssets(dependencies, model, libraries);
         return this.renderer(model);
     }
 
@@ -161,6 +186,37 @@ export default class H5PPlayer {
         });
     }
 
+    /**
+     * Scans the parameters for occurances of the regex pattern in any string
+     * property.
+     * @param parameters the parameters (= content.json)
+     * @param regex the regex to look for
+     * @returns true if the regex occurs in a string inside the parametres
+     */
+    private checkIfRegexIsInParameters(
+        parameters: any,
+        regex: RegExp
+    ): boolean {
+        const type = typeof parameters;
+        if (type === 'string') {
+            if (regex.test(parameters)) {
+                return true;
+            }
+        } else if (type === 'object') {
+            // tslint:disable-next-line: forin
+            for (const property in parameters) {
+                const found = this.checkIfRegexIsInParameters(
+                    parameters[property],
+                    regex
+                );
+                if (found) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private generateIntegration(
         contentId: ContentId,
         parameters: ContentParameters,
@@ -197,11 +253,135 @@ export default class H5PPlayer {
             l10n: {
                 H5P: this.clientTranslation
             },
+            libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
             url: this.config.baseUrl,
             ...this.integrationObjectDefaults
         };
+    }
+
+    /**
+     * Finds out which adds should be added to the library due to the settings
+     * in the global configuration or in the library metadata.
+     * @param machineName the machine name of the library to which addons should
+     * be added
+     * @param installedAddons a list of installed addons on the system
+     * @returns the list of addons to install
+     */
+    private async getAddonsByLibrary(
+        machineName: string,
+        installedAddons: ILibraryMetadata[]
+    ): Promise<ILibraryMetadata[]> {
+        const neededAddons: ILibraryMetadata[] = [];
+        // add addons that are required by the H5P library metadata extension
+        for (const installedAddon of installedAddons) {
+            // The property addTo.player.machineNames is a custom
+            // h5p-nodejs-library extension.
+            if (
+                installedAddon.addTo?.player?.machineNames?.includes(
+                    machineName
+                ) ||
+                installedAddon.addTo?.player?.machineNames?.includes('*')
+            ) {
+                log.debug(
+                    `Addon ${LibraryName.toUberName(
+                        installedAddon
+                    )} will be added to the player.`
+                );
+                neededAddons.push(installedAddon);
+            }
+        }
+
+        // add addons that are required by the server configuration
+        const configRequestedAddons = [
+            ...(this.config.playerAddons?.[machineName] ?? []),
+            ...(this.config.playerAddons?.['*'] ?? [])
+        ];
+        for (const addonMachineName of configRequestedAddons) {
+            const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
+                [addonMachineName]
+            );
+            if (
+                !neededAddons
+                    .map((a) => a.machineName)
+                    .includes(addonMachineName) &&
+                installedAddonVersions[addonMachineName] !== undefined
+            ) {
+                log.debug(
+                    `Addon ${addonMachineName} will be added to the player.`
+                );
+
+                neededAddons.push(
+                    installedAddonVersions[addonMachineName].sort()[
+                        installedAddonVersions[addonMachineName].length - 1
+                    ]
+                );
+            }
+        }
+
+        return neededAddons;
+    }
+
+    /**
+     * Determines which addons should be used for the parameters. It will scan
+     * the parameters for patterns specified by installed addons.
+     * @param parameters the parameters to scan
+     * @param installedAddons a list of addons installed on the system
+     * @returns a list of addons that should be used
+     */
+    private async getAddonsByParameters(
+        parameters: any,
+        installedAddons: ILibraryMetadata[]
+    ): Promise<ILibraryMetadata[]> {
+        log.debug('Checking which of the addons must be used for the content.');
+        const addonsToAdd: { [key: string]: ILibraryMetadata } = {};
+        for (const installedAddon of installedAddons) {
+            if (!installedAddon.addTo?.content?.types) {
+                continue;
+            }
+
+            for (const types of installedAddon.addTo.content.types) {
+                if (types.text) {
+                    // The regex pattern in the metadata is specified like this:
+                    // /mypattern/ or /mypattern/g
+                    // Because of this we must extract the actual pattern and
+                    // the flags and pass them to the constructor of RegExp.
+                    const matches = /^\/(.+?)\/([gimy]+)?$/.exec(
+                        types.text.regex
+                    );
+                    if (matches.length < 1) {
+                        log.error(
+                            `The addon ${LibraryName.toUberName(
+                                installedAddon
+                            )} contains an invalid regexp pattern in the addTo selector: ${
+                                types.text.regex
+                            }. This will be silently ignored, but the addon will never be used!`
+                        );
+                        continue;
+                    }
+
+                    if (
+                        this.checkIfRegexIsInParameters(
+                            parameters,
+                            new RegExp(matches[1], matches[2])
+                        )
+                    ) {
+                        log.debug(
+                            `Adding addon ${LibraryName.toUberName(
+                                installedAddon
+                            )} to dependencies as the regexp pattern ${
+                                types.text.regex
+                            } was found in the parameters.`
+                        );
+                        addonsToAdd[
+                            installedAddon.machineName
+                        ] = installedAddon;
+                    }
+                }
+            }
+        }
+        return Object.values(addonsToAdd);
     }
 
     private getDownloadPath(contentId: ContentId): string {

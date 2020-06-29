@@ -140,9 +140,28 @@ const start = async () => {
         )
     );
 
+    // The LibraryAdministrationExpress routes are REST endpoints that offer library
+    // management functionality.
+    server.use(
+        `${h5pEditor.config.baseUrl}/libraries`,
+        H5P.adapters.LibraryAdministrationExpressRouter(h5pEditor)
+    );
+
+    // The ContentTypeCacheExpress routes are REST endpoints that allow updating
+    // the content type cache manually.
+    server.use(
+        `${h5pEditor.config.baseUrl}/content-type-cache`,
+        H5P.adapters.ContentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
+    );
+
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
+
+    server.use(
+        '/client',
+        express.static(path.resolve('build/examples/client'))
+    );
 
     const port = process.env.PORT || '8080';
 

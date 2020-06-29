@@ -42,17 +42,19 @@ export default class InstalledLibrary implements IInstalledLibrary {
     public preloadedCss?: IPath[];
     public preloadedDependencies?: ILibraryName[];
     public preloadedJs?: IPath[];
-    public runnable: boolean;
+    public runnable: boolean | 0 | 1;
     public title: string;
     public w?: number;
 
-    public static fromMetadata(metadata: ILibraryMetadata): InstalledLibrary {
+    public static fromMetadata(
+        metadata: ILibraryMetadata & { restricted?: boolean }
+    ): InstalledLibrary {
         return new InstalledLibrary(
             metadata.machineName,
             metadata.majorVersion,
             metadata.minorVersion,
             metadata.patchVersion,
-            undefined,
+            metadata.restricted,
             metadata
         );
     }
@@ -80,14 +82,21 @@ export default class InstalledLibrary implements IInstalledLibrary {
     }
 
     /**
-     * Compares libraries by giving precedence to major version, then minor version, then patch version.
+     * Compares libraries by giving precedence to major version, then minor version, then if present patch version.
      * @param otherLibrary
+     * @returns a negative value: if this library is older than the other library
+     * a positive value: if this library is newer than the other library
+     * zero: if both libraries are the same (or if it can't be determined, because the patch version is missing in the other library)
      */
-    public compareVersions(otherLibrary: IFullLibraryName): number {
+    public compareVersions(
+        otherLibrary: ILibraryName & { patchVersion?: number }
+    ): number {
         return (
             this.majorVersion - otherLibrary.majorVersion ||
             this.minorVersion - otherLibrary.minorVersion ||
-            this.patchVersion - otherLibrary.patchVersion
+            (otherLibrary.patchVersion !== undefined
+                ? this.patchVersion - otherLibrary.patchVersion
+                : 0)
         );
     }
 }

@@ -1,4 +1,3 @@
-import fileSystem from 'fs';
 import fsExtra, { ReadStream } from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
@@ -16,7 +15,7 @@ import {
     LibraryName
 } from '../../../src';
 import { checkFilename } from './filenameUtils';
-import { IFileStats } from '../../types';
+import { IFileStats, IAdditionalLibraryMetadata } from '../../types';
 
 /**
  * Stores libraries in a directory.
@@ -202,6 +201,77 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Counts how often libraries are listed in the dependencies of other
+     * libraries and returns a list of the number.
+     * @returns an object with ubernames as key.
+     * Example:
+     * {
+     *   'H5P.Example': 10
+     * }
+     * This means that H5P.Example is used by 10 other libraries.
+     */
+    public async getAllDependentsCount(): Promise<{
+        [ubername: string]: number;
+    }> {
+        const librariesNames = await this.getInstalledLibraryNames();
+        const librariesMetadata = await Promise.all(
+            librariesNames.map((lib) => this.getLibrary(lib))
+        );
+
+        // the metadata map allows faster access to libraries by ubername
+        const librariesMetadataMap: {
+            [ubername: string]: IInstalledLibrary;
+        } = librariesMetadata.reduce((prev, curr) => {
+            prev[LibraryName.toUberName(curr)] = curr;
+            return prev;
+        }, {});
+
+        // Remove circular dependencies caused by editor dependencies in
+        // content types like H5P.InteractiveVideo.
+        for (const libraryMetadata of librariesMetadata) {
+            for (const dependency of libraryMetadata.editorDependencies ?? []) {
+                const ubername = LibraryName.toUberName(dependency);
+                const index = librariesMetadataMap[
+                    ubername
+                ].preloadedDependencies?.findIndex((ln) =>
+                    LibraryName.equal(ln, libraryMetadata)
+                );
+                if (index >= 0) {
+                    librariesMetadataMap[ubername].preloadedDependencies.splice(
+                        index,
+                        1
+                    );
+                }
+            }
+        }
+
+        // Count dependencies
+        const dependencies = {};
+        for (const libraryMetadata of librariesMetadata) {
+            for (const dependency of (
+                libraryMetadata.preloadedDependencies ?? []
+            )
+                .concat(libraryMetadata.editorDependencies ?? [])
+                .concat(libraryMetadata.dynamicDependencies ?? [])) {
+                const ubername = LibraryName.toUberName(dependency);
+                dependencies[ubername] = (dependencies[ubername] ?? 0) + 1;
+            }
+        }
+
+        return dependencies;
+    }
+
+    /**
+     * Returns the number of libraries that depend on this (single) library.
+     * @param library the library to check
+     * @returns the number of libraries that depend on this library.
+     */
+    public async getDependentsCount(library: ILibraryName): Promise<number> {
+        const allDependencies = await this.getAllDependentsCount();
+        return allDependencies[LibraryName.toUberName(library)] ?? 0;
+    }
+
+    /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
@@ -317,12 +387,36 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Checks if a library is installed in the system.
+     * @param library the library to check
+     * @returns true if installed, false if not
+     */
+    public async isInstalled(library: ILibraryName): Promise<boolean> {
+        return fsExtra.pathExists(this.getFilePath(library, 'library.json'));
+    }
+
+    /**
      * Checks if the library has been installed.
      * @param name the library name
      * @returns true if the library has been installed
      */
     public async libraryExists(name: ILibraryName): Promise<boolean> {
         return fsExtra.pathExists(this.getDirectoryPath(name));
+    }
+
+    /**
+     * Returns a list of library addons that are installed in the system.
+     * Addons are libraries that have the property 'addTo' in their metadata.
+     */
+    public async listAddons(): Promise<ILibraryMetadata[]> {
+        const installedLibraries = await this.getInstalledLibraryNames();
+        return (
+            await Promise.all(
+                installedLibraries.map((addonName) =>
+                    this.getLibrary(addonName)
+                )
+            )
+        ).filter((library) => library.addTo !== undefined);
     }
 
     /**
@@ -338,10 +432,58 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Updates the additional metadata properties that is added to the
+     * stored libraries. This metadata can be used to customize behavior like
+     * restricting libraries to specific users.
+     * @param library the library for which the metadata should be updated
+     * @param additionalMetadata the metadata to update
+     * @returns true if the additionalMetadata object contained real changes
+     * and if they were successfully saved; false if there were not changes.
+     * Throws an error if saving was not possible.
+     */
+    public async updateAdditionalMetadata(
+        library: ILibraryName,
+        additionalMetadata: Partial<IAdditionalLibraryMetadata>
+    ): Promise<boolean> {
+        const metadata = await this.getLibrary(library);
+
+        // We set dirty to true if there is an actual update in the
+        // additional metadata.
+        let dirty = false;
+        for (const property of Object.keys(additionalMetadata)) {
+            if (additionalMetadata[property] !== metadata[property]) {
+                metadata[property] = additionalMetadata[property];
+                dirty = true;
+            }
+        }
+        if (!dirty) {
+            return false;
+        }
+
+        try {
+            await fsExtra.writeJSON(
+                this.getFilePath(library, 'library.json'),
+                metadata
+            );
+            return true;
+        } catch (error) {
+            throw new H5pError(
+                'storage-file-implementations:error-updating-metadata',
+                {
+                    library: LibraryName.toUberName(library),
+                    error: error.message
+                },
+                500
+            );
+        }
+    }
+
+    /**
      * Updates the library metadata.
      * This is necessary when updating to a new patch version.
-     * You also need to call clearFiles(...) to remove all old files during the update process and addFile(...)
-     * to add the files of the patch.
+     * You also need to call clearFiles(...) to remove all old files
+     * during the update process and addFile(...) to add the files of
+     * the patch.
      * @param libraryMetadata the new library metadata
      * @returns The updated library object
      */

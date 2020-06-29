@@ -1,4 +1,4 @@
-import { ReadStream, WriteStream } from 'fs';
+import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
 import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
@@ -35,26 +35,28 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IEditorModel,
     IH5PConfig,
     IHubInfo,
     IIntegration,
     IKeyValueStorage,
-    IEditorModel,
     ILibraryDetailedDataForClient,
     ILibraryInstallResult,
+    ILibraryMetadata,
     ILibraryName,
     ILibraryOverviewForClient,
     ILibraryStorage,
     ILumiEditorIntegration,
-    IUrlGenerator,
     ISemanticsEntry,
     ITemporaryFileStorage,
     ITranslationFunction,
+    IUrlGenerator,
     IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
+import DependencyGetter from './DependencyGetter';
 
 const log = new Logger('H5PEditor');
 
@@ -124,6 +126,7 @@ export default class H5PEditor {
             this.contentStorage
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
+        this.dependencyGetter = new DependencyGetter(libraryStorage);
     }
 
     public contentManager: ContentManager;
@@ -135,6 +138,7 @@ export default class H5PEditor {
 
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
+    private dependencyGetter: DependencyGetter;
     private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
@@ -578,10 +582,10 @@ export default class H5PEditor {
             );
         }
 
-        const h5pJson: IContentMetadata = await this.generateH5PJson(
+        const h5pJson: IContentMetadata = await this.generateContentMetadata(
             metadata,
             parsedLibraryName,
-            this.findLibraries(parameters)
+            this.findLibrariesInParameters(parameters)
         );
 
         const newContentId = await this.contentStorer.addOrUpdateContent(
@@ -665,15 +669,24 @@ export default class H5PEditor {
      * returns the actual content information for the editor to process.
      * Throws errors if something goes wrong.
      * @param data the raw data of the h5p package as a buffer
-     * @returns the content information extracted from the package
+     * @param user the user who is uploading the package; optional if onlyInstallLibraries
+     * is set to true
+     * @param options (optional) further options:
+     * @param onlyInstallLibraries true if content should be disregarded
+     * @returns the content information extracted from the package. The metadata
+     * and parameters property will be undefined if onlyInstallLibraries was set
+     * to true.
      */
     public async uploadPackage(
         data: Buffer,
-        user: IUser
+        user?: IUser,
+        options?: {
+            onlyInstallLibraries?: boolean;
+        }
     ): Promise<{
         installedLibraries: ILibraryInstallResult[];
-        metadata: IContentMetadata;
-        parameters: any;
+        metadata?: IContentMetadata;
+        parameters?: any;
     }> {
         log.info(`uploading package`);
         const dataStream: any = new PassThrough();
@@ -681,8 +694,8 @@ export default class H5PEditor {
 
         let returnValues: {
             installedLibraries: ILibraryInstallResult[];
-            metadata: IContentMetadata;
-            parameters: any;
+            metadata?: IContentMetadata;
+            parameters?: any;
         };
 
         await withFile(
@@ -694,10 +707,18 @@ export default class H5PEditor {
                     throw new H5pError('upload-package-failed-tmp');
                 }
 
-                returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
-                    tempPackagePath,
-                    user
-                );
+                if (options?.onlyInstallLibraries) {
+                    returnValues = {
+                        installedLibraries: await this.packageImporter.installLibrariesFromPackage(
+                            tempPackagePath
+                        )
+                    };
+                } else {
+                    returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
+                        tempPackagePath,
+                        user
+                    );
+                }
             },
             { postfix: '.h5p', keep: false }
         );
@@ -727,25 +748,65 @@ export default class H5PEditor {
         return filename;
     }
 
-    private findLibraries(object: any, collect: any = {}): ILibraryName[] {
-        if (typeof object !== 'object') {
+    /**
+     * Recursively crawls through the parameters and finds usages of libraries.
+     * @param parameters the parameters to scan
+     * @param collect a collecting object used by the recursion. Do not use
+     * @returns a list of libraries that are referenced in the parameters
+     */
+    private findLibrariesInParameters(
+        parameters: any,
+        collect: any = {}
+    ): ILibraryName[] {
+        if (typeof parameters !== 'object') {
             return collect;
         }
 
-        Object.keys(object).forEach((key: string) => {
-            if (key === 'library' && typeof object[key] === 'string') {
-                if (object[key].match(/.+ \d+\.\d+/)) {
-                    collect[object[key]] = LibraryName.fromUberName(
-                        object[key],
-                        { useWhitespace: true }
+        Object.keys(parameters).forEach((key: string) => {
+            if (key === 'library' && typeof parameters[key] === 'string') {
+                if (parameters[key].match(/.+ \d+\.\d+/)) {
+                    collect[parameters[key]] = LibraryName.fromUberName(
+                        parameters[key],
+                        {
+                            useWhitespace: true
+                        }
                     );
                 }
             } else {
-                this.findLibraries(object[key], collect);
+                this.findLibrariesInParameters(parameters[key], collect);
             }
         });
 
         return Object.values(collect);
+    }
+
+    private async generateContentMetadata(
+        metadata: IContentMetadata,
+        mainLibrary: ILibraryName,
+        contentDependencies: ILibraryName[] = []
+    ): Promise<IContentMetadata> {
+        log.info(`generating h5p.json`);
+
+        const mainLibraryMetadata = await this.libraryManager.getLibrary(
+            mainLibrary
+        );
+        const newMetadata: IContentMetadata = new ContentMetadata(
+            metadata,
+            { mainLibrary: mainLibraryMetadata.machineName },
+            {
+                preloadedDependencies: [
+                    ...(await this.dependencyGetter.getDependentLibraries(
+                        [...contentDependencies, mainLibrary],
+                        {
+                            preloaded: true
+                        },
+                        [mainLibrary]
+                    )),
+                    mainLibrary
+                ]
+            }
+        );
+        return newMetadata;
     }
 
     private generateEditorIntegration(
@@ -778,32 +839,6 @@ export default class H5PEditor {
         };
     }
 
-    private async generateH5PJson(
-        metadata: IContentMetadata,
-        libraryName: ILibraryName,
-        contentDependencies: ILibraryName[] = []
-    ): Promise<IContentMetadata> {
-        log.info(`generating h5p.json`);
-
-        const library = await this.libraryManager.getLibrary(libraryName);
-        const h5pJson: IContentMetadata = new ContentMetadata(
-            metadata,
-            { mainLibrary: library.machineName },
-            {
-                preloadedDependencies: [
-                    ...contentDependencies,
-                    ...(library.preloadedDependencies || []), // empty array should preloadedDependencies be undefined
-                    {
-                        machineName: library.machineName,
-                        majorVersion: library.majorVersion,
-                        minorVersion: library.minorVersion
-                    }
-                ]
-            }
-        );
-        return h5pJson;
-    }
-
     private generateIntegration(
         contentId: ContentId,
         language: string
@@ -823,14 +858,78 @@ export default class H5PEditor {
                     true
                 )
             },
+            libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
+            libraryUrl: this.urlGenerator.coreFile('js'),
+            pluginCacheBuster: '', // TODO make dynamic
             url: this.config.baseUrl,
             user: {
                 mail: '',
                 name: ''
             }
         };
+    }
+
+    /**
+     * Returns a list of addons that should be used for the library
+     * @param machineName the library identified by its machine name
+     * @returns a list of addons
+     */
+    private async getAddonsForLibrary(
+        machineName: string
+    ): Promise<ILibraryMetadata[]> {
+        log.debug('Getting list of installed addons.');
+        const installedAddons = await this.libraryManager.listAddons();
+
+        const neededAddons: ILibraryMetadata[] = [];
+        // add addons that are required by the H5P library metadata extension
+        for (const installedAddon of installedAddons) {
+            // The property addTo.editor.machineNames is a custom
+            // h5p-nodejs-library extension.
+            if (
+                installedAddon.addTo?.editor?.machineNames?.includes(
+                    machineName
+                ) ||
+                installedAddon.addTo?.editor?.machineNames?.includes('*')
+            ) {
+                log.debug(
+                    `Addon ${LibraryName.toUberName(
+                        installedAddon
+                    )} will be added to the editor.`
+                );
+                neededAddons.push(installedAddon);
+            }
+        }
+        // add addons that are required by the server configuration
+        const configRequestedAddons = [
+            ...(this.config.editorAddons?.[machineName] ?? []),
+            ...(this.config.editorAddons?.['*'] ?? [])
+        ];
+
+        for (const addonMachineName of configRequestedAddons) {
+            const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
+                [addonMachineName]
+            );
+            if (
+                !neededAddons
+                    .map((a) => a.machineName)
+                    .includes(addonMachineName) &&
+                installedAddonVersions[addonMachineName] !== undefined
+            ) {
+                log.debug(
+                    `Addon ${addonMachineName} will be added to the editor.`
+                );
+
+                neededAddons.push(
+                    installedAddonVersions[addonMachineName].sort()[
+                        installedAddonVersions[addonMachineName].length - 1
+                    ]
+                );
+            }
+        }
+
+        return neededAddons;
     }
 
     /**
@@ -878,6 +977,11 @@ export default class H5PEditor {
             this.libraryManager.getLibrary(libraryName),
             this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
+
+        const addonsForLibrary = await this.getAddonsForLibrary(
+            library.machineName
+        );
+
         const combinedDependencies = await Promise.all([
             this.resolveDependencies(
                 library.preloadedDependencies || [],
@@ -888,7 +992,10 @@ export default class H5PEditor {
                 library.editorDependencies || [],
                 language,
                 loaded
-            )
+            ),
+            addonsForLibrary
+                ? this.resolveDependencies(addonsForLibrary, language, loaded)
+                : undefined
         ]);
         combinedDependencies.forEach((dependencies) =>
             dependencies.forEach((dependency) => {
