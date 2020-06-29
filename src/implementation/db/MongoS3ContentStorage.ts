@@ -584,8 +584,8 @@ export default class MongoS3ContentStorage implements IContentStorage {
             this.mongodb.countDocuments({
                 $and: [
                     {
-                        mainLibraryUbername: {
-                            $ne: LibraryName.toUberName(library)
+                        'metadata.mainLibrary': {
+                            $ne: library.machineName
                         }
                     },
                     {

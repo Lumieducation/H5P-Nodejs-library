@@ -20,7 +20,13 @@ describe('MongoS3ContentStorage', () => {
         embedTypes: ['div'],
         language: 'en',
         mainLibrary: 'H5P.Test',
-        preloadedDependencies: [],
+        preloadedDependencies: [
+            {
+                machineName: 'H5P.Test',
+                majorVersion: 1,
+                minorVersion: 0
+            }
+        ],
         title: 'Title'
     };
     const stubParameters = {
@@ -401,5 +407,65 @@ describe('MongoS3ContentStorage', () => {
         ).rejects.toThrowError(
             'mongo-s3-content-storage:missing-write-permission'
         );
+    });
+
+    describe('getUsage', () => {
+        it(`doesn't count main libraries as dependencies`, async () => {
+            await storage.addContent(stubMetadata, stubParameters, new User());
+            await storage.addContent(stubMetadata, stubParameters, new User());
+
+            const { asDependency, asMainLibrary } = await storage.getUsage({
+                machineName: 'H5P.Test',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+
+            expect(asMainLibrary).toEqual(2);
+            expect(asDependency).toEqual(0);
+        });
+
+        it(`counts dependent libraries`, async () => {
+            await storage.addContent(
+                {
+                    ...stubMetadata,
+                    mainLibrary: 'H5P.Test2',
+                    preloadedDependencies: [
+                        {
+                            machineName: 'H5P.Test',
+                            majorVersion: 1,
+                            minorVersion: 0
+                        },
+                        {
+                            machineName: 'H5P.Test2',
+                            majorVersion: 1,
+                            minorVersion: 0
+                        }
+                    ]
+                },
+                stubParameters,
+                new User()
+            );
+            await storage.addContent(stubMetadata, stubParameters, new User());
+
+            const { asDependency, asMainLibrary } = await storage.getUsage({
+                machineName: 'H5P.Test',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+            expect(asMainLibrary).toEqual(1);
+            expect(asDependency).toEqual(1);
+
+            const {
+                asDependency: asDependency2,
+                asMainLibrary: asMainLibrary2
+            } = await storage.getUsage({
+                machineName: 'H5P.Test2',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+
+            expect(asMainLibrary2).toEqual(1);
+            expect(asDependency2).toEqual(0);
+        });
     });
 });
