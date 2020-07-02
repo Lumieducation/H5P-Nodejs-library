@@ -294,7 +294,7 @@ export default class ContentStorer {
                     }
                 }
             } finally {
-                if (readStream.close) {
+                if (readStream?.close) {
                     readStream.close();
                 }
             }
