@@ -293,6 +293,10 @@ export default class ContentStorer {
                         );
                     }
                 }
+            } catch (error) {
+                log.error(
+                    `There was an error while copying file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
+                );
             } finally {
                 if (readStream?.close) {
                     readStream.close();
