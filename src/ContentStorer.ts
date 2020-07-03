@@ -78,8 +78,10 @@ export default class ContentStorer {
         );
 
         // All files added to the piece of content during the editor session are only stored
-        // in temporary storage. We need to copy them over from there.
-        await this.copyFilesFromTemporaryStorage(
+        // in temporary storage. We need to copy them over from there. In some
+        // edge cases this might involve changing the paths of the filenames
+        // in the parameters, so we set the dirty flag accordingly.
+        let dirty = await this.copyFilesFromTemporaryStorage(
             filesToCopyFromTemporaryStorage,
             user,
             newContentId,
@@ -89,15 +91,18 @@ export default class ContentStorer {
         );
 
         // We copy over files that were pasted from another piece of content. This might requires changing the paths
-        // in the parameters, so we have to update them.
-        // TODO: In the future we might want to avoid updating content right after it was saved.
-        if (
-            await this.copyFilesFromPasteSource(
+        // in the parameters, so we have to update them by setting the dirty flag.
+        dirty =
+            (await this.copyFilesFromPasteSource(
                 fileReferencesInNewParams,
                 user,
                 newContentId
-            )
-        ) {
+            )) || dirty;
+
+        // If any paths to files were changed before (dirty === true), we have
+        // to save the content once more.
+        // TODO: In the future we might want to avoid updating content right after it was saved.
+        if (dirty) {
             await this.contentManager.createOrUpdateContent(
                 metadata,
                 parameters,
@@ -255,18 +260,21 @@ export default class ContentStorer {
      * @param user the user who is saving the content
      * @param contentId the content id of the object
      * @param deleteTemporaryFiles true if temporary files should be deleted after copying
+     * @returns true if paths were updated in the parameters and the content
+     * parameters must be saved again
      */
     private async copyFilesFromTemporaryStorage(
-        files: string[],
+        files: IFileReference[],
         user: IUser,
         contentId: string,
         deleteTemporaryFiles: boolean
-    ): Promise<void> {
+    ): Promise<boolean> {
+        let dirty = false;
         for (const fileToCopy of files) {
-            let readStream;
+            let readable;
             try {
-                readStream = await this.temporaryFileManager.getFileStream(
-                    fileToCopy,
+                readable = await this.temporaryFileManager.getFileStream(
+                    fileToCopy.filePath,
                     user
                 );
             } catch (error) {
@@ -276,33 +284,36 @@ export default class ContentStorer {
                 );
             }
             try {
-                if (readStream !== undefined) {
+                if (readable !== undefined) {
                     log.debug(
                         `Adding temporary file ${fileToCopy} to content id ${contentId}`
                     );
                     await this.contentManager.addContentFile(
                         contentId,
-                        fileToCopy,
-                        readStream,
+                        fileToCopy.filePath,
+                        readable,
                         user
                     );
                     if (deleteTemporaryFiles) {
                         await this.temporaryFileManager.deleteFile(
-                            fileToCopy,
+                            fileToCopy.filePath,
                             user
                         );
                     }
                 }
             } catch (error) {
                 log.error(
-                    `There was an error while copying file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
+                    `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
                 );
+                fileToCopy.context.params.path = '';
+                dirty = true;
             } finally {
-                if (readStream?.close) {
-                    readStream.close();
+                if (readable?.close) {
+                    readable.close();
                 }
             }
         }
+        return dirty;
     }
 
     /**
@@ -344,8 +355,8 @@ export default class ContentStorer {
     private async determineFilesToCopyFromTemporaryStorage(
         fileReferencesInNewParams: IFileReference[],
         oldFiles: string[]
-    ): Promise<string[]> {
-        const filesToCopyFromTemporaryStorage: string[] = [];
+    ): Promise<IFileReference[]> {
+        const filesToCopyFromTemporaryStorage: IFileReference[] = [];
 
         for (const ref of fileReferencesInNewParams) {
             // We mark the file to be copied over from temporary storage if the file has a temporary marker.
@@ -353,7 +364,7 @@ export default class ContentStorer {
                 // We only save temporary file for later copying, however, if the there isn't already a file
                 // with the exact name. This might be the case if the user presses "save" twice.
                 if (!oldFiles.some((f) => f === ref.filePath)) {
-                    filesToCopyFromTemporaryStorage.push(ref.filePath);
+                    filesToCopyFromTemporaryStorage.push(ref);
                 }
                 // remove temporary file marker from parameters
                 ref.context.params.path = ref.filePath;
