@@ -1,12 +1,13 @@
 import * as express from 'express';
-import { H5PEditor, LibraryName, H5pError } from '../..';
+import { H5PEditor, LibraryName, H5pError, ContentId } from '../..';
 import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
 import {
     IFileStats,
     IRequestWithUser,
-    IRequestWithTranslator
+    IRequestWithTranslator,
+    IUser
 } from '../../types';
 
 interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
@@ -72,12 +73,19 @@ export default class H5PAjaxExpressController {
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const stream = await this.h5pEditor.getContentFileStream(
+        const stats = await this.h5pEditor.contentStorage.getFileStats(
             req.params.id,
             req.params.file,
             req.user
         );
-        this.pipeStreamToResponse(req.params.file, stream, res, null);
+        return this.abstractGetContentFile(
+            req.params.id,
+            req.params.file,
+            req.user,
+            stats,
+            req,
+            res
+        );
     };
 
     public getContentParameters = async (
@@ -113,19 +121,25 @@ export default class H5PAjaxExpressController {
             this.h5pEditor.getLibraryFileStream(lib, req.params.file)
         ]);
 
-        this.pipeStreamToResponse(req.params.file, stream, res, stats);
+        this.pipeStreamToResponse(req.params.file, stream, res, stats.size);
     };
 
     public getTemporaryContentFile = async (
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const stream = await this.h5pEditor.getContentFileStream(
-            undefined,
+        const stats = await this.h5pEditor.temporaryStorage.getFileStats(
             req.params.file,
             req.user
         );
-        this.pipeStreamToResponse(req.params.file, stream, res);
+        return this.abstractGetContentFile(
+            undefined,
+            req.params.file,
+            req.user,
+            stats,
+            req,
+            res
+        );
     };
 
     /**
@@ -319,17 +333,92 @@ export default class H5PAjaxExpressController {
         }
     };
 
+    /**
+     * Unified handling of range requests for getContentFile and
+     * getTemporaryContentFile.
+     * @param contentId (optional) the contentId, can be undefined if a
+     * temporary file is requested
+     */
+    private async abstractGetContentFile(
+        contentId: ContentId,
+        file: string,
+        user: IUser,
+        stats: IFileStats,
+        req: express.Request,
+        res: express.Response
+    ): Promise<void> {
+        const range = req.range(stats.size);
+        let start: number;
+        let end: number;
+        if (range) {
+            if (range === -2) {
+                throw new H5pError('malformed-request', {}, 400);
+            }
+            if (range === -1) {
+                throw new H5pError('unsatisfiable-range', {}, 416);
+            }
+            if (range.length > 1) {
+                throw new H5pError('multipart-ranges-unsupported', {}, 400);
+            }
+            start = range[0].start;
+            end = range[0].end;
+        }
+
+        const stream = await this.h5pEditor.getContentFileStream(
+            contentId,
+            file,
+            user,
+            start,
+            end
+        );
+        if (range) {
+            this.pipeStreamToPartialResponse(
+                req.params.file,
+                stream,
+                res,
+                stats.size,
+                start,
+                end
+            );
+        } else {
+            this.pipeStreamToResponse(req.params.file, stream, res, stats.size);
+        }
+    }
+
+    private pipeStreamToPartialResponse = (
+        filename: string,
+        readStream: Readable,
+        response: express.Response,
+        totalLength: number,
+        start: number,
+        end: number
+    ) => {
+        const contentType = mimeLookup(filename) || 'application/octet-stream';
+
+        response.writeHead(206, {
+            'Content-Type': contentType,
+            'Content-Length': end - start + 1,
+            'Content-Range': `bytes ${start}-${end}/${totalLength}`
+        });
+
+        readStream.on('error', (err) => {
+            response.status(404).end();
+        });
+        readStream.pipe(response);
+    };
+
     private pipeStreamToResponse = (
         filename: string,
         readStream: Readable,
         response: express.Response,
-        stats?: IFileStats
+        contentLength?: number
     ) => {
         const contentType = mimeLookup(filename) || 'application/octet-stream';
-        if (stats) {
+        if (contentLength) {
             response.writeHead(200, {
                 'Content-Type': contentType,
-                'Content-Length': stats.size
+                'Content-Length': contentLength,
+                'Accept-Ranges': 'bytes'
             });
         } else {
             response.type(contentType);

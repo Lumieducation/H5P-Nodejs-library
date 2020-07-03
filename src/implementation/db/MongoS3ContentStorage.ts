@@ -459,7 +459,9 @@ export default class MongoS3ContentStorage implements IContentStorage {
     public async getFileStream(
         contentId: ContentId,
         filename: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<Readable> {
         log.debug(
             `Getting stream for file "${filename}" in content ${contentId}.`
@@ -493,7 +495,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
         return this.s3
             .getObject({
                 Bucket: this.options.s3Bucket,
-                Key: MongoS3ContentStorage.getS3Key(contentId, filename)
+                Key: MongoS3ContentStorage.getS3Key(contentId, filename),
+                Range:
+                    rangeStart && rangeEnd
+                        ? `bytes=${rangeStart}-${rangeEnd}`
+                        : undefined
             })
             .createReadStream();
     }

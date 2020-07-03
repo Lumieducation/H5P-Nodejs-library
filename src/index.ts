@@ -36,7 +36,8 @@ import {
     IRequestWithLanguage,
     IRequestWithTranslator,
     Permission,
-    ILibraryAdministrationOverviewItem
+    ILibraryAdministrationOverviewItem,
+    IFileStats
 } from './types';
 
 // Adapters
@@ -92,6 +93,7 @@ export {
     IRequestWithLanguage,
     IRequestWithTranslator,
     Permission,
+    IFileStats,
     // implementations
     H5PConfig,
     fs,

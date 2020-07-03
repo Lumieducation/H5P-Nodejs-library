@@ -8,7 +8,8 @@ import {
     H5pError,
     ITemporaryFile,
     ITemporaryFileStorage,
-    IUser
+    IUser,
+    IFileStats
 } from '../../../src';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
 
@@ -78,9 +79,29 @@ export default class DirectoryTemporaryFileStorage
         return fsExtra.pathExists(filePath);
     }
 
-    public async getFileStream(
+    public async getFileStats(
         filename: string,
         user: IUser
+    ): Promise<IFileStats> {
+        if (!(await this.fileExists(filename, user))) {
+            throw new H5pError(
+                'storage-file-implementations:temporary-file-not-found',
+                {
+                    filename,
+                    userId: user.id
+                },
+                404
+            );
+        }
+        const filePath = this.getAbsoluteFilePath(user.id, filename);
+        return fsExtra.stat(filePath);
+    }
+
+    public async getFileStream(
+        filename: string,
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<ReadStream> {
         checkFilename(filename);
         checkFilename(user.id);
@@ -92,7 +113,10 @@ export default class DirectoryTemporaryFileStorage
                 404
             );
         }
-        return fsExtra.createReadStream(filePath);
+        return fsExtra.createReadStream(filePath, {
+            start: rangeStart,
+            end: rangeEnd
+        });
     }
 
     public async listFiles(user?: IUser): Promise<ITemporaryFile[]> {

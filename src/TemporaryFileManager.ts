@@ -99,14 +99,18 @@ export default class TemporaryFileManager {
      * Make sure to close this stream. Otherwise the temporary files can't be deleted properly!
      * @param filename the file to get
      * @param user the user who requests the file
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      * @returns a stream to read from
      */
     public async getFileStream(
         filename: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<Readable> {
         log.info(`Getting temporary file ${filename}`);
-        return this.storage.getFileStream(filename, user);
+        return this.storage.getFileStream(filename, user, rangeStart, rangeEnd);
     }
 
     /**

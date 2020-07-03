@@ -213,12 +213,16 @@ export default class H5PEditor {
      * @param contentId the content id (undefined if retrieved for unsaved content)
      * @param filename the file to get (without 'content/' prefix!)
      * @param user the user who wants to retrieve the file
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      * @returns a stream of the content file
      */
     public async getContentFileStream(
         contentId: ContentId,
         filename: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<Readable> {
         // We have to try the regular content repository first and then fall back to the temporary storage.
         // This is necessary as the H5P client ignores the '#tmp' suffix we've added to temporary files.
@@ -228,7 +232,9 @@ export default class H5PEditor {
                 const returnStream = await this.contentManager.getContentFileStream(
                     contentId,
                     filename,
-                    user
+                    user,
+                    rangeStart,
+                    rangeEnd
                 );
                 return returnStream;
             } catch (error) {
@@ -237,7 +243,12 @@ export default class H5PEditor {
                 );
             }
         }
-        return this.temporaryFileManager.getFileStream(filename, user);
+        return this.temporaryFileManager.getFileStream(
+            filename,
+            user,
+            rangeStart,
+            rangeEnd
+        );
     }
 
     /**
