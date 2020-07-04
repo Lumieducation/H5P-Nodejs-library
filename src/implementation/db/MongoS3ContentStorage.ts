@@ -437,12 +437,43 @@ export default class MongoS3ContentStorage implements IContentStorage {
      * @param user the user who wants to retrieve the content file
      * @returns
      */
-    getFileStats(
+    public async getFileStats(
         contentId: string,
-        file: string,
+        filename: string,
         user: IUser
     ): Promise<IFileStats> {
-        return null;
+        validateFilename(filename);
+
+        if (
+            !(await this.getUserPermissions(contentId, user)).includes(
+                Permission.View
+            )
+        ) {
+            log.error(
+                `User tried to get stats of file from a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-s3-content-storage:missing-view-permission',
+                {},
+                403
+            );
+        }
+
+        try {
+            const head = await this.s3
+                .headObject({
+                    Bucket: this.options.s3Bucket,
+                    Key: MongoS3ContentStorage.getS3Key(contentId, filename)
+                })
+                .promise();
+            return { size: head.ContentLength, birthtime: head.LastModified };
+        } catch (error) {
+            throw new H5pError(
+                'content-file-missing',
+                { filename, contentId },
+                404
+            );
+        }
     }
 
     /**

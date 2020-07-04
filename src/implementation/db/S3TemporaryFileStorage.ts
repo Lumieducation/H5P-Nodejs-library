@@ -181,7 +181,34 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         filename: string,
         user: IUser
     ): Promise<IFileStats> {
-        return undefined;
+        validateFilename(filename);
+
+        if (
+            !(await this.getUserPermissions(user.id, filename)).includes(
+                Permission.View
+            )
+        ) {
+            log.error(
+                `User tried to get stats of a content object without proper permissions.`
+            );
+            throw new H5pError(
+                's3-temporary-storage:missing-view-permission',
+                {},
+                403
+            );
+        }
+
+        try {
+            const head = await this.s3
+                .headObject({
+                    Bucket: this.options.s3Bucket,
+                    Key: filename
+                })
+                .promise();
+            return { size: head.ContentLength, birthtime: head.LastModified };
+        } catch (error) {
+            throw new H5pError('file-not-found', {}, 404);
+        }
     }
 
     /**
