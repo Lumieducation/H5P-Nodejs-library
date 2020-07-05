@@ -83,7 +83,7 @@ jobs:
     db-tests:
         docker:
             - image: circleci/node:10
-            - image: circleci/mongo:latest-ram
+            - image: circleci/mongo:latest
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
                   MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
