@@ -32,7 +32,7 @@ describe('MongoS3ContentStorage', () => {
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
-            endpoint: 'http://127.0.0.1:9000',
+            endpoint: 'http://localhost:9000',
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });

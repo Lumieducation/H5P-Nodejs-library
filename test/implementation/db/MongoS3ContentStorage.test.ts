@@ -56,11 +56,11 @@ describe('MongoS3ContentStorage', () => {
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
-            endpoint: 'http://127.0.0.1:9000',
+            endpoint: 'http://localhost:9000',
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
-        mongoClient = await mongodb.connect('mongodb://127.0.0.1:27017', {
+        mongoClient = await mongodb.connect('mongodb://localhost:27017', {
             auth: {
                 user: 'root',
                 password: 'h5pnodejs'
@@ -278,6 +278,9 @@ describe('MongoS3ContentStorage', () => {
             fsExtra.createReadStream(stubImagePath),
             stubUser
         );
+        // It looks like it can take some time until a file is reachable in
+        // minio, so we wait a bit.
+        await new Promise((resolve) => setTimeout(resolve, 200));
         expect(
             s3
                 .headObject({

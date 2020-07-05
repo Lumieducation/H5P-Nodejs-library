@@ -80,6 +80,24 @@ jobs:
                   at: .
             - run: npm run test:e2e
 
+    db-tests:
+        docker:
+            - image: circleci/node:10
+            - image: circleci/mongo:latest-ram
+              environment:
+                  MONGO_INITDB_ROOT_USERNAME: root
+                  MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
+            - image: minio/minio
+              environment:
+                  MINIO_ACCESS_KEY: minioaccesskey
+                  MINIO_SECRET_KEY: miniosecret
+              command: server /data
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: npm run test:db
+
     release:
         docker:
             - image: 'circleci/node:10'
@@ -112,6 +130,9 @@ workflows:
             - integration-tests:
                   requires:
                       - install-build
+            - db-tests:
+                  requires:
+                      - install-build
             - release:
                   requires:
                       - install-build
@@ -120,3 +141,4 @@ workflows:
                       - unit-tests
                       - e2e-tests
                       - integration-tests
+                      - db-tests
