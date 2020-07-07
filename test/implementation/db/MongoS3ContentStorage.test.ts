@@ -64,7 +64,9 @@ describe('MongoS3ContentStorage', () => {
             auth: {
                 user: 'root',
                 password: 'h5pnodejs'
-            }
+            },
+            ignoreUndefined: true,
+            useUnifiedTopology: true
         });
         mongo = mongoClient.db('h5pintegrationtest');
     });
@@ -195,7 +197,7 @@ describe('MongoS3ContentStorage', () => {
         expect(list).toMatchObject([contentId1, contentId2, contentId3]);
     });
 
-    it('adds files and returns stream to them', async () => {
+    it('adds files, returns its size and a stream to them', async () => {
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -214,6 +216,14 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.fileExists(contentId, filename)).resolves.toEqual(
             true
         );
+
+        const fsStats = await fsExtra.stat(stubJsonPath);
+        const s3Stats = await storage.getFileStats(
+            contentId,
+            filename,
+            stubUser
+        );
+        expect(s3Stats.size).toEqual(fsStats.size);
 
         const returnedStream = await storage.getFileStream(
             contentId,
