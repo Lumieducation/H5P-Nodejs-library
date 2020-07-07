@@ -52,5 +52,7 @@
     "updated-libraries_plural": "Updated {{count}} old libraries.",
     "updated-libraries": "Updated {{count}} old library.",
     "upload-package-failed-tmp": "Could not save uploaded package to temporary file.",
-    "upload-validation-error": "The file you've uploaded is invalid."
+    "upload-validation-error": "The file you've uploaded is invalid.",
+    "unsatisfiable-range": "The requested range of the file is not within the size of the actual file.",
+    "multipart-ranges-unsupported": "Multipart range requests are not supported on this server."
 }

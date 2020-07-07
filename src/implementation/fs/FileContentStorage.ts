@@ -290,12 +290,16 @@ export default class FileContentStorage implements IContentStorage {
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      * @returns
      */
     public async getFileStream(
         id: ContentId,
         filename: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<ReadStream> {
         if (!(await this.fileExists(id, filename))) {
             throw new H5pError(
@@ -305,7 +309,11 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
         return fsExtra.createReadStream(
-            path.join(this.getContentPath(), id.toString(), filename)
+            path.join(this.getContentPath(), id.toString(), filename),
+            {
+                start: rangeStart,
+                end: rangeEnd
+            }
         );
     }
 

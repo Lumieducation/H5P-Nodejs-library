@@ -56,15 +56,17 @@ describe('MongoS3ContentStorage', () => {
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
-            endpoint: 'http://127.0.0.1:9000',
+            endpoint: 'http://localhost:9000',
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
-        mongoClient = await mongodb.connect('mongodb://127.0.0.1:27017', {
+        mongoClient = await mongodb.connect('mongodb://localhost:27017', {
             auth: {
                 user: 'root',
                 password: 'h5pnodejs'
-            }
+            },
+            ignoreUndefined: true,
+            useUnifiedTopology: true
         });
         mongo = mongoClient.db('h5pintegrationtest');
     });
@@ -195,7 +197,7 @@ describe('MongoS3ContentStorage', () => {
         expect(list).toMatchObject([contentId1, contentId2, contentId3]);
     });
 
-    it('adds files and returns stream to them', async () => {
+    it('adds files, returns its size and a stream to them', async () => {
         const contentId = await storage.addContent(
             stubMetadata,
             stubParameters,
@@ -214,6 +216,14 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.fileExists(contentId, filename)).resolves.toEqual(
             true
         );
+
+        const fsStats = await fsExtra.stat(stubJsonPath);
+        const s3Stats = await storage.getFileStats(
+            contentId,
+            filename,
+            stubUser
+        );
+        expect(s3Stats.size).toEqual(fsStats.size);
 
         const returnedStream = await storage.getFileStream(
             contentId,
@@ -278,6 +288,9 @@ describe('MongoS3ContentStorage', () => {
             fsExtra.createReadStream(stubImagePath),
             stubUser
         );
+        // It looks like it can take some time until a file is reachable in
+        // minio, so we wait a bit.
+        await new Promise((resolve) => setTimeout(resolve, 200));
         expect(
             s3
                 .headObject({

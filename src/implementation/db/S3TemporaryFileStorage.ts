@@ -5,7 +5,8 @@ import {
     IUser,
     ITemporaryFile,
     Permission,
-    IH5PConfig
+    IH5PConfig,
+    IFileStats
 } from '../../types';
 import { ReadStream } from 'fs';
 import { validateFilename, sanitizeFilename } from './S3Utils';
@@ -170,6 +171,47 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     }
 
     /**
+     * Returns a information about a temporary file.
+     * Throws an exception if the file does not exist.
+     * @param filename the relative path inside the library
+     * @param user the user who wants to access the file
+     * @returns the file stats
+     */
+    public async getFileStats(
+        filename: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        validateFilename(filename);
+
+        if (
+            !(await this.getUserPermissions(user.id, filename)).includes(
+                Permission.View
+            )
+        ) {
+            log.error(
+                `User tried to get stats of a content object without proper permissions.`
+            );
+            throw new H5pError(
+                's3-temporary-storage:missing-view-permission',
+                {},
+                403
+            );
+        }
+
+        try {
+            const head = await this.s3
+                .headObject({
+                    Bucket: this.options.s3Bucket,
+                    Key: filename
+                })
+                .promise();
+            return { size: head.ContentLength, birthtime: head.LastModified };
+        } catch (error) {
+            throw new H5pError('file-not-found', {}, 404);
+        }
+    }
+
+    /**
      * Returns a readable for a file.
      *
      * Note: Make sure to handle the 'error' event of the Readable! This method
@@ -178,10 +220,14 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * to the response if the file doesn't exist!
      * @param filename
      * @param user
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      */
     public async getFileStream(
         filename: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<Readable> {
         log.debug(`Getting stream for temporary file "${filename}".`);
         validateFilename(filename);
@@ -209,7 +255,11 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         return this.s3
             .getObject({
                 Bucket: this.options?.s3Bucket,
-                Key: filename
+                Key: filename,
+                Range:
+                    rangeStart && rangeEnd
+                        ? `bytes=${rangeStart}-${rangeEnd}`
+                        : undefined
             })
             .createReadStream();
     }

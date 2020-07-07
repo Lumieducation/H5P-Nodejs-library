@@ -32,7 +32,7 @@ describe('MongoS3ContentStorage', () => {
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
-            endpoint: 'http://127.0.0.1:9000',
+            endpoint: 'http://localhost:9000',
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
@@ -88,7 +88,7 @@ describe('MongoS3ContentStorage', () => {
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(4);
     });
 
-    it('adds files and returns stream to them', async () => {
+    it('adds files and returns stats and stream to them', async () => {
         const filename = 'testfile1.jpg';
         await expect(storage.fileExists(filename, stubUser)).resolves.toEqual(
             false
@@ -102,6 +102,10 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.fileExists(filename, stubUser)).resolves.toEqual(
             true
         );
+
+        const fsStats = await fsExtra.stat(stubImagePath);
+        const s3Stats = await storage.getFileStats(filename, stubUser);
+        expect(s3Stats.size).toEqual(fsStats.size);
 
         const returnedStream = await storage.getFileStream(filename, stubUser);
 

@@ -601,12 +601,16 @@ export interface IContentStorage {
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user who wants to retrieve the content file
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      * @returns the stream (that can be used to send the file to the user)
      */
     getFileStream(
         contentId: ContentId,
         file: string,
-        user: IUser
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
     ): Promise<Readable>;
 
     /**
@@ -1483,13 +1487,29 @@ export interface ITemporaryFileStorage {
     fileExists(filename: string, user: IUser): Promise<boolean>;
 
     /**
+     * Returns a information about a temporary file.
+     * Throws an exception if the file does not exist.
+     * @param filename the relative path inside the library
+     * @param user the user who wants to access the file
+     * @returns the file stats
+     */
+    getFileStats(filename: string, user: IUser): Promise<IFileStats>;
+
+    /**
      * Returns the contents of a file.
      * Must check for access permissions and throw an H5PError if a file is not accessible.
      * @param filename the filename; can be a path including subdirectories (e.g. 'images/xyz.png')
      * @param user the user who accesses the file
+     * @param rangeStart (optional) the position in bytes at which the stream should start
+     * @param rangeEnd (optional) the position in bytes at which the stream should end
      * @returns the stream containing the file's content
      */
-    getFileStream(filename: string, user: IUser): Promise<Readable>;
+    getFileStream(
+        filename: string,
+        user: IUser,
+        rangeStart?: number,
+        rangeEnd?: number
+    ): Promise<Readable>;
 
     /**
      * Returns a list of files in temporary storage for the specified user.
