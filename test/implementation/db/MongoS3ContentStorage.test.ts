@@ -274,7 +274,7 @@ describe('MongoS3ContentStorage', () => {
             stubUser
         );
         const filename = 'testfile1.jpg';
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -282,16 +282,14 @@ describe('MongoS3ContentStorage', () => {
                 })
                 .promise()
         ).rejects.toThrow();
+
         await storage.addFile(
             contentId,
             filename,
             fsExtra.createReadStream(stubImagePath),
             stubUser
         );
-        // It looks like it can take some time until a file is reachable in
-        // minio, so we wait a bit.
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -304,7 +302,7 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.fileExists(contentId, filename)).resolves.toEqual(
             false
         );
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -321,7 +319,7 @@ describe('MongoS3ContentStorage', () => {
             stubUser
         );
         const filename = 'testfile1.jpg';
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -335,7 +333,7 @@ describe('MongoS3ContentStorage', () => {
             fsExtra.createReadStream(stubImagePath),
             stubUser
         );
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -345,7 +343,7 @@ describe('MongoS3ContentStorage', () => {
         ).resolves.toBeDefined();
 
         await storage.deleteContent(contentId);
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -390,7 +388,7 @@ describe('MongoS3ContentStorage', () => {
             '|'
         ];
         for (const illegalCharacter of illegalCharacters) {
-            expect(
+            await expect(
                 storage.addFile(
                     contentId,
                     illegalCharacter,
@@ -399,11 +397,11 @@ describe('MongoS3ContentStorage', () => {
                 )
             ).rejects.toThrowError('illegal-filename');
         }
-        expect(
+        await expect(
             storage.addFile(contentId, '../../bin/bash', undefined, stubUser)
         ).rejects.toThrowError('illegal-filename');
 
-        expect(
+        await expect(
             storage.addFile(contentId, '/bin/bash', undefined, stubUser)
         ).rejects.toThrowError('illegal-filename');
     });
