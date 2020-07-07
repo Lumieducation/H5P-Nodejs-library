@@ -46,6 +46,7 @@ import { errorHandler } from './adapters/expressErrorHandler';
 import expressController from './adapters/H5PAjaxRouter/H5PAjaxExpressController';
 import LibraryAdministrationExpressRouter from './adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
 import ContentTypeCacheExpressRouter from './adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
+import LibraryAdministration from './LibraryAdministration';
 
 const adapters = {
     express,
@@ -71,6 +72,7 @@ export {
     InstalledLibrary,
     LibraryName,
     PackageExporter,
+    LibraryAdministration,
     // interfaces
     ContentId,
     ContentParameters,
