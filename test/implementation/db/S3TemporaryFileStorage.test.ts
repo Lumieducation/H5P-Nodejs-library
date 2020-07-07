@@ -16,7 +16,7 @@ import { emptyAndDeleteBucket } from './s3-utils';
 import S3TemporaryFileStorage from '../../../src/implementation/db/S3TemporaryFileStorage';
 import { H5PConfig } from '../../../src';
 
-describe('MongoS3ContentStorage', () => {
+describe('S3TemporaryFileStorage', () => {
     const stubUser = new User();
     const stubImagePath = path.resolve(
         'test/data/sample-content/content/earth.jpg'
@@ -120,7 +120,7 @@ describe('MongoS3ContentStorage', () => {
     // We need to look into this.
     it('deletes added files from S3', async () => {
         const filename = 'testfile1.jpg';
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -136,7 +136,7 @@ describe('MongoS3ContentStorage', () => {
             new Date()
         );
 
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -149,7 +149,7 @@ describe('MongoS3ContentStorage', () => {
         await expect(storage.fileExists(filename, stubUser)).resolves.toEqual(
             false
         );
-        expect(
+        await expect(
             s3
                 .headObject({
                     Bucket: bucketName,
@@ -188,7 +188,7 @@ describe('MongoS3ContentStorage', () => {
             '|'
         ];
         for (const illegalCharacter of illegalCharacters) {
-            expect(
+            await expect(
                 storage.saveFile(
                     illegalCharacter,
                     undefined,
@@ -197,11 +197,11 @@ describe('MongoS3ContentStorage', () => {
                 )
             ).rejects.toThrowError('illegal-filename');
         }
-        expect(
+        await expect(
             storage.saveFile('../../bin/bash', undefined, stubUser, new Date())
         ).rejects.toThrowError('illegal-filename');
 
-        expect(
+        await expect(
             storage.saveFile('/bin/bash', undefined, stubUser, new Date())
         ).rejects.toThrowError('illegal-filename');
     });
