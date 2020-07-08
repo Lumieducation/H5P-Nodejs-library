@@ -123,7 +123,8 @@ export default class H5PEditor {
         );
         this.packageExporter = new PackageExporter(
             this.libraryStorage,
-            this.contentStorage
+            this.contentStorage,
+            config
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);

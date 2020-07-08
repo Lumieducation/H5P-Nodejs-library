@@ -40,7 +40,8 @@ export async function importAndExportPackage(
 
             const packageExporter = new PackageExporter(
                 libraryStorage,
-                contentStorage
+                contentStorage,
+                { exportMaxContentPathLength: 255 }
             );
             const contentId = (
                 await packageImporter.addPackageLibrariesAndContent(

@@ -1334,6 +1334,11 @@ export interface IH5PConfig {
      */
     enableLrsContentTypes: boolean;
     /**
+     * The maximum character count of paths of content files allowed when
+     * exporting h5p packages. If files would be longer, paths are shortened.
+     */
+    exportMaxContentPathLength: number;
+    /**
      * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
      * User-configurable.
      */
