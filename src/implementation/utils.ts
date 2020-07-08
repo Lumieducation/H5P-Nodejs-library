@@ -1,4 +1,4 @@
-import path from 'path';
+import upath from 'upath';
 
 /**
  * Sanitizes a filename. Removes invalid characters and shortens to the max
@@ -21,9 +21,9 @@ export function generalizedSanitizeFilename(
 
     // Should the filename only contain the extension now (because all
     // characters of the basename were invalid), we add a generic filename.
-    let extension = path.extname(cleanedFilename);
-    let basename = path.basename(cleanedFilename, extension);
-    const dirname = path.dirname(cleanedFilename);
+    let extension = upath.extname(cleanedFilename);
+    let basename = upath.basename(cleanedFilename, extension);
+    const dirname = upath.dirname(cleanedFilename);
     if (extension === '') {
         extension = basename;
         basename = 'file';
