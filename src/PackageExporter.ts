@@ -272,7 +272,8 @@ export default class PackageExporter {
                         generalizedSanitizeFilename(
                             filenameToCheck,
                             new RegExp(''),
-                            maxFilenameLength - 9
+                            maxFilenameLength - 17 // 9 for shortid and and 8
+                            // for content/ prefix of path in package
                         ),
                     async (fileToCheck) => usedFilenames[fileToCheck]
                 );

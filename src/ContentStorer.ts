@@ -1,6 +1,5 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
-import shortid from 'shortid';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';

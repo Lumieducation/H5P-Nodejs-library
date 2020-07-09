@@ -14,7 +14,8 @@ import PackageImporter from '../src/PackageImporter';
 import User from '../examples/User';
 
 export async function importAndExportPackage(
-    packagePath: string
+    packagePath: string,
+    exportMaxContentPathLength: number = 255
 ): Promise<void> {
     await withDir(
         async ({ path: tmpDirPath }) => {
@@ -41,7 +42,7 @@ export async function importAndExportPackage(
             const packageExporter = new PackageExporter(
                 libraryStorage,
                 contentStorage,
-                { exportMaxContentPathLength: 255 }
+                { exportMaxContentPathLength }
             );
             const contentId = (
                 await packageImporter.addPackageLibrariesAndContent(
@@ -80,7 +81,15 @@ export async function importAndExportPackage(
                                 .map((e) => e.fileName)
                                 .sort();
 
-                            expect(newEntries).toMatchObject(oldEntries);
+                            if (exportMaxContentPathLength === 255) {
+                                expect(newEntries).toMatchObject(oldEntries);
+                            } else {
+                                for (const newEntry of newEntries) {
+                                    expect(newEntry.length).toBeLessThanOrEqual(
+                                        exportMaxContentPathLength
+                                    );
+                                }
+                            }
 
                             resolve();
                         });
@@ -96,6 +105,15 @@ describe('PackageExporter', () => {
     it('creates h5p packages', async () => {
         await importAndExportPackage(
             path.resolve('test/data/validator/valid2.h5p')
+        );
+    });
+
+    it('shortens long filenames', async () => {
+        await importAndExportPackage(
+            path.resolve(
+                'test/data/PackageExporter/long_content_file_name.h5p'
+            ),
+            50
         );
     });
 });

@@ -1,6 +1,6 @@
 import { ReadStream } from 'fs';
 import path from 'path';
-import shortid from 'shortid';
+import { nanoid } from 'nanoid';
 import { Readable } from 'stream';
 
 import H5pError from './helpers/H5pError';
@@ -139,7 +139,7 @@ export default class TemporaryFileManager {
             }${path.basename(
                 cleanedFilename,
                 path.extname(cleanedFilename)
-            )}-${shortid()}${path.extname(cleanedFilename)}`;
+            )}-${nanoid(8)}${path.extname(cleanedFilename)}`;
             exists = await this.storage.fileExists(filenameAttempt, user);
             attempts += 1;
         } while (attempts < 5 && exists); // only try 5 times

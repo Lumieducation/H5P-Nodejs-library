@@ -1,10 +1,15 @@
-import shortid from 'shortid';
+import { customAlphabet } from 'nanoid';
 import upath from 'upath';
 
 import Logger from './Logger';
 import H5pError from './H5pError';
 
 const log = new Logger('FilenameGenerator');
+
+const idCharacters =
+    '1234567890abcdefghjiklmnoprstuvwxyABCDEFGHJIKLMNOPRSTUVWYXZ';
+const nanoid = customAlphabet(idCharacters, 8);
+const idRegex = new RegExp(`[${idCharacters}]+`);
 
 /**
  * Generates a unique filename. Removes short-ids that were added to filenames
@@ -21,7 +26,7 @@ export default async (
     let actualFilename = filename;
     // remove already assigned shortids
     const match = filename.match(/^(.+?)-([^/]+?)(\.\w+)$/);
-    if (match && shortid.isValid(match[2])) {
+    if (match && idRegex.test(match[2])) {
         actualFilename = match[1] + match[3];
         log.debug(`Actual filename is ${actualFilename}.`);
     }
@@ -36,7 +41,7 @@ export default async (
         filenameAttempt = `${dirname ? `${dirname}/` : ''}${upath.basename(
             actualFilename,
             upath.extname(actualFilename)
-        )}-${shortid()}${upath.extname(actualFilename)}`;
+        )}-${nanoid()}${upath.extname(actualFilename)}`;
         log.debug(`Checking if ${filenameAttempt} already exists`);
         exists = await checkIfFileExists(filenameAttempt);
         attempts += 1;
