@@ -35,7 +35,7 @@ export default class PackageExporter {
         { exportMaxContentPathLength }: { exportMaxContentPathLength: number }
     ) {
         log.info(`initialize`);
-        this.maxContentPathLength = exportMaxContentPathLength;
+        this.maxContentPathLength = exportMaxContentPathLength ?? 255;
     }
 
     private maxContentPathLength: number;
@@ -252,6 +252,9 @@ export default class PackageExporter {
         maxFilenameLength: number
     ): Promise<{ [oldPath: string]: string }> {
         const substitutions: { [oldPath: string]: string } = {};
+
+        // usedFilenames keeps track of filenames that are used in the package
+        // to avoid duplicate filenames
         const usedFilenames: { [filename: string]: boolean } = {};
 
         const contentScanner = new ContentFileScanner(
