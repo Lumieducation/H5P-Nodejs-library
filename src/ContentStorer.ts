@@ -1,6 +1,5 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
-import shortid from 'shortid';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
@@ -15,6 +14,7 @@ import {
     ILibraryName,
     IUser
 } from './types';
+import generateFilename from './helpers/FilenameGenerator';
 
 const log = new Logger('ContentStorer');
 
@@ -407,46 +407,19 @@ export default class ContentStorer {
      * @param filename the filename on which to base the unique filename on
      * @returns a unique filename (within the content object)
      */
-    private async getUniqueFilename(
+    private getUniqueFilename = (
         contentId: ContentId,
         filename: string
-    ): Promise<string> {
-        log.debug(`Getting unique name for ${filename}.`);
-        let actualFilename = filename;
-        // remove already assigned shortids
-        const match = filename.match(/^(.+?)-(.+?)(\.\w+)$/);
-        if (match && shortid.isValid(match[2])) {
-            actualFilename = match[1] + match[3];
-            log.debug(`Actual filename is ${actualFilename}.`);
-        }
-
-        // try newly generated filenames
-        let attempts = 0;
-        let filenameAttempt = '';
-        let exists = false;
-        actualFilename = this.contentManager.sanitizeFilename(actualFilename);
-        const dirname = path.dirname(actualFilename);
-        do {
-            filenameAttempt = `${dirname ? `${dirname}/` : ''}${path.basename(
-                actualFilename,
-                path.extname(actualFilename)
-            )}-${shortid()}${path.extname(actualFilename)}`;
-            log.debug(`Checking if ${filenameAttempt} already exists`);
-            exists = await this.contentManager.contentFileExists(
-                contentId,
-                filenameAttempt
-            );
-            attempts += 1;
-        } while (attempts < 5 && exists); // only try 5 times
-        if (exists) {
-            log.error(`Cannot determine a unique filename for ${filename}`);
-            throw new H5pError(
-                'error-generating-unique-content-filename',
-                { filename },
-                500
-            );
-        }
-        log.debug(`Unique filename is ${filenameAttempt}`);
-        return filenameAttempt;
-    }
+    ): Promise<string> => {
+        return generateFilename(
+            filename,
+            this.contentManager.sanitizeFilename,
+            async (filenameToCheck) => {
+                return this.contentManager.contentFileExists(
+                    contentId,
+                    filenameToCheck
+                );
+            }
+        );
+    };
 }

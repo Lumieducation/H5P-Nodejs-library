@@ -1,5 +1,6 @@
 import { Writable, Readable } from 'stream';
 import yazl from 'yazl';
+import upath from 'upath';
 
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
@@ -12,8 +13,12 @@ import {
     IUser,
     Permission
 } from './types';
-
+import { ContentFileScanner } from './ContentFileScanner';
 import Logger from './helpers/Logger';
+import LibraryManager from './LibraryManager';
+import generateFilename from './helpers/FilenameGenerator';
+import { generalizedSanitizeFilename } from './implementation/utils';
+
 const log = new Logger('PackageExporter');
 
 /**
@@ -26,10 +31,14 @@ export default class PackageExporter {
      */
     constructor(
         private libraryStorage: ILibraryStorage,
-        private contentStorage: IContentStorage = null
+        private contentStorage: IContentStorage = null,
+        { exportMaxContentPathLength }: { exportMaxContentPathLength: number }
     ) {
         log.info(`initialize`);
+        this.maxContentPathLength = exportMaxContentPathLength ?? 255;
     }
+
+    private maxContentPathLength: number;
 
     /**
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
@@ -49,20 +58,37 @@ export default class PackageExporter {
         const outputZipFile = new yazl.ZipFile();
         outputZipFile.outputStream.pipe(outputStream);
 
-        // add json files
-        const contentStream = await this.createContentFileStream(
+        // get content data
+        const parameters = await this.contentStorage.getParameters(
             contentId,
             user
         );
-        outputZipFile.addReadStream(contentStream, 'content/content.json');
         const { metadata, metadataStream } = await this.getMetadata(
             contentId,
             user
         );
+
+        // check if filenames are too long and shorten them in the parameters
+        // if necessary; the substitutions that took place are returned and
+        // later used to change the paths inside the zip archive
+        const substitutions = await this.shortenFilenames(
+            parameters,
+            metadata,
+            this.maxContentPathLength
+        );
+
+        // add json files
+        const contentStream = await this.createContentFileStream(parameters);
+        outputZipFile.addReadStream(contentStream, 'content/content.json');
         outputZipFile.addReadStream(metadataStream, 'h5p.json');
 
         // add content file (= files in content directory)
-        await this.addContentFiles(contentId, user, outputZipFile);
+        await this.addContentFiles(
+            contentId,
+            user,
+            outputZipFile,
+            substitutions
+        );
 
         // add library files
         await this.addLibraryFiles(metadata, outputZipFile);
@@ -73,11 +99,18 @@ export default class PackageExporter {
 
     /**
      * Adds the files inside the content directory to the zip file. Does not include content.json!
+     * @param contentId the contentId of the content
+     * @param user the user who wants to export
+     * @param outputZipFile the file to write to
+     * @param pathSubstitutions list of unix (!) paths to files whose paths were
+     * changed in the parameters; this means the paths in the zip file must
+     * be changed accordingly
      */
     private async addContentFiles(
         contentId: ContentId,
         user: IUser,
-        outputZipFile: yazl.ZipFile
+        outputZipFile: yazl.ZipFile,
+        pathSubstitutions: { [oldPath: string]: string }
     ): Promise<void> {
         log.info(`adding content files to ${contentId}`);
         const contentFiles = await this.contentStorage.listFiles(
@@ -92,7 +125,9 @@ export default class PackageExporter {
                     contentFile,
                     user
                 ),
-                `content/${contentFile}`
+                `content/${
+                    pathSubstitutions[upath.toUnix(contentFile)] ?? contentFile
+                }`
             );
         }
     }
@@ -159,21 +194,14 @@ export default class PackageExporter {
     /**
      * Creates a readable stream for the content.json file
      */
-    private async createContentFileStream(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Readable> {
+    private async createContentFileStream(parameters: any): Promise<Readable> {
         let contentStream: Readable;
         try {
-            const content = await this.contentStorage.getParameters(
-                contentId,
-                user
-            );
             contentStream = new Readable();
             contentStream._read = () => {
                 return;
             };
-            contentStream.push(JSON.stringify(content));
+            contentStream.push(JSON.stringify(parameters));
             contentStream.push(null);
         } catch (error) {
             throw new H5pError('download-content-unreadable-data');
@@ -203,5 +231,62 @@ export default class PackageExporter {
         }
 
         return { metadata, metadataStream };
+    }
+
+    /**
+     * Scans the parameters of the piece of content and looks for paths that are
+     * longed than the specified max length. If this happens the filenames are
+     * shortened in the parameters and the substitution is returned in the
+     * substitution list
+     * @param parameters the parameters to scan; IMPORTANT: The parameters are
+     * mutated by this method!!!
+     * @param metadata the metadata of the piece of content
+     * @param maxFilenameLength the maximum acceptable filename length
+     * @returns an object whose keys are old paths and values the new paths to
+     * be used instead; IMPORTANT: All paths are unix paths using slashes as
+     * directory separators!
+     */
+    private async shortenFilenames(
+        parameters: any,
+        metadata: IContentMetadata,
+        maxFilenameLength: number
+    ): Promise<{ [oldPath: string]: string }> {
+        const substitutions: { [oldPath: string]: string } = {};
+
+        // usedFilenames keeps track of filenames that are used in the package
+        // to avoid duplicate filenames
+        const usedFilenames: { [filename: string]: boolean } = {};
+
+        const contentScanner = new ContentFileScanner(
+            new LibraryManager(this.libraryStorage)
+        );
+        const files = await contentScanner.scanForFiles(
+            parameters,
+            metadata.preloadedDependencies.find(
+                (dep) => dep.machineName === metadata.mainLibrary
+            )
+        );
+
+        for (const file of files) {
+            if (file.filePath.length >= maxFilenameLength) {
+                const newFilename = await generateFilename(
+                    file.filePath,
+                    (filenameToCheck) =>
+                        generalizedSanitizeFilename(
+                            filenameToCheck,
+                            new RegExp(''),
+                            maxFilenameLength - 17 // 9 for shortid and and 8
+                            // for content/ prefix of path in package
+                        ),
+                    async (fileToCheck) => usedFilenames[fileToCheck]
+                );
+                substitutions[file.filePath] = newFilename;
+                file.context.params.path = newFilename;
+                usedFilenames[newFilename] = true;
+            } else {
+                usedFilenames[file.filePath] = true;
+            }
+        }
+        return substitutions;
     }
 }

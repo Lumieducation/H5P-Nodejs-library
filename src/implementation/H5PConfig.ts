@@ -38,6 +38,7 @@ export default class H5PConfig implements IH5PConfig {
     };
     public editorLibraryUrl: string = '/editor';
     public enableLrsContentTypes: boolean = true;
+    public exportMaxContentPathLength: number = 255;
     public fetchingDisabled: 0 | 1 = 0;
     public h5pVersion: string = '1.24.0';
     public hubContentTypesEndpoint: string =
@@ -86,6 +87,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
+        await this.loadSettingFromStorage('exportMaxContentPathLength');
         return this;
     }
 
@@ -108,6 +110,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
+        await this.saveSettingToStorage('exportMaxContentPathLength');
     }
 
     /**

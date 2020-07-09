@@ -64,12 +64,12 @@ export default class ContentManager {
      * @param filename the filename of the file to get
      * @returns true if the file exists
      */
-    public async contentFileExists(
+    public contentFileExists = async (
         contentId: ContentId,
         filename: string
-    ): Promise<boolean> {
+    ): Promise<boolean> => {
         return this.contentStorage.fileExists(contentId, filename);
-    }
+    };
 
     /**
      * Adds content from a H5P package (in a temporary directory) to the installation.
@@ -271,10 +271,10 @@ export default class ContentManager {
         return this.contentStorage.listFiles(contentId, user);
     }
 
-    public sanitizeFilename(filename: string): string {
+    public sanitizeFilename = (filename: string): string => {
         if (this.contentStorage.sanitizeFilename) {
             return this.contentStorage.sanitizeFilename(filename);
         }
         return filename;
-    }
+    };
 }
