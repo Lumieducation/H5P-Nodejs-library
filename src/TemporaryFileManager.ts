@@ -94,6 +94,16 @@ export default class TemporaryFileManager {
     }
 
     /**
+     * Checks if a file exists in temporary storage.
+     * @param filename the filename to check; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param user the user for who to check
+     * @returns true if file already exists
+     */
+    public async fileExists(filename: string, user: IUser): Promise<boolean> {
+        return this.storage.fileExists(filename, user);
+    }
+
+    /**
      * Returns a file stream for temporary file.
      * Will throw H5PError if the file doesn't exist or the user has no access permissions!
      * Make sure to close this stream. Otherwise the temporary files can't be deleted properly!
