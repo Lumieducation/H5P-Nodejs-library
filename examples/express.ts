@@ -88,7 +88,7 @@ const start = async () => {
     );
     server.use(
         fileUpload({
-            limits: { fileSize: h5pEditor.config.maxFileSize }
+            limits: { fileSize: h5pEditor.config.maxTotalSize }
         })
     );
 

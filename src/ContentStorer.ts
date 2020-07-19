@@ -3,7 +3,6 @@ import path from 'path';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
-import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import TemporaryFileManager from './TemporaryFileManager';
@@ -159,7 +158,10 @@ export default class ContentStorer {
                 'content',
                 reference.filePath
             );
+            // If the file referenced in the parameters isn't included in the
+            // package, we remove the reference.
             if (!(await fsExtra.pathExists(filepath))) {
+                reference.context.params.path = '';
                 continue;
             }
             const readStream = fsExtra.createReadStream(filepath);
