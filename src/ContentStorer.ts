@@ -274,45 +274,62 @@ export default class ContentStorer {
         let dirty = false;
         for (const fileToCopy of files) {
             let readable;
-            try {
-                readable = await this.temporaryFileManager.getFileStream(
+            let removeReference = false;
+            if (
+                await this.temporaryFileManager.fileExists(
                     fileToCopy.filePath,
                     user
-                );
-            } catch (error) {
-                // We just log this error and continue.
-                log.error(
-                    `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
-                );
-            }
-            try {
-                if (readable !== undefined) {
-                    log.debug(
-                        `Adding temporary file ${fileToCopy} to content id ${contentId}`
-                    );
-                    await this.contentManager.addContentFile(
-                        contentId,
+                )
+            ) {
+                try {
+                    readable = await this.temporaryFileManager.getFileStream(
                         fileToCopy.filePath,
-                        readable,
                         user
                     );
-                    if (deleteTemporaryFiles) {
-                        await this.temporaryFileManager.deleteFile(
+                } catch (error) {
+                    // We just log this error and continue.
+                    log.error(
+                        `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
+                    );
+                    removeReference = true;
+                }
+                try {
+                    if (readable !== undefined) {
+                        log.debug(
+                            `Adding temporary file ${fileToCopy} to content id ${contentId}`
+                        );
+                        await this.contentManager.addContentFile(
+                            contentId,
                             fileToCopy.filePath,
+                            readable,
                             user
                         );
+                        if (deleteTemporaryFiles) {
+                            await this.temporaryFileManager.deleteFile(
+                                fileToCopy.filePath,
+                                user
+                            );
+                        }
+                    }
+                } catch (error) {
+                    log.error(
+                        `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
+                    );
+                    removeReference = true;
+                } finally {
+                    if (readable?.close) {
+                        readable.close();
                     }
                 }
-            } catch (error) {
+            } else {
                 log.error(
-                    `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
+                    `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: The file does not exist in temporary storage. Ignoring and continuing.`
                 );
+                removeReference = true;
+            }
+            if (removeReference) {
                 fileToCopy.context.params.path = '';
                 dirty = true;
-            } finally {
-                if (readable?.close) {
-                    readable.close();
-                }
             }
         }
         return dirty;
