@@ -194,6 +194,10 @@ DEBUG=h5p:* LOG_LEVEL=debug node script.js
 
 Check out the many other npm scripts in [package.json](package.json) for other development functionality.
 
+### Compliance and privacy
+
+To conform with local law, you probably have to compile a privacy declaration for your application. You can check out the [documentation page on privacy](docs/privacy.md) to find out what this library does with your users' personal data.
+
 ## Contributing
 
 Lumi tries to improve education wherever it is possible by providing a software that connects teachers with their students. Every help is appreciated and welcome.

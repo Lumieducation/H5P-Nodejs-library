@@ -8,7 +8,9 @@ You can find it at
 [/src/implementation/db/S3TemporaryFileStorage.ts](/src/implementation/db/S3TemporaryFileStorage.ts).
 
 **Note:** You must create the S3 bucket manually before it can be used by
-`S3TemporaryFileStorage`!
+`S3TemporaryFileStorage`! **It's also your responsibility to configure the
+bucket to automatically delete old temporary files after a sensible timespan
+(e.g. 1 day).**
 
 ## Dependencies
 
