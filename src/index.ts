@@ -32,9 +32,6 @@ import {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUser,
-    IRequestWithUser,
-    IRequestWithLanguage,
-    IRequestWithTranslator,
     Permission,
     ILibraryAdministrationOverviewItem,
     IFileStats
@@ -78,9 +75,6 @@ export {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUser,
-    IRequestWithUser,
-    IRequestWithLanguage,
-    IRequestWithTranslator,
     Permission,
     IFileStats,
     // implementations
