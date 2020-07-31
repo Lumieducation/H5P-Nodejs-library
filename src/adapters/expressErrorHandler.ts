@@ -2,7 +2,7 @@ import AggregateH5pError from '../helpers/AggregateH5pError';
 import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
 import H5pError from '../helpers/H5pError';
 import { Request, Response, NextFunction } from 'express';
-import { IRequestWithTranslator } from '../';
+import { IRequestWithTranslator } from './expressTypes';
 
 export function undefinedOrTrue(option: boolean): boolean {
     return option === undefined || option;

@@ -3,12 +3,8 @@ import { H5PEditor, LibraryName, H5pError, ContentId } from '../..';
 import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
-import {
-    IFileStats,
-    IRequestWithUser,
-    IRequestWithTranslator,
-    IUser
-} from '../../types';
+import { IFileStats, IUser } from '../../types';
+import { IRequestWithUser, IRequestWithTranslator } from '../expressTypes';
 
 interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
     files: {

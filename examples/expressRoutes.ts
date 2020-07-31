@@ -1,6 +1,10 @@
 import express from 'express';
 
 import * as H5P from '../src';
+import {
+    IRequestWithUser,
+    IRequestWithLanguage
+} from '../src/adapters/expressTypes';
 
 /**
  * @param h5pEditor
@@ -26,21 +30,18 @@ export default function (
         }
     });
 
-    router.get(
-        '/edit/:contentId',
-        async (req: H5P.IRequestWithLanguage, res) => {
-            const page = await h5pEditor.render(
-                req.params.contentId,
-                languageOverride === 'auto'
-                    ? req.language ?? 'en'
-                    : languageOverride
-            );
-            res.send(page);
-            res.status(200).end();
-        }
-    );
+    router.get('/edit/:contentId', async (req: IRequestWithLanguage, res) => {
+        const page = await h5pEditor.render(
+            req.params.contentId,
+            languageOverride === 'auto'
+                ? req.language ?? 'en'
+                : languageOverride
+        );
+        res.send(page);
+        res.status(200).end();
+    });
 
-    router.post('/edit/:contentId', async (req: H5P.IRequestWithUser, res) => {
+    router.post('/edit/:contentId', async (req: IRequestWithUser, res) => {
         const contentId = await h5pEditor.saveOrUpdateContent(
             req.params.contentId.toString(),
             req.body.params.params,
@@ -53,7 +54,7 @@ export default function (
         res.status(200).end();
     });
 
-    router.get('/new', async (req: H5P.IRequestWithLanguage, res) => {
+    router.get('/new', async (req: IRequestWithLanguage, res) => {
         const page = await h5pEditor.render(
             undefined,
             languageOverride === 'auto'
@@ -64,7 +65,7 @@ export default function (
         res.status(200).end();
     });
 
-    router.post('/new', async (req: H5P.IRequestWithUser, res) => {
+    router.post('/new', async (req: IRequestWithUser, res) => {
         if (
             !req.body.params ||
             !req.body.params.params ||
@@ -87,7 +88,7 @@ export default function (
         res.status(200).end();
     });
 
-    router.get('/delete/:contentId', async (req: H5P.IRequestWithUser, res) => {
+    router.get('/delete/:contentId', async (req: IRequestWithUser, res) => {
         try {
             await h5pEditor.deleteContent(req.params.contentId, req.user);
         } catch (error) {
