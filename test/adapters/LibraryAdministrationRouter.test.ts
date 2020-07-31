@@ -12,6 +12,7 @@ import User from '../../examples/User';
 import * as H5P from '../../src';
 import { ILibraryAdministrationOverviewItem } from '../../src/types';
 import LibraryName from '../../src/LibraryName';
+import LibraryAdministrationExpressRouter from '../../src/adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
 
 const axiosMock = new axiosMockAdapter(axios);
 
@@ -75,7 +76,7 @@ describe('Express Library Administration endpoint adapter', () => {
             req.t = (id, replacements) => id;
             next();
         });
-        app.use(H5P.adapters.LibraryAdministrationExpressRouter(h5pEditor));
+        app.use(LibraryAdministrationExpressRouter(h5pEditor));
     });
 
     afterEach(async () => {

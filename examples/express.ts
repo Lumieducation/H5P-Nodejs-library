@@ -6,6 +6,10 @@ import i18nextHttpMiddleware from 'i18next-http-middleware';
 import i18nextFsBackend from 'i18next-fs-backend';
 import path from 'path';
 
+import h5pAjaxExpressRouter from '../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
+import libraryAdministrationExpressRouter from '../src/adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
+import contentTypeCacheExpressRouter from '../src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
+
 import * as H5P from '../src';
 import expressRoutes from './expressRoutes';
 import startPageRenderer from './startPageRenderer';
@@ -113,7 +117,7 @@ const start = async () => {
     // object, which means we get all of them.
     server.use(
         h5pEditor.config.baseUrl,
-        H5P.adapters.express(
+        h5pAjaxExpressRouter(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the files of the JavaScript client of the player are stored
             path.resolve('h5p/editor'), // the path on the local disc where the files of the JavaScript client of the editor are stored
@@ -144,14 +148,14 @@ const start = async () => {
     // management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
-        H5P.adapters.LibraryAdministrationExpressRouter(h5pEditor)
+        libraryAdministrationExpressRouter(h5pEditor)
     );
 
     // The ContentTypeCacheExpress routes are REST endpoints that allow updating
     // the content type cache manually.
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
-        H5P.adapters.ContentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
+        contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
     // The startPageRenderer displays a list of content objects and shows

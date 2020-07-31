@@ -9,6 +9,7 @@ import supertest from 'supertest';
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
+import ContentTypeCacheExpressRouter from '../../src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 
 const axiosMock = new axiosMockAdapter(axios);
 
@@ -72,11 +73,7 @@ describe('Content Type Cache endpoint adapter', () => {
             req.t = (id, replacements) => id;
             next();
         });
-        app.use(
-            H5P.adapters.ContentTypeCacheExpressRouter(
-                h5pEditor.contentTypeCache
-            )
-        );
+        app.use(ContentTypeCacheExpressRouter(h5pEditor.contentTypeCache));
     });
 
     afterEach(async () => {
