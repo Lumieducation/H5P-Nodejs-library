@@ -9,6 +9,7 @@ import { dir } from 'tmp-promise';
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
+import H5PAjaxExpressRouter from '../../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
 
 const axiosMock = new axiosMockAdapter(axios);
 interface RequestEx extends express.Request {
@@ -69,7 +70,7 @@ describe('Express Ajax endpoint adapter', () => {
             next();
         });
         app.use(
-            H5P.adapters.express(
+            H5PAjaxExpressRouter(
                 h5pEditor,
                 path.resolve(path.join(tempDir, 'core')), // the path on the local disc where the files of the JavaScript client of the player are stored
                 path.resolve(path.join(tempDir, 'editor')) // the path on the local disc where the files of the JavaScript client of the editor are stored
