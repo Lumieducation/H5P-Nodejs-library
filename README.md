@@ -150,6 +150,10 @@ This library supports localization. See the [respective documentation page](/doc
 
 An application using h5p-nodejs-library can customize the way H5P behaves in several ways. See [the documentation page on customization](/docs/customization.md) for more details.
 
+### Compliance and privacy
+
+To conform with local law, you probably have to compile a privacy declaration for your application. You can check out the [documentation page on privacy](docs/privacy.md) to find out what this library does with your users' personal data.
+
 ## Development & Testing
 
 ### Prerequisites
@@ -193,10 +197,6 @@ DEBUG=h5p:* LOG_LEVEL=debug node script.js
 ### Other scripts
 
 Check out the many other npm scripts in [package.json](package.json) for other development functionality.
-
-### Compliance and privacy
-
-To conform with local law, you probably have to compile a privacy declaration for your application. You can check out the [documentation page on privacy](docs/privacy.md) to find out what this library does with your users' personal data.
 
 ## Contributing
 

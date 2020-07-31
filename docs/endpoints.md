@@ -2,13 +2,29 @@
 
 ## Handling requests with the Express adapter
 
-Your implementation must process requests to several endpoints and relay them to the H5PEditor or H5PPlayer objects. All Ajax endpoints are already implemented in the [Express adapter](../src/adapters/express.ts), which you can use like this:
+Your implementation must process requests to several endpoints and relay them to the H5PEditor or H5PPlayer objects. All Ajax endpoints are already implemented in the [Express adapter](../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter.ts), which you can use like this:
+
+Import the Express adapter router like this:
+
+```ts
+import h5pAjaxExpressRouter from 'h5p-nodejs-library/build/src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
+```
+
+or in classic JS style:
 
 ```js
-server.use(
+const h5pAjaxExpressRouter = require('h5p-nodejs-library/build/src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter');
+```
+
+**You must use submodule imports because regularly exporting the router would mean that every implementation must install the express package.**
+
+Then add the router to your Express app like this
+
+```js
+app.use(
     // server is an object initialized with express()
     '/h5p', // the route under which all the Ajax calls will be registered
-    H5P.adapters.express(
+    h5pAjaxExpressRouter(
         h5pEditor, // an H5P.H5PEditor object
         path.resolve('h5p/core'), // the path to the h5p core files (of the player)
         path.resolve('h5p/editor'), // the path to the h5p core files (of the editor)
