@@ -29,7 +29,7 @@
         "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:watch": "jest --watch",
-        "test": "jest --testTimeout=120000 --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
+        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build"
     },
     "release": {
@@ -113,7 +113,7 @@
         "i18next": "19.6.3",
         "i18next-fs-backend": "1.0.7",
         "i18next-http-middleware": "3.0.2",
-        "jest": "26.2.1",
+        "jest": "26.2.0",
         "mockdate": "3.0.2",
         "mongodb": "3.6.0",
         "prettier": "2.0.5",
