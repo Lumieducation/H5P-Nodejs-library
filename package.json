@@ -121,7 +121,7 @@
         "puppeteer": "5.2.1",
         "semantic-release": "17.1.1",
         "source-map-support": "0.5.19",
-        "start-server-and-test": "1.11.2",
+        "start-server-and-test": "1.11.3",
         "stream-mock": "2.0.5",
         "supertest": "4.0.2",
         "ts-jest": "26.1.4",
