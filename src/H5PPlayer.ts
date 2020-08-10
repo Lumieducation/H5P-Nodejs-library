@@ -241,7 +241,12 @@ export default class H5PPlayer {
                     contentUrl: this.config.contentFilesUrlPlayerOverride?.replace(
                         '{{contentId}}',
                         contentId
-                    )
+                    ),
+                    metadata: {
+                        license: metadata.license || 'U',
+                        title: metadata.title || '',
+                        defaultLanguage: metadata.language || 'en'
+                    }
                 }
             },
             core: {
