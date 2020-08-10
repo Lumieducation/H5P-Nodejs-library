@@ -28,7 +28,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         );
     }
 
-    // Install all packages from the H5P Hub before running tests for indidual content.
+    // Install all packages from the H5P Hub before running tests for individual content.
     // (This is necessary, as some packages have unfulfilled dependencies if you just install them. The
     // tests for these packages will fail because the semantics.json file is missing for them.)
 
@@ -105,9 +105,33 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
                 user
             );
 
+            const normalizedFoundFiles = foundFiles.map((f) => {
+                return { ...f };
+            });
+            normalizedFoundFiles.forEach(
+                (f) => (f.filePath = path.normalize(f.filePath))
+            );
+            const normalizedFileSystemFiles = fileSystemFiles
+                .map((f) => path.normalize(f))
+                .sort();
+
             expect(
-                foundFiles.map((f) => path.normalize(f.filePath)).sort()
-            ).toEqual(fileSystemFiles.map((p) => path.normalize(p)).sort());
+                Array.from(
+                    new Set(
+                        normalizedFoundFiles
+                            .filter(
+                                (f) =>
+                                    normalizedFileSystemFiles.includes(
+                                        f.filePath
+                                    ) || !f.temporary
+                            ) // some H5P packages downloaded
+                            // from the Hub contain references resources stored on h5p.org
+                            // that aren't included in the packages, so we filter those
+                            // out
+                            .map((f) => f.filePath)
+                    )
+                ).sort()
+            ).toEqual(normalizedFileSystemFiles);
 
             const parameters = await contentManager.getContentParameters(
                 contentId,
