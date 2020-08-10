@@ -44,7 +44,12 @@ describe('Rendering the HTML page', () => {
                         "icon": false
                       },
                       "fullScreen": "0",
-                      "jsonContent": "{\\"my\\":\\"content\\"}"
+                      "jsonContent": "{\\"my\\":\\"content\\"}",
+                      "metadata":{
+                        "license":"U",
+                        "title":"",
+                        "defaultLanguage":"en"
+                       }
                     }
                   },
                   "core":{
@@ -277,7 +282,12 @@ describe('Rendering the HTML page', () => {
                             "icon": false
                           },
                           "fullScreen": "0",
-                          "jsonContent": "{\\"my\\":\\"content\\"}"
+                          "jsonContent": "{\\"my\\":\\"content\\"}",
+                          "metadata":{
+                            "license":"U",
+                            "title":"",
+                            "defaultLanguage":"en"
+                          }
                         }
                       },
                       "core":{
