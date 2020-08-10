@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+    coveralls: coveralls/coveralls@1.0.6
 jobs:
     install-build:
         docker:
@@ -60,7 +61,10 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test
+            - run: npm run test -- --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: Unit tests
 
     integration-tests:
         docker:
@@ -69,7 +73,10 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:integration
+            - run: npm run test:integration -- --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: Integration tests
 
     e2e-tests:
         docker:
@@ -96,7 +103,10 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:db
+            - run: npm run test:db -- --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: DB tests
 
     release:
         docker:
@@ -106,13 +116,15 @@ jobs:
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - attach_workspace:
                   at: .
+            - coveralls/upload:
+                  parallel_finished: true
             - run:
                   name: release
                   command: npm run semantic-release || true
 
 workflows:
     version: 2
-    h5peditor:
+    h5p-nodejs-library:
         jobs:
             - install-build
             - lint:
