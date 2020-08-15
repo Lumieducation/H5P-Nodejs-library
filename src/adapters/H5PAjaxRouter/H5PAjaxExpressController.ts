@@ -4,21 +4,8 @@ import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
 import { IFileStats, IUser } from '../../types';
-import { IRequestWithUser, IRequestWithTranslator } from '../expressTypes';
-
-interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
-    files: {
-        file: {
-            data: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-        };
-        h5p: {
-            data: any;
-        };
-    };
-}
+import { IRequestWithUser, IActionRequest } from '../expressTypes';
+import H5PAjaxEndpoint from '../../H5PAjaxEndpoint';
 
 /**
  * The methods in this class can be used to answer AJAX requests that are received by Express routers.
@@ -28,7 +15,11 @@ interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
  * HTTP interface the H5P client uses and we can't change it.
  */
 export default class H5PAjaxExpressController {
-    constructor(protected h5pEditor: H5PEditor) {}
+    constructor(protected h5pEditor: H5PEditor) {
+        this.ajaxEndpoint = new H5PAjaxEndpoint(h5pEditor);
+    }
+
+    private ajaxEndpoint: H5PAjaxEndpoint;
 
     /**
      * Get various things through the Ajax endpoint.
@@ -37,32 +28,15 @@ export default class H5PAjaxExpressController {
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const { action } = req.query;
-        const { majorVersion, minorVersion, machineName, language } = req.query;
-
-        switch (action) {
-            case 'content-type-cache':
-                const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    req.user
-                );
-                res.status(200).json(contentTypeCache);
-                break;
-
-            case 'libraries':
-                const library = await this.h5pEditor.getLibraryData(
-                    machineName?.toString(),
-                    majorVersion?.toString(),
-                    minorVersion?.toString(),
-                    language?.toString()
-                );
-                res.status(200).json(library);
-
-                break;
-
-            default:
-                res.status(400).end();
-                break;
-        }
+        const result = await this.ajaxEndpoint.getAjax(
+            req.query.action as string,
+            req.query.machineName as string,
+            req.query.majorVersion as string,
+            req.query.minorVersion as string,
+            req.query.language as string,
+            req.user
+        );
+        res.status(200).send(result);
     };
 
     public getContentFile = async (
@@ -88,11 +62,11 @@ export default class H5PAjaxExpressController {
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const content = await this.h5pEditor.getContent(
+        const result = await this.ajaxEndpoint.getContentParameters(
             req.params.contentId,
             req.user
         );
-        res.status(200).json(content);
+        res.status(200).json(result);
     };
 
     public getDownload = async (
@@ -104,7 +78,11 @@ export default class H5PAjaxExpressController {
             'Content-disposition',
             `attachment; filename=${req.params.contentId}.h5p`
         );
-        await this.h5pEditor.exportContent(req.params.contentId, res, req.user);
+        await this.ajaxEndpoint.getDownload(
+            req.params.contentId,
+            req.user,
+            res
+        );
     };
 
     public getLibraryFile = async (

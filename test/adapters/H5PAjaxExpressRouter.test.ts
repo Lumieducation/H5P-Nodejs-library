@@ -173,6 +173,11 @@ describe('Express Ajax endpoint adapter', () => {
         expect(res.status).toBe(200);
     });
 
+    it('should return 404 when downloading unknown packages', async () => {
+        const res = await supertest(app).get(`/download/invalid`);
+        expect(res.status).toBe(404);
+    });
+
     it('should return the list of installed libraries', async () => {
         await h5pEditor.packageImporter.installLibrariesFromPackage(
             path.resolve('test/data/validator/valid2.h5p')
@@ -300,6 +305,13 @@ describe('Express Ajax endpoint adapter', () => {
         expect(
             (await mockApp.get(`/temp-files/${parsedRes.path}`)).status
         ).toBe(200);
+    });
+
+    // get ajax endpoint error handler
+    it('should return 400 for invalid actions', async () => {
+        const mockApp = supertest(app);
+        const result = await mockApp.get(`/ajax?action=unsupported-action`);
+        expect(result.status).toBe(400);
     });
 
     // content type cache endpoint
