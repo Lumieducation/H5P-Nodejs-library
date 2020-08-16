@@ -27,7 +27,10 @@ export interface IActionRequest
             size: number;
         };
         h5p: {
-            data: any;
+            data: Buffer;
+            mimetype: string;
+            name: string;
+            size: number;
         };
     };
 }
