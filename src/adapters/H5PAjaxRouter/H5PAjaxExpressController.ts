@@ -1,18 +1,13 @@
 import * as express from 'express';
-import { H5PEditor, LibraryName, H5pError, ContentId } from '../..';
-import { lookup as mimeLookup } from 'mime-types';
-import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
+import { H5PEditor, LibraryName, H5pError } from '../..';
 import { Readable } from 'stream';
-import { IFileStats, IUser } from '../../types';
 import { IRequestWithUser, IActionRequest } from '../expressTypes';
 import H5PAjaxEndpoint from '../../H5PAjaxEndpoint';
 
 /**
- * The methods in this class can be used to answer AJAX requests that are received by Express routers.
- * You can use all methods independently at your convenience.
- * Note that even though the names getAjax and postAjax imply that only these methods deal with AJAX
- * requests, ALL methods except getDownload deal with AJAX requests. This confusion is caused by the
- * HTTP interface the H5P client uses and we can't change it.
+ * This class is part of the Express adapter for the H5PAjaxEndpoint class and
+ * maps Express specific properties and methods to the generic H5PAjaxEndpoint
+ * methods.
  */
 export default class H5PAjaxExpressController {
     constructor(protected h5pEditor: H5PEditor) {
@@ -22,6 +17,7 @@ export default class H5PAjaxExpressController {
     private ajaxEndpoint: H5PAjaxEndpoint;
 
     /**
+     * GET /ajax
      * Get various things through the Ajax endpoint.
      */
     public getAjax = async (
@@ -39,25 +35,41 @@ export default class H5PAjaxExpressController {
         res.status(200).send(result);
     };
 
+    /**
+     * GET /content/<contentId>/<filename>
+     */
     public getContentFile = async (
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const stats = await this.h5pEditor.contentStorage.getFileStats(
-            req.params.id,
-            req.params.file,
-            req.user
-        );
-        return this.abstractGetContentFile(
+        const {
+            mimetype,
+            stream,
+            stats,
+            range
+        } = await this.ajaxEndpoint.getContentFile(
             req.params.id,
             req.params.file,
             req.user,
-            stats,
-            req,
-            res
+            this.getRange(req)
         );
+        if (range) {
+            this.pipeStreamToPartialResponse(
+                req.params.file,
+                stream,
+                res,
+                stats.size,
+                range.start,
+                range.end
+            );
+        } else {
+            this.pipeStreamToResponse(mimetype, stream, res, stats.size);
+        }
     };
 
+    /**
+     * GET /params/<contentId>
+     */
     public getContentParameters = async (
         req: IRequestWithUser,
         res: express.Response
@@ -69,6 +81,9 @@ export default class H5PAjaxExpressController {
         res.status(200).json(result);
     };
 
+    /**
+     * GET /download/<contentId>
+     */
     public getDownload = async (
         req: IRequestWithUser,
         res: express.Response
@@ -85,6 +100,9 @@ export default class H5PAjaxExpressController {
         );
     };
 
+    /**
+     * GET /libraries/<library>/<file>
+     */
     public getLibraryFile = async (
         req: express.Request,
         res: express.Response
@@ -98,25 +116,39 @@ export default class H5PAjaxExpressController {
         this.pipeStreamToResponse(req.params.file, stream, res, stats.size);
     };
 
+    /**
+     * GET /temp-files/<file>
+     */
     public getTemporaryContentFile = async (
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const stats = await this.h5pEditor.temporaryStorage.getFileStats(
-            req.params.file,
-            req.user
-        );
-        return this.abstractGetContentFile(
-            undefined,
+        const {
+            mimetype,
+            stream,
+            stats,
+            range
+        } = await this.ajaxEndpoint.getTemporaryFile(
             req.params.file,
             req.user,
-            stats,
-            req,
-            res
+            this.getRange(req)
         );
+        if (range) {
+            this.pipeStreamToPartialResponse(
+                req.params.file,
+                stream,
+                res,
+                stats.size,
+                range.start,
+                range.end
+            );
+        } else {
+            this.pipeStreamToResponse(mimetype, stream, res, stats.size);
+        }
     };
 
     /**
+     * POST /ajax
      * Post various things through the Ajax endpoint
      * Don't be confused by the fact that many of the requests dealt with here are not
      * really POST requests, but look more like GET requests. This is simply how the H5P
@@ -140,22 +172,13 @@ export default class H5PAjaxExpressController {
     };
 
     /**
-     * Unified handling of range requests for getContentFile and
-     * getTemporaryContentFile.
-     * @param contentId (optional) the contentId, can be undefined if a
-     * temporary file is requested
+     * Retrieves a range that was specified in the HTTP request headers. Returns
+     * undefined if no range was specified.
      */
-    private async abstractGetContentFile(
-        contentId: ContentId,
-        file: string,
-        user: IUser,
-        stats: IFileStats,
-        req: express.Request,
-        res: express.Response
-    ): Promise<void> {
-        const range = req.range(stats.size);
-        let start: number;
-        let end: number;
+    private getRange = (req: express.Request) => (
+        fileSize: number
+    ): { end: number; start: number } => {
+        const range = req.range(fileSize);
         if (range) {
             if (range === -2) {
                 throw new H5pError('malformed-request', {}, 400);
@@ -166,43 +189,31 @@ export default class H5PAjaxExpressController {
             if (range.length > 1) {
                 throw new H5pError('multipart-ranges-unsupported', {}, 400);
             }
-            start = range[0].start;
-            end = range[0].end;
-        }
 
-        const stream = await this.h5pEditor.getContentFileStream(
-            contentId,
-            file,
-            user,
-            start,
-            end
-        );
-        if (range) {
-            this.pipeStreamToPartialResponse(
-                req.params.file,
-                stream,
-                res,
-                stats.size,
-                start,
-                end
-            );
-        } else {
-            this.pipeStreamToResponse(req.params.file, stream, res, stats.size);
+            return range[0];
         }
-    }
+    };
 
+    /**
+     * Pipes the contents of the file to the request object and sets the
+     * 206 status code and all necessary headers.
+     * @param mimetype the mimetype of the file
+     * @param readStream a readable stream of the file (at the start position)
+     * @param response the Express response object (a writable stream)
+     * @param totalLength the total file size of the file
+     * @param start the start of the range
+     * @param end the end of the range
+     */
     private pipeStreamToPartialResponse = (
-        filename: string,
+        mimetype: string,
         readStream: Readable,
         response: express.Response,
         totalLength: number,
         start: number,
         end: number
     ) => {
-        const contentType = mimeLookup(filename) || 'application/octet-stream';
-
         response.writeHead(206, {
-            'Content-Type': contentType,
+            'Content-Type': mimetype,
             'Content-Length': end - start + 1,
             'Content-Range': `bytes ${start}-${end}/${totalLength}`
         });
@@ -213,22 +224,26 @@ export default class H5PAjaxExpressController {
         readStream.pipe(response);
     };
 
+    /**
+     * Pipes the contents of the file to the request object and sets the
+     * 200 status code and all necessary headers to indicate support for ranges.
+     * @param mimetype the mimetype of the file
+     * @param readStream a readable stream of the file (at the start position)
+     * @param response the Express response object (a writable stream)
+     * @param contentLength the total file size of the file
+     */
     private pipeStreamToResponse = (
-        filename: string,
+        mimetype: string,
         readStream: Readable,
         response: express.Response,
-        contentLength?: number
+        contentLength: number
     ) => {
-        const contentType = mimeLookup(filename) || 'application/octet-stream';
-        if (contentLength) {
-            response.writeHead(200, {
-                'Content-Type': contentType,
-                'Content-Length': contentLength,
-                'Accept-Ranges': 'bytes'
-            });
-        } else {
-            response.type(contentType);
-        }
+        response.writeHead(200, {
+            'Content-Type': mimetype,
+            'Content-Length': contentLength,
+            'Accept-Ranges': 'bytes'
+        });
+
         readStream.on('error', (err) => {
             response.status(404).end();
         });

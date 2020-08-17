@@ -1,4 +1,5 @@
-import { Writable } from 'stream';
+import { Writable, Readable } from 'stream';
+import { lookup as mimeLookup } from 'mime-types';
 
 import {
     IUser,
@@ -7,7 +8,8 @@ import {
     ContentId,
     IContentMetadata,
     ContentParameters,
-    ILibraryOverviewForClient
+    ILibraryOverviewForClient,
+    IFileStats
 } from './types';
 import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
@@ -20,6 +22,16 @@ import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
  *
  * If something goes wrong, the methods throw H5pErrors, which include HTTP
  * status codes. Send back these status codes in your HTTP response.
+ *
+ * Remarks:
+ * - Most of the route names can be configured in the IH5PConfig object and thus
+ *   might have different names in your case!
+ * - The GET /content/<contentId>/<file> and GET /temp-files/<file> routes
+ *   should support partials for the Interactive Video editor to work. This
+ *   means that the response with HTTP 200 must send back the header
+ *   'Accept-Ranges: bytes' and must send back status code 206 for partials.
+ *   Check out the documentation of the methods `getContentFile` and
+ *   `getTemporaryFile` for more details.
  */
 export default class H5PAjaxEndpoint {
     constructor(private h5pEditor: H5PEditor) {}
@@ -92,6 +104,68 @@ export default class H5PAjaxEndpoint {
     };
 
     /**
+     * The method must be called by the GET /content/<contentId>/<filename>
+     * route.
+     * As it is necessary for the method to know about a possible range start
+     * and end, you need to pass in a callback function that returns the range
+     * specified in the http request. The start and end of the range cannot be
+     * passed to this method directly, as you need to know the file size to
+     * calculate the correct range. That's why we use the callback.
+     * @param contentId the contentId of the resource
+     * @param filename the filename of the resource
+     * @param user the user who is requesting the resource
+     * @param getRangeCallback a function that can be called to retrieve the
+     * start and end of a range; if the request doesn't specify a range, simply
+     * return undefined
+     * @returns mimetype: the mimetype of the file, the range (undefined if
+     * unused), stats about the file and a readable. Do this with the response:
+     * - Pipe back the readable as the response with status code 200.
+     * - Set this HTTP header in the response: "Content-Type: <mimetype>"
+     * - If range is undefined:
+     *    - Return status code 200
+     *    - Set this HTTP header in the response: 'Accept-Ranges: bytes'
+     * - If range is defined:
+     *    - Return status code 206
+     *    - Set these HTTP headers in the response: 'Content-Length: <end - start + 1>'
+     *                                              'Content-Range': `bytes <start-end>/<totalLength>`
+     * **IMPORTANT:** You must subscribe to the error event of the readable and
+     * send back a 404 status code if an error occurs. This is necessary as the
+     * AWS S3 library doesn't throw proper 404 errors.
+     * @throws H5pErrors with HTTP status codes, which you must catch and then
+     * send back in the response
+     */
+    public getContentFile = async (
+        contentId: ContentId,
+        filename: string,
+        user: IUser,
+        getRangeCallback: (
+            fileSize: number
+        ) => { end: number; start: number } | undefined
+    ): Promise<{
+        mimetype: string;
+        range: { end: number; start: number };
+        stats: IFileStats;
+        stream: Readable;
+    }> => {
+        const stats = await this.h5pEditor.contentStorage.getFileStats(
+            contentId,
+            filename,
+            user
+        );
+        const range = getRangeCallback(stats.size);
+        const readable = await this.h5pEditor.getContentFileStream(
+            contentId,
+            filename,
+            user,
+            range?.start,
+            range?.end
+        );
+        const mimetype = mimeLookup(filename) || 'application/octet-stream';
+
+        return { mimetype, range, stats, stream: readable };
+    };
+
+    /**
      * This method must be called when the editor requests the parameters
      * (= content.json) of a piece of content, which is done with
      * GET /params/<contentId>
@@ -144,6 +218,63 @@ export default class H5PAjaxEndpoint {
     };
 
     /**
+     * The method must be called by the GET /temp-files/<filename> route.
+     * As it is necessary for the method to know about a possible range start
+     * and end, you need to pass in a callback function that returns the range
+     * specified in the http request. The start and end of the range cannot be
+     * passed to this method directly, as you need to know the file size to
+     * calculate the correct range. That's why we use the callback.
+     * @param filename the filename of the resource
+     * @param user the user who is requesting the resource
+     * @param getRangeCallback a function that can be called to retrieve the
+     * start and end of a range; if the request doesn't specify a range, simply
+     * return undefined
+     * @returns mimetype: the mimetype of the file, the range (undefined if
+     * unused), stats about the file and a readable. Do this with the response:
+     * - Pipe back the readable as the response with status code 200.
+     * - Set this HTTP header in the response: "Content-Type: <mimetype>"
+     * - If range is undefined:
+     *    - Return status code 200
+     *    - Set this HTTP header in the response: 'Accept-Ranges': 'bytes'
+     * - If range is defined:
+     *    - Return status code 206
+     *    - Set these HTTP headers in the response: 'Content-Length: <end - start + 1>'
+     *                                              'Content-Range': `bytes <start-end>/<totalLength>`
+     * **IMPORTANT:** You must subscribe to the error event of the readable and
+     * send back a 404 status code if an error occurs. This is necessary as the
+     * AWS S3 library doesn't throw proper 404 errors.
+     * @throws H5pErrors with HTTP status codes, which you must catch and then
+     * send back in the response
+     */
+    public getTemporaryFile = async (
+        filename: string,
+        user: IUser,
+        getRangeCallback: (fileSize: number) => { end: number; start: number }
+    ): Promise<{
+        mimetype: string;
+        range: { end: number; start: number };
+        stats: IFileStats;
+        stream: Readable;
+    }> => {
+        const stats = await this.h5pEditor.temporaryStorage.getFileStats(
+            filename,
+            user
+        );
+        const range = getRangeCallback(stats.size);
+        const readable = await this.h5pEditor.getContentFileStream(
+            undefined,
+            filename,
+            user,
+            range?.start,
+            range?.end
+        );
+        const mimetype = mimeLookup(filename) || 'application/octet-stream';
+
+        return { mimetype, range, stats, stream: readable };
+    };
+
+    /**
+     * Implements the POST /ajax route.
      * Performs various actions. Don't be confused by the fact that many of the
      * requests dealt with here are not really POST requests, but look more like
      * GET requests. This is simply how the H5P client works and we can't
