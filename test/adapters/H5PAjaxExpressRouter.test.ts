@@ -6,6 +6,7 @@ import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
+import fsExtra from 'fs-extra';
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
@@ -403,5 +404,49 @@ describe('Express Ajax endpoint adapter', () => {
             const imageResult = await mockApp.get(`/temp-files/${imagePath}`);
             expect(imageResult.status).toBe(200);
         });
+    });
+
+    it('returns 200 on filter requests', async () => {
+        const imageResult = await supertest(app)
+            .post(`/ajax?action=filter`)
+            .send({
+                libraryParameters: JSON.stringify({
+                    params: await fsExtra.readJson(
+                        path.resolve(
+                            'test/data/sample-content/content/content.json'
+                        )
+                    ),
+                    metadata: await fsExtra.readJson(
+                        path.resolve('test/data/sample-content/h5p.json')
+                    ),
+                    library: 'H5P.GreetingCard 1.0'
+                })
+            });
+        expect(imageResult.status).toBe(200);
+    });
+
+    it('installs content types from the H5P Hub', async () => {
+        axiosMock
+            .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
+            .reply(() => {
+                return [
+                    200,
+                    fsExtra.createReadStream(
+                        path.resolve(
+                            'test/data/example-packages/H5P.DragText.h5p'
+                        )
+                    )
+                ];
+            });
+        const result = await supertest(app).post(
+            `/ajax?action=library-install&id=H5P.DragText`
+        );
+        expect(result.status).toEqual(200);
+        expect(result.body.success).toEqual(true);
+        expect(
+            result.body.data.libraries.find(
+                (l) => l.machineName === 'H5P.DragText'
+            ).installed
+        ).toEqual(true);
     });
 });

@@ -156,7 +156,13 @@ export default class H5PAjaxEndpoint {
      *                      in a specific language
      *   - files:           uploads a resource file (image, video, ...) into
      *                      temporary storage
+     *   - filter:          cleans the parameters passed to it to avoid XSS
+     *                      attacks and schema violations (currently only
+     *                      implemented as a stub)
      *   - library-install: downloads an installs content types from the H5P Hub
+     *   - library-upload:  uploads a h5p package from the user's computer and
+     *                      installs the libraries in it; returns the parameters
+     *                      and metadata in it
      * @param body the parsed JSON content of the request body
      * @param language (needed for 'translations') the language code for which
      * the translations should be retrieved, e.g. 'en'. This paramter is part
