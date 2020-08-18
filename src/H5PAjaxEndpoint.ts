@@ -14,6 +14,7 @@ import {
 import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
 import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
+import LibraryName from './LibraryName';
 
 /**
  * Each method in this class corresponds to a route that is called by the H5P
@@ -111,6 +112,10 @@ export default class H5PAjaxEndpoint {
      * specified in the http request. The start and end of the range cannot be
      * passed to this method directly, as you need to know the file size to
      * calculate the correct range. That's why we use the callback.
+     *
+     * Note: You can also use a status route to serve content files, but then
+     * you lose the rights and permission check.
+     *
      * @param contentId the contentId of the resource
      * @param filename the filename of the resource
      * @param user the user who is requesting the resource
@@ -215,6 +220,39 @@ export default class H5PAjaxEndpoint {
         outputWritable: Writable
     ): Promise<void> => {
         return this.h5pEditor.exportContent(contentId, outputWritable, user);
+    };
+
+    /**
+     * This method must be called when the client requests a library file with
+     * GET /libraries/<uberName>/<file>.
+     *
+     * Note: You can also use a static route to serve library files.
+     *
+     * @param uberName the ubername of the library (e.g. H5P.Example-1.0). This
+     * is the first component of the path after /libraries/
+     * @param file the filename of the requested file, e.g. xyz.js. This is the
+     * rest of the path after the uberName.
+     * @returns all the values that must be send back with HTTP status code 200.
+     * You should send back:
+     *   - status code 200
+     *   - the mimetype
+     *   - the file size (in stats)
+     * @throws H5pErrors with HTTP status codes, which you must catch and then
+     * send back in the response
+     */
+    public getLibraryFile = async (
+        uberName: string,
+        file: string
+    ): Promise<{ mimetype: string; stats: IFileStats; stream: Readable }> => {
+        const lib = LibraryName.fromUberName(uberName);
+        const [stats, stream] = await Promise.all([
+            this.h5pEditor.libraryManager.getFileStats(lib, file),
+            this.h5pEditor.getLibraryFileStream(lib, file)
+        ]);
+
+        const mimetype = mimeLookup(file) || 'application/octet-stream';
+
+        return { mimetype, stream, stats };
     };
 
     /**

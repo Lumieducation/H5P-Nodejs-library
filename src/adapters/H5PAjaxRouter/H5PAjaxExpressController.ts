@@ -101,19 +101,22 @@ export default class H5PAjaxExpressController {
     };
 
     /**
-     * GET /libraries/<library>/<file>
+     * GET /libraries/<uberName>/<file>
      */
     public getLibraryFile = async (
         req: express.Request,
         res: express.Response
     ): Promise<void> => {
-        const lib = LibraryName.fromUberName(req.params.uberName);
-        const [stats, stream] = await Promise.all([
-            this.h5pEditor.libraryManager.getFileStats(lib, req.params.file),
-            this.h5pEditor.getLibraryFileStream(lib, req.params.file)
-        ]);
+        const {
+            mimetype,
+            stream,
+            stats
+        } = await this.ajaxEndpoint.getLibraryFile(
+            req.params.uberName,
+            req.params.file
+        );
 
-        this.pipeStreamToResponse(req.params.file, stream, res, stats.size);
+        this.pipeStreamToResponse(mimetype, stream, res, stats.size);
     };
 
     /**
