@@ -770,7 +770,11 @@ export default class H5PEditor {
         parameters: any,
         collect: any = {}
     ): ILibraryName[] {
-        if (typeof parameters !== 'object') {
+        if (
+            parameters === undefined ||
+            parameters === null ||
+            typeof parameters !== 'object'
+        ) {
             return collect;
         }
 
