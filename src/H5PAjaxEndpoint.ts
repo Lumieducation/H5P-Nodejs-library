@@ -80,11 +80,30 @@ export default class H5PAjaxEndpoint {
     ): Promise<IHubInfo | ILibraryDetailedDataForClient> => {
         switch (action) {
             case 'content-type-cache':
+                if (!user) {
+                    throw new Error(
+                        'You must specify a user when calling getAjax(...).'
+                    );
+                }
                 const contentTypeCache = await this.h5pEditor.getContentTypeCache(
                     user
                 );
                 return contentTypeCache;
             case 'libraries':
+                if (
+                    machineName === undefined ||
+                    majorVersion === undefined ||
+                    minorVersion === undefined
+                ) {
+                    throw new H5pError(
+                        'malformed-request',
+                        {
+                            error:
+                                'You must specify a machineName, majorVersion and minorVersion.'
+                        },
+                        400
+                    );
+                }
                 const library = await this.h5pEditor.getLibraryData(
                     machineName?.toString(),
                     majorVersion?.toString(),
@@ -121,7 +140,8 @@ export default class H5PAjaxEndpoint {
      * @param user the user who is requesting the resource
      * @param getRangeCallback a function that can be called to retrieve the
      * start and end of a range; if the request doesn't specify a range, simply
-     * return undefined
+     * return undefined; if you do not specify getRangeCallback, the method
+     * will simply always use the whole file.
      * @returns mimetype: the mimetype of the file, the range (undefined if
      * unused), stats about the file and a readable. Do this with the response:
      * - Pipe back the readable as the response with status code 200.
@@ -143,7 +163,7 @@ export default class H5PAjaxEndpoint {
         contentId: ContentId,
         filename: string,
         user: IUser,
-        getRangeCallback: (
+        getRangeCallback?: (
             fileSize: number
         ) => { end: number; start: number } | undefined
     ): Promise<{
@@ -152,13 +172,31 @@ export default class H5PAjaxEndpoint {
         stats: IFileStats;
         stream: Readable;
     }> => {
+        if (!user) {
+            throw new Error(
+                'You must specify a user when calling getContentFile(...).'
+            );
+        }
+        if (!contentId) {
+            throw new Error(
+                'You must specify a contentId when calling getContentFile(...)'
+            );
+        }
+        if (!filename) {
+            throw new Error(
+                'You must specify a contentId when calling getContentFile(...)'
+            );
+        }
+
         const stats = await this.h5pEditor.contentStorage.getFileStats(
             contentId,
             filename,
             user
         );
-        const range = getRangeCallback(stats.size);
-        const readable = await this.h5pEditor.getContentFileStream(
+        const range = getRangeCallback
+            ? getRangeCallback(stats.size)
+            : undefined;
+        const stream = await this.h5pEditor.getContentFileStream(
             contentId,
             filename,
             user,
@@ -167,7 +205,7 @@ export default class H5PAjaxEndpoint {
         );
         const mimetype = mimeLookup(filename) || 'application/octet-stream';
 
-        return { mimetype, range, stats, stream: readable };
+        return { mimetype, range, stats, stream };
     };
 
     /**
@@ -195,6 +233,16 @@ export default class H5PAjaxEndpoint {
             params: ContentParameters;
         };
     }> => {
+        if (!user) {
+            throw new Error(
+                'You must specify a user when calling getContentParameters(...).'
+            );
+        }
+        if (!contentId) {
+            throw new Error(
+                'You must specify a contentId when calling getContentParameters(...)'
+            );
+        }
         return this.h5pEditor.getContent(contentId, user);
     };
 
@@ -219,18 +267,29 @@ export default class H5PAjaxEndpoint {
         user: IUser,
         outputWritable: Writable
     ): Promise<void> => {
+        if (!user) {
+            throw new Error(
+                'You must specify a user when calling getDownload(...).'
+            );
+        }
+        if (!contentId) {
+            throw new Error(
+                'You must specify a contentId when calling getDownload(...)'
+            );
+        }
+
         return this.h5pEditor.exportContent(contentId, outputWritable, user);
     };
 
     /**
      * This method must be called when the client requests a library file with
-     * GET /libraries/<uberName>/<file>.
+     * GET /libraries/<uberName>/<filename>.
      *
      * Note: You can also use a static route to serve library files.
      *
      * @param uberName the ubername of the library (e.g. H5P.Example-1.0). This
      * is the first component of the path after /libraries/
-     * @param file the filename of the requested file, e.g. xyz.js. This is the
+     * @param filename the filename of the requested file, e.g. xyz.js. This is the
      * rest of the path after the uberName.
      * @returns all the values that must be send back with HTTP status code 200.
      * You should send back:
@@ -242,15 +301,18 @@ export default class H5PAjaxEndpoint {
      */
     public getLibraryFile = async (
         uberName: string,
-        file: string
+        filename: string
     ): Promise<{ mimetype: string; stats: IFileStats; stream: Readable }> => {
-        const lib = LibraryName.fromUberName(uberName);
+        if (!filename) {
+            throw new Error('You must pass a file to getLibraryFile(...).');
+        }
+        const library = LibraryName.fromUberName(uberName);
         const [stats, stream] = await Promise.all([
-            this.h5pEditor.libraryManager.getFileStats(lib, file),
-            this.h5pEditor.getLibraryFileStream(lib, file)
+            this.h5pEditor.libraryManager.getFileStats(library, filename),
+            this.h5pEditor.getLibraryFileStream(library, filename)
         ]);
 
-        const mimetype = mimeLookup(file) || 'application/octet-stream';
+        const mimetype = mimeLookup(filename) || 'application/octet-stream';
 
         return { mimetype, stream, stats };
     };
@@ -266,7 +328,8 @@ export default class H5PAjaxEndpoint {
      * @param user the user who is requesting the resource
      * @param getRangeCallback a function that can be called to retrieve the
      * start and end of a range; if the request doesn't specify a range, simply
-     * return undefined
+     * return undefined; if you do not specify getRangeCallback, the method
+     * will simply always use the whole file.
      * @returns mimetype: the mimetype of the file, the range (undefined if
      * unused), stats about the file and a readable. Do this with the response:
      * - Pipe back the readable as the response with status code 200.
@@ -287,18 +350,30 @@ export default class H5PAjaxEndpoint {
     public getTemporaryFile = async (
         filename: string,
         user: IUser,
-        getRangeCallback: (fileSize: number) => { end: number; start: number }
+        getRangeCallback?: (fileSize: number) => { end: number; start: number }
     ): Promise<{
         mimetype: string;
         range: { end: number; start: number };
         stats: IFileStats;
         stream: Readable;
     }> => {
+        if (!user) {
+            throw new Error(
+                'You must specify a user when calling getTemporaryFile(...).'
+            );
+        }
+        if (!filename) {
+            throw new Error(
+                'You must specify a filename when calling getContentParameters(...)'
+            );
+        }
         const stats = await this.h5pEditor.temporaryStorage.getFileStats(
             filename,
             user
         );
-        const range = getRangeCallback(stats.size);
+        const range = getRangeCallback
+            ? getRangeCallback(stats.size)
+            : undefined;
         const readable = await this.h5pEditor.getContentFileStream(
             undefined,
             filename,
@@ -343,7 +418,7 @@ export default class H5PAjaxEndpoint {
      * file is part of the HTTP request and has the name 'file'.
      * @param id (needed for 'library-install') the machine name of the library
      * to  install. The id is part of the query URL, e.g. POST /ajax?action=library-install&id=H5P.Example
-     * @param t (needed for 'library-install' and 'library-upload') a
+     * @param translate (needed for 'library-install' and 'library-upload') a
      * translation function used to localize messages
      * @param filesFile (needed for 'library-upload') the file uploaded to the
      * server; this file is part of the HTTP request and has the name 'h5p'.
@@ -374,7 +449,10 @@ export default class H5PAjaxEndpoint {
             size: number;
         },
         id?: string,
-        t?: (stringId: string, replacements: { [key: string]: any }) => string,
+        translate?: (
+            stringId: string,
+            replacements: { [key: string]: any }
+        ) => string,
         libraryUploadFile?: {
             data: Buffer;
             mimetype: string;
@@ -395,14 +473,14 @@ export default class H5PAjaxEndpoint {
         ): string =>
             `${
                 installed
-                    ? t
-                        ? t('installed-libraries', { count: installed })
+                    ? translate
+                        ? translate('installed-libraries', { count: installed })
                         : `Installed ${installed} libraries.`
                     : ''
             } ${
                 updated
-                    ? t
-                        ? t('updated-libraries', { count: updated })
+                    ? translate
+                        ? translate('updated-libraries', { count: updated })
                         : `Updated ${updated} libraries.`
                     : ''
             }`.trim();

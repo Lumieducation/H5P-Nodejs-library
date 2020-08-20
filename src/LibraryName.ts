@@ -31,6 +31,7 @@ export default class LibraryName implements ILibraryName {
      * @param useWhitespace true if the parser should accept names like "H5P.Library 1.0"
      * @param useHyphen true if the parser should accept names like "H5P.Library-1.0"
      * @returns undefined if the name could not be parsed
+     * @throws H5pError with 400 when the ubername is invalid
      */
     public static fromUberName(
         libraryName: string,
