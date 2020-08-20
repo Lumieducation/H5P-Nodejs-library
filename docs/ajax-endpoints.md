@@ -1,5 +1,11 @@
 # Handling AJAX requests
 
+There are two ways of handling AJAX requests: You can use the out-of-the-box
+[Express adapter](#handling-requests-with-the-express-adapter) or
+[write your own custom router](#handling-requests-yourself):
+
+![diagram of the architecture of the H5P Ajax endpoint](ajax-endpoint-architecture.svg)
+
 ## Handling requests with the Express adapter
 
 Your implementation must process requests to several endpoints and relay them to

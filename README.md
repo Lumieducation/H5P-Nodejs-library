@@ -86,7 +86,7 @@ See [the documentation page on constructing a `H5PEditor` object](docs/h5p-edito
 
 ### Handling AJAX Requests
 
-The H5P client (running in the browser) sends many AJAX requests to the server (this application). While this library provides you with everything required to process the requests in the backend, your implementation must still serve the requests to these endpoints. There is an Express adapter that you can use out-of-the box for this purpose. Check out the [documentation on endpoints](docs/endpoints.md) for details.
+The H5P client (running in the browser) sends many AJAX requests to the server (this application). While this library provides you with everything required to process the requests in the backend, your implementation must still serve the requests to these endpoints. There is an Express adapter that you can use out-of-the box for this purpose. Check out the [documentation on the AJAX endpoints](docs/ajax-endpoints.md) for details.
 
 ### Serving static H5P core files for the client
 
