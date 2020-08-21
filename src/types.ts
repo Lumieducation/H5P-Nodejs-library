@@ -1308,6 +1308,21 @@ export interface IH5PConfig {
      */
     coreUrl: string;
     /**
+     * A list of JavaScript and CSS files that are added to the editor or
+     * player. The URLs in the lists are directly appended to the list of core
+     * scripts or styles without any modifications.
+     */
+    customizing: {
+        editor?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+        player?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+    };
+    /**
      * Path to the downloadable H5P packages.
      */
     downloadUrl: string;
@@ -1616,7 +1631,6 @@ export interface IHubInfo {
 
 export interface IPlayerModel {
     contentId: ContentParameters;
-    customScripts: string;
     downloadPath: string;
     integration: IIntegration;
     scripts: string[];

@@ -32,16 +32,21 @@ export default class H5PPlayer {
      * @param libraryStorage the storage for libraries (can be read only)
      * @param contentStorage the storage for content (can be read only)
      * @param config the configuration object
-     * @param integrationObjectDefaults (optional) the default values to use for the integration object
-     * @param globalCustomScripts (optional) references to these scripts will be added when rendering content
+     * @param integrationObjectDefaults (optional) the default values to use for
+     * the integration object
+     * @param globalCustomScripts (optional) references to these scripts will be
+     * added when rendering content; use (relative or absolute) URLs
+     * @param globalCustomStyles (optional) references to these styles will be
+     * added when rendering content; use (relative or absolute) URLs
      */
     constructor(
         private libraryStorage: ILibraryStorage,
         private contentStorage: IContentStorage,
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config),
         private globalCustomScripts: string[] = [],
-        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
+        private globalCustomStyles: string[] = []
     ) {
         log.info('initialize');
         this.renderer = player;
@@ -50,6 +55,16 @@ export default class H5PPlayer {
             libraryStorage,
             urlGenerator.libraryFile
         );
+        if (this.config.customizing?.player?.scripts) {
+            this.globalCustomScripts = this.globalCustomScripts.concat(
+                this.config.customizing.player.scripts
+            );
+        }
+        if (this.config.customizing?.player?.styles) {
+            this.globalCustomStyles = this.globalCustomStyles.concat(
+                this.config.customizing.player.styles
+            );
+        }
     }
     private clientTranslation: any;
     private libraryManager: LibraryManager;
@@ -91,9 +106,6 @@ export default class H5PPlayer {
 
         const model: IPlayerModel = {
             contentId,
-            customScripts: this.globalCustomScripts
-                .map((script) => `<script src="${script}"></script>`)
-                .join('\n'),
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
@@ -250,9 +262,7 @@ export default class H5PPlayer {
                 }
             },
             core: {
-                scripts: this.listCoreScripts().concat(
-                    this.globalCustomScripts
-                ),
+                scripts: this.listCoreScripts(),
                 styles: this.listCoreStyles()
             },
             l10n: {
@@ -445,10 +455,14 @@ export default class H5PPlayer {
     }
 
     private listCoreScripts(): string[] {
-        return playerAssetList.scripts.core.map(this.urlGenerator.coreFile);
+        return playerAssetList.scripts.core
+            .map(this.urlGenerator.coreFile)
+            .concat(this.globalCustomScripts);
     }
 
     private listCoreStyles(): string[] {
-        return playerAssetList.styles.core.map(this.urlGenerator.coreFile);
+        return playerAssetList.styles.core
+            .map(this.urlGenerator.coreFile)
+            .concat(this.globalCustomStyles);
     }
 }

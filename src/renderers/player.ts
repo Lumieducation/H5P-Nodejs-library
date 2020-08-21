@@ -13,7 +13,6 @@ export default (model) => `<!doctype html>
     <script>
         H5PIntegration = ${JSON.stringify(model.integration, null, 2)};
     </script>
-    ${model.customScripts}
 </head>
 <body>
     <div class="h5p-content" data-content-id="${model.contentId}"></div>

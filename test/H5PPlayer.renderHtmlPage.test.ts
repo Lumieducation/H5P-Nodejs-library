@@ -145,7 +145,6 @@ describe('Rendering the HTML page', () => {
                   "url": "/h5p"
                 };
                     </script>
-
                 </head>
                 <body>
                     <div class="h5p-content" data-content-id="foo"></div>
@@ -193,7 +192,7 @@ describe('Rendering the HTML page', () => {
             });
     });
 
-    it('includes custom scripts', () => {
+    it('includes custom scripts and styles', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const h5pObject = {};
@@ -204,20 +203,24 @@ describe('Rendering the HTML page', () => {
             }
         };
 
-        return new H5PPlayer(
+        const player = new H5PPlayer(
             mockLibraryStorage,
             undefined,
             new H5PConfig(undefined),
             undefined,
-            ['/test']
-        )
-            .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
-            .then((model) => {
-                expect((model as any).customScripts).toBe(
-                    '<script src="/test"></script>'
-                );
-            });
+            undefined,
+            ['/test.js'],
+            ['/test.css']
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect((model as any).scripts.includes('/test.js')).toEqual(true);
+        expect((model as any).styles.includes('/test.css')).toEqual(true);
     });
 
     it('includes custom integration', () => {
@@ -235,7 +238,7 @@ describe('Rendering the HTML page', () => {
             });
     });
 
-    it('includes custom scripts in the generated html', () => {
+    it('includes custom scripts and styles in the generated html', () => {
         const contentId = 'foo';
         const contentObject = {
             my: 'content'
@@ -247,7 +250,9 @@ describe('Rendering the HTML page', () => {
             undefined,
             new H5PConfig(undefined),
             undefined,
-            ['/test']
+            undefined,
+            ['/test.js'],
+            ['/test.css']
         )
             .render(contentId, contentObject, h5pObject as any)
             .then((html) => {
@@ -259,6 +264,7 @@ describe('Rendering the HTML page', () => {
                         
                         <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
                         <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
+                        <link rel="stylesheet" href="/test.css"/>
                         <script src="/h5p/core/js/jquery.js"></script>
                         <script src="/h5p/core/js/h5p.js"></script>
                         <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
@@ -268,6 +274,7 @@ describe('Rendering the HTML page', () => {
                         <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
                         <script src="/h5p/core/js/h5p-action-bar.js"></script>
                         <script src="/h5p/core/js/request-queue.js"></script>
+                        <script src="/test.js"></script>                        
                     
                         <script>
                             H5PIntegration = {
@@ -301,11 +308,12 @@ describe('Rendering the HTML page', () => {
                           "/h5p/core/js/h5p-confirmation-dialog.js",
                           "/h5p/core/js/h5p-action-bar.js",
                           "/h5p/core/js/request-queue.js",
-                          "/test"
+                          "/test.js"
                           ],
                           "styles":[
                           "/h5p/core/styles/h5p.css",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css"
+                          "/h5p/core/styles/h5p-confirmation-dialog.css",
+                          "/test.css"
                           ]
                           },
                       "l10n": {
@@ -384,7 +392,6 @@ describe('Rendering the HTML page', () => {
                       "url": "/h5p"
                     };
                         </script>
-                        <script src="/test"></script>
                     </head>
                     <body>
                         <div class="h5p-content" data-content-id="foo"></div>

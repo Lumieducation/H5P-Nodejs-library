@@ -88,7 +88,9 @@ export default class H5PEditor {
             'metadata-semantics': defaultMetadataSemanticsLanguageFile,
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
-        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config),
+        private globalCustomScripts: string[] = [],
+        private globalCustomStyles: string[] = []
     ) {
         log.info('initialize');
 
@@ -128,6 +130,17 @@ export default class H5PEditor {
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
+
+        if (this.config.customizing?.editor?.scripts) {
+            this.globalCustomScripts = this.globalCustomScripts.concat(
+                this.config.customizing.editor.scripts
+            );
+        }
+        if (this.config.customizing?.editor?.styles) {
+            this.globalCustomStyles = this.globalCustomStyles.concat(
+                this.config.customizing.editor.styles
+            );
+        }
     }
 
     public contentManager: ContentManager;
@@ -1061,7 +1074,8 @@ export default class H5PEditor {
                 editorAssetList.scripts.editor
                     .map(replacer)
                     .map(this.urlGenerator.editorLibraryFile)
-            );
+            )
+            .concat(this.globalCustomScripts);
     }
 
     private listCoreStyles(): string[] {
@@ -1071,7 +1085,8 @@ export default class H5PEditor {
                 editorAssetList.styles.editor.map(
                     this.urlGenerator.editorLibraryFile
                 )
-            );
+            )
+            .concat(this.globalCustomStyles);
     }
 
     private resolveDependencies(
