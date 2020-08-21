@@ -23,6 +23,13 @@ export default class UrlGenerator implements IUrlGenerator {
     };
 
     public libraryFile = (library: ILibraryName, file: string) => {
+        if (file.startsWith('/')) {
+            return this.getBaseUrl() + file;
+        }
+        if (file.startsWith('http://') || file.startsWith('https://')) {
+            return file;
+        }
+
         return `${this.getBaseUrl()}${this.config.librariesUrl}/${
             library.machineName
         }-${library.majorVersion}.${library.minorVersion}/${file}`;

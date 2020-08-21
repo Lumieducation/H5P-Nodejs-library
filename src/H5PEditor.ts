@@ -89,8 +89,19 @@ export default class H5PEditor {
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private globalCustomScripts: string[] = [],
-        private globalCustomStyles: string[] = []
+        private options?: {
+            customization?: {
+                alterLibraryFiles?: (
+                    library: ILibraryName,
+                    scripts: string[],
+                    styles: string[]
+                ) => { scripts: string[]; styles: string[] };
+                global?: {
+                    scripts?: string[];
+                    styles?: string[];
+                };
+            };
+        }
     ) {
         log.info('initialize');
 
@@ -131,11 +142,16 @@ export default class H5PEditor {
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
 
+        this.globalCustomScripts =
+            this.options?.customization?.global?.scripts || [];
         if (this.config.customizing?.editor?.scripts) {
             this.globalCustomScripts = this.globalCustomScripts.concat(
                 this.config.customizing.editor.scripts
             );
         }
+
+        this.globalCustomStyles =
+            this.options?.customization?.global?.styles || [];
         if (this.config.customizing?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
                 this.config.customizing.editor.styles
@@ -153,6 +169,8 @@ export default class H5PEditor {
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
     private dependencyGetter: DependencyGetter;
+    private globalCustomScripts: string[] = [];
+    private globalCustomStyles: string[] = [];
     private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
@@ -1040,14 +1058,29 @@ export default class H5PEditor {
             })
         );
 
-        (library.preloadedJs || []).forEach((script) =>
+        let cssFiles: string[] = library.preloadedCss?.map((f) => f.path) || [];
+        let jsFiles: string[] = library.preloadedJs?.map((f) => f.path) || [];
+
+        // If configured in the options, we call a hook to change the files
+        // included for certain libraries.
+        if (this.options?.customization?.alterLibraryFiles) {
+            const alteredFiles = this.options.customization.alterLibraryFiles(
+                libraryName,
+                jsFiles,
+                cssFiles
+            );
+            jsFiles = alteredFiles?.scripts;
+            cssFiles = alteredFiles?.styles;
+        }
+
+        jsFiles.forEach((script) =>
             assets.scripts.push(
-                this.urlGenerator.libraryFile(libraryName, script.path)
+                this.urlGenerator.libraryFile(libraryName, script)
             )
         );
-        (library.preloadedCss || []).forEach((style) =>
+        cssFiles.forEach((style) =>
             assets.styles.push(
-                this.urlGenerator.libraryFile(libraryName, style.path)
+                this.urlGenerator.libraryFile(libraryName, style)
             )
         );
 

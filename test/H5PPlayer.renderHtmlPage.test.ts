@@ -1,6 +1,6 @@
 import H5PPlayer from '../src/H5PPlayer';
 import H5PConfig from '../src/implementation/H5PConfig';
-import { ILibraryName } from '../src/types';
+import { ILibraryName, ILibraryMetadata } from '../src/types';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {
@@ -209,8 +209,14 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
-            ['/test.js'],
-            ['/test.css']
+            {
+                customization: {
+                    global: {
+                        scripts: ['/test.js'],
+                        styles: ['/test.css']
+                    }
+                }
+            }
         );
         player.setRenderer((mod) => mod);
         const model = await player.render(
@@ -251,8 +257,14 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
-            ['/test.js'],
-            ['/test.css']
+            {
+                customization: {
+                    global: {
+                        scripts: ['/test.js'],
+                        styles: ['/test.css']
+                    }
+                }
+            }
         )
             .render(contentId, contentObject, h5pObject as any)
             .then((html) => {
@@ -400,5 +412,202 @@ describe('Rendering the HTML page', () => {
                     </html>`.replace(/ /g, '')
                 );
             });
+    });
+
+    it('includes custom scripts and styles for certain content types', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const h5pObject = {
+            mainLibrary: 'Foo',
+            preloadedDependencies: [
+                {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0
+                }
+            ]
+        };
+
+        const mockLibraryStorage: any = {
+            getLibrary: async (
+                libName: ILibraryName
+            ): Promise<ILibraryMetadata> => {
+                return {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0,
+                    patchVersion: 0,
+                    runnable: 1,
+                    title: 'Foo',
+                    preloadedCss: [
+                        { path: 'preload1.css' },
+                        { path: 'preload2.css' },
+                        { path: '/absolute-preload3.css' }
+                    ],
+                    preloadedJs: [
+                        { path: 'preload1.js' },
+                        { path: 'preload2.js' }
+                    ]
+                };
+            }
+        };
+
+        const player = new H5PPlayer(
+            mockLibraryStorage,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            undefined,
+            {
+                customization: {
+                    alterLibraryFiles: (lib, scripts, styles) => {
+                        if (
+                            lib.machineName === 'Foo' &&
+                            lib.majorVersion === 1 &&
+                            lib.minorVersion === 0
+                        ) {
+                            return {
+                                scripts: [
+                                    ...scripts,
+                                    'preload3.js',
+                                    'https://example.com/script.js'
+                                ],
+                                styles: [styles[1], styles[2]]
+                            };
+                        }
+                        return { scripts, styles };
+                    }
+                }
+            }
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload1.js'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload2.js'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload3.js'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes('https://example.com/script.js')
+        ).toBe(true);
+
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload2.css'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).styles.includes('/h5p/absolute-preload3.css')
+        ).toBe(true);
+    });
+
+    it("doesn't include custom scripts and styles for other content types", async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const h5pObject = {
+            mainLibrary: 'Foo',
+            preloadedDependencies: [
+                {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0
+                }
+            ]
+        };
+
+        const mockLibraryStorage: any = {
+            getLibrary: async (
+                libName: ILibraryName
+            ): Promise<ILibraryMetadata> => {
+                return {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0,
+                    patchVersion: 0,
+                    runnable: 1,
+                    title: 'Foo',
+                    preloadedCss: [
+                        { path: 'preload1.css' },
+                        { path: 'preload2.css' }
+                    ],
+                    preloadedJs: [
+                        { path: 'preload1.js' },
+                        { path: 'preload2.js' }
+                    ]
+                };
+            }
+        };
+
+        const player = new H5PPlayer(
+            mockLibraryStorage,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            undefined,
+            {
+                customization: {
+                    alterLibraryFiles: (lib, scripts, styles) => {
+                        if (
+                            lib.machineName === 'Bar' &&
+                            lib.majorVersion === 1 &&
+                            lib.minorVersion === 0
+                        ) {
+                            return {
+                                scripts: [
+                                    ...scripts,
+                                    'preload3.js',
+                                    'https://example.com/script.js'
+                                ],
+                                styles: [styles[1], styles[2]]
+                            };
+                        }
+                        return { scripts, styles };
+                    }
+                }
+            }
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload1.js'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload2.js'
+            )
+        ).toBe(true);
+
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload1.css'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload2.css'
+            )
+        ).toBe(true);
     });
 });

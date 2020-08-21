@@ -34,10 +34,6 @@ export default class H5PPlayer {
      * @param config the configuration object
      * @param integrationObjectDefaults (optional) the default values to use for
      * the integration object
-     * @param globalCustomScripts (optional) references to these scripts will be
-     * added when rendering content; use (relative or absolute) URLs
-     * @param globalCustomStyles (optional) references to these styles will be
-     * added when rendering content; use (relative or absolute) URLs
      */
     constructor(
         private libraryStorage: ILibraryStorage,
@@ -45,8 +41,19 @@ export default class H5PPlayer {
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private globalCustomScripts: string[] = [],
-        private globalCustomStyles: string[] = []
+        private options?: {
+            customization?: {
+                alterLibraryFiles?: (
+                    library: ILibraryName,
+                    scripts: string[],
+                    styles: string[]
+                ) => { scripts: string[]; styles: string[] };
+                global?: {
+                    scripts?: string[];
+                    styles?: string[];
+                };
+            };
+        }
     ) {
         log.info('initialize');
         this.renderer = player;
@@ -55,18 +62,26 @@ export default class H5PPlayer {
             libraryStorage,
             urlGenerator.libraryFile
         );
-        if (this.config.customizing?.player?.scripts) {
+
+        this.globalCustomScripts =
+            this.options?.customization?.global?.scripts || [];
+        if (this.config.customizing?.editor?.scripts) {
             this.globalCustomScripts = this.globalCustomScripts.concat(
-                this.config.customizing.player.scripts
+                this.config.customizing.editor.scripts
             );
         }
-        if (this.config.customizing?.player?.styles) {
+
+        this.globalCustomStyles =
+            this.options?.customization?.global?.styles || [];
+        if (this.config.customizing?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
-                this.config.customizing.player.styles
+                this.config.customizing.editor.styles
             );
         }
     }
     private clientTranslation: any;
+    private globalCustomScripts: string[] = [];
+    private globalCustomStyles: string[] = [];
     private libraryManager: LibraryManager;
     private renderer: (model: IPlayerModel) => string | any;
 
@@ -184,14 +199,30 @@ export default class H5PPlayer {
                     libraries,
                     loaded
                 );
-                (lib.preloadedCss || []).forEach((asset) =>
+                let cssFiles: string[] =
+                    lib.preloadedCss?.map((f) => f.path) || [];
+                let jsFiles: string[] =
+                    lib.preloadedJs?.map((f) => f.path) || [];
+
+                // If configured in the options, we call a hook to change the files
+                // included for certain libraries.
+                if (this.options?.customization?.alterLibraryFiles) {
+                    const alteredFiles = this.options.customization.alterLibraryFiles(
+                        lib,
+                        jsFiles,
+                        cssFiles
+                    );
+                    jsFiles = alteredFiles?.scripts;
+                    cssFiles = alteredFiles?.styles;
+                }
+                (cssFiles || []).forEach((style) =>
                     assets.styles.push(
-                        this.urlGenerator.libraryFile(dependency, asset.path)
+                        this.urlGenerator.libraryFile(dependency, style)
                     )
                 );
-                (lib.preloadedJs || []).forEach((script) =>
+                (jsFiles || []).forEach((script) =>
                     assets.scripts.push(
-                        this.urlGenerator.libraryFile(dependency, script.path)
+                        this.urlGenerator.libraryFile(dependency, script)
                     )
                 );
             }
