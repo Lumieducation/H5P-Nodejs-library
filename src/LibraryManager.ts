@@ -138,6 +138,7 @@ export default class LibraryManager {
                     )
                 });
             }
+            return languageFileAsString;
         } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(
