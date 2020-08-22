@@ -10,16 +10,17 @@ import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
+    IFileStats,
     IFullLibraryName,
     IInstalledLibrary,
+    ILanguageFileEntry,
     ILibraryFileUrlResolver,
     ILibraryInstallResult,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
     IPath,
-    ISemanticsEntry,
-    IFileStats
+    ISemanticsEntry
 } from './types';
 
 const log = new Logger('LibraryManager');
@@ -37,7 +38,13 @@ export default class LibraryManager {
      * @param fileUrlResolver gets URLs at which a file in a library can be
      * downloaded. Must be passed through from the implementation.
      * @param alterLibrarySemantics a hook that allows implementations to change
-     * the semantics of certain libraries
+     * the semantics of certain libraries; should be used together with
+     * alterLibraryLanguageFile if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
+     * @param alterLibraryLanguageFile a hook that allows implementations to
+     * change the language files of certain libraries; should be used together
+     * with alterLibrarySemantics if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
@@ -48,7 +55,12 @@ export default class LibraryManager {
         private alterLibrarySemantics?: (
             library: ILibraryName,
             semantics: ISemanticsEntry[]
-        ) => ISemanticsEntry[]
+        ) => ISemanticsEntry[],
+        private alterLibraryLanguageFile?: (
+            library: ILibraryName,
+            languageFile: ILanguageFileEntry[],
+            language: string
+        ) => any[]
     ) {
         log.info('initialize');
     }
@@ -112,7 +124,20 @@ export default class LibraryManager {
                 library,
                 `language/${language}.json`
             );
-            return streamToString(stream);
+            const languageFileAsString = await streamToString(stream);
+            // If the implementation has specified one, we use a hook to alter
+            // the language files to match the structure of the altered
+            // semantics.
+            if (this.alterLibraryLanguageFile) {
+                log.debug('Calling hook to alter language file of library.');
+                return JSON.stringify({
+                    semantics: this.alterLibraryLanguageFile(
+                        library,
+                        JSON.parse(languageFileAsString).semantics,
+                        language
+                    )
+                });
+            }
         } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(

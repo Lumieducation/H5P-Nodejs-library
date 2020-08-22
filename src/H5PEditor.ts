@@ -75,6 +75,10 @@ export default class H5PEditor {
      * translations of keys in a certain language; the keys use the i18next
      * format (e.g. namespace:key). See the ITranslationFunction documentation
      * for more details.
+     * @param urlGenerator creates url strings for files, can be used to
+     * customize the paths in an implementation application
+     * @param options more options to customize the behavior of the editor; see
+     * IH5PEditorOptions documentation for more details
      */
     constructor(
         protected cache: IKeyValueStorage,
@@ -101,7 +105,8 @@ export default class H5PEditor {
         this.libraryManager = new LibraryManager(
             libraryStorage,
             this.urlGenerator.libraryFile,
-            this.options?.customization?.alterLibrarySemantics
+            this.options?.customization?.alterLibrarySemantics,
+            this.options?.customization?.alterLibraryLanguageFile
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -425,9 +430,9 @@ export default class H5PEditor {
 
     /**
      * Retrieves the installed languages for libraries
-     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
-     *                     In this list the names of the libraries don't use hyphens to separate
-     *                     machine name and version.
+     * @param libraryUbernames A list of libraries for which the language files
+     * should be retrieved. In this list the names of the libraries don't use
+     * hyphens to separate machine name and version.
      * @param language the language code to get the files for
      * @returns The strings of the language files
      */

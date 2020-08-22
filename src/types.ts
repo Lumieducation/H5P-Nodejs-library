@@ -56,7 +56,9 @@ export interface IAjaxResponse {
 export interface IAssets {
     scripts: string[];
     styles: string[];
-    translations: object;
+    translations: {
+        [machineName: string]: { semantics: ILanguageFileEntry[] };
+    };
 }
 
 /**
@@ -1689,16 +1691,64 @@ export interface ILibraryAdministrationOverviewItem {
  * The options that can be passed to the constructor of H5PEditor
  */
 export interface IH5PEditorOptions {
+    /**
+     * Enables customization of looks and behavior See the documentation page on
+     * customization for more details.
+     */
     customization?: {
+        /**
+         * This hook is called when the editor creates the list of files that
+         * are loaded when displaying the editor for a library.
+         * Note: This function should be immutable, so it shouldn't change the
+         * scripts and styles parameters but create new arrays!
+         * @param library the library that is currently being loaded
+         * @param scripts the original list of scripts that will be loaded
+         * @param styles the original list of styles that will be loaded
+         * @returns the altered lists of scripts and styles
+         */
         alterLibraryFiles?: (
             library: ILibraryName,
             scripts: string[],
             styles: string[]
         ) => { scripts: string[]; styles: string[] };
+        /**
+         * This hook is called when the editor retrieves the language file of a
+         * library in a specific language. You can change the language file in
+         * the hook, e.g. by adding or removing entries.
+         * Note: This function should be immutable, so it shouldn't change the
+         * languageFile parameter but return a clone!
+         * Note: If you change the semantic structure of a library, you must
+         * also change the language files by using the this hook!
+         * @param library the library that is currently being loaded
+         * @param languageFile the original language file
+         * @returns the changed language file
+         */
+        alterLibraryLanguageFile?: (
+            library: ILibraryName,
+            languageFile: ILanguageFileEntry[],
+            language: string
+        ) => any[];
+        /**
+         * This hook is called when the editor retrieves the semantics of a
+         * library. You can change the semantics in the hook, e.g. by adding or
+         * removing entries.
+         * Note: This function should be immutable, so it shouldn't change the
+         * semantics parameter but return a clone!
+         * Note: If you change the semantic structure of a library, you must
+         * also change its language files by using the
+         * `alterLibraryLanguageFile` hook!
+         * @param library the library that is currently being loaded
+         * @param semantics the original semantic structure
+         * @returns the changed semantic structure
+         */
         alterLibrarySemantics?: (
             library: ILibraryName,
             semantics: ISemanticsEntry[]
         ) => ISemanticsEntry[];
+        /**
+         * Lists of JavaScript and CSS files that should always be appended to
+         * the list of core editor files.
+         */
         global?: {
             scripts?: string[];
             styles?: string[];
@@ -1710,15 +1760,79 @@ export interface IH5PEditorOptions {
  * The options that can be passed to the constructor of H5PPlayer
  */
 export interface IH5PPlayerOptions {
+    /**
+     * Enables customization of looks and behavior See the documentation page on
+     * customization for more details.
+     */
     customization?: {
+        /**
+         * This hook is called when the player creates the list of files that
+         * are loaded when playing content with the library.
+         * Note: This function should be immutable, so it shouldn't change the
+         * scripts and styles parameters but create new arrays!
+         * @param library the library that is currently being loaded
+         * @param scripts the original list of scripts that will be loaded
+         * @param styles the original list of styles that will be loaded
+         * @returns the altered lists of scripts and styles
+         */
         alterLibraryFiles?: (
             library: ILibraryName,
             scripts: string[],
             styles: string[]
         ) => { scripts: string[]; styles: string[] };
+        /**
+         * Lists of JavaScript and CSS files that should always be appended to
+         * the list of core player files.
+         */
         global?: {
             scripts?: string[];
             styles?: string[];
         };
     };
+}
+
+/**
+ * The structure of entries in language files. This is basically a subset of
+ * translatable ISemanticsEntry properties.
+ */
+export interface ILanguageFileEntry {
+    /**
+     * The default value of the field.
+     */
+    default?: string;
+    /**
+     * An explanation text below the widget shown in the editor
+     */
+    description?: string;
+    /**
+     * (for list) The name for a single entity in a list.
+     */
+    entity?: string;
+    /**
+     * (in lists only) defines a single field type in the list
+     */
+    field?: ILanguageFileEntry;
+    /**
+     * (in groups only) a list of field definitions
+     */
+    fields?: ILanguageFileEntry[];
+    /**
+     * A help text that can be collapsed.
+     */
+    important?: {
+        description: string;
+        example: string;
+    };
+    /**
+     * The text displayed in the editor for the entry.
+     */
+    label?: string;
+    /**
+     * (for select) the options to choose from
+     */
+    options?: any[] | { label: string }[];
+    /**
+     * The text displayed in a text box if the user has entered nothing so far.
+     */
+    placeholder?: string;
 }

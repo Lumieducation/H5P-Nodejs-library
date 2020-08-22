@@ -35,6 +35,10 @@ export default class H5PPlayer {
      * @param config the configuration object
      * @param integrationObjectDefaults (optional) the default values to use for
      * the integration object
+     * @param urlGenerator creates url strings for files, can be used to
+     * customize the paths in an implementation application
+     * @param options more options to customize the behavior of the player; see
+     * IH5PPlayerOptions documentation for more details
      */
     constructor(
         private libraryStorage: ILibraryStorage,
