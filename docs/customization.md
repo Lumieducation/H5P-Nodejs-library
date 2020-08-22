@@ -62,7 +62,7 @@ You can add lists of JavaScript or CSS files to the configuration like this:
 ```json
 {
     // ... further configuration values ...
-    "customizing": {
+    "customization": {
         "editor": {
             "scripts": [
                 "/url/of/script/1.js",

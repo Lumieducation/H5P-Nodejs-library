@@ -1314,7 +1314,7 @@ export interface IH5PConfig {
      * player. The URLs in the lists are directly appended to the list of core
      * scripts or styles without any modifications.
      */
-    customizing: {
+    customization: {
         editor?: {
             scripts?: string[];
             styles?: string[];

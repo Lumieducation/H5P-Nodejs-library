@@ -32,7 +32,7 @@ export default class H5PConfig implements IH5PConfig {
         minor: 24
     };
     public coreUrl: string = '/core';
-    public customizing: {
+    public customization: {
         editor?: {
             scripts?: string[];
             styles?: string[];

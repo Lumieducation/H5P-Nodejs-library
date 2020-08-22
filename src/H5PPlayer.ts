@@ -58,17 +58,17 @@ export default class H5PPlayer {
 
         this.globalCustomScripts =
             this.options?.customization?.global?.scripts || [];
-        if (this.config.customizing?.editor?.scripts) {
+        if (this.config.customization?.editor?.scripts) {
             this.globalCustomScripts = this.globalCustomScripts.concat(
-                this.config.customizing.editor.scripts
+                this.config.customization.editor.scripts
             );
         }
 
         this.globalCustomStyles =
             this.options?.customization?.global?.styles || [];
-        if (this.config.customizing?.editor?.styles) {
+        if (this.config.customization?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
-                this.config.customizing.editor.styles
+                this.config.customization.editor.styles
             );
         }
     }
