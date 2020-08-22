@@ -37,6 +37,7 @@ import {
     IContentStorage,
     IEditorModel,
     IH5PConfig,
+    IH5PEditorOptions,
     IHubInfo,
     IIntegration,
     IKeyValueStorage,
@@ -89,23 +90,7 @@ export default class H5PEditor {
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private options?: {
-            customization?: {
-                alterLibraryFiles?: (
-                    library: ILibraryName,
-                    scripts: string[],
-                    styles: string[]
-                ) => { scripts: string[]; styles: string[] };
-                alterLibrarySemantics?: (
-                    library: ILibraryName,
-                    semantics: ISemanticsEntry[]
-                ) => ISemanticsEntry[];
-                global?: {
-                    scripts?: string[];
-                    styles?: string[];
-                };
-            };
-        }
+        private options?: IH5PEditorOptions
     ) {
         log.info('initialize');
 

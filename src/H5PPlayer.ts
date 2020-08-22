@@ -6,13 +6,14 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
+    IH5PPlayerOptions,
     IInstalledLibrary,
     IIntegration,
+    ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
     IPlayerModel,
-    IUrlGenerator,
-    ILibraryMetadata
+    IUrlGenerator
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -41,19 +42,7 @@ export default class H5PPlayer {
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private options?: {
-            customization?: {
-                alterLibraryFiles?: (
-                    library: ILibraryName,
-                    scripts: string[],
-                    styles: string[]
-                ) => { scripts: string[]; styles: string[] };
-                global?: {
-                    scripts?: string[];
-                    styles?: string[];
-                };
-            };
-        }
+        private options?: IH5PPlayerOptions
     ) {
         log.info('initialize');
         this.renderer = player;

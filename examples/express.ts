@@ -24,8 +24,8 @@ const start = async () => {
     const translationFunction = await i18next
         .use(i18nextFsBackend)
         .use(i18nextHttpMiddleware.LanguageDetector) // This will add the
-        // properties language and languages to the req object.
-        // See https://github.com/i18next/i18next-http-middleware#adding-own-detection-functionality
+        // properties language and languages to the req object. See
+        // https://github.com/i18next/i18next-http-middleware#adding-own-detection-functionality
         // how to detect language in your own fashion. You can also choose not
         // to add a detector if you only want to use one language.
         .init({
@@ -67,9 +67,14 @@ const start = async () => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
-        path.resolve('h5p/libraries'), // the path on the local disc where libraries should be stored)
-        path.resolve('h5p/content'), // the path on the local disc where content is stored. Only used / necessary if you use the local filesystem content storage class.
-        path.resolve('h5p/temporary-storage'), // the path on the local disc where temporary files (uploads) should be stored. Only used / necessary if you use the local filesystem temporary storage class.
+        path.resolve('h5p/libraries'), // the path on the local disc where
+        // libraries should be stored)
+        path.resolve('h5p/content'), // the path on the local disc where content
+        // is stored. Only used / necessary if you use the local filesystem
+        // content storage class.
+        path.resolve('h5p/temporary-storage'), // the path on the local disc
+        // where temporary files (uploads) should be stored. Only used /
+        // necessary if you use the local filesystem temporary storage class.
         (key, language) => {
             return translationFunction(key, { lng: language });
         }
@@ -120,8 +125,10 @@ const start = async () => {
         h5pEditor.config.baseUrl,
         h5pAjaxExpressRouter(
             h5pEditor,
-            path.resolve('h5p/core'), // the path on the local disc where the files of the JavaScript client of the player are stored
-            path.resolve('h5p/editor'), // the path on the local disc where the files of the JavaScript client of the editor are stored
+            path.resolve('h5p/core'), // the path on the local disc where the
+            // files of the JavaScript client of the player are stored
+            path.resolve('h5p/editor'), // the path on the local disc where the
+            // files of the JavaScript client of the editor are stored
             undefined,
             'auto' // You can change the language of the editor here by setting
             // the language code you need here. 'auto' means the route will try
@@ -145,8 +152,8 @@ const start = async () => {
         )
     );
 
-    // The LibraryAdministrationExpress routes are REST endpoints that offer library
-    // management functionality.
+    // The LibraryAdministrationExpress routes are REST endpoints that offer
+    // library management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
         libraryAdministrationExpressRouter(h5pEditor)

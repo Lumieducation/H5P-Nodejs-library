@@ -1684,3 +1684,41 @@ export interface ILibraryAdministrationOverviewItem {
     runnable: boolean;
     title: string;
 }
+
+/**
+ * The options that can be passed to the constructor of H5PEditor
+ */
+export interface IH5PEditorOptions {
+    customization?: {
+        alterLibraryFiles?: (
+            library: ILibraryName,
+            scripts: string[],
+            styles: string[]
+        ) => { scripts: string[]; styles: string[] };
+        alterLibrarySemantics?: (
+            library: ILibraryName,
+            semantics: ISemanticsEntry[]
+        ) => ISemanticsEntry[];
+        global?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+    };
+}
+
+/**
+ * The options that can be passed to the constructor of H5PPlayer
+ */
+export interface IH5PPlayerOptions {
+    customization?: {
+        alterLibraryFiles?: (
+            library: ILibraryName,
+            scripts: string[],
+            styles: string[]
+        ) => { scripts: string[]; styles: string[] };
+        global?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+    };
+}
