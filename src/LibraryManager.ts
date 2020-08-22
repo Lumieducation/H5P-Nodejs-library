@@ -60,7 +60,7 @@ export default class LibraryManager {
             library: ILibraryName,
             languageFile: ILanguageFileEntry[],
             language: string
-        ) => any[]
+        ) => ILanguageFileEntry[]
     ) {
         log.info('initialize');
     }

@@ -1309,19 +1309,25 @@ export interface IH5PConfig {
      * Path to the H5P core files directory.
      */
     coreUrl: string;
+
     /**
-     * A list of JavaScript and CSS files that are added to the editor or
-     * player. The URLs in the lists are directly appended to the list of core
-     * scripts or styles without any modifications.
+     * Options that change the looks and behavior of H5P.
      */
     customization: {
-        editor?: {
-            scripts?: string[];
-            styles?: string[];
-        };
-        player?: {
-            scripts?: string[];
-            styles?: string[];
+        /**
+         * Lists of JavaScript and CSS files that are added to the editor or
+         * player. The URLs in the lists are directly appended to the list of core
+         * scripts or styles without any modifications.
+         */
+        global: {
+            editor?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+            player?: {
+                scripts?: string[];
+                styles?: string[];
+            };
         };
     };
     /**
@@ -1721,13 +1727,14 @@ export interface IH5PEditorOptions {
          * also change the language files by using the this hook!
          * @param library the library that is currently being loaded
          * @param languageFile the original language file
+         * @param language the language for which the entries should be changed
          * @returns the changed language file
          */
         alterLibraryLanguageFile?: (
             library: ILibraryName,
             languageFile: ILanguageFileEntry[],
             language: string
-        ) => any[];
+        ) => ILanguageFileEntry[];
         /**
          * This hook is called when the editor retrieves the semantics of a
          * library. You can change the semantics in the hook, e.g. by adding or

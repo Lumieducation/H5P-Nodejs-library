@@ -139,17 +139,17 @@ export default class H5PEditor {
 
         this.globalCustomScripts =
             this.options?.customization?.global?.scripts || [];
-        if (this.config.customization?.editor?.scripts) {
+        if (this.config.customization?.global?.editor?.scripts) {
             this.globalCustomScripts = this.globalCustomScripts.concat(
-                this.config.customization.editor.scripts
+                this.config.customization.global?.editor.scripts
             );
         }
 
         this.globalCustomStyles =
             this.options?.customization?.global?.styles || [];
-        if (this.config.customization?.editor?.styles) {
+        if (this.config.customization?.global?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
-                this.config.customization.editor.styles
+                this.config.customization.global?.editor.styles
             );
         }
     }

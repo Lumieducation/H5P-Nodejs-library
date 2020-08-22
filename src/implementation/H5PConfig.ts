@@ -33,22 +33,26 @@ export default class H5PConfig implements IH5PConfig {
     };
     public coreUrl: string = '/core';
     public customization: {
-        editor?: {
-            scripts?: string[];
-            styles?: string[];
-        };
-        player?: {
-            scripts?: string[];
-            styles?: string[];
+        global: {
+            editor?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+            player?: {
+                scripts?: string[];
+                styles?: string[];
+            };
         };
     } = {
-        editor: {
-            scripts: [],
-            styles: []
-        },
-        player: {
-            scripts: [],
-            styles: []
+        global: {
+            editor: {
+                scripts: [],
+                styles: []
+            },
+            player: {
+                scripts: [],
+                styles: []
+            }
         }
     };
     public downloadUrl: string = '/download';
