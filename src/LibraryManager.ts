@@ -1,8 +1,7 @@
-import { ReadStream } from 'fs';
+import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
-import { Stream } from 'stream';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -77,7 +76,7 @@ export default class LibraryManager {
     public async getFileStream(
         library: ILibraryName,
         file: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.debug(
             `getting file ${file} from library ${LibraryName.toUberName(
                 library
@@ -518,7 +517,7 @@ export default class LibraryManager {
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);
                 }
-                const readStream: Stream = fsExtra.createReadStream(
+                const readStream: Readable = fsExtra.createReadStream(
                     fileFullPath
                 );
                 return this.libraryStorage.addFile(
@@ -543,7 +542,7 @@ export default class LibraryManager {
         log.silly(
             `loading ${file} for library ${LibraryName.toUberName(library)}`
         );
-        const stream: Stream = await this.libraryStorage.getFileStream(
+        const stream: Readable = await this.libraryStorage.getFileStream(
             library,
             file
         );

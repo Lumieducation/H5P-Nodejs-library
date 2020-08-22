@@ -339,7 +339,7 @@ export default class H5PEditor {
     public async getLibraryFileStream(
         library: ILibraryName,
         filename: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         return this.libraryManager.getFileStream(library, filename);
     }
 

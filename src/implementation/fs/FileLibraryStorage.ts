@@ -1,8 +1,8 @@
-import fsExtra, { ReadStream } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { Stream } from 'stream';
+import { Readable } from 'stream';
 import { streamToString } from '../../helpers/StreamHelpers';
 
 import {
@@ -79,7 +79,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async addFile(
         library: ILibraryName,
         filename: string,
-        stream: Stream
+        stream: Readable
     ): Promise<boolean> {
         checkFilename(filename);
         if (!(await this.libraryExists(library))) {
@@ -308,7 +308,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async getFileStream(
         library: ILibraryName,
         filename: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         if (
             !(await this.fileExists(library, filename)) ||
             this.isIgnored(filename)

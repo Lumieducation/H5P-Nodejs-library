@@ -1,11 +1,11 @@
-import { Stream } from 'stream';
+import { Readable } from 'stream';
 
 /**
  * Returns the contents of a stream as a string
  * @param stream the stream to read
  * @returns
  */
-export function streamToString(stream: Stream): Promise<string> {
+export function streamToString(stream: Readable): Promise<string> {
     /* from https://stackoverflow.com/questions/10623798/read-contents-of-node-js-stream-into-a-string-variable */
     const chunks = [];
     return new Promise((resolve, reject) => {
