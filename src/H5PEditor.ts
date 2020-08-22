@@ -115,7 +115,8 @@ export default class H5PEditor {
         this.contentTypeCache = new ContentTypeCache(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            this.urlGenerator.libraryFile
+            this.urlGenerator.libraryFile,
+            this.options?.customization?.alterLibrarySemantics
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -139,7 +140,7 @@ export default class H5PEditor {
             this.contentStorer
         );
         this.packageExporter = new PackageExporter(
-            this.libraryStorage,
+            this.libraryManager,
             this.contentStorage,
             config
         );

@@ -40,7 +40,7 @@ export async function importAndExportPackage(
             );
 
             const packageExporter = new PackageExporter(
-                libraryStorage,
+                libraryManager,
                 contentStorage,
                 { exportMaxContentPathLength }
             );
