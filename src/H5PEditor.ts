@@ -96,6 +96,10 @@ export default class H5PEditor {
                     scripts: string[],
                     styles: string[]
                 ) => { scripts: string[]; styles: string[] };
+                alterLibrarySemantics?: (
+                    library: ILibraryName,
+                    semantics: ISemanticsEntry[]
+                ) => ISemanticsEntry[];
                 global?: {
                     scripts?: string[];
                     styles?: string[];
@@ -1064,6 +1068,7 @@ export default class H5PEditor {
         // If configured in the options, we call a hook to change the files
         // included for certain libraries.
         if (this.options?.customization?.alterLibraryFiles) {
+            log.debug('Calling alterLibraryFiles hook');
             const alteredFiles = this.options.customization.alterLibraryFiles(
                 libraryName,
                 jsFiles,

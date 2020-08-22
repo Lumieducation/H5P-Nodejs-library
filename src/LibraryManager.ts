@@ -32,18 +32,23 @@ const log = new Logger('LibraryManager');
 export default class LibraryManager {
     /**
      *
-     * @param libraryStorage The library repository that persists library somewhere.
+     * @param libraryStorage the library repository that persists library
+     * somewhere.
+     * @param fileUrlResolver gets URLs at which a file in a library can be
+     * downloaded. Must be passed through from the implementation.
+     * @param alterLibrarySemantics a hook that allows implementations to change
+     * the semantics of certain libraries
      */
     constructor(
         public libraryStorage: ILibraryStorage,
-        /**
-         * Gets URLs at which a file in a library can be downloaded. Must be passed
-         * through from the implementation.
-         */
         private fileUrlResolver: ILibraryFileUrlResolver = (
             library,
             filename
-        ) => '' // default is there to avoid having to pass empty function in tests
+        ) => '', // default is there to avoid having to pass empty function in tests
+        private alterLibrarySemantics?: (
+            library: ILibraryName,
+            semantics: ISemanticsEntry[]
+        ) => ISemanticsEntry[]
     ) {
         log.info('initialize');
     }
@@ -163,7 +168,27 @@ export default class LibraryManager {
         log.debug(
             `loading semantics for library ${LibraryName.toUberName(library)}`
         );
-        return this.getJsonFile(library, 'semantics.json');
+        const originalSemantics = await this.getJsonFile(
+            library,
+            'semantics.json'
+        );
+
+        // We call the hook that allows implementations to alter library
+        // semantics;
+        if (this.alterLibrarySemantics) {
+            log.debug('Calling alterLibrarySemantics hook');
+            const alteredSemantics = await this.alterLibrarySemantics(
+                library,
+                originalSemantics
+            );
+            if (!alteredSemantics) {
+                throw new Error(
+                    'alterLibrarySemantics returned undefined, but must return a proper list of semantic entries'
+                );
+            }
+            return alteredSemantics;
+        }
+        return originalSemantics;
     }
 
     /**

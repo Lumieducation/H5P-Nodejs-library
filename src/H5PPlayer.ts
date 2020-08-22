@@ -207,6 +207,7 @@ export default class H5PPlayer {
                 // If configured in the options, we call a hook to change the files
                 // included for certain libraries.
                 if (this.options?.customization?.alterLibraryFiles) {
+                    log.debug('Calling alterLibraryFiles hook');
                     const alteredFiles = this.options.customization.alterLibraryFiles(
                         lib,
                         jsFiles,

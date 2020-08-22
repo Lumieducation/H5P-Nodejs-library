@@ -5,6 +5,7 @@ import { withDir } from 'tmp-promise';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InstalledLibrary from '../src/InstalledLibrary';
 import LibraryManager from '../src/LibraryManager';
+import LibraryName from '../src/LibraryName';
 
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
@@ -294,5 +295,51 @@ describe('listLanguages()', () => {
         const library = new InstalledLibrary('H5P.Example2', 1, 2, 0);
 
         await expect(libManager.listLanguages(library)).resolves.toEqual([]);
+    });
+});
+
+describe('alterLibrarySemantics hook', () => {
+    it('returns changed semantics when a hook is specified', async () => {
+        const library = new InstalledLibrary('H5P.Example1', 1, 1, 0);
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`),
+            () => '',
+            (lib, semantics) => {
+                if (LibraryName.equal(lib, library)) {
+                    return [
+                        ...semantics,
+                        {
+                            name: 'greeting2',
+                            type: 'text'
+                        }
+                    ];
+                }
+                return semantics;
+            }
+        );
+
+        expect(libManager.getSemantics(library)).resolves.toMatchObject([
+            {
+                label: 'Greeting text',
+                name: 'greeting',
+                type: 'text',
+                importance: 'high',
+                default: 'Hello world!',
+                description: 'The greeting text displayed to the end user.'
+            },
+            {
+                label: 'Card image',
+                name: 'image',
+                type: 'image',
+                importance: 'low',
+                optional: true,
+                description:
+                    'Image shown on card, optional. Without this the card will show just the text.'
+            },
+            {
+                name: 'greeting2',
+                type: 'text'
+            }
+        ]);
     });
 });
