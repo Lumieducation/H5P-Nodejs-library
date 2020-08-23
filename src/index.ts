@@ -13,6 +13,7 @@ import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
+import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 
 // Interfaces
 import {
@@ -48,6 +49,10 @@ const fsImplementations = {
     JsonStorage
 };
 
+const cacheImplementations = {
+    CachedLibraryStorage
+};
+
 export {
     // classes
     H5PEditor,
@@ -80,5 +85,6 @@ export {
     // implementations
     H5PConfig,
     fs,
-    fsImplementations
+    fsImplementations,
+    cacheImplementations
 };
