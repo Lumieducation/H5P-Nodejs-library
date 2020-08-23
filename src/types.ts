@@ -767,6 +767,10 @@ export interface ILibraryStorage {
      */
     getDependentsCount(library: ILibraryName): Promise<number>;
 
+    getFileAsJson(library: ILibraryName, file: string): Promise<any>;
+
+    getFileAsString(library: ILibraryName, file: string): Promise<string>;
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
@@ -814,13 +818,6 @@ export interface ILibraryStorage {
      * @returns true if the library is installed
      */
     isInstalled(library: ILibraryName): Promise<boolean>;
-
-    /**
-     * Checks if the library has been installed.
-     * @param name the library name
-     * @returns true if the library has been installed
-     */
-    libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
      * Returns a list of library addons that are installed in the system.

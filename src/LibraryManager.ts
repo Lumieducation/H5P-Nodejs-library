@@ -102,11 +102,11 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const stream = await this.getFileStream(
+            const result = await this.libraryStorage.getFileAsString(
                 library,
                 `language/${language}.json`
             );
-            return streamToString(stream);
+            return result;
         } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(
@@ -162,7 +162,7 @@ export default class LibraryManager {
         log.debug(
             `loading semantics for library ${LibraryName.toUberName(library)}`
         );
-        return this.getJsonFile(library, 'semantics.json');
+        return this.libraryStorage.getFileAsJson(library, 'semantics.json');
     }
 
     /**
@@ -275,7 +275,7 @@ export default class LibraryManager {
      * @returns true if the library has been installed
      */
     public async libraryExists(library: LibraryName): Promise<boolean> {
-        return this.libraryStorage.libraryExists(library);
+        return this.libraryStorage.isInstalled(library);
     }
 
     /**
@@ -527,27 +527,6 @@ export default class LibraryManager {
                 );
             })
         );
-    }
-
-    /**
-     * Gets the parsed contents of a library file that is JSON.
-     * @param library
-     * @param file
-     * @returns The content or undefined if there was an error
-     */
-    private async getJsonFile(
-        library: ILibraryName,
-        file: string
-    ): Promise<any> {
-        log.silly(
-            `loading ${file} for library ${LibraryName.toUberName(library)}`
-        );
-        const stream: Readable = await this.libraryStorage.getFileStream(
-            library,
-            file
-        );
-        const jsonString: string = await streamToString(stream);
-        return JSON.parse(jsonString);
     }
 
     /**

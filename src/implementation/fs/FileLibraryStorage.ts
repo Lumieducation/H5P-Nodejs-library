@@ -82,7 +82,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         stream: Readable
     ): Promise<boolean> {
         checkFilename(filename);
-        if (!(await this.libraryExists(library))) {
+        if (!(await this.isInstalled(library))) {
             throw new H5pError(
                 'storage-file-implementations:add-library-file-not-installed',
                 { filename, libraryName: LibraryName.toUberName(library) },
@@ -145,7 +145,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns
      */
     public async clearFiles(library: ILibraryName): Promise<void> {
-        if (!(await this.libraryExists(library))) {
+        if (!(await this.isInstalled(library))) {
             throw new H5pError(
                 'storage-file-implementations:clear-library-not-found',
                 {
@@ -271,6 +271,22 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return allDependencies[LibraryName.toUberName(library)] ?? 0;
     }
 
+    public async getFileAsJson(
+        library: ILibraryName,
+        file: string
+    ): Promise<any> {
+        const str = await this.getFileAsString(library, file);
+        return JSON.parse(str);
+    }
+
+    public async getFileAsString(
+        library: ILibraryName,
+        file: string
+    ): Promise<string> {
+        const stream: Readable = await this.getFileStream(library, file);
+        return streamToString(stream);
+    }
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
@@ -370,7 +386,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns the metadata
      */
     public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
-        if (!(await this.libraryExists(library))) {
+        if (!(await this.isInstalled(library))) {
             throw new H5pError(
                 'storage-file-implementations:get-library-metadata-not-installed',
                 { libraryName: LibraryName.toUberName(library) },
@@ -393,15 +409,6 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async isInstalled(library: ILibraryName): Promise<boolean> {
         return fsExtra.pathExists(this.getFilePath(library, 'library.json'));
-    }
-
-    /**
-     * Checks if the library has been installed.
-     * @param name the library name
-     * @returns true if the library has been installed
-     */
-    public async libraryExists(name: ILibraryName): Promise<boolean> {
-        return fsExtra.pathExists(this.getDirectoryPath(name));
     }
 
     /**
