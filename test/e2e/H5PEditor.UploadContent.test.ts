@@ -34,16 +34,22 @@ describe('e2e test: upload content', () => {
             resolveEditorFunctions[key] = undefined;
         });
 
-        page.on('response', (response) => {
+        page.on('response', async (response) => {
             if (
                 response.status() >= 400 &&
                 response.status() < 600 &&
-                response.url().startsWith(host) && // we ignore external errors
-                !/\content\/(\d+)\/$/.test(response.url()) // we ignore requests
-                // that result from missing resource files in packages
+                // we ignore requests that result in errors on different servers
+                response.url().startsWith(host) &&
+                // we ignore requests that result from missing resource files
+                // in packages
+                !/\/content\/(\d+)\/$/.test(response.url()) &&
+                // we ignore missing favicons
+                !/favicon\.ico$/.test(response.url())
             ) {
                 throw new Error(
-                    `Received status code ${response.status()}: ${response.statusText()} for request to ${response.url()}`
+                    `Received status code ${response.status()} ${response.statusText()} for ${response
+                        .request()
+                        .method()} request to ${response.url()}\n${await response.text()}`
                 );
             }
         });
@@ -56,8 +62,8 @@ describe('e2e test: upload content', () => {
 
     for (const file of fsExtra
         .readdirSync(examplesPath)
-        // We ignore H5P.Audio as the requests for the OGG file is never resolved in some cases
-        // See #553 for more details.
+        // We ignore H5P.Audio as the requests for the OGG file is never
+        // resolved in some cases See #553 for more details.
         .filter((f) => f !== 'H5P.Audio.h5p')) {
         it(`uploading and then saving ${file}`, async () => {
             if (errorFunction) {
@@ -104,9 +110,7 @@ describe('e2e test: upload content', () => {
             await uploadHandle.uploadFile(path.join(examplesPath, file));
             await contentFrame.waitForSelector('button.use-button');
             await contentFrame.click('button.use-button');
-            try {
-                await contentFrame.select('div.h5p-hub-message.info');
-            } catch {
+            if (!(await contentFrame.$('div.h5p-hub-message.info'))) {
                 await contentFrame.waitForSelector('div.h5p-hub-message.info', {
                     timeout: 60000 // increased timeout as validation can take
                     // ages
@@ -115,11 +119,14 @@ describe('e2e test: upload content', () => {
 
             await editorLoadedPromise;
 
-            await page.click('input[type="submit"]');
-            await page.waitForNavigation({
+            await page.waitFor(500);
+            await page.waitForSelector('#save-h5p');
+            const navPromise = page.waitForNavigation({
                 waitUntil: ['load', 'networkidle0'],
-                timeout: 60000
+                timeout: 30000
             });
+            await page.click('#save-h5p');
+            await navPromise;
 
             expect(errorHandler).not.toHaveBeenCalled();
         }, 60000);

@@ -21,7 +21,7 @@ ${model.scripts
             <div class="h5p-editor"></div>
         </div>
     </div>
-    <input type="submit" name="submit" value="Create" class="button button-primary button-large">
+    <input id="save-h5p" type="submit" name="submit" value="Create" class="button button-primary button-large">
 </form>
 <script>
 var ns = H5PEditor;
