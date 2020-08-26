@@ -4,13 +4,12 @@ import fsExtra from 'fs-extra';
 
 declare var window;
 
-describe('e2e test: upload content', () => {
-    const examplesPath = path.resolve('test/data/hub-content');
-    const host = 'http://localhost:8080';
+const examplesPath = path.resolve('test/data/hub-content');
+const host = 'http://localhost:8080';
 
+describe('e2e test: upload content and save', () => {
     let browser: puppeteer.Browser;
     let page: puppeteer.Page;
-    let errorFunction;
     const resolveEditorFunctions: { [key: string]: () => void } = {};
 
     beforeAll(async () => {
@@ -29,11 +28,22 @@ describe('e2e test: upload content', () => {
         await page.setUserAgent(
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
         );
-        await page.exposeFunction('oneditorloaded', (key) => {
+
+        // the function onEditorLoaded is called in the browser when the H5P
+        // editor has finished loading. To be able to wait for this event, we
+        // collect the resolve function of the promises in the
+        // resolveEditorFunctions object.
+        await page.exposeFunction('onEditorLoaded', (key) => {
             resolveEditorFunctions[key]();
             resolveEditorFunctions[key] = undefined;
         });
 
+        // Tests should fail when there is an error on the page
+        page.on('pageerror', (error) => {
+            throw new Error(`There was in error in the page: ${error.message}`);
+        });
+
+        // Tests should fail when there is a failed request to our server
         page.on('response', async (response) => {
             if (
                 response.status() >= 400 &&
@@ -66,36 +76,27 @@ describe('e2e test: upload content', () => {
         // resolved in some cases See #553 for more details.
         .filter((f) => f !== 'H5P.Audio.h5p')) {
         it(`uploading and then saving ${file}`, async () => {
-            if (errorFunction) {
-                page.removeListener('pageerror', errorFunction);
-            }
-            const errorHandler = jest.fn();
-            errorFunction = (error) => {
-                // tslint:disable-next-line: no-console
-                console.error(`Error when playing file: ${error}`);
-                errorHandler();
-            };
-            page.on('pageerror', errorFunction);
-
             await page.goto(`${host}/h5p/new`, {
                 waitUntil: ['load', 'networkidle0']
             });
 
+            // The editor is displayed within an iframe, so we must get it
             await page.waitFor('iframe.h5p-editor-iframe');
             const contentFrame = await (
                 await page.$('iframe.h5p-editor-iframe')
             ).contentFrame();
 
             // This code listens for a H5P event to detect when the editor has
-            // fully loaded
-
+            // fully loaded. Later, the test waits for editorLoadedPromise to
+            // resolve.
             const editorLoadedPromise = new Promise((res) => {
                 resolveEditorFunctions[file] = res;
             });
 
+            // Inject the code to catch the editorloaded event.
             await page.evaluate((browserFile) => {
                 window.H5P.externalDispatcher.on('editorloaded', () => {
-                    window.oneditorloaded(browserFile);
+                    window.onEditorLoaded(browserFile);
                 });
             }, file);
 
@@ -110,6 +111,8 @@ describe('e2e test: upload content', () => {
             await uploadHandle.uploadFile(path.join(examplesPath, file));
             await contentFrame.waitForSelector('button.use-button');
             await contentFrame.click('button.use-button');
+
+            // Wait until the file was validated.
             if (!(await contentFrame.$('div.h5p-hub-message.info'))) {
                 await contentFrame.waitForSelector('div.h5p-hub-message.info', {
                     timeout: 60000 // increased timeout as validation can take
@@ -117,9 +120,15 @@ describe('e2e test: upload content', () => {
                 });
             }
 
+            // editorLoadedPromise resolves when the H5P editor signals that it
+            // was fully loaded
             await editorLoadedPromise;
 
+            // some content type editors still to some things after the
+            // editorloaded event was sent, so we wait for an arbitrary time
             await page.waitFor(500);
+
+            // Press save and wait until the player has loaded
             await page.waitForSelector('#save-h5p');
             const navPromise = page.waitForNavigation({
                 waitUntil: ['load', 'networkidle0'],
@@ -127,8 +136,6 @@ describe('e2e test: upload content', () => {
             });
             await page.click('#save-h5p');
             await navPromise;
-
-            expect(errorHandler).not.toHaveBeenCalled();
         }, 60000);
     }
 });
