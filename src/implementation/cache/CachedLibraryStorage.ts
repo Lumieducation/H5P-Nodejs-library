@@ -74,12 +74,12 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     }
 
     public async deleteLibrary(library: ILibraryName): Promise<void> {
-        await this.storage.deleteLibrary(library);
-
         const files = await this.storage.listFiles(library);
+        await this.storage.deleteLibrary(library);
         await Promise.all(
             files.map((file) => this.deleteFileCache(library, file))
         );
+
         await this.cache.del(
             this.getCacheKeyForMetadata(library, this.METADATA_CACHE_KEY)
         );
@@ -92,6 +92,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 this.LIBRARY_IS_INSTALLED_CACHE_KEY
             )
         );
+
         await this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY);
         await this.cache.del(this.ADDONS_CACHE_KEY);
     }

@@ -1,10 +1,12 @@
 import path from 'path';
 import cacheManager from 'cache-manager';
 import fsExtra from 'fs-extra';
+import { dir, DirectoryResult } from 'tmp-promise';
 
 import { ILibraryStorage } from '../../../src/types';
 import CachedLibraryStorage from '../../../src/implementation/cache/CachedLibraryStorage';
 import FileLibraryStorage from '../../../src/implementation/fs/FileLibraryStorage';
+import LibraryManager from '../../../src/LibraryManager';
 
 type FunctionPropertyNames<T> = {
     [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
@@ -12,28 +14,6 @@ type FunctionPropertyNames<T> = {
     string;
 
 describe('CachedLibraryStorage', () => {
-    let defaultCachedStorage: ILibraryStorage;
-    let defaultUncachedStorage: ILibraryStorage;
-    let defaultCheckIfFunctionCaches;
-
-    beforeEach(() => {
-        defaultUncachedStorage = new FileLibraryStorage(
-            path.resolve('test/data/libraries')
-        );
-        defaultCachedStorage = new CachedLibraryStorage(
-            defaultUncachedStorage,
-            cacheManager.caching({
-                store: 'memory',
-                ttl: 60 * 60 * 24,
-                max: 2 ** 10
-            })
-        );
-        defaultCheckIfFunctionCaches = checkIfFunctionCaches(
-            defaultUncachedStorage,
-            defaultCachedStorage
-        );
-    });
-
     /**
      * Calls a function on the cached storage object twice. If expectedResult is
      * defined, asserts that the result returned both times is the one in
@@ -49,6 +29,7 @@ describe('CachedLibraryStorage', () => {
     >(
         functionName: M,
         expectedResult: any,
+        intermittentFunction?: () => Promise<any>,
         ...functionParameters: any[]
     ): Promise<number> => {
         const spy = jest.spyOn(uncachedStorage, functionName);
@@ -63,6 +44,11 @@ describe('CachedLibraryStorage', () => {
                 expect(result1).toEqual(expectedResult);
             }
         }
+
+        if (intermittentFunction) {
+            await intermittentFunction();
+        }
+
         const result2 = await cachedStorage[functionName].call(
             cachedStorage,
             ...functionParameters
@@ -77,99 +63,311 @@ describe('CachedLibraryStorage', () => {
         return spy.mock.calls.length;
     };
 
-    it("doesn't read from the wrapped storage for metadata twice", async () => {
-        expect(
-            await defaultCheckIfFunctionCaches(
-                'getLibrary',
-                await fsExtra.readJSON(
-                    path.resolve(
-                        'test/data/libraries/H5P.Example1-1.1/library.json'
-                    )
-                ),
-                {
-                    machineName: 'H5P.Example1',
-                    majorVersion: 1,
-                    minorVersion: 1
-                }
-            )
-        ).toEqual(1);
-    });
+    const initStorage = async (options?: {
+        directory?: string;
+        useTemporaryDirectory?: boolean;
+    }): Promise<{
+        cacheCheck: <
+            M extends FunctionPropertyNames<Required<ILibraryStorage>>
+        >(
+            functionName: M,
+            expectedResult: any,
+            intermittentFunction?: () => Promise<any>,
+            ...functionParameters: any[]
+        ) => Promise<number>;
+        cachedStorage: ILibraryStorage;
+        tempDir?: DirectoryResult;
+        uncachedStorage: ILibraryStorage;
+    }> => {
+        let tempDir: DirectoryResult;
+        if (options?.useTemporaryDirectory) {
+            tempDir = await dir({
+                unsafeCleanup: true
+            });
+        }
 
-    it("doesn't read from the wrapped storage for semantics twice (as JSON)", async () => {
-        expect(
-            await defaultCheckIfFunctionCaches(
-                'getFileAsJson',
-                await fsExtra.readJSON(
-                    path.resolve(
-                        'test/data/libraries/H5P.Example1-1.1/semantics.json'
-                    )
-                ),
-                {
-                    machineName: 'H5P.Example1',
-                    majorVersion: 1,
-                    minorVersion: 1
-                },
-                'semantics.json'
-            )
-        ).toEqual(1);
-    });
+        const uncachedStorage = new FileLibraryStorage(
+            options?.useTemporaryDirectory
+                ? tempDir.path
+                : options?.directory ?? path.resolve('test/data/libraries')
+        );
+        const cachedStorage = new CachedLibraryStorage(
+            uncachedStorage,
+            cacheManager.caching({
+                store: 'memory',
+                ttl: 60 * 60 * 24,
+                max: 2 ** 10
+            })
+        );
+        const cacheCheck = checkIfFunctionCaches(
+            uncachedStorage,
+            cachedStorage
+        );
 
-    it("doesn't read from the wrapped storage for semantics twice (as string)", async () => {
-        expect(
-            await defaultCheckIfFunctionCaches(
-                'getFileAsString',
-                (
-                    await fsExtra.readFile(
+        return { cachedStorage, uncachedStorage, cacheCheck, tempDir };
+    };
+    describe('check if caching works', () => {
+        it('cache metadata', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getLibrary',
+                    await fsExtra.readJSON(
+                        path.resolve(
+                            'test/data/libraries/H5P.Example1-1.1/library.json'
+                        )
+                    ),
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    }
+                )
+            ).toEqual(1);
+        });
+
+        it('cache semantics (as JSON)', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getFileAsJson',
+                    await fsExtra.readJSON(
                         path.resolve(
                             'test/data/libraries/H5P.Example1-1.1/semantics.json'
                         )
-                    )
-                ).toString(),
-                {
-                    machineName: 'H5P.Example1',
-                    majorVersion: 1,
-                    minorVersion: 1
-                },
-                'semantics.json'
-            )
-        ).toEqual(1);
-    });
+                    ),
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    },
+                    'semantics.json'
+                )
+            ).toEqual(1);
+        });
 
-    it('reads from the wrapped storage for uncached files twice (as string)', async () => {
-        expect(
-            await defaultCheckIfFunctionCaches(
-                'getFileAsString',
-                (
-                    await fsExtra.readFile(
-                        path.resolve(
-                            'test/data/libraries/H5P.Example1-1.1/greetingcard.js'
+        it('cache semantics (as string)', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getFileAsString',
+                    (
+                        await fsExtra.readFile(
+                            path.resolve(
+                                'test/data/libraries/H5P.Example1-1.1/semantics.json'
+                            )
                         )
-                    )
-                ).toString(),
-                {
-                    machineName: 'H5P.Example1',
-                    majorVersion: 1,
-                    minorVersion: 1
-                },
-                'greetingcard.js'
-            )
-        ).toEqual(2);
-    });
+                    ).toString(),
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    },
+                    'semantics.json'
+                )
+            ).toEqual(1);
+        });
 
-    it('caches getInstalledLibraryNames', async () => {
-        expect(
-            await defaultCheckIfFunctionCaches('getInstalledLibraryNames', [
-                {
+        it('no cache for uncached files (as string)', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getFileAsString',
+                    (
+                        await fsExtra.readFile(
+                            path.resolve(
+                                'test/data/libraries/H5P.Example1-1.1/greetingcard.js'
+                            )
+                        )
+                    ).toString(),
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    },
+                    'greetingcard.js'
+                )
+            ).toEqual(2);
+        });
+
+        it('cache language file enumeration', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck('getLanguages', ['.en', 'de'], undefined, {
                     machineName: 'H5P.Example1',
                     majorVersion: 1,
                     minorVersion: 1
-                },
-                {
-                    machineName: 'H5P.Example3',
-                    majorVersion: 2,
-                    minorVersion: 1
-                }
-            ])
-        ).toEqual(1);
+                })
+            ).toEqual(1);
+        });
+
+        it('cache getInstalledLibraryNames', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getInstalledLibraryNames',
+                    [
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        },
+                        {
+                            machineName: 'H5P.Example3',
+                            majorVersion: 2,
+                            minorVersion: 1
+                        }
+                    ],
+                    undefined
+                )
+            ).toEqual(1);
+        });
+
+        it('cache listAddons', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(await cacheCheck('listAddons', [], undefined)).toEqual(1);
+        });
+
+        it('cache fileExists (semantics.json)', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'fileExists',
+                    true,
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    },
+                    'semantics.json'
+                )
+            ).toEqual(1);
+        });
+    });
+    describe('cache invalidation', () => {
+        it('clears the cache of installed library names when installing new libraries', async () => {
+            const { cachedStorage, cacheCheck, tempDir } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(cachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'getInstalledLibraryNames',
+                        undefined,
+                        async () => {
+                            await libraryManager.installFromDirectory(
+                                path.resolve(
+                                    'test/data/libraries/H5P.Example3-2.1/'
+                                )
+                            );
+                        }
+                    )
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clears the cache of addons when installing new libraries', async () => {
+            const { cachedStorage, cacheCheck, tempDir } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(cachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck('listAddons', undefined, async () => {
+                        await libraryManager.installFromDirectory(
+                            path.resolve(
+                                'test/data/libraries/H5P.Example3-2.1/'
+                            )
+                        );
+                    })
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clear the fileExists cache (semantics.json) when clearing files', async () => {
+            const { cachedStorage, cacheCheck, tempDir } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(cachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'fileExists',
+                        undefined,
+                        async () => {
+                            await cachedStorage.clearFiles({
+                                machineName: 'H5P.Example1',
+                                majorVersion: 1,
+                                minorVersion: 1
+                            });
+                        },
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        },
+                        'language/de.json'
+                    )
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clears the cache of isInstalled when deleting libraries', async () => {
+            const {
+                cachedStorage,
+                cacheCheck,
+                tempDir,
+                uncachedStorage
+            } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(uncachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'isInstalled',
+                        undefined,
+                        async () => {
+                            await cachedStorage.deleteLibrary({
+                                machineName: 'H5P.Example1',
+                                majorVersion: 1,
+                                minorVersion: 1
+                            });
+                        },
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        }
+                    )
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
     });
 });

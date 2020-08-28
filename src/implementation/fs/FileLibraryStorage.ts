@@ -4,6 +4,7 @@ import path from 'path';
 import promisepipe from 'promisepipe';
 import { Readable } from 'stream';
 import { streamToString } from '../../helpers/StreamHelpers';
+import upath from 'upath';
 
 import {
     H5pError,
@@ -435,7 +436,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
         const libPath = this.getDirectoryPath(library);
         return (await globPromise(path.join(libPath, '**/*.*')))
             .map((p) => path.relative(libPath, p))
-            .filter((p) => !this.isIgnored(p));
+            .filter((p) => !this.isIgnored(p))
+            .map((p) => upath.toUnix(p));
     }
 
     /**
