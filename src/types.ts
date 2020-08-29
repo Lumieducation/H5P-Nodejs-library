@@ -790,13 +790,13 @@ export interface ILibraryStorage {
     getFileStream(library: ILibraryName, file: string): Promise<Readable>;
 
     /**
-     * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param machineNames (optional) only return libraries that have these machine names
+     * Returns all installed libraries or the installed libraries that have the
+     * machine name.
+     * @param machineName (optional) only return libraries that have this
+     * machine name
      * @returns the libraries installed
      */
-    getInstalledLibraryNames(
-        ...machineNames: string[]
-    ): Promise<ILibraryName[]>;
+    getInstalledLibraryNames(machineName?: string): Promise<ILibraryName[]>;
 
     /**
      * Gets a list of installed language files for the library.

@@ -58,6 +58,9 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 this.LIBRARY_IS_INSTALLED_CACHE_KEY
             )
         );
+        await this.cache.del(
+            this.getCacheKeyForLibraryListByMachineName(libraryData.machineName)
+        );
         return result;
     }
 
@@ -102,6 +105,11 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                         )
                     ),
                     this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY),
+                    this.cache.del(
+                        this.getCacheKeyForLibraryListByMachineName(
+                            library.machineName
+                        )
+                    ),
                     this.cache.del(this.ADDONS_CACHE_KEY)
                 ])
         );
@@ -181,16 +189,19 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     }
 
     public async getInstalledLibraryNames(
-        ...machineNames: string[]
+        machineName?: string
     ): Promise<ILibraryName[]> {
-        // As there is large number of permutations of possible machine names
-        // it becomes very difficult to list the cache keys to invalidate search
-        // queries. That's why we don't cache this use case.
-        if (machineNames && machineNames.length > 0) {
-            return this.storage.getInstalledLibraryNames(...machineNames);
+        if (machineName) {
+            return this.cache.wrap(
+                this.getCacheKeyForLibraryListByMachineName(machineName),
+                () => {
+                    return this.storage.getInstalledLibraryNames(machineName);
+                }
+            );
         }
+
         return this.cache.wrap(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY, () => {
-            return this.storage.getInstalledLibraryNames(...machineNames);
+            return this.storage.getInstalledLibraryNames();
         });
     }
 
@@ -263,6 +274,11 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         );
         await this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY);
         await this.cache.del(this.ADDONS_CACHE_KEY);
+        await this.cache.del(
+            this.getCacheKeyForLibraryListByMachineName(
+                libraryMetadata.machineName
+            )
+        );
         return result;
     }
 
@@ -307,6 +323,12 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         usage: string
     ): string {
         return `${LibraryName.toUberName(library)}/${filename}-${usage}`;
+    }
+
+    private getCacheKeyForLibraryListByMachineName(
+        machineName: string
+    ): string {
+        return `${this.INSTALLED_LIBRARY_NAMES_CACHE_KEY}-${machineName}`;
     }
 
     private getCacheKeyForMetadata(

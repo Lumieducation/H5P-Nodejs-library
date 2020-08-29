@@ -107,7 +107,7 @@ describe('CachedLibraryStorage', () => {
         return { cachedStorage, uncachedStorage, cacheCheck, tempDir };
     };
     describe('check if caching works', () => {
-        it('cache metadata', async () => {
+        it('caches metadata', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck(
@@ -127,7 +127,7 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
-        it('cache semantics (as JSON)', async () => {
+        it('caches semantics (as JSON)', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck(
@@ -148,7 +148,7 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
-        it('cache semantics (as string)', async () => {
+        it('caches semantics (as string)', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck(
@@ -194,7 +194,7 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(2);
         });
 
-        it('cache language file enumeration', async () => {
+        it('caches language file enumeration', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck('getLanguages', ['.en', 'de'], undefined, {
@@ -205,7 +205,7 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
-        it('cache getInstalledLibraryNames', async () => {
+        it('caches getInstalledLibraryNames without parameter', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck(
@@ -227,12 +227,30 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
-        it('cache listAddons', async () => {
+        it('caches getInstalledLibraryNames with parameter', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getInstalledLibraryNames',
+                    [
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        }
+                    ],
+                    undefined,
+                    'H5P.Example1'
+                )
+            ).toEqual(1);
+        });
+
+        it('caches listAddons', async () => {
             const { cacheCheck } = await initStorage();
             expect(await cacheCheck('listAddons', [], undefined)).toEqual(1);
         });
 
-        it('cache fileExists (semantics.json)', async () => {
+        it('caches fileExists (semantics.json)', async () => {
             const { cacheCheck } = await initStorage();
             expect(
                 await cacheCheck(
@@ -283,6 +301,42 @@ describe('CachedLibraryStorage', () => {
                                 )
                             );
                         }
+                    )
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clears the cache of installed library names (request for individual machineName) when updating library', async () => {
+            const {
+                cacheCheck,
+                cachedStorage,
+                tempDir,
+                uncachedStorage
+            } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(uncachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'getInstalledLibraryNames',
+                        undefined,
+                        async () => {
+                            await cachedStorage.updateLibrary({
+                                title: 'Example 1',
+                                majorVersion: 1,
+                                minorVersion: 1,
+                                patchVersion: 5,
+                                runnable: 1,
+                                machineName: 'H5P.Example1'
+                            });
+                        },
+                        'H5P.Example1'
                     )
                 ).toEqual(2);
             } finally {

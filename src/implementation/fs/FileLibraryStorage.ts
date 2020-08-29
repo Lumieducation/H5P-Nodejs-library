@@ -343,12 +343,14 @@ export default class FileLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param {...string[]} machineNames (optional) only return libraries that have these machine names
+     * Returns all installed libraries or the installed libraries that have the
+     * machine names.
+     * @param machineName (optional) only return libraries that have this
+     * machine name
      * @returns the libraries installed
      */
     public async getInstalledLibraryNames(
-        ...machineNames: string[]
+        machineName?: string
     ): Promise<ILibraryName[]> {
         const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
         const libraryDirectories = await fsExtra.readdir(
@@ -359,12 +361,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
             .map((name) => {
                 return LibraryName.fromUberName(name);
             })
-            .filter(
-                (lib) =>
-                    !machineNames ||
-                    machineNames.length === 0 ||
-                    machineNames.some((mn) => mn === lib.machineName)
-            );
+            .filter((lib) => !machineName || lib.machineName === machineName);
     }
 
     /**

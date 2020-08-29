@@ -305,7 +305,7 @@ export default class H5PPlayer {
         ];
         for (const addonMachineName of configRequestedAddons) {
             const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                [addonMachineName]
+                addonMachineName
             );
             if (
                 !neededAddons

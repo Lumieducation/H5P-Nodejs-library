@@ -925,7 +925,7 @@ export default class H5PEditor {
 
         for (const addonMachineName of configRequestedAddons) {
             const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                [addonMachineName]
+                addonMachineName
             );
             if (
                 !neededAddons
