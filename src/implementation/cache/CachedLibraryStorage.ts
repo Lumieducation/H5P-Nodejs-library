@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { Cache } from 'cache-manager';
+import { Cache, caching } from 'cache-manager';
 
 import {
     ILibraryStorage,
@@ -11,8 +11,37 @@ import {
 } from '../../types';
 import LibraryName from '../../LibraryName';
 
+/**
+ * A wrapper around an actual library storage which adds caching and also
+ * handles cache invalidation for you. You can use this method as a drop-in
+ * replacement for other library storages.
+ *
+ * It uses [the NPM package
+ * `cache-manager`](https://www.npmjs.com/package/cache-manager) to abstract the
+ * caching, so you can pass in any of the store engines supported by it (e.g.
+ * redis, mongodb, fs, memcached). See the documentation page of `cache-manager`
+ * for more details.
+ *
+ * Note: If you construct `CachedLibraryStorage` without a cache, it will
+ * default to an in-memory cache that **is not suitable for multi-process or
+ * multi-machine setups**!
+ */
 export default class CachedLibraryStorage implements ILibraryStorage {
-    constructor(protected storage: ILibraryStorage, protected cache: Cache) {}
+    /**
+     * @param storage the uncached storage behind the cache
+     * @param cache the cache to use; if undefined an in-memory cache will be
+     * used; **IMPORTANT: The default in-memory cache does not with
+     * multi-process or multi-machine setups!**
+     */
+    constructor(protected storage: ILibraryStorage, protected cache?: Cache) {
+        if (!this.cache) {
+            this.cache = caching({
+                store: 'memory',
+                ttl: 60 * 60 * 24,
+                max: 2 ** 10
+            });
+        }
+    }
 
     private readonly ADDONS_CACHE_KEY: string = 'addons';
     private readonly FILE_EXISTS_CACHE_KEY: string = 'exists';

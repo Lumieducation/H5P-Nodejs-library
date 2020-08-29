@@ -95,7 +95,7 @@ This application doesn't include the H5P JavaScript core files for the editor an
 1. Download the [Core Files](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/core` in your project.
 2. Download the [Editor Files](https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip) and place them into a folder called `h5p/editor` in your project.
 
-You must add a route to your implementation that serves the static files found under `h5p/core` and `h5p/editor` to the endpoint configured in `config.libraryUrl`. The out-of-the-box Express adapter already includes a route for this.
+You must add a route to your implementation that serves the static files found under `h5p/core` and `h5p/editor` to the endpoint configured in `config.coreUrl` and `config.editorLibraryUrl`. The out-of-the-box Express adapter already includes a route for this.
 
 ### Creating content views
 
@@ -153,6 +153,10 @@ An application using h5p-nodejs-library can customize the way H5P behaves in sev
 ### Compliance and privacy
 
 To conform with local law, you probably have to compile a privacy declaration for your application. You can check out the [documentation page on privacy](docs/privacy.md) to find out what this library does with your users' personal data.
+
+### Performance optimizations
+
+Consult the documentation page on [performance optimizations](/docs/performance-optimizations.md) to find out how you can improve the performance of the library in production use.
 
 ## Development & Testing
 

@@ -1357,7 +1357,7 @@ export interface IH5PConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * The URL of the library files (=content types).
+     * The URL of the library files (= content types).
      */
     librariesUrl: string;
     /**
