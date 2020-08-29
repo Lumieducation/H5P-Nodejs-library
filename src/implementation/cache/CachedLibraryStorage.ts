@@ -16,12 +16,14 @@ export default class CachedLibraryStorage implements ILibraryStorage {
 
     private readonly ADDONS_CACHE_KEY: string = 'addons';
     private readonly FILE_EXISTS_CACHE_KEY: string = 'exists';
+    private readonly FILE_LIST: string = 'files';
     private readonly INSTALLED_LIBRARY_NAMES_CACHE_KEY: string =
         'installed-library-names';
     private readonly JSON_CACHE_KEY: string = 'json';
     private readonly LANGUAGES_CACHE_KEY: string = 'languages';
     private readonly LIBRARY_IS_INSTALLED_CACHE_KEY: string = 'is-installed';
     private readonly METADATA_CACHE_KEY: string = 'metadata';
+    private readonly STATS_CACHE_KEY: string = 'stats';
     private readonly STRING_CACHE_KEY: string = 'string';
 
     public async addFile(
@@ -54,6 +56,9 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         await this.cache.del(
             this.getCacheKeyForLibraryListByMachineName(libraryData.machineName)
         );
+        await this.cache.del(
+            this.getCacheKeyForMetadata(libraryData, this.FILE_LIST)
+        );
         return result;
     }
 
@@ -67,6 +72,9 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     public async clearFiles(library: ILibraryName): Promise<void> {
         const files = await this.storage.listFiles(library);
         await this.storage.clearFiles(library);
+        await this.cache.del(
+            this.getCacheKeyForMetadata(library, this.FILE_LIST)
+        );
         await Promise.all(
             files.map((file) => this.deleteFileCache(library, file))
         );
@@ -103,7 +111,10 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                             library.machineName
                         )
                     ),
-                    this.cache.del(this.ADDONS_CACHE_KEY)
+                    this.cache.del(this.ADDONS_CACHE_KEY),
+                    this.cache.del(
+                        this.getCacheKeyForMetadata(library, this.FILE_LIST)
+                    )
                 ])
         );
     }
@@ -122,8 +133,6 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 return this.storage.fileExists(library, filename);
             }
         );
-
-        return this.storage.fileExists(library, filename);
     }
 
     /**
@@ -152,8 +161,6 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 return this.storage.getFileAsJson(library, file);
             }
         );
-
-        return this.storage.getFileAsJson(library, file);
     }
 
     public async getFileAsString(
@@ -166,17 +173,26 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 return this.storage.getFileAsString(library, file);
             }
         );
-
-        return this.storage.getFileAsString(library, file);
     }
 
     public async getFileStats(
         library: ILibraryName,
         file: string
     ): Promise<IFileStats> {
-        return this.storage.getFileStats(library, file);
+        return this.cache.wrap(
+            this.getCacheKeyForFile(library, file, this.STATS_CACHE_KEY),
+            () => {
+                return this.storage.getFileStats(library, file);
+            }
+        );
     }
 
+    /**
+     * We don't cache file streams, as this doesn't make much sense. A better
+     * way to improve performance of files requested individually by the client
+     * is to serve them statically, i.e. directly via Express or by offloading
+     * them to S3 storage or a CDN.
+     */
     public async getFileStream(
         library: ILibraryName,
         file: string
@@ -241,7 +257,12 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     }
 
     public async listFiles(library: ILibraryName): Promise<string[]> {
-        return this.storage.listFiles(library);
+        return this.cache.wrap(
+            this.getCacheKeyForMetadata(library, this.FILE_LIST),
+            () => {
+                return this.storage.listFiles(library);
+            }
+        );
     }
 
     public async updateAdditionalMetadata(
@@ -299,6 +320,9 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                     filename,
                     this.FILE_EXISTS_CACHE_KEY
                 )
+            ),
+            this.cache.del(
+                this.getCacheKeyForFile(library, filename, this.STATS_CACHE_KEY)
             )
         ]);
     }

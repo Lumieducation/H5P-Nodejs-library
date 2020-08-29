@@ -171,6 +171,23 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
+        it('caches file stats', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getFileStats',
+                    undefined,
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    },
+                    'semantics.json'
+                )
+            ).toEqual(1);
+        });
+
         it('caches language file enumeration', async () => {
             const { cacheCheck } = await initStorage();
             expect(
@@ -240,6 +257,28 @@ describe('CachedLibraryStorage', () => {
                         minorVersion: 1
                     },
                     'semantics.json'
+                )
+            ).toEqual(1);
+        });
+
+        it('caches file lists', async () => {
+            const { cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'listFiles',
+                    [
+                        'greetingcard.css',
+                        'greetingcard.js',
+                        'language/de.json',
+                        'library.json',
+                        'semantics.json'
+                    ],
+                    undefined,
+                    {
+                        machineName: 'H5P.Example1',
+                        majorVersion: 1,
+                        minorVersion: 1
+                    }
                 )
             ).toEqual(1);
         });
