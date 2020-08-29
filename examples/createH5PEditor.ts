@@ -34,9 +34,11 @@ export default async function createH5PEditor(
     const h5pEditor = new H5P.H5PEditor(
         new H5P.fsImplementations.InMemoryStorage(), // this is a general-purpose cache
         config,
-        new H5P.cacheImplementations.CachedLibraryStorage(
-            new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
-        ),
+        !process.env.CACHE || process.env.CACHE === 'in-memory'
+            ? new H5P.cacheImplementations.CachedLibraryStorage(
+                  new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
+              )
+            : new H5P.fsImplementations.FileLibraryStorage(localLibraryPath),
         process.env.CONTENTSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(

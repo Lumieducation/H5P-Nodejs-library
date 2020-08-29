@@ -26,7 +26,7 @@
         "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
-        "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
+        "test:e2e": "CACHE=none start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:watch": "jest --watch",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
