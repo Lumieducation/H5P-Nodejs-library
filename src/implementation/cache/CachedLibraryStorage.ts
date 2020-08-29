@@ -61,6 +61,9 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         return result;
     }
 
+    /**
+     * Invalidates the whole cache.
+     */
     public async clearCache(): Promise<void> {
         return this.cache.reset();
     }
@@ -77,24 +80,31 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         const files = await this.storage.listFiles(library);
         await this.storage.deleteLibrary(library);
         await Promise.all(
-            files.map((file) => this.deleteFileCache(library, file))
+            files
+                .map((file) => this.deleteFileCache(library, file))
+                .concat([
+                    this.cache.del(
+                        this.getCacheKeyForMetadata(
+                            library,
+                            this.METADATA_CACHE_KEY
+                        )
+                    ),
+                    this.cache.del(
+                        this.getCacheKeyForMetadata(
+                            library,
+                            this.LANGUAGES_CACHE_KEY
+                        )
+                    ),
+                    this.cache.del(
+                        this.getCacheKeyForMetadata(
+                            library,
+                            this.LIBRARY_IS_INSTALLED_CACHE_KEY
+                        )
+                    ),
+                    this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY),
+                    this.cache.del(this.ADDONS_CACHE_KEY)
+                ])
         );
-
-        await this.cache.del(
-            this.getCacheKeyForMetadata(library, this.METADATA_CACHE_KEY)
-        );
-        await this.cache.del(
-            this.getCacheKeyForMetadata(library, this.LANGUAGES_CACHE_KEY)
-        );
-        await this.cache.del(
-            this.getCacheKeyForMetadata(
-                library,
-                this.LIBRARY_IS_INSTALLED_CACHE_KEY
-            )
-        );
-
-        await this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY);
-        await this.cache.del(this.ADDONS_CACHE_KEY);
     }
 
     public async fileExists(
@@ -173,6 +183,12 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     public async getInstalledLibraryNames(
         ...machineNames: string[]
     ): Promise<ILibraryName[]> {
+        // As there is large number of permutations of possible machine names
+        // it becomes very difficult to list the cache keys to invalidate search
+        // queries. That's why we don't cache this use case.
+        if (machineNames && machineNames.length > 0) {
+            return this.storage.getInstalledLibraryNames(...machineNames);
+        }
         return this.cache.wrap(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY, () => {
             return this.storage.getInstalledLibraryNames(...machineNames);
         });

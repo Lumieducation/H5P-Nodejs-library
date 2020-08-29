@@ -75,7 +75,7 @@ describe('CachedLibraryStorage', () => {
             intermittentFunction?: () => Promise<any>,
             ...functionParameters: any[]
         ) => Promise<number>;
-        cachedStorage: ILibraryStorage;
+        cachedStorage: CachedLibraryStorage;
         tempDir?: DirectoryResult;
         uncachedStorage: ILibraryStorage;
     }> => {
@@ -250,6 +250,19 @@ describe('CachedLibraryStorage', () => {
         });
     });
     describe('cache invalidation', () => {
+        it('clears the cache of installed library names when invalidating the whole cache', async () => {
+            const { cachedStorage, cacheCheck } = await initStorage();
+            expect(
+                await cacheCheck(
+                    'getInstalledLibraryNames',
+                    undefined,
+                    async () => {
+                        await cachedStorage.clearCache();
+                    }
+                )
+            ).toEqual(2);
+        });
+
         it('clears the cache of installed library names when installing new libraries', async () => {
             const { cachedStorage, cacheCheck, tempDir } = await initStorage({
                 useTemporaryDirectory: true
@@ -295,6 +308,93 @@ describe('CachedLibraryStorage', () => {
                         );
                     })
                 ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clears the metadata cache when updating a library', async () => {
+            const {
+                cachedStorage,
+                cacheCheck,
+                tempDir,
+                uncachedStorage
+            } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(uncachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'getLibrary',
+                        undefined,
+                        async () => {
+                            await cachedStorage.updateLibrary({
+                                title: 'Example 1',
+                                description:
+                                    'The description of content type 1',
+                                majorVersion: 1,
+                                minorVersion: 1,
+                                patchVersion: 2,
+                                runnable: 1,
+                                author: 'H5P NodeJs Implementation',
+                                license: 'MIT',
+                                machineName: 'H5P.Example1'
+                            });
+                        },
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        }
+                    )
+                ).toEqual(2);
+            } finally {
+                await tempDir.cleanup();
+            }
+        });
+
+        it('clears the metadata cache when updating the additional metadata of a library', async () => {
+            const {
+                cachedStorage,
+                cacheCheck,
+                tempDir,
+                uncachedStorage
+            } = await initStorage({
+                useTemporaryDirectory: true
+            });
+            try {
+                const libraryManager = new LibraryManager(uncachedStorage);
+                await libraryManager.installFromDirectory(
+                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                );
+                expect(
+                    await cacheCheck(
+                        'getLibrary',
+                        undefined,
+                        async () => {
+                            await cachedStorage.updateAdditionalMetadata(
+                                {
+                                    machineName: 'H5P.Example1',
+                                    majorVersion: 1,
+                                    minorVersion: 1
+                                },
+                                {
+                                    restricted: true
+                                }
+                            );
+                        },
+                        {
+                            machineName: 'H5P.Example1',
+                            majorVersion: 1,
+                            minorVersion: 1
+                        }
+                    )
+                ).toEqual(3); // 3 as the wrapped updateAdditionialMetadata
+                // method also calls getLibrary
             } finally {
                 await tempDir.cleanup();
             }
