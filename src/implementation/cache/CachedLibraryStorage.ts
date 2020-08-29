@@ -12,14 +12,7 @@ import {
 import LibraryName from '../../LibraryName';
 
 export default class CachedLibraryStorage implements ILibraryStorage {
-    constructor(
-        protected storage: ILibraryStorage,
-        protected cache: Cache,
-        protected cachedFiles: RegExp[] = [
-            /^semantics.json$/,
-            /^language\/.*?\.json$/
-        ]
-    ) {}
+    constructor(protected storage: ILibraryStorage, protected cache: Cache) {}
 
     private readonly ADDONS_CACHE_KEY: string = 'addons';
     private readonly FILE_EXISTS_CACHE_KEY: string = 'exists';
@@ -119,27 +112,32 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<boolean> {
-        if (this.checkIfFileIsCached(filename)) {
-            return this.cache.wrap(
-                this.getCacheKeyForFile(
-                    library,
-                    filename,
-                    this.FILE_EXISTS_CACHE_KEY
-                ),
-                () => {
-                    return this.storage.fileExists(library, filename);
-                }
-            );
-        }
+        return this.cache.wrap(
+            this.getCacheKeyForFile(
+                library,
+                filename,
+                this.FILE_EXISTS_CACHE_KEY
+            ),
+            () => {
+                return this.storage.fileExists(library, filename);
+            }
+        );
+
         return this.storage.fileExists(library, filename);
     }
 
+    /**
+     * Not cached as the function will be called only very rarely.
+     */
     public async getAllDependentsCount(): Promise<{
         [ubername: string]: number;
     }> {
         return this.storage.getAllDependentsCount();
     }
 
+    /**
+     * Not cached as the function will be called only very rarely.
+     */
     public async getDependentsCount(library: ILibraryName): Promise<number> {
         return this.storage.getDependentsCount(library);
     }
@@ -148,14 +146,13 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         file: string
     ): Promise<any> {
-        if (this.checkIfFileIsCached(file)) {
-            return this.cache.wrap(
-                this.getCacheKeyForFile(library, file, this.JSON_CACHE_KEY),
-                () => {
-                    return this.storage.getFileAsJson(library, file);
-                }
-            );
-        }
+        return this.cache.wrap(
+            this.getCacheKeyForFile(library, file, this.JSON_CACHE_KEY),
+            () => {
+                return this.storage.getFileAsJson(library, file);
+            }
+        );
+
         return this.storage.getFileAsJson(library, file);
     }
 
@@ -163,14 +160,13 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         file: string
     ): Promise<string> {
-        if (this.checkIfFileIsCached(file)) {
-            return this.cache.wrap(
-                this.getCacheKeyForFile(library, file, this.STRING_CACHE_KEY),
-                () => {
-                    return this.storage.getFileAsString(library, file);
-                }
-            );
-        }
+        return this.cache.wrap(
+            this.getCacheKeyForFile(library, file, this.STRING_CACHE_KEY),
+            () => {
+                return this.storage.getFileAsString(library, file);
+            }
+        );
+
         return this.storage.getFileAsString(library, file);
     }
 
@@ -282,39 +278,29 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         return result;
     }
 
-    private checkIfFileIsCached(filename: string): boolean {
-        return this.cachedFiles.some((f: RegExp) => f.test(filename));
-    }
-
     private async deleteFileCache(
         library: ILibraryName,
         filename: string
     ): Promise<void> {
-        if (this.checkIfFileIsCached(filename)) {
-            await Promise.all([
-                this.cache.del(
-                    this.getCacheKeyForFile(
-                        library,
-                        filename,
-                        this.JSON_CACHE_KEY
-                    )
-                ),
-                this.cache.del(
-                    this.getCacheKeyForFile(
-                        library,
-                        filename,
-                        this.STRING_CACHE_KEY
-                    )
-                ),
-                this.cache.del(
-                    this.getCacheKeyForFile(
-                        library,
-                        filename,
-                        this.FILE_EXISTS_CACHE_KEY
-                    )
+        await Promise.all([
+            this.cache.del(
+                this.getCacheKeyForFile(library, filename, this.JSON_CACHE_KEY)
+            ),
+            this.cache.del(
+                this.getCacheKeyForFile(
+                    library,
+                    filename,
+                    this.STRING_CACHE_KEY
                 )
-            ]);
-        }
+            ),
+            this.cache.del(
+                this.getCacheKeyForFile(
+                    library,
+                    filename,
+                    this.FILE_EXISTS_CACHE_KEY
+                )
+            )
+        ]);
     }
 
     private getCacheKeyForFile(

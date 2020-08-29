@@ -171,29 +171,6 @@ describe('CachedLibraryStorage', () => {
             ).toEqual(1);
         });
 
-        it('no cache for uncached files (as string)', async () => {
-            const { cacheCheck } = await initStorage();
-            expect(
-                await cacheCheck(
-                    'getFileAsString',
-                    (
-                        await fsExtra.readFile(
-                            path.resolve(
-                                'test/data/libraries/H5P.Example1-1.1/greetingcard.js'
-                            )
-                        )
-                    ).toString(),
-                    undefined,
-                    {
-                        machineName: 'H5P.Example1',
-                        majorVersion: 1,
-                        minorVersion: 1
-                    },
-                    'greetingcard.js'
-                )
-            ).toEqual(2);
-        });
-
         it('caches language file enumeration', async () => {
             const { cacheCheck } = await initStorage();
             expect(
