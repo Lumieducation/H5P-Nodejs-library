@@ -1,11 +1,11 @@
+import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
-import fsExtra from 'fs-extra';
-import mimeTypes from 'mime-types';
-import promisepipe from 'promisepipe';
-import sanitize from 'sanitize-filename';
-import { PassThrough, Writable, Readable } from 'stream';
+import fsExtra, { pathExists } from 'fs-extra';
 import imageSize from 'image-size';
+import mimeTypes from 'mime-types';
+import path from 'path';
+import promisepipe from 'promisepipe';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
@@ -504,8 +504,9 @@ export default class H5PEditor {
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
-        // We must make sure to avoid illegal characters in filenames.
-        let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
+        // We discard the old filename and construct a new one
+        let cleanFilename = (field.type || 'file') + path.extname(file.name);
+
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
