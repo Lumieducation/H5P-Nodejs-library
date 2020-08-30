@@ -21,16 +21,18 @@ export interface IActionRequest
         IRequestWithTranslator {
     files: {
         file: {
-            data: Buffer;
+            data?: Buffer;
             mimetype: string;
             name: string;
             size: number;
+            tempFilePath?: string;
         };
         h5p: {
-            data: Buffer;
+            data?: Buffer;
             mimetype: string;
             name: string;
             size: number;
+            tempFilePath?: string;
         };
     };
 }

@@ -1,4 +1,6 @@
 import os from 'os';
+import { Request } from 'express';
+import fsExtra from 'fs-extra';
 
 /**
  * Displays links to the server at all available IP addresses.
@@ -21,4 +23,24 @@ export function displayIps(port: string): void {
                 )
             );
     }
+}
+
+/**
+ * This method will delete all temporary uploaded files from the request
+ */
+export async function clearTempFiles(
+    req: Request & { files: any }
+): Promise<void> {
+    if (!req.files) {
+        return;
+    }
+
+    await Promise.all(
+        Object.keys(req.files).map((file) =>
+            req.files[file].tempFilePath !== undefined &&
+            req.files[file].tempFilePath !== ''
+                ? fsExtra.remove(req.files[file].tempFilePath)
+                : Promise.resolve()
+        )
+    );
 }

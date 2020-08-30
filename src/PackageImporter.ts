@@ -101,6 +101,7 @@ export default class PackageImporter {
                 await promisepipe(readStream, writeStream);
             }
         });
+        await zipFile.close();
     }
 
     /**

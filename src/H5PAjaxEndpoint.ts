@@ -443,10 +443,11 @@ export default class H5PAjaxEndpoint {
         language?: string,
         user?: IUser,
         filesFile?: {
-            data: Buffer;
+            data?: Buffer;
             mimetype: string;
             name: string;
             size: number;
+            tempFilePath?: string;
         },
         id?: string,
         translate?: (
@@ -454,10 +455,11 @@ export default class H5PAjaxEndpoint {
             replacements: { [key: string]: any }
         ) => string,
         libraryUploadFile?: {
-            data: Buffer;
+            data?: Buffer;
             mimetype: string;
             name: string;
             size: number;
+            tempFilePath?: string;
         }
     ): Promise<
         | AjaxSuccessResponse
@@ -628,12 +630,18 @@ export default class H5PAjaxEndpoint {
                 );
 
             case 'library-upload':
+                if (!libraryUploadFile.name.endsWith('.h5p')) {
+                    throw new H5pError('missing-h5p-extension', {}, 400);
+                }
+
                 const {
                     installedLibraries,
                     metadata,
                     parameters
                 } = await this.h5pEditor.uploadPackage(
-                    libraryUploadFile.data,
+                    libraryUploadFile.data?.length > 0
+                        ? libraryUploadFile.data
+                        : libraryUploadFile.tempFilePath,
                     user
                 );
                 updatedLibCount = installedLibraries.filter(

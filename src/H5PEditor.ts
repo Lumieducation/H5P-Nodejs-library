@@ -1,5 +1,5 @@
 import { ReadStream } from 'fs';
-import { withFile } from 'tmp-promise';
+import { file as createTempFile, FileResult } from 'tmp-promise';
 import fsExtra from 'fs-extra';
 import mimeTypes from 'mime-types';
 import promisepipe from 'promisepipe';
@@ -465,20 +465,22 @@ export default class H5PEditor {
 
     /**
      * Stores an uploaded file in temporary storage.
-     * @param contentId the id of the piece of content the file is attached to; Set to null/undefined if
-     * the content hasn't been saved before.
+     * @param contentId the id of the piece of content the file is attached to;
+     * Set to null/undefined if the content hasn't been saved before.
      * @param field the semantic structure of the field the file is attached to.
-     * @param file information about the uploaded file
+     * @param file information about the uploaded file; either data or
+     * tempFilePath must be used!
      * @returns information about the uploaded file
      */
     public async saveContentFile(
         contentId: ContentId,
         field: ISemanticsEntry,
         file: {
-            data: Buffer;
+            data?: Buffer;
             mimetype: string;
             name: string;
             size: number;
+            tempFilePath?: string;
         },
         user: IUser
     ): Promise<{
@@ -495,7 +497,9 @@ export default class H5PEditor {
         };
         try {
             if (file.mimetype.startsWith('image/')) {
-                imageDimensions = imageSize.imageSize(file.data);
+                imageDimensions = imageSize.imageSize(
+                    file.data?.length > 0 ? file.data : file.tempFilePath
+                );
             }
         } catch (error) {
             // A caught error means that the file format is not supported by image-size. This usually
@@ -510,8 +514,18 @@ export default class H5PEditor {
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
-        const dataStream: any = new PassThrough();
-        dataStream.end(file.data);
+        let dataStream;
+        if (file.data?.length > 0) {
+            dataStream = new PassThrough();
+            dataStream.end(file.data);
+        } else if (file.tempFilePath) {
+            dataStream = fsExtra.createReadStream(file.tempFilePath);
+        } else {
+            throw new Error(
+                'Either file.data or file.tempFilePath must be used!'
+            );
+        }
+
         log.info(
             `Putting content file ${cleanFilename} into temporary storage`
         );
@@ -520,6 +534,13 @@ export default class H5PEditor {
             dataStream,
             user
         );
+
+        // We close the stream to make sure the temporary file can be deleted
+        // elsewhere.
+        if (dataStream.close) {
+            dataStream.close();
+        }
+
         log.debug(`New temporary filename is ${tmpFilename}`);
         return {
             height: imageDimensions?.height,
@@ -676,13 +697,14 @@ export default class H5PEditor {
     }
 
     /**
-     * Adds the contents of a package to the system: Installs required libraries (if
-     * the user has the permissions for this), adds files to temporary storage and
-     * returns the actual content information for the editor to process.
-     * Throws errors if something goes wrong.
-     * @param data the raw data of the h5p package as a buffer
-     * @param user the user who is uploading the package; optional if onlyInstallLibraries
-     * is set to true
+     * Adds the contents of a package to the system: Installs required libraries
+     * (if the user has the permissions for this), adds files to temporary
+     * storage and returns the actual content information for the editor to
+     * process. Throws errors if something goes wrong.
+     * @param dataOrPath the raw data of the h5p package as a buffer or the path
+     * of the file in the local filesystem
+     * @param user the user who is uploading the package; optional if
+     * onlyInstallLibraries is set to true
      * @param options (optional) further options:
      * @param onlyInstallLibraries true if content should be disregarded
      * @returns the content information extracted from the package. The metadata
@@ -690,7 +712,7 @@ export default class H5PEditor {
      * to true.
      */
     public async uploadPackage(
-        data: Buffer,
+        dataOrPath: Buffer | string,
         user?: IUser,
         options?: {
             onlyInstallLibraries?: boolean;
@@ -701,8 +723,6 @@ export default class H5PEditor {
         parameters?: any;
     }> {
         log.info(`uploading package`);
-        const dataStream: any = new PassThrough();
-        dataStream.end(data);
 
         let returnValues: {
             installedLibraries: ILibraryInstallResult[];
@@ -710,30 +730,52 @@ export default class H5PEditor {
             parameters?: any;
         };
 
-        await withFile(
-            async ({ path: tempPackagePath }) => {
-                const writeStream = fsExtra.createWriteStream(tempPackagePath);
+        let filename: string;
+        let tempFile: FileResult;
+
+        // if we received a buffer of the file, we write the file to the local
+        // temporary storage; otherwise we can simply use the path we received
+        // in the parameters
+        if (typeof dataOrPath !== 'string') {
+            tempFile = await createTempFile({ postfix: '.h5p', keep: false });
+            filename = tempFile.path;
+            try {
+                const dataStream = new PassThrough();
+                dataStream.end(dataOrPath);
+                const writeStream = fsExtra.createWriteStream(filename);
                 try {
                     await promisepipe(dataStream, writeStream);
                 } catch (error) {
                     throw new H5pError('upload-package-failed-tmp');
                 }
-
-                if (options?.onlyInstallLibraries) {
-                    returnValues = {
-                        installedLibraries: await this.packageImporter.installLibrariesFromPackage(
-                            tempPackagePath
-                        )
-                    };
-                } else {
-                    returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
-                        tempPackagePath,
-                        user
-                    );
+            } catch (error) {
+                if (tempFile) {
+                    await tempFile.cleanup();
                 }
-            },
-            { postfix: '.h5p', keep: false }
-        );
+                throw error;
+            }
+        } else {
+            filename = dataOrPath;
+        }
+
+        try {
+            if (options?.onlyInstallLibraries) {
+                returnValues = {
+                    installedLibraries: await this.packageImporter.installLibrariesFromPackage(
+                        filename
+                    )
+                };
+            } else {
+                returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
+                    filename,
+                    user
+                );
+            }
+        } finally {
+            if (tempFile) {
+                await tempFile.cleanup();
+            }
+        }
 
         return returnValues;
     }
