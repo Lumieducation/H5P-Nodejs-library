@@ -115,7 +115,7 @@
         "i18next-http-middleware": "3.0.4",
         "jest": "26.4.2",
         "mockdate": "3.0.2",
-        "mongodb": "3.6.0",
+        "mongodb": "3.6.1",
         "prettier": "2.1.1",
         "promise-queue": "2.2.5",
         "puppeteer": "5.2.1",
