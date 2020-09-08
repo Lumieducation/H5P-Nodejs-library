@@ -96,7 +96,7 @@
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
         "@types/mongodb": "3.5.27",
-        "@types/puppeteer": "3.0.1",
+        "@types/puppeteer": "3.0.2",
         "@types/shortid": "0.0.29",
         "@types/stream-buffers": "3.0.3",
         "@types/supertest": "2.0.10",
