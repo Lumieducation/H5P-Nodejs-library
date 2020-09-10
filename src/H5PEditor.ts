@@ -862,8 +862,8 @@ export default class H5PEditor {
     ): IIntegration {
         return {
             ajax: {
-                contentUserData: '',
-                setFinished: ''
+                contentUserData: `${this.config.baseUrl}/contentUserData`,
+                setFinished: `${this.config.baseUrl}/setFinished`
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
             editor: this.generateEditorIntegration(contentId, language),

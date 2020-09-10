@@ -28,6 +28,8 @@
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
         "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
+        "test:server+upload": "start-server-and-test start http://localhost:8080 test:upload",
+        "test:upload": "npx ts-node test/e2e/customUpload.ts ${H5P_FILES} ${ERROR_FILE}",
         "test:watch": "jest --watch",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "uninstall": "rm -rf node_modules && rm -rf test/data/hub-content && rm test/data/content-type-cache/real-content-types.json && rm -rf h5p && rm -rf build"
