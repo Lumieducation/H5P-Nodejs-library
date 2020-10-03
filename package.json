@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
-        "build": "rm -rf build && npx tsc -p ./tsconfig.build.json && npx tsc -p ./tsconfig.client.json && cp -r src/schemas build/src/schemas && cp -r assets build",
+        "build": "sh build.sh",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
         "clear": "rm -rf test/data/hub-content && rm -rf h5p && rm test/data/content-type-cache/real-content-types.json && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
