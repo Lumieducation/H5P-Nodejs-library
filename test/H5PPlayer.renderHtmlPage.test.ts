@@ -32,7 +32,7 @@ describe('Rendering the HTML page', () => {
                     <script src="/h5p/core/js/request-queue.js"></script>
                 
                     <script>
-                        H5PIntegration = {
+                        window.H5PIntegration = {
                   "contents": {
                     "cid-foo": {
                       "displayOptions": {
@@ -49,7 +49,22 @@ describe('Rendering the HTML page', () => {
                         "license":"U",
                         "title":"",
                         "defaultLanguage":"en"
-                       }
+                       },                       
+                        "scripts":[
+                        "/h5p/core/js/jquery.js",
+                        "/h5p/core/js/h5p.js",
+                        "/h5p/core/js/h5p-event-dispatcher.js",
+                        "/h5p/core/js/h5p-x-api-event.js",
+                        "/h5p/core/js/h5p-x-api.js",
+                        "/h5p/core/js/h5p-content-type.js",
+                        "/h5p/core/js/h5p-confirmation-dialog.js",
+                        "/h5p/core/js/h5p-action-bar.js",
+                        "/h5p/core/js/request-queue.js"
+                        ],
+                        "styles":[
+                        "/h5p/core/styles/h5p.css",
+                        "/h5p/core/styles/h5p-confirmation-dialog.css"
+                        ]
                     }
                   },
                   "core":{
@@ -142,10 +157,10 @@ describe('Rendering the HTML page', () => {
                   },
                   "postUserStatistics": false,
                   "saveFreq": false,
-                  "url": "/h5p"
+                  "url": "/h5p",
+                  "hubIsEnabled": true
                 };
                     </script>
-
                 </head>
                 <body>
                     <div class="h5p-content" data-content-id="foo"></div>
@@ -214,9 +229,9 @@ describe('Rendering the HTML page', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).customScripts).toBe(
-                    '<script src="/test"></script>'
-                );
+                expect(
+                    ((model as any).scripts as string[]).indexOf('/test')
+                ).toBeGreaterThanOrEqual(0);
             });
     });
 
@@ -268,9 +283,10 @@ describe('Rendering the HTML page', () => {
                         <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
                         <script src="/h5p/core/js/h5p-action-bar.js"></script>
                         <script src="/h5p/core/js/request-queue.js"></script>
+                        <script src="/test"></script>
                     
                         <script>
-                            H5PIntegration = {
+                            window.H5PIntegration = {
                       "contents": {
                         "cid-foo": {
                           "displayOptions": {
@@ -287,7 +303,23 @@ describe('Rendering the HTML page', () => {
                             "license":"U",
                             "title":"",
                             "defaultLanguage":"en"
-                          }
+                          },
+                          "scripts":[
+                          "/h5p/core/js/jquery.js",
+                          "/h5p/core/js/h5p.js",
+                          "/h5p/core/js/h5p-event-dispatcher.js",
+                          "/h5p/core/js/h5p-x-api-event.js",
+                          "/h5p/core/js/h5p-x-api.js",
+                          "/h5p/core/js/h5p-content-type.js",
+                          "/h5p/core/js/h5p-confirmation-dialog.js",
+                          "/h5p/core/js/h5p-action-bar.js",
+                          "/h5p/core/js/request-queue.js",
+                          "/test"
+                          ],
+                          "styles":[
+                          "/h5p/core/styles/h5p.css",
+                          "/h5p/core/styles/h5p-confirmation-dialog.css"
+                          ]
                         }
                       },
                       "core":{
@@ -381,10 +413,10 @@ describe('Rendering the HTML page', () => {
                       },
                       "postUserStatistics": false,
                       "saveFreq": false,
-                      "url": "/h5p"
+                      "url": "/h5p",
+                      "hubIsEnabled": true
                     };
                         </script>
-                        <script src="/test"></script>
                     </head>
                     <body>
                         <div class="h5p-content" data-content-id="foo"></div>
