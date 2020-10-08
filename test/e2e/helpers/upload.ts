@@ -1,5 +1,14 @@
 import puppeteer from 'puppeteer';
 
+// On 4th Oct 2020, the Puppeteer types didn't include waitForTimeout, so we
+// added it manually. Can be removed when
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48129 is merged
+declare module 'puppeteer' {
+    export interface Page {
+      waitForTimeout(duration: number): Promise<void>;
+    }
+  }
+
 declare var window;
 
 let serverHost;
@@ -73,7 +82,7 @@ export async function uploadSave(file: string): Promise<void> {
     });
 
     // The editor is displayed within an iframe, so we must get it
-    await page.waitFor('iframe.h5p-editor-iframe');
+    await page.waitForSelector('iframe.h5p-editor-iframe');
     const contentFrame = await (
         await page.$('iframe.h5p-editor-iframe')
     ).contentFrame();
@@ -116,7 +125,7 @@ export async function uploadSave(file: string): Promise<void> {
 
     // some content type editors still to some things after the
     // editorloaded event was sent, so we wait for an arbitrary time
-    await page.waitFor(500);
+    await page.waitForTimeout(500);
 
     // Press save and wait until the player has loaded
     await page.waitForSelector('#save-h5p');

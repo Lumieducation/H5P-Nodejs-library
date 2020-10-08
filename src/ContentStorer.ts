@@ -14,6 +14,7 @@ import {
     IUser
 } from './types';
 import generateFilename from './helpers/FilenameGenerator';
+import SemanticsEnforcer from './SemanticsEnforcer';
 
 const log = new Logger('ContentStorer');
 
@@ -28,9 +29,11 @@ export default class ContentStorer {
         private temporaryFileManager: TemporaryFileManager
     ) {
         this.contentFileScanner = new ContentFileScanner(libraryManager);
+        this.semanticsEnforcer = new SemanticsEnforcer(libraryManager);
     }
 
     private contentFileScanner: ContentFileScanner;
+    private semanticsEnforcer: SemanticsEnforcer;
 
     /**
      * Saves content in the persistence system. Also copies over files from temporary storage
@@ -49,6 +52,11 @@ export default class ContentStorer {
         user: IUser
     ): Promise<ContentId> {
         const isUpdate = contentId !== undefined;
+
+        await this.semanticsEnforcer.enforceSemanticStructure(
+            parameters,
+            mainLibraryName
+        );
 
         // Get the list of files used in the old version of the content (if the content was saved before).
         // This list will later be compared against the files referenced in the new params.
