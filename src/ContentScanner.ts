@@ -56,7 +56,6 @@ export class ContentScanner {
             mainSemantics,
             params,
             '$',
-            undefined,
             callback,
             {
                 doNotAddNameToJsonPath: false
@@ -151,7 +150,10 @@ export class ContentScanner {
             case 'library':
                 // If an element contains another library, we have to retrieve
                 // the exact name, and the nested content parameters.
-                if (elementParams.library === undefined) {
+                if (
+                    elementParams.library === undefined ||
+                    !elementParams.params
+                ) {
                     // Skip if the element is empty. (= unused)
                     return;
                 }
@@ -168,9 +170,8 @@ export class ContentScanner {
                     subSemantics,
                     elementParams.params,
                     `${currentJsonPath}.params`,
-                    elementParams,
                     callback,
-                    options
+                    { doNotAddNameToJsonPath: false }
                 );
                 break;
             case 'group':
@@ -183,7 +184,7 @@ export class ContentScanner {
                         currentJsonPath,
                         elementParams,
                         callback,
-                        options
+                        { doNotAddNameToJsonPath: false }
                     );
                 }
                 break;
@@ -219,7 +220,6 @@ export class ContentScanner {
         semantics: ISemanticsEntry[],
         params: any,
         parentJsonPath: string,
-        parentParams: any,
         callback: ScanCallback,
         options: {
             doNotAddNameToJsonPath: boolean;

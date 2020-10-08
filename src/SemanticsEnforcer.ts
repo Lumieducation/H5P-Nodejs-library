@@ -19,15 +19,19 @@ export default class SemanticsEnforcer extends ContentScanner {
             mainParams,
             mainLibraryName,
             (semantics, params, jsonPath, parentParams) => {
-                log.debug(
-                    `Callback called with jsonPath ${jsonPath}->${semantics.name}`
-                );
-                if (params?.params && Object.keys(params.params).length === 0) {
+                if (
+                    semantics.name === 'media' &&
+                    semantics.type === 'library' &&
+                    params &&
+                    params.params &&
+                    Object.keys(params.params).length === 0
+                ) {
                     log.debug(
                         `Deleting empty library entry: ${jsonPath}: ${semantics.name}`
                     );
                     delete params.params;
                     delete parentParams[semantics.name];
+                    return true;
                 }
                 return false;
             }
