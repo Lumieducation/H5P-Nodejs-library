@@ -59,7 +59,7 @@ export class ContentScanner {
             undefined,
             callback,
             {
-                doNotAddNameToJsonPath: false,
+                doNotAddNameToJsonPath: false
             }
         );
     }
@@ -85,7 +85,7 @@ export class ContentScanner {
         options: {
             doNotAddNameToJsonPath: boolean;
         } = {
-            doNotAddNameToJsonPath: false,
+            doNotAddNameToJsonPath: false
         }
     ): Promise<void> {
         if (elementParams === undefined && !elementSemantics.optional) {
@@ -128,14 +128,21 @@ export class ContentScanner {
                 parentParams,
                 callback,
                 {
-                    doNotAddNameToJsonPath: true,
+                    doNotAddNameToJsonPath: true
                 } // we have already added the parent's name to the JSON path, so
                 // we don't want the child to add its name
             );
             return;
         }
 
-        if (callback(elementSemantics, elementParams, currentJsonPath, parentParams)) {
+        if (
+            callback(
+                elementSemantics,
+                elementParams,
+                currentJsonPath,
+                parentParams
+            )
+        ) {
             // don't walk further into the tree if the callback signalled to stop
             return;
         }
@@ -192,7 +199,7 @@ export class ContentScanner {
                         elementParams,
                         callback,
                         {
-                            doNotAddNameToJsonPath: true,
+                            doNotAddNameToJsonPath: true
                         } // we don't want the field name of a list to be added to the JSON path
                     );
                     counter += 1;
@@ -217,7 +224,7 @@ export class ContentScanner {
         options: {
             doNotAddNameToJsonPath: boolean;
         } = {
-            doNotAddNameToJsonPath: false,
+            doNotAddNameToJsonPath: false
         }
     ): Promise<void> {
         for (const semanticEntry of semantics) {

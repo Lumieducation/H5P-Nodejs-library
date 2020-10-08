@@ -5,9 +5,9 @@ import puppeteer from 'puppeteer';
 // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48129 is merged
 declare module 'puppeteer' {
     export interface Page {
-      waitForTimeout(duration: number): Promise<void>;
+        waitForTimeout(duration: number): Promise<void>;
     }
-  }
+}
 
 declare var window;
 
