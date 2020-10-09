@@ -921,6 +921,10 @@ export interface ISemanticsEntry {
     /**
      * (in lists only) defines a single field type in the list
      */
+    extraAttributes?: string[];
+    /**
+     * Further attributes allowed in the params.
+     */
     field?: ISemanticsEntry;
     /**
      * (in groups only) a list of field definitions
@@ -997,6 +1001,12 @@ export interface ISemanticsEntry {
      * (for number) the allowed steps
      */
     steps?: number;
+    /**
+     * (for library) an id identifying subcontent, set by the editor; Must be
+     * formatted like this:
+     * /^\{?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\}?$/
+     */
+    subContentId?: string;
     /**
      * (for text) list of allowed html tags.
      */
