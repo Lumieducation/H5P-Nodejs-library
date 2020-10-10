@@ -480,7 +480,7 @@ export default class ContentStorer {
         return (
             // Check if a path is a URL without a protocol prefix, like
             // youtu.be/XXX
-            /.+?\..+\/.+/.test(brokenPath) ||
+            /^[^.\/]+?\.[^.\/]+\/.+$/.test(brokenPath) ||
             // The H5P editor produces this non-standard mime-type, so we can
             // use it to detect URLs.
             (mimetype && mimetype.toLowerCase() === 'video/youtube')
