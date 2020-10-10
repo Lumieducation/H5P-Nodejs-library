@@ -15,7 +15,9 @@ describe('e2e test: upload content and save', () => {
         await uploadHelpers.afterAll();
     });
 
-    for (const file of fsExtra.readdirSync(problemCasesPath)) {
+    for (const file of fsExtra
+        .readdirSync(problemCasesPath)
+        .filter((f) => f.endsWith('.h5p'))) {
         it(`uploading and then saving ${file}`, async () => {
             await uploadHelpers.uploadSave(path.join(problemCasesPath, file));
         }, 60000);
