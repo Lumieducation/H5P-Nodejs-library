@@ -7,9 +7,11 @@ const log = new Logger('ContentScanner');
 
 /**
  * @param semantics The semantic information about the current content params
- * @param params The current current params
+ * @param params The current params
  * @param jsonPath The current path of the object in the tree as a JSON path
  * (example: .media.type.path)
+ * @param parentParams The parent element in the params tree. Can be used to
+ * delete this entry.
  * @returns true if the children of this entry should not be scanned (= abort
  * scan for this subtree)
  */
@@ -24,6 +26,10 @@ export type ScanCallback = (
  * Scans the content parameters (= content.json) of a piece of content and calls
  * a callback for each element in the semantic tree. This includes all nested
  * pieces of content.
+ *
+ * You must pass ins a callback that is called for every element in the params
+ * tree. If this callback returns true, the scan will be aborted _for the
+ * element and its children_, but not for the rest of the params.
  */
 export class ContentScanner {
     constructor(private libraryManager: LibraryManager) {
@@ -33,17 +39,18 @@ export class ContentScanner {
     /**
      * Scans the specified parameters and executes the callback for every
      * element in the tree. This includes nested content!
-     * @param contentId the piece of content
-     * @param user the user who executes the action
+     * @param params the params to scan
+     * @param mainLibraryName the library name
      * @param callback a function that is executed for every element in the
-     * semantic structure
+     * semantic structure. Return true in it to abort the scan for the element
+     * itself and all of its children (the rest of the scan will continue).
      */
     public async scanContent(
         params: any,
         mainLibraryName: ILibraryName,
         callback: ScanCallback
     ): Promise<void> {
-        log.info(
+        log.debug(
             `scanning content for of type ${LibraryName.toUberName(
                 mainLibraryName
             )}`
@@ -69,6 +76,7 @@ export class ContentScanner {
      * @param elementParams the parameters for the current element (as in
      * content.json)
      * @param parentJsonPath the JSON path of the parent (example: .media.type)
+     * @param parentParams the parent params in the params tree
      * @param callback a function that is executed for this element and for
      * every child
      * @param doNotAddNameToJsonPath if true, the name of the current element
@@ -127,9 +135,10 @@ export class ContentScanner {
                 parentParams,
                 callback,
                 {
+                    // We have already added the parent's name to the JSON path,
+                    // so we don't want the child to add its name.
                     doNotAddNameToJsonPath: true
-                } // we have already added the parent's name to the JSON path, so
-                // we don't want the child to add its name
+                }
             );
             return;
         }
@@ -150,10 +159,7 @@ export class ContentScanner {
             case 'library':
                 // If an element contains another library, we have to retrieve
                 // the exact name, and the nested content parameters.
-                if (
-                    elementParams.library === undefined ||
-                    !elementParams.params
-                ) {
+                if (elementParams.library === undefined) {
                     // Skip if the element is empty. (= unused)
                     return;
                 }
@@ -200,8 +206,10 @@ export class ContentScanner {
                         elementParams,
                         callback,
                         {
+                            // We don't want the field name of a list to be
+                            // added to the JSON path.
                             doNotAddNameToJsonPath: true
-                        } // we don't want the field name of a list to be added to the JSON path
+                        }
                     );
                     counter += 1;
                 }

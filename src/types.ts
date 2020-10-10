@@ -919,11 +919,11 @@ export interface ISemanticsEntry {
      */
     expanded?: boolean;
     /**
-     * (in lists only) defines a single field type in the list
+     * Further attributes allowed in the params.
      */
     extraAttributes?: string[];
     /**
-     * Further attributes allowed in the params.
+     * (in lists only) defines a single field type in the list
      */
     field?: ISemanticsEntry;
     /**
