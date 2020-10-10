@@ -1,10 +1,17 @@
 import * as express from 'express';
-import { H5PEditor, LibraryName, H5pError, ContentId } from '../..';
+import {
+    H5PEditor,
+    LibraryName,
+    H5pError,
+    ContentId,
+    IContentMetadata
+} from '../..';
 import { lookup as mimeLookup } from 'mime-types';
 import AjaxSuccessResponse from '../../helpers/AjaxSuccessResponse';
 import { Readable } from 'stream';
 import { IFileStats, IUser } from '../../types';
 import { IRequestWithUser, IRequestWithTranslator } from '../expressTypes';
+import SemanticsEnforcer from '../../SemanticsEnforcer';
 
 interface IActionRequest extends IRequestWithUser, IRequestWithTranslator {
     files: {
@@ -226,10 +233,15 @@ export default class H5PAjaxExpressController {
                         400
                     );
                 }
+
                 const {
                     library: unfilteredLibrary,
                     params: unfilteredParams,
                     metadata: unfilteredMetadata
+                }: {
+                    library: string;
+                    metadata: IContentMetadata;
+                    params: any;
                 } = JSON.parse(req.body.libraryParameters);
 
                 if (
@@ -244,7 +256,16 @@ export default class H5PAjaxExpressController {
                     );
                 }
 
-                // TODO: properly filter params, this is just a hack to get uploading working
+                const enforcer = new SemanticsEnforcer(
+                    this.h5pEditor.libraryManager
+                );
+
+                await enforcer.enforceSemanticStructure(
+                    unfilteredParams,
+                    LibraryName.fromUberName(unfilteredLibrary, {
+                        useWhitespace: true
+                    })
+                );
 
                 res.status(200).json(
                     new AjaxSuccessResponse({
