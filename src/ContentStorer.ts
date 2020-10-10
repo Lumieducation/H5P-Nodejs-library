@@ -167,9 +167,17 @@ export default class ContentStorer {
                 reference.filePath
             );
             // If the file referenced in the parameters isn't included in the
-            // package, we remove the reference.
+            // package, we first check if the path is actually a URL and if not,
+            // we delete the reference.
             if (!(await fsExtra.pathExists(filepath))) {
-                reference.context.params.path = '';
+                if (
+                    !this.isUrl(
+                        reference.context.params.path,
+                        reference.mimeType
+                    )
+                ) {
+                    reference.context.params.path = '';
+                }
                 continue;
             }
             const readStream = fsExtra.createReadStream(filepath);
@@ -253,12 +261,15 @@ export default class ContentStorer {
                 ref.context.params.path = pastedFilename;
                 changedSomething = true;
             } catch (error) {
-                // If something went wrong, we simply remove the reference to the file from the params.
+                // If something went wrong, we remove the reference to the file
+                // from the params (except if it is actually a URL).
                 log.error(
                     `Could not copy file ${sourceFilename} from ${sourceContentId}: ${error}. Removing the reference in the pasted content.`
                 );
-                ref.context.params.path = '';
-                changedSomething = true;
+                if (!this.isUrl(ref.context.params.path, ref.mimeType)) {
+                    ref.context.params.path = '';
+                    changedSomething = true;
+                }
             }
         }
         return changedSomething;
@@ -282,7 +293,7 @@ export default class ContentStorer {
         let dirty = false;
         for (const fileToCopy of files) {
             let readable;
-            let removeReference = false;
+            let removeReferenceIfNotUrl = false;
             if (
                 await this.temporaryFileManager.fileExists(
                     fileToCopy.filePath,
@@ -299,7 +310,7 @@ export default class ContentStorer {
                     log.error(
                         `Temporary file ${fileToCopy} does not exist or is not accessible to user: ${error}`
                     );
-                    removeReference = true;
+                    removeReferenceIfNotUrl = true;
                 }
                 try {
                     if (readable !== undefined) {
@@ -323,7 +334,7 @@ export default class ContentStorer {
                     log.error(
                         `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: ${error.message}. Ignoring and continuing.`
                     );
-                    removeReference = true;
+                    removeReferenceIfNotUrl = true;
                 } finally {
                     if (readable?.close) {
                         readable.close();
@@ -333,11 +344,20 @@ export default class ContentStorer {
                 log.error(
                     `There was an error while copying temporary file ${fileToCopy} to content ${contentId}: The file does not exist in temporary storage. Ignoring and continuing.`
                 );
-                removeReference = true;
+                removeReferenceIfNotUrl = true;
             }
-            if (removeReference) {
-                fileToCopy.context.params.path = '';
-                dirty = true;
+            if (removeReferenceIfNotUrl) {
+                // We check if the path points to a malformed URL and remove it
+                // if this is not the case.
+                if (
+                    !this.isUrl(
+                        fileToCopy.context.params.path,
+                        fileToCopy.mimeType
+                    )
+                ) {
+                    fileToCopy.context.params.path = '';
+                    dirty = true;
+                }
             }
         }
         return dirty;
@@ -449,4 +469,21 @@ export default class ContentStorer {
             }
         );
     };
+
+    /**
+     * Checks if a path to a file is broken, if it is actually a URL without a
+     * protocol.
+     * @param brokenPath the path to check
+     * @param mimetype (optional) the mimetype of the file
+     */
+    private isUrl(brokenPath: string, mimetype?: string): boolean {
+        return (
+            // Check if a path is a URL without a protocol prefix, like
+            // youtu.be/XXX
+            /^[^.\/]+?\.[^.\/]+\/.+$/.test(brokenPath) ||
+            // The H5P editor produces this non-standard mime-type, so we can
+            // use it to detect URLs.
+            (mimetype && mimetype.toLowerCase() === 'video/youtube')
+        );
+    }
 }

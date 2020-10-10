@@ -14,8 +14,8 @@ export interface IFileReference {
      */
     context: {
         /**
-         * The path of the object **inside the params tree**. You can use this path
-         * to later modify the params, if needed.
+         * The path of the object **inside the params tree**. You can use this
+         * path to later modify the params, if needed.
          */
         jsonPath: string;
         /**
@@ -25,9 +25,9 @@ export interface IFileReference {
         /**
          * The semantic structure of the object (as defined in semantics.json).
          *
-         * Can be null or undefined if there is no semantic structure for the element
-         * (happens if the file can be found somewhere that is not described by the
-         * semantics)
+         * Can be null or undefined if there is no semantic structure for the
+         * element (happens if the file can be found somewhere that is not
+         * described by the semantics)
          */
         semantics?: ISemanticsEntry;
     };
@@ -37,15 +37,19 @@ export interface IFileReference {
      */
     filePath: string;
     /**
-     * If true, the file was marked as temporary (by the #tmp suffix).
-     * The suffix is **not included** in filePath
+     * The mime type specified in the params
+     */
+    mimeType?: string;
+    /**
+     * If true, the file was marked as temporary (by the #tmp suffix). The
+     * suffix is **not included** in filePath
      */
     temporary: boolean;
 }
 
 /**
- * Scans the content parameters (=content.json) of a piece of content and returns a list
- * of references to file that are embedded inside the content.
+ * Scans the content parameters (=content.json) of a piece of content and
+ * returns a list of references to file that are embedded inside the content.
  */
 export class ContentFileScanner extends ContentScanner {
     constructor(libraryManager: LibraryManager) {
@@ -60,8 +64,9 @@ export class ContentFileScanner extends ContentScanner {
     private static urlRegExp = /^https?:\/\//;
 
     /**
-     * Loads the specified content from the ContentManager and scans its parameters (= content.json) for references
-     * to local files (= audio, video, images, generic files).
+     * Loads the specified content from the ContentManager and scans its
+     * parameters (= content.json) for references to local files (= audio,
+     * video, images, generic files).
      * @param contentId the content to scan
      * @param user the user who wants to access the file
      * @returns a list of local files
@@ -139,12 +144,14 @@ export class ContentFileScanner extends ContentScanner {
     }
 
     /**
-     * Checks if an element in the parameter tree contains a valid reference to a local file and
-     * removed temporary markers.
+     * Checks if an element in the parameter tree contains a valid reference to
+     * a local file and removes temporary markers.
      * @param semantics The semantic structure of the element to check
      * @param params the parameter object of the element to check
-     * @param jsonPath the JSONPath at which the element can be found in the parameter object
-     * @returns an object with information about the file reference; undefined if the file reference is invalid
+     * @param jsonPath the JSONPath at which the element can be found in the
+     * parameter object
+     * @returns an object with information about the file reference; undefined
+     * if the file reference is invalid
      */
     private checkFileElement(
         semantics: ISemanticsEntry,
@@ -152,11 +159,12 @@ export class ContentFileScanner extends ContentScanner {
         jsonPath: string
     ): IFileReference {
         if (!params.path) {
-            // Path shouldn't be empty, but we simply ignore the entry in this case.
+            // Path shouldn't be empty, but we simply ignore the entry in this
+            // case.
             return undefined;
         }
         if (ContentFileScanner.urlRegExp.test(params.path)) {
-            // if the file is a reference to a URL, we don't return it.
+            // If the file is a reference to a URL, we don't return it.
             return undefined;
         }
 
@@ -174,12 +182,13 @@ export class ContentFileScanner extends ContentScanner {
         return {
             context: { semantics, params, jsonPath },
             filePath: cleanFileReferencePath,
+            mimeType: params.mime,
             temporary
         };
     }
 
     /**
-     * Helper function that pushed an item to an array if the item is defined.
+     * Helper function that pushes an item to an array if the item is defined.
      * @param array the array to push to
      * @param item the item to push
      * @returns the item (if defined); otherwise undefined
