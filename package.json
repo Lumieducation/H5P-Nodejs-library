@@ -105,7 +105,7 @@
         "@types/yargs": "15.0.8",
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
-        "aws-sdk": "2.771.0",
+        "aws-sdk": "2.772.0",
         "axios-mock-adapter": "1.18.2",
         "body-parser": "1.19.0",
         "commitlint": "11.0.0",
