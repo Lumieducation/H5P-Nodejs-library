@@ -1,7 +1,7 @@
 {
     "name": "h5p-nodejs-library",
-    "version": "2.0.0",
-    "description": "The H5P-Nodejs-library is a port of the H5P-Editor-PHP-library and the H5P-PHP-Library for Nodejs.",
+    "version": "6.0.3",
+    "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
         "type": "git",
@@ -60,6 +60,12 @@
             "name": "Bo Biene",
             "email": "biene@inray.de",
             "url": "https://www.qm-team.de/mymento-kursportal/"
+        },
+        {
+            "name": "jdavidavendano"
+        },
+        {
+            "name": "jankapunkt"
         }
     ],
     "dependencies": {
