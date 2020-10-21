@@ -104,7 +104,7 @@
         "@types/supertest": "2.0.10",
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
-        "aws-sdk": "2.775.0",
+        "aws-sdk": "2.776.0",
         "axios-mock-adapter": "1.18.2",
         "body-parser": "1.19.0",
         "commitlint": "11.0.0",
