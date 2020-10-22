@@ -14,7 +14,7 @@ const errorFileStream = fsExtra.createWriteStream(
 
 async function logFailed(file: string, cause: string): Promise<void> {
     console.error(`❌ ${file} failed: ${cause})`);
-    errorFileStream.write(`${file}\n`);
+    errorFileStream.write(`${file}: ${cause}\n`);
 }
 
 async function main(): Promise<void> {
