@@ -168,6 +168,21 @@ const start = async () => {
         express.static(path.resolve('build/examples/client'))
     );
 
+    // STUB
+    server.post('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.get('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.post('/h5p/setFinished', (req, res) => {
+        res.status(200).send();
+    });
+
     const port = process.env.PORT || '8080';
 
     // For developer convenience we display a list of IPs, the server is running

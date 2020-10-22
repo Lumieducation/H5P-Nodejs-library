@@ -284,6 +284,44 @@ describe('basic file library manager functionality', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('returns null file for language en', async () => {
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+        );
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'en'
+        );
+        expect(language).toBeNull();
+    });
+
+    it('returns the de language file for de-DE', async () => {
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+        );
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'de-DE'
+        );
+        expect(JSON.parse(language)).toMatchObject({
+            semantics: [
+                {
+                    label: 'Grußbotschaft',
+                    default: 'Hallo, Welt!',
+                    description:
+                        'Die Grußbotschaft, die dem Nutzer gezeigt wird.'
+                },
+                {
+                    label: 'Kartenbild',
+                    description:
+                        'Bild, das optional auf der Karte gezeigt wird. Ohne ein solches wird nur Text auf der Karte gezeigt.'
+                }
+            ]
+        });
+    });
 });
 describe('listLanguages()', () => {
     it('returns an empty array if the language folder does not exist', async () => {

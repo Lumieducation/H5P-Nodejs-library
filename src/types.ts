@@ -232,6 +232,16 @@ export interface IIntegration {
              */
             resizeCode?: string;
             /**
+             * A complete list of scripts required to display the content.
+             * Includes core scripts and content type specific scripts.
+             */
+            scripts?: string[];
+            /**
+             * A complete list of styles required to display the content.
+             * Includes core scripts and content type specific styles.
+             */
+            styles?: string[];
+            /**
              * The absolute URL to the current content.
              */
             url?: string;
@@ -278,14 +288,10 @@ export interface IIntegration {
         [namespace: string]: any;
     };
     /**
-     * Can be null. Usage is unknown. the server might be able to customize
-     * library behavior by setting the library config for certain machine names,
-     * as the H5P client allows it to be called by executing
-     * H5P.getLibraryConfig(machineName). This means that libraries can retrieve
-     * configuration values from the server that way. The core never calls the
-     * method and none of the content types on the H5P hub do so...
-     * The Moodle implementation simply passed through a configuration value
-     * in this case.
+     * Can be null. The server can customize library behavior by setting the
+     * library config for certain machine names, as the H5P client allows it to
+     * be called by executing H5P.getLibraryConfig(machineName). This means that
+     * libraries can retrieve configuration values from the server that way.
      */
     libraryConfig?: {
         [machineName: string]: any;
@@ -910,6 +916,10 @@ export interface ISemanticsEntry {
      */
     expanded?: boolean;
     /**
+     * Further attributes allowed in the params.
+     */
+    extraAttributes?: string[];
+    /**
      * (in lists only) defines a single field type in the list
      */
     field?: ISemanticsEntry;
@@ -988,6 +998,12 @@ export interface ISemanticsEntry {
      * (for number) the allowed steps
      */
     steps?: number;
+    /**
+     * (for library) an id identifying subcontent, set by the editor; Must be
+     * formatted like this:
+     * /^\{?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\}?$/
+     */
+    subContentId?: string;
     /**
      * (for text) list of allowed html tags.
      */
@@ -1613,8 +1629,8 @@ export interface IHubInfo {
 
 export interface IPlayerModel {
     contentId: ContentParameters;
-    customScripts: string;
     downloadPath: string;
+    embedTypes: ('iframe' | 'div')[];
     integration: IIntegration;
     scripts: string[];
     styles: string[];

@@ -88,6 +88,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('exportMaxContentPathLength');
+        await this.loadSettingFromStorage('baseUrl');
         return this;
     }
 

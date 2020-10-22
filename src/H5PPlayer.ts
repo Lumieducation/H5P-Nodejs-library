@@ -89,22 +89,6 @@ export default class H5PPlayer {
             throw new H5pError('h5p-player:content-missing', {}, 404);
         }
 
-        const model: IPlayerModel = {
-            contentId,
-            customScripts: this.globalCustomScripts
-                .map((script) => `<script src="${script}"></script>`)
-                .join('\n'),
-            downloadPath: this.getDownloadPath(contentId),
-            integration: this.generateIntegration(
-                contentId,
-                parameters,
-                metadata
-            ),
-            scripts: this.listCoreScripts(),
-            styles: this.listCoreStyles(),
-            translations: {}
-        };
-
         log.debug('Getting list of installed addons.');
         let installedAddons: ILibraryMetadata[] = [];
         if (this.libraryStorage?.listAddons) {
@@ -129,10 +113,28 @@ export default class H5PPlayer {
                     )
             )
         );
-        const libraries = {};
-        await this.getLibraries(dependencies, libraries);
 
-        this.aggregateAssets(dependencies, model, libraries);
+        // Getting lists of scripts and styles needed for the main library.
+        const libraries = await this.getMetadataRecursive(dependencies);
+        const assets = this.aggregateAssetsRecursive(dependencies, libraries);
+
+        const model: IPlayerModel = {
+            contentId,
+            downloadPath: this.getDownloadPath(contentId),
+            integration: this.generateIntegration(
+                contentId,
+                parameters,
+                metadata,
+                assets
+            ),
+            scripts: this.listCoreScripts()
+                .concat(this.globalCustomScripts)
+                .concat(assets.scripts),
+            styles: this.listCoreStyles().concat(assets.styles),
+            translations: {},
+            embedTypes: metadata.embedTypes // TODO: check if the library supports the embed type!
+        };
+
         return this.renderer(model);
     }
 
@@ -148,12 +150,24 @@ export default class H5PPlayer {
         return this;
     }
 
-    private aggregateAssets(
+    /**
+     *
+     * @param dependencies
+     * @param libraries
+     * @param assets
+     * @param loaded
+     * @returns aggregated asset lists
+     */
+    private aggregateAssetsRecursive(
         dependencies: ILibraryName[],
-        assets: IAssets,
-        libraries: object = {},
-        loaded: object = {}
-    ): void {
+        libraries: { [ubername: string]: IInstalledLibrary },
+        assets: IAssets = ({
+            scripts: [],
+            styles: [],
+            translations: []
+        } = { scripts: [], styles: [], translations: [] }),
+        loaded: { [ubername: string]: boolean } = {}
+    ): IAssets {
         log.verbose(
             `loading assets from dependencies: ${dependencies
                 .map((dep) => LibraryName.toUberName(dep))
@@ -166,10 +180,10 @@ export default class H5PPlayer {
             loaded[key] = true;
             const lib = libraries[key];
             if (lib) {
-                this.aggregateAssets(
+                this.aggregateAssetsRecursive(
                     lib.preloadedDependencies || [],
-                    assets,
                     libraries,
+                    assets,
                     loaded
                 );
                 (lib.preloadedCss || []).forEach((asset) =>
@@ -184,6 +198,7 @@ export default class H5PPlayer {
                 );
             }
         });
+        return assets;
     }
 
     /**
@@ -220,7 +235,8 @@ export default class H5PPlayer {
     private generateIntegration(
         contentId: ContentId,
         parameters: ContentParameters,
-        metadata: IContentMetadata
+        metadata: IContentMetadata,
+        assets: IAssets
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
@@ -246,7 +262,11 @@ export default class H5PPlayer {
                         license: metadata.license || 'U',
                         title: metadata.title || '',
                         defaultLanguage: metadata.language || 'en'
-                    }
+                    },
+                    scripts: this.listCoreScripts()
+                        .concat(this.globalCustomScripts)
+                        .concat(assets.scripts),
+                    styles: this.listCoreStyles().concat(assets.styles)
                 }
             },
             core: {
@@ -262,6 +282,7 @@ export default class H5PPlayer {
             postUserStatistics: false,
             saveFreq: false,
             url: this.config.baseUrl,
+            hubIsEnabled: true,
             ...this.integrationObjectDefaults
         };
     }
@@ -393,10 +414,28 @@ export default class H5PPlayer {
         return this.urlGenerator.downloadPackage(contentId);
     }
 
-    private async getLibraries(
+    private async getMetadata(
+        machineName: string,
+        majorVersion: number,
+        minorVersion: number
+    ): Promise<IInstalledLibrary> {
+        log.verbose(
+            `loading library ${machineName}-${majorVersion}.${minorVersion}`
+        );
+        return this.libraryStorage.getLibrary(
+            new LibraryName(machineName, majorVersion, minorVersion)
+        );
+    }
+
+    /**
+     *
+     * @param dependencies
+     * @param loaded can be left out in initial call
+     */
+    private async getMetadataRecursive(
         dependencies: ILibraryName[],
-        loaded: object
-    ): Promise<void> {
+        loaded: { [ubername: string]: IInstalledLibrary } = {}
+    ): Promise<{ [ubername: string]: IInstalledLibrary }> {
         log.verbose(
             `loading libraries from dependencies: ${dependencies
                 .map((dep) => LibraryName.toUberName(dep))
@@ -414,7 +453,7 @@ export default class H5PPlayer {
                 }
                 let lib;
                 try {
-                    lib = await this.getLibrary(name, majVer, minVer);
+                    lib = await this.getMetadata(name, majVer, minVer);
                 } catch {
                     log.info(
                         `Could not find library ${name}-${majVer}.${minVer} in storage. Silently ignoring...`
@@ -422,26 +461,14 @@ export default class H5PPlayer {
                 }
                 if (lib) {
                     loaded[key] = lib;
-                    await this.getLibraries(
+                    await this.getMetadataRecursive(
                         lib.preloadedDependencies || [],
                         loaded
                     );
                 }
             })
         );
-    }
-
-    private async getLibrary(
-        machineName: string,
-        majorVersion: number,
-        minorVersion: number
-    ): Promise<IInstalledLibrary> {
-        log.verbose(
-            `loading library ${machineName}-${majorVersion}.${minorVersion}`
-        );
-        return this.libraryStorage.getLibrary(
-            new LibraryName(machineName, majorVersion, minorVersion)
-        );
+        return loaded;
     }
 
     private listCoreScripts(): string[] {

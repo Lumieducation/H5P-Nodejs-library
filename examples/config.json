@@ -7,6 +7,8 @@
     "hubContentTypesEndpoint": "https://api.h5p.org/v1/content-types/",
     "contentTypeCacheRefreshInterval": 86400000,
     "enableLrsContentTypes": true,
+    "maxFileSize": 1048576000,
+    "maxTotalSize": 1048576000,
     "editorAddons": {
         "H5P.CoursePresentation": ["H5P.MathDisplay"],
         "H5P.InteractiveVideo": ["H5P.MathDisplay"],
