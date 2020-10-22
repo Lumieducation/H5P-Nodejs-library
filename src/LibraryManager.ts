@@ -108,12 +108,21 @@ export default class LibraryManager {
                 `language/${language}.json`
             );
             return streamToString(stream);
-        } catch (ignored) {
+        } catch {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(
                     library
                 )}`
             );
+            const languageCodeMatch = /^([a-zA-Z]+)\-([a-zA-Z]+)$/.exec(
+                language
+            );
+            if (languageCodeMatch && languageCodeMatch.length === 3) {
+                log.debug(
+                    `Language code ${language} seems to contain country code. Trying without it.`
+                );
+                return this.getLanguage(library, languageCodeMatch[1]);
+            }
             return null;
         }
     }
