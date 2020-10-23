@@ -881,6 +881,7 @@ export default class H5PEditor {
             libraryUrl: this.urlGenerator.coreFile('js'),
             pluginCacheBuster: '', // TODO make dynamic
             url: this.config.baseUrl,
+            fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             user: {
                 mail: '',
                 name: ''

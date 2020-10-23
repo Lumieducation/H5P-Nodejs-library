@@ -295,6 +295,7 @@ export default class H5PPlayer {
             saveFreq: false,
             url: this.config.baseUrl,
             hubIsEnabled: true,
+            fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             ...this.integrationObjectDefaults
         };
     }
