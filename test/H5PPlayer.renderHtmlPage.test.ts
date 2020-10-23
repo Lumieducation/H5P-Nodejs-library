@@ -158,7 +158,8 @@ describe('Rendering the HTML page', () => {
                   "postUserStatistics": false,
                   "saveFreq": false,
                   "url": "/h5p",
-                  "hubIsEnabled": true
+                  "hubIsEnabled": true,
+                  "fullscreenDisabled": 0
                 };
                     </script>
                 </head>
@@ -414,7 +415,8 @@ describe('Rendering the HTML page', () => {
                       "postUserStatistics": false,
                       "saveFreq": false,
                       "url": "/h5p",
-                      "hubIsEnabled": true
+                      "hubIsEnabled": true,
+                      "fullscreenDisabled": 0
                     };
                         </script>
                     </head>
