@@ -1324,6 +1324,10 @@ export interface IH5PConfig {
      */
     coreUrl: string;
     /**
+     * If true, the fullscreen button will not be shown to the user.
+     */
+    disableFullscreen: boolean;
+    /**
      * Path to the downloadable H5P packages.
      */
     downloadUrl: string;

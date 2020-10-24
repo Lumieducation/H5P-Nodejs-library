@@ -118,6 +118,16 @@ export default class H5PPlayer {
         const libraries = await this.getMetadataRecursive(dependencies);
         const assets = this.aggregateAssetsRecursive(dependencies, libraries);
 
+        const mainLibrarySupportsFullscreen = !metadata.mainLibrary
+            ? false
+            : libraries[
+                  LibraryName.toUberName(
+                      metadata.preloadedDependencies.find(
+                          (dep) => dep.machineName === metadata.mainLibrary
+                      )
+                  )
+              ].fullscreen === 1;
+
         const model: IPlayerModel = {
             contentId,
             downloadPath: this.getDownloadPath(contentId),
@@ -125,7 +135,8 @@ export default class H5PPlayer {
                 contentId,
                 parameters,
                 metadata,
-                assets
+                assets,
+                mainLibrarySupportsFullscreen
             ),
             scripts: this.listCoreScripts()
                 .concat(this.globalCustomScripts)
@@ -236,7 +247,8 @@ export default class H5PPlayer {
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
-        assets: IAssets
+        assets: IAssets,
+        supportsFullscreen: boolean
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
@@ -251,7 +263,7 @@ export default class H5PPlayer {
                         frame: false,
                         icon: false
                     },
-                    fullScreen: '0',
+                    fullScreen: supportsFullscreen ? '1' : '0',
                     jsonContent: JSON.stringify(parameters),
                     library: ContentMetadata.toUbername(metadata),
                     contentUrl: this.config.contentFilesUrlPlayerOverride?.replace(
@@ -283,6 +295,7 @@ export default class H5PPlayer {
             saveFreq: false,
             url: this.config.baseUrl,
             hubIsEnabled: true,
+            fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             ...this.integrationObjectDefaults
         };
     }
