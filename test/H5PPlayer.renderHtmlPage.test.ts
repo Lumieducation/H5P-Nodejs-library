@@ -21,6 +21,7 @@ describe('Rendering the HTML page', () => {
                     
                     <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
                     <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css"/>
                     <script src="/h5p/core/js/jquery.js"></script>
                     <script src="/h5p/core/js/h5p.js"></script>
                     <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
@@ -63,7 +64,8 @@ describe('Rendering the HTML page', () => {
                         ],
                         "styles":[
                         "/h5p/core/styles/h5p.css",
-                        "/h5p/core/styles/h5p-confirmation-dialog.css"
+                        "/h5p/core/styles/h5p-confirmation-dialog.css",
+                        "/h5p/core/styles/h5p-core-button.css"
                         ]
                     }
                   },
@@ -81,7 +83,8 @@ describe('Rendering the HTML page', () => {
                     ],
                     "styles":[
                     "/h5p/core/styles/h5p.css",
-                    "/h5p/core/styles/h5p-confirmation-dialog.css"
+                    "/h5p/core/styles/h5p-confirmation-dialog.css",
+                    "/h5p/core/styles/h5p-core-button.css"
                     ]
                     },
                   "l10n": {
@@ -275,6 +278,7 @@ describe('Rendering the HTML page', () => {
                         
                         <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
                         <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css"/>
                         <script src="/h5p/core/js/jquery.js"></script>
                         <script src="/h5p/core/js/h5p.js"></script>
                         <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
@@ -319,7 +323,8 @@ describe('Rendering the HTML page', () => {
                           ],
                           "styles":[
                           "/h5p/core/styles/h5p.css",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css"
+                          "/h5p/core/styles/h5p-confirmation-dialog.css",
+                          "/h5p/core/styles/h5p-core-button.css"
                           ]
                         }
                       },
@@ -338,7 +343,8 @@ describe('Rendering the HTML page', () => {
                           ],
                           "styles":[
                           "/h5p/core/styles/h5p.css",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css"
+                          "/h5p/core/styles/h5p-confirmation-dialog.css",
+                          "/h5p/core/styles/h5p-core-button.css"
                           ]
                           },
                       "l10n": {
