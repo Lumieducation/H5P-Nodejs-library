@@ -1,3 +1,5 @@
+import sanitizeHtml from 'sanitize-html';
+
 import { ContentScanner } from './ContentScanner';
 import LibraryManager from './LibraryManager';
 import Logger from './helpers/Logger';
@@ -45,7 +47,15 @@ export default class SemanticsEnforcer {
                         jsonPath
                     );
                     deleteMe = result.deleteMe;
+                } else if (semantics.type === 'text') {
+                    this.enforceTextSemantics(
+                        semantics,
+                        params,
+                        parentParams,
+                        jsonPath
+                    );
                 }
+
                 if (deleteMe) {
                     log.debug(
                         `Enforcing library semantics by deleting params path ${jsonPath}.`
@@ -113,5 +123,97 @@ export default class SemanticsEnforcer {
         return {
             deleteMe
         };
+    }
+
+    private enforceTextSemantics(
+        semantics: ISemanticsEntry,
+        params: any,
+        parentParams: any,
+        jsonPath: string
+    ): void {
+        let newText = params;
+        if (!newText) {
+            newText = '';
+        }
+
+        if (semantics.tags) {
+            let allowedTags = ['div', 'span', 'p', 'br', ...semantics.tags];
+            if (allowedTags.includes('table')) {
+                allowedTags = [
+                    ...allowedTags,
+                    'tr',
+                    'td',
+                    'th',
+                    'colgroup',
+                    'thead',
+                    'tbody',
+                    'tfoot'
+                ];
+            }
+            if (allowedTags.includes('strong')) {
+                allowedTags.push('b');
+            } else {
+                if (allowedTags.includes('b')) {
+                    allowedTags.push('strong');
+                }
+            }
+            if (allowedTags.includes('em')) {
+                allowedTags.push('i');
+            } else {
+                if (allowedTags.includes('i')) {
+                    allowedTags.push('em');
+                }
+            }
+            if (allowedTags.includes('ul') || allowedTags.includes('ol')) {
+                allowedTags.push('li');
+            }
+            if (allowedTags.includes('del') || allowedTags.includes('strike')) {
+                allowedTags.push('s');
+            }
+            allowedTags = Array.from(new Set<string>(allowedTags));
+
+            const allowedStyles = {
+                'text-align': [/(center|left|right)/i]
+            };
+            if (semantics.font) {
+                if (semantics.font.size) {
+                    allowedStyles['font-size'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+                if (semantics.font.family) {
+                    allowedStyles['font-family'] = [/^[-a-z0-9," ]+$/i];
+                }
+                if (semantics.font.color) {
+                    // tslint:disable-next-line: no-string-literal
+                    allowedStyles['color'] = [
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                    ];
+                }
+                if (semantics.font.background) {
+                    allowedStyles['background-color'] = [
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                    ];
+                }
+                if (semantics.font.spacing) {
+                    // tslint:disable-next-line: no-string-literal
+                    allowedStyles['spacing'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+                if (semantics.font.height) {
+                    allowedStyles['line-height'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+            }
+
+            newText = sanitizeHtml(newText, {
+                allowedTags,
+                allowedAttributes: false,
+                allowedStyles: { '*': allowedStyles }
+            });
+        }
+        parentParams.text = newText;
+
+        // TODO:
+        // - respect detailed font specifications in style filter
+        // - be stricter which attributes are allowed and where styles are allowed
+        // - filter non HTML
+        // - enforce other parts of the schema
     }
 }
