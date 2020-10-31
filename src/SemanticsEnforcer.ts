@@ -125,19 +125,32 @@ export default class SemanticsEnforcer {
         };
     }
 
+    /**
+     * Checks if a text entry conforms to the semantics and enforces the
+     * semantics if necessary. Implements all checks of the PHP version, but
+     * does not include error reporting at the moment.
+     */
     private enforceTextSemantics(
         semantics: ISemanticsEntry,
         params: any,
         parentParams: any,
         jsonPath: string
     ): void {
-        let newText = params;
+        // TODO:
+        // - respect detailed font specifications in style filter
+        // - report errors to user
+
+        log.debug('Checking contents of text entry');
+        let newText: string = params;
         if (!newText) {
             newText = '';
         }
 
+        // Filter out disallowed HTML tags to prevent XSS attacks.
         if (semantics.tags) {
+            // We always allow divs, pans, p and br.
             let allowedTags = ['div', 'span', 'p', 'br', ...semantics.tags];
+            // We add related HTML tags
             if (allowedTags.includes('table')) {
                 allowedTags = [
                     ...allowedTags,
@@ -172,9 +185,11 @@ export default class SemanticsEnforcer {
             }
             allowedTags = Array.from(new Set<string>(allowedTags));
 
+            // Text alignment is always allowed.
             const allowedStyles = {
                 'text-align': [/(center|left|right)/i]
             };
+            // We only allow the styles set in the semantics.
             if (semantics.font) {
                 if (semantics.font.size) {
                     allowedStyles['font-size'] = [/^[0-9.]+(em|px|%)$/i];
@@ -202,18 +217,49 @@ export default class SemanticsEnforcer {
                 }
             }
 
+            log.debug('Filtering out disallowed HTML tags');
+
             newText = sanitizeHtml(newText, {
                 allowedTags,
-                allowedAttributes: false,
+                allowedAttributes: {
+                    '*': ['style'],
+                    a: ['href', 'hreflang', 'media', 'rel', 'target'],
+                    td: ['colspan', 'rowspan', 'headers'],
+                    th: ['colspan', 'rowspan', 'headers', 'scope'],
+                    ol: ['start', 'reversed'],
+                    table: ['summary']
+                },
                 allowedStyles: { '*': allowedStyles }
             });
+        } else {
+            log.debug('Filtering out all HTML tags');
+            // Escape all HTML tags if the field doesn't allow HTML in general.
+            newText = sanitizeHtml(newText, {
+                allowedTags: [],
+                allowedAttributes: {},
+                disallowedTagsMode: 'recursiveEscape'
+            });
         }
-        parentParams.text = newText;
 
-        // TODO:
-        // - respect detailed font specifications in style filter
-        // - be stricter which attributes are allowed and where styles are allowed
-        // - filter non HTML
-        // - enforce other parts of the schema
+        // Check if string has the required length
+        if (semantics.maxLength && newText.length > semantics.maxLength) {
+            log.debug('Clipping string that is too long');
+            newText = newText.substring(0, semantics.maxLength);
+        }
+
+        // Check if string conforms to regexp (if given)
+        if (newText !== '' && semantics.optional && semantics.regexp) {
+            const regexp = new RegExp(
+                semantics.regexp.pattern,
+                semantics.regexp.modifiers
+            );
+            if (!regexp.test(newText)) {
+                log.debug(
+                    `Provided string does not conform to regexp in semantics (value: ${newText}, regexp: ${semantics.regexp})`
+                );
+            }
+        }
+
+        parentParams.text = newText;
     }
 }
