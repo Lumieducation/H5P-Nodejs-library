@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import { escape } from 'html-escaper';
 
 import { ContentScanner } from './ContentScanner';
 import LibraryManager from './LibraryManager';
@@ -183,7 +184,14 @@ export default class SemanticsEnforcer {
             if (allowedTags.includes('del') || allowedTags.includes('strike')) {
                 allowedTags.push('s');
             }
-            allowedTags = Array.from(new Set<string>(allowedTags));
+            const uniqueTags = new Set<string>(allowedTags);
+            // We never allow inherently unsafe tags, even if the library would
+            // allow this.
+            uniqueTags.delete('script');
+            uniqueTags.delete('style');
+            uniqueTags.delete('textarea');
+            uniqueTags.delete('option');
+            allowedTags = Array.from(uniqueTags);
 
             // Text alignment is always allowed.
             const allowedStyles = {
@@ -222,7 +230,7 @@ export default class SemanticsEnforcer {
             newText = sanitizeHtml(newText, {
                 allowedTags,
                 allowedAttributes: {
-                    '*': ['style'],
+                    '*': ['style'], // styles are filtered, so we can allow this
                     a: ['href', 'hreflang', 'media', 'rel', 'target'],
                     td: ['colspan', 'rowspan', 'headers'],
                     th: ['colspan', 'rowspan', 'headers', 'scope'],
@@ -234,11 +242,7 @@ export default class SemanticsEnforcer {
         } else {
             log.debug('Filtering out all HTML tags');
             // Escape all HTML tags if the field doesn't allow HTML in general.
-            newText = sanitizeHtml(newText, {
-                allowedTags: [],
-                allowedAttributes: {},
-                disallowedTagsMode: 'recursiveEscape'
-            });
+            newText = escape(newText);
         }
 
         // Check if string has the required length
@@ -260,6 +264,6 @@ export default class SemanticsEnforcer {
             }
         }
 
-        parentParams.text = newText;
+        parentParams[semantics.name] = newText;
     }
 }
