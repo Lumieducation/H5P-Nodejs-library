@@ -25,15 +25,20 @@ export default class LibraryName implements ILibraryName {
     }
 
     /**
-     * Creates a library object from a library name
-     * @param libraryName The library name in a format "H5P.Example-1.0" or "H5P.Example 1.0" (see options)
+     * Creates a library object from a library name. Also validates the ubername
+     * to protect against attempts to manipulate the server by creating library
+     * names.
+     * @param ubername The library name in a format "H5P.Example-1.0" or
+     * "H5P.Example 1.0" (see options)
      * @param restricted true if the library is restricted
-     * @param useWhitespace true if the parser should accept names like "H5P.Library 1.0"
-     * @param useHyphen true if the parser should accept names like "H5P.Library-1.0"
+     * @param useWhitespace true if the parser should accept names like
+     * "H5P.Library 1.0"
+     * @param useHyphen true if the parser should accept names like
+     * "H5P.Library-1.0"
      * @returns undefined if the name could not be parsed
      */
     public static fromUberName(
-        libraryName: string,
+        ubername: string,
         options: {
             useHyphen?: boolean;
             useWhitespace?: boolean;
@@ -49,12 +54,12 @@ export default class LibraryName implements ILibraryName {
         }
         const nameRegex: RegExp =
             options.useHyphen && options.useWhitespace
-                ? /([^\s]+)[-\s](\d+)\.(\d+)/
+                ? /([\w\.]+)[-\s](\d+)\.(\d+)/
                 : options.useHyphen
-                ? /([^\s]+)-(\d+)\.(\d+)/
-                : /([^\s]+)\s(\d+)\.(\d+)/;
+                ? /([\w\.]+)-(\d+)\.(\d+)/
+                : /([\w\.]+)\s(\d+)\.(\d+)/;
 
-        const result = nameRegex.exec(libraryName);
+        const result = nameRegex.exec(ubername);
 
         if (!result) {
             let example = '';
@@ -70,7 +75,7 @@ export default class LibraryName implements ILibraryName {
                 'invalid-ubername-pattern',
                 {
                     example,
-                    name: libraryName
+                    name: ubername
                 },
                 400
             );
@@ -84,7 +89,9 @@ export default class LibraryName implements ILibraryName {
     }
 
     /**
-     * Returns the directory name that is used for this library (e.g. H5P.ExampleLibrary-1.0)
+     * Returns the ubername for a library (e.g. H5P.ExampleLibrary-1.0).
+     * Also validates the ubername to protect against attempts to manipulate the
+     * server by creating invalid ubernames.
      */
     public static toUberName(
         libraryName: ILibraryName,
@@ -97,11 +104,25 @@ export default class LibraryName implements ILibraryName {
         }
     ): string {
         if (options.useHyphen) {
-            return `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
+            const ubername = `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
+            if (!/([\w\.]+)-(\d+)\.(\d+)/.test(ubername)) {
+                throw new Error(
+                    `Ubername ${ubername} is not a valid ubername with hyphen separator.`
+                );
+            }
+            return ubername;
         }
         if (options.useWhitespace) {
-            return `${libraryName.machineName} ${libraryName.majorVersion}.${libraryName.minorVersion}`;
+            const ubername = `${libraryName.machineName} ${libraryName.majorVersion}.${libraryName.minorVersion}`;
+            if (!/([\w\.]+)\s(\d+)\.(\d+)/.test(ubername)) {
+                throw new Error(
+                    `Ubername ${ubername} is not a valid ubername with whitespace separator.`
+                );
+            }
+            return ubername;
         }
-        return '';
+        throw new Error(
+            'You must specify either the useHyphen or useWhitespace option'
+        );
     }
 }

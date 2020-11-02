@@ -505,7 +505,24 @@ export default class H5PEditor {
         }
 
         // We discard the old filename and construct a new one
-        let cleanFilename = (field.type || 'file') + path.extname(file.name);
+        let cleanFilename =
+            // We check if the field type is allowed to protect against injections
+            (field.type &&
+            [
+                'file',
+                'text',
+                'number',
+                'boolean',
+                'group',
+                'list',
+                'select',
+                'library',
+                'image',
+                'video',
+                'audio'
+            ].includes(field.type)
+                ? field.type
+                : 'file') + path.extname(file.name);
 
         // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
