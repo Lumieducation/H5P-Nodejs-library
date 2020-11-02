@@ -939,14 +939,14 @@ export interface ISemanticsEntry {
      * currently ignored in the server-side CSS style filter, though.
      */
     font?: {
-        background:
+        background?:
             | boolean
             | { css: string; default?: boolean; label: string }[];
-        color: boolean | { css: string; default?: boolean; label: string }[];
-        family: boolean | { css: string; default?: boolean; label: string }[];
-        height: boolean | { css: string; default?: boolean; label: string }[];
-        size: boolean | { css: string; default?: boolean; label: string }[];
-        spacing: boolean | { css: string; default?: boolean; label: string }[];
+        color?: boolean | { css: string; default?: boolean; label: string }[];
+        family?: boolean | { css: string; default?: boolean; label: string }[];
+        height?: boolean | { css: string; default?: boolean; label: string }[];
+        size?: boolean | { css: string; default?: boolean; label: string }[];
+        spacing?: boolean | { css: string; default?: boolean; label: string }[];
     };
     /**
      * More important fields have a more prominent style in the editor.

@@ -39,7 +39,33 @@ describe('SemanticsEnforcer', () => {
     async function compare(
         original: string,
         expected: string,
-        allowedTags?: string[]
+        allowedTags?: string[],
+        allowedStyles?: {
+            background?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+            color?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+            family?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+            height?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+            size?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+            spacing?:
+                | boolean
+                | { css: string; default?: boolean; label: string }[];
+        },
+        maxLength?: number,
+        optional?: boolean,
+        regexp?: {
+            modifiers: string;
+            pattern: string;
+        }
     ): Promise<void> {
         const enforcer = prepare([
             {
@@ -47,7 +73,11 @@ describe('SemanticsEnforcer', () => {
                 name: 'test',
                 type: 'text',
                 default: 'Hello world!',
-                tags: allowedTags
+                tags: allowedTags,
+                font: allowedStyles,
+                maxLength,
+                optional,
+                regexp
             }
         ]);
         const params = {
@@ -155,6 +185,81 @@ describe('SemanticsEnforcer', () => {
             "<b onmouseover=alert('XSS testing!')>content</b>",
             '<b>content</b>',
             ['b']
+        );
+    });
+
+    it('strips disallowed styles from tags', async () => {
+        await compare(
+            '<div style="xss:expr/*XSS*/ession(alert(\'XSS\'))">Hello world!</div>',
+            '<div>Hello world!</div>',
+            ['div']
+        );
+
+        await compare(
+            '<div style="font-size:error;">Hello world!</div>',
+            '<div>Hello world!</div>',
+            ['div'],
+            {
+                size: true
+            }
+        );
+    });
+
+    it('keeps allowed styles in tags', async () => {
+        await compare(
+            '<div style="font-size:150%;">Hello world!</div>',
+            '<div style="font-size:150%">Hello world!</div>',
+            ['div'],
+            {
+                size: true
+            }
+        );
+    });
+
+    it('clips long text', async () => {
+        await compare(
+            '12345678901234567890123456789012345678901234567890',
+            '12345678901234567890',
+            undefined,
+            undefined,
+            20
+        );
+    });
+
+    it('removes text not matching regexp pattern (if set to optional)', async () => {
+        await compare('asdbk45', '', undefined, undefined, undefined, true, {
+            modifiers: 'i',
+            pattern: '^[a-z]+$'
+        });
+    });
+
+    it('keeps text matching regexp pattern (if set to optional)', async () => {
+        await compare(
+            'asdskdjgkortjkt',
+            'asdskdjgkortjkt',
+            undefined,
+            undefined,
+            undefined,
+            true,
+            {
+                modifiers: 'i',
+                pattern: '^[a-z]+$'
+            }
+        );
+    });
+
+    it("doesn't break if you include delimiters in regexp pattern", async () => {
+        await compare(
+            'asd/asd',
+            'asd/asd',
+            undefined,
+            undefined,
+            undefined,
+            true,
+            {
+                modifiers: 'i',
+                pattern: '^asd/asd$'
+            }
         );
     });
 });

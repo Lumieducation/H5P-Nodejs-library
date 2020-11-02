@@ -251,7 +251,7 @@ export default class SemanticsEnforcer {
             newText = newText.substring(0, semantics.maxLength);
         }
 
-        // Check if string conforms to regexp (if given)
+        // Check if string conforms to regexp (if given and if set to optional)
         if (newText !== '' && semantics.optional && semantics.regexp) {
             const regexp = new RegExp(
                 semantics.regexp.pattern,
@@ -261,6 +261,7 @@ export default class SemanticsEnforcer {
                 log.debug(
                     `Provided string does not conform to regexp in semantics (value: ${newText}, regexp: ${semantics.regexp})`
                 );
+                newText = '';
             }
         }
 
