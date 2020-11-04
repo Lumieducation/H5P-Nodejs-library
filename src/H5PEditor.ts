@@ -2,7 +2,7 @@ import ajv from 'ajv';
 import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
-import fsExtra, { pathExists } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
@@ -513,7 +513,7 @@ export default class H5PEditor {
         };
         try {
             if (file.mimetype.startsWith('image/')) {
-                imageDimensions = imageSize.imageSize(file.data);
+                imageDimensions = imageSize(file.data);
             }
         } catch (error) {
             // A caught error means that the file format is not supported by image-size. This usually
