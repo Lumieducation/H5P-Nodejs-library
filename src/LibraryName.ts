@@ -2,11 +2,17 @@ import H5pError from './helpers/H5pError';
 import { ILibraryName } from './types';
 
 export default class LibraryName implements ILibraryName {
+    /**
+     * Construct the object and validates the parameters.
+     * @throws errors if the validation fail
+     */
     constructor(
         public machineName: string,
         public majorVersion: number,
         public minorVersion: number
-    ) {}
+    ) {
+        LibraryName.validate(this);
+    }
 
     /**
      * Checks if two libraries are identical.
@@ -105,7 +111,7 @@ export default class LibraryName implements ILibraryName {
     ): string {
         if (options.useHyphen) {
             const ubername = `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
-            if (!/([\w\.]+)-(\d+)\.(\d+)/.test(ubername)) {
+            if (!/^([\w\.]+)-(\d+)\.(\d+)$/.test(ubername)) {
                 throw new Error(
                     `Ubername ${ubername} is not a valid ubername with hyphen separator.`
                 );
@@ -114,7 +120,7 @@ export default class LibraryName implements ILibraryName {
         }
         if (options.useWhitespace) {
             const ubername = `${libraryName.machineName} ${libraryName.majorVersion}.${libraryName.minorVersion}`;
-            if (!/([\w\.]+)\s(\d+)\.(\d+)/.test(ubername)) {
+            if (!/^([\w\.]+)\s(\d+)\.(\d+)$/.test(ubername)) {
                 throw new Error(
                     `Ubername ${ubername} is not a valid ubername with whitespace separator.`
                 );
@@ -124,5 +130,39 @@ export default class LibraryName implements ILibraryName {
         throw new Error(
             'You must specify either the useHyphen or useWhitespace option'
         );
+    }
+
+    /**
+     * Checks if the library name is valid.
+     * @throws errors if the library name is invalid
+     */
+    public static validate(library: ILibraryName): void {
+        LibraryName.validateMachineName(library.machineName);
+        if (
+            typeof library.majorVersion !== 'number' ||
+            Number.isNaN(library.majorVersion)
+        ) {
+            throw new Error(
+                `Major version of library is invalid. Only numbers are allowed`
+            );
+        }
+        if (
+            typeof library.minorVersion !== 'number' ||
+            Number.isNaN(library.minorVersion)
+        ) {
+            throw new Error(
+                `Minor version of library is invalid. Only numbers are allowed`
+            );
+        }
+    }
+
+    /**
+     * Throw an error if the machine name is not valid.
+     * @param machineName
+     */
+    public static validateMachineName(machineName: string): void {
+        if (!/^[\w\.]+$/i.test(machineName)) {
+            throw new Error(`Machine name "${machineName}" is illegal.`);
+        }
     }
 }
