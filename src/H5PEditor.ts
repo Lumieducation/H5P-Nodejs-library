@@ -131,10 +131,12 @@ export default class H5PEditor {
         this.dependencyGetter = new DependencyGetter(libraryStorage);
 
         const jsonValidator = new ajv();
-        const h5pJsonSchema = require('./schemas/save-metadata.json');
+        const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
         const libraryNameSchema = require('./schemas/library-name-schema.json');
-        jsonValidator.addSchema([h5pJsonSchema, libraryNameSchema]);
-        this.contentMetadataValidator = jsonValidator.compile(h5pJsonSchema);
+        jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
+        this.contentMetadataValidator = jsonValidator.compile(
+            saveMetadataJsonSchema
+        );
     }
 
     public contentManager: ContentManager;
@@ -1138,6 +1140,9 @@ export default class H5PEditor {
     }
 
     private validateLanguageCode(languageCode: string): void {
+        // We are a bit more tolerant than the ISO standard, as there are three
+        // character languages codes and country codes like 'hans' for
+        // 'zh-hans'.
         if (!/^[a-z]{2,3}(-[A-Z]{2,6})?$/i.test(languageCode)) {
             throw new Error(`Language code ${languageCode} is invalid.`);
         }

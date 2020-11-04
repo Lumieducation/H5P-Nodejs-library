@@ -9,7 +9,7 @@ const log = new Logger('FilenameGenerator');
 const idCharacters =
     '1234567890abcdefghjiklmnoprstuvwxyABCDEFGHJIKLMNOPRSTUVWYXZ';
 const nanoid = customAlphabet(idCharacters, 8);
-const idRegex = new RegExp(`[${idCharacters}]+`);
+const idRegex = new RegExp(`^[${idCharacters}]+$`);
 
 /**
  * Generates a unique filename. Removes short-ids that were added to filenames

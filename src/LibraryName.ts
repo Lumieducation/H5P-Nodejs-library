@@ -3,8 +3,8 @@ import { ILibraryName } from './types';
 
 export default class LibraryName implements ILibraryName {
     /**
-     * Construct the object and validates the parameters.
-     * @throws errors if the validation fail
+     * Constructs the object and validates the parameters.
+     * @throws errors if the validation fails
      */
     constructor(
         public machineName: string,
@@ -60,10 +60,10 @@ export default class LibraryName implements ILibraryName {
         }
         const nameRegex: RegExp =
             options.useHyphen && options.useWhitespace
-                ? /([\w\.]+)[-\s](\d+)\.(\d+)/
+                ? /^([\w\.]+)[-\s](\d+)\.(\d+)$/i
                 : options.useHyphen
-                ? /([\w\.]+)-(\d+)\.(\d+)/
-                : /([\w\.]+)\s(\d+)\.(\d+)/;
+                ? /^([\w\.]+)-(\d+)\.(\d+)$/i
+                : /^([\w\.]+)\s(\d+)\.(\d+)$/i;
 
         const result = nameRegex.exec(ubername);
 
@@ -157,7 +157,7 @@ export default class LibraryName implements ILibraryName {
     }
 
     /**
-     * Throw an error if the machine name is not valid.
+     * Throws an error if the machine name is not valid.
      * @param machineName
      */
     public static validateMachineName(machineName: string): void {
