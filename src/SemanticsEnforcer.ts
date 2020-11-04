@@ -1,3 +1,6 @@
+import sanitizeHtml from 'sanitize-html';
+import { escape } from 'html-escaper';
+
 import { ContentScanner } from './ContentScanner';
 import LibraryManager from './LibraryManager';
 import Logger from './helpers/Logger';
@@ -45,7 +48,15 @@ export default class SemanticsEnforcer {
                         jsonPath
                     );
                     deleteMe = result.deleteMe;
+                } else if (semantics.type === 'text') {
+                    this.enforceTextSemantics(
+                        semantics,
+                        params,
+                        parentParams,
+                        jsonPath
+                    );
                 }
+
                 if (deleteMe) {
                     log.debug(
                         `Enforcing library semantics by deleting params path ${jsonPath}.`
@@ -113,5 +124,147 @@ export default class SemanticsEnforcer {
         return {
             deleteMe
         };
+    }
+
+    /**
+     * Checks if a text entry conforms to the semantics and enforces the
+     * semantics if necessary. Implements all checks of the PHP version, but
+     * does not include error reporting at the moment.
+     */
+    private enforceTextSemantics(
+        semantics: ISemanticsEntry,
+        params: any,
+        parentParams: any,
+        jsonPath: string
+    ): void {
+        // TODO:
+        // - respect detailed font specifications in style filter
+        // - report errors to user
+
+        log.debug('Checking contents of text entry');
+        let newText: string = params;
+        if (!newText) {
+            newText = '';
+        }
+
+        // Filter out disallowed HTML tags to prevent XSS attacks.
+        if (semantics.tags) {
+            // We always allow divs, spans, p and br.
+            let allowedTags = ['div', 'span', 'p', 'br', ...semantics.tags];
+            // We add related HTML tags
+            if (allowedTags.includes('table')) {
+                allowedTags = [
+                    ...allowedTags,
+                    'tr',
+                    'td',
+                    'th',
+                    'colgroup',
+                    'thead',
+                    'tbody',
+                    'tfoot'
+                ];
+            }
+            if (allowedTags.includes('strong')) {
+                allowedTags.push('b');
+            } else {
+                if (allowedTags.includes('b')) {
+                    allowedTags.push('strong');
+                }
+            }
+            if (allowedTags.includes('em')) {
+                allowedTags.push('i');
+            } else {
+                if (allowedTags.includes('i')) {
+                    allowedTags.push('em');
+                }
+            }
+            if (allowedTags.includes('ul') || allowedTags.includes('ol')) {
+                allowedTags.push('li');
+            }
+            if (allowedTags.includes('del') || allowedTags.includes('strike')) {
+                allowedTags.push('s');
+            }
+            const uniqueTags = new Set<string>(allowedTags);
+            // We never allow inherently unsafe tags, even if the library would
+            // allow this.
+            uniqueTags.delete('script');
+            uniqueTags.delete('style');
+            uniqueTags.delete('textarea');
+            uniqueTags.delete('option');
+            allowedTags = Array.from(uniqueTags);
+
+            // Text alignment is always allowed.
+            const allowedStyles = {
+                'text-align': [/^(center|left|right)$/i]
+            };
+            // We only allow the styles set in the semantics.
+            if (semantics.font) {
+                if (semantics.font.size) {
+                    allowedStyles['font-size'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+                if (semantics.font.family) {
+                    allowedStyles['font-family'] = [/^[-a-z0-9," ]+$/i];
+                }
+                if (semantics.font.color) {
+                    // tslint:disable-next-line: no-string-literal
+                    allowedStyles['color'] = [
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                    ];
+                }
+                if (semantics.font.background) {
+                    allowedStyles['background-color'] = [
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                    ];
+                }
+                if (semantics.font.spacing) {
+                    // tslint:disable-next-line: no-string-literal
+                    allowedStyles['spacing'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+                if (semantics.font.height) {
+                    allowedStyles['line-height'] = [/^[0-9.]+(em|px|%)$/i];
+                }
+            }
+
+            log.debug('Filtering out disallowed HTML tags');
+
+            newText = sanitizeHtml(newText, {
+                allowedTags,
+                allowedAttributes: {
+                    '*': ['style'], // styles are filtered, so we can allow this
+                    a: ['href', 'hreflang', 'media', 'rel', 'target'],
+                    td: ['colspan', 'rowspan', 'headers'],
+                    th: ['colspan', 'rowspan', 'headers', 'scope'],
+                    ol: ['start', 'reversed'],
+                    table: ['summary']
+                },
+                allowedStyles: { '*': allowedStyles }
+            });
+        } else {
+            log.debug('Filtering out all HTML tags');
+            // Escape all HTML tags if the field doesn't allow HTML in general.
+            newText = escape(newText);
+        }
+
+        // Check if string has the required length
+        if (semantics.maxLength && newText.length > semantics.maxLength) {
+            log.debug('Clipping string that is too long');
+            newText = newText.substring(0, semantics.maxLength);
+        }
+
+        // Check if string conforms to regexp (if given and if set to optional)
+        if (newText !== '' && semantics.optional && semantics.regexp) {
+            const regexp = new RegExp(
+                semantics.regexp.pattern,
+                semantics.regexp.modifiers
+            );
+            if (!regexp.test(newText)) {
+                log.debug(
+                    `Provided string does not conform to regexp in semantics (value: ${newText}, regexp: ${semantics.regexp})`
+                );
+                newText = '';
+            }
+        }
+
+        parentParams[semantics.name] = newText;
     }
 }

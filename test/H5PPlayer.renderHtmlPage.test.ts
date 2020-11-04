@@ -182,7 +182,9 @@ describe('Rendering the HTML page', () => {
             mainLibrary: 'Foo',
             preloadedDependencies: [
                 {
-                    machineName: 'Bar'
+                    machineName: 'Bar',
+                    majorVersion: 1,
+                    minorVersion: 0
                 },
                 {
                     machineName: 'Foo',
