@@ -149,7 +149,7 @@ export default class SemanticsEnforcer {
 
         // Filter out disallowed HTML tags to prevent XSS attacks.
         if (semantics.tags) {
-            // We always allow divs, pans, p and br.
+            // We always allow divs, spans, p and br.
             let allowedTags = ['div', 'span', 'p', 'br', ...semantics.tags];
             // We add related HTML tags
             if (allowedTags.includes('table')) {
@@ -195,7 +195,7 @@ export default class SemanticsEnforcer {
 
             // Text alignment is always allowed.
             const allowedStyles = {
-                'text-align': [/(center|left|right)/i]
+                'text-align': [/^(center|left|right)$/i]
             };
             // We only allow the styles set in the semantics.
             if (semantics.font) {
