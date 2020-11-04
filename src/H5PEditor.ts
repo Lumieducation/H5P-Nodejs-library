@@ -1,3 +1,4 @@
+import ajv from 'ajv';
 import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
@@ -128,6 +129,12 @@ export default class H5PEditor {
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
+
+        const jsonValidator = new ajv();
+        const h5pJsonSchema = require('./schemas/save-metadata.json');
+        const libraryNameSchema = require('./schemas/library-name-schema.json');
+        jsonValidator.addSchema([h5pJsonSchema, libraryNameSchema]);
+        this.contentMetadataValidator = jsonValidator.compile(h5pJsonSchema);
     }
 
     public contentManager: ContentManager;
@@ -136,6 +143,7 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
+    private contentMetadataValidator: ajv.ValidateFunction;
 
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
@@ -618,6 +626,11 @@ export default class H5PEditor {
                 { message: error.message },
                 400
             );
+        }
+
+        // Validate metadata against schema
+        if (!this.contentMetadataValidator(metadata)) {
+            throw new Error('Metadata does not conform to schema.');
         }
 
         const h5pJson: IContentMetadata = await this.generateContentMetadata(
