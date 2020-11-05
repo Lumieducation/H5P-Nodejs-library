@@ -32,6 +32,7 @@ export default class H5PConfig implements IH5PConfig {
         minor: 24
     };
     public coreUrl: string = '/core';
+    public disableFullscreen: boolean = false;
     public downloadUrl: string = '/download';
     public editorAddons?: {
         [machineName: string]: string[];
@@ -76,6 +77,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('contentWhitelist');
         await this.loadSettingFromStorage('editorAddons');
         await this.loadSettingFromStorage('enableLrsContentTypes');
+        await this.loadSettingFromStorage('disableFullscreen');
         await this.loadSettingFromStorage('fetchingDisabled');
         await this.loadSettingFromStorage('hubContentTypesEndpoint');
         await this.loadSettingFromStorage('hubRegistrationEndpoint');
@@ -88,6 +90,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('exportMaxContentPathLength');
+        await this.loadSettingFromStorage('baseUrl');
         return this;
     }
 
@@ -99,6 +102,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('contentWhitelist');
         await this.saveSettingToStorage('editorAddons');
         await this.saveSettingToStorage('enableLrsContentTypes');
+        await this.saveSettingToStorage('disableFullscreen');
         await this.saveSettingToStorage('fetchingDisabled');
         await this.saveSettingToStorage('hubContentTypesEndpoint');
         await this.saveSettingToStorage('hubRegistrationEndpoint');

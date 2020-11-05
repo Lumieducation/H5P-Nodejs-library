@@ -333,7 +333,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async getInstalledLibraryNames(
         ...machineNames: string[]
     ): Promise<ILibraryName[]> {
-        const nameRegex = /([^\s]+)-(\d+)\.(\d+)/;
+        const nameRegex = /^([\w\.]+)-(\d+)\.(\d+)$/i;
         const libraryDirectories = await fsExtra.readdir(
             this.getLibrariesDirectory()
         );

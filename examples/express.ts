@@ -188,6 +188,21 @@ const start = async () => {
         express.static(path.resolve('build/examples/client'))
     );
 
+    // STUB
+    server.post('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.get('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.post('/h5p/setFinished', (req, res) => {
+        res.status(200).send();
+    });
+
     // Remove temporary directory on shutdown
     if (useTempUploads) {
         [

@@ -1,11 +1,12 @@
+import ajv from 'ajv';
+import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { file as createTempFile, FileResult } from 'tmp-promise';
 import fsExtra from 'fs-extra';
-import mimeTypes from 'mime-types';
-import promisepipe from 'promisepipe';
-import sanitize from 'sanitize-filename';
-import { PassThrough, Writable, Readable } from 'stream';
 import imageSize from 'image-size';
+import mimeTypes from 'mime-types';
+import path from 'path';
+import promisepipe from 'promisepipe';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
@@ -128,6 +129,14 @@ export default class H5PEditor {
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
+
+        const jsonValidator = new ajv();
+        const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
+        const libraryNameSchema = require('./schemas/library-name-schema.json');
+        jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
+        this.contentMetadataValidator = jsonValidator.compile(
+            saveMetadataJsonSchema
+        );
     }
 
     public contentManager: ContentManager;
@@ -136,6 +145,7 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
+    private contentMetadataValidator: ajv.ValidateFunction;
 
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
@@ -161,16 +171,16 @@ export default class H5PEditor {
      * Creates a .h5p-package for the specified content file and pipes it to the stream.
      * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
      * @param contentId The contentId for which the package should be created.
-     * @param outputStream The stream that the package is written to (e.g. the response stream fo Express)
+     * @param outputWritable The writable that the package is written to (e.g. the response stream fo Express)
      */
     public async exportContent(
         contentId: ContentId,
-        outputStream: Writable,
+        outputWritable: Writable,
         user: IUser
     ): Promise<void> {
         return this.packageExporter.createPackage(
             contentId,
-            outputStream,
+            outputWritable,
             user
         );
     }
@@ -208,7 +218,7 @@ export default class H5PEditor {
     }
 
     /**
-     * Returns a stream for a file that was uploaded for a content object.
+     * Returns a readable for a file that was uploaded for a content object.
      * The requested content file can be a temporary file uploaded for unsaved content or a
      * file in permanent content storage.
      * @param contentId the content id (undefined if retrieved for unsaved content)
@@ -216,7 +226,7 @@ export default class H5PEditor {
      * @param user the user who wants to retrieve the file
      * @param rangeStart (optional) the position in bytes at which the stream should start
      * @param rangeEnd (optional) the position in bytes at which the stream should end
-     * @returns a stream of the content file
+     * @returns a readable of the content file
      */
     public async getContentFileStream(
         contentId: ContentId,
@@ -275,11 +285,14 @@ export default class H5PEditor {
         );
         const majorVersionAsNr = Number.parseInt(majorVersion, 10);
         const minorVersionAsNr = Number.parseInt(minorVersion, 10);
+        // the constructor also validates the parameters, so we don't check them
+        // again
         const library = new LibraryName(
             machineName,
             majorVersionAsNr,
             minorVersionAsNr
         );
+        this.validateLanguageCode(language);
 
         if (!(await this.libraryManager.libraryExists(library))) {
             throw new H5pError(
@@ -340,22 +353,23 @@ export default class H5PEditor {
         library: ILibraryName,
         filename: string
     ): Promise<ReadStream> {
+        LibraryName.validate(library);
         return this.libraryManager.getFileStream(library, filename);
     }
 
     /**
      * Gets a rough overview of information about the requested libraries.
-     * @param libraryNames
+     * @param ubernames
      */
     public async getLibraryOverview(
-        libraryNames: string[]
+        ubernames: string[]
     ): Promise<ILibraryOverviewForClient[]> {
         log.info(
-            `getting library overview for libraries: ${libraryNames.join(', ')}`
+            `getting library overview for libraries: ${ubernames.join(', ')}`
         );
         return (
             await Promise.all(
-                libraryNames
+                ubernames
                     .map((name) =>
                         LibraryName.fromUberName(name, {
                             useWhitespace: true
@@ -392,14 +406,15 @@ export default class H5PEditor {
 
     /**
      * Installs a content type from the H5P Hub.
-     * @param libraryName The name of the content type to install (e.g. H5P.Test) Note that this is not a full ubername!
+     * @param machineName The name of the content type to install (e.g. H5P.Test) Note that this is not a full ubername!
      * @returns a list of installed libraries if successful. Will throw errors if something goes wrong.
      */
     public async installLibraryFromHub(
-        libraryName: string,
+        machineName: string,
         user: IUser
     ): Promise<ILibraryInstallResult[]> {
-        return this.contentTypeRepository.installContentType(libraryName, user);
+        LibraryName.validateMachineName(machineName);
+        return this.contentTypeRepository.installContentType(machineName, user);
     }
 
     /**
@@ -419,6 +434,7 @@ export default class H5PEditor {
                 ', '
             )}`
         );
+        this.validateLanguageCode(language);
         return (
             await Promise.all(
                 libraryUbernames.map(async (name) => {
@@ -453,6 +469,8 @@ export default class H5PEditor {
         language: string = 'en'
     ): Promise<string | any> {
         log.info(`rendering ${contentId}`);
+        this.validateLanguageCode(language);
+
         const model: IEditorModel = {
             integration: this.generateIntegration(contentId, language),
             scripts: this.listCoreScripts(language),
@@ -490,14 +508,14 @@ export default class H5PEditor {
         width?: number;
     }> {
         // We extract the image size from the file as some content types need the dimensions
-        // of the image. It
+        // of the image.
         let imageDimensions: {
             height: number;
             width: number;
         };
         try {
             if (file.mimetype.startsWith('image/')) {
-                imageDimensions = imageSize.imageSize(
+                imageDimensions = imageSize(
                     file.data?.length > 0 ? file.data : file.tempFilePath
                 );
             }
@@ -508,9 +526,27 @@ export default class H5PEditor {
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
-        // We must make sure to avoid illegal characters in filenames.
-        let cleanFilename = sanitize(file.name).replace(/\s/g, '_');
-        // Same PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
+        // We discard the old filename and construct a new one
+        let cleanFilename =
+            // We check if the field type is allowed to protect against injections
+            (field.type &&
+            [
+                'file',
+                'text',
+                'number',
+                'boolean',
+                'group',
+                'list',
+                'select',
+                'library',
+                'image',
+                'video',
+                'audio'
+            ].includes(field.type)
+                ? field.type
+                : 'file') + path.extname(file.name);
+
+        // Some PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
         // folder. To achieve compatibility, we also put them into these directories by their mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
@@ -556,7 +592,7 @@ export default class H5PEditor {
      * @param contentId the contentId of existing content (undefined or previously unsaved content)
      * @param parameters the content parameters (=content.json)
      * @param metadata the content metadata (~h5p.json)
-     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
+     * @param mainLibraryUbername the ubername with whitespace as separator (no hyphen!)
      * @param user the user who wants to save the piece of content
      * @returns the existing contentId or the newly assigned one
      */
@@ -564,7 +600,7 @@ export default class H5PEditor {
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
-        mainLibraryName: string,
+        mainLibraryUbername: string,
         user: IUser
     ): Promise<ContentId> {
         return (
@@ -572,7 +608,7 @@ export default class H5PEditor {
                 contentId,
                 parameters,
                 metadata,
-                mainLibraryName,
+                mainLibraryUbername,
                 user
             )
         ).id;
@@ -584,7 +620,7 @@ export default class H5PEditor {
      * @param contentId the contentId of existing content (undefined or previously unsaved content)
      * @param parameters the content parameters (=content.json)
      * @param metadata the content metadata (~h5p.json)
-     * @param mainLibraryName the ubername with whitespace as separator (no hyphen!)
+     * @param mainLibraryUbername the ubername with whitespace as separator (no hyphen!)
      * @param user the user who wants to save the piece of content
      * @returns the existing contentId or the newly assigned one and the metatdata
      */
@@ -592,7 +628,7 @@ export default class H5PEditor {
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
-        mainLibraryName: string,
+        mainLibraryUbername: string,
         user: IUser
     ): Promise<{ id: string; metadata: IContentMetadata }> {
         if (contentId !== undefined) {
@@ -602,9 +638,9 @@ export default class H5PEditor {
         }
 
         // validate library name
-        let parsedLibraryName: ILibraryName;
+        let libraryName: ILibraryName;
         try {
-            parsedLibraryName = LibraryName.fromUberName(mainLibraryName, {
+            libraryName = LibraryName.fromUberName(mainLibraryUbername, {
                 useWhitespace: true
             });
         } catch (error) {
@@ -615,9 +651,14 @@ export default class H5PEditor {
             );
         }
 
+        // Validate metadata against schema
+        if (!this.contentMetadataValidator(metadata)) {
+            throw new Error('Metadata does not conform to schema.');
+        }
+
         const h5pJson: IContentMetadata = await this.generateContentMetadata(
             metadata,
-            parsedLibraryName,
+            libraryName,
             this.findLibrariesInParameters(parameters)
         );
 
@@ -625,7 +666,7 @@ export default class H5PEditor {
             contentId,
             parameters,
             h5pJson,
-            parsedLibraryName,
+            libraryName,
             user
         );
         return { id: newContentId, metadata: h5pJson };
@@ -903,8 +944,8 @@ export default class H5PEditor {
     ): IIntegration {
         return {
             ajax: {
-                contentUserData: '',
-                setFinished: ''
+                contentUserData: `${this.config.baseUrl}/contentUserData`,
+                setFinished: `${this.config.baseUrl}/setFinished`
             },
             ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
             editor: this.generateEditorIntegration(contentId, language),
@@ -922,6 +963,7 @@ export default class H5PEditor {
             libraryUrl: this.urlGenerator.coreFile('js'),
             pluginCacheBuster: '', // TODO make dynamic
             url: this.config.baseUrl,
+            fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             user: {
                 mail: '',
                 name: ''
@@ -1137,5 +1179,14 @@ export default class H5PEditor {
         };
 
         return resolve(dependencies.shift());
+    }
+
+    private validateLanguageCode(languageCode: string): void {
+        // We are a bit more tolerant than the ISO standard, as there are three
+        // character languages codes and country codes like 'hans' for
+        // 'zh-hans'.
+        if (!/^[a-z]{2,3}(-[A-Z]{2,6})?$/i.test(languageCode)) {
+            throw new Error(`Language code ${languageCode} is invalid.`);
+        }
     }
 }

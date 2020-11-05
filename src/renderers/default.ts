@@ -21,7 +21,7 @@ ${model.scripts
             <div class="h5p-editor"></div>
         </div>
     </div>
-    <input type="submit" name="submit" value="Create" class="button button-primary button-large">
+    <input id="save-h5p" type="submit" name="submit" value="Create" class="button button-primary button-large">
 </form>
 <script>
 var ns = H5PEditor;
@@ -67,23 +67,28 @@ var ns = H5PEditor;
         //   else {
         $upload.hide();
         if (h5peditor === undefined) {
-            $.ajax({
-                error: function(res) {
-                    h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
-                    $create.show();
-                },
-                success: function(res) {
-                    h5peditor = new ns.Editor(
-                        res.library,
-                        JSON.stringify(res.params),
-                        $editor[0]
-                    );
-                    $create.show();
-                    // $type.change();
-                },
-                type: 'GET',
-                url: '${model.urlGenerator.parameters()}/' + H5PEditor.contentId + window.location.search
-            });
+            if(H5PEditor.contentId){
+                $.ajax({
+                    error: function(res) {
+                        h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
+                        $create.show();
+                    },
+                    success: function(res) {
+                        h5peditor = new ns.Editor(
+                            res.library,
+                            JSON.stringify(res.params),
+                            $editor[0]
+                        );
+                        $create.show();
+                        // $type.change();
+                    },
+                    type: 'GET',
+                    url: '${model.urlGenerator.parameters()}/' + H5PEditor.contentId + window.location.search
+                });
+            } else {
+                h5peditor = new ns.Editor(undefined, undefined, $editor[0]);
+                $create.show();
+            }
         }
         $create.show();
         //   }

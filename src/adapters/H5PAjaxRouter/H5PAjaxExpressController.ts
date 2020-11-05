@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { H5PEditor, LibraryName, H5pError } from '../..';
+import { H5PEditor, H5pError } from '../..';
 import { Readable } from 'stream';
 import { IRequestWithUser, IActionRequest } from '../expressTypes';
 import H5PAjaxEndpoint from '../../H5PAjaxEndpoint';
