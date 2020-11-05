@@ -97,6 +97,14 @@ describe('SemanticsEnforcer', () => {
         await compare('Hello world!', 'Hello world!');
     });
 
+    it("doesn't escape already escaped text.", async () => {
+        await compare('Hello &amp; world!', 'Hello &amp; world!');
+    });
+
+    it('escapes dangerous characters in simple text', async () => {
+        await compare('Hello & world!', 'Hello &amp; world!');
+    });
+
     it("strips html tags from text that doesn't allow html", async () => {
         await compare(
             '<script>alert("Danger!");</script>Hello world!',
