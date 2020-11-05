@@ -407,6 +407,10 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     it('returns 200 on filter requests', async () => {
+        const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+
         const imageResult = await supertest(app)
             .post(`/ajax?action=filter`)
             .send({
