@@ -15,6 +15,7 @@ import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
 import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
 import LibraryName from './LibraryName';
+import SemanticsEnforcer from './SemanticsEnforcer';
 
 /**
  * Each method in this class corresponds to a route that is called by the H5P
@@ -35,7 +36,13 @@ import LibraryName from './LibraryName';
  *   `getTemporaryFile` for more details.
  */
 export default class H5PAjaxEndpoint {
-    constructor(private h5pEditor: H5PEditor) {}
+    constructor(private h5pEditor: H5PEditor) {
+        this.semanticsEnforcer = new SemanticsEnforcer(
+            h5pEditor.libraryManager
+        );
+    }
+
+    private semanticsEnforcer: SemanticsEnforcer;
 
     /**
      * This method must be called by the GET route at the Ajax URL, e.g.
@@ -104,10 +111,13 @@ export default class H5PAjaxEndpoint {
                         400
                     );
                 }
+
+                // getLibraryData validates the library name and language code,
+                // so we don't do it here.
                 const library = await this.h5pEditor.getLibraryData(
-                    machineName?.toString(),
-                    majorVersion?.toString(),
-                    minorVersion?.toString(),
+                    machineName.toString(),
+                    majorVersion.toString(),
+                    minorVersion.toString(),
                     language?.toString()
                 );
                 return library;
@@ -188,14 +198,18 @@ export default class H5PAjaxEndpoint {
             );
         }
 
+        // getFileStats validates filenames itself, so we don't do it here.
         const stats = await this.h5pEditor.contentStorage.getFileStats(
             contentId,
             filename,
             user
         );
+
         const range = getRangeCallback
             ? getRangeCallback(stats.size)
             : undefined;
+
+        // getContentFileStream validates filenames itself, so we don't do it here.
         const stream = await this.h5pEditor.getContentFileStream(
             contentId,
             filename,
@@ -287,7 +301,7 @@ export default class H5PAjaxEndpoint {
      *
      * Note: You can also use a static route to serve library files.
      *
-     * @param uberName the ubername of the library (e.g. H5P.Example-1.0). This
+     * @param ubername the ubername of the library (e.g. H5P.Example-1.0). This
      * is the first component of the path after /libraries/
      * @param filename the filename of the requested file, e.g. xyz.js. This is the
      * rest of the path after the uberName.
@@ -300,13 +314,15 @@ export default class H5PAjaxEndpoint {
      * send back in the response
      */
     public getLibraryFile = async (
-        uberName: string,
+        ubername: string,
         filename: string
     ): Promise<{ mimetype: string; stats: IFileStats; stream: Readable }> => {
         if (!filename) {
             throw new Error('You must pass a file to getLibraryFile(...).');
         }
-        const library = LibraryName.fromUberName(uberName);
+        const library = LibraryName.fromUberName(ubername);
+        // Filenames are validated in the storage classes, so we don't validate
+        // them here.
         const [stats, stream] = await Promise.all([
             this.h5pEditor.libraryManager.getFileStats(library, filename),
             this.h5pEditor.getLibraryFileStream(library, filename)
@@ -367,6 +383,8 @@ export default class H5PAjaxEndpoint {
                 'You must specify a filename when calling getContentParameters(...)'
             );
         }
+        // Filenames are validated in the storage classes, so we don't validate
+        // them here.
         const stats = await this.h5pEditor.temporaryStorage.getFileStats(
             filename,
             user
@@ -499,6 +517,8 @@ export default class H5PAjaxEndpoint {
                         400
                     );
                 }
+                // getLibraryOverview validates the library list, so we don't do
+                // it here.
                 return this.h5pEditor.getLibraryOverview(body.libraries);
             case 'translations':
                 if (!('libraries' in body) || !Array.isArray(body.libraries)) {
@@ -511,6 +531,8 @@ export default class H5PAjaxEndpoint {
                         400
                     );
                 }
+                // listLibraryLanguageFiles validates the parameters, so we
+                // don't do it here.
                 return new AjaxSuccessResponse(
                     await this.h5pEditor.listLibraryLanguageFiles(
                         body.libraries,
@@ -540,6 +562,8 @@ export default class H5PAjaxEndpoint {
                         400
                     );
                 }
+                // saveContentFile only uses save properties of field, so we
+                // don't need to validate it here.
                 return this.h5pEditor.saveContentFile(
                     undefined,
                     field,
@@ -587,12 +611,23 @@ export default class H5PAjaxEndpoint {
                     );
                 }
 
-                // TODO: properly filter params, this is just a hack to get uploading working
+                const filteredParams = unfiltered.params;
+                const filteredLibraryName = LibraryName.fromUberName(
+                    unfiltered.library,
+                    { useWhitespace: true }
+                );
+                await this.semanticsEnforcer.enforceSemanticStructure(
+                    filteredParams,
+                    filteredLibraryName
+                );
+                // TODO: filter metadata, too
 
                 return new AjaxSuccessResponse({
-                    library: unfiltered.library,
+                    library: LibraryName.toUberName(filteredLibraryName, {
+                        useWhitespace: true
+                    }),
                     metadata: unfiltered.metadata,
-                    params: unfiltered.params
+                    params: filteredParams
                 });
             case 'library-install':
                 if (!id || !user) {
@@ -605,6 +640,8 @@ export default class H5PAjaxEndpoint {
                         400
                     );
                 }
+                // installLibraryFrom hub validates the id, so we don't do it
+                // here.
                 const installedLibs = await this.h5pEditor.installLibraryFromHub(
                     id,
                     user
