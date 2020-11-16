@@ -5,6 +5,7 @@ import H5pError from './helpers/H5pError';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
+import H5PAjaxEndpoint from './H5PAjaxEndpoint';
 
 import H5PConfig from './implementation/H5PConfig';
 import fs from './implementation/fs';
@@ -52,13 +53,14 @@ const fsImplementations = {
 
 export {
     // classes
+    H5PAjaxEndpoint,
     H5PEditor,
     H5pError,
     H5PPlayer,
     InstalledLibrary,
+    LibraryAdministration,
     LibraryName,
     PackageExporter,
-    LibraryAdministration,
     // interfaces
     ContentId,
     ContentParameters,
