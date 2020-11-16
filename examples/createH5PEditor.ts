@@ -32,7 +32,7 @@ export default async function createH5PEditor(
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
     const h5pEditor = new H5P.H5PEditor(
-        new H5P.fsImplementations.InMemoryStorage(), // this is a general-purpose cache
+        new H5P.cacheImplementations.CachedKeyValueStorage(), // this is a general-purpose cache
         config,
         !process.env.CACHE || process.env.CACHE === 'in-memory'
             ? new H5P.cacheImplementations.CachedLibraryStorage(

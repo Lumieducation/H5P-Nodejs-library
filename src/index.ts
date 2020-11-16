@@ -14,6 +14,7 @@ import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
+import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 
 // Interfaces
 import {
@@ -52,6 +53,7 @@ const fsImplementations = {
 };
 
 const cacheImplementations = {
+    CachedKeyValueStorage,
     CachedLibraryStorage
 };
 
