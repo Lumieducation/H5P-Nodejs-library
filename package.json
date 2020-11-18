@@ -111,6 +111,7 @@
         "aws-sdk": "2.776.0",
         "axios-mock-adapter": "1.18.2",
         "body-parser": "1.19.0",
+        "cache-manager-redis-store": "^2.0.0",
         "commitlint": "11.0.0",
         "cross-env": "^7.0.2",
         "express": "4.17.1",

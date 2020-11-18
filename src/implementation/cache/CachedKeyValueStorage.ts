@@ -10,7 +10,7 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
      * @param cache the cache backend, if left undefined, an in-memory cache is
      * created.
      */
-    constructor(private cache?: Cache) {
+    constructor(private prefix: string, private cache?: Cache) {
         if (!this.cache) {
             this.cache = caching({
                 store: 'memory',
@@ -21,10 +21,10 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
     }
 
     public async load(key: string): Promise<any> {
-        return this.cache.get(key);
+        return this.cache.get(`${this.prefix}-${key}`);
     }
 
     public async save(key: string, value: any): Promise<any> {
-        return this.cache.set(key, value, { ttl: 0 });
+        return this.cache.set(`${this.prefix}-${key}`, value, { ttl: 0 });
     }
 }

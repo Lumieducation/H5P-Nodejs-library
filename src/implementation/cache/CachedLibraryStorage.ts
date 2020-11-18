@@ -10,6 +10,7 @@ import {
     IAdditionalLibraryMetadata
 } from '../../types';
 import LibraryName from '../../LibraryName';
+import { InstalledLibrary } from '../..';
 
 /**
  * A wrapper around an actual library storage which adds caching and also
@@ -256,12 +257,18 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     }
 
     public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
-        return this.cache.wrap(
+        const result: IInstalledLibrary = await this.cache.wrap(
             this.getCacheKeyForMetadata(library, this.METADATA_CACHE_KEY),
             () => {
                 return this.storage.getLibrary(library);
             }
         );
+        // The ILibraryInterface contains methods, so we must construct an
+        // object with these methods if we obtained the data from the cache.
+        if (!result.compare) {
+            return InstalledLibrary.fromMetadata(result);
+        }
+        return result;
     }
 
     public async isInstalled(library: ILibraryName): Promise<boolean> {
