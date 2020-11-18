@@ -24,7 +24,10 @@ Change directories to the directory that contains the `docker-compose.yml` file.
 docker-compose up --scale h5p=4
 ```
 
-### Startup (also rebuilds image; execute this after )
+### Startup (also rebuilds image)
+
+Execute this command after you've made changes to the code that require a
+rebuild
 
 ```sh
 docker-compose up --scale h5p=4 --build
