@@ -43,6 +43,10 @@ export default class UrlGenerator implements IUrlGenerator {
         }`;
     };
 
+    public coreFiles = () => {
+        return `${this.getBaseUrl()}${this.config.coreUrl}/js`;
+    };
+
     public downloadPackage = (contentId: ContentId) => {
         return `${this.getBaseUrl()}${this.config.downloadUrl}/${contentId}`;
     };

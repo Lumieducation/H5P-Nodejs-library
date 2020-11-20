@@ -971,7 +971,7 @@ export default class H5PEditor {
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
-            libraryUrl: this.urlGenerator.coreFile('js'),
+            libraryUrl: this.urlGenerator.coreFiles(),
             pluginCacheBuster: this.cacheBusterGenerator(),
             url: this.config.baseUrl,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,

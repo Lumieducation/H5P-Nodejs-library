@@ -1661,6 +1661,7 @@ export interface IEditorModel {
 
 export interface IUrlGenerator {
     coreFile(file: string): string;
+    coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
     editorLibraryFile(file: string): string;
     editorLibraryFiles(): string;
