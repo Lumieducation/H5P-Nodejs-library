@@ -156,6 +156,17 @@ export default class H5PEditor {
     private semanticsLocalizer: SemanticsLocalizer;
 
     /**
+     * Generates cache buster strings that are used by the JavaScript client in
+     * the browser when generating URLs of core JavaScript files (only rarely
+     * used).
+     *
+     * If you want to customize cache busting, you can override this generator.
+     * The default generator creates strings like '?version=1.24.0', which are
+     * simply added to the URL.
+     */
+    public cacheBusterGenerator = () => `?version=${this.config.h5pVersion}`;
+
+    /**
      * Deletes a piece of content and all files dependent on it.
      * @param contentId the piece of content to delete
      * @param user the user who wants to delete it
@@ -961,7 +972,7 @@ export default class H5PEditor {
             postUserStatistics: false,
             saveFreq: false,
             libraryUrl: this.urlGenerator.coreFile('js'),
-            pluginCacheBuster: '', // TODO make dynamic
+            pluginCacheBuster: this.cacheBusterGenerator(),
             url: this.config.baseUrl,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             user: {

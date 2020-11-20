@@ -16,8 +16,8 @@ import {
  * the version. If you decide to do this, you must be aware of the fact that the
  * JavaScript client generates URLs dynamically in two cases (at the time of
  * writing), both in h5peditor.js:contentUpgrade. This function uses
- * H5PIntegration.pluginCacheBuster, which is currently not implemented in
- * H5PEditor.
+ * H5PIntegration.pluginCacheBuster, which can be customized by overriding
+ * H5PEditor.cacheBusterGenerator.
  *
  * UrlGenerator requires these values to be set in config:
  * - baseUrl
