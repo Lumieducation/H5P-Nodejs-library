@@ -116,7 +116,9 @@ export default class H5PAjaxExpressController {
             req.params.file
         );
 
-        this.pipeStreamToResponse(mimetype, stream, res, stats.size);
+        this.pipeStreamToResponse(mimetype, stream, res, stats.size, {
+            'Cache-Control': 'public, max-age=31536000'
+        });
     };
 
     /**
@@ -239,9 +241,11 @@ export default class H5PAjaxExpressController {
         mimetype: string,
         readStream: Readable,
         response: express.Response,
-        contentLength: number
+        contentLength: number,
+        additionalHeaders?: { [key: string]: string }
     ) => {
         response.writeHead(200, {
+            ...(additionalHeaders || {}),
             'Content-Type': mimetype,
             'Content-Length': contentLength,
             'Accept-Ranges': 'bytes'

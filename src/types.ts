@@ -1294,7 +1294,6 @@ export interface IH5PConfig {
      * the editor.
      */
     contentFilesUrl: string;
-
     /**
      * Base path for content files (e.g. images) IN THE PLAYER. It MUST direct
      * to a URL at which the content files for THE CONTENT BEING DISPLAYED must
@@ -1665,7 +1664,7 @@ export interface IUrlGenerator {
     downloadPackage(contentId: ContentId): string;
     editorLibraryFile(file: string): string;
     editorLibraryFiles(): string;
-    libraryFile(library: ILibraryName, file: string): string;
+    libraryFile(library: IFullLibraryName, file: string): string;
     parameters(): string;
     play(): string;
     temporaryFiles(): string;

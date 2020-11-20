@@ -1113,12 +1113,12 @@ export default class H5PEditor {
 
         (library.preloadedJs || []).forEach((script) =>
             assets.scripts.push(
-                this.urlGenerator.libraryFile(libraryName, script.path)
+                this.urlGenerator.libraryFile(library, script.path)
             )
         );
         (library.preloadedCss || []).forEach((style) =>
             assets.styles.push(
-                this.urlGenerator.libraryFile(libraryName, style.path)
+                this.urlGenerator.libraryFile(library, style.path)
             )
         );
 
