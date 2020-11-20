@@ -136,10 +136,10 @@ describe('Express Ajax endpoint adapter', () => {
         expect(parsedData.version).toMatchObject({ major: 1, minor: 0 });
         expect(parsedData.title).toBe('Greeting Card');
         expect(parsedData.css).toMatchObject([
-            '/libraries/H5P.GreetingCard-1.0/greetingcard.css'
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.css?version=1.0.6'
         ]);
         expect(parsedData.javascript).toMatchObject([
-            '/libraries/H5P.GreetingCard-1.0/greetingcard.js'
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.js?version=1.0.6'
         ]);
         expect(parsedData.languages.sort()).toMatchObject(
             ['en', 'fr', 'nb'].sort()

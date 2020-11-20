@@ -116,13 +116,13 @@ describe('aggregating data from library folders for the editor', () => {
                                 {
                                     machineName: 'EditorDependency',
                                     majorVersion: 1,
-
                                     minorVersion: 0
                                 }
                             ],
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 2,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'PreloadedDependency',
@@ -136,6 +136,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'PreloadedDependency',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedCss: [
                                 {
                                     path: 'some/style.css'
@@ -152,6 +153,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'EditorDependency',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedCss: [
                                 {
                                     path: 'path/to/style.css'
@@ -174,12 +176,12 @@ describe('aggregating data from library folders for the editor', () => {
 
         return h5pEditor.getLibraryData('Foo', '1', '2').then((libraryData) => {
             expect(libraryData.javascript).toEqual([
-                '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
-                '/h5p/libraries/EditorDependency-1.0/path/to/script.js'
+                '/h5p/libraries/PreloadedDependency-1.0/some/script.js?version=1.0.1',
+                '/h5p/libraries/EditorDependency-1.0/path/to/script.js?version=1.0.1'
             ]);
             expect(libraryData.css).toEqual([
-                '/h5p/libraries/PreloadedDependency-1.0/some/style.css',
-                '/h5p/libraries/EditorDependency-1.0/path/to/style.css'
+                '/h5p/libraries/PreloadedDependency-1.0/some/style.css?version=1.0.1',
+                '/h5p/libraries/EditorDependency-1.0/path/to/style.css?version=1.0.1'
             ]);
         });
     });
@@ -207,6 +209,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 2,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'Bar',
@@ -227,6 +230,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Bar',
                             majorVersion: 1,
                             minorVersion: 3,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'PreloadedDependency',
@@ -245,6 +249,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'PreloadedDependency',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedJs: [
                                 {
                                     path: 'some/script.js'
@@ -256,6 +261,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'EditorDependency',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedJs: [
                                 {
                                     path: 'path/to/script.js'
@@ -273,9 +279,9 @@ describe('aggregating data from library folders for the editor', () => {
 
         return h5pEditor.getLibraryData('Foo', '1', '2').then((libraryData) => {
             expect(libraryData.javascript).toEqual([
-                '/h5p/libraries/PreloadedDependency-1.0/some/script.js',
-                '/h5p/libraries/EditorDependency-1.0/path/to/script.js',
-                '/h5p/libraries/Bar-1.3/bar/script.js'
+                '/h5p/libraries/PreloadedDependency-1.0/some/script.js?version=1.0.1',
+                '/h5p/libraries/EditorDependency-1.0/path/to/script.js?version=1.0.1',
+                '/h5p/libraries/Bar-1.3/bar/script.js?version=1.3.1'
             ]);
         });
     });
@@ -306,6 +312,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'H5PEditor.test',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedJs: [
                                 {
                                     path: 'path/to/test.js'
@@ -323,7 +330,8 @@ describe('aggregating data from library folders for the editor', () => {
                             ],
                             machineName: 'Foo',
                             majorVersion: 1,
-                            minorVersion: 2
+                            minorVersion: 2,
+                            patchVersion: 1
                         });
                 }
             },
@@ -382,6 +390,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'H5PEditor.test',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedJs: [
                                 {
                                     path: 'path/to/test.js'
@@ -399,7 +408,8 @@ describe('aggregating data from library folders for the editor', () => {
                             ],
                             machineName: 'Foo',
                             majorVersion: 1,
-                            minorVersion: 2
+                            minorVersion: 2,
+                            patchVersion: 1
                         });
                 }
             },
@@ -455,6 +465,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Foo',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'Bar',
@@ -478,6 +489,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Bar',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'Jaz',
@@ -496,6 +508,7 @@ describe('aggregating data from library folders for the editor', () => {
                             machineName: 'Baz',
                             majorVersion: 1,
                             minorVersion: 0,
+                            patchVersion: 1,
                             preloadedDependencies: [
                                 {
                                     machineName: 'Jaz',
@@ -510,16 +523,17 @@ describe('aggregating data from library folders for the editor', () => {
                             ]
                         });
                     case 'Jaz':
-                        return new Promise((y) =>
+                        return new Promise((res) =>
                             setTimeout(
                                 () =>
-                                    y({
-                                        machineName: 'Bar',
+                                    res({
+                                        machineName: 'Jaz',
                                         majorVersion: 1,
                                         minorVersion: 0,
+                                        patchVersion: 1,
                                         preloadedDependencies: [
                                             {
-                                                machineName: 'Jaz',
+                                                machineName: 'Bar',
                                                 majorVersion: 1,
                                                 minorVersion: 0
                                             }
@@ -544,10 +558,10 @@ describe('aggregating data from library folders for the editor', () => {
 
         return h5pEditor.getLibraryData('Foo', '1', '0').then((libraryData) => {
             expect(libraryData.javascript).toEqual([
-                '/h5p/libraries/Jaz-1.0/script.js',
-                '/h5p/libraries/Bar-1.0/script.js',
-                '/h5p/libraries/Baz-1.0/script.js',
-                '/h5p/libraries/Foo-1.0/script.js'
+                '/h5p/libraries/Jaz-1.0/script.js?version=1.0.1',
+                '/h5p/libraries/Bar-1.0/script.js?version=1.0.1',
+                '/h5p/libraries/Baz-1.0/script.js?version=1.0.1',
+                '/h5p/libraries/Foo-1.0/script.js?version=1.0.1'
             ]);
         });
     });
