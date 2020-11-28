@@ -17,6 +17,7 @@ import startPageRenderer from './startPageRenderer';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps } from './utils';
+import { HtmlExporter } from '../src/HtmlExporter';
 
 const start = async () => {
     // We use i18next to localize messages sent to the user. You can use any
@@ -158,6 +159,19 @@ const start = async () => {
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
+
+    const htmlExporter = new HtmlExporter(
+        h5pEditor.libraryStorage,
+        h5pEditor.contentStorage,
+        h5pEditor.config,
+        path.resolve('h5p/core'),
+        path.resolve('h5p/editor')
+    );
+
+    server.get('/h5p/html/:contentId', async (req, res) => {
+        const html = await htmlExporter.export(req.params.contentId);
+        res.status(200).send(html);
+    });
 
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.
