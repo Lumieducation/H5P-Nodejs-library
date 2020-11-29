@@ -4,6 +4,7 @@ import postCss from 'postcss';
 import postCssUrl from 'postcss-url';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
+import uglifyJs from 'uglify-js';
 
 import H5PPlayer from './H5PPlayer';
 import { streamToString } from './helpers/StreamHelpers';
@@ -44,6 +45,7 @@ export class HtmlExporter {
                 text = text.replace(/<\/script>/g, '<\\/script>');
                 scriptTexts[script] = text;
             }
+            const fullScripts = uglifyJs.minify(scriptTexts).code;
 
             const styleTexts = {};
             for (const style of model.styles) {
@@ -57,7 +59,8 @@ export class HtmlExporter {
                 const basePath = library
                     ? path.join(
                           this.librariesPath,
-                          LibraryName.toUberName(library)
+                          LibraryName.toUberName(library),
+                          path.dirname(filename)
                       )
                     : editor
                     ? path.join(this.editorFilePath, 'styles')
@@ -109,6 +112,7 @@ export class HtmlExporter {
             model.integration.contents[`cid-${model.contentId}`].contentUrl =
                 '.';
             model.integration.contents[`cid-${model.contentId}`].url = '.';
+
             return `<!doctype html>
         <html class="h5p-iframe">
         <head>
@@ -122,18 +126,14 @@ export class HtmlExporter {
             libraryUrl: ''
         })};
         </script>                
+        <script>
         ${
-            (
-                await Promise.all(
-                    model.scripts.map(
-                        (script) => `<script>${scriptTexts[script]}</script>`
-                    )
-                )
-            ).join('\n')
+            fullScripts
             // The H5P core client creates paths to resource files using the
             // hostname of the current URL, so we have to make sure data: URLs
             // work.
         }
+        </script>
         <script>
             const realH5PGetPath = H5P.getPath;
             H5P.getPath = function (path, contentId) {
