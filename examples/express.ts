@@ -165,11 +165,19 @@ const start = async () => {
         h5pEditor.contentStorage,
         h5pEditor.config,
         path.resolve('h5p/core'),
-        path.resolve('h5p/editor')
+        path.resolve('h5p/editor'),
+        path.resolve('h5p/libraries')
     );
 
     server.get('/h5p/html/:contentId', async (req, res) => {
-        const html = await htmlExporter.export(req.params.contentId);
+        const html = await htmlExporter.export(
+            req.params.contentId,
+            (req as any).user
+        );
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.params.contentId}.html`
+        );
         res.status(200).send(html);
     });
 

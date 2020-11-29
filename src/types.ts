@@ -1651,6 +1651,7 @@ export interface IPlayerModel {
     scripts: string[];
     styles: string[];
     translations: any;
+    user: IUser;
 }
 
 export interface IEditorModel {

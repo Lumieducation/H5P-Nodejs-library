@@ -1,14 +1,24 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
+import postCss from 'postcss';
+import postCssUrl from 'postcss-url';
+import postCssClean from 'postcss-clean';
+import mimetypes from 'mime-types';
 
 import H5PPlayer from './H5PPlayer';
 import { streamToString } from './helpers/StreamHelpers';
+import LibraryName from './LibraryName';
 import {
     ContentId,
     IContentStorage,
     IH5PConfig,
-    ILibraryStorage
+    ILibraryName,
+    ILibraryStorage,
+    IPlayerModel,
+    IUser
 } from './types';
+import { ContentFileScanner } from './ContentFileScanner';
+import LibraryManager from './LibraryManager';
 
 export class HtmlExporter {
     /**
@@ -19,26 +29,86 @@ export class HtmlExporter {
         protected contentStorage: IContentStorage,
         protected config: IH5PConfig,
         protected coreFilePath: string,
-        protected editorFilePath: string
+        protected editorFilePath: string,
+        protected librariesPath: string
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
             this.contentStorage,
             this.config
         );
-        this.player.setRenderer(async (model) => {
+        this.player.setRenderer(async (model: IPlayerModel) => {
             const scriptTexts = {};
             for (const script of model.scripts) {
-                let text = await this.getLibraryFileAsText(script);
+                let { text } = await this.getLibraryFileAsText(script);
                 text = text.replace(/<\/script>/g, '<\\/script>');
                 scriptTexts[script] = text;
             }
 
             const styleTexts = {};
             for (const style of model.styles) {
-                styleTexts[style] = await this.getLibraryFileAsText(style);
+                const {
+                    text,
+                    filename,
+                    library,
+                    editor,
+                    core
+                } = await this.getLibraryFileAsText(style);
+                const basePath = library
+                    ? path.join(
+                          this.librariesPath,
+                          LibraryName.toUberName(library)
+                      )
+                    : editor
+                    ? path.join(this.editorFilePath, 'styles')
+                    : path.join(this.coreFilePath, 'styles');
+                const processedResult = await postCss(postCssClean())
+                    .use(
+                        postCssUrl({
+                            url: 'inline',
+                            basePath
+                        })
+                    )
+                    .process(text, {
+                        from: filename
+                    });
+                styleTexts[style] = processedResult.css;
             }
 
+            const params = JSON.parse(
+                model.integration.contents[`cid-${model.contentId}`].jsonContent
+            );
+            const mainLibrary =
+                model.integration.contents[`cid-${model.contentId}`].library;
+
+            const scanner = new ContentFileScanner(
+                new LibraryManager(this.libraryStorage)
+            );
+            const contentFiles = await scanner.scanForFiles(
+                params,
+                LibraryName.fromUberName(mainLibrary, { useWhitespace: true })
+            );
+            for (const fileRef of contentFiles) {
+                const base64 = await streamToString(
+                    await this.contentStorage.getFileStream(
+                        model.contentId,
+                        fileRef.filePath,
+                        model.user
+                    ),
+                    'base64'
+                );
+                const mimetype =
+                    fileRef.mimeType ||
+                    mimetypes.lookup(path.extname(fileRef.filePath));
+                fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
+            }
+            model.integration.contents[
+                `cid-${model.contentId}`
+            ].jsonContent = JSON.stringify(params);
+
+            model.integration.contents[`cid-${model.contentId}`].contentUrl =
+                '.';
+            model.integration.contents[`cid-${model.contentId}`].url = '.';
             return `<!doctype html>
         <html class="h5p-iframe">
         <head>
@@ -52,13 +122,29 @@ export class HtmlExporter {
             libraryUrl: ''
         })};
         </script>                
-        ${(
-            await Promise.all(
-                model.scripts.map(
-                    (script) => `<script>${scriptTexts[script]}</script>`
+        ${
+            (
+                await Promise.all(
+                    model.scripts.map(
+                        (script) => `<script>${scriptTexts[script]}</script>`
+                    )
                 )
-            )
-        ).join('\n')}
+            ).join('\n')
+            // The H5P core client creates paths to resource files using the
+            // hostname of the current URL, so we have to make sure data: URLs
+            // work.
+        }
+        <script>
+            const realH5PGetPath = H5P.getPath;
+            H5P.getPath = function (path, contentId) {
+                if(path.startsWith('data:')){
+                    return path;
+                }
+                else {
+                    return realH5PGetPath(path, contentId);
+                }
+            };
+        </script>
         <style>
             ${(
                 await Promise.all(
@@ -78,47 +164,53 @@ export class HtmlExporter {
 
     private player: H5PPlayer;
 
-    public async export(contentId: ContentId): Promise<string> {
-        return this.player.render(contentId);
+    public async export(contentId: ContentId, user: IUser): Promise<string> {
+        return this.player.render(contentId, undefined, undefined, user);
     }
 
-    private async getLibraryFileAsText(file: string): Promise<string> {
+    private async getLibraryFileAsText(
+        file: string
+    ): Promise<{
+        core?: boolean;
+        editor?: boolean;
+        filename: string;
+        library?: ILibraryName;
+        text: string;
+    }> {
         const libraryFileMatch = new RegExp(
             `^${this.config.baseUrl}${this.config.librariesUrl}/([\\w\\.]+)-(\\d+)\\.(\\d+)\\/(.+)$`
         ).exec(file);
         if (!libraryFileMatch) {
             const coreSuffix = `${this.config.baseUrl + this.config.coreUrl}/`;
             if (file.startsWith(coreSuffix)) {
+                const filename = file.substr(coreSuffix.length);
                 const coreFile = await fsExtra.readFile(
-                    path.resolve(
-                        this.coreFilePath,
-                        file.substr(coreSuffix.length)
-                    )
+                    path.resolve(this.coreFilePath, filename)
                 );
-                return coreFile.toString();
+                return { text: coreFile.toString(), core: true, filename };
             }
             const editorSuffix = `${
                 this.config.baseUrl + this.config.editorLibraryUrl
             }/`;
             if (file.startsWith(editorSuffix)) {
+                const filename = file.substr(editorSuffix.length);
                 const coreFile = await fsExtra.readFile(
-                    path.resolve(
-                        this.editorFilePath,
-                        file.substr(editorSuffix.length)
-                    )
+                    path.resolve(this.editorFilePath, filename)
                 );
-                return coreFile.toString();
+                return { text: coreFile.toString(), editor: true, filename };
             }
         } else {
+            const library = {
+                machineName: libraryFileMatch[1],
+                majorVersion: Number.parseInt(libraryFileMatch[2], 10),
+                minorVersion: Number.parseInt(libraryFileMatch[3], 10)
+            };
+            const filename = libraryFileMatch[4];
             const readable = await this.libraryStorage.getFileStream(
-                {
-                    machineName: libraryFileMatch[1],
-                    majorVersion: Number.parseInt(libraryFileMatch[2], 10),
-                    minorVersion: Number.parseInt(libraryFileMatch[3], 10)
-                },
-                libraryFileMatch[4]
+                library,
+                filename
             );
-            return streamToString(readable);
+            return { text: await streamToString(readable), library, filename };
         }
     }
 }
