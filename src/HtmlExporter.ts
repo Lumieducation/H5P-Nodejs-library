@@ -1,6 +1,6 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
-import postCss from 'postcss';
+import postCss, { ChildNode } from 'postcss';
 import postCssUrl from 'postcss-url';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
@@ -65,16 +65,116 @@ export class HtmlExporter {
                     : editor
                     ? path.join(this.editorFilePath, 'styles')
                     : path.join(this.coreFilePath, 'styles');
-                const processedResult = await postCss(postCssClean())
-                    .use(
-                        postCssUrl({
-                            url: 'inline',
-                            basePath
-                        })
-                    )
-                    .process(text, {
-                        from: filename
-                    });
+                const processedResult = await postCss(
+                    {
+                        postcssPlugin: 'postcss-remove-redundant-urls',
+                        // tslint:disable-next-line: function-name typedef
+                        Once(styles, { result }) {
+                            styles.walkAtRules('font-face', (atRule) => {
+                                const extensionmap = {
+                                    eot: 'embedded-opentype',
+                                    ttf: 'truetype'
+                                };
+                                const fontPreference = [
+                                    'woff',
+                                    'woff2',
+                                    'truetype',
+                                    'svg',
+                                    'embedded-opentype'
+                                ];
+
+                                const fonts: {
+                                    format: string;
+                                    node: ChildNode;
+                                    str: string;
+                                }[] = [];
+                                atRule.nodes
+                                    .filter(
+                                        (node) => (node as any).prop === 'src'
+                                    )
+                                    .forEach((node) => {
+                                        const regex = /url\(["']?([^'"\)\?#]+)\.(.*?)([\?\#].+?)?["']?\)( format\(["'](.*?)["']\))?[,$]?/g;
+                                        let matches;
+                                        while (
+                                            // tslint:disable-next-line: no-conditional-assignment
+                                            (matches = regex.exec(
+                                                (node as any).value
+                                            ))
+                                        ) {
+                                            const format =
+                                                matches[5] ??
+                                                extensionmap[matches[2]] ??
+                                                matches[2];
+                                            fonts.push({
+                                                format,
+                                                node,
+                                                str: matches[0]
+                                            });
+                                        }
+                                    });
+                                const keepFont = fonts.sort(
+                                    (a, b) =>
+                                        fontPreference.indexOf(a.format) -
+                                        fontPreference.indexOf(b.format)
+                                )[0];
+                                fonts.forEach((f) => {
+                                    if (f === keepFont) {
+                                        // tslint:disable-next-line: no-console
+                                        console.log(`keeping ${f.str}`);
+                                        return;
+                                    }
+                                    // tslint:disable-next-line: no-console
+                                    console.log(`removing ${f.str}`);
+                                    (f.node as any).value = ((f.node as any)
+                                        .value as string)
+                                        .replace(f.str, '')
+                                        .trim();
+                                    if ((f.node as any).value.endsWith(',')) {
+                                        (f.node as any).value = (f.node as any).value.substr(
+                                            0,
+                                            (f.node as any).value.length - 1
+                                        );
+                                    }
+                                    if (
+                                        ((f.node as any)
+                                            .value as string).trim() === ''
+                                    ) {
+                                        atRule.removeChild(f.node);
+                                    }
+                                });
+                            });
+                        }
+                    },
+                    postCssUrl({
+                        url: async (asset) => {
+                            const mimetype = mimetypes.lookup(
+                                path.extname(asset.relativePath)
+                            );
+                            if (library) {
+                                const p = path.join(
+                                    path.dirname(filename),
+                                    asset.relativePath
+                                );
+                                return `data:${mimetype};base64,${await streamToString(
+                                    await this.libraryStorage.getFileStream(
+                                        library,
+                                        p
+                                    ),
+                                    'base64'
+                                )}`;
+                            }
+                            if (editor || core) {
+                                return `data:${mimetype};base64,${await fsExtra.readFile(
+                                    path.resolve(basePath, asset.relativePath),
+                                    'base64'
+                                )}`;
+                            }
+                        }
+                    }),
+                    postCssClean()
+                ).process(text, {
+                    from: filename
+                });
                 styleTexts[style] = processedResult.css;
             }
 
@@ -214,3 +314,17 @@ export class HtmlExporter {
         }
     }
 }
+
+/*
+url(https://somewebsite.com/path/to/font.woff)
+url(path/to/font.woff)
+url(path/to/font.woff?123#2) format("woff")
+url('path/to/font.woff#23')
+url(path/to/svgfont.svg#example)
+
+local(font), url(path/to/font.svg) format("svg"),
+url(path/to/font.woff) format("woff"),
+url(path/to/font.otf) format("opentype");
+
+url('fontawesome-webfont.eot?#iefix&v=4.5.0') format('embedded-opentype'),url('fontawesome-webfont.woff2?v=4.5.0') format('woff2'),url('fontawesome-webfont.woff?v=4.5.0') format('woff'),url('fontawesome-webfont.ttf?v=4.5.0') format('truetype'),url('fontawesome-webfont.svg?v=4.5.0#fontawesomeregular') format('svg')
+*/
