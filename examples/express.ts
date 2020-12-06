@@ -165,8 +165,7 @@ const start = async () => {
         h5pEditor.contentStorage,
         h5pEditor.config,
         path.resolve('h5p/core'),
-        path.resolve('h5p/editor'),
-        path.resolve('h5p/libraries')
+        path.resolve('h5p/editor')
     );
 
     server.get('/h5p/html/:contentId', async (req, res) => {
