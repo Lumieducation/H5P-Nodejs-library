@@ -101,7 +101,7 @@
         "@types/jest": "26.0.16",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
-        "@types/mongodb": "3.6.1",
+        "@types/mongodb": "3.6.2",
         "@types/puppeteer": "5.4.1",
         "@types/sanitize-html": "1.27.0",
         "@types/stream-buffers": "3.0.3",
