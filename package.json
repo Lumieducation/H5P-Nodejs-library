@@ -98,7 +98,7 @@
         "@types/express": "4.17.9",
         "@types/fs-extra": "9.0.4",
         "@types/html-escaper": "3.0.0",
-        "@types/jest": "26.0.17",
+        "@types/jest": "26.0.18",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
         "@types/mongodb": "3.6.2",
