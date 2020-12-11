@@ -36,6 +36,12 @@ export default function (
         'embedded-opentype'
     ]
 ): Plugin {
+    if (!fontPreference || fontPreference.length === 0) {
+        throw new Error(
+            'You must specify the order in which fonts should be preferred as any array with at least one entry.'
+        );
+    }
+
     return {
         postcssPlugin: 'postcss-remove-redundant-font-urls',
         // tslint:disable-next-line: function-name
