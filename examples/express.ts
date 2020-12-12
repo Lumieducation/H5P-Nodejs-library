@@ -169,7 +169,7 @@ const start = async () => {
     );
 
     server.get('/h5p/html/:contentId', async (req, res) => {
-        const html = await htmlExporter.export(
+        const html = await htmlExporter.createSingleBundle(
             req.params.contentId,
             (req as any).user
         );
