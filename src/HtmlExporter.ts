@@ -195,11 +195,13 @@ export class HtmlExporter {
         additionalScripts: string[]
     ): Promise<string> {
         const scripts = {};
-        for (const script of model.scripts) {
-            const { text } = await this.getFileAsText(script);
-            // We must escape </script> tags inside scripts.
-            scripts[script] = text.replace(/<\/script>/g, '<\\/script>');
-        }
+        await Promise.all(
+            model.scripts.map(async (script) => {
+                const { text } = await this.getFileAsText(script);
+                // We must escape </script> tags inside scripts.
+                scripts[script] = text.replace(/<\/script>/g, '<\\/script>');
+            })
+        );
         for (let index = 0; index < additionalScripts.length; index += 1) {
             scripts[`custom-script-${index}`] = additionalScripts[index];
         }
@@ -214,26 +216,33 @@ export class HtmlExporter {
      */
     private async getStylesBundle(model: IPlayerModel): Promise<string> {
         const styleTexts = {};
-        for (const style of model.styles) {
-            const {
-                text,
-                filename,
-                library,
-                editor,
-                core
-            } = await this.getFileAsText(style);
+        await Promise.all(
+            model.styles.map(async (style) => {
+                const {
+                    text,
+                    filename,
+                    library,
+                    editor,
+                    core
+                } = await this.getFileAsText(style);
 
-            const processedResult = await postCss(
-                postCssRemoveRedundantUrls(),
-                postCssUrl({
-                    url: this.urlInternalizer(filename, library, editor, core)
-                }),
-                postCssClean()
-            ).process(text, {
-                from: filename
-            });
-            styleTexts[style] = processedResult.css;
-        }
+                const processedResult = await postCss(
+                    postCssRemoveRedundantUrls(),
+                    postCssUrl({
+                        url: this.urlInternalizer(
+                            filename,
+                            library,
+                            editor,
+                            core
+                        )
+                    }),
+                    postCssClean()
+                ).process(text, {
+                    from: filename
+                });
+                styleTexts[style] = processedResult.css;
+            })
+        );
         return model.styles.map((style) => styleTexts[style]).join('\n');
     }
 
@@ -253,20 +262,22 @@ export class HtmlExporter {
                 useWhitespace: true
             })
         );
-        for (const fileRef of contentFiles) {
-            const base64 = await streamToString(
-                await this.contentStorage.getFileStream(
-                    model.contentId,
-                    fileRef.filePath,
-                    model.user
-                ),
-                'base64'
-            );
-            const mimetype =
-                fileRef.mimeType ||
-                mimetypes.lookup(path.extname(fileRef.filePath));
-            fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
-        }
+        await Promise.all(
+            contentFiles.map(async (fileRef) => {
+                const base64 = await streamToString(
+                    await this.contentStorage.getFileStream(
+                        model.contentId,
+                        fileRef.filePath,
+                        model.user
+                    ),
+                    'base64'
+                );
+                const mimetype =
+                    fileRef.mimeType ||
+                    mimetypes.lookup(path.extname(fileRef.filePath));
+                fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
+            })
+        );
         content.jsonContent = JSON.stringify(params);
         content.contentUrl = '.';
         content.url = '.';
@@ -278,12 +289,11 @@ export class HtmlExporter {
      * @returns a string with HTML markup
      */
     private renderer = async (model: IPlayerModel): Promise<string> => {
-        const scriptsBundle = await this.getScriptBundle(
-            model,
-            this.additionalScripts
-        );
-        const stylesBundle = await this.getStylesBundle(model);
-        await this.internalizeResources(model);
+        const [scriptsBundle, stylesBundle] = await Promise.all([
+            this.getScriptBundle(model, this.additionalScripts),
+            this.getStylesBundle(model),
+            this.internalizeResources(model)
+        ]);
 
         return `<!doctype html>
             <html class="h5p-iframe">
