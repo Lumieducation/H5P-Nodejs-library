@@ -226,35 +226,7 @@ export class HtmlExporter {
             const processedResult = await postCss(
                 postCssRemoveRedundantUrls(),
                 postCssUrl({
-                    url: async (asset) => {
-                        const mimetype = mimetypes.lookup(
-                            path.extname(asset.relativePath)
-                        );
-
-                        if (library) {
-                            const p = path.join(
-                                path.dirname(filename),
-                                asset.relativePath
-                            );
-                            return `data:${mimetype};base64,${await streamToString(
-                                await this.libraryStorage.getFileStream(
-                                    library,
-                                    p
-                                ),
-                                'base64'
-                            )}`;
-                        }
-
-                        if (editor || core) {
-                            const basePath = editor
-                                ? path.join(this.editorFilePath, 'styles')
-                                : path.join(this.coreFilePath, 'styles');
-                            return `data:${mimetype};base64,${await fsExtra.readFile(
-                                path.resolve(basePath, asset.relativePath),
-                                'base64'
-                            )}`;
-                        }
-                    }
+                    url: this.urlInternalizer(filename, library, editor, core)
                 }),
                 postCssClean()
             ).process(text, {
@@ -334,5 +306,41 @@ export class HtmlExporter {
                 }"></div>                
             </body>
             </html>`;
+    };
+
+    /**
+     * A factory method that returns functions that can be passed to the url
+     * option of postcss-url. The function returns the base64 encoded resource.
+     * @param filename the filename of the css file being internalized
+     * @param library the library name if the css file is a library file
+     * @param editor true if the css file is a editor file
+     * @param core true if the css file is a core file
+     * @param asset the object received from the postcss-url plugin call
+     */
+    private urlInternalizer = (
+        filename: string,
+        library: ILibraryName,
+        editor: boolean,
+        core: boolean
+    ) => async (asset) => {
+        const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
+
+        if (library) {
+            const p = path.join(path.dirname(filename), asset.relativePath);
+            return `data:${mimetype};base64,${await streamToString(
+                await this.libraryStorage.getFileStream(library, p),
+                'base64'
+            )}`;
+        }
+
+        if (editor || core) {
+            const basePath = editor
+                ? path.join(this.editorFilePath, 'styles')
+                : path.join(this.coreFilePath, 'styles');
+            return `data:${mimetype};base64,${await fsExtra.readFile(
+                path.resolve(basePath, asset.relativePath),
+                'base64'
+            )}`;
+        }
     };
 }
