@@ -55,14 +55,29 @@ export class HtmlExporter {
         this.editorSuffix = `${
             this.config.baseUrl + this.config.editorLibraryUrl
         }/`;
+        this.contentFileScanner = new ContentFileScanner(
+            new LibraryManager(this.libraryStorage)
+        );
         this.player.setRenderer(this.renderer);
     }
 
+    private additionalScripts: string[] = [
+        // The H5P core client creates paths to resource files using the
+        // hostname of the current URL, so we have to make sure data: URLs
+        // work.
+        `const realH5PGetPath = H5P.getPath;
+        H5P.getPath = function (path, contentId) {
+            if(path.startsWith('data:')){
+                return path;
+            }
+            else {
+                return realH5PGetPath(path, contentId);
+            }
+        };`
+    ];
+    private contentFileScanner: ContentFileScanner;
     private coreSuffix: string;
     private editorSuffix: string;
-    /**
-     * The player instance used to generate the H5P stuff.
-     */
     private player: H5PPlayer;
 
     /**
@@ -169,28 +184,45 @@ export class HtmlExporter {
     }
 
     /**
-     * Creates HTML strings out of player models.
-     * @param model the player model created by H5PPlayer
-     * @returns a string with HTML markup
+     * Creates a big minified bundle of all script files in the model
+     * @param model
+     * @param additionalScripts an array of scripts (actual script code as
+     * string, not filenames!) that should be appended at the end of the bundle
+     * @returns all scripts in a single bundle
      */
-    private renderer = async (model: IPlayerModel): Promise<string> => {
-        const scriptTexts = {};
+    private async getScriptBundle(
+        model: IPlayerModel,
+        additionalScripts: string[]
+    ): Promise<string> {
+        const scripts = {};
         for (const script of model.scripts) {
-            let { text: text } = await this.getFileAsText(script);
-            text = text.replace(/<\/script>/g, '<\\/script>');
-            scriptTexts[script] = text;
+            const { text } = await this.getFileAsText(script);
+            // We must escape </script> tags inside scripts.
+            scripts[script] = text.replace(/<\/script>/g, '<\\/script>');
         }
-        const fullScripts = uglifyJs.minify(scriptTexts).code;
+        for (let index = 0; index < additionalScripts.length; index += 1) {
+            scripts[`custom-script-${index}`] = additionalScripts[index];
+        }
+        return uglifyJs.minify(scripts).code;
+    }
 
+    /**
+     * Creates a big minified bundle of all style files in the model. Also
+     * internalizes all url(...) resources in the styles.
+     * @param model
+     * @returns all styles in a single bundle
+     */
+    private async getStylesBundle(model: IPlayerModel): Promise<string> {
         const styleTexts = {};
         for (const style of model.styles) {
             const {
-                text: text,
+                text,
                 filename,
                 library,
                 editor,
                 core
             } = await this.getFileAsText(style);
+
             const processedResult = await postCss(
                 postCssRemoveRedundantUrls(),
                 postCssUrl({
@@ -198,6 +230,7 @@ export class HtmlExporter {
                         const mimetype = mimetypes.lookup(
                             path.extname(asset.relativePath)
                         );
+
                         if (library) {
                             const p = path.join(
                                 path.dirname(filename),
@@ -211,6 +244,7 @@ export class HtmlExporter {
                                 'base64'
                             )}`;
                         }
+
                         if (editor || core) {
                             const basePath = editor
                                 ? path.join(this.editorFilePath, 'styles')
@@ -228,19 +262,24 @@ export class HtmlExporter {
             });
             styleTexts[style] = processedResult.css;
         }
+        return model.styles.map((style) => styleTexts[style]).join('\n');
+    }
 
-        const params = JSON.parse(
-            model.integration.contents[`cid-${model.contentId}`].jsonContent
-        );
-        const mainLibrary =
-            model.integration.contents[`cid-${model.contentId}`].library;
+    /**
+     * Changes the content params by internalizing all files references with
+     * base64 data strings. Has a side effect on contents[cid-xxx]!
+     * @param model
+     */
+    private async internalizeResources(model: IPlayerModel): Promise<void> {
+        const content = model.integration.contents[`cid-${model.contentId}`];
+        const params = JSON.parse(content.jsonContent);
+        const mainLibraryUbername = content.library;
 
-        const scanner = new ContentFileScanner(
-            new LibraryManager(this.libraryStorage)
-        );
-        const contentFiles = await scanner.scanForFiles(
+        const contentFiles = await this.contentFileScanner.scanForFiles(
             params,
-            LibraryName.fromUberName(mainLibrary, { useWhitespace: true })
+            LibraryName.fromUberName(mainLibraryUbername, {
+                useWhitespace: true
+            })
         );
         for (const fileRef of contentFiles) {
             const base64 = await streamToString(
@@ -256,52 +295,38 @@ export class HtmlExporter {
                 mimetypes.lookup(path.extname(fileRef.filePath));
             fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
         }
-        model.integration.contents[
-            `cid-${model.contentId}`
-        ].jsonContent = JSON.stringify(params);
+        content.jsonContent = JSON.stringify(params);
+        content.contentUrl = '.';
+        content.url = '.';
+    }
 
-        model.integration.contents[`cid-${model.contentId}`].contentUrl = '.';
-        model.integration.contents[`cid-${model.contentId}`].url = '.';
+    /**
+     * Creates HTML strings out of player models.
+     * @param model the player model created by H5PPlayer
+     * @returns a string with HTML markup
+     */
+    private renderer = async (model: IPlayerModel): Promise<string> => {
+        const scriptsBundle = await this.getScriptBundle(
+            model,
+            this.additionalScripts
+        );
+        const stylesBundle = await this.getStylesBundle(model);
+        await this.internalizeResources(model);
 
         return `<!doctype html>
             <html class="h5p-iframe">
             <head>
-            <meta charset="utf-8">                    
-            <script>H5PIntegration = ${JSON.stringify({
-                ...model.integration,
-                baseUrl: '.',
-                url: '.',
-                ajax: { setFinished: '', contentUserData: '' },
-                saveFreq: false,
-                libraryUrl: ''
-            })};
-            </script>                
-            <script>
-            ${
-                fullScripts
-                // The H5P core client creates paths to resource files using the
-                // hostname of the current URL, so we have to make sure data: URLs
-                // work.
-            }
-            </script>
-            <script>
-                const realH5PGetPath = H5P.getPath;
-                H5P.getPath = function (path, contentId) {
-                    if(path.startsWith('data:')){
-                        return path;
-                    }
-                    else {
-                        return realH5PGetPath(path, contentId);
-                    }
-                };
-            </script>
-            <style>
-                ${(
-                    await Promise.all(
-                        model.styles.map((style) => styleTexts[style])
-                    )
-                ).join('\n')}
-            </style>
+                <meta charset="utf-8">                    
+                <script>H5PIntegration = ${JSON.stringify({
+                    ...model.integration,
+                    baseUrl: '.',
+                    url: '.',
+                    ajax: { setFinished: '', contentUserData: '' },
+                    saveFreq: false,
+                    libraryUrl: ''
+                })};
+                ${scriptsBundle}</script>
+                <style>${stylesBundle}</style>
             </head>
             <body>
                 <div class="h5p-content lag" data-content-id="${
