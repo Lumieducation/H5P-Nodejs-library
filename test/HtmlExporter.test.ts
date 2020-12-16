@@ -133,33 +133,14 @@ describe('HtmlExporter', () => {
         );
     }
 
-    /*for (const file of files.filter((f) => f.endsWith('.h5p'))) {
+    for (const file of files.filter((f) => f.endsWith('.h5p'))) {
         it(`creates html exports (${file})`, async () => {
             await importAndExportHtml(path.join(directory, file));
         }, 30000);
-    }*/
-    it(`creates html exports (H5P.BranchingScenario.h5p)`, async () => {
+    }
+    /*it(`creates html exports (H5P.BranchingScenario.h5p)`, async () => {
         await importAndExportHtml(
             path.join(directory, 'H5P.BranchingScenario.h5p')
         );
-    }, 30000);
+    }, 30000);*/
 });
-/*
-HtmlExporter › creates html exports packages (H5P.BranchingScenario.h5p)
-
-    library-file-missing
-
-      14 |         public clientErrorId?: string
-      15 |     ) {
-    > 16 |         super(`${errorId}${debugMessage ? `: ${debugMessage}` : ''}`);
-         |         ^
-      17 |         Object.setPrototypeOf(this, new.target.prototype); // need to restore the prototype chain
-      18 |     }
-      19 | }
-
-      at new H5pError (src/helpers/H5pError.ts:16:9)
-      at FileLibraryStorage.<anonymous> (src/implementation/fs/FileLibraryStorage.ts:316:19)
-      at step (src/implementation/fs/FileLibraryStorage.ts:33:23)
-      at Object.next (src/implementation/fs/FileLibraryStorage.ts:14:53)
-      at fulfilled (src/implementation/fs/FileLibraryStorage.ts:5:58)
-      */

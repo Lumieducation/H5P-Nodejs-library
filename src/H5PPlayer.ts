@@ -132,6 +132,7 @@ export default class H5PPlayer {
 
         const model: IPlayerModel = {
             contentId,
+            dependencies,
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,

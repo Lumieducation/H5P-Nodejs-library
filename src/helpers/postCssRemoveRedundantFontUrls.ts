@@ -34,7 +34,8 @@ export default function (
         'svg',
         'opentype',
         'embedded-opentype'
-    ]
+    ],
+    removedCallback?: (filename: string) => void
 ): Plugin {
     if (!fontPreference || fontPreference.length === 0) {
         throw new Error(
@@ -48,6 +49,8 @@ export default function (
         async Once(styles: Root): Promise<void> {
             styles.walkAtRules('font-face', (atRule) => {
                 const fonts: {
+                    extension: string;
+                    filename: string;
                     format: FontTypes;
                     node: ChildNode;
                     sourceText: string;
@@ -70,7 +73,9 @@ export default function (
                             fonts.push({
                                 format,
                                 node,
-                                sourceText: matches[0]
+                                sourceText: matches[0],
+                                filename: matches[1],
+                                extension: matches[2]
                             });
                         }
                     });
@@ -94,6 +99,9 @@ export default function (
                     newValue = newValue.replace(f.sourceText, '').trim();
                     if (newValue.endsWith(',')) {
                         newValue = newValue.substr(0, newValue.length - 1);
+                    }
+                    if (removedCallback) {
+                        removedCallback(`${f.filename}.${f.extension}`);
                     }
 
                     // Delete the whole src node if it has become empty because

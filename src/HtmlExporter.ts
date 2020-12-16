@@ -79,6 +79,8 @@ export class HtmlExporter {
     private editorSuffix: string;
     private player: H5PPlayer;
 
+    private usedFiles: { [ubername: string]: string[] };
+
     /**
      * Creates a single HTML file that contains **all** scripts, styles and
      * resources (images, videos, etc.) inline. This bundle will grow very large
@@ -207,6 +209,7 @@ export class HtmlExporter {
                 minorVersion: Number.parseInt(libraryFileMatch[3], 10)
             };
             const filenameWithoutDir = libraryFileMatch[4];
+            this.markLibraryFilenameAsUsed(library, filenameWithoutDir);
             return {
                 text: await streamToString(
                     await this.libraryStorage.getFileStream(
@@ -286,7 +289,17 @@ export class HtmlExporter {
                 );
                 let processedCss = '';
                 const pCss = postCss(
-                    postCssRemoveRedundantUrls(),
+                    postCssRemoveRedundantUrls(
+                        undefined,
+                        library
+                            ? (f) => {
+                                  this.markLibraryFilenameAsUsed(
+                                      library,
+                                      path.join(path.dirname(filename), f)
+                                  );
+                              }
+                            : undefined
+                    ),
                     postCssUrl({
                         url: this.urlInternalizer(
                             filename,
@@ -322,6 +335,48 @@ export class HtmlExporter {
             })
         );
         return model.styles.map((style) => styleTexts[style]).join('\n');
+    }
+
+    private async getUnusedFiles(
+        dependencies: ILibraryName[]
+    ): Promise<{ [filename: string]: string }> {
+        const mf: { [filename: string]: string } = {};
+        for (const lib of dependencies) {
+            const ub = LibraryName.toUberName(lib);
+            const existingFiles = await this.libraryStorage.listFiles(lib);
+            let unusedFiles = existingFiles.filter(
+                (f) =>
+                    !this.usedFiles[ub]?.includes(f) &&
+                    !f.startsWith('language/') &&
+                    f !== 'library.json' &&
+                    f !== 'semantics.json' &&
+                    f !== 'icon.svg' &&
+                    f !== 'upgrades.js' &&
+                    f !== 'presave.js'
+            );
+            unusedFiles = unusedFiles.filter((f) => {
+                const mt = mimetypes.lookup(path.basename(f));
+                if (
+                    mt &&
+                    (mt.startsWith('audio/') ||
+                        mt.startsWith('video/') ||
+                        mt.startsWith('image/')) &&
+                    !f.includes('font')
+                ) {
+                    return true;
+                }
+                return false;
+            });
+            for (const unusedFile of unusedFiles) {
+                mf[`${ub}/${unusedFile}`] = `data:${mimetypes.lookup(
+                    path.basename(unusedFile)
+                )};base64,${await streamToString(
+                    await this.libraryStorage.getFileStream(lib, unusedFile),
+                    'base64'
+                )}`;
+            }
+        }
+        return mf;
     }
 
     /**
@@ -378,17 +433,50 @@ export class HtmlExporter {
         content.url = '.';
     }
 
+    private markLibraryFilenameAsUsed(
+        library: ILibraryName,
+        filename: string
+    ): void {
+        const ubername = LibraryName.toUberName(library);
+        if (!this.usedFiles[ubername]) {
+            this.usedFiles[ubername] = [];
+        }
+        this.usedFiles[ubername].push(filename);
+    }
+
     /**
      * Creates HTML strings out of player models.
      * @param model the player model created by H5PPlayer
      * @returns a string with HTML markup
      */
     private renderer = async (model: IPlayerModel): Promise<string> => {
-        const [scriptsBundle, stylesBundle] = await Promise.all([
+        this.usedFiles = {};
+        // tslint:disable-next-line: prefer-const
+        let [scriptsBundle, stylesBundle] = await Promise.all([
             this.getScriptBundle(model, this.additionalScripts),
             this.getStylesBundle(model),
             this.internalizeResources(model)
         ]);
+
+        const unusedFiles = await this.getUnusedFiles(model.dependencies);
+        if (Object.keys(unusedFiles).length) {
+            scriptsBundle = scriptsBundle.concat(
+                ` var furtherH5PInlineResources=${JSON.stringify(
+                    unusedFiles
+                )};`,
+                `H5P.ContentType = function (isRootLibrary) {
+                    function ContentType() {}                  
+                    ContentType.prototype = new H5P.EventDispatcher();                  
+                    ContentType.prototype.isRoot = function () {
+                      return isRootLibrary;
+                    };                  
+                    ContentType.prototype.getLibraryFilePath = function (filePath) {
+                        return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
+                    };                  
+                    return ContentType;
+                  };`
+            );
+        }
 
         return `<!doctype html>
             <html class="h5p-iframe">
@@ -433,6 +521,7 @@ export class HtmlExporter {
         if (library) {
             const p = path.join(path.dirname(filename), asset.relativePath);
             try {
+                this.markLibraryFilenameAsUsed(library, p);
                 return `data:${mimetype};base64,${await streamToString(
                     await this.libraryStorage.getFileStream(library, p),
                     'base64'
