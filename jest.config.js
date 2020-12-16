@@ -173,7 +173,7 @@ module.exports = {
     // verbose: null,
 
     // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
-    watchPathIgnorePatterns: ['/node_modules/', '/h5p/', '/build/'],
+    watchPathIgnorePatterns: ['/node_modules/', '/test/data/', '/h5p/', '/build/'],
 
     // Whether to use watchman for file crawling
     // watchman: true,

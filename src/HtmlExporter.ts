@@ -1,12 +1,11 @@
-// TODO: get it working with external references (http://)
-
 import fsExtra from 'fs-extra';
 import path from 'path';
-import postCss from 'postcss';
+import postCss, { CssSyntaxError } from 'postcss';
 import postCssUrl from 'postcss-url';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import uglifyJs from 'uglify-js';
+import postCssSafeParser from 'postcss-safe-parser';
 
 import H5PPlayer from './H5PPlayer';
 import { streamToString } from './helpers/StreamHelpers';
@@ -285,8 +284,8 @@ export class HtmlExporter {
                     editor,
                     library
                 );
-
-                const processedResult = await postCss(
+                let processedCss = '';
+                const pCss = postCss(
                     postCssRemoveRedundantUrls(),
                     postCssUrl({
                         url: this.urlInternalizer(
@@ -297,10 +296,29 @@ export class HtmlExporter {
                         )
                     }),
                     postCssClean()
-                ).process(licenseText + text, {
-                    from: filename
-                });
-                styleTexts[style] = processedResult.css;
+                );
+
+                try {
+                    processedCss = (
+                        await pCss.process(licenseText + text, {
+                            from: filename
+                        })
+                    )?.css;
+                } catch (error) {
+                    // We retry with a more tolerant CSS parser if parsing has
+                    // failed with the regular one.
+                    if (error instanceof CssSyntaxError) {
+                        processedCss = (
+                            await pCss.process(licenseText + text, {
+                                parser: postCssSafeParser,
+                                from: filename
+                            })
+                        )?.css;
+                    } else {
+                        throw error;
+                    }
+                }
+                styleTexts[style] = processedCss;
             })
         );
         return model.styles.map((style) => styleTexts[style]).join('\n');
@@ -324,18 +342,35 @@ export class HtmlExporter {
         );
         await Promise.all(
             contentFiles.map(async (fileRef) => {
-                const base64 = await streamToString(
-                    await this.contentStorage.getFileStream(
-                        model.contentId,
-                        fileRef.filePath,
-                        model.user
-                    ),
-                    'base64'
-                );
-                const mimetype =
-                    fileRef.mimeType ||
-                    mimetypes.lookup(path.extname(fileRef.filePath));
-                fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
+                if (
+                    !(
+                        fileRef.filePath === '' ||
+                        fileRef.filePath
+                            .toLocaleLowerCase()
+                            .startsWith('http://') ||
+                        fileRef.filePath
+                            .toLocaleLowerCase()
+                            .startsWith('http://')
+                    )
+                ) {
+                    try {
+                        const base64 = await streamToString(
+                            await this.contentStorage.getFileStream(
+                                model.contentId,
+                                fileRef.filePath,
+                                model.user
+                            ),
+                            'base64'
+                        );
+                        const mimetype =
+                            fileRef.mimeType ||
+                            mimetypes.lookup(path.extname(fileRef.filePath));
+                        fileRef.context.params.path = `data:${mimetype};base64,${base64}`;
+                    } catch (error) {
+                        // We silently ignore errors, as there might be cases in
+                        // which YouTube links are not detected correctly.
+                    }
+                }
             })
         );
         content.jsonContent = JSON.stringify(params);
@@ -397,10 +432,17 @@ export class HtmlExporter {
 
         if (library) {
             const p = path.join(path.dirname(filename), asset.relativePath);
-            return `data:${mimetype};base64,${await streamToString(
-                await this.libraryStorage.getFileStream(library, p),
-                'base64'
-            )}`;
+            try {
+                return `data:${mimetype};base64,${await streamToString(
+                    await this.libraryStorage.getFileStream(library, p),
+                    'base64'
+                )}`;
+            } catch {
+                // There are edge cases in which there are non-existent files in
+                // stylesheets as placeholders (H5P.BranchingScenario), so we
+                // have to leave them in.
+                return asset.relativePath;
+            }
         }
 
         if (editor || core) {

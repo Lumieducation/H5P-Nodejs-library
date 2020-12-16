@@ -81,6 +81,7 @@
         "merge": "^2.0.0",
         "mime-types": "^2.1.26",
         "nanoid": "^3.1.10",
+        "postcss-safe-parser": "^5.0.2",
         "promisepipe": "^3.0.0",
         "qs": "^6.9.3",
         "sanitize-html": "^2.1.1",
