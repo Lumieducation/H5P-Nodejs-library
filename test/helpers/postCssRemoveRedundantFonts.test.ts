@@ -41,6 +41,21 @@ describe('postCssRemoveRedundantFonts.test', () => {
         );
     });
 
+    it('calls the callback for removed fonts', async () => {
+        const removed = [];
+        const result = await postCss(
+            postCssRemoveRedundantUrls(undefined, (filename) =>
+                removed.push(filename)
+            )
+        ).process(
+            `@font-face { src: url(path/to/font.woff2) format("woff2"), url(path/to/font.woff) format("woff"), url(path/to/font.otf) format("opentype"); }`
+        );
+        expect(removed).toMatchObject([
+            'path/to/font.woff2',
+            'path/to/font.otf'
+        ]);
+    });
+
     it('removes redundant fonts across multiple srcs', async () => {
         const result = await postCss(postCssRemoveRedundantUrls()).process(
             `@font-face { src: url(path/to/font.woff) format("woff"), url(path/to/font.otf) format("opentype"); src: url(path/to/font.eot) format("embedded-opentype"); }`
