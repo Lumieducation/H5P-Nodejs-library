@@ -132,15 +132,15 @@ describe('HtmlExporter', () => {
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
         );
     }
-
+    /*
     for (const file of files.filter((f) => f.endsWith('.h5p'))) {
         it(`creates html exports (${file})`, async () => {
             await importAndExportHtml(path.join(directory, file));
         }, 30000);
-    }
-    /*it(`creates html exports (H5P.BranchingScenario.h5p)`, async () => {
+    }*/
+    it(`creates html exports (H5P.BranchingScenario.h5p)`, async () => {
         await importAndExportHtml(
             path.join(directory, 'H5P.BranchingScenario.h5p')
         );
-    }, 30000);*/
+    }, 30000);
 });

@@ -22,10 +22,47 @@ import {
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
+import LibrariesFilesList from './helpers/LibrariesFilesList';
+
+/**
+ * This script is used to change the default behavior of H5P when it gets
+ * resources dynamically from JavaScript. This works in most cases, but there
+ * are some libraries (the H5P.SoundJS library used by single choice set) that
+ * can't be modified that way.
+ */
+const getLibraryFilePathOverrideScript = uglifyJs.minify(
+    `H5P.ContentType = function (isRootLibrary) {
+    function ContentType() {}                  
+    ContentType.prototype = new H5P.EventDispatcher();                  
+    ContentType.prototype.isRoot = function () {
+      return isRootLibrary;
+    };                  
+    ContentType.prototype.getLibraryFilePath = function (filePath) {
+        return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
+    };                  
+    return ContentType;
+  };`
+).code;
 
 /**
  * Creates standalone HTML packages that can be used to display H5P in a browser
  * without having to use the full H5P server backend.
+ *
+ * The bundle includes all JavaScript files, stylesheets, fonts of the H5P core
+ * and all libraries used in the content. It also includes base64 encoded
+ * resources used in the content itself. This can make the files seriously big,
+ * if the content includes video files or lots of high-res images.
+ *
+ * The bundle does NOT internalize resources that are included in the content
+ * via absolute URLs but only resources that are part of the H5P package.
+ *
+ * The HTML exports work with all content types on the official H5P Hub, but
+ * there might be unexpected issues with other content types if they behave
+ * weirdly and in any kind of non-standard way.
+ *
+ * The exported bundle contains license information for each file put into the
+ * bundle in a shortened fashion (only includes author and license name and not
+ * full license text).
  */
 export class HtmlExporter {
     /**
@@ -60,7 +97,9 @@ export class HtmlExporter {
         this.player.setRenderer(this.renderer);
     }
 
-    private additionalScripts: string[] = [
+    private contentFileScanner: ContentFileScanner;
+    private coreSuffix: string;
+    private defaultAdditionalScripts: string[] = [
         // The H5P core client creates paths to resource files using the
         // hostname of the current URL, so we have to make sure data: URLs
         // work.
@@ -74,12 +113,8 @@ export class HtmlExporter {
             }
         };`
     ];
-    private contentFileScanner: ContentFileScanner;
-    private coreSuffix: string;
     private editorSuffix: string;
     private player: H5PPlayer;
-
-    private usedFiles: { [ubername: string]: string[] };
 
     /**
      * Creates a single HTML file that contains **all** scripts, styles and
@@ -154,7 +189,8 @@ export class HtmlExporter {
      * - text: the text in the file
      */
     private async getFileAsText(
-        filename: string
+        filename: string,
+        usedFiles: LibrariesFilesList
     ): Promise<{
         core?: boolean;
         editor?: boolean;
@@ -209,7 +245,7 @@ export class HtmlExporter {
                 minorVersion: Number.parseInt(libraryFileMatch[3], 10)
             };
             const filenameWithoutDir = libraryFileMatch[4];
-            this.markLibraryFilenameAsUsed(library, filenameWithoutDir);
+            usedFiles.addFile(library, filenameWithoutDir);
             return {
                 text: await streamToString(
                     await this.libraryStorage.getFileStream(
@@ -235,6 +271,7 @@ export class HtmlExporter {
      */
     private async getScriptBundle(
         model: IPlayerModel,
+        usedFiles: LibrariesFilesList,
         additionalScripts: string[] = []
     ): Promise<string> {
         const texts = {};
@@ -246,7 +283,7 @@ export class HtmlExporter {
                     core,
                     editor,
                     library
-                } = await this.getFileAsText(script);
+                } = await this.getFileAsText(script, usedFiles);
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
@@ -270,7 +307,10 @@ export class HtmlExporter {
      * @param model
      * @returns all styles in a single bundle
      */
-    private async getStylesBundle(model: IPlayerModel): Promise<string> {
+    private async getStylesBundle(
+        model: IPlayerModel,
+        usedFiles: LibrariesFilesList
+    ): Promise<string> {
         const styleTexts = {};
         await Promise.all(
             model.styles.map(async (style) => {
@@ -280,7 +320,7 @@ export class HtmlExporter {
                     library,
                     editor,
                     core
-                } = await this.getFileAsText(style);
+                } = await this.getFileAsText(style, usedFiles);
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
@@ -293,7 +333,7 @@ export class HtmlExporter {
                         undefined,
                         library
                             ? (f) => {
-                                  this.markLibraryFilenameAsUsed(
+                                  usedFiles.addFile(
                                       library,
                                       path.join(path.dirname(filename), f)
                                   );
@@ -305,7 +345,8 @@ export class HtmlExporter {
                             filename,
                             library,
                             editor,
-                            core
+                            core,
+                            usedFiles
                         )
                     }),
                     postCssClean()
@@ -337,46 +378,70 @@ export class HtmlExporter {
         return model.styles.map((style) => styleTexts[style]).join('\n');
     }
 
-    private async getUnusedFiles(
-        dependencies: ILibraryName[]
+    /**
+     * Gets base64 encoded contents of library files that have not been used in
+     * the bundle so far. Ignores files that are only used by the editor.
+     * @param libraries the libraries for which to get files
+     * @returns an object with the filenames of files as keys and base64 strings
+     * as values
+     */
+    private async getUnusedLibraryFiles(
+        libraries: ILibraryName[],
+        usedFiles: LibrariesFilesList
     ): Promise<{ [filename: string]: string }> {
-        const mf: { [filename: string]: string } = {};
-        for (const lib of dependencies) {
-            const ub = LibraryName.toUberName(lib);
-            const existingFiles = await this.libraryStorage.listFiles(lib);
-            let unusedFiles = existingFiles.filter(
-                (f) =>
-                    !this.usedFiles[ub]?.includes(f) &&
-                    !f.startsWith('language/') &&
-                    f !== 'library.json' &&
-                    f !== 'semantics.json' &&
-                    f !== 'icon.svg' &&
-                    f !== 'upgrades.js' &&
-                    f !== 'presave.js'
-            );
-            unusedFiles = unusedFiles.filter((f) => {
-                const mt = mimetypes.lookup(path.basename(f));
-                if (
-                    mt &&
-                    (mt.startsWith('audio/') ||
-                        mt.startsWith('video/') ||
-                        mt.startsWith('image/')) &&
-                    !f.includes('font')
-                ) {
-                    return true;
-                }
-                return false;
-            });
-            for (const unusedFile of unusedFiles) {
-                mf[`${ub}/${unusedFile}`] = `data:${mimetypes.lookup(
-                    path.basename(unusedFile)
-                )};base64,${await streamToString(
-                    await this.libraryStorage.getFileStream(lib, unusedFile),
-                    'base64'
-                )}`;
-            }
-        }
-        return mf;
+        const result: { [filename: string]: string } = {};
+
+        await Promise.all(
+            libraries.map(async (library) => {
+                const ubername = LibraryName.toUberName(library);
+                const allLibraryFiles = await this.libraryStorage.listFiles(
+                    library
+                );
+                const unusedLibraryFiles = allLibraryFiles.filter(
+                    (filename) => {
+                        if (
+                            !usedFiles.checkFile(library, filename) &&
+                            !filename.startsWith('language/') &&
+                            filename !== 'library.json' &&
+                            filename !== 'semantics.json' &&
+                            filename !== 'icon.svg' &&
+                            filename !== 'upgrades.js' &&
+                            filename !== 'presave.js'
+                        ) {
+                            const mt = mimetypes.lookup(
+                                path.basename(filename)
+                            );
+                            if (
+                                mt &&
+                                (mt.startsWith('audio/') ||
+                                    mt.startsWith('video/') ||
+                                    mt.startsWith('image/')) &&
+                                !filename.includes('font')
+                            ) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                );
+                await Promise.all(
+                    unusedLibraryFiles.map(async (unusedFile) => {
+                        result[
+                            `${ubername}/${unusedFile}`
+                        ] = `data:${mimetypes.lookup(
+                            path.basename(unusedFile)
+                        )};base64,${await streamToString(
+                            await this.libraryStorage.getFileStream(
+                                library,
+                                unusedFile
+                            ),
+                            'base64'
+                        )}`;
+                    })
+                );
+            })
+        );
+        return result;
     }
 
     /**
@@ -384,7 +449,9 @@ export class HtmlExporter {
      * base64 data strings. Has a side effect on contents[cid-xxx]!
      * @param model
      */
-    private async internalizeResources(model: IPlayerModel): Promise<void> {
+    private async internalizeContentResources(
+        model: IPlayerModel
+    ): Promise<void> {
         const content = model.integration.contents[`cid-${model.contentId}`];
         const params = JSON.parse(content.jsonContent);
         const mainLibraryUbername = content.library;
@@ -433,48 +500,40 @@ export class HtmlExporter {
         content.url = '.';
     }
 
-    private markLibraryFilenameAsUsed(
-        library: ILibraryName,
-        filename: string
-    ): void {
-        const ubername = LibraryName.toUberName(library);
-        if (!this.usedFiles[ubername]) {
-            this.usedFiles[ubername] = [];
-        }
-        this.usedFiles[ubername].push(filename);
-    }
-
     /**
      * Creates HTML strings out of player models.
      * @param model the player model created by H5PPlayer
      * @returns a string with HTML markup
      */
     private renderer = async (model: IPlayerModel): Promise<string> => {
-        this.usedFiles = {};
+        const usedFiles = new LibrariesFilesList();
         // tslint:disable-next-line: prefer-const
         let [scriptsBundle, stylesBundle] = await Promise.all([
-            this.getScriptBundle(model, this.additionalScripts),
-            this.getStylesBundle(model),
-            this.internalizeResources(model)
+            this.getScriptBundle(
+                model,
+                usedFiles,
+                this.defaultAdditionalScripts
+            ),
+            this.getStylesBundle(model, usedFiles),
+            this.internalizeContentResources(model)
         ]);
 
-        const unusedFiles = await this.getUnusedFiles(model.dependencies);
+        // Look for files in the libraries which haven't been included in the
+        // bundle so far.
+        const unusedFiles = await this.getUnusedLibraryFiles(
+            model.dependencies,
+            usedFiles
+        );
+        // If there are files in the directory of a library that haven't been
+        // included in the bundle yet, we add those as base64 encoded variables
+        // and rewire H5P.ContentType.getLibraryFilePath to return these files
+        // as data urls. (needed for resource files of H5P.BranchingScenario)
         if (Object.keys(unusedFiles).length) {
             scriptsBundle = scriptsBundle.concat(
                 ` var furtherH5PInlineResources=${JSON.stringify(
                     unusedFiles
                 )};`,
-                `H5P.ContentType = function (isRootLibrary) {
-                    function ContentType() {}                  
-                    ContentType.prototype = new H5P.EventDispatcher();                  
-                    ContentType.prototype.isRoot = function () {
-                      return isRootLibrary;
-                    };                  
-                    ContentType.prototype.getLibraryFilePath = function (filePath) {
-                        return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
-                    };                  
-                    return ContentType;
-                  };`
+                getLibraryFilePathOverrideScript
             );
         }
 
@@ -514,14 +573,15 @@ export class HtmlExporter {
         filename: string,
         library: ILibraryName,
         editor: boolean,
-        core: boolean
+        core: boolean,
+        usedFiles: LibrariesFilesList
     ) => async (asset) => {
         const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
         if (library) {
             const p = path.join(path.dirname(filename), asset.relativePath);
             try {
-                this.markLibraryFilenameAsUsed(library, p);
+                usedFiles.addFile(library, p);
                 return `data:${mimetype};base64,${await streamToString(
                     await this.libraryStorage.getFileStream(library, p),
                     'base64'
