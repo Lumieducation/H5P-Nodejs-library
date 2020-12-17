@@ -3,15 +3,15 @@ import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
 
-import ContentManager from '../src/ContentManager';
-import H5PConfig from '../src/implementation/H5PConfig';
-import FileContentStorage from '../src/implementation/fs/FileContentStorage';
-import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
-import LibraryManager from '../src/LibraryManager';
-import PackageImporter from '../src/PackageImporter';
+import ContentManager from '../../src/ContentManager';
+import H5PConfig from '../../src/implementation/H5PConfig';
+import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
+import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
+import LibraryManager from '../../src/LibraryManager';
+import PackageImporter from '../../src/PackageImporter';
 
-import User from '../examples/User';
-import { HtmlExporter } from '../src/HtmlExporter';
+import User from '../../examples/User';
+import { HtmlExporter } from '../../src/HtmlExporter';
 
 let browser: puppeteer.Browser;
 let page: puppeteer.Page;
