@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
+import promisePipe from 'promisepipe';
 
 import ContentManager from '../../src/ContentManager';
 import H5PConfig from '../../src/implementation/H5PConfig';
@@ -16,7 +17,10 @@ import HtmlExporter from '../../src/HtmlExporter';
 let browser: puppeteer.Browser;
 let page: puppeteer.Page;
 
-async function importAndExportHtml(packagePath: string): Promise<void> {
+async function importAndExportHtml(
+    packagePath: string,
+    mode: 'singleBundle' | 'externalContentResources'
+): Promise<void> {
     await withDir(
         async ({ path: tmpDirPath }) => {
             const contentDir = path.join(tmpDirPath, 'content');
@@ -52,23 +56,77 @@ async function importAndExportHtml(packagePath: string): Promise<void> {
                     user
                 )
             ).id;
-            const exportedHtml = await htmlExporter.createSingleBundle(
-                contentId,
-                user
-            );
-            await withFile(
-                async (result) => {
-                    await fsExtra.writeFile(result.path, exportedHtml);
-                    await page.goto(`file://${result.path}`, {
-                        waitUntil: ['networkidle0', 'load'],
-                        timeout: 30000
-                    });
-                },
-                {
-                    keep: false,
-                    postfix: '.html'
-                }
-            );
+            if (mode === 'singleBundle') {
+                const exportedHtml = await htmlExporter.createSingleBundle(
+                    contentId,
+                    user
+                );
+                await withFile(
+                    async (result) => {
+                        await fsExtra.writeFile(result.path, exportedHtml);
+                        await page.goto(`file://${result.path}`, {
+                            waitUntil: ['networkidle0', 'load'],
+                            timeout: 30000
+                        });
+                    },
+                    {
+                        keep: false,
+                        postfix: '.html'
+                    }
+                );
+            } else if (mode === 'externalContentResources') {
+                const res = await htmlExporter.createBundleWithExternalContentResources(
+                    contentId,
+                    user,
+                    contentId.toString()
+                );
+                await withDir(
+                    async (result) => {
+                        await fsExtra.mkdirp(result.path);
+                        await fsExtra.writeFile(
+                            path.join(result.path, `${contentId}.html`),
+                            res.html
+                        );
+                        for (const f of res.contentFiles) {
+                            try {
+                                const tempFilePath = path.join(
+                                    result.path,
+                                    contentId.toString(),
+                                    f
+                                );
+                                await fsExtra.mkdirp(
+                                    path.dirname(tempFilePath)
+                                );
+                                const writer = fsExtra.createWriteStream(
+                                    tempFilePath
+                                );
+                                const readable = await contentStorage.getFileStream(
+                                    contentId,
+                                    f,
+                                    user
+                                );
+                                await promisePipe(readable, writer);
+                                writer.close();
+                            } catch {
+                                // We silently ignore errors here as there is
+                                // some example content with invalid file
+                                // references.
+                            }
+                        }
+                        await page.goto(
+                            `file://${result.path}/${contentId}.html`,
+                            {
+                                waitUntil: ['networkidle0', 'load'],
+                                timeout: 30000
+                            }
+                        );
+                    },
+                    {
+                        keep: false,
+                        unsafeCleanup: true
+                    }
+                );
+            }
         },
         { keep: false, unsafeCleanup: true }
     );
@@ -135,7 +193,16 @@ describe('HtmlExporter', () => {
 
     for (const file of files.filter((f) => f.endsWith('.h5p'))) {
         it(`creates html exports (${file})`, async () => {
-            await importAndExportHtml(path.join(directory, file));
+            await importAndExportHtml(
+                path.join(directory, file),
+                'singleBundle'
+            );
         }, 30000);
     }
+    it(`creates html exports (H5P.Dialogcards.h5p)`, async () => {
+        await importAndExportHtml(
+            path.join(directory, 'H5P.Dialogcards.h5p'),
+            'externalContentResources'
+        );
+    }, 30000);
 });

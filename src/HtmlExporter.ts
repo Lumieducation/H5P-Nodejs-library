@@ -44,6 +44,13 @@ const getLibraryFilePathOverrideScript = uglifyJs.minify(
   };`
 ).code;
 
+const getContentPathOverrideScript = uglifyJs.minify(
+    `H5P.getPath = function (path, contentId) {
+        return path;
+    };
+    `
+).code;
+
 /**
  * Creates standalone HTML packages that can be used to display H5P in a browser
  * without having to use the full H5P server backend.
@@ -98,7 +105,6 @@ export default class HtmlExporter {
         this.contentFileScanner = new ContentFileScanner(
             new LibraryManager(this.libraryStorage)
         );
-        this.player.setRenderer(this.renderer);
     }
 
     private contentFileScanner: ContentFileScanner;
@@ -121,6 +127,46 @@ export default class HtmlExporter {
     private player: H5PPlayer;
 
     /**
+     * Creates a HTML file that contains **all** scripts, styles and library
+     * resources (images and fonts) inline. All resources used inside the
+     * content are only listed and must be retrieved from library storage by the
+     * caller.
+     * @param contentId a content id that can be found in the content repository
+     * passed into the constructor
+     * @param user the user who wants to create the bundle
+     * @param contentResourcesPrefix (optional) if set, the prefix will be added
+     * to all content files in the content's parameters; example:
+     * contentResourcesPrefix = '123'; filename = 'images/image.jpg' => filename
+     * in parameters: '123/images/image.jpg' (the directory separated is added
+     * automatically)
+     * @throws H5PError if there are access violations, missing files etc.
+     * @returns a HTML string that can be written into a file and a list of
+     * content files used by the content; you can use the filenames in
+     * IContentStorage.getFileStream. Note that the returned filenames DO NOT
+     * include the prefix, so that the caller doesn't have to remove it when
+     * calling getFileStream.
+     */
+    public async createBundleWithExternalContentResources(
+        contentId: ContentId,
+        user: IUser,
+        contentResourcesPrefix: string = ''
+    ): Promise<{ contentFiles: string[]; html: string }> {
+        this.player.setRenderer(
+            this.renderer(
+                {
+                    contentResources: 'files',
+                    core: 'inline',
+                    libraries: 'inline'
+                },
+                {
+                    contentResourcesPrefix
+                }
+            )
+        );
+        return this.player.render(contentId, undefined, undefined, user);
+    }
+
+    /**
      * Creates a single HTML file that contains **all** scripts, styles and
      * resources (images, videos, etc.) inline. This bundle will grow very large
      * if there are big videos in the content.
@@ -134,7 +180,49 @@ export default class HtmlExporter {
         contentId: ContentId,
         user: IUser
     ): Promise<string> {
-        return this.player.render(contentId, undefined, undefined, user);
+        this.player.setRenderer(
+            this.renderer({
+                contentResources: 'inline',
+                core: 'inline',
+                libraries: 'inline'
+            })
+        );
+        return (await this.player.render(contentId, undefined, undefined, user))
+            .html;
+    }
+
+    /**
+     * Finds all files in the content's parameters and returns them. Also
+     * appends the prefix if necessary. Note: This method has a mutating effect
+     * on model!
+     * @param model
+     * @param prefix this prefix will be added to all file references as
+     * subdirectory
+     */
+    private async findAndPrefixContentResources(
+        model: IPlayerModel,
+        prefix: string = ''
+    ): Promise<string[]> {
+        const content = model.integration.contents[`cid-${model.contentId}`];
+        const params = JSON.parse(content.jsonContent);
+        const mainLibraryUbername = content.library;
+
+        const fileRefs = (
+            await this.contentFileScanner.scanForFiles(
+                params,
+                LibraryName.fromUberName(mainLibraryUbername, {
+                    useWhitespace: true
+                })
+            )
+        ).filter((ref) => this.isLocalPath(ref.filePath));
+        fileRefs.forEach(
+            (ref) => (ref.context.params.path = path.join(prefix, ref.filePath))
+        );
+        model.integration.contents[
+            `cid-${model.contentId}`
+        ].jsonContent = JSON.stringify(params);
+
+        return fileRefs.map((ref) => ref.filePath);
     }
 
     /**
@@ -468,17 +556,7 @@ export default class HtmlExporter {
         );
         await Promise.all(
             contentFiles.map(async (fileRef) => {
-                if (
-                    !(
-                        fileRef.filePath === '' ||
-                        fileRef.filePath
-                            .toLocaleLowerCase()
-                            .startsWith('http://') ||
-                        fileRef.filePath
-                            .toLocaleLowerCase()
-                            .startsWith('http://')
-                    )
-                ) {
+                if (this.isLocalPath(fileRef.filePath)) {
                     try {
                         const base64 = await streamToString(
                             await this.contentStorage.getFileStream(
@@ -505,11 +583,40 @@ export default class HtmlExporter {
     }
 
     /**
+     * Returns true if the filename is not an absolute URL or empty.
+     * @param filename
+     */
+    private isLocalPath = (filename: string): boolean =>
+        !(
+            filename === '' ||
+            filename.toLocaleLowerCase().startsWith('http://') ||
+            filename.toLocaleLowerCase().startsWith('https://')
+        );
+
+    /**
      * Creates HTML strings out of player models.
      * @param model the player model created by H5PPlayer
      * @returns a string with HTML markup
      */
-    private renderer = async (model: IPlayerModel): Promise<string> => {
+    private renderer = (
+        mode: {
+            contentResources: 'files' | 'inline';
+            core: 'files' | 'inline';
+            libraries: 'files' | 'inline';
+        },
+        options?: {
+            contentResourcesPrefix?: string;
+        }
+    ) => async (
+        model: IPlayerModel
+    ): Promise<{ contentFiles?: string[]; html: string }> => {
+        if (mode.core === 'files') {
+            throw new Error('Core mode "files" not supported yet.');
+        }
+        if (mode.libraries === 'files') {
+            throw new Error('Library mode "files" not supported yet.');
+        }
+
         const usedFiles = new LibrariesFilesList();
         // tslint:disable-next-line: prefer-const
         let [scriptsBundle, stylesBundle] = await Promise.all([
@@ -519,7 +626,9 @@ export default class HtmlExporter {
                 this.defaultAdditionalScripts
             ),
             this.getStylesBundle(model, usedFiles),
-            this.internalizeContentResources(model)
+            mode?.contentResources === 'inline'
+                ? this.internalizeContentResources(model)
+                : undefined
         ]);
 
         // Look for files in the libraries which haven't been included in the
@@ -541,7 +650,18 @@ export default class HtmlExporter {
             );
         }
 
-        return `<!doctype html>
+        // If the user wants to put content resources into files, we must get
+        // these files and
+        let contentFiles: string[];
+        if (mode.contentResources === 'files') {
+            contentFiles = await this.findAndPrefixContentResources(
+                model,
+                options?.contentResourcesPrefix
+            );
+            scriptsBundle = scriptsBundle.concat(getContentPathOverrideScript);
+        }
+
+        const html = `<!doctype html>
             <html class="h5p-iframe">
             <head>
                 <meta charset="utf-8">                    
@@ -562,6 +682,7 @@ export default class HtmlExporter {
                 }"></div>                
             </body>
             </html>`;
+        return { html, contentFiles };
     };
 
     /**
