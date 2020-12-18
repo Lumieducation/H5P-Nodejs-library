@@ -63,8 +63,12 @@ const getLibraryFilePathOverrideScript = uglifyJs.minify(
  * The exported bundle contains license information for each file put into the
  * bundle in a shortened fashion (only includes author and license name and not
  * full license text).
+ *
+ * (important!) You need to install these NPM packages for the exporter to work:
+ * postcss, postcss-clean, postcss-url, postcss-safe-parser, uglify-js
  */
-export class HtmlExporter {
+
+export default class HtmlExporter {
     /**
      * @param libraryStorage
      * @param contentStorage

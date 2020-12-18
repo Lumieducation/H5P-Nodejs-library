@@ -1,7 +1,8 @@
 // Classes
 import H5PEditor from './H5PEditor';
-import H5PPlayer from './H5PPlayer';
 import H5pError from './helpers/H5pError';
+import H5PPlayer from './H5PPlayer';
+import HtmlExporter from './HtmlExporter';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
@@ -55,10 +56,11 @@ export {
     H5PEditor,
     H5pError,
     H5PPlayer,
+    HtmlExporter,
     InstalledLibrary,
+    LibraryAdministration,
     LibraryName,
     PackageExporter,
-    LibraryAdministration,
     // interfaces
     ContentId,
     ContentParameters,

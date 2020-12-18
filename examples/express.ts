@@ -17,7 +17,6 @@ import startPageRenderer from './startPageRenderer';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps } from './utils';
-import { HtmlExporter } from '../src/HtmlExporter';
 
 const start = async () => {
     // We use i18next to localize messages sent to the user. You can use any
@@ -160,7 +159,7 @@ const start = async () => {
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
-    const htmlExporter = new HtmlExporter(
+    const htmlExporter = new H5P.HtmlExporter(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         h5pEditor.config,
