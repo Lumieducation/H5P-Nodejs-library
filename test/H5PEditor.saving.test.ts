@@ -694,7 +694,7 @@ describe('H5PEditor', () => {
                         const writeStream = fsExtra.createWriteStream(
                             h5pFilePath
                         );
-                        const packageFinishedPromise = new Promise(
+                        const packageFinishedPromise = new Promise<void>(
                             (resolve) => {
                                 writeStream.on('close', () => {
                                     resolve();
