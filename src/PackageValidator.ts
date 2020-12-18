@@ -1,4 +1,5 @@
-import ajv from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
+import ajvKeywords from 'ajv-keywords';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
@@ -473,7 +474,8 @@ export default class PackageValidator {
         }
         log.info(`initializing json validators`);
 
-        const jsonValidator = new ajv();
+        const jsonValidator = new Ajv();
+        ajvKeywords(jsonValidator, 'regexp');
         const h5pJsonSchema = require('./schemas/h5p-schema.json');
         const libraryNameSchema = require('./schemas/library-name-schema.json');
         const librarySchema = require('./schemas/library-schema.json');
@@ -559,7 +561,7 @@ export default class PackageValidator {
      */
     private jsonMustConformToSchema(
         filename: string,
-        schemaValidator: ajv.ValidateFunction,
+        schemaValidator: ValidateFunction,
         errorIdAnyError: string,
         errorIdJsonParse?: string,
         returnContent: boolean = false,

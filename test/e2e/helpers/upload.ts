@@ -90,7 +90,7 @@ export async function uploadSave(file: string): Promise<void> {
     // This code listens for a H5P event to detect when the editor has
     // fully loaded. Later, the test waits for editorLoadedPromise to
     // resolve.
-    const editorLoadedPromise = new Promise((res) => {
+    const editorLoadedPromise = new Promise<void>((res) => {
         resolveEditorFunctions[file] = res;
     });
 
