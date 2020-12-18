@@ -11,7 +11,7 @@ import LibraryManager from '../../src/LibraryManager';
 import PackageImporter from '../../src/PackageImporter';
 
 import User from '../../examples/User';
-import { HtmlExporter } from '../../src/HtmlExporter';
+import HtmlExporter from '../../src/HtmlExporter';
 
 let browser: puppeteer.Browser;
 let page: puppeteer.Page;
