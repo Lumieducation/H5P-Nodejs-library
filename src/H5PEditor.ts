@@ -1,4 +1,5 @@
-import ajv from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
+import ajvKeywords from 'ajv-keywords';
 import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { withFile } from 'tmp-promise';
@@ -130,7 +131,8 @@ export default class H5PEditor {
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
 
-        const jsonValidator = new ajv();
+        const jsonValidator = new Ajv();
+        ajvKeywords(jsonValidator, 'regexp');
         const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
         const libraryNameSchema = require('./schemas/library-name-schema.json');
         jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
@@ -145,7 +147,7 @@ export default class H5PEditor {
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
-    private contentMetadataValidator: ajv.ValidateFunction;
+    private contentMetadataValidator: ValidateFunction;
 
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
