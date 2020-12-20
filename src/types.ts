@@ -1645,12 +1645,14 @@ export interface IHubInfo {
 
 export interface IPlayerModel {
     contentId: ContentParameters;
+    dependencies: ILibraryName[];
     downloadPath: string;
     embedTypes: ('iframe' | 'div')[];
     integration: IIntegration;
     scripts: string[];
     styles: string[];
     translations: any;
+    user: IUser;
 }
 
 export interface IEditorModel {

@@ -11,6 +11,12 @@ export default class LibraryName implements ILibraryName {
         public majorVersion: number,
         public minorVersion: number
     ) {
+        if (typeof this.majorVersion === 'string') {
+            this.majorVersion = Number.parseInt(this.majorVersion, 10);
+        }
+        if (typeof this.minorVersion === 'string') {
+            this.minorVersion = Number.parseInt(this.minorVersion, 10);
+        }
         LibraryName.validate(this);
     }
 
