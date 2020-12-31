@@ -203,12 +203,12 @@ export default class H5PPlayer {
                 );
                 (lib.preloadedCss || []).forEach((asset) =>
                     assets.styles.push(
-                        this.urlGenerator.libraryFile(dependency, asset.path)
+                        this.urlGenerator.libraryFile(lib, asset.path)
                     )
                 );
                 (lib.preloadedJs || []).forEach((script) =>
                     assets.scripts.push(
-                        this.urlGenerator.libraryFile(dependency, script.path)
+                        this.urlGenerator.libraryFile(lib, script.path)
                     )
                 );
             }
@@ -343,7 +343,7 @@ export default class H5PPlayer {
         ];
         for (const addonMachineName of configRequestedAddons) {
             const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                [addonMachineName]
+                addonMachineName
             );
             if (
                 !neededAddons

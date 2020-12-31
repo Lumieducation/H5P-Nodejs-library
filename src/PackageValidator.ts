@@ -156,9 +156,13 @@ export default class PackageValidator {
         log.info(`validating package ${h5pFile}`);
         await this.initializeJsonValidators();
 
-        return new ValidatorBuilder()
-            .addRule(this.mustHaveH5pExtension)
-            .addRule(this.zipArchiveMustBeValid)
+        const zipArchive = await PackageValidator.openZipArchive(h5pFile);
+        if (!zipArchive) {
+            log.error(`zip archive not valid`);
+            throw new H5pError('unable-to-unzip', {}, 400);
+        }
+
+        const result = await new ValidatorBuilder()
             .addRule(this.fileSizeMustBeWithinLimits)
             .addRule(
                 this.filterOutEntries(
@@ -217,7 +221,10 @@ export default class PackageValidator {
             .addRuleWhen(this.librariesMustBeValid, checkLibraries)
             .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
-            .validate(h5pFile);
+            .validate(await zipArchive.readEntries());
+
+        await zipArchive.close();
+        return result;
     }
 
     /**
@@ -862,25 +869,6 @@ export default class PackageValidator {
     };
 
     /**
-     * Checks if the package file ends with .h5p.
-     * Throws an error.
-     * @param h5pFile Path to the h5p file
-     * @param error The error object to use
-     * @returns Unchanged path to the h5p file
-     */
-    private mustHaveH5pExtension = async (
-        h5pFile: string,
-        error: AggregateH5pError
-    ): Promise<string> => {
-        log.info(`checking if file extension is .h5p`);
-        if (path.extname(h5pFile).toLocaleLowerCase() !== '.h5p') {
-            log.error(`file extension is not .h5p`);
-            throw error.addError(new H5pError('missing-h5p-extension'));
-        }
-        return h5pFile;
-    };
-
-    /**
      * A rule that always returns true.
      */
     private async returnTrue(): Promise<boolean> {
@@ -970,23 +958,4 @@ export default class PackageValidator {
             throw e;
         }
     }
-
-    /**
-     * Makes sure the archive can be unzipped.
-     * Throws an error.
-     * @param h5pFile Path to the h5p file
-     * @param error The error object to use
-     * @returns The entries inside the zip archive
-     */
-    private zipArchiveMustBeValid = async (
-        h5pFile: string,
-        error: AggregateH5pError
-    ): Promise<yauzlPromise.Entry[]> => {
-        const zipArchive = await PackageValidator.openZipArchive(h5pFile);
-        if (!zipArchive) {
-            log.error(`zip archive not valid`);
-            throw error.addError(new H5pError('unable-to-unzip'));
-        }
-        return zipArchive.readEntries();
-    };
 }

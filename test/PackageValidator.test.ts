@@ -19,21 +19,13 @@ describe('validating H5P files', () => {
         }
     });
 
-    it('rejects files not ending with .h5p', async () => {
-        const h5pFile = `${path.resolve('')}/test/test.docx`;
-        const validator = new PackageValidator(new H5PConfig(null));
-        await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'package-validation-failed:missing-h5p-extension'
-        );
-    });
-
     it('rejects non-valid zip files', async () => {
         const h5pFile = `${path.resolve(
             ''
         )}/test/data/validator/corrupt_archive.h5p`;
         const validator = new PackageValidator(new H5PConfig(null));
         await expect(validator.validatePackage(h5pFile)).rejects.toThrow(
-            'package-validation-failed:unable-to-unzip'
+            'unable-to-unzip'
         );
     });
 

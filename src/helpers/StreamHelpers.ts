@@ -1,4 +1,4 @@
-import { Stream } from 'stream';
+import { Readable } from 'stream';
 
 /**
  * Returns the contents of a stream as a string
@@ -6,7 +6,7 @@ import { Stream } from 'stream';
  * @returns
  */
 export function streamToString(
-    stream: Stream,
+    stream: Readable,
     encoding: BufferEncoding = 'utf8'
 ): Promise<string> {
     /* from https://stackoverflow.com/questions/10623798/read-contents-of-node-js-stream-into-a-string-variable */

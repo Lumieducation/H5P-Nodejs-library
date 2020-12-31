@@ -104,14 +104,27 @@ export default function (
 
     // serve core files (= JavaScript + CSS from h5p-php-library)
     if (undefinedOrTrue(routeOptions.routeCoreFiles)) {
-        router.use(h5pEditor.config.coreUrl, ExpressStatic(h5pCorePath));
+        router.use(
+            h5pEditor.config.coreUrl,
+            ExpressStatic(h5pCorePath, {
+                cacheControl: true,
+                etag: true,
+                lastModified: true,
+                maxAge: 31536000000
+            })
+        );
     }
 
     // serve editor core files (= JavaScript + CSS from h5p-editor-php-library)
     if (undefinedOrTrue(routeOptions.routeEditorCoreFiles)) {
         router.use(
             h5pEditor.config.editorLibraryUrl,
-            ExpressStatic(h5pEditorLibraryPath)
+            ExpressStatic(h5pEditorLibraryPath, {
+                cacheControl: true,
+                etag: true,
+                lastModified: true,
+                maxAge: 31536000000
+            })
         );
     }
 

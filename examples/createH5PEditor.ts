@@ -1,3 +1,6 @@
+import { Cache, caching } from 'cache-manager';
+import redisStore from 'cache-manager-redis-store';
+
 import * as H5P from '../src';
 import dbImplementations from '../src/implementation/db';
 
@@ -29,12 +32,38 @@ export default async function createH5PEditor(
     localTemporaryPath?: string,
     translationCallback?: H5P.ITranslationFunction
 ): Promise<H5P.H5PEditor> {
+    let cache: Cache;
+    if (process.env.CACHE === 'in-memory') {
+        cache = caching({
+            store: 'memory',
+            ttl: 60 * 60 * 24,
+            max: 2 ** 10
+        });
+    } else if (process.env.CACHE === 'redis') {
+        cache = caching({
+            store: redisStore,
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
+            auth_pass: process.env.REDIS_AUTH_PASS,
+            db: process.env.REDIS_DB,
+            ttl: 60 * 60 * 24
+        });
+    } else {
+        // using no cache
+    }
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
     const h5pEditor = new H5P.H5PEditor(
-        new H5P.fsImplementations.InMemoryStorage(), // this is a general-purpose cache
+        new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
         config,
-        new H5P.fsImplementations.FileLibraryStorage(localLibraryPath),
+        process.env.CACHE
+            ? new H5P.cacheImplementations.CachedLibraryStorage(
+                  new H5P.fsImplementations.FileLibraryStorage(
+                      localLibraryPath
+                  ),
+                  cache
+              )
+            : new H5P.fsImplementations.FileLibraryStorage(localLibraryPath),
         process.env.CONTENTSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(

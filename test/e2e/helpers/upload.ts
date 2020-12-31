@@ -80,7 +80,6 @@ export async function uploadSave(file: string): Promise<void> {
     await page.goto(`${serverHost}/h5p/new`, {
         waitUntil: ['load', 'networkidle0']
     });
-
     // The editor is displayed within an iframe, so we must get it
     await page.waitForSelector('iframe.h5p-editor-iframe');
     const contentFrame = await (
@@ -100,7 +99,6 @@ export async function uploadSave(file: string): Promise<void> {
             window.onEditorLoaded(browserFile);
         });
     }, file);
-
     await contentFrame.waitForSelector('#upload');
     await contentFrame.click('#upload');
     await contentFrame.waitForSelector(".input-wrapper input[type='file']");
@@ -118,7 +116,6 @@ export async function uploadSave(file: string): Promise<void> {
             // ages
         });
     }
-
     // editorLoadedPromise resolves when the H5P editor signals that it
     // was fully loaded
     await editorLoadedPromise;
