@@ -297,8 +297,8 @@ export default class HtmlExporter {
         if (!libraryFileMatch) {
             if (filename.startsWith(this.coreSuffix)) {
                 // Core files
-                const filenameWithoutDir = filename.substr(
-                    this.coreSuffix.length
+                const filenameWithoutDir = this.removeQueryString(
+                    filename.substr(this.coreSuffix.length)
                 );
                 return {
                     text: (
@@ -313,8 +313,8 @@ export default class HtmlExporter {
 
             if (filename.startsWith(this.editorSuffix)) {
                 // Editor files
-                const filenameWithoutDir = filename.substr(
-                    this.editorSuffix.length
+                const filenameWithoutDir = this.removeQueryString(
+                    filename.substr(this.editorSuffix.length)
                 );
                 return {
                     text: (
@@ -336,7 +336,9 @@ export default class HtmlExporter {
                 majorVersion: Number.parseInt(libraryFileMatch[2], 10),
                 minorVersion: Number.parseInt(libraryFileMatch[3], 10)
             };
-            const filenameWithoutDir = libraryFileMatch[4];
+            const filenameWithoutDir = this.removeQueryString(
+                libraryFileMatch[4]
+            );
             usedFiles.addFile(library, filenameWithoutDir);
             return {
                 text: await streamToString(
@@ -592,6 +594,14 @@ export default class HtmlExporter {
             filename.toLocaleLowerCase().startsWith('http://') ||
             filename.toLocaleLowerCase().startsWith('https://')
         );
+
+    private removeQueryString(filename: string): string {
+        const questionMarkIndex = filename.indexOf('?');
+        if (questionMarkIndex >= 0) {
+            return filename.substring(0, questionMarkIndex);
+        }
+        return filename;
+    }
 
     /**
      * Creates HTML strings out of player models.
