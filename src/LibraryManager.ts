@@ -1,8 +1,7 @@
-import { ReadStream } from 'fs';
+import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
-import { Stream } from 'stream';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -94,7 +93,7 @@ export default class LibraryManager {
     public async getFileStream(
         library: ILibraryName,
         file: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.debug(
             `getting file ${file} from library ${LibraryName.toUberName(
                 library
@@ -120,11 +119,10 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const stream = await this.getFileStream(
+            const languageFileAsString = await this.libraryStorage.getFileAsString(
                 library,
                 `language/${language}.json`
             );
-            const languageFileAsString = await streamToString(stream);
             // If the implementation has specified one, we use a hook to alter
             // the language files to match the structure of the altered
             // semantics.
@@ -145,6 +143,15 @@ export default class LibraryManager {
                     library
                 )}`
             );
+            const languageCodeMatch = /^([a-zA-Z]+)\-([a-zA-Z]+)$/.exec(
+                language
+            );
+            if (languageCodeMatch && languageCodeMatch.length === 3) {
+                log.debug(
+                    `Language code ${language} seems to contain country code. Trying without it.`
+                );
+                return this.getLanguage(library, languageCodeMatch[1]);
+            }
             return null;
         }
     }
@@ -194,7 +201,7 @@ export default class LibraryManager {
         log.debug(
             `loading semantics for library ${LibraryName.toUberName(library)}`
         );
-        const originalSemantics = await this.getJsonFile(
+        const originalSemantics = await this.libraryStorage.getFileAsJson(
             library,
             'semantics.json'
         );
@@ -294,9 +301,9 @@ export default class LibraryManager {
         log.info(
             `checking if library ${LibraryName.toUberName(library)} is patched`
         );
-        const wrappedLibraryInfos = await this.listInstalledLibraries([
+        const wrappedLibraryInfos = await this.listInstalledLibraries(
             library.machineName
-        ]);
+        );
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
             return undefined;
         }
@@ -327,7 +334,7 @@ export default class LibraryManager {
      * @returns true if the library has been installed
      */
     public async libraryExists(library: LibraryName): Promise<boolean> {
-        return this.libraryStorage.libraryExists(library);
+        return this.libraryStorage.isInstalled(library);
     }
 
     /**
@@ -359,9 +366,9 @@ export default class LibraryManager {
         log.verbose(
             `checking if library ${library.machineName}-${library.majorVersion}.${library.minorVersion} has an upgrade`
         );
-        const wrappedLibraryInfos = await this.listInstalledLibraries([
+        const wrappedLibraryInfos = await this.listInstalledLibraries(
             library.machineName
-        ]);
+        );
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
             return false;
         }
@@ -399,16 +406,22 @@ export default class LibraryManager {
 
     /**
      * Get a list of the currently installed libraries.
-     * @param machineNames (if supplied) only return results for the machines names in the list
-     * @returns An object which has properties with the existing library machine names. The properties'
-     * values are arrays of Library objects, which represent the different versions installed of this library.
+     * @param machineName (optional) only return results for the machine name
+     * @returns An object which has properties with the existing library machine
+     * names. The properties' values are arrays of Library objects, which
+     * represent the different versions installed of this library.
      */
     public async listInstalledLibraries(
-        machineNames?: string[]
+        machineName?: string
     ): Promise<{ [machineName: string]: IInstalledLibrary[] }> {
-        log.verbose(`checking if libraries ${machineNames} are installed`);
+        if (machineName) {
+            log.debug(`Listing libraries with machineName ${machineName}`);
+        } else {
+            log.debug('Listing all installed libraries.');
+        }
+
         let libraries = await this.libraryStorage.getInstalledLibraryNames(
-            ...machineNames
+            machineName
         );
         libraries = (
             await Promise.all(
@@ -569,7 +582,7 @@ export default class LibraryManager {
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);
                 }
-                const readStream: Stream = fsExtra.createReadStream(
+                const readStream: Readable = fsExtra.createReadStream(
                     fileFullPath
                 );
                 return this.libraryStorage.addFile(
@@ -579,27 +592,6 @@ export default class LibraryManager {
                 );
             })
         );
-    }
-
-    /**
-     * Gets the parsed contents of a library file that is JSON.
-     * @param library
-     * @param file
-     * @returns The content or undefined if there was an error
-     */
-    private async getJsonFile(
-        library: ILibraryName,
-        file: string
-    ): Promise<any> {
-        log.silly(
-            `loading ${file} for library ${LibraryName.toUberName(library)}`
-        );
-        const stream: Stream = await this.libraryStorage.getFileStream(
-            library,
-            file
-        );
-        const jsonString: string = await streamToString(stream);
-        return JSON.parse(jsonString);
     }
 
     /**

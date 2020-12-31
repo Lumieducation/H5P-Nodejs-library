@@ -13,7 +13,7 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
 
-        const libraryObject = await libManager.listInstalledLibraries([]);
+        const libraryObject = await libManager.listInstalledLibraries();
         expect(Object.keys(libraryObject).length).toEqual(
             (await fsExtra.readdir('test/data/libraries')).length
         );
@@ -24,9 +24,9 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
 
-        const libraryObject = await libManager.listInstalledLibraries([
+        const libraryObject = await libManager.listInstalledLibraries(
             'H5P.Example3'
-        ]);
+        );
         expect(Object.keys(libraryObject).length).toEqual(1);
     });
 
@@ -35,9 +35,9 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
         );
 
-        const libraryObject = await libManager.listInstalledLibraries([
+        const libraryObject = await libManager.listInstalledLibraries(
             'H5P.Example1'
-        ]);
+        );
         expect(
             await libManager.isPatchedLibrary(libraryObject['H5P.Example1'][0])
         ).toBeUndefined();
@@ -70,7 +70,7 @@ describe('basic file library manager functionality', () => {
 
                 // check if library version 1.1.2 is NOT installed
                 const installedLibraries = await libManager.listInstalledLibraries(
-                    ['H5P.Example1']
+                    'H5P.Example1'
                 );
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
@@ -106,7 +106,7 @@ describe('basic file library manager functionality', () => {
 
                 // check if library version 1.1.2 is still installed
                 const installedLibraries = await libManager.listInstalledLibraries(
-                    ['H5P.Example1']
+                    'H5P.Example1'
                 );
                 expect(installedLibraries['H5P.Example1'].length).toEqual(1);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
@@ -164,7 +164,7 @@ describe('basic file library manager functionality', () => {
 
                 // check if library version 1.1.2  and 1.2.0 are now installed
                 const installedLibraries = await libManager.listInstalledLibraries(
-                    ['H5P.Example1']
+                    'H5P.Example1'
                 );
                 expect(installedLibraries['H5P.Example1'].length).toEqual(2);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
@@ -229,7 +229,7 @@ describe('basic file library manager functionality', () => {
 
                 // check if library version 1.1.2 is now installed
                 const installedLibraries = await libManager.listInstalledLibraries(
-                    ['H5P.Example1']
+                    'H5P.Example1'
                 );
                 expect(installedLibraries['H5P.Example1'].length).toEqual(1);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
@@ -275,7 +275,7 @@ describe('basic file library manager functionality', () => {
 
                 // check that library version 1.1.3 is NOT installed
                 const installedLibraries = await libManager.listInstalledLibraries(
-                    ['H5P.Example1']
+                    'H5P.Example1'
                 );
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
@@ -284,6 +284,44 @@ describe('basic file library manager functionality', () => {
             },
             { keep: false, unsafeCleanup: true }
         );
+    });
+
+    it('returns null file for language en', async () => {
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+        );
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'en'
+        );
+        expect(language).toBeNull();
+    });
+
+    it('returns the de language file for de-DE', async () => {
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+        );
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'de-DE'
+        );
+        expect(JSON.parse(language)).toMatchObject({
+            semantics: [
+                {
+                    label: 'Grußbotschaft',
+                    default: 'Hallo, Welt!',
+                    description:
+                        'Die Grußbotschaft, die dem Nutzer gezeigt wird.'
+                },
+                {
+                    label: 'Kartenbild',
+                    description:
+                        'Bild, das optional auf der Karte gezeigt wird. Ohne ein solches wird nur Text auf der Karte gezeigt.'
+                }
+            ]
+        });
     });
 });
 describe('listLanguages()', () => {

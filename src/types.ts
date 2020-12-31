@@ -234,6 +234,16 @@ export interface IIntegration {
              */
             resizeCode?: string;
             /**
+             * A complete list of scripts required to display the content.
+             * Includes core scripts and content type specific scripts.
+             */
+            scripts?: string[];
+            /**
+             * A complete list of styles required to display the content.
+             * Includes core scripts and content type specific styles.
+             */
+            styles?: string[];
+            /**
              * The absolute URL to the current content.
              */
             url?: string;
@@ -280,14 +290,10 @@ export interface IIntegration {
         [namespace: string]: any;
     };
     /**
-     * Can be null. Usage is unknown. the server might be able to customize
-     * library behavior by setting the library config for certain machine names,
-     * as the H5P client allows it to be called by executing
-     * H5P.getLibraryConfig(machineName). This means that libraries can retrieve
-     * configuration values from the server that way. The core never calls the
-     * method and none of the content types on the H5P hub do so...
-     * The Moodle implementation simply passed through a configuration value
-     * in this case.
+     * Can be null. The server can customize library behavior by setting the
+     * library config for certain machine names, as the H5P client allows it to
+     * be called by executing H5P.getLibraryConfig(machineName). This means that
+     * libraries can retrieve configuration values from the server that way.
      */
     libraryConfig?: {
         [machineName: string]: any;
@@ -704,7 +710,7 @@ export interface ILibraryStorage {
     addFile(
         library: ILibraryName,
         filename: string,
-        readStream: Stream
+        readStream: Readable
     ): Promise<boolean>;
 
     /**
@@ -769,6 +775,10 @@ export interface ILibraryStorage {
      */
     getDependentsCount(library: ILibraryName): Promise<number>;
 
+    getFileAsJson(library: ILibraryName, file: string): Promise<any>;
+
+    getFileAsString(library: ILibraryName, file: string): Promise<string>;
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
@@ -785,16 +795,16 @@ export interface ILibraryStorage {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
+    getFileStream(library: ILibraryName, file: string): Promise<Readable>;
 
     /**
-     * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param machineNames (optional) only return libraries that have these machine names
+     * Returns all installed libraries or the installed libraries that have the
+     * machine name.
+     * @param machineName (optional) only return libraries that have this
+     * machine name
      * @returns the libraries installed
      */
-    getInstalledLibraryNames(
-        ...machineNames: string[]
-    ): Promise<ILibraryName[]>;
+    getInstalledLibraryNames(machineName?: string): Promise<ILibraryName[]>;
 
     /**
      * Gets a list of installed language files for the library.
@@ -816,13 +826,6 @@ export interface ILibraryStorage {
      * @returns true if the library is installed
      */
     isInstalled(library: ILibraryName): Promise<boolean>;
-
-    /**
-     * Checks if the library has been installed.
-     * @param name the library name
-     * @returns true if the library has been installed
-     */
-    libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
      * Returns a list of library addons that are installed in the system.
@@ -915,6 +918,10 @@ export interface ISemanticsEntry {
      */
     expanded?: boolean;
     /**
+     * Further attributes allowed in the params.
+     */
+    extraAttributes?: string[];
+    /**
      * (in lists only) defines a single field type in the list
      */
     field?: ISemanticsEntry;
@@ -923,13 +930,22 @@ export interface ISemanticsEntry {
      */
     fields?: ISemanticsEntry[];
     /**
-     * The font choices the user has.
+     * The font choices the user has in the HTML editor widget. If set to true,
+     * the editor will display the default choices and the style will be allowed
+     * by the sanitization filter. All other styles will be removed.
+     *
+     * You an also specify lists of allowed CSS values with a label. These are
+     * currently ignored in the server-side CSS style filter, though.
      */
     font?: {
-        background: any;
-        color: any;
-        family: any;
-        size: any;
+        background?:
+            | boolean
+            | { css: string; default?: boolean; label: string }[];
+        color?: boolean | { css: string; default?: boolean; label: string }[];
+        family?: boolean | { css: string; default?: boolean; label: string }[];
+        height?: boolean | { css: string; default?: boolean; label: string }[];
+        size?: boolean | { css: string; default?: boolean; label: string }[];
+        spacing?: boolean | { css: string; default?: boolean; label: string }[];
     };
     /**
      * More important fields have a more prominent style in the editor.
@@ -993,6 +1009,12 @@ export interface ISemanticsEntry {
      * (for number) the allowed steps
      */
     steps?: number;
+    /**
+     * (for library) an id identifying subcontent, set by the editor; Must be
+     * formatted like this:
+     * /^\{?[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\}?$/
+     */
+    subContentId?: string;
     /**
      * (for text) list of allowed html tags.
      */
@@ -1271,7 +1293,6 @@ export interface IH5PConfig {
      * the editor.
      */
     contentFilesUrl: string;
-
     /**
      * Base path for content files (e.g. images) IN THE PLAYER. It MUST direct
      * to a URL at which the content files for THE CONTENT BEING DISPLAYED must
@@ -1331,6 +1352,10 @@ export interface IH5PConfig {
         };
     };
     /**
+     * If true, the fullscreen button will not be shown to the user.
+     */
+    disableFullscreen: boolean;
+    /**
      * Path to the downloadable H5P packages.
      */
     downloadUrl: string;
@@ -1383,7 +1408,7 @@ export interface IH5PConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * The URL of the library files (=content types).
+     * The URL of the library files (= content types).
      */
     librariesUrl: string;
     /**
@@ -1639,11 +1664,14 @@ export interface IHubInfo {
 
 export interface IPlayerModel {
     contentId: ContentParameters;
+    dependencies: ILibraryName[];
     downloadPath: string;
+    embedTypes: ('iframe' | 'div')[];
     integration: IIntegration;
     scripts: string[];
     styles: string[];
     translations: any;
+    user: IUser;
 }
 
 export interface IEditorModel {
@@ -1655,10 +1683,11 @@ export interface IEditorModel {
 
 export interface IUrlGenerator {
     coreFile(file: string): string;
+    coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
     editorLibraryFile(file: string): string;
     editorLibraryFiles(): string;
-    libraryFile(library: ILibraryName, file: string): string;
+    libraryFile(library: IFullLibraryName, file: string): string;
     parameters(): string;
     play(): string;
     temporaryFiles(): string;

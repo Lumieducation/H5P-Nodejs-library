@@ -26,10 +26,18 @@ describe('Loading dependencies', () => {
             getLibrary: async (libName: ILibraryName) =>
                 ({
                     Bar21: {
+                        machineName: 'Bar',
+                        majorVersion: 2,
+                        minorVersion: 1,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'bar.css' }],
                         preloadedJs: [{ path: 'bar.js' }]
                     },
                     Foo42: {
+                        machineName: 'Foo',
+                        majorVersion: 4,
+                        minorVersion: 2,
+                        patchVersion: 0,
                         preloadedCss: [
                             { path: 'foo1.css' },
                             { path: 'foo2.css' }
@@ -42,7 +50,6 @@ describe('Loading dependencies', () => {
                         libName.minorVersion
                 ])
         };
-
         return new H5PPlayer(
             mockLibraryStorage,
             undefined,
@@ -53,15 +60,15 @@ describe('Loading dependencies', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).styles.slice(2)).toEqual([
-                    '/h5p/libraries/Foo-4.2/foo1.css',
-                    '/h5p/libraries/Foo-4.2/foo2.css',
-                    '/h5p/libraries/Bar-2.1/bar.css'
+                expect((model as any).styles.slice(3)).toEqual([
+                    '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
+                    '/h5p/libraries/Foo-4.2/foo2.css?version=4.2.0',
+                    '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0'
                 ]);
                 expect((model as any).scripts.slice(9)).toEqual([
-                    '/h5p/libraries/Foo-4.2/foo1.js',
-                    '/h5p/libraries/Foo-4.2/foo2.js',
-                    '/h5p/libraries/Bar-2.1/bar.js'
+                    '/h5p/libraries/Foo-4.2/foo1.js?version=4.2.0',
+                    '/h5p/libraries/Foo-4.2/foo2.js?version=4.2.0',
+                    '/h5p/libraries/Bar-2.1/bar.js?version=2.1.0'
                 ]);
             });
     });
@@ -92,10 +99,18 @@ describe('Loading dependencies', () => {
                             resolve(
                                 {
                                     Bar21: {
+                                        machineName: 'Bar',
+                                        majorVersion: 2,
+                                        minorVersion: 1,
+                                        patchVersion: 0,
                                         preloadedCss: [{ path: 'bar.css' }],
                                         preloadedJs: [{ path: 'bar.js' }]
                                     },
                                     Foo42: {
+                                        machineName: 'Foo',
+                                        majorVersion: 4,
+                                        minorVersion: 2,
+                                        patchVersion: 0,
                                         preloadedCss: [
                                             { path: 'foo1.css' },
                                             { path: 'foo2.css' }
@@ -126,15 +141,15 @@ describe('Loading dependencies', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).styles.slice(2)).toEqual([
-                    '/h5p/libraries/Foo-4.2/foo1.css',
-                    '/h5p/libraries/Foo-4.2/foo2.css',
-                    '/h5p/libraries/Bar-2.1/bar.css'
+                expect((model as any).styles.slice(3)).toEqual([
+                    '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
+                    '/h5p/libraries/Foo-4.2/foo2.css?version=4.2.0',
+                    '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0'
                 ]);
                 expect((model as any).scripts.slice(9)).toEqual([
-                    '/h5p/libraries/Foo-4.2/foo1.js',
-                    '/h5p/libraries/Foo-4.2/foo2.js',
-                    '/h5p/libraries/Bar-2.1/bar.js'
+                    '/h5p/libraries/Foo-4.2/foo1.js?version=4.2.0',
+                    '/h5p/libraries/Foo-4.2/foo2.js?version=4.2.0',
+                    '/h5p/libraries/Bar-2.1/bar.js?version=2.1.0'
                 ]);
             });
     });
@@ -160,6 +175,10 @@ describe('Loading dependencies', () => {
                             resolve(
                                 {
                                     Bar21: {
+                                        machineName: 'Bar',
+                                        majorVersion: 2,
+                                        minorVersion: 1,
+                                        patchVersion: 0,
                                         preloadedCss: [{ path: 'bar.css' }],
                                         preloadedDependencies: [
                                             {
@@ -171,10 +190,18 @@ describe('Loading dependencies', () => {
                                         preloadedJs: [{ path: 'bar.js' }]
                                     },
                                     Baz33: {
+                                        machineName: 'Baz',
+                                        majorVersion: 3,
+                                        minorVersion: 3,
+                                        patchVersion: 0,
                                         preloadedCss: [{ path: 'baz.css' }],
                                         preloadedJs: [{ path: 'baz.js' }]
                                     },
                                     Foo42: {
+                                        machineName: 'Foo',
+                                        majorVersion: 4,
+                                        minorVersion: 2,
+                                        patchVersion: 0,
                                         preloadedCss: [{ path: 'foo.css' }],
                                         preloadedDependencies: [
                                             {
@@ -206,15 +233,15 @@ describe('Loading dependencies', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).styles.slice(2)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.css',
-                    '/h5p/libraries/Bar-2.1/bar.css',
-                    '/h5p/libraries/Foo-4.2/foo.css'
+                expect((model as any).styles.slice(3)).toEqual([
+                    '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
                 ]);
                 expect((model as any).scripts.slice(9)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.js',
-                    '/h5p/libraries/Bar-2.1/bar.js',
-                    '/h5p/libraries/Foo-4.2/foo.js'
+                    '/h5p/libraries/Baz-3.3/baz.js?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.js?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.js?version=4.2.0'
                 ]);
             });
     });
@@ -236,6 +263,10 @@ describe('Loading dependencies', () => {
             getLibrary: async (libName: ILibraryName) =>
                 ({
                     Bar21: {
+                        machineName: 'Bar',
+                        majorVersion: 2,
+                        minorVersion: 1,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'bar.css' }],
                         preloadedDependencies: [
                             {
@@ -247,11 +278,19 @@ describe('Loading dependencies', () => {
                         preloadedJs: [{ path: 'bar.js' }]
                     },
                     Baz33: {
+                        machineName: 'Baz',
+                        majorVersion: 3,
+                        minorVersion: 3,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'baz.css' }],
 
                         preloadedJs: [{ path: 'baz.js' }]
                     },
                     Foo42: {
+                        machineName: 'Foo',
+                        majorVersion: 4,
+                        minorVersion: 2,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'foo.css' }],
                         preloadedDependencies: [
                             {
@@ -279,15 +318,15 @@ describe('Loading dependencies', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).styles.slice(2)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.css',
-                    '/h5p/libraries/Bar-2.1/bar.css',
-                    '/h5p/libraries/Foo-4.2/foo.css'
+                expect((model as any).styles.slice(3)).toEqual([
+                    '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
                 ]);
                 expect((model as any).scripts.slice(9)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.js',
-                    '/h5p/libraries/Bar-2.1/bar.js',
-                    '/h5p/libraries/Foo-4.2/foo.js'
+                    '/h5p/libraries/Baz-3.3/baz.js?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.js?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.js?version=4.2.0'
                 ]);
             });
     });
@@ -309,6 +348,10 @@ describe('Loading dependencies', () => {
             getLibrary: (libName: ILibraryName) =>
                 ({
                     Bar21: {
+                        machineName: 'Bar',
+                        majorVersion: 2,
+                        minorVersion: 1,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'bar.css' }],
                         preloadedDependencies: [
                             {
@@ -320,10 +363,18 @@ describe('Loading dependencies', () => {
                         preloadedJs: [{ path: 'bar.js' }]
                     },
                     Baz33: {
+                        machineName: 'Baz',
+                        majorVersion: 3,
+                        minorVersion: 3,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'baz.css' }],
                         preloadedJs: [{ path: 'baz.js' }]
                     },
                     Foo42: {
+                        machineName: 'Foo',
+                        majorVersion: 4,
+                        minorVersion: 2,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'foo.css' }],
                         preloadedDependencies: [
                             {
@@ -356,15 +407,15 @@ describe('Loading dependencies', () => {
             .setRenderer((model) => model)
             .render(contentId, contentObject, h5pObject as any)
             .then((model) => {
-                expect((model as any).styles.slice(2)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.css',
-                    '/h5p/libraries/Bar-2.1/bar.css',
-                    '/h5p/libraries/Foo-4.2/foo.css'
+                expect((model as any).styles.slice(3)).toEqual([
+                    '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
                 ]);
                 expect((model as any).scripts.slice(9)).toEqual([
-                    '/h5p/libraries/Baz-3.3/baz.js',
-                    '/h5p/libraries/Bar-2.1/bar.js',
-                    '/h5p/libraries/Foo-4.2/foo.js'
+                    '/h5p/libraries/Baz-3.3/baz.js?version=3.3.0',
+                    '/h5p/libraries/Bar-2.1/bar.js?version=2.1.0',
+                    '/h5p/libraries/Foo-4.2/foo.js?version=4.2.0'
                 ]);
             });
     });
@@ -386,6 +437,10 @@ describe('Loading dependencies', () => {
             getLibrary: (libName: ILibraryName) => {
                 return {
                     Bar21: {
+                        machineName: 'Bar',
+                        majorVersion: 2,
+                        minorVersion: 1,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'bar.css' }],
                         preloadedDependencies: [
                             {
@@ -397,10 +452,18 @@ describe('Loading dependencies', () => {
                         preloadedJs: [{ path: 'bar.js' }]
                     },
                     Baz33: {
+                        machineName: 'Baz',
+                        majorVersion: 3,
+                        minorVersion: 3,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'baz.css' }],
                         preloadedJs: [{ path: 'baz.js' }]
                     },
                     Foo42: {
+                        machineName: 'Foo',
+                        majorVersion: 4,
+                        minorVersion: 2,
+                        patchVersion: 0,
                         preloadedCss: [{ path: 'foo.css' }],
                         preloadedDependencies: [
                             {
@@ -423,15 +486,15 @@ describe('Loading dependencies', () => {
                 ];
             }
         };
-
+        const config = new H5PConfig(undefined, {
+            baseUrl: '/baseUrl',
+            coreUrl: '/coreUrl',
+            librariesUrl: `/libraryUrl`
+        });
         const h5p = new H5PPlayer(
             mockLibraryStorage,
             undefined,
-            new H5PConfig(undefined, {
-                baseUrl: '/baseUrl',
-                coreUrl: '/coreUrl',
-                librariesUrl: `/libraryUrl`
-            }),
+            config,
             undefined,
             undefined
         );
@@ -443,26 +506,27 @@ describe('Loading dependencies', () => {
             h5pObject as any
         );
         expect(model.scripts).toEqual([
-            '/baseUrl/coreUrl/js/jquery.js',
-            '/baseUrl/coreUrl/js/h5p.js',
-            '/baseUrl/coreUrl/js/h5p-event-dispatcher.js',
-            '/baseUrl/coreUrl/js/h5p-x-api-event.js',
-            '/baseUrl/coreUrl/js/h5p-x-api.js',
-            '/baseUrl/coreUrl/js/h5p-content-type.js',
-            '/baseUrl/coreUrl/js/h5p-confirmation-dialog.js',
-            '/baseUrl/coreUrl/js/h5p-action-bar.js',
-            '/baseUrl/coreUrl/js/request-queue.js',
-            '/baseUrl/libraryUrl/Baz-3.3/baz.js',
-            '/baseUrl/libraryUrl/Bar-2.1/bar.js',
-            '/baseUrl/libraryUrl/Foo-4.2/foo.js'
+            `/baseUrl/coreUrl/js/jquery.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-event-dispatcher.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-x-api-event.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-x-api.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-content-type.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/h5p-action-bar.js?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/js/request-queue.js?version=${config.h5pVersion}`,
+            `/baseUrl/libraryUrl/Baz-3.3/baz.js?version=3.3.0`,
+            `/baseUrl/libraryUrl/Bar-2.1/bar.js?version=2.1.0`,
+            `/baseUrl/libraryUrl/Foo-4.2/foo.js?version=4.2.0`
         ]);
 
         expect(model.styles).toEqual([
-            '/baseUrl/coreUrl/styles/h5p.css',
-            '/baseUrl/coreUrl/styles/h5p-confirmation-dialog.css',
-            '/baseUrl/libraryUrl/Baz-3.3/baz.css',
-            '/baseUrl/libraryUrl/Bar-2.1/bar.css',
-            '/baseUrl/libraryUrl/Foo-4.2/foo.css'
+            `/baseUrl/coreUrl/styles/h5p.css?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/styles/h5p-core-button.css?version=${config.h5pVersion}`,
+            `/baseUrl/libraryUrl/Baz-3.3/baz.css?version=3.3.0`,
+            `/baseUrl/libraryUrl/Bar-2.1/bar.css?version=2.1.0`,
+            `/baseUrl/libraryUrl/Foo-4.2/foo.css?version=4.2.0`
         ]);
 
         expect(model.integration.url).toBe('/baseUrl');

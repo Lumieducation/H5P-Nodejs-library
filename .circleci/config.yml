@@ -68,7 +68,7 @@ jobs:
 
     integration-tests:
         docker:
-            - image: circleci/node:10
+            - image: circleci/node:10-browsers
         steps:
             - checkout
             - attach_workspace:

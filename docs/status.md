@@ -31,7 +31,7 @@ implemented and what isn't.
 -   [ ] validation of content against library semantics (+ filter html to prevent cross-site-scripting (XSS) vulnerabilities.)
 -   [ ] manage and check editor tokens (to make sure you have access rights to a session) (might never be implemented, as this is something the implementation should check)
 -   [ ] logging & statistics generation: e.g. use of libraries by author, view of embedded content etc. (see h5p-php-library:h5p-event-base.class.php for a list of events)
--   [ ] alter library files, semantics (allows site admins to change libraries without hacking the actual files; very useful)
+-   [x] alter library files, semantics (allows site admins to change libraries without hacking the actual files; very useful) (published soon)
 -   [ ] provide embed option for content (as div and as iframe)
 -   [ ] (**only partly supported**) check permissions of users (install libraries, download h5p package, embed h5p package, create restricted, update libraries, install recommended, copy h5p?)
 -   [ ] cache assets (aggregates all css and js files into two big files to decrease http requests; done in h5p-php-library:h5p-default-storage.class.php->cacheAssets(...))
@@ -42,4 +42,4 @@ implemented and what isn't.
 -   [ ] security review
 -   [ ] performance optimizations
 -   [ ] MongoDB and S3 storage implementation for libraries
--   [ ] Redis cache for caching
+-   [x] Redis cache for caching (published soon)

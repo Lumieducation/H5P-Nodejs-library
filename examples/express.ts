@@ -1,9 +1,10 @@
+import { dir, DirectoryResult } from 'tmp-promise';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import i18next from 'i18next';
-import i18nextHttpMiddleware from 'i18next-http-middleware';
 import i18nextFsBackend from 'i18next-fs-backend';
+import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
 
 import h5pAjaxExpressRouter from '../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
@@ -16,9 +17,16 @@ import expressRoutes from './expressRoutes';
 import startPageRenderer from './startPageRenderer';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
-import { displayIps } from './utils';
+import { displayIps, clearTempFiles } from './utils';
+
+let tmpDir: DirectoryResult;
 
 const start = async () => {
+    const useTempUploads = process.env.TEMP_UPLOADS === 'true';
+    if (useTempUploads) {
+        tmpDir = await dir({ keep: false, unsafeCleanup: true });
+    }
+
     // We use i18next to localize messages sent to the user. You can use any
     // localization library you like.
     const translationFunction = await i18next
@@ -96,11 +104,23 @@ const start = async () => {
             extended: true
         })
     );
+
+    // Configure file uploads
     server.use(
         fileUpload({
-            limits: { fileSize: h5pEditor.config.maxTotalSize }
+            limits: { fileSize: h5pEditor.config.maxTotalSize },
+            useTempFiles: useTempUploads,
+            tempFileDir: useTempUploads ? tmpDir?.path : undefined
         })
     );
+
+    // delete temporary files left over from uploads
+    if (useTempUploads) {
+        server.use((req: express.Request & { files: any }, res, next) => {
+            res.on('finish', async () => clearTempFiles(req));
+            next();
+        });
+    }
 
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
@@ -166,6 +186,26 @@ const start = async () => {
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
+    const htmlExporter = new H5P.HtmlExporter(
+        h5pEditor.libraryStorage,
+        h5pEditor.contentStorage,
+        h5pEditor.config,
+        path.resolve('h5p/core'),
+        path.resolve('h5p/editor')
+    );
+
+    server.get('/h5p/html/:contentId', async (req, res) => {
+        const html = await htmlExporter.createSingleBundle(
+            req.params.contentId,
+            (req as any).user
+        );
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.params.contentId}.html`
+        );
+        res.status(200).send(html);
+    });
+
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
@@ -174,6 +214,39 @@ const start = async () => {
         '/client',
         express.static(path.resolve('build/examples/client'))
     );
+
+    // STUB
+    server.post('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.get('/h5p/contentUserData', (req, res) => {
+        res.status(200).send();
+    });
+
+    // STUB
+    server.post('/h5p/setFinished', (req, res) => {
+        res.status(200).send();
+    });
+
+    // Remove temporary directory on shutdown
+    if (useTempUploads) {
+        [
+            'beforeExit',
+            'uncaughtException',
+            'unhandledRejection',
+            'SIGQUIT',
+            'SIGABRT',
+            'SIGSEGV',
+            'SIGTERM'
+        ].forEach((evt) =>
+            process.on(evt, async () => {
+                await tmpDir?.cleanup();
+                tmpDir = null;
+            })
+        );
+    }
 
     const port = process.env.PORT || '8080';
 

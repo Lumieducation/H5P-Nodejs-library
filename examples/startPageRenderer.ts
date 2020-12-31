@@ -68,6 +68,12 @@ export default function render(
                                         </a>
                                     </div>
                                     <div class="p-2">
+                                        <a class="btn btn-info" href="${editor.config.baseUrl}/html/${content.id}">
+                                            <span class="fa fa-file-download m-1"></span>
+                                            download HTML
+                                        </a>
+                                    </div>
+                                    <div class="p-2">
                                         <a class="btn btn-danger" href="${editor.config.baseUrl}/delete/${content.id}">
                                             <span class="fa fa-trash-alt m-1"></span>
                                             delete

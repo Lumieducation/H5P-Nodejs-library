@@ -720,7 +720,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         try {
             const cursor = this.mongodb.find({}, { projection: { _id: true } });
             return (await cursor.toArray()).map((match) =>
-                match._id.toHexString()
+                (match._id as ObjectId).toHexString()
             );
         } catch (error) {
             log.error(

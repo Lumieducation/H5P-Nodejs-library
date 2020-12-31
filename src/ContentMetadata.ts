@@ -15,7 +15,7 @@ export class ContentMetadata implements IContentMetadata {
      * Creates an object conforming to the h5p.json schema.
      * @param furtherMetadata these objects will be merged into the newly created object
      */
-    constructor(...furtherMetadata: any[]) {
+    constructor(...furtherMetadata: Partial<IContentMetadata>[]) {
         for (const metadata of furtherMetadata) {
             Object.assign(this, metadata);
         }

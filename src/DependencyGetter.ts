@@ -43,8 +43,12 @@ export default class DependencyGetter {
             await this.addDependenciesRecursive(
                 new LibraryName(
                     library.machineName,
-                    library.majorVersion,
-                    library.minorVersion
+                    typeof library.majorVersion === 'string'
+                        ? Number.parseInt(library.majorVersion, 10)
+                        : library.majorVersion,
+                    typeof library.minorVersion === 'string'
+                        ? Number.parseInt(library.minorVersion, 10)
+                        : library.minorVersion
                 ),
                 { preloaded, editor, dynamic },
                 dependencies,
