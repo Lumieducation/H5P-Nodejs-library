@@ -341,12 +341,13 @@ describe('Rendering the HTML page', () => {
                           "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
                           "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
                           "/h5p/core/js/request-queue.js?version=${config.h5pVersion}",
-                          "/test"
+                          "/test.js"
                           ],
                           "styles":[
                           "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
                           "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
-                          "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"
+                          "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}",
+                          "/test.css"
                           ]
                         }
                       },
@@ -485,8 +486,7 @@ describe('Rendering the HTML page', () => {
                     title: 'Foo',
                     preloadedCss: [
                         { path: 'preload1.css' },
-                        { path: 'preload2.css' },
-                        { path: '/absolute-preload3.css' }
+                        { path: 'preload2.css' }
                     ],
                     preloadedJs: [
                         { path: 'preload1.js' },
@@ -516,7 +516,7 @@ describe('Rendering the HTML page', () => {
                                     'preload3.js',
                                     'https://example.com/script.js'
                                 ],
-                                styles: [styles[1], styles[2]]
+                                styles: [styles[0], styles[1]]
                             };
                         }
                         return { scripts, styles };
@@ -533,17 +533,17 @@ describe('Rendering the HTML page', () => {
 
         expect(
             (model as any).scripts.includes(
-                '/h5p/libraries/Foo-1.0/preload1.js'
+                '/h5p/libraries/Foo-1.0/preload1.js?version=1.0.0'
             )
         ).toBe(true);
         expect(
             (model as any).scripts.includes(
-                '/h5p/libraries/Foo-1.0/preload2.js'
+                '/h5p/libraries/Foo-1.0/preload2.js?version=1.0.0'
             )
         ).toBe(true);
         expect(
             (model as any).scripts.includes(
-                '/h5p/libraries/Foo-1.0/preload3.js'
+                '/h5p/libraries/Foo-1.0/preload3.js?version=1.0.0'
             )
         ).toBe(true);
         expect(
@@ -552,11 +552,8 @@ describe('Rendering the HTML page', () => {
 
         expect(
             (model as any).styles.includes(
-                '/h5p/libraries/Foo-1.0/preload2.css'
+                '/h5p/libraries/Foo-1.0/preload2.css?version=1.0.0'
             )
-        ).toBe(true);
-        expect(
-            (model as any).styles.includes('/h5p/absolute-preload3.css')
         ).toBe(true);
     });
 
@@ -634,23 +631,23 @@ describe('Rendering the HTML page', () => {
 
         expect(
             (model as any).scripts.includes(
-                '/h5p/libraries/Foo-1.0/preload1.js'
+                '/h5p/libraries/Foo-1.0/preload1.js?version=1.0.0'
             )
         ).toBe(true);
         expect(
             (model as any).scripts.includes(
-                '/h5p/libraries/Foo-1.0/preload2.js'
+                '/h5p/libraries/Foo-1.0/preload2.js?version=1.0.0'
             )
         ).toBe(true);
 
         expect(
             (model as any).styles.includes(
-                '/h5p/libraries/Foo-1.0/preload1.css'
+                '/h5p/libraries/Foo-1.0/preload1.css?version=1.0.0'
             )
         ).toBe(true);
         expect(
             (model as any).styles.includes(
-                '/h5p/libraries/Foo-1.0/preload2.css'
+                '/h5p/libraries/Foo-1.0/preload2.css?version=1.0.0'
             )
         ).toBe(true);
     });

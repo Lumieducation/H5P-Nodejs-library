@@ -164,9 +164,7 @@ export default class H5PPlayer {
                 assets,
                 mainLibrarySupportsFullscreen
             ),
-            scripts: this.listCoreScripts()
-                .concat(this.globalCustomScripts)
-                .concat(assets.scripts),
+            scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
             translations: {},
             embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
@@ -319,9 +317,7 @@ export default class H5PPlayer {
                         title: metadata.title || '',
                         defaultLanguage: metadata.language || 'en'
                     },
-                    scripts: this.listCoreScripts()
-                        .concat(this.globalCustomScripts)
-                        .concat(assets.scripts),
+                    scripts: this.listCoreScripts().concat(assets.scripts),
                     styles: this.listCoreStyles().concat(assets.styles)
                 }
             },

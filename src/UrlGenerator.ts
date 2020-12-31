@@ -66,16 +66,14 @@ export default class UrlGenerator implements IUrlGenerator {
     };
 
     public libraryFile = (library: IFullLibraryName, file: string) => {
-        if (file.startsWith('/')) {
-            return `${this.getBaseUrl()}${this.config.librariesUrl}/${
-                library.machineName
-            }-${library.majorVersion}.${library.minorVersion}/${file}?version=${
-                library.majorVersion
-            }.${library.minorVersion}.${library.patchVersion}`;
-        }
         if (file.startsWith('http://') || file.startsWith('https://')) {
             return file;
         }
+        return `${this.getBaseUrl()}${this.config.librariesUrl}/${
+            library.machineName
+        }-${library.majorVersion}.${library.minorVersion}/${file}?version=${
+            library.majorVersion
+        }.${library.minorVersion}.${library.patchVersion}`;
     };
 
     public parameters = () => {
