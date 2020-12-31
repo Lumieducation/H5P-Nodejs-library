@@ -15,6 +15,8 @@ import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
+import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
+import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 
 // Interfaces
 import {
@@ -50,6 +52,11 @@ const fsImplementations = {
     FileLibraryStorage,
     InMemoryStorage,
     JsonStorage
+};
+
+const cacheImplementations = {
+    CachedKeyValueStorage,
+    CachedLibraryStorage
 };
 
 export {
@@ -88,5 +95,6 @@ export {
     // implementations
     H5PConfig,
     fs,
-    fsImplementations
+    fsImplementations,
+    cacheImplementations
 };

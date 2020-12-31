@@ -1,8 +1,8 @@
-import Ajv, { ValidateFunction } from 'ajv';
-import ajvKeywords from 'ajv-keywords';
+import { file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
 import { ReadStream } from 'fs';
-import { file as createTempFile, FileResult } from 'tmp-promise';
+import Ajv, { ValidateFunction } from 'ajv';
+import ajvKeywords from 'ajv-keywords';
 import fsExtra from 'fs-extra';
 import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
@@ -365,7 +365,7 @@ export default class H5PEditor {
     public async getLibraryFileStream(
         library: ILibraryName,
         filename: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         LibraryName.validate(library);
         return this.libraryManager.getFileStream(library, filename);
     }
@@ -1022,7 +1022,7 @@ export default class H5PEditor {
 
         for (const addonMachineName of configRequestedAddons) {
             const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                [addonMachineName]
+                addonMachineName
             );
             if (
                 !neededAddons

@@ -708,7 +708,7 @@ export interface ILibraryStorage {
     addFile(
         library: ILibraryName,
         filename: string,
-        readStream: Stream
+        readStream: Readable
     ): Promise<boolean>;
 
     /**
@@ -773,6 +773,10 @@ export interface ILibraryStorage {
      */
     getDependentsCount(library: ILibraryName): Promise<number>;
 
+    getFileAsJson(library: ILibraryName, file: string): Promise<any>;
+
+    getFileAsString(library: ILibraryName, file: string): Promise<string>;
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
@@ -789,16 +793,16 @@ export interface ILibraryStorage {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
+    getFileStream(library: ILibraryName, file: string): Promise<Readable>;
 
     /**
-     * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param machineNames (optional) only return libraries that have these machine names
+     * Returns all installed libraries or the installed libraries that have the
+     * machine name.
+     * @param machineName (optional) only return libraries that have this
+     * machine name
      * @returns the libraries installed
      */
-    getInstalledLibraryNames(
-        ...machineNames: string[]
-    ): Promise<ILibraryName[]>;
+    getInstalledLibraryNames(machineName?: string): Promise<ILibraryName[]>;
 
     /**
      * Gets a list of installed language files for the library.
@@ -820,13 +824,6 @@ export interface ILibraryStorage {
      * @returns true if the library is installed
      */
     isInstalled(library: ILibraryName): Promise<boolean>;
-
-    /**
-     * Checks if the library has been installed.
-     * @param name the library name
-     * @returns true if the library has been installed
-     */
-    libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
      * Returns a list of library addons that are installed in the system.
@@ -1388,7 +1385,7 @@ export interface IH5PConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * The URL of the library files (=content types).
+     * The URL of the library files (= content types).
      */
     librariesUrl: string;
     /**

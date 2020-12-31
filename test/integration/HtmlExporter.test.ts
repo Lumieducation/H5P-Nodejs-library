@@ -197,12 +197,12 @@ describe('HtmlExporter', () => {
                 path.join(directory, file),
                 'singleBundle'
             );
-        }, 30000);
+        }, 60000);
     }
     it(`creates html exports (H5P.Dialogcards.h5p)`, async () => {
         await importAndExportHtml(
             path.join(directory, 'H5P.Dialogcards.h5p'),
             'externalContentResources'
         );
-    }, 30000);
+    }, 60000);
 });

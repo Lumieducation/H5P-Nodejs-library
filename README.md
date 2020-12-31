@@ -136,9 +136,9 @@ separately:
    place them into a folder called `h5p/editor` in your project.
 
 You must add a route to your implementation that serves the static files found
-under `h5p/core` and `h5p/editor` to the endpoint configured in
-`config.libraryUrl`. The out-of-the-box Express adapter already includes a route
-for this.
+under `h5p/core` and `h5p/editor` to the endpoint configured in `config.coreUrl`
+and `config.editorLibraryUrl`. The out-of-the-box Express adapter already
+includes a route for this.
 
 ### Creating content views
 
@@ -238,6 +238,12 @@ To conform with local law, you probably have to compile a privacy declaration
 for your application. You can check out the [documentation page on
 privacy](docs/privacy.md) to find out what this library does with your users'
 personal data.
+
+### Performance optimizations
+
+Consult the documentation page on 
+[performance optimizations](/docs/performance-optimizations.md) to find out how
+you can improve the performance of the library in production use.
 
 ## Development & Testing
 
