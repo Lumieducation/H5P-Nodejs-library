@@ -65,12 +65,10 @@ export default class UrlGenerator implements IUrlGenerator {
         return `${this.getBaseUrl()}${this.config.editorLibraryUrl}/`;
     };
 
-    /**
-     * Also adds a cache buster based on the full library version (e.g. 1.2.3)
-     * @param library
-     * @param file
-     */
     public libraryFile = (library: IFullLibraryName, file: string) => {
+        if (file.startsWith('http://') || file.startsWith('https://')) {
+            return file;
+        }
         return `${this.getBaseUrl()}${this.config.librariesUrl}/${
             library.machineName
         }-${library.majorVersion}.${library.minorVersion}/${file}?version=${

@@ -9,16 +9,17 @@ import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
+    IFileStats,
     IFullLibraryName,
     IInstalledLibrary,
+    ILanguageFileEntry,
     ILibraryFileUrlResolver,
     ILibraryInstallResult,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
     IPath,
-    ISemanticsEntry,
-    IFileStats
+    ISemanticsEntry
 } from './types';
 
 const log = new Logger('LibraryManager');
@@ -31,18 +32,34 @@ const log = new Logger('LibraryManager');
 export default class LibraryManager {
     /**
      *
-     * @param libraryStorage The library repository that persists library somewhere.
+     * @param libraryStorage the library repository that persists library
+     * somewhere.
+     * @param fileUrlResolver gets URLs at which a file in a library can be
+     * downloaded. Must be passed through from the implementation.
+     * @param alterLibrarySemantics a hook that allows implementations to change
+     * the semantics of certain libraries; should be used together with
+     * alterLibraryLanguageFile if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
+     * @param alterLibraryLanguageFile a hook that allows implementations to
+     * change the language files of certain libraries; should be used together
+     * with alterLibrarySemantics if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
-        /**
-         * Gets URLs at which a file in a library can be downloaded. Must be passed
-         * through from the implementation.
-         */
         private fileUrlResolver: ILibraryFileUrlResolver = (
             library,
             filename
-        ) => '' // default is there to avoid having to pass empty function in tests
+        ) => '', // default is there to avoid having to pass empty function in tests
+        private alterLibrarySemantics?: (
+            library: ILibraryName,
+            semantics: ISemanticsEntry[]
+        ) => ISemanticsEntry[],
+        private alterLibraryLanguageFile?: (
+            library: ILibraryName,
+            languageFile: ILanguageFileEntry[],
+            language: string
+        ) => ILanguageFileEntry[]
     ) {
         log.info('initialize');
     }
@@ -102,12 +119,25 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const result = await this.libraryStorage.getFileAsString(
+            const languageFileAsString = await this.libraryStorage.getFileAsString(
                 library,
                 `language/${language}.json`
             );
-            return result;
-        } catch {
+            // If the implementation has specified one, we use a hook to alter
+            // the language files to match the structure of the altered
+            // semantics.
+            if (this.alterLibraryLanguageFile) {
+                log.debug('Calling hook to alter language file of library.');
+                return JSON.stringify({
+                    semantics: this.alterLibraryLanguageFile(
+                        library,
+                        JSON.parse(languageFileAsString).semantics,
+                        language
+                    )
+                });
+            }
+            return languageFileAsString;
+        } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(
                     library
@@ -171,7 +201,27 @@ export default class LibraryManager {
         log.debug(
             `loading semantics for library ${LibraryName.toUberName(library)}`
         );
-        return this.libraryStorage.getFileAsJson(library, 'semantics.json');
+        const originalSemantics = await this.libraryStorage.getFileAsJson(
+            library,
+            'semantics.json'
+        );
+
+        // We call the hook that allows implementations to alter library
+        // semantics;
+        if (this.alterLibrarySemantics) {
+            log.debug('Calling alterLibrarySemantics hook');
+            const alteredSemantics = await this.alterLibrarySemantics(
+                library,
+                originalSemantics
+            );
+            if (!alteredSemantics) {
+                throw new Error(
+                    'alterLibrarySemantics returned undefined, but must return a proper list of semantic entries'
+                );
+            }
+            return alteredSemantics;
+        }
+        return originalSemantics;
     }
 
     /**

@@ -39,6 +39,7 @@ import {
     IContentStorage,
     IEditorModel,
     IH5PConfig,
+    IH5PEditorOptions,
     IHubInfo,
     IIntegration,
     IKeyValueStorage,
@@ -76,6 +77,10 @@ export default class H5PEditor {
      * translations of keys in a certain language; the keys use the i18next
      * format (e.g. namespace:key). See the ITranslationFunction documentation
      * for more details.
+     * @param urlGenerator creates url strings for files, can be used to
+     * customize the paths in an implementation application
+     * @param options more options to customize the behavior of the editor; see
+     * IH5PEditorOptions documentation for more details
      */
     constructor(
         protected cache: IKeyValueStorage,
@@ -90,7 +95,8 @@ export default class H5PEditor {
             'metadata-semantics': defaultMetadataSemanticsLanguageFile,
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
-        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config),
+        private options?: IH5PEditorOptions
     ) {
         log.info('initialize');
 
@@ -100,7 +106,9 @@ export default class H5PEditor {
         this.contentTypeCache = new ContentTypeCache(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            this.urlGenerator.libraryFile
+            this.urlGenerator.libraryFile,
+            this.options?.customization?.alterLibrarySemantics,
+            this.options?.customization?.alterLibraryLanguageFile
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -124,13 +132,28 @@ export default class H5PEditor {
             this.contentStorer
         );
         this.packageExporter = new PackageExporter(
-            this.libraryStorage,
+            this.libraryManager,
             this.contentStorage,
             config
         );
         this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
         this.dependencyGetter = new DependencyGetter(libraryStorage);
 
+        this.globalCustomScripts =
+            this.options?.customization?.global?.scripts || [];
+        if (this.config.customization?.global?.editor?.scripts) {
+            this.globalCustomScripts = this.globalCustomScripts.concat(
+                this.config.customization.global?.editor.scripts
+            );
+        }
+
+        this.globalCustomStyles =
+            this.options?.customization?.global?.styles || [];
+        if (this.config.customization?.global?.editor?.styles) {
+            this.globalCustomStyles = this.globalCustomStyles.concat(
+                this.config.customization.global?.editor.styles
+            );
+        }
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
         const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
@@ -152,6 +175,8 @@ export default class H5PEditor {
     private contentStorer: ContentStorer;
     private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
     private dependencyGetter: DependencyGetter;
+    private globalCustomScripts: string[] = [];
+    private globalCustomStyles: string[] = [];
     private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
@@ -432,9 +457,9 @@ export default class H5PEditor {
 
     /**
      * Retrieves the installed languages for libraries
-     * @param libraryUbernames A list of libraries for which the language files should be retrieved.
-     *                     In this list the names of the libraries don't use hyphens to separate
-     *                     machine name and version.
+     * @param libraryUbernames A list of libraries for which the language files
+     * should be retrieved. In this list the names of the libraries don't use
+     * hyphens to separate machine name and version.
      * @param language the language code to get the files for
      * @returns The strings of the language files
      */
@@ -1124,15 +1149,27 @@ export default class H5PEditor {
             })
         );
 
-        (library.preloadedJs || []).forEach((script) =>
-            assets.scripts.push(
-                this.urlGenerator.libraryFile(library, script.path)
-            )
+        let cssFiles: string[] = library.preloadedCss?.map((f) => f.path) || [];
+        let jsFiles: string[] = library.preloadedJs?.map((f) => f.path) || [];
+
+        // If configured in the options, we call a hook to change the files
+        // included for certain libraries.
+        if (this.options?.customization?.alterLibraryFiles) {
+            log.debug('Calling alterLibraryFiles hook');
+            const alteredFiles = this.options.customization.alterLibraryFiles(
+                libraryName,
+                jsFiles,
+                cssFiles
+            );
+            jsFiles = alteredFiles?.scripts;
+            cssFiles = alteredFiles?.styles;
+        }
+
+        jsFiles.forEach((script) =>
+            assets.scripts.push(this.urlGenerator.libraryFile(library, script))
         );
-        (library.preloadedCss || []).forEach((style) =>
-            assets.styles.push(
-                this.urlGenerator.libraryFile(library, style.path)
-            )
+        cssFiles.forEach((style) =>
+            assets.styles.push(this.urlGenerator.libraryFile(library, style))
         );
 
         let parsedLanguageObject: any;
@@ -1158,7 +1195,8 @@ export default class H5PEditor {
                 editorAssetList.scripts.editor
                     .map(replacer)
                     .map(this.urlGenerator.editorLibraryFile)
-            );
+            )
+            .concat(this.globalCustomScripts);
     }
 
     private listCoreStyles(): string[] {
@@ -1168,7 +1206,8 @@ export default class H5PEditor {
                 editorAssetList.styles.editor.map(
                     this.urlGenerator.editorLibraryFile
                 )
-            );
+            )
+            .concat(this.globalCustomStyles);
     }
 
     private resolveDependencies(
