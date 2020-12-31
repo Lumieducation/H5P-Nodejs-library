@@ -179,6 +179,26 @@ const start = async () => {
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
+    const htmlExporter = new H5P.HtmlExporter(
+        h5pEditor.libraryStorage,
+        h5pEditor.contentStorage,
+        h5pEditor.config,
+        path.resolve('h5p/core'),
+        path.resolve('h5p/editor')
+    );
+
+    server.get('/h5p/html/:contentId', async (req, res) => {
+        const html = await htmlExporter.createSingleBundle(
+            req.params.contentId,
+            (req as any).user
+        );
+        res.setHeader(
+            'Content-disposition',
+            `attachment; filename=${req.params.contentId}.html`
+        );
+        res.status(200).send(html);
+    });
+
     // The startPageRenderer displays a list of content objects and shows
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));

@@ -12,7 +12,8 @@ import {
     ILibraryStorage,
     IPlayerModel,
     IUrlGenerator,
-    ILibraryMetadata
+    ILibraryMetadata,
+    IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -67,7 +68,8 @@ export default class H5PPlayer {
     public async render(
         contentId: ContentId,
         parameters?: ContentParameters,
-        metadata?: IContentMetadata
+        metadata?: IContentMetadata,
+        user?: IUser
     ): Promise<string | any> {
         log.info(`rendering page for ${contentId}`);
 
@@ -130,6 +132,7 @@ export default class H5PPlayer {
 
         const model: IPlayerModel = {
             contentId,
+            dependencies,
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
@@ -143,7 +146,8 @@ export default class H5PPlayer {
                 .concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
             translations: {},
-            embedTypes: metadata.embedTypes // TODO: check if the library supports the embed type!
+            embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
+            user
         };
 
         return this.renderer(model);
