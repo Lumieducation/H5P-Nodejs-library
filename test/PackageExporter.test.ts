@@ -40,7 +40,7 @@ export async function importAndExportPackage(
             );
 
             const packageExporter = new PackageExporter(
-                libraryStorage,
+                libraryManager,
                 contentStorage,
                 { exportMaxContentPathLength }
             );
@@ -61,7 +61,7 @@ export async function importAndExportPackage(
                         writeStream,
                         user
                     );
-                    await new Promise(async (resolve, reject) => {
+                    await new Promise<void>(async (resolve, reject) => {
                         const whenStreamClosed = jest.fn();
                         writeStream.on('close', whenStreamClosed);
                         writeStream.on('close', async () => {

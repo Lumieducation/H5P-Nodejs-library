@@ -6,13 +6,15 @@ import {
     IContentMetadata,
     IContentStorage,
     IH5PConfig,
+    IH5PPlayerOptions,
     IInstalledLibrary,
     IIntegration,
     ILibraryName,
     ILibraryStorage,
     IPlayerModel,
     IUrlGenerator,
-    ILibraryMetadata
+    ILibraryMetadata,
+    IUser
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -32,16 +34,20 @@ export default class H5PPlayer {
      * @param libraryStorage the storage for libraries (can be read only)
      * @param contentStorage the storage for content (can be read only)
      * @param config the configuration object
-     * @param integrationObjectDefaults (optional) the default values to use for the integration object
-     * @param globalCustomScripts (optional) references to these scripts will be added when rendering content
+     * @param integrationObjectDefaults (optional) the default values to use for
+     * the integration object
+     * @param urlGenerator creates url strings for files, can be used to
+     * customize the paths in an implementation application
+     * @param options more options to customize the behavior of the player; see
+     * IH5PPlayerOptions documentation for more details
      */
     constructor(
         private libraryStorage: ILibraryStorage,
         private contentStorage: IContentStorage,
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
-        private globalCustomScripts: string[] = [],
-        private urlGenerator: IUrlGenerator = new UrlGenerator(config)
+        private urlGenerator: IUrlGenerator = new UrlGenerator(config),
+        private options?: IH5PPlayerOptions
     ) {
         log.info('initialize');
         this.renderer = player;
@@ -50,8 +56,26 @@ export default class H5PPlayer {
             libraryStorage,
             urlGenerator.libraryFile
         );
+
+        this.globalCustomScripts =
+            this.options?.customization?.global?.scripts || [];
+        if (this.config.customization?.global?.player?.scripts) {
+            this.globalCustomScripts = this.globalCustomScripts.concat(
+                this.config.customization.global.player.scripts
+            );
+        }
+
+        this.globalCustomStyles =
+            this.options?.customization?.global?.styles || [];
+        if (this.config.customization?.global?.player?.styles) {
+            this.globalCustomStyles = this.globalCustomStyles.concat(
+                this.config.customization.global.player.styles
+            );
+        }
     }
     private clientTranslation: any;
+    private globalCustomScripts: string[] = [];
+    private globalCustomStyles: string[] = [];
     private libraryManager: LibraryManager;
     private renderer: (model: IPlayerModel) => string | any;
 
@@ -67,7 +91,8 @@ export default class H5PPlayer {
     public async render(
         contentId: ContentId,
         parameters?: ContentParameters,
-        metadata?: IContentMetadata
+        metadata?: IContentMetadata,
+        user?: IUser
     ): Promise<string | any> {
         log.info(`rendering page for ${contentId}`);
 
@@ -130,6 +155,7 @@ export default class H5PPlayer {
 
         const model: IPlayerModel = {
             contentId,
+            dependencies,
             downloadPath: this.getDownloadPath(contentId),
             integration: this.generateIntegration(
                 contentId,
@@ -138,12 +164,11 @@ export default class H5PPlayer {
                 assets,
                 mainLibrarySupportsFullscreen
             ),
-            scripts: this.listCoreScripts()
-                .concat(this.globalCustomScripts)
-                .concat(assets.scripts),
+            scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
             translations: {},
-            embedTypes: metadata.embedTypes // TODO: check if the library supports the embed type!
+            embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
+            user
         };
 
         return this.renderer(model);
@@ -175,8 +200,8 @@ export default class H5PPlayer {
         assets: IAssets = ({
             scripts: [],
             styles: [],
-            translations: []
-        } = { scripts: [], styles: [], translations: [] }),
+            translations: {}
+        } = { scripts: [], styles: [], translations: {} }),
         loaded: { [ubername: string]: boolean } = {}
     ): IAssets {
         log.verbose(
@@ -197,14 +222,31 @@ export default class H5PPlayer {
                     assets,
                     loaded
                 );
-                (lib.preloadedCss || []).forEach((asset) =>
+                let cssFiles: string[] =
+                    lib.preloadedCss?.map((f) => f.path) || [];
+                let jsFiles: string[] =
+                    lib.preloadedJs?.map((f) => f.path) || [];
+
+                // If configured in the options, we call a hook to change the files
+                // included for certain libraries.
+                if (this.options?.customization?.alterLibraryFiles) {
+                    log.debug('Calling alterLibraryFiles hook');
+                    const alteredFiles = this.options.customization.alterLibraryFiles(
+                        lib,
+                        jsFiles,
+                        cssFiles
+                    );
+                    jsFiles = alteredFiles?.scripts;
+                    cssFiles = alteredFiles?.styles;
+                }
+                (cssFiles || []).forEach((style) =>
                     assets.styles.push(
-                        this.urlGenerator.libraryFile(dependency, asset.path)
+                        this.urlGenerator.libraryFile(lib, style)
                     )
                 );
-                (lib.preloadedJs || []).forEach((script) =>
+                (jsFiles || []).forEach((script) =>
                     assets.scripts.push(
-                        this.urlGenerator.libraryFile(dependency, script.path)
+                        this.urlGenerator.libraryFile(lib, script)
                     )
                 );
             }
@@ -275,16 +317,12 @@ export default class H5PPlayer {
                         title: metadata.title || '',
                         defaultLanguage: metadata.language || 'en'
                     },
-                    scripts: this.listCoreScripts()
-                        .concat(this.globalCustomScripts)
-                        .concat(assets.scripts),
+                    scripts: this.listCoreScripts().concat(assets.scripts),
                     styles: this.listCoreStyles().concat(assets.styles)
                 }
             },
             core: {
-                scripts: this.listCoreScripts().concat(
-                    this.globalCustomScripts
-                ),
+                scripts: this.listCoreScripts(),
                 styles: this.listCoreStyles()
             },
             l10n: {
@@ -339,7 +377,7 @@ export default class H5PPlayer {
         ];
         for (const addonMachineName of configRequestedAddons) {
             const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                [addonMachineName]
+                addonMachineName
             );
             if (
                 !neededAddons
@@ -485,10 +523,14 @@ export default class H5PPlayer {
     }
 
     private listCoreScripts(): string[] {
-        return playerAssetList.scripts.core.map(this.urlGenerator.coreFile);
+        return playerAssetList.scripts.core
+            .map(this.urlGenerator.coreFile)
+            .concat(this.globalCustomScripts);
     }
 
     private listCoreStyles(): string[] {
-        return playerAssetList.styles.core.map(this.urlGenerator.coreFile);
+        return playerAssetList.styles.core
+            .map(this.urlGenerator.coreFile)
+            .concat(this.globalCustomStyles);
     }
 }

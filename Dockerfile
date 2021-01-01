@@ -7,4 +7,4 @@ COPY --chown=node:node . ./
 RUN npm install
 
 EXPOSE 8080
-CMD [ "npm", "start" ]
+CMD [ "node", "build/examples/express.js" ]

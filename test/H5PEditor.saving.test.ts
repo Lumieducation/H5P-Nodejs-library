@@ -626,6 +626,34 @@ describe('H5PEditor', () => {
         );
     });
 
+    it('throws an error if content metadata is invalid', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save the content
+                await expect(
+                    h5pEditor.saveOrUpdateContent(
+                        undefined,
+                        mockupParametersWithoutImage,
+                        { someIllegal: 'attribute' } as any,
+                        'H5P.GreetingCard 1.0',
+                        user
+                    )
+                ).rejects.toThrowError('Metadata does not conform to schema.');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
     it('saving content returns a valid H5P package', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
@@ -666,7 +694,7 @@ describe('H5PEditor', () => {
                         const writeStream = fsExtra.createWriteStream(
                             h5pFilePath
                         );
-                        const packageFinishedPromise = new Promise(
+                        const packageFinishedPromise = new Promise<void>(
                             (resolve) => {
                                 writeStream.on('close', () => {
                                     resolve();

@@ -1,8 +1,7 @@
-import { ReadStream } from 'fs';
+import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
-import { Stream } from 'stream';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -10,16 +9,17 @@ import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
+    IFileStats,
     IFullLibraryName,
     IInstalledLibrary,
+    ILanguageFileEntry,
     ILibraryFileUrlResolver,
     ILibraryInstallResult,
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
     IPath,
-    ISemanticsEntry,
-    IFileStats
+    ISemanticsEntry
 } from './types';
 
 const log = new Logger('LibraryManager');
@@ -32,18 +32,34 @@ const log = new Logger('LibraryManager');
 export default class LibraryManager {
     /**
      *
-     * @param libraryStorage The library repository that persists library somewhere.
+     * @param libraryStorage the library repository that persists library
+     * somewhere.
+     * @param fileUrlResolver gets URLs at which a file in a library can be
+     * downloaded. Must be passed through from the implementation.
+     * @param alterLibrarySemantics a hook that allows implementations to change
+     * the semantics of certain libraries; should be used together with
+     * alterLibraryLanguageFile if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
+     * @param alterLibraryLanguageFile a hook that allows implementations to
+     * change the language files of certain libraries; should be used together
+     * with alterLibrarySemantics if you plan to use any other language than
+     * English! See the documentation of IH5PEditorOptions for more details.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
-        /**
-         * Gets URLs at which a file in a library can be downloaded. Must be passed
-         * through from the implementation.
-         */
         private fileUrlResolver: ILibraryFileUrlResolver = (
             library,
             filename
-        ) => '' // default is there to avoid having to pass empty function in tests
+        ) => '', // default is there to avoid having to pass empty function in tests
+        private alterLibrarySemantics?: (
+            library: ILibraryName,
+            semantics: ISemanticsEntry[]
+        ) => ISemanticsEntry[],
+        private alterLibraryLanguageFile?: (
+            library: ILibraryName,
+            languageFile: ILanguageFileEntry[],
+            language: string
+        ) => ILanguageFileEntry[]
     ) {
         log.info('initialize');
     }
@@ -77,7 +93,7 @@ export default class LibraryManager {
     public async getFileStream(
         library: ILibraryName,
         file: string
-    ): Promise<ReadStream> {
+    ): Promise<Readable> {
         log.debug(
             `getting file ${file} from library ${LibraryName.toUberName(
                 library
@@ -103,12 +119,25 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const stream = await this.getFileStream(
+            const languageFileAsString = await this.libraryStorage.getFileAsString(
                 library,
                 `language/${language}.json`
             );
-            return streamToString(stream);
-        } catch {
+            // If the implementation has specified one, we use a hook to alter
+            // the language files to match the structure of the altered
+            // semantics.
+            if (this.alterLibraryLanguageFile) {
+                log.debug('Calling hook to alter language file of library.');
+                return JSON.stringify({
+                    semantics: this.alterLibraryLanguageFile(
+                        library,
+                        JSON.parse(languageFileAsString).semantics,
+                        language
+                    )
+                });
+            }
+            return languageFileAsString;
+        } catch (ignored) {
             log.debug(
                 `language '${language}' not found for ${LibraryName.toUberName(
                     library
@@ -172,7 +201,27 @@ export default class LibraryManager {
         log.debug(
             `loading semantics for library ${LibraryName.toUberName(library)}`
         );
-        return this.getJsonFile(library, 'semantics.json');
+        const originalSemantics = await this.libraryStorage.getFileAsJson(
+            library,
+            'semantics.json'
+        );
+
+        // We call the hook that allows implementations to alter library
+        // semantics;
+        if (this.alterLibrarySemantics) {
+            log.debug('Calling alterLibrarySemantics hook');
+            const alteredSemantics = await this.alterLibrarySemantics(
+                library,
+                originalSemantics
+            );
+            if (!alteredSemantics) {
+                throw new Error(
+                    'alterLibrarySemantics returned undefined, but must return a proper list of semantic entries'
+                );
+            }
+            return alteredSemantics;
+        }
+        return originalSemantics;
     }
 
     /**
@@ -252,9 +301,9 @@ export default class LibraryManager {
         log.info(
             `checking if library ${LibraryName.toUberName(library)} is patched`
         );
-        const wrappedLibraryInfos = await this.listInstalledLibraries([
+        const wrappedLibraryInfos = await this.listInstalledLibraries(
             library.machineName
-        ]);
+        );
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
             return undefined;
         }
@@ -285,7 +334,7 @@ export default class LibraryManager {
      * @returns true if the library has been installed
      */
     public async libraryExists(library: LibraryName): Promise<boolean> {
-        return this.libraryStorage.libraryExists(library);
+        return this.libraryStorage.isInstalled(library);
     }
 
     /**
@@ -317,9 +366,9 @@ export default class LibraryManager {
         log.verbose(
             `checking if library ${library.machineName}-${library.majorVersion}.${library.minorVersion} has an upgrade`
         );
-        const wrappedLibraryInfos = await this.listInstalledLibraries([
+        const wrappedLibraryInfos = await this.listInstalledLibraries(
             library.machineName
-        ]);
+        );
         if (!wrappedLibraryInfos || !wrappedLibraryInfos[library.machineName]) {
             return false;
         }
@@ -357,16 +406,22 @@ export default class LibraryManager {
 
     /**
      * Get a list of the currently installed libraries.
-     * @param machineNames (if supplied) only return results for the machines names in the list
-     * @returns An object which has properties with the existing library machine names. The properties'
-     * values are arrays of Library objects, which represent the different versions installed of this library.
+     * @param machineName (optional) only return results for the machine name
+     * @returns An object which has properties with the existing library machine
+     * names. The properties' values are arrays of Library objects, which
+     * represent the different versions installed of this library.
      */
     public async listInstalledLibraries(
-        machineNames?: string[]
+        machineName?: string
     ): Promise<{ [machineName: string]: IInstalledLibrary[] }> {
-        log.verbose(`checking if libraries ${machineNames} are installed`);
+        if (machineName) {
+            log.debug(`Listing libraries with machineName ${machineName}`);
+        } else {
+            log.debug('Listing all installed libraries.');
+        }
+
         let libraries = await this.libraryStorage.getInstalledLibraryNames(
-            ...machineNames
+            machineName
         );
         libraries = (
             await Promise.all(
@@ -527,7 +582,7 @@ export default class LibraryManager {
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);
                 }
-                const readStream: Stream = fsExtra.createReadStream(
+                const readStream: Readable = fsExtra.createReadStream(
                     fileFullPath
                 );
                 return this.libraryStorage.addFile(
@@ -537,27 +592,6 @@ export default class LibraryManager {
                 );
             })
         );
-    }
-
-    /**
-     * Gets the parsed contents of a library file that is JSON.
-     * @param library
-     * @param file
-     * @returns The content or undefined if there was an error
-     */
-    private async getJsonFile(
-        library: ILibraryName,
-        file: string
-    ): Promise<any> {
-        log.silly(
-            `loading ${file} for library ${LibraryName.toUberName(library)}`
-        );
-        const stream: Stream = await this.libraryStorage.getFileStream(
-            library,
-            file
-        );
-        const jsonString: string = await streamToString(stream);
-        return JSON.parse(jsonString);
     }
 
     /**

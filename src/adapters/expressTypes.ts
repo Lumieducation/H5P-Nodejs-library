@@ -15,3 +15,24 @@ export interface IRequestWithTranslator extends Request {
     };
     t: (errorId: string, replacements: any) => string;
 }
+
+export interface IActionRequest
+    extends IRequestWithUser,
+        IRequestWithTranslator {
+    files: {
+        file: {
+            data?: Buffer;
+            mimetype: string;
+            name: string;
+            size: number;
+            tempFilePath?: string;
+        };
+        h5p: {
+            data?: Buffer;
+            mimetype: string;
+            name: string;
+            size: number;
+            tempFilePath?: string;
+        };
+    };
+}

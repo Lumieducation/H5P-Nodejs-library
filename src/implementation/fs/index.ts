@@ -1,5 +1,10 @@
 import * as H5P from '../../';
-import { IContentStorage, ITranslationFunction } from '../../types';
+import {
+    IContentStorage,
+    ITranslationFunction,
+    IH5PEditorOptions,
+    IUrlGenerator
+} from '../../types';
 import InMemoryStorage from '../InMemoryStorage';
 import DirectoryTemporaryFileStorage from './DirectoryTemporaryFileStorage';
 import FileContentStorage from './FileContentStorage';
@@ -11,7 +16,9 @@ export default function h5pfs(
     temporaryStoragePath: string,
     contentPath: string,
     contentStorage?: IContentStorage,
-    translationCallback?: ITranslationFunction
+    translationCallback?: ITranslationFunction,
+    urlGenerator?: IUrlGenerator,
+    options?: IH5PEditorOptions
 ): H5P.H5PEditor {
     return new H5P.H5PEditor(
         new InMemoryStorage(),
@@ -19,6 +26,8 @@ export default function h5pfs(
         new FileLibraryStorage(librariesPath),
         contentStorage || new FileContentStorage(contentPath),
         new DirectoryTemporaryFileStorage(temporaryStoragePath),
-        translationCallback
+        translationCallback,
+        urlGenerator,
+        options
     );
 }

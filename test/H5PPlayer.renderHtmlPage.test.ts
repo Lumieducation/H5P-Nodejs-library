@@ -1,6 +1,6 @@
 import H5PPlayer from '../src/H5PPlayer';
 import H5PConfig from '../src/implementation/H5PConfig';
-import { ILibraryName } from '../src/types';
+import { ILibraryName, ILibraryMetadata } from '../src/types';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {
@@ -9,8 +9,8 @@ describe('Rendering the HTML page', () => {
             my: 'content'
         };
         const h5pObject = {};
-
-        return new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
+        const config = new H5PConfig(undefined);
+        return new H5PPlayer(undefined, undefined, config)
             .render(contentId, contentObject, h5pObject as any)
             .then((html) => {
                 expect(html.replace(/ /g, '')).toBe(
@@ -19,18 +19,18 @@ describe('Rendering the HTML page', () => {
                 <head>
                     <meta charset="utf-8">
                     
-                    <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
-                    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
-                    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css"/>
-                    <script src="/h5p/core/js/jquery.js"></script>
-                    <script src="/h5p/core/js/h5p.js"></script>
-                    <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
-                    <script src="/h5p/core/js/h5p-x-api-event.js"></script>
-                    <script src="/h5p/core/js/h5p-x-api.js"></script>
-                    <script src="/h5p/core/js/h5p-content-type.js"></script>
-                    <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
-                    <script src="/h5p/core/js/h5p-action-bar.js"></script>
-                    <script src="/h5p/core/js/request-queue.js"></script>
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=${config.h5pVersion}"/>
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}"/>
+                    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"/>
+                    <script src="/h5p/core/js/jquery.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}"></script>
+                    <script src="/h5p/core/js/request-queue.js?version=${config.h5pVersion}"></script>
                 
                     <script>
                         window.H5PIntegration = {
@@ -52,39 +52,39 @@ describe('Rendering the HTML page', () => {
                         "defaultLanguage":"en"
                        },                       
                         "scripts":[
-                        "/h5p/core/js/jquery.js",
-                        "/h5p/core/js/h5p.js",
-                        "/h5p/core/js/h5p-event-dispatcher.js",
-                        "/h5p/core/js/h5p-x-api-event.js",
-                        "/h5p/core/js/h5p-x-api.js",
-                        "/h5p/core/js/h5p-content-type.js",
-                        "/h5p/core/js/h5p-confirmation-dialog.js",
-                        "/h5p/core/js/h5p-action-bar.js",
-                        "/h5p/core/js/request-queue.js"
+                        "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
+                        "/h5p/core/js/request-queue.js?version=${config.h5pVersion}"
                         ],
                         "styles":[
-                        "/h5p/core/styles/h5p.css",
-                        "/h5p/core/styles/h5p-confirmation-dialog.css",
-                        "/h5p/core/styles/h5p-core-button.css"
+                        "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
+                        "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
+                        "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"
                         ]
                     }
                   },
                   "core":{
                     "scripts":[
-                    "/h5p/core/js/jquery.js",
-                    "/h5p/core/js/h5p.js",
-                    "/h5p/core/js/h5p-event-dispatcher.js",
-                    "/h5p/core/js/h5p-x-api-event.js",
-                    "/h5p/core/js/h5p-x-api.js",
-                    "/h5p/core/js/h5p-content-type.js",
-                    "/h5p/core/js/h5p-confirmation-dialog.js",
-                    "/h5p/core/js/h5p-action-bar.js",
-                    "/h5p/core/js/request-queue.js"
+                    "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
+                    "/h5p/core/js/request-queue.js?version=${config.h5pVersion}"
                     ],
                     "styles":[
-                    "/h5p/core/styles/h5p.css",
-                    "/h5p/core/styles/h5p-confirmation-dialog.css",
-                    "/h5p/core/styles/h5p-core-button.css"
+                    "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
+                    "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
+                    "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"
                     ]
                     },
                   "l10n": {
@@ -182,7 +182,9 @@ describe('Rendering the HTML page', () => {
             mainLibrary: 'Foo',
             preloadedDependencies: [
                 {
-                    machineName: 'Bar'
+                    machineName: 'Bar',
+                    majorVersion: 1,
+                    minorVersion: 0
                 },
                 {
                     machineName: 'Foo',
@@ -212,7 +214,7 @@ describe('Rendering the HTML page', () => {
             });
     });
 
-    it('includes custom scripts', () => {
+    it('includes custom scripts and styles', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const h5pObject = {};
@@ -223,20 +225,30 @@ describe('Rendering the HTML page', () => {
             }
         };
 
-        return new H5PPlayer(
+        const player = new H5PPlayer(
             mockLibraryStorage,
             undefined,
             new H5PConfig(undefined),
             undefined,
-            ['/test']
-        )
-            .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
-            .then((model) => {
-                expect(
-                    ((model as any).scripts as string[]).indexOf('/test')
-                ).toBeGreaterThanOrEqual(0);
-            });
+            undefined,
+            {
+                customization: {
+                    global: {
+                        scripts: ['/test.js'],
+                        styles: ['/test.css']
+                    }
+                }
+            }
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect((model as any).scripts.includes('/test.js')).toEqual(true);
+        expect((model as any).styles.includes('/test.css')).toEqual(true);
     });
 
     it('includes custom integration', () => {
@@ -254,19 +266,28 @@ describe('Rendering the HTML page', () => {
             });
     });
 
-    it('includes custom scripts in the generated html', () => {
+    it('includes custom scripts and styles in the generated html', () => {
         const contentId = 'foo';
         const contentObject = {
             my: 'content'
         };
         const h5pObject = {};
+        const config = new H5PConfig(undefined);
 
         return new H5PPlayer(
             undefined,
             undefined,
             new H5PConfig(undefined),
             undefined,
-            ['/test']
+            undefined,
+            {
+                customization: {
+                    global: {
+                        scripts: ['/test.js'],
+                        styles: ['/test.css']
+                    }
+                }
+            }
         )
             .render(contentId, contentObject, h5pObject as any)
             .then((html) => {
@@ -276,19 +297,20 @@ describe('Rendering the HTML page', () => {
                     <head>
                         <meta charset="utf-8">
                         
-                        <link rel="stylesheet" href="/h5p/core/styles/h5p.css"/>
-                        <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css"/>
-                        <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css"/>
-                        <script src="/h5p/core/js/jquery.js"></script>
-                        <script src="/h5p/core/js/h5p.js"></script>
-                        <script src="/h5p/core/js/h5p-event-dispatcher.js"></script>
-                        <script src="/h5p/core/js/h5p-x-api-event.js"></script>
-                        <script src="/h5p/core/js/h5p-x-api.js"></script>
-                        <script src="/h5p/core/js/h5p-content-type.js"></script>
-                        <script src="/h5p/core/js/h5p-confirmation-dialog.js"></script>
-                        <script src="/h5p/core/js/h5p-action-bar.js"></script>
-                        <script src="/h5p/core/js/request-queue.js"></script>
-                        <script src="/test"></script>
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=${config.h5pVersion}"/>
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}"/>
+                        <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"/>
+                        <link rel="stylesheet" href="/test.css"/>
+                        <script src="/h5p/core/js/jquery.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}"></script>
+                        <script src="/h5p/core/js/request-queue.js?version=${config.h5pVersion}"></script>
+                        <script src="/test.js"></script>
                     
                         <script>
                             window.H5PIntegration = {
@@ -310,41 +332,43 @@ describe('Rendering the HTML page', () => {
                             "defaultLanguage":"en"
                           },
                           "scripts":[
-                          "/h5p/core/js/jquery.js",
-                          "/h5p/core/js/h5p.js",
-                          "/h5p/core/js/h5p-event-dispatcher.js",
-                          "/h5p/core/js/h5p-x-api-event.js",
-                          "/h5p/core/js/h5p-x-api.js",
-                          "/h5p/core/js/h5p-content-type.js",
-                          "/h5p/core/js/h5p-confirmation-dialog.js",
-                          "/h5p/core/js/h5p-action-bar.js",
-                          "/h5p/core/js/request-queue.js",
-                          "/test"
+                          "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/request-queue.js?version=${config.h5pVersion}",
+                          "/test.js"
                           ],
                           "styles":[
-                          "/h5p/core/styles/h5p.css",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css",
-                          "/h5p/core/styles/h5p-core-button.css"
+                          "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
+                          "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
+                          "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}",
+                          "/test.css"
                           ]
                         }
                       },
                       "core":{
                           "scripts":[
-                          "/h5p/core/js/jquery.js",
-                          "/h5p/core/js/h5p.js",
-                          "/h5p/core/js/h5p-event-dispatcher.js",
-                          "/h5p/core/js/h5p-x-api-event.js",
-                          "/h5p/core/js/h5p-x-api.js",
-                          "/h5p/core/js/h5p-content-type.js",
-                          "/h5p/core/js/h5p-confirmation-dialog.js",
-                          "/h5p/core/js/h5p-action-bar.js",
-                          "/h5p/core/js/request-queue.js",
-                          "/test"
+                          "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
+                          "/h5p/core/js/request-queue.js?version=${config.h5pVersion}",
+                          "/test.js"
                           ],
                           "styles":[
-                          "/h5p/core/styles/h5p.css",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css",
-                          "/h5p/core/styles/h5p-core-button.css"
+                          "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
+                          "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
+                          "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}",
+                          "/test.css"
                           ]
                           },
                       "l10n": {
@@ -433,5 +457,198 @@ describe('Rendering the HTML page', () => {
                     </html>`.replace(/ /g, '')
                 );
             });
+    });
+
+    it('includes custom scripts and styles for certain content types', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const h5pObject = {
+            mainLibrary: 'Foo',
+            preloadedDependencies: [
+                {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0
+                }
+            ]
+        };
+
+        const mockLibraryStorage: any = {
+            getLibrary: async (
+                libName: ILibraryName
+            ): Promise<ILibraryMetadata> => {
+                return {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0,
+                    patchVersion: 0,
+                    runnable: 1,
+                    title: 'Foo',
+                    preloadedCss: [
+                        { path: 'preload1.css' },
+                        { path: 'preload2.css' }
+                    ],
+                    preloadedJs: [
+                        { path: 'preload1.js' },
+                        { path: 'preload2.js' }
+                    ]
+                };
+            }
+        };
+
+        const player = new H5PPlayer(
+            mockLibraryStorage,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            undefined,
+            {
+                customization: {
+                    alterLibraryFiles: (lib, scripts, styles) => {
+                        if (
+                            lib.machineName === 'Foo' &&
+                            lib.majorVersion === 1 &&
+                            lib.minorVersion === 0
+                        ) {
+                            return {
+                                scripts: [
+                                    ...scripts,
+                                    'preload3.js',
+                                    'https://example.com/script.js'
+                                ],
+                                styles: [styles[0], styles[1]]
+                            };
+                        }
+                        return { scripts, styles };
+                    }
+                }
+            }
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload1.js?version=1.0.0'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload2.js?version=1.0.0'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload3.js?version=1.0.0'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes('https://example.com/script.js')
+        ).toBe(true);
+
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload2.css?version=1.0.0'
+            )
+        ).toBe(true);
+    });
+
+    it("doesn't include custom scripts and styles for other content types", async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const h5pObject = {
+            mainLibrary: 'Foo',
+            preloadedDependencies: [
+                {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0
+                }
+            ]
+        };
+
+        const mockLibraryStorage: any = {
+            getLibrary: async (
+                libName: ILibraryName
+            ): Promise<ILibraryMetadata> => {
+                return {
+                    machineName: 'Foo',
+                    majorVersion: 1,
+                    minorVersion: 0,
+                    patchVersion: 0,
+                    runnable: 1,
+                    title: 'Foo',
+                    preloadedCss: [
+                        { path: 'preload1.css' },
+                        { path: 'preload2.css' }
+                    ],
+                    preloadedJs: [
+                        { path: 'preload1.js' },
+                        { path: 'preload2.js' }
+                    ]
+                };
+            }
+        };
+
+        const player = new H5PPlayer(
+            mockLibraryStorage,
+            undefined,
+            new H5PConfig(undefined),
+            undefined,
+            undefined,
+            {
+                customization: {
+                    alterLibraryFiles: (lib, scripts, styles) => {
+                        if (
+                            lib.machineName === 'Bar' &&
+                            lib.majorVersion === 1 &&
+                            lib.minorVersion === 0
+                        ) {
+                            return {
+                                scripts: [
+                                    ...scripts,
+                                    'preload3.js',
+                                    'https://example.com/script.js'
+                                ],
+                                styles: [styles[1], styles[2]]
+                            };
+                        }
+                        return { scripts, styles };
+                    }
+                }
+            }
+        );
+        player.setRenderer((mod) => mod);
+        const model = await player.render(
+            contentId,
+            contentObject,
+            h5pObject as any
+        );
+
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload1.js?version=1.0.0'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).scripts.includes(
+                '/h5p/libraries/Foo-1.0/preload2.js?version=1.0.0'
+            )
+        ).toBe(true);
+
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload1.css?version=1.0.0'
+            )
+        ).toBe(true);
+        expect(
+            (model as any).styles.includes(
+                '/h5p/libraries/Foo-1.0/preload2.css?version=1.0.0'
+            )
+        ).toBe(true);
     });
 });

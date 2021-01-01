@@ -1,10 +1,12 @@
 // Classes
 import H5PEditor from './H5PEditor';
-import H5PPlayer from './H5PPlayer';
 import H5pError from './helpers/H5pError';
+import H5PPlayer from './H5PPlayer';
+import HtmlExporter from './HtmlExporter';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
+import H5PAjaxEndpoint from './H5PAjaxEndpoint';
 
 import H5PConfig from './implementation/H5PConfig';
 import fs from './implementation/fs';
@@ -13,6 +15,8 @@ import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
+import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
+import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 
 // Interfaces
 import {
@@ -50,15 +54,22 @@ const fsImplementations = {
     JsonStorage
 };
 
+const cacheImplementations = {
+    CachedKeyValueStorage,
+    CachedLibraryStorage
+};
+
 export {
     // classes
+    H5PAjaxEndpoint,
     H5PEditor,
     H5pError,
     H5PPlayer,
+    HtmlExporter,
     InstalledLibrary,
+    LibraryAdministration,
     LibraryName,
     PackageExporter,
-    LibraryAdministration,
     // interfaces
     ContentId,
     ContentParameters,
@@ -84,5 +95,6 @@ export {
     // implementations
     H5PConfig,
     fs,
-    fsImplementations
+    fsImplementations,
+    cacheImplementations
 };

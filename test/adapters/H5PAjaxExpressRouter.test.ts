@@ -6,6 +6,7 @@ import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
+import fsExtra from 'fs-extra';
 
 import User from '../../examples/User';
 import * as H5P from '../../src';
@@ -135,10 +136,10 @@ describe('Express Ajax endpoint adapter', () => {
         expect(parsedData.version).toMatchObject({ major: 1, minor: 0 });
         expect(parsedData.title).toBe('Greeting Card');
         expect(parsedData.css).toMatchObject([
-            '/libraries/H5P.GreetingCard-1.0/greetingcard.css'
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.css?version=1.0.6'
         ]);
         expect(parsedData.javascript).toMatchObject([
-            '/libraries/H5P.GreetingCard-1.0/greetingcard.js'
+            '/libraries/H5P.GreetingCard-1.0/greetingcard.js?version=1.0.6'
         ]);
         expect(parsedData.languages.sort()).toMatchObject(
             ['en', 'fr', 'nb'].sort()
@@ -171,6 +172,11 @@ describe('Express Ajax endpoint adapter', () => {
         );
         const res = await supertest(app).get(`/download/${installResult.id}`);
         expect(res.status).toBe(200);
+    });
+
+    it('should return 404 when downloading unknown packages', async () => {
+        const res = await supertest(app).get(`/download/invalid`);
+        expect(res.status).toBe(404);
     });
 
     it('should return the list of installed libraries', async () => {
@@ -302,6 +308,13 @@ describe('Express Ajax endpoint adapter', () => {
         ).toBe(200);
     });
 
+    // get ajax endpoint error handler
+    it('should return 400 for invalid actions', async () => {
+        const mockApp = supertest(app);
+        const result = await mockApp.get(`/ajax?action=unsupported-action`);
+        expect(result.status).toBe(400);
+    });
+
     // content type cache endpoint
     it('should return a valid content type cache', async () => {
         const mockApp = supertest(app);
@@ -391,5 +404,53 @@ describe('Express Ajax endpoint adapter', () => {
             const imageResult = await mockApp.get(`/temp-files/${imagePath}`);
             expect(imageResult.status).toBe(200);
         });
+    });
+
+    it('returns 200 on filter requests', async () => {
+        const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
+            path.resolve('test/data/validator/valid2.h5p')
+        );
+
+        const imageResult = await supertest(app)
+            .post(`/ajax?action=filter`)
+            .send({
+                libraryParameters: JSON.stringify({
+                    params: await fsExtra.readJson(
+                        path.resolve(
+                            'test/data/sample-content/content/content.json'
+                        )
+                    ),
+                    metadata: await fsExtra.readJson(
+                        path.resolve('test/data/sample-content/h5p.json')
+                    ),
+                    library: 'H5P.GreetingCard 1.0'
+                })
+            });
+        expect(imageResult.status).toBe(200);
+    });
+
+    it('installs content types from the H5P Hub', async () => {
+        axiosMock
+            .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
+            .reply(() => {
+                return [
+                    200,
+                    fsExtra.createReadStream(
+                        path.resolve(
+                            'test/data/example-packages/H5P.DragText.h5p'
+                        )
+                    )
+                ];
+            });
+        const result = await supertest(app).post(
+            `/ajax?action=library-install&id=H5P.DragText`
+        );
+        expect(result.status).toEqual(200);
+        expect(result.body.success).toEqual(true);
+        expect(
+            result.body.data.libraries.find(
+                (l) => l.machineName === 'H5P.DragText'
+            ).installed
+        ).toEqual(true);
     });
 });

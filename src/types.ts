@@ -56,7 +56,9 @@ export interface IAjaxResponse {
 export interface IAssets {
     scripts: string[];
     styles: string[];
-    translations: object;
+    translations: {
+        [machineName: string]: { semantics: ILanguageFileEntry[] };
+    };
 }
 
 /**
@@ -708,7 +710,7 @@ export interface ILibraryStorage {
     addFile(
         library: ILibraryName,
         filename: string,
-        readStream: Stream
+        readStream: Readable
     ): Promise<boolean>;
 
     /**
@@ -773,6 +775,10 @@ export interface ILibraryStorage {
      */
     getDependentsCount(library: ILibraryName): Promise<number>;
 
+    getFileAsJson(library: ILibraryName, file: string): Promise<any>;
+
+    getFileAsString(library: ILibraryName, file: string): Promise<string>;
+
     /**
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
@@ -789,16 +795,16 @@ export interface ILibraryStorage {
      * @param filename the relative path inside the library
      * @returns a readable stream of the file's contents
      */
-    getFileStream(library: ILibraryName, file: string): Promise<ReadStream>;
+    getFileStream(library: ILibraryName, file: string): Promise<Readable>;
 
     /**
-     * Returns all installed libraries or the installed libraries that have the machine names in the arguments.
-     * @param machineNames (optional) only return libraries that have these machine names
+     * Returns all installed libraries or the installed libraries that have the
+     * machine name.
+     * @param machineName (optional) only return libraries that have this
+     * machine name
      * @returns the libraries installed
      */
-    getInstalledLibraryNames(
-        ...machineNames: string[]
-    ): Promise<ILibraryName[]>;
+    getInstalledLibraryNames(machineName?: string): Promise<ILibraryName[]>;
 
     /**
      * Gets a list of installed language files for the library.
@@ -820,13 +826,6 @@ export interface ILibraryStorage {
      * @returns true if the library is installed
      */
     isInstalled(library: ILibraryName): Promise<boolean>;
-
-    /**
-     * Checks if the library has been installed.
-     * @param name the library name
-     * @returns true if the library has been installed
-     */
-    libraryExists(name: ILibraryName): Promise<boolean>;
 
     /**
      * Returns a list of library addons that are installed in the system.
@@ -931,13 +930,22 @@ export interface ISemanticsEntry {
      */
     fields?: ISemanticsEntry[];
     /**
-     * The font choices the user has.
+     * The font choices the user has in the HTML editor widget. If set to true,
+     * the editor will display the default choices and the style will be allowed
+     * by the sanitization filter. All other styles will be removed.
+     *
+     * You an also specify lists of allowed CSS values with a label. These are
+     * currently ignored in the server-side CSS style filter, though.
      */
     font?: {
-        background: any;
-        color: any;
-        family: any;
-        size: any;
+        background?:
+            | boolean
+            | { css: string; default?: boolean; label: string }[];
+        color?: boolean | { css: string; default?: boolean; label: string }[];
+        family?: boolean | { css: string; default?: boolean; label: string }[];
+        height?: boolean | { css: string; default?: boolean; label: string }[];
+        size?: boolean | { css: string; default?: boolean; label: string }[];
+        spacing?: boolean | { css: string; default?: boolean; label: string }[];
     };
     /**
      * More important fields have a more prominent style in the editor.
@@ -1285,7 +1293,6 @@ export interface IH5PConfig {
      * the editor.
      */
     contentFilesUrl: string;
-
     /**
      * Base path for content files (e.g. images) IN THE PLAYER. It MUST direct
      * to a URL at which the content files for THE CONTENT BEING DISPLAYED must
@@ -1323,6 +1330,27 @@ export interface IH5PConfig {
      * Path to the H5P core files directory.
      */
     coreUrl: string;
+
+    /**
+     * Options that change the looks and behavior of H5P.
+     */
+    customization: {
+        /**
+         * Lists of JavaScript and CSS files that are added to the editor or
+         * player. The URLs in the lists are directly appended to the list of core
+         * scripts or styles without any modifications.
+         */
+        global: {
+            editor?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+            player?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+        };
+    };
     /**
      * If true, the fullscreen button will not be shown to the user.
      */
@@ -1380,7 +1408,7 @@ export interface IH5PConfig {
      */
     hubRegistrationEndpoint: string;
     /**
-     * The URL of the library files (=content types).
+     * The URL of the library files (= content types).
      */
     librariesUrl: string;
     /**
@@ -1636,12 +1664,14 @@ export interface IHubInfo {
 
 export interface IPlayerModel {
     contentId: ContentParameters;
+    dependencies: ILibraryName[];
     downloadPath: string;
     embedTypes: ('iframe' | 'div')[];
     integration: IIntegration;
     scripts: string[];
     styles: string[];
     translations: any;
+    user: IUser;
 }
 
 export interface IEditorModel {
@@ -1653,10 +1683,11 @@ export interface IEditorModel {
 
 export interface IUrlGenerator {
     coreFile(file: string): string;
+    coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
     editorLibraryFile(file: string): string;
     editorLibraryFiles(): string;
-    libraryFile(library: ILibraryName, file: string): string;
+    libraryFile(library: IFullLibraryName, file: string): string;
     parameters(): string;
     play(): string;
     temporaryFiles(): string;
@@ -1689,4 +1720,155 @@ export interface ILibraryAdministrationOverviewItem {
     restricted: boolean;
     runnable: boolean;
     title: string;
+}
+
+/**
+ * The options that can be passed to the constructor of H5PEditor
+ */
+export interface IH5PEditorOptions {
+    /**
+     * Enables customization of looks and behavior See the documentation page on
+     * customization for more details.
+     */
+    customization?: {
+        /**
+         * This hook is called when the editor creates the list of files that
+         * are loaded when displaying the editor for a library.
+         * Note: This function should be immutable, so it shouldn't change the
+         * scripts and styles parameters but create new arrays!
+         * @param library the library that is currently being loaded
+         * @param scripts the original list of scripts that will be loaded
+         * @param styles the original list of styles that will be loaded
+         * @returns the altered lists of scripts and styles
+         */
+        alterLibraryFiles?: (
+            library: ILibraryName,
+            scripts: string[],
+            styles: string[]
+        ) => { scripts: string[]; styles: string[] };
+        /**
+         * This hook is called when the editor retrieves the language file of a
+         * library in a specific language. You can change the language file in
+         * the hook, e.g. by adding or removing entries.
+         * Note: This function should be immutable, so it shouldn't change the
+         * languageFile parameter but return a clone!
+         * Note: If you change the semantic structure of a library, you must
+         * also change the language files by using the this hook!
+         * @param library the library that is currently being loaded
+         * @param languageFile the original language file
+         * @param language the language for which the entries should be changed
+         * @returns the changed language file
+         */
+        alterLibraryLanguageFile?: (
+            library: ILibraryName,
+            languageFile: ILanguageFileEntry[],
+            language: string
+        ) => ILanguageFileEntry[];
+        /**
+         * This hook is called when the editor retrieves the semantics of a
+         * library. You can change the semantics in the hook, e.g. by adding or
+         * removing entries.
+         * Note: This function should be immutable, so it shouldn't change the
+         * semantics parameter but return a clone!
+         * Note: If you change the semantic structure of a library, you must
+         * also change its language files by using the
+         * `alterLibraryLanguageFile` hook!
+         * @param library the library that is currently being loaded
+         * @param semantics the original semantic structure
+         * @returns the changed semantic structure
+         */
+        alterLibrarySemantics?: (
+            library: ILibraryName,
+            semantics: ISemanticsEntry[]
+        ) => ISemanticsEntry[];
+        /**
+         * Lists of JavaScript and CSS files that should always be appended to
+         * the list of core editor files.
+         */
+        global?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+    };
+}
+
+/**
+ * The options that can be passed to the constructor of H5PPlayer
+ */
+export interface IH5PPlayerOptions {
+    /**
+     * Enables customization of looks and behavior See the documentation page on
+     * customization for more details.
+     */
+    customization?: {
+        /**
+         * This hook is called when the player creates the list of files that
+         * are loaded when playing content with the library.
+         * Note: This function should be immutable, so it shouldn't change the
+         * scripts and styles parameters but create new arrays!
+         * @param library the library that is currently being loaded
+         * @param scripts the original list of scripts that will be loaded
+         * @param styles the original list of styles that will be loaded
+         * @returns the altered lists of scripts and styles
+         */
+        alterLibraryFiles?: (
+            library: ILibraryName,
+            scripts: string[],
+            styles: string[]
+        ) => { scripts: string[]; styles: string[] };
+        /**
+         * Lists of JavaScript and CSS files that should always be appended to
+         * the list of core player files.
+         */
+        global?: {
+            scripts?: string[];
+            styles?: string[];
+        };
+    };
+}
+
+/**
+ * The structure of entries in language files. This is basically a subset of
+ * translatable ISemanticsEntry properties.
+ */
+export interface ILanguageFileEntry {
+    /**
+     * The default value of the field.
+     */
+    default?: string;
+    /**
+     * An explanation text below the widget shown in the editor
+     */
+    description?: string;
+    /**
+     * (for list) The name for a single entity in a list.
+     */
+    entity?: string;
+    /**
+     * (in lists only) defines a single field type in the list
+     */
+    field?: ILanguageFileEntry;
+    /**
+     * (in groups only) a list of field definitions
+     */
+    fields?: ILanguageFileEntry[];
+    /**
+     * A help text that can be collapsed.
+     */
+    important?: {
+        description: string;
+        example: string;
+    };
+    /**
+     * The text displayed in the editor for the entry.
+     */
+    label?: string;
+    /**
+     * (for select) the options to choose from
+     */
+    options?: any[] | { label: string }[];
+    /**
+     * The text displayed in a text box if the user has entered nothing so far.
+     */
+    placeholder?: string;
 }

@@ -1,0 +1,150 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "save-metadata.json",
+    "title": "saving metadata",
+    "description": "The metadata received from the client when saving content",
+    "type": "object",
+    "properties": {
+        "title": {
+            "description": "The title of the content contained within the package",
+            "type": "string",
+            "pattern": "^.{1,255}$"
+        },
+        "language": {
+            "description": "The language code the content was created in",
+            "type": "string",
+            "pattern": "^[-a-zA-Z]{1,10}$"
+        },
+        "preloadedDependencies": {
+            "description": "The h5p libraries that must be loaded before this content type can be displayed",
+            "type": "array",
+            "items": {
+                "$ref": "library-name-schema.json"
+            }
+        },
+        "mainLibrary": {
+            "description": "The content type of the content",
+            "type": "string",
+            "pattern": "^[$a-zA-Z_][0-9a-zA-Z_\\.$]{1,254}$"
+        },
+        "embedTypes": {
+            "description": "How the content has to be embedded into its surroundings",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["iframe", "div"]
+            }
+        },
+        "contentType": {
+            "type": "string",
+            "pattern": "^.{1,255}$"
+        },
+        "dynamicDependencies": {
+            "type": "array",
+            "items": {
+                "$ref": "library-name-schema.json"
+            }
+        },
+        "author": {
+            "$comment": "deprecated",
+            "type": "string",
+            "pattern": "^.{1,255}$"
+        },
+        "authors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "^.{1,255}$"
+                    },
+                    "role": {
+                        "type": "string",
+                        "pattern": "^\\w+$"
+                    }
+                },
+                "required": ["name", "role"]
+            }
+        },
+        "source": {
+            "type": "string",
+            "pattern": "^(http[s]?://.+)$"
+        },
+        "license": {
+            "type": "string",
+            "pattern": "^(CC BY|CC BY-SA|CC BY-ND|CC BY-NC|CC BY-NC-SA|CC BY-NC-ND|CC0 1\\.0|GNU GPL|PD|ODC PDDL|CC PDM|U|C)$"
+        },
+        "licenseVersion": {
+            "type": "string",
+            "pattern": "^(1\\.0|2\\.0|2\\.5|3\\.0|4\\.0)$"
+        },
+        "licenseExtras": {
+            "type": "string",
+            "regexp": {
+                "pattern": "^.{1,5000}$",
+                "flags": "s"
+            }
+        },
+        "yearsFrom": {
+            "type": "string",
+            "pattern": "^([0-9]{1,4})$"
+        },
+        "yearsTo": {
+            "type": "string",
+            "pattern": "^([0-9]{1,4})$"
+        },
+        "changes": {
+            "description": "The changelog",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "pattern": "^[0-9]{2}-[0-9]{2}-[0-9]{2} [0-9]{1,2}:[0-9]{2}:[0-9]{2}$"
+                    },
+                    "author": {
+                        "type": "string",
+                        "pattern": "^.{1,255}$"
+                    },
+                    "log": {
+                        "description": "The free text what was changed in the content",
+                        "type": "string",
+                        "regexp": {
+                            "pattern": "^.{1,5000}$",
+                            "flags": "s"
+                        }
+                    }
+                },
+                "required": ["date", "author", "log"]
+            }
+        },
+        "authorComments": {
+            "type": "string",
+            "regexp": {
+                "pattern": "^.{1,5000}$",
+                "flags": "s"
+            }
+        },
+        "w": {
+            "type": "string",
+            "pattern": "^[0-9]{1,4}$"
+        },
+        "h": {
+            "type": "string",
+            "pattern": "^[0-9]{1,4}$"
+        },
+        "metaKeywords": {
+            "$comment": "deprecated",
+            "type": "string",
+            "pattern": "^.{1,}$"
+        },
+        "metaDescription": {
+            "$comment": "deprecated",
+            "type": "string",
+            "pattern": "^.{1,}$"
+        }
+    },
+    "required": ["title"]
+}

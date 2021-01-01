@@ -6,7 +6,6 @@ import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
 import LibraryName from './LibraryName';
 import {
-    ILibraryStorage,
     IContentStorage,
     ContentId,
     IContentMetadata,
@@ -22,15 +21,20 @@ import { generalizedSanitizeFilename } from './implementation/utils';
 const log = new Logger('PackageExporter');
 
 /**
- * Offers functionality to create .h5p files from content that is stored in the system.
+ * Offers functionality to create .h5p files from content that is stored in the
+ * system.
  */
 export default class PackageExporter {
     /**
-     * @param libraryStorage
-     * @param contentStorage (optional) Only needed if you want to use the PackageExporter to copy content from a package (e.g. Upload option in the editor)
+     * @param libraryManager
+     * @param contentStorage (optional) Only needed if you want to use the
+     * PackageExporter to copy content from a package (e.g. Upload option in the
+     * editor)
      */
     constructor(
-        private libraryStorage: ILibraryStorage,
+        // we don't use content storage directly as we want the
+        // alterLibrarySemantics hook to work
+        private libraryManager: LibraryManager,
         private contentStorage: IContentStorage = null,
         { exportMaxContentPathLength }: { exportMaxContentPathLength: number }
     ) {
@@ -41,10 +45,12 @@ export default class PackageExporter {
     private maxContentPathLength: number;
 
     /**
-     * Creates a .h5p-package for the specified content file and pipes it to the stream.
-     * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
+     * Creates a .h5p-package for the specified content file and pipes it to the
+     * stream. Throws H5pErrors if something goes wrong. The contents of the
+     * stream should be disregarded then.
      * @param contentId The contentId for which the package should be created.
-     * @param outputStream The stream that the package is written to (e.g. the response stream fo Express)
+     * @param outputStream The stream that the package is written to (e.g. the
+     * response stream fo Express)
      */
     public async createPackage(
         contentId: ContentId,
@@ -98,7 +104,8 @@ export default class PackageExporter {
     }
 
     /**
-     * Adds the files inside the content directory to the zip file. Does not include content.json!
+     * Adds the files inside the content directory to the zip file. Does not
+     * include content.json!
      * @param contentId the contentId of the content
      * @param user the user who wants to export
      * @param outputZipFile the file to write to
@@ -133,7 +140,8 @@ export default class PackageExporter {
     }
 
     /**
-     * Adds the library files to the zip file that are required for the content to be playable.
+     * Adds the library files to the zip file that are required for the content
+     * to be playable.
      */
     private async addLibraryFiles(
         metadata: IContentMetadata,
@@ -141,7 +149,9 @@ export default class PackageExporter {
     ): Promise<void> {
         log.info(`adding library files`);
         {
-            const dependencyGetter = new DependencyGetter(this.libraryStorage);
+            const dependencyGetter = new DependencyGetter(
+                this.libraryManager.libraryStorage
+            );
             const dependencies = await dependencyGetter.getDependentLibraries(
                 metadata.preloadedDependencies
                     .concat(metadata.editorDependencies || [])
@@ -149,10 +159,10 @@ export default class PackageExporter {
                 { editor: true, preloaded: true }
             );
             for (const dependency of dependencies) {
-                const files = await this.libraryStorage.listFiles(dependency);
+                const files = await this.libraryManager.listFiles(dependency);
                 for (const file of files) {
                     outputZipFile.addReadStream(
-                        await this.libraryStorage.getFileStream(
+                        await this.libraryManager.getFileStream(
                             dependency,
                             file
                         ),
@@ -164,8 +174,9 @@ export default class PackageExporter {
     }
 
     /**
-     * Checks if a piece of content exists and if the user has download permissions for it.
-     * Throws an exception with the respective error message if this is not the case.
+     * Checks if a piece of content exists and if the user has download
+     * permissions for it. Throws an exception with the respective error message
+     * if this is not the case.
      */
     private async checkAccess(
         contentId: ContentId,
@@ -210,7 +221,8 @@ export default class PackageExporter {
     }
 
     /**
-     * Gets the metadata for the piece of content (h5p.json) and also creates a file stream for it.
+     * Gets the metadata for the piece of content (h5p.json) and also creates a
+     * file stream for it.
      */
     private async getMetadata(
         contentId: ContentId,
@@ -257,9 +269,7 @@ export default class PackageExporter {
         // to avoid duplicate filenames
         const usedFilenames: { [filename: string]: boolean } = {};
 
-        const contentScanner = new ContentFileScanner(
-            new LibraryManager(this.libraryStorage)
-        );
+        const contentScanner = new ContentFileScanner(this.libraryManager);
         const files = await contentScanner.scanForFiles(
             parameters,
             metadata.preloadedDependencies.find(

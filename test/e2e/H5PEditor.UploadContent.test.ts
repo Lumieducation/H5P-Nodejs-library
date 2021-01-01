@@ -22,6 +22,6 @@ describe('e2e test: upload content and save', () => {
         .filter((f) => f !== 'H5P.Audio.h5p')) {
         it(`uploading and then saving ${file}`, async () => {
             await uploadHelpers.uploadSave(path.join(examplesPath, file));
-        }, 60000);
+        }, 30000);
     }
 });

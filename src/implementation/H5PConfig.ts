@@ -32,6 +32,29 @@ export default class H5PConfig implements IH5PConfig {
         minor: 24
     };
     public coreUrl: string = '/core';
+    public customization: {
+        global: {
+            editor?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+            player?: {
+                scripts?: string[];
+                styles?: string[];
+            };
+        };
+    } = {
+        global: {
+            editor: {
+                scripts: [],
+                styles: []
+            },
+            player: {
+                scripts: [],
+                styles: []
+            }
+        }
+    };
     public disableFullscreen: boolean = false;
     public downloadUrl: string = '/download';
     public editorAddons?: {
@@ -90,6 +113,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('exportMaxContentPathLength');
+        await this.loadSettingFromStorage('customizing');
         await this.loadSettingFromStorage('baseUrl');
         return this;
     }
@@ -115,6 +139,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
         await this.saveSettingToStorage('exportMaxContentPathLength');
+        await this.saveSettingToStorage('customizing');
     }
 
     /**
