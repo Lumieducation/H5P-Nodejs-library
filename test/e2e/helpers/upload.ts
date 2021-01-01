@@ -100,6 +100,7 @@ export async function uploadSave(file: string): Promise<void> {
         });
     }, file);
     await contentFrame.waitForSelector('#upload');
+    await contentFrame.focus('#upload');
     await contentFrame.click('#upload');
     await contentFrame.waitForSelector(".input-wrapper input[type='file']");
     const uploadHandle = await contentFrame.$(
@@ -107,6 +108,7 @@ export async function uploadSave(file: string): Promise<void> {
     );
     await uploadHandle.uploadFile(file);
     await contentFrame.waitForSelector('button.use-button');
+    await contentFrame.focus('button.use-button');
     await contentFrame.click('button.use-button');
 
     // Wait until the file was validated.
@@ -130,6 +132,7 @@ export async function uploadSave(file: string): Promise<void> {
         waitUntil: ['load', 'networkidle0'],
         timeout: 30000
     });
+    await page.focus('#save-h5p');
     await page.click('#save-h5p');
     await navPromise;
 }
