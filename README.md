@@ -43,6 +43,8 @@ h5p-nodejs-library](docs/architecture.md)
 
 [Enabling addon support](docs/addons.md)
 
+[Performance optimizations](docs/performance-optimizations.md)
+
 ## Trying out the demo
 
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)

@@ -152,7 +152,7 @@ There are already default implementations that you can use:
 -   There is a implementation of the content storage for MongoDB and
     S3-compatible storage systems. Check out more information [in the
     documentation page](/docs/mongo-s3-content-storage.md).
--   There is a implementation of the temporary file storage for S3-comptaible
+-   There is a implementation of the temporary file storage for S3-compatible
     storage system. Check out more information [in the documentation
     page](/docs/s3-temporary-file-storage.md).
 
