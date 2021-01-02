@@ -101,25 +101,6 @@ describe('SemanticsEnforcer', () => {
         await compare('Hello &amp; world!', 'Hello &amp; world!');
     });
 
-    it('escapes dangerous characters in simple text', async () => {
-        await compare('Hello & world!', 'Hello &amp; world!');
-    });
-
-    it("strips html tags from text that doesn't allow html", async () => {
-        await compare(
-            '<script>alert("Danger!");</script>Hello world!',
-            '&lt;script&gt;alert(&quot;Danger!&quot;);&lt;/script&gt;Hello world!'
-        );
-        await compare(
-            "<b onmouseover=alert('XSS testing!')></b>",
-            '&lt;b onmouseover=alert(&#39;XSS testing!&#39;)&gt;&lt;/b&gt;'
-        );
-        await compare(
-            "javascript:/*--></title></style></textarea></script></xmp><svg/onload='+/\"/+/onmouseover=1/+/[*/[]/+alert(1)//'>",
-            'javascript:/*--&gt;&lt;/title&gt;&lt;/style&gt;&lt;/textarea&gt;&lt;/script&gt;&lt;/xmp&gt;&lt;svg/onload=&#39;+/&quot;/+/onmouseover=1/+/[*/[]/+alert(1)//&#39;&gt;'
-        );
-    });
-
     it('strips dangerous html tags from text that allows html', async () => {
         await compare(
             '<script>alert("Danger!");</script>Hello world!',

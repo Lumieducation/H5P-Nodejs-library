@@ -1,5 +1,4 @@
 import sanitizeHtml from 'sanitize-html';
-import { escape, unescape } from 'html-escaper';
 
 import { ContentScanner } from './ContentScanner';
 import LibraryManager from './LibraryManager';
@@ -239,12 +238,6 @@ export default class SemanticsEnforcer {
                 },
                 allowedStyles: { '*': allowedStyles }
             });
-        } else {
-            log.debug('Filtering out all HTML tags');
-            // Escape all HTML tags if the field doesn't allow HTML in general.
-            // We avoid double escaping like &amp; becoming &amp;amp; by
-            // unescaping first.
-            newText = escape(unescape(newText));
         }
 
         // Check if string has the required length
