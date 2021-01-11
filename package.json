@@ -119,7 +119,7 @@
         "axios-mock-adapter": "1.19.0",
         "body-parser": "1.19.0",
         "commitlint": "11.0.0",
-        "express-fileupload": "1.2.0",
+        "express-fileupload": "1.2.1",
         "express": "4.17.1",
         "husky": "4.3.7",
         "i18next-fs-backend": "1.0.7",
