@@ -1,0 +1,13 @@
+{
+  "semantics": [
+    {
+      "label": "Texte des voeux",
+      "default": "Meilleurs voeux!",
+      "description": "Les félicitaions ou voeux qui seront affichés."
+    },
+    {
+      "label": "Ajouter une image",
+      "description": "Image affichée sur le carte. Optionel."
+    }
+  ]
+}

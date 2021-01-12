@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.base.json",
+    "include": ["src/**/*", "test/**/*", "examples/**/*"],
+    "compilerOptions": {
+        "outDir": "./build-ide",
+        "jsx": "react"
+    }
+}

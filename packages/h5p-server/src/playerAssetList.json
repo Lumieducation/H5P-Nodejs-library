@@ -1,0 +1,22 @@
+{
+    "scripts": {
+        "core": [
+            "js/jquery.js",
+            "js/h5p.js",
+            "js/h5p-event-dispatcher.js",
+            "js/h5p-x-api-event.js",
+            "js/h5p-x-api.js",
+            "js/h5p-content-type.js",
+            "js/h5p-confirmation-dialog.js",
+            "js/h5p-action-bar.js",
+            "js/request-queue.js"
+        ]
+    },
+    "styles": {
+        "core": [
+            "styles/h5p.css",
+            "styles/h5p-confirmation-dialog.css",
+            "styles/h5p-core-button.css"
+        ]
+    }
+}

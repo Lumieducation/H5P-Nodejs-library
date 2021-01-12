@@ -1,0 +1,10 @@
+{
+    "fetchingDisabled": 0,
+    "uuid": "",
+    "siteType": "local",
+    "sendUsageStatistics": false,
+    "hubRegistrationEndpoint": "https://customhub",
+    "hubContentTypesEndpoint": "https://customContentTypesEndpoint",
+    "contentTypeCacheRefreshInterval": 86400000,
+    "enableLrsContentTypes": true
+}

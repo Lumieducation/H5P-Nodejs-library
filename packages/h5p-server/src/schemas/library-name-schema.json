@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "library-name-schema.json",
+    "title": "h5p library reference",
+    "description": "A combination of machine name and major + minor version",
+    "type": "object",
+    "properties": {
+        "machineName": {
+            "type": "string",
+            "pattern": "^[\\w0-9\\-\\.]{1,255}$"
+        },
+        "majorVersion": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 99999
+                },
+                {
+                    "type": "string",
+                    "pattern": "^[0-9]{1,5}$"
+                }
+            ]
+        },
+        "minorVersion": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 99999
+                },
+                {
+                    "type": "string",
+                    "pattern": "^[0-9]{1,5}$"
+                }
+            ]
+        }
+    },
+    "required": ["machineName", "majorVersion", "minorVersion"]
+}

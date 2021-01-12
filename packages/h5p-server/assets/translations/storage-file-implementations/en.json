@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Cannot add file {{filename}} to content with id {{id}}: Content with does not exist.",
+    "add-library-file-not-installed": "Can't add {{filename}} to library {{libraryName}} because the library has not been installed.",
+    "clear-library-not-found": "Can't clear library {{libraryName}} because the library has not been installed.",
+    "delete-content-file-not-found": "Cannot delete file {{filename}}: It does not exist.",
+    "delete-content-not-found": "Cannot delete content: It does not exist.",
+    "error-creating-content": "Could not create content.",
+    "error-generating-content-id": "Could not generate id for new content.",
+    "error-generating-unique-temporary-filename": "Cannot determine a unique filename for {{name}}",
+    "error-updating-metadata": "The additional metadata of the library {{library}} cannot be updated. Error: {{error}}",
+    "get-library-metadata-not-installed": "Can't get metadata for library {{libraryName}} because the library has not been installed.",
+    "illegal-absolute-filename": "Absolute paths in filenames are not allowed: {{filename}} is illegal",
+    "illegal-relative-filename": "Relative paths in filenames are not allowed: {{filename}} is illegal",
+    "install-library-already-installed": "Library {{libraryName}} has already been installed.",
+    "remove-library-library-missing": "Library {{libraryName}} is not installed on the system.",
+    "temporary-file-not-found": "The file {{filename}} is not accessible for user {{userId}} or does not exist.",
+    "update-library-library-missing": "Library {{libraryName}} can't be updated as it hasn't been installed yet."
+}
