@@ -1,5 +1,5 @@
 {
-    "name": "h5p-server",
+    "name": "@lumieducation/h5p-server",
     "version": "6.2.0",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
@@ -16,7 +16,6 @@
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:h5p": "sh scripts/install.sh",
         "prepare": "npm run download:content-type-cache && npm run download:h5p && npm run build",
-        "semantic-release": "semantic-release",
         "start:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d",
         "start": "CACHE=in-memory node build/examples/express.js",
         "stop:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml down",
