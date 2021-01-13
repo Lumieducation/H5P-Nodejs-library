@@ -8,7 +8,7 @@ import ContentManager from '../src/ContentManager';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import { IContentMetadata } from '../src/types';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('ContentManager', () => {
     const mockupMetadata: IContentMetadata = {

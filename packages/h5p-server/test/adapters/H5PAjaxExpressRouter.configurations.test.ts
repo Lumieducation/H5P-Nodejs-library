@@ -7,7 +7,7 @@ import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
 
-import User from '../../examples/User';
+import User from '../User';
 import * as H5P from '../../src';
 import H5PAjaxExpressRouter from '../../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
 

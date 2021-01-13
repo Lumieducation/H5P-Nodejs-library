@@ -8,7 +8,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import supertest from 'supertest';
 
-import User from '../../examples/User';
+import User from '../User';
 import * as H5P from '../../src';
 import { ILibraryAdministrationOverviewItem } from '../../src/types';
 import LibraryName from '../../src/LibraryName';

@@ -11,7 +11,7 @@ import LibraryManager from '../src/LibraryManager';
 import PackageExporter from '../src/PackageExporter';
 import PackageImporter from '../src/PackageImporter';
 
-import User from '../examples/User';
+import User from './User';
 
 export async function importAndExportPackage(
     packagePath: string,

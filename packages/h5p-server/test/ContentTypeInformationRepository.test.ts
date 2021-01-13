@@ -12,7 +12,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
 
-import User from '../examples/User';
+import User from './User';
 
 const axiosMock = new axiosMockAdapter(axios);
 

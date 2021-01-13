@@ -12,7 +12,7 @@ import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import { ContentId, IUser } from '../src/types';
 
-import User from '../examples/User';
+import User from './User';
 
 import { getContentDetails } from './ContentScanner.test';
 

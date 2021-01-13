@@ -1,4 +1,4 @@
-import { IUser } from '@lumieducation/h5p-server/build/src';
+import { IUser } from '../src/';
 
 /**
  * Example user object

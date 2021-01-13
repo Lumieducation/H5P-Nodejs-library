@@ -9,7 +9,7 @@ import H5PConfig from '../src/implementation/H5PConfig';
 import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import TemporaryFileManager from '../src/TemporaryFileManager';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('TemporaryFileManager', () => {
     it('stores files and lets you retrieve them', async () => {

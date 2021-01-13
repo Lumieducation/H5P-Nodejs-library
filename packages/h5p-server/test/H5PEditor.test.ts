@@ -5,7 +5,7 @@ import H5PEditor from '../src/H5PEditor';
 import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('H5PEditor: general', () => {
     const axiosMock = new axiosMockAdapter(axios);

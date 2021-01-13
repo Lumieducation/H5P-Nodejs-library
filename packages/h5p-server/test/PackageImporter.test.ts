@@ -11,7 +11,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('package importer', () => {
     it('installs libraries', async () => {

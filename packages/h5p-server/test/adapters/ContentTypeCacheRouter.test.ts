@@ -7,7 +7,7 @@ import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 
-import User from '../../examples/User';
+import User from '../User';
 import * as H5P from '../../src';
 import ContentTypeCacheExpressRouter from '../../src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 

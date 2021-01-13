@@ -10,7 +10,7 @@ import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 
 import MongoS3ContentStorage from '../../../src/implementation/db/MongoS3ContentStorage';
-import User from '../../../examples/User';
+import User from '../../User';
 import { IContentMetadata, Permission } from '../../../src/types';
 import initS3 from '../../../src/implementation/db/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';

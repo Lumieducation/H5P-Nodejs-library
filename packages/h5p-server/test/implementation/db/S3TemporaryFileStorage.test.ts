@@ -9,7 +9,7 @@ import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 
-import User from '../../../examples/User';
+import User from '../../User';
 import { Permission } from '../../../src/types';
 import initS3 from '../../../src/implementation/db/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';

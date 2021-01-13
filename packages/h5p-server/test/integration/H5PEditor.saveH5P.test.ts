@@ -4,7 +4,7 @@ import { withDir } from 'tmp-promise';
 
 import { createH5PEditor } from '../helpers/H5PEditor';
 
-import User from '../../examples/User';
+import User from '../../h5p-examples/User';
 import { ContentMetadata } from '../../src/ContentMetadata';
 
 describe('H5PEditor.saveH5P()', () => {

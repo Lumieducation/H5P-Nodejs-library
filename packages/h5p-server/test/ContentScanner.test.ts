@@ -11,7 +11,7 @@ import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import { ContentId, ILibraryName, IUser } from '../src/types';
 
-import User from '../examples/User';
+import User from './User';
 
 async function createContentScanner(
     file: string,

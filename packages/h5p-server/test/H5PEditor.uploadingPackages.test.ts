@@ -2,7 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
 
-import User from '../examples/User';
+import User from './User';
 
 import { createH5PEditor } from './helpers/H5PEditor';
 

@@ -5,7 +5,7 @@ import { withDir } from 'tmp-promise';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import { IContentMetadata } from '../src/types';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('FileContentStorage (repository that saves content objects to a local directory)', () => {
     function createMetadataMock(): IContentMetadata {

@@ -19,7 +19,7 @@ import { fsImplementations, H5PEditor } from '../src';
 import H5PConfig from '../src/implementation/H5PConfig';
 import PackageValidator from '../src/PackageValidator';
 
-import User from '../examples/User';
+import User from './User';
 
 describe('H5PEditor', () => {
     function createH5PEditor(
