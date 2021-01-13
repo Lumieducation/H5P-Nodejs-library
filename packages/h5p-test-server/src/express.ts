@@ -208,10 +208,7 @@ const start = async () => {
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
 
-    server.use(
-        '/client',
-        express.static(path.resolve('build/examples/client'))
-    );
+    server.use('/client', express.static(path.resolve('build/client')));
 
     // STUB
     server.post('/h5p/contentUserData', (req, res) => {
