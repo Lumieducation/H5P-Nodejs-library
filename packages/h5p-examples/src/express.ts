@@ -56,7 +56,6 @@ const start = async () => {
             // i18next, you must preload all languages you want to use!
         });
 
-    console.log(path.resolve(''));
     // Load the configuration file from the local file system
     const config = await new H5P.H5PConfig(
         new H5P.fsImplementations.JsonStorage(path.resolve('src/config.json'))
