@@ -3,7 +3,7 @@ import React from 'react';
 
 // We reference the build directory (which contains a .d.ts file) to avoid
 // including the whole server part of the library in the build of the client.
-import type { ILibraryAdministrationOverviewItem } from '../../build/src';
+import type { ILibraryAdministrationOverviewItem } from '@lumieducation/h5p-server';
 
 // The .js references are necessary for requireJs to work in the browser.
 import LibraryDetails from './LibraryDetailsComponent.js';

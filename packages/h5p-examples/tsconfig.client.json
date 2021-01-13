@@ -1,9 +1,9 @@
 {
     "extends": "./tsconfig.base.json",
-    "include": ["examples/client/**/*.ts", "examples/client/**/*.tsx"],
+    "include": ["src/client/**/*.ts", "src/client/**/*.tsx"],
     "compilerOptions": {
         "module": "AMD",
-        "outDir": "./build/examples/client",
+        "outDir": "./build/client",
         "jsx": "react",
         "declaration": false
     }

@@ -1,13 +1,5 @@
 {
-    "exclude": ["node_modules"],
-    "include": [
-        "packages/h5p-server/src/**/*",
-        "packages/h5p-server/test/**/*",
-        "packages/h5p-examples/src/**/*"
-    ],
     "compilerOptions": {
-        "outDir": "./build-ide",
-        "jsx": "react",
         "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
@@ -19,5 +11,6 @@
         "baseUrl": "./",
         "resolveJsonModule": true,
         "declaration": true
-    }
+    },
+    "exclude": ["node_modules"]
 }

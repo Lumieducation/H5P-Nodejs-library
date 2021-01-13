@@ -1,6 +1,6 @@
 // tslint:disable-next-line: no-implicit-dependencies
 import React from 'react';
-import { IInstalledLibrary } from '../../build/src';
+import { IInstalledLibrary } from '@lumieducation/h5p-server';
 
 const yesNo = (value: boolean | 0 | 1) =>
     value ? (

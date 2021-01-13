@@ -1,8 +1,8 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
 
-import * as H5P from '../src';
-import dbImplementations from '../src/implementation/db';
+import * as H5P from '@lumieducation/h5p-server';
+import dbImplementations from '@lumieducation/h5p-server/build/src/implementation/db';
 
 /**
  * Create a H5PEditor object.

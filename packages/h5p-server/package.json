@@ -17,7 +17,6 @@
         "download:h5p": "sh scripts/install.sh",
         "prepare": "npm run download:content-type-cache && npm run download:h5p && npm run build",
         "start:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d",
-        "start": "CACHE=in-memory node build/examples/express.js",
         "stop:dbs": "docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml down",
         "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",

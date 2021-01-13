@@ -3,7 +3,7 @@
 import type {
     IInstalledLibrary,
     ILibraryAdministrationOverviewItem
-} from '../../build/src';
+} from '@lumieducation/h5p-server';
 
 /**
  * The data model used to display the library list.

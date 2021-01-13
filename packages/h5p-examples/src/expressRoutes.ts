@@ -1,10 +1,10 @@
 import express from 'express';
 
-import * as H5P from '../src';
+import * as H5P from '@lumieducation/h5p-server';
 import {
     IRequestWithUser,
     IRequestWithLanguage
-} from '../src/adapters/expressTypes';
+} from '@lumieducation/h5p-server/build/src/adapters/expressTypes';
 
 /**
  * @param h5pEditor

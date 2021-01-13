@@ -7,12 +7,12 @@ import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
 
-import h5pAjaxExpressRouter from '../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
-import libraryAdministrationExpressRouter from '../src/adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
-import contentTypeCacheExpressRouter from '../src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
-import { IRequestWithUser } from '../src/adapters/expressTypes';
+import h5pAjaxExpressRouter from '@lumieducation/h5p-server/build/src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
+import libraryAdministrationExpressRouter from '@lumieducation/h5p-server/build/src/adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
+import contentTypeCacheExpressRouter from '@lumieducation/h5p-server/build/src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
+import { IRequestWithUser } from '@lumieducation/h5p-server/build/src/adapters/expressTypes';
 
-import * as H5P from '../src';
+import * as H5P from '@lumieducation/h5p-server';
 import expressRoutes from './expressRoutes';
 import startPageRenderer from './startPageRenderer';
 import User from './User';
@@ -58,9 +58,7 @@ const start = async () => {
 
     // Load the configuration file from the local file system
     const config = await new H5P.H5PConfig(
-        new H5P.fsImplementations.JsonStorage(
-            path.resolve('examples/config.json')
-        )
+        new H5P.fsImplementations.JsonStorage(path.resolve('src/config.json'))
     ).load();
 
     // The H5PEditor object is central to all operations of h5p-nodejs-library
