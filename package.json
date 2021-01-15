@@ -121,7 +121,7 @@
         "commitlint": "11.0.0",
         "express-fileupload": "1.2.1",
         "express": "4.17.1",
-        "husky": "4.3.7",
+        "husky": "4.3.8",
         "i18next-fs-backend": "1.0.7",
         "i18next-http-middleware": "3.0.6",
         "i18next": "19.8.4",
