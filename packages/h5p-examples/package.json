@@ -17,6 +17,7 @@
     "license": "ISC",
     "dependencies": {
         "@lumieducation/h5p-server": "6.2.0",
+        "@lumieducation/h5p-express-adapter": "6.2.0",
         "body-parser": "1.19.0",
         "cache-manager": "3.4.0",
         "cache-manager-redis-store": "2.0.0",

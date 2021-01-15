@@ -7,10 +7,12 @@ import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
 
-import h5pAjaxExpressRouter from '@lumieducation/h5p-server/build/src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
-import libraryAdministrationExpressRouter from '@lumieducation/h5p-server/build/src/adapters/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
-import contentTypeCacheExpressRouter from '@lumieducation/h5p-server/build/src/adapters/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
-import { IRequestWithUser } from '@lumieducation/h5p-server/build/src/adapters/expressTypes';
+import {
+    h5pAjaxExpressRouter,
+    libraryAdministrationExpressRouter,
+    contentTypeCacheExpressRouter,
+    IRequestWithUser
+} from '@lumieducation/h5p-express-adapter';
 
 import * as H5P from '@lumieducation/h5p-server';
 import expressRoutes from './expressRoutes';
