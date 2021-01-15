@@ -1,5 +1,5 @@
 {
-    "name": "@lumieducation/h5p-express-adapter",
+    "name": "@lumieducation/h5p-express",
     "version": "6.2.0",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",

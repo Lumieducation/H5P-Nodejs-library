@@ -12,7 +12,7 @@ import {
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter,
     IRequestWithUser
-} from '@lumieducation/h5p-express-adapter';
+} from '@lumieducation/h5p-express';
 
 import * as H5P from '@lumieducation/h5p-server';
 import expressRoutes from './expressRoutes';

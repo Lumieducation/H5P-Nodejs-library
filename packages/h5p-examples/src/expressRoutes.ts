@@ -4,7 +4,7 @@ import * as H5P from '@lumieducation/h5p-server';
 import {
     IRequestWithUser,
     IRequestWithLanguage
-} from '@lumieducation/h5p-express-adapter';
+} from '@lumieducation/h5p-express';
 
 /**
  * @param h5pEditor

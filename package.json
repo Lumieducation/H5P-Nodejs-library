@@ -8,7 +8,7 @@
     "scripts": {
         "build:watch": "npm run build:watch --prefix packages/h5p-server",
         "build": "npm run build --prefix packages/h5p-server && npm run build --prefix packages/h5p-examples",
-        "build:h5p-express-adapter": "npm run build --prefix packages/h5p-express-adapter",
+        "build:h5p-express": "npm run build --prefix packages/h5p-express",
         "build:h5p-examples": "npm run build --prefix packages/h5p-examples",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
         "format:check": "npx prettier --check \"packages/*/{src,test,examples}/**/*.ts\"",
@@ -24,16 +24,16 @@
         "test:server+upload": "npm run test:server+upload --repfix packages/h5p-server",
         "test:upload": "npm run test:upload --prefix packages/h5p-server",
         "test:watch": "npm run test:watch --prefix packages/h5p-server",
-        "test:watch:h5p-express-adapter": "npm run test:watch --prefix packages/h5p-express-adapter",
-        "test": "npm test --prefix packages/h5p-server && npm test --prefix packages/h5p-express-adapter",
-        "test:h5p-express-adapter": "npm test --prefix packages/h5p-express-adapter",
+        "test:watch:h5p-express": "npm run test:watch --prefix packages/h5p-express",
+        "test": "npm test --prefix packages/h5p-server && npm test --prefix packages/h5p-express",
+        "test:h5p-express": "npm test --prefix packages/h5p-express",
         "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version",
         "release:build": "lerna run --parallel build",
         "release:publish": "lerna publish from-package --dist-tag next --contents build",
         "release:publish:dry-run": "lerna publish from-package --dist-tag next --contents build --registry=\"http://localhost:4873/\"",
         "test:e2e:tests": "npm run test:e2e:tests --prefix packages/h5p-examples",
         "test:e2e": "npm run test:e2e --prefix packages/h5p-examples",
-        "publish:h5p-express-adapter": "cd packages/h5p-express-adapter && npm publish"
+        "publish:h5p-express": "cd packages/h5p-express && npm publish"
     },
     "release": {
         "branch": "master"
