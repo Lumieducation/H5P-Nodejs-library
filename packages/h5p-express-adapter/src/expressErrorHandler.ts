@@ -1,6 +1,8 @@
-import AggregateH5pError from '../helpers/AggregateH5pError';
-import AjaxErrorResponse from '../helpers/AjaxErrorResponse';
-import H5pError from '../helpers/H5pError';
+import {
+    AggregateH5pError,
+    AjaxErrorResponse
+} from '@lumieducation/h5p-server';
+import { H5pError } from '@lumieducation/h5p-server';
 import { Request, Response, NextFunction } from 'express';
 import { IRequestWithTranslator } from './expressTypes';
 

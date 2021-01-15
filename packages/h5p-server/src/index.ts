@@ -7,6 +7,10 @@ import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import H5PAjaxEndpoint from './H5PAjaxEndpoint';
+import ContentTypeCache from './ContentTypeCache';
+
+import AggregateH5pError from './helpers/AggregateH5pError';
+import AjaxErrorResponse from './helpers/AjaxErrorResponse';
 
 import H5PConfig from './implementation/H5PConfig';
 import fs from './implementation/fs';
@@ -61,6 +65,9 @@ const cacheImplementations = {
 
 export {
     // classes
+    AggregateH5pError,
+    AjaxErrorResponse,
+    ContentTypeCache,
     H5PAjaxEndpoint,
     H5PEditor,
     H5pError,

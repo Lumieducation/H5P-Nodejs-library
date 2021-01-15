@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { IUser } from '../types';
+import { IUser } from '@lumieducation/h5p-server';
 
 export interface IRequestWithLanguage extends Request {
     language: string;

@@ -1,6 +1,6 @@
 import { Router, static as ExpressStatic } from 'express';
 
-import { H5PEditor } from '../..';
+import { H5PEditor } from '@lumieducation/h5p-server';
 import {
     errorHandler,
     undefinedOrTrue,

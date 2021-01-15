@@ -1,12 +1,12 @@
 import * as express from 'express';
 
 import {
+    H5PEditor,
+    H5pError,
     IInstalledLibrary,
-    ILibraryAdministrationOverviewItem
-} from '../../types';
-import H5pError from '../../helpers/H5pError';
-import H5PEditor from '../../H5PEditor';
-import LibraryAdministration from '../../LibraryAdministration';
+    ILibraryAdministrationOverviewItem,
+    LibraryAdministration
+} from '@lumieducation/h5p-server';
 
 export default class LibraryAdministrationExpressController {
     constructor(

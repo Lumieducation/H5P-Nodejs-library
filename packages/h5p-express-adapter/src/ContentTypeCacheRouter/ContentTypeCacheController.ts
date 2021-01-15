@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import ContentTypeCache from '../../ContentTypeCache';
+import { ContentTypeCache } from '@lumieducation/h5p-server';
 
 export default class ContentTypeCacheController {
     constructor(protected contentTypeCache: ContentTypeCache) {}

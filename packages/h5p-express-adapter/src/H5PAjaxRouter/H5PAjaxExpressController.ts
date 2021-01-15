@@ -1,8 +1,11 @@
 import * as express from 'express';
-import { H5PEditor, H5pError } from '../..';
+import {
+    H5PEditor,
+    H5pError,
+    H5PAjaxEndpoint
+} from '@lumieducation/h5p-server';
 import { Readable } from 'stream';
 import { IRequestWithUser, IActionRequest } from '../expressTypes';
-import H5PAjaxEndpoint from '../../H5PAjaxEndpoint';
 
 /**
  * This class is part of the Express adapter for the H5PAjaxEndpoint class and

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { H5PEditor } from '../..';
+import { H5PEditor, LibraryAdministration } from '@lumieducation/h5p-server';
 import LibraryAdministrationExpressController from './LibraryAdministrationController';
 import LibraryAdministrationExpressRouterOptions from './LibraryAdministrationExpressRouterOptions';
 import {
@@ -8,7 +8,6 @@ import {
     catchAndPassOnErrors,
     undefinedOrTrue
 } from '../expressErrorHandler';
-import LibraryAdministration from '../../LibraryAdministration';
 
 export default function (
     h5pEditor: H5PEditor,

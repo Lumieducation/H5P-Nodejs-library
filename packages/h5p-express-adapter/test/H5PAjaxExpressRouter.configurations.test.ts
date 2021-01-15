@@ -7,14 +7,14 @@ import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
 
-import User from '../User';
-import * as H5P from '../../src';
-import H5PAjaxExpressRouter from '../../src/adapters/H5PAjaxRouter/H5PAjaxExpressRouter';
+import User from './User';
+import * as H5P from '@lumieducation/h5p-server';
+import H5PAjaxExpressRouter from '../src/H5PAjaxRouter/H5PAjaxExpressRouter';
 
 const axiosMock = new axiosMockAdapter(axios);
 interface RequestEx extends express.Request {
     language: string;
-    languages: string;
+    languages: string | string[];
     t: (id: string, replacements: any) => string;
     user: H5P.IUser;
 }
@@ -55,13 +55,13 @@ describe('Configuration of the Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require('../data/content-type-cache/registration.json')
+                require(`${__dirname}/data/content-type-cache/registration.json`)
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('../data/content-type-cache/real-content-types.json')
+                require(`${__dirname}/data/content-type-cache/real-content-types.json`)
             );
         app.use((req: RequestEx, res, next) => {
             req.user = user;

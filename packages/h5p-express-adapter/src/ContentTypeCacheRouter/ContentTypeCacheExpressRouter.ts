@@ -6,7 +6,7 @@ import {
     undefinedOrTrue
 } from '../expressErrorHandler';
 import ContentTypeCacheController from './ContentTypeCacheController';
-import ContentTypeCache from '../../ContentTypeCache';
+import { ContentTypeCache } from '@lumieducation/h5p-server';
 
 export default function (
     contentTypeCache: ContentTypeCache,
