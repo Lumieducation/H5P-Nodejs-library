@@ -14,7 +14,7 @@ import H5PAjaxExpressRouter from '../src/H5PAjaxRouter/H5PAjaxExpressRouter';
 const axiosMock = new axiosMockAdapter(axios);
 interface RequestEx extends express.Request {
     language: string;
-    languages: string | string[];
+    languages: any;
     t: (id: string, replacements: any) => string;
     user: H5P.IUser;
 }
