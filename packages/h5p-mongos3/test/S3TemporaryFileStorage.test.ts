@@ -9,12 +9,12 @@ import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 
-import User from '../../User';
-import { Permission } from '../../../src/types';
-import initS3 from '../../../src/implementation/db/initS3';
+import User from './User';
+import { Permission } from '@lumieducation/h5p-server';
+import initS3 from '../src/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
-import S3TemporaryFileStorage from '../../../src/implementation/db/S3TemporaryFileStorage';
-import { H5PConfig } from '../../../src';
+import S3TemporaryFileStorage from '../src/S3TemporaryFileStorage';
+import { H5PConfig } from '@lumieducation/h5p-server';
 
 describe('S3TemporaryFileStorage', () => {
     const stubUser = new User();

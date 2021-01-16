@@ -11,12 +11,12 @@ import {
     IFileStats,
     IUser,
     Permission,
-    ILibraryName
-} from '../../types';
-import Logger from '../../helpers/Logger';
-import H5pError from '../../helpers/H5pError';
+    ILibraryName,
+    H5pError,
+    LibraryName,
+    Logger
+} from '@lumieducation/h5p-server';
 import { validateFilename, sanitizeFilename } from './S3Utils';
-import LibraryName from '../../LibraryName';
 
 const log = new Logger('MongoS3ContentStorage');
 

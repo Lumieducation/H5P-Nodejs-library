@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-import Logger from '../../helpers/Logger';
+import { Logger } from '@lumieducation/h5p-server';
 
 const log = new Logger('initMongo');
 

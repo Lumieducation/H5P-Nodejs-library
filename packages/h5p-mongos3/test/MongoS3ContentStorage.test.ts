@@ -9,10 +9,10 @@ import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 
-import MongoS3ContentStorage from '../../../src/implementation/db/MongoS3ContentStorage';
-import User from '../../User';
-import { IContentMetadata, Permission } from '../../../src/types';
-import initS3 from '../../../src/implementation/db/initS3';
+import MongoS3ContentStorage from '../src/MongoS3ContentStorage';
+import User from './User';
+import { IContentMetadata, Permission } from '@lumieducation/h5p-server';
+import initS3 from '../src/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
 
 describe('MongoS3ContentStorage', () => {

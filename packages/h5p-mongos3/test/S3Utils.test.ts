@@ -1,4 +1,4 @@
-import { sanitizeFilename } from '../../src/implementation/db/S3Utils';
+import { sanitizeFilename } from '../src/S3Utils';
 
 describe('S3Utils', () => {
     describe('sanitizeFilename', () => {

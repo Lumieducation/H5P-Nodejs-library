@@ -1,6 +1,5 @@
-import Logger from '../../helpers/Logger';
-import H5pError from '../../helpers/H5pError';
-import { generalizedSanitizeFilename } from '../utils';
+import { H5pError, Logger, utils } from '@lumieducation/h5p-server';
+const generalizedSanitizeFilename = utils.generalizedSanitizeFilename;
 
 const log = new Logger('S3Utils');
 

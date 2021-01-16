@@ -11,9 +11,11 @@ import ContentTypeCache from './ContentTypeCache';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
+import Logger from './helpers/Logger';
 
 import H5PConfig from './implementation/H5PConfig';
 import fs from './implementation/fs';
+import * as utils from './implementation/utils';
 import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
@@ -76,6 +78,7 @@ export {
     InstalledLibrary,
     LibraryAdministration,
     LibraryName,
+    Logger,
     PackageExporter,
     // interfaces
     ContentId,
@@ -102,6 +105,7 @@ export {
     // implementations
     H5PConfig,
     fs,
+    utils,
     fsImplementations,
     cacheImplementations
 };

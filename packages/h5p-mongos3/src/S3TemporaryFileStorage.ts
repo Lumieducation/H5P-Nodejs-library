@@ -6,12 +6,12 @@ import {
     ITemporaryFile,
     Permission,
     IH5PConfig,
-    IFileStats
-} from '../../types';
+    IFileStats,
+    H5pError,
+    Logger
+} from '@lumieducation/h5p-server';
 import { ReadStream } from 'fs';
 import { validateFilename, sanitizeFilename } from './S3Utils';
-import Logger from '../../helpers/Logger';
-import H5pError from '../../helpers/H5pError';
 
 const log = new Logger('S3TemporaryFileStorage');
 
