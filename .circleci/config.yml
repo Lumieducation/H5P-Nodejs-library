@@ -3,9 +3,6 @@ orbs:
     coveralls: coveralls/coveralls@1.0.6
 jobs:
     install-build:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10
         steps:
@@ -40,9 +37,6 @@ jobs:
                       - build
 
     lint:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10
         steps:
@@ -52,9 +46,6 @@ jobs:
             - run: npm run lint
 
     format:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10
         steps:
@@ -64,9 +55,6 @@ jobs:
             - run: npm run format:check
 
     unit-tests:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10
         steps:
@@ -79,9 +67,6 @@ jobs:
                   flag_name: Unit tests
 
     integration-tests:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10-browsers
         steps:
@@ -94,9 +79,6 @@ jobs:
                   flag_name: Integration tests
 
     e2e-tests:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10-browsers
         steps:
@@ -106,9 +88,6 @@ jobs:
             - run: npm run test:e2e
 
     db-tests:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: circleci/node:10
             - image: circleci/mongo:latest
@@ -130,9 +109,6 @@ jobs:
                   flag_name: DB tests
 
     release:
-        filters:
-            branches:
-                only: refactor/monorepo
         docker:
             - image: 'circleci/node:10'
         steps:
