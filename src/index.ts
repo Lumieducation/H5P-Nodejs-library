@@ -39,6 +39,7 @@ import {
     ITemporaryFile,
     ITemporaryFileStorage,
     ITranslationFunction,
+    IUrlGenerator,
     IUser,
     Permission
 } from './types';
@@ -90,6 +91,7 @@ export {
     ITemporaryFile,
     ITemporaryFileStorage,
     ITranslationFunction,
+    IUrlGenerator,
     IUser,
     Permission,
     // implementations
