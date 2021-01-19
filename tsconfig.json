@@ -3,7 +3,11 @@
     "include": [
         "packages/h5p-server/src/**/*",
         "packages/h5p-server/test/**/*",
-        "packages/h5p-examples/src/**/*"
+        "packages/h5p-examples/src/**/*",
+        "packages/h5p-mongos3/src/**/*",
+        "packages/h5p-mongos3/test/**/*",
+        "packages/h5p-html-exporter/src/**/*",
+        "packages/h5p-html-exporter/test/**/*"
     ],
     "compilerOptions": {
         "outDir": "./build-ide",
