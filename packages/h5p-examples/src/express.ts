@@ -21,6 +21,8 @@ import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
+import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
+
 let tmpDir: DirectoryResult;
 
 const start = async () => {
@@ -186,7 +188,7 @@ const start = async () => {
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
-    const htmlExporter = new H5P.HtmlExporter(
+    const htmlExporter = new H5PHtmlExporter(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         h5pEditor.config,
