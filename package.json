@@ -109,7 +109,7 @@
         "@types/mongodb": "3.6.3",
         "@types/puppeteer": "5.4.2",
         "@types/react": "17.0.0",
-        "@types/sanitize-html": "1.27.0",
+        "@types/sanitize-html": "1.27.1",
         "@types/stream-buffers": "3.0.3",
         "@types/supertest": "2.0.10",
         "@types/uglify-js": "3.11.1",
