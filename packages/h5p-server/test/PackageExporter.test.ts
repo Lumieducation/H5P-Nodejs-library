@@ -104,7 +104,7 @@ export async function importAndExportPackage(
 describe('PackageExporter', () => {
     it('creates h5p packages', async () => {
         await importAndExportPackage(
-            path.resolve('test/data/validator/valid2.h5p')
+            path.resolve('../../test/data/validator/valid2.h5p')
         );
     });
 

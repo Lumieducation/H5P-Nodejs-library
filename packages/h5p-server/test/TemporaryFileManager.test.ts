@@ -27,7 +27,7 @@ describe('TemporaryFileManager', () => {
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
+                            '../../test/data/content-type-cache/real-content-types.json'
                         )
                     ),
                     user
@@ -67,7 +67,7 @@ describe('TemporaryFileManager', () => {
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
+                            '../../test/data/content-type-cache/real-content-types.json'
                         )
                     ),
                     user
@@ -76,7 +76,7 @@ describe('TemporaryFileManager', () => {
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
+                            '../../test/data/content-type-cache/real-content-types.json'
                         )
                     ),
                     user
@@ -104,7 +104,7 @@ describe('TemporaryFileManager', () => {
                         'expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
-                                'test/data/content-type-cache/real-content-types.json'
+                                '../../test/data/content-type-cache/real-content-types.json'
                             )
                         ),
                         user
@@ -118,7 +118,7 @@ describe('TemporaryFileManager', () => {
                         'non-expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
-                                'test/data/content-type-cache/real-content-types.json'
+                                '../../test/data/content-type-cache/real-content-types.json'
                             )
                         ),
                         user
@@ -167,7 +167,7 @@ describe('TemporaryFileManager', () => {
                     'real-content-types.json',
                     fsExtra.createReadStream(
                         path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
+                            '../../test/data/content-type-cache/real-content-types.json'
                         )
                     ),
                     user1

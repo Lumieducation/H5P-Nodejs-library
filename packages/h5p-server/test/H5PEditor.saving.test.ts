@@ -108,7 +108,7 @@ describe('H5PEditor', () => {
                 const user = new User();
 
                 const originalPath = path.resolve(
-                    'test/data/sample-content/content/earth.jpg'
+                    '../../test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = fsExtra.readFileSync(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
@@ -160,7 +160,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
@@ -207,7 +207,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
@@ -222,7 +222,7 @@ describe('H5PEditor', () => {
 
                 // save image
                 const originalPath = path.resolve(
-                    'test/data/sample-content/content/earth.jpg'
+                    '../../test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = fsExtra.readFileSync(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
@@ -297,13 +297,13 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
                 // save image
                 const originalPath = path.resolve(
-                    'test/data/sample-content/content/earth.jpg'
+                    '../../test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = fsExtra.readFileSync(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
@@ -375,7 +375,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
@@ -390,7 +390,7 @@ describe('H5PEditor', () => {
 
                 // save image
                 const originalPath = path.resolve(
-                    'test/data/sample-content/content/earth.jpg'
+                    '../../test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = fsExtra.readFileSync(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
@@ -477,13 +477,13 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
                 // save image
                 const originalPath = path.resolve(
-                    'test/data/sample-content/content/earth.jpg'
+                    '../../test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = fsExtra.readFileSync(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
@@ -582,7 +582,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
@@ -635,7 +635,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 
@@ -663,7 +663,7 @@ describe('H5PEditor', () => {
                 // install the test library so that we can work with the test content we want to upload
                 await h5pEditor.libraryManager.installFromDirectory(
                     path.resolve(
-                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                        '../../test/data/sample-content/H5P.GreetingCard-1.0'
                     )
                 );
 

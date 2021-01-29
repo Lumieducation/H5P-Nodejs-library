@@ -88,7 +88,7 @@ describe('ContentScanner', () => {
                     contentManager,
                     contentId
                 } = await createContentScanner(
-                    path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
+                    path.resolve('../../test/data/hub-content/H5P.Blanks.h5p'),
                     user,
                     tmpDirPath
                 );
@@ -179,7 +179,7 @@ describe('ContentScanner', () => {
                     contentId,
                     contentManager
                 } = await createContentScanner(
-                    path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
+                    path.resolve('../../test/data/hub-content/H5P.Blanks.h5p'),
                     user,
                     tmpDirPath
                 );

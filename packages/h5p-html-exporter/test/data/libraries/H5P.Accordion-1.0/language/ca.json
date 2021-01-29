@@ -1,25 +1,25 @@
 {
   "semantics":[
     {
-      "label":"Panels",
-      "entity":"panel",
+      "label":"Taulers",
+      "entity":"tauler",
       "field":{
-        "label":"Content",
-        "entity":"content",
+        "label":"Contingut",
+        "entity":"contingut",
         "fields":[
           {
-            "label":"Title"
+            "label":"Títol"
           },
           {
-            "label":"Content type",
-            "entity":"content"
+            "label":"Contingut type",
+            "entity":"contingut"
           }
         ]
       }
     },
     {
-      "label":"H tags for labels (does not affect the size of the label)",
-      "description":"The h tag used on the labels. Normally H2 but if this belongs under an H2 heading use H3. Does not affect the size of the labels, only used for semantical purposes.",
+      "label":"Identificadors H per a les etiquetes (no afecta la mida de l’etiqueta)",
+      "description":"Identificador H que s’utilitza a les etiquetes. Normalment és H2, però si es mostra a sota d’un encapçalament H2, cal fer servir H3. L’identificador no afecta la mida de les etiquetes; només té finalitats semàntiques.",
       "options":[
         {
           "label":"H2"

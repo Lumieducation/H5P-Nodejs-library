@@ -55,13 +55,17 @@ describe('Configuration of the Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(`${__dirname}/data/content-type-cache/registration.json`)
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(`${__dirname}/data/content-type-cache/real-content-types.json`)
+                require(path.resolve(
+                    '../../test/data/content-type-cache/real-content-types.json'
+                ))
             );
         app.use((req: RequestEx, res, next) => {
             req.user = user;
@@ -105,7 +109,7 @@ describe('Configuration of the Express Ajax endpoint adapter', () => {
         );
 
         const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
-            path.resolve('test/data/validator/valid2.h5p')
+            path.resolve('../../test/data/validator/valid2.h5p')
         );
         expect(installResult.length).toEqual(1);
         expect(installResult[0].newVersion.machineName).toEqual(

@@ -1,8 +1,8 @@
 {
   "semantics": [
     {
-      "label": "Panels",
-      "entity": "panel",
+      "label": "פאנלים",
+      "entity": "פאנל",
       "field": {
         "label": "תוכן",
         "entity": "תוכן",

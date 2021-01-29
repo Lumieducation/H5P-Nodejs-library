@@ -5,6 +5,8 @@ import H5PEditor from '../src/H5PEditor';
 import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
+import path from 'path';
+
 import User from './User';
 
 describe('H5PEditor: general', () => {
@@ -22,12 +24,19 @@ describe('H5PEditor: general', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('./data/content-type-cache/1-content-type.json')
+                require(path.resolve(
+                    '../../test/data/content-type-cache/1-content-type.json'
+                ))
             );
 
         await expect(
@@ -47,12 +56,19 @@ describe('H5PEditor: general', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('./data/content-type-cache/1-content-type.json')
+                require(path.resolve(
+                    '../../test/data/content-type-cache/1-content-type.json'
+                ))
             );
         axiosMock
             .onGet(`${config.hubContentTypesEndpoint}H5P.Example1`)

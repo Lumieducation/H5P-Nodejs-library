@@ -2,17 +2,17 @@
   "semantics": [
     {
       "label": "لوحات",
-      "entity": "panel",
+      "entity": "لوحة التحكم",
       "field": {
         "label": "المحتوى",
-        "entity": "content",
+        "entity": "المحتوى",
         "fields": [
           {
             "label": "العنوان"
           },
           {
             "label": "نوع المحتوى",
-            "entity": "content"
+            "entity": "المحتوى"
           }
         ]
       }

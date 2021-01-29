@@ -40,7 +40,11 @@
         "test:e2e": "npm run test:e2e --prefix packages/h5p-examples",
         "publish:h5p-express": "cd packages/h5p-express && npm publish",
         "publish:h5p-html-exporter": "cd packages/h5p-html-exporter && npm publish",
-        "publish:h5p-mongos3": "cd packages/h5p-mongos3 && npm publish"
+        "publish:h5p-mongos3": "cd packages/h5p-mongos3 && npm publish",
+        "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
+        "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
+        "download:h5p": "sh scripts/install.sh",
+        "postinstall": "npm run download:content-type-cache && npm run download:h5p && npx lerna bootstrap"
     },
     "release": {
         "branch": "master"
@@ -82,6 +86,7 @@
         "@semantic-release/git": "9.0.0",
         "@semantic-release/github": "7.2.0",
         "@types/jest": "26.0.19",
+        "axios": "^0.21.1",
         "commitlint": "11.0.0",
         "husky": "4.3.6",
         "jest": "26.6.3",

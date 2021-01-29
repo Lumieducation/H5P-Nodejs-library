@@ -57,13 +57,27 @@ describe('Content Type Cache endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(`${__dirname}/data/content-type-cache/registration.json`)
+                require(path.resolve(
+                    '..',
+                    '..',
+                    'test',
+                    'data',
+                    'content-type-cache',
+                    'registration.json'
+                ))
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(`${__dirname}/data/content-type-cache/real-content-types.json`)
+                require(path.resolve(
+                    '..',
+                    '..',
+                    'test',
+                    'data',
+                    'content-type-cache',
+                    'real-content-types.json'
+                ))
             );
 
         app.use((req: RequestEx, res, next) => {

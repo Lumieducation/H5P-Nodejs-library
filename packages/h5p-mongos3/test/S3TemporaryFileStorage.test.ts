@@ -18,7 +18,7 @@ import S3TemporaryFileStorage from '../src/S3TemporaryFileStorage';
 describe('S3TemporaryFileStorage', () => {
     const stubUser = new User();
     const stubImagePath = path.resolve(
-        'test/data/sample-content/content/earth.jpg'
+        '../../test/data/sample-content/content/earth.jpg'
     );
     let s3: AWS.S3;
     let bucketName: string;

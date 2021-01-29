@@ -14,7 +14,7 @@ describe('H5PEditor', () => {
                 const user = new User();
 
                 const fileBuffer = fsExtra.readFileSync(
-                    path.resolve('test/data/validator/valid2.h5p')
+                    path.resolve('../../test/data/validator/valid2.h5p')
                 );
                 const { metadata, parameters } = await h5pEditor.uploadPackage(
                     fileBuffer,
@@ -59,7 +59,7 @@ describe('H5PEditor', () => {
                 const user = new User();
 
                 const fileBuffer = fsExtra.readFileSync(
-                    path.resolve('test/data/validator/valid2.h5p')
+                    path.resolve('../../test/data/validator/valid2.h5p')
                 );
                 const { parameters } = await h5pEditor.uploadPackage(
                     fileBuffer,

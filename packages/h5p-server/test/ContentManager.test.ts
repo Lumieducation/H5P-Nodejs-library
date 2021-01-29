@@ -152,7 +152,7 @@ describe('ContentManager', () => {
                     'earth.jpg',
                     fsExtra.createReadStream(
                         path.resolve(
-                            'test/data/sample-content/content/earth.jpg'
+                            '../../test/data/sample-content/content/earth.jpg'
                         )
                     ),
                     user

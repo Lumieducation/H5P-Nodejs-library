@@ -6,6 +6,8 @@ import ContentTypeCache from '../src/ContentTypeCache';
 import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
+import path from 'path';
+
 const axiosMock = new axiosMockAdapter(axios);
 
 describe('registering the site at H5P Hub', () => {
@@ -16,7 +18,12 @@ describe('registering the site at H5P Hub', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
 
         const uuid = await cache.registerOrGetUuid();
         expect(uuid).toBeDefined();
@@ -57,12 +64,19 @@ describe('getting H5P Hub content types', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('./data/content-type-cache/real-content-types.json')
+                require(path.resolve(
+                    '../../test/data/content-type-cache/real-content-types.json'
+                ))
             );
 
         let updated = await cache.updateIfNecessary();
@@ -83,12 +97,19 @@ describe('getting H5P Hub content types', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('./data/content-type-cache/real-content-types.json')
+                require(path.resolve(
+                    '../../test/data/content-type-cache/real-content-types.json'
+                ))
             );
 
         const updated1 = await cache.updateIfNecessary();
@@ -113,12 +134,19 @@ describe('getting H5P Hub content types', () => {
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
-            .reply(200, require('./data/content-type-cache/registration.json'));
+            .reply(
+                200,
+                require(path.resolve(
+                    '../../test/data/content-type-cache/registration.json'
+                ))
+            );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require('./data/content-type-cache/real-content-types.json')
+                require(path.resolve(
+                    '../../test/data/content-type-cache/real-content-types.json'
+                ))
             );
 
         expect(await cache.isOutdated()).toEqual(true);
