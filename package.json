@@ -44,7 +44,7 @@
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:h5p": "sh scripts/install.sh",
-        "postinstall": "npm run download:content-type-cache && npm run download:h5p && npx lerna bootstrap"
+        "postinstall": "npx lerna bootstrap && npm run download:content-type-cache && npm run download:h5p "
     },
     "release": {
         "branch": "master"
