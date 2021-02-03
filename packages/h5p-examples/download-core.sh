@@ -20,7 +20,7 @@ fi
 echo "Downloading H5P core v$core_version..."
 echo "Downloading H5P editor v$editor_version..."
 
-base="$(dirname $0)/../h5p"
+base="$(dirname $0)/h5p"
 mkdir -p "$base/tmp"
 mkdir -p "$base/tmp/core"
 mkdir -p "$base/tmp/editor"

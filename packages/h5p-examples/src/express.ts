@@ -42,7 +42,10 @@ const start = async () => {
         // to add a detector if you only want to use one language.
         .init({
             backend: {
-                loadPath: 'assets/translations/{{ns}}/{{lng}}.json'
+                loadPath: path.join(
+                    __dirname,
+                    '../node_modules/@lumieducation/h5p-server/build/assets/translations/{{ns}}/{{lng}}.json'
+                )
             },
             debug: process.env.DEBUG && process.env.DEBUG.includes('i18n'),
             defaultNS: 'server',
