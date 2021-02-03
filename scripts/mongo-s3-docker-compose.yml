@@ -1,4 +1,6 @@
-version: "3.7"
+# Needed for the integration tests of the h5p-mongos3 package.
+# Run with docker-compose -f scripts/mongo-s3-docker-compose up
+version: "3.6"
 
 services:
     mongo:

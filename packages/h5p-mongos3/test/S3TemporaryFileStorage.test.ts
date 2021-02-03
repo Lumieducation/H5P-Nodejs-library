@@ -68,7 +68,6 @@ describe('S3TemporaryFileStorage', () => {
             .promise();
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
-        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(3);
 
         await storage.setBucketLifecycleConfiguration(
@@ -83,7 +82,6 @@ describe('S3TemporaryFileStorage', () => {
             .promise();
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
-        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(4);
     });
 
