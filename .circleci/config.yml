@@ -16,9 +16,29 @@ jobs:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run download:content
             - save_cache:
-                  key: modules-cache-{{ checksum "package-lock.json" }}
+                  key: root-modules-cache-{{ checksum "package-lock.json" }}
                   paths:
                       - ./node_modules
+            - save_cache:
+                  key: h5p-examples-modules-cache-{{ checksum "packages/h5p-examples/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-examples/node_modules
+            - save_cache:
+                  key: h5p-express-modules-cache-{{ checksum "packages/h5p-express/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-express/node_modules
+            - save_cache:
+                  key: h5p-html-exporter-modules-cache-{{ checksum "packages/h5p-html-exporter/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-html-exporter/node_modules
+            - save_cache:
+                  key: h5p-mongos3-modules-cache-{{ checksum "packages/h5p-mongos3/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-mongos3/node_modules
+            - save_cache:
+                  key: h5p-server-modules-cache-{{ checksum "packages/h5p-server/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-server/node_modules
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
