@@ -11,9 +11,6 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "prepare": "npm run build",
         "build": "npx tsc",
-        "start:dbs": "docker-compose -f test/mongo-s3-docker-compose.yml up -d",
-        "stop:dbs": "docker-compose -f test/mongo-s3-docker-compose.yml down",
-        "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
         "clear": "rm -rf test/data/hub-content && rm -rf h5p && rm test/data/content-type-cache/real-content-types.json && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
@@ -48,15 +45,15 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^7.0.0-alpha.1",
+        "@lumieducation/h5p-server": "7.0.0-alpha.1",
         "aws-sdk": "2.828.0",
         "mongodb": "3.6.3"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "fs-extra": "^9.0.1",
-        "promisepipe": "^3.0.0",
-        "stream-mock": "^2.0.5"
+        "fs-extra": "9.0.1",
+        "promisepipe": "3.0.0",
+        "stream-mock": "2.0.5"
     }
 }

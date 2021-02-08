@@ -35,10 +35,10 @@ describe('MongoS3ContentStorage', () => {
     };
     const stubUser = new User();
     const stubImagePath = path.resolve(
-        '../../test/data/sample-content/content/earth.jpg'
+        'test/data/sample-content/content/earth.jpg'
     );
     const stubJsonPath = path.resolve(
-        '../../test/data/sample-content/content/content.json'
+        'test/data/sample-content/content/content.json'
     );
 
     let mongo: mongodb.Db;
