@@ -10,6 +10,7 @@
         "build:server": "npx tsc -p ./tsconfig.server.json",
         "build:client": "npx tsc -p ./tsconfig.client.json",
         "build": "npm run build:server && npm run build:client",
+        "prepare": "npm run build:server && npm run build:client",
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
         "test:e2e": "cross-env start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:server+upload": "start-server-and-test start http://localhost:8080 test:upload",
@@ -36,7 +37,8 @@
     },
     "devDependencies": {
         "@types/express": "4.17.11",
-        "@types/puppeteer": "^5.4.2",
+        "@types/puppeteer": "5.4.2",
+        "@types/react": "17.0.1",
         "cross-env": "7.0.2",
         "start-server-and-test": "1.11.7"
     }

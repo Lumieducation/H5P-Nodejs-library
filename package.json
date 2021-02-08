@@ -7,7 +7,7 @@
     },
     "scripts": {
         "build:watch": "npm run build:watch --prefix packages/h5p-server",
-        "build": "npm run build --prefix packages/h5p-server && npm run build --prefix packages/h5p-express && npm run build --prefix packages/h5p-html-exporter && npm run build --prefix packages/h5p-mongos3",
+        "build": "npm run build --prefix packages/h5p-server && npm run build --prefix packages/h5p-express && npm run build --prefix packages/h5p-html-exporter && npm run build --prefix packages/h5p-mongos3 && npm run build --prefix packages/h5p-examples",
         "build:h5p-express": "npm run build --prefix packages/h5p-express",
         "build:h5p-examples": "npm run build --prefix packages/h5p-examples",
         "build:h5p-html-exporter": "npm run build --prefix packages/h5p-html-exporter",
@@ -16,9 +16,9 @@
         "format": "npx prettier --write \"packages/*/{src,test,examples}/**/*.ts\"",
         "lint": "npx tslint --project tsconfig.json --config tslint.json",
         "semantic-release": "semantic-release",
-        "start:dbs": "npm run start:dbs --prefix packages/h5p-mongos3",
         "start": "npm run start --prefix packages/h5p-examples",
-        "stop:dbs": "npm run stop:dbs --prefix packages/h5p-mongos3",
+        "start:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml up -d",
+        "stop:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml down",
         "test:coverage": "npm run test:coverage --prefix packages/h5p-server",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
@@ -42,7 +42,7 @@
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:h5p": "sh scripts/install.sh",
-        "postinstall": "npx lerna bootstrap && npm run download:content-type-cache && npm run download:h5p "
+        "postinstall": "npx lerna bootstrap && npm run download:content-type-cache && npm run download:h5p"
     },
     "release": {
         "branch": "master"
