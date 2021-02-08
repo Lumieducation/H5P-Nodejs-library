@@ -87,7 +87,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: circleci/node:10
+            - image: circleci/node:10-browsers
               environment:
                   NODE_ENV: development
         steps:
