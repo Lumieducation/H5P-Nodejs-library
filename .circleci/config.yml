@@ -13,7 +13,7 @@ jobs:
                   key: modules-cache-{{ checksum "package-lock.json" }}
             - restore_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
-            - run: npm ci
+            - run: npm install
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run download:content
