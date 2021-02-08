@@ -89,7 +89,8 @@ describe('CachedLibraryStorage', () => {
         const uncachedStorage = new FileLibraryStorage(
             options?.useTemporaryDirectory
                 ? tempDir.path
-                : options?.directory ?? path.resolve('test/data/libraries')
+                : options?.directory ??
+                  path.resolve('packages/h5p-server/test/data/libraries')
         );
         const cachedStorage = new CachedLibraryStorage(
             uncachedStorage,
@@ -114,7 +115,7 @@ describe('CachedLibraryStorage', () => {
                     'getLibrary',
                     await fsExtra.readJSON(
                         path.resolve(
-                            'test/data/libraries/H5P.Example1-1.1/library.json'
+                            'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/library.json'
                         )
                     ),
                     undefined,
@@ -134,7 +135,7 @@ describe('CachedLibraryStorage', () => {
                     'getFileAsJson',
                     await fsExtra.readJSON(
                         path.resolve(
-                            'test/data/libraries/H5P.Example1-1.1/semantics.json'
+                            'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/semantics.json'
                         )
                     ),
                     undefined,
@@ -156,7 +157,7 @@ describe('CachedLibraryStorage', () => {
                     (
                         await fsExtra.readFile(
                             path.resolve(
-                                'test/data/libraries/H5P.Example1-1.1/semantics.json'
+                                'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/semantics.json'
                             )
                         )
                     ).toString(),
@@ -304,7 +305,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(
@@ -313,7 +316,7 @@ describe('CachedLibraryStorage', () => {
                         async () => {
                             await libraryManager.installFromDirectory(
                                 path.resolve(
-                                    'test/data/libraries/H5P.Example3-2.1/'
+                                    'packages/h5p-server/test/data/libraries/H5P.Example3-2.1/'
                                 )
                             );
                         }
@@ -336,7 +339,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(
@@ -367,13 +372,15 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck('listAddons', undefined, async () => {
                         await libraryManager.installFromDirectory(
                             path.resolve(
-                                'test/data/libraries/H5P.Example3-2.1/'
+                                'packages/h5p-server/test/data/libraries/H5P.Example3-2.1/'
                             )
                         );
                     })
@@ -395,7 +402,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(
@@ -439,7 +448,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(
@@ -477,7 +488,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(
@@ -515,7 +528,9 @@ describe('CachedLibraryStorage', () => {
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
-                    path.resolve('test/data/libraries/H5P.Example1-1.1/')
+                    path.resolve(
+                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                    )
                 );
                 expect(
                     await cacheCheck(

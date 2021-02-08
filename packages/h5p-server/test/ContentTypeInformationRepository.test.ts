@@ -21,7 +21,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data`)
+            new FileLibraryStorage(`${__dirname}/test/data`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -30,7 +30,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -38,7 +38,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -53,7 +53,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
             require(path.resolve(
-                '../../test/data/content-type-cache/real-content-types.json'
+                'test/data/content-type-cache/real-content-types.json'
             )).contentTypes.length
         );
     });
@@ -61,7 +61,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data`)
+            new FileLibraryStorage(`${__dirname}/test/data`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -70,7 +70,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -78,7 +78,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -91,7 +91,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
             require(path.resolve(
-                '../../test/data/content-type-cache/real-content-types.json'
+                'test/data/content-type-cache/real-content-types.json'
             )).contentTypes.length
         );
     });
@@ -100,7 +100,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -109,7 +109,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -117,7 +117,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/0-content-types.json'
+                    'test/data/content-type-cache/0-content-types.json'
                 ))
             );
 
@@ -134,7 +134,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -143,7 +143,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -151,7 +151,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/1-content-type.json'
+                    'test/data/content-type-cache/1-content-type.json'
                 ))
             );
 
@@ -170,7 +170,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -179,7 +179,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
@@ -197,7 +197,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
         const user = new User();
@@ -211,7 +211,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
@@ -237,7 +237,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -246,7 +246,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -254,7 +254,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -277,7 +277,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
         const user = new User();
@@ -287,7 +287,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -295,7 +295,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -337,7 +337,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     .reply(
                         200,
                         require(path.resolve(
-                            '../../test/data/content-type-cache/registration.json'
+                            'test/data/content-type-cache/registration.json'
                         ))
                     );
                 axiosMock
@@ -345,7 +345,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     .reply(
                         200,
                         require(path.resolve(
-                            '../../test/data/content-type-cache/real-content-types.json'
+                            'test/data/content-type-cache/real-content-types.json'
                         ))
                     );
 
@@ -356,7 +356,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                             200,
                             fsExtra.createReadStream(
                                 path.resolve(
-                                    'test/data/example-packages/H5P.DragText.h5p'
+                                    'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
                                 )
                             )
                         ];

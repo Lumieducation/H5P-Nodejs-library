@@ -7,7 +7,9 @@ import JsonStorage from '../src/implementation/fs/JsonStorage';
 describe('JSON storage of configuration', () => {
     it('loads JSON valid files', async () => {
         const storage = await JsonStorage.create(
-            path.resolve('test/data/configuration/valid-config.json')
+            path.resolve(
+                'packages/h5p-server/test/data/configuration/valid-config.json'
+            )
         );
         const config = new H5PConfig(storage);
         await config.load();
@@ -19,11 +21,15 @@ describe('JSON storage of configuration', () => {
     });
 
     it('saves changes', async () => {
-        const file = path.resolve('test/data/configuration/temp.json');
+        const file = path.resolve(
+            'packages/h5p-server/test/data/configuration/temp.json'
+        );
         await fs.remove(file);
         try {
             await fs.copyFile(
-                path.resolve('test/data/configuration/valid-config.json'),
+                path.resolve(
+                    'packages/h5p-server/test/data/configuration/valid-config.json'
+                ),
                 file
             );
 

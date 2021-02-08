@@ -28,7 +28,7 @@ describe('package importer', () => {
                     new H5PConfig(null)
                 );
                 const installedLibraryNames = await packageImporter.installLibrariesFromPackage(
-                    path.resolve('../../test/data/validator/valid2.h5p')
+                    path.resolve('test/data/validator/valid2.h5p')
                 );
 
                 expect(installedLibraryNames.length).toEqual(1);
@@ -82,7 +82,7 @@ describe('package importer', () => {
                 );
                 const contentId = (
                     await packageImporter.addPackageLibrariesAndContent(
-                        path.resolve('../../test/data/validator/valid2.h5p'),
+                        path.resolve('test/data/validator/valid2.h5p'),
                         user
                     )
                 ).id;

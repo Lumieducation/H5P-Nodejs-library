@@ -63,7 +63,7 @@ describe('Express Library Administration endpoint adapter', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -71,7 +71,7 @@ describe('Express Library Administration endpoint adapter', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -101,7 +101,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should return 200 and a list of installed libraries', async () => {
             // We install the Course Presentation content type.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid1.h5p')
+                path.resolve('test/data/validator/valid1.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
                 fileBuffer,
@@ -147,7 +147,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should delete unused libraries', async () => {
             // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid2.h5p')
+                path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
                 fileBuffer,
@@ -178,7 +178,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should reject deleting used libraries', async () => {
             // We install the Greeting Card content type and its content.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid2.h5p')
+                path.resolve('test/data/validator/valid2.h5p')
             );
             const {
                 installedLibraries,
@@ -220,7 +220,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should return 200 and details of the installed library', async () => {
             // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid2.h5p')
+                path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
                 fileBuffer,
@@ -277,7 +277,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should detect invalid bodies', async () => {
             // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid2.h5p')
+                path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
                 fileBuffer,
@@ -301,7 +301,7 @@ describe('Express Library Administration endpoint adapter', () => {
         it('should return 204 when updating restricted', async () => {
             // We install the Greeting Card content type.
             const fileBuffer = fsExtra.readFileSync(
-                path.resolve('../../test/data/validator/valid2.h5p')
+                path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
                 fileBuffer,
@@ -327,7 +327,7 @@ describe('Express Library Administration endpoint adapter', () => {
                 .post('/')
                 .attach(
                     'anotherfile',
-                    path.resolve('../../test/data/validator/valid2.h5p')
+                    path.resolve('test/data/validator/valid2.h5p')
                 );
 
             expect(res.status).toBe(400);
@@ -339,9 +339,7 @@ describe('Express Library Administration endpoint adapter', () => {
                 .post('/')
                 .attach(
                     'file',
-                    path.resolve(
-                        '../../test/data/validator/invalid-library-json.h5p'
-                    )
+                    path.resolve('test/data/validator/invalid-library-json.h5p')
                 );
 
             expect(res.status).toBe(400);
@@ -351,10 +349,7 @@ describe('Express Library Administration endpoint adapter', () => {
             const mockApp = supertest(app);
             const res = await mockApp
                 .post('/')
-                .attach(
-                    'file',
-                    path.resolve('../../test/data/validator/valid2.h5p')
-                );
+                .attach('file', path.resolve('test/data/validator/valid2.h5p'));
 
             expect(res.status).toBe(200);
             expect(res.body.installed).toEqual(1);
@@ -374,9 +369,7 @@ describe('Express Library Administration endpoint adapter', () => {
                 .post('/')
                 .attach(
                     'file',
-                    path.resolve(
-                        '../../test/data/validator/broken-content-json.h5p'
-                    )
+                    path.resolve('test/data/validator/broken-content-json.h5p')
                 );
 
             expect(res.status).toBe(200);

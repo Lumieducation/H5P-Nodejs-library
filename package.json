@@ -27,7 +27,7 @@
         "test:watch": "npm run test:watch --prefix packages/h5p-server",
         "test:watch:h5p-express": "npm run test:watch --prefix packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --prefix packages/h5p-mongos3",
-        "test": "npm run test:h5p-server && npm run test:h5p-express && npm run test:h5p-html-exporter",
+        "test": "npx jest",
         "test:h5p-server": "npm run test --prefix packages/h5p-server",
         "test:h5p-express": "npm test --prefix packages/h5p-express",
         "test:h5p-mongos3": "npm test --prefix packages/h5p-mongos3",
@@ -53,7 +53,7 @@
     "husky": {
         "hooks": {
             "pre-commit": "npm run lint && npm run format:check",
-            "pre-push": "npm run test:prepush",
+            "pre-push": "npm run test",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },

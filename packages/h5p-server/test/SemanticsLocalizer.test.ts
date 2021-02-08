@@ -7,7 +7,9 @@ import SimpleTranslator from '../src/helpers/SimpleTranslator';
 describe('SemanticsLocalizer', () => {
     it('localizes copyright semantics', async () => {
         const translations = await fsExtra.readJson(
-            path.resolve('assets/translations/copyright-semantics/en.json')
+            path.resolve(
+                'packages/h5p-server/assets/translations/copyright-semantics/en.json'
+            )
         );
 
         const localizer = new SemanticsLocalizer(
@@ -16,7 +18,9 @@ describe('SemanticsLocalizer', () => {
 
         const localized = localizer.localize(
             await fsExtra.readJson(
-                path.resolve('assets/defaultCopyrightSemantics.json')
+                path.resolve(
+                    'packages/h5p-server/assets/defaultCopyrightSemantics.json'
+                )
             ),
             'en'
         );
@@ -271,7 +275,9 @@ describe('SemanticsLocalizer', () => {
 
     it('localizes metadata semantics', async () => {
         const translations = await fsExtra.readJson(
-            path.resolve('assets/translations/metadata-semantics/en.json')
+            path.resolve(
+                'packages/h5p-server/assets/translations/metadata-semantics/en.json'
+            )
         );
 
         const localizer = new SemanticsLocalizer(
@@ -280,7 +286,9 @@ describe('SemanticsLocalizer', () => {
 
         const localized = localizer.localize(
             await fsExtra.readJson(
-                path.resolve('assets/defaultMetadataSemantics.json')
+                path.resolve(
+                    'packages/h5p-server/assets/defaultMetadataSemantics.json'
+                )
             ),
             'en'
         );

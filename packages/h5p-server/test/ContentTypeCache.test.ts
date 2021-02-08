@@ -21,7 +21,7 @@ describe('registering the site at H5P Hub', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
 
@@ -67,7 +67,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -75,7 +75,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -100,7 +100,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -108,7 +108,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 
@@ -137,7 +137,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -145,7 +145,7 @@ describe('getting H5P Hub content types', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/real-content-types.json'
+                    'test/data/content-type-cache/real-content-types.json'
                 ))
             );
 

@@ -27,7 +27,7 @@ describe('H5PEditor: general', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -35,7 +35,7 @@ describe('H5PEditor: general', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/1-content-type.json'
+                    'test/data/content-type-cache/1-content-type.json'
                 ))
             );
 
@@ -59,7 +59,7 @@ describe('H5PEditor: general', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/registration.json'
+                    'test/data/content-type-cache/registration.json'
                 ))
             );
         axiosMock
@@ -67,7 +67,7 @@ describe('H5PEditor: general', () => {
             .reply(
                 200,
                 require(path.resolve(
-                    '../../test/data/content-type-cache/1-content-type.json'
+                    'test/data/content-type-cache/1-content-type.json'
                 ))
             );
         axiosMock

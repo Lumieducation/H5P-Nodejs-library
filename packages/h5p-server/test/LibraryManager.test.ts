@@ -10,18 +10,18 @@ import LibraryName from '../src/LibraryName';
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries();
         expect(Object.keys(libraryObject).length).toEqual(
-            (await fsExtra.readdir('test/data/libraries')).length
+            (await fsExtra.readdir(`${__dirname}/data/libraries`)).length
         );
     });
 
     it('filters the list of all installed libraries by machine names', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries(
@@ -32,7 +32,7 @@ describe('basic file library manager functionality', () => {
 
     it('correctly detects patches', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries(
@@ -61,9 +61,7 @@ describe('basic file library manager functionality', () => {
                 // prepare by installing library version 1.1.3 (has missing .js file)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve(
-                            'test/data/patches/H5P.Example1-1.1.3 (missing js file)'
-                        ),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.3 (missing js file)`,
                         false
                     )
                 ).rejects.toThrow('library-consistency-check-file-missing');
@@ -91,7 +89,7 @@ describe('basic file library manager functionality', () => {
                 // prepare by installing library version 1.1.2
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.2'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.2`,
                         false
                     )
                 ).resolves.toHaveProperty('type', 'new');
@@ -99,7 +97,7 @@ describe('basic file library manager functionality', () => {
                 // try installing library version 1.1.1 (should fail)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.1'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
                         false
                     )
                 ).resolves.toHaveProperty('type', 'none');
@@ -122,7 +120,7 @@ describe('basic file library manager functionality', () => {
                 // try installing library version 1.1.2 again (should fail)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.2'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.2`,
                         false
                     )
                 ).resolves.toMatchObject({ type: 'none' });
@@ -141,7 +139,7 @@ describe('basic file library manager functionality', () => {
                 // prepare by installing library version 1.1.1
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.1'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
                         false
                     )
                 ).resolves.toHaveProperty('type', 'new');
@@ -149,7 +147,7 @@ describe('basic file library manager functionality', () => {
                 // try installing library version 1.2.0 (should success)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.2.0'),
+                        `${__dirname}/data/patches/H5P.Example1-1.2.0`,
                         false
                     )
                 ).resolves.toMatchObject({
@@ -200,7 +198,7 @@ describe('basic file library manager functionality', () => {
                 // prepare by installing library version 1.1.1
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.1'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
                         false
                     )
                 ).resolves.toMatchObject({ type: 'new' });
@@ -208,7 +206,7 @@ describe('basic file library manager functionality', () => {
                 // try installing library version 1.1.2 (should success)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.2'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.2`,
                         false
                     )
                 ).resolves.toMatchObject({
@@ -256,7 +254,7 @@ describe('basic file library manager functionality', () => {
                 // prepare by installing library version 1.1.1
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve('test/data/patches/H5P.Example1-1.1.1'),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
                         false
                     )
                 ).resolves.toMatchObject({
@@ -266,9 +264,7 @@ describe('basic file library manager functionality', () => {
                 // try installing library version 1.1.3 (should fail)
                 await expect(
                     libManager.installFromDirectory(
-                        path.resolve(
-                            'test/data/patches/H5P.Example1-1.1.3 (missing js file)'
-                        ),
+                        `${__dirname}/data/patches/H5P.Example1-1.1.3 (missing js file)`,
                         false
                     )
                 ).rejects.toThrow('library-consistency-check-file-missing');
@@ -288,7 +284,7 @@ describe('basic file library manager functionality', () => {
 
     it('returns null file for language en', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const language = await libManager.getLanguage(
@@ -300,7 +296,7 @@ describe('basic file library manager functionality', () => {
 
     it('returns the de language file for de-DE', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const language = await libManager.getLanguage(
@@ -327,7 +323,7 @@ describe('basic file library manager functionality', () => {
 describe('listLanguages()', () => {
     it('returns an empty array if the language folder does not exist', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const library = new InstalledLibrary('H5P.Example2', 1, 2, 0);
@@ -340,7 +336,7 @@ describe('alterLibrarySemantics hook', () => {
     it('returns changed semantics when a hook is specified', async () => {
         const library = new InstalledLibrary('H5P.Example1', 1, 1, 0);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${path.resolve('')}/test/data/libraries`),
+            new FileLibraryStorage(`${__dirname}/data/libraries`),
             () => '',
             (lib, semantics) => {
                 if (LibraryName.equal(lib, library)) {

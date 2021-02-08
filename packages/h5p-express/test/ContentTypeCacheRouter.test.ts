@@ -53,32 +53,28 @@ describe('Content Type Cache endpoint adapter', () => {
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
         );
 
-        axiosMock
-            .onPost(h5pEditor.config.hubRegistrationEndpoint)
-            .reply(
-                200,
-                require(path.resolve(
-                    '..',
-                    '..',
-                    'test',
-                    'data',
-                    'content-type-cache',
-                    'registration.json'
-                ))
-            );
-        axiosMock
-            .onPost(h5pEditor.config.hubContentTypesEndpoint)
-            .reply(
-                200,
-                require(path.resolve(
-                    '..',
-                    '..',
-                    'test',
-                    'data',
-                    'content-type-cache',
-                    'real-content-types.json'
-                ))
-            );
+        axiosMock.onPost(h5pEditor.config.hubRegistrationEndpoint).reply(
+            200,
+            require(path.resolve(
+                // '..',
+                // '..',
+                'test',
+                'data',
+                'content-type-cache',
+                'registration.json'
+            ))
+        );
+        axiosMock.onPost(h5pEditor.config.hubContentTypesEndpoint).reply(
+            200,
+            require(path.resolve(
+                // '..',
+                // '..',
+                'test',
+                'data',
+                'content-type-cache',
+                'real-content-types.json'
+            ))
+        );
 
         app.use((req: RequestEx, res, next) => {
             req.user = user;

@@ -104,14 +104,14 @@ export async function importAndExportPackage(
 describe('PackageExporter', () => {
     it('creates h5p packages', async () => {
         await importAndExportPackage(
-            path.resolve('../../test/data/validator/valid2.h5p')
+            path.resolve('test/data/validator/valid2.h5p')
         );
     });
 
     it('shortens long filenames', async () => {
         await importAndExportPackage(
             path.resolve(
-                'test/data/PackageExporter/long_content_file_name.h5p'
+                'packages/h5p-server/test/data/PackageExporter/long_content_file_name.h5p'
             ),
             50
         );
