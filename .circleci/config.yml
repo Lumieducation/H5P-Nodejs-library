@@ -51,10 +51,19 @@ jobs:
                   root: .
                   paths:
                       - node_modules
-                      - h5p
+                      - packages/h5p-examples/h5p
                       - test/data/content-type-cache/real-content-types.json
                       - test/data/hub-content
-                      - build
+                      - packages/h5p-examples/node_modules
+                      - packages/h5p-examples/build
+                      - packages/h5p-express/node_modules
+                      - packages/h5p-express/build
+                      - packages/h5p-html-exporter/node_modules
+                      - packages/h5p-html-exporter/build
+                      - packages/h5p-mongos3/node_modules
+                      - packages/h5p-mongos3/build
+                      - packages/h5p-server/node_modules
+                      - packages/h5p-server/build
 
     lint:
         docker:
