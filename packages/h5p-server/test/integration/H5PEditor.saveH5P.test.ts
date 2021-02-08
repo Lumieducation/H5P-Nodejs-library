@@ -12,7 +12,7 @@ describe('H5PEditor.saveH5P()', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const user = new User();
-                const contentPath = `${__dirname}/../data/hub-content`;
+                const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
                 Promise.all(

@@ -21,7 +21,7 @@
         "stop:dbs": "npm run stop:dbs --prefix packages/h5p-mongos3",
         "test:coverage": "npm run test:coverage --prefix packages/h5p-server",
         "test:db": "npm run test:db --prefix packages/h5p-mongos3",
-        "test:integration": "npm run test:integration --prefix packages/h5p-server",
+        "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:server+upload": "npm run test:server+upload --repfix packages/h5p-server",
         "test:upload": "npm run test:upload --prefix packages/h5p-server",
         "test:watch": "npm run test:watch --prefix packages/h5p-server",
