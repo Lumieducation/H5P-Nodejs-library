@@ -32,6 +32,7 @@
         "test:h5p-express": "npm test --prefix packages/h5p-express",
         "test:h5p-mongos3": "npm test --prefix packages/h5p-mongos3",
         "test:h5p-html-exporter": "npm test --prefix packages/h5p-html-exporter",
+        "test:prepush": "npm run test:h5p-server && npm run test:h5p-express",
         "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version",
         "release:build": "lerna run --parallel build",
         "release:publish": "lerna publish from-package --dist-tag next --contents build",
@@ -52,7 +53,7 @@
     "husky": {
         "hooks": {
             "pre-commit": "npm run lint && npm run format:check",
-            "pre-push": "npm run ci",
+            "pre-push": "npm run test:prepush",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },
