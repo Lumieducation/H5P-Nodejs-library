@@ -86,6 +86,8 @@ jobs:
     unit-tests:
         docker:
             - image: circleci/node:10
+              environment:
+                  NODE_ENV: development
         steps:
             - checkout
             - attach_workspace:
