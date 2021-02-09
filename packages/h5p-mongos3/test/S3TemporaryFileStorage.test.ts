@@ -69,6 +69,7 @@ describe('S3TemporaryFileStorage', () => {
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(3);
+        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('/');
 
         await storage.setBucketLifecycleConfiguration(
             new H5PConfig(undefined, {
@@ -83,6 +84,7 @@ describe('S3TemporaryFileStorage', () => {
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(4);
+        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('/');
     });
 
     it('adds files and returns stats and stream to them', async () => {
