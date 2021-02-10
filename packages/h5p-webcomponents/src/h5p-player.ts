@@ -17,6 +17,12 @@ declare global {
     }
 }
 
+export interface IxAPIEvent {
+    data: {
+        statement: any;
+    };
+}
+
 /**
  * A Web Component displaying H5P content.
  */
@@ -239,6 +245,16 @@ export class H5PPlayerComponent extends HTMLElement {
             this
         );
         window.H5P.preventInit = false;
+
+        // attach xAPI listener
+        window.H5P.externalDispatcher.on('xAPI', (event: IxAPIEvent) => {
+            this.dispatchEvent(
+                new CustomEvent('xAPI', {
+                    detail: { event }
+                })
+            );
+        });
+
         window.H5P.init(this.root);
     }
 
