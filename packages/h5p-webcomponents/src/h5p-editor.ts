@@ -34,7 +34,11 @@ declare global {
 }
 
 export class H5PEditorComponent extends HTMLElement {
-    private resizeObserver: ResizeObserver;
+    constructor() {
+        super();
+
+        H5PEditorComponent.initTemplate();
+    }
 
     public get contentId(): string {
         return this.getAttribute('content-id') ?? undefined;
@@ -97,11 +101,6 @@ export class H5PEditorComponent extends HTMLElement {
     public static get observedAttributes(): string[] {
         return ['content-id', 'h5p-url'];
     }
-    constructor() {
-        super();
-
-        H5PEditorComponent.initTemplate();
-    }
 
     private static template: HTMLTemplateElement;
 
@@ -125,10 +124,11 @@ export class H5PEditorComponent extends HTMLElement {
         requestBody: { library: string; params: any }
     ) => Promise<{ contentId: string; metadata: IContentMetadata }>;
 
+    private editorInstance: any;
     /**
      * Stores the H5P instance (H5P native object of the core).
      */
-    private editorInstance: any;
+
     private privateLoadContentCallback: (
         contentId: string
     ) => Promise<
@@ -138,6 +138,9 @@ export class H5PEditorComponent extends HTMLElement {
             params?: any;
         }
     >;
+
+    private resizeObserver: ResizeObserver;
+
     private root: HTMLElement;
 
     private static initTemplate(): void {
