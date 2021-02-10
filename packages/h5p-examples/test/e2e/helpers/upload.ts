@@ -19,10 +19,9 @@ let resolveEditorFunctions: { [key: string]: () => void } = {};
 export async function beforeAll(host: string): Promise<void> {
     serverHost = host;
     browser = await puppeteer.launch({
-        // headless: true,
-        headless: false,
+        headless: true,
         args: [
-            // '--headless',
+            '--headless',
             '--no-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu'
