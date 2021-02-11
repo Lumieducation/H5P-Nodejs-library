@@ -79,9 +79,9 @@ export default class H5PPlayerUI extends React.Component<{
         }
     };
 
-    private onxAPIStatement = (event: IxAPIEvent) => {
+    private onxAPIStatement = (event: CustomEvent<IxAPIEvent>) => {
         if (this.props.xAPICallback) {
-            this.props.xAPICallback(event);
+            this.props.xAPICallback(event.detail);
         }
     };
 
