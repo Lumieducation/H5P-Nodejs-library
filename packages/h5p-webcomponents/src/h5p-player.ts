@@ -23,6 +23,10 @@ export interface IxAPIEvent {
     };
 }
 
+export interface IContext {
+    contentId: string;
+}
+
 /**
  * A Web Component displaying H5P content.
  */
@@ -248,9 +252,16 @@ export class H5PPlayerComponent extends HTMLElement {
 
         // attach xAPI listener
         window.H5P.externalDispatcher.on('xAPI', (event: IxAPIEvent) => {
+            const context: IContext = {
+                contentId: this.playerModel.contentId
+            };
             this.dispatchEvent(
                 new CustomEvent('xAPI', {
-                    detail: { event }
+                    detail: {
+                        statement: event.data.statement,
+                        context,
+                        event
+                    }
                 })
             );
         });

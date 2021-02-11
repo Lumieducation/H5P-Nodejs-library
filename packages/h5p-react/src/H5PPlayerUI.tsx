@@ -3,7 +3,8 @@ import React from 'react';
 import {
     defineElements,
     H5PPlayerComponent,
-    IxAPIEvent
+    IxAPIEvent,
+    IContext
 } from '@lumieducation/h5p-webcomponents';
 import { IPlayerModel } from '@lumieducation/h5p-server';
 
@@ -24,13 +25,17 @@ export default class H5PPlayerUI extends React.Component<{
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
-    xAPICallback?: (event: IxAPIEvent) => void;
+    xAPICallback?: (statement: any, context: any, event: IxAPIEvent) => void;
 }> {
     constructor(props: {
         contentId: string;
         loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
         onInitialized?: (contentId: string) => void;
-        xAPICallback?: (event: IxAPIEvent) => void;
+        xAPICallback?: (
+            statement: any,
+            context: any,
+            event: IxAPIEvent
+        ) => void;
     }) {
         super(props);
         this.h5pPlayer = React.createRef();
@@ -59,6 +64,7 @@ export default class H5PPlayerUI extends React.Component<{
     }
 
     public render(): React.ReactNode {
+        console.log('rendering', this.props.contentId);
         return (
             <h5p-player
                 ref={this.h5pPlayer}
@@ -79,9 +85,19 @@ export default class H5PPlayerUI extends React.Component<{
         }
     };
 
-    private onxAPIStatement = (event: CustomEvent<IxAPIEvent>) => {
+    private onxAPIStatement = (
+        event: CustomEvent<{
+            statement: any;
+            context: IContext;
+            event: IxAPIEvent;
+        }>
+    ) => {
         if (this.props.xAPICallback) {
-            this.props.xAPICallback(event.detail);
+            this.props.xAPICallback(
+                event.detail.statement,
+                event.detail.context,
+                event.detail.event
+            );
         }
     };
 
