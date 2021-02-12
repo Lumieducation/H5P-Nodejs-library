@@ -129,7 +129,7 @@
         "mockdate": "3.0.2",
         "mongodb": "3.6.4",
         "prettier": "2.2.1",
-        "puppeteer": "5.5.0",
+        "puppeteer": "7.1.0",
         "semantic-release": "17.3.7",
         "source-map-support": "0.5.19",
         "start-server-and-test": "1.12.0",
