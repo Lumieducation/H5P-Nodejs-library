@@ -178,6 +178,9 @@ workflows:
                   requires:
                       - install-build
             - release:
+                  filters:
+                      branches:
+                          only: release
                   requires:
                       - install-build
                       - lint
