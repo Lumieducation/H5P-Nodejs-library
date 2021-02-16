@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@1.0.6
+
 jobs:
     install-build:
         docker:
@@ -16,9 +17,29 @@ jobs:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run download:content
             - save_cache:
-                  key: modules-cache-{{ checksum "package-lock.json" }}
+                  key: root-modules-cache-{{ checksum "package-lock.json" }}
                   paths:
                       - ./node_modules
+            - save_cache:
+                  key: h5p-examples-modules-cache-{{ checksum "packages/h5p-examples/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-examples/node_modules
+            - save_cache:
+                  key: h5p-express-modules-cache-{{ checksum "packages/h5p-express/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-express/node_modules
+            - save_cache:
+                  key: h5p-html-exporter-modules-cache-{{ checksum "packages/h5p-html-exporter/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-html-exporter/node_modules
+            - save_cache:
+                  key: h5p-mongos3-modules-cache-{{ checksum "packages/h5p-mongos3/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-mongos3/node_modules
+            - save_cache:
+                  key: h5p-server-modules-cache-{{ checksum "packages/h5p-server/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-server/node_modules
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
@@ -31,10 +52,19 @@ jobs:
                   root: .
                   paths:
                       - node_modules
-                      - h5p
+                      - packages/h5p-examples/h5p
                       - test/data/content-type-cache/real-content-types.json
                       - test/data/hub-content
-                      - build
+                      - packages/h5p-examples/node_modules
+                      - packages/h5p-examples/build
+                      - packages/h5p-express/node_modules
+                      - packages/h5p-express/build
+                      - packages/h5p-html-exporter/node_modules
+                      - packages/h5p-html-exporter/build
+                      - packages/h5p-mongos3/node_modules
+                      - packages/h5p-mongos3/build
+                      - packages/h5p-server/node_modules
+                      - packages/h5p-server/build
 
     lint:
         docker:
@@ -56,7 +86,9 @@ jobs:
 
     unit-tests:
         docker:
-            - image: circleci/node:10
+            - image: circleci/node:10-browsers
+              environment:
+                  NODE_ENV: development
         steps:
             - checkout
             - attach_workspace:
@@ -136,21 +168,24 @@ workflows:
             - unit-tests:
                   requires:
                       - install-build
-            - e2e-tests:
-                  requires:
-                      - install-build
+            # - e2e-tests:
+            #       requires:
+            #           - install-build
             - integration-tests:
                   requires:
                       - install-build
-            - db-tests:
-                  requires:
-                      - install-build
+            # - db-tests:
+            #       requires:
+            #           - install-build
             - release:
+                  filters:
+                      branches:
+                          only: release
                   requires:
                       - install-build
                       - lint
                       - format
                       - unit-tests
-                      - e2e-tests
+                      # - e2e-tests
                       - integration-tests
-                      - db-tests
+                      # - db-tests

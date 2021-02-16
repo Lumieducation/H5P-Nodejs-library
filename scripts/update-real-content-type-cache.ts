@@ -6,10 +6,10 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
-import ContentTypeCache from '../src/ContentTypeCache';
-import H5PConfig from '../src/implementation/H5PConfig';
-import InMemoryStorage from '../src/implementation/InMemoryStorage';
-import { IKeyValueStorage } from '../src/types';
+import ContentTypeCache from '../packages/h5p-server/src/ContentTypeCache';
+import H5PConfig from '../packages/h5p-server/src/implementation/H5PConfig';
+import InMemoryStorage from '../packages/h5p-server/src/implementation/InMemoryStorage';
+import { IKeyValueStorage } from '../packages/h5p-server/src/types';
 
 const start = async () => {
     const keyValueStorage: IKeyValueStorage = new InMemoryStorage();

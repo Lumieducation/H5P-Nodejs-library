@@ -4,6 +4,6 @@ module.exports = {
     ...base,
 
     // The glob patterns Jest uses to detect test files
-    testMatch: ['**/db/*.test.ts'],
+    roots: ['<rootDir>/packages/h5p-mongos3/test'],
     testPathIgnorePatterns: []
 };

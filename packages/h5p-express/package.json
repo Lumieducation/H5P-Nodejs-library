@@ -1,0 +1,64 @@
+{
+    "name": "@lumieducation/h5p-express",
+    "version": "7.0.0-alpha.1",
+    "description": "A community re-implementation of the H5P server",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
+    },
+    "scripts": {
+        "build:watch": "npx tsc -w -p ./tsconfig.build.json",
+        "prepare": "npm run build",
+        "build": "npx tsc",
+        "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
+        "clear": "rm -rf test/data/hub-content && rm -rf h5p && rm test/data/content-type-cache/real-content-types.json && rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "test:watch": "jest --watch",
+        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+    },
+    "release": {
+        "branch": "master"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        },
+        {
+            "name": "Nikolas Martens"
+        },
+        {
+            "name": "Jan Philip Schellenberg",
+            "email": "jps@Lumi.education",
+            "url": "http://Lumi.education"
+        },
+        {
+            "name": "Bo Biene",
+            "email": "biene@inray.de",
+            "url": "https://www.qm-team.de/mymento-kursportal/"
+        },
+        {
+            "name": "jdavidavendano"
+        },
+        {
+            "name": "jankapunkt"
+        }
+    ],
+    "dependencies": {
+        "@lumieducation/h5p-server": "^7.0.0-alpha.1",
+        "express": "4.17.1"
+    },
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "devDependencies": {
+        "@types/express": "4.17.9",
+        "@types/express-serve-static-core": "4.17.18",
+        "@types/supertest": "2.0.10",
+        "axios": "0.21.1",
+        "axios-mock-adapter": "^1.19.0",
+        "body-parser": "^1.19.0",
+        "express-fileupload": "^1.2.1",
+        "supertest": "6.0.1",
+        "tmp-promise": "3.0.2"
+    }
+}

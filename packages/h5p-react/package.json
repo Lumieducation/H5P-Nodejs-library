@@ -1,0 +1,30 @@
+{
+    "name": "@lumieducation/h5p-react",
+    "version": "0.1.2",
+    "main": "./build/umd/index.js",
+    "module": "./build/es2015/index.js",
+    "types": "./build/es2015/index.d.ts",
+    "scripts": {
+        "build": "npx tsc --build tsconfig.es2015.json && npx tsc --build tsconfig.umd.json",
+        "build:watch": "npx tsc --watch",
+        "prepare": "npm run build"
+    },
+    "release": {
+        "branch": "master"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        }
+    ],
+    "dependencies": {
+        "@lumieducation/h5p-webcomponents": "0.2.2",
+        "react": "16.13.1"
+    },
+    "devDependencies": {
+        "@types/react": "16.9.49",
+        "@types/resize-observer-browser": "0.1.4",
+        "@lumieducation/h5p-server": "7.0.0-alpha.1"
+    }
+}

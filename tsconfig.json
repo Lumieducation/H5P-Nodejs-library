@@ -1,8 +1,32 @@
 {
-    "extends": "./tsconfig.base.json",
-    "include": ["src/**/*", "test/**/*", "examples/**/*"],
+    "exclude": ["node_modules"],
+    "include": [
+        "packages/h5p-server/src/**/*",
+        "packages/h5p-server/test/**/*",
+        "packages/h5p-examples/src/**/*",
+        "packages/h5p-examples/test/**/*",
+        "packages/h5p-mongos3/src/**/*",
+        "packages/h5p-mongos3/test/**/*",
+        "packages/h5p-html-exporter/src/**/*",
+        "packages/h5p-html-exporter/test/**/*",
+        "packages/h5p-webcomponents/src/**/*",
+        "packages/h5p-webcomponents/test/**/*",
+        "packages/h5p-react/src/**/*",
+        "packages/h5p-react/test/**/*"
+    ],
     "compilerOptions": {
         "outDir": "./build-ide",
-        "jsx": "react"
+        "jsx": "react",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "removeComments": false,
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "baseUrl": "./",
+        "resolveJsonModule": true,
+        "declaration": true
     }
 }
