@@ -174,9 +174,9 @@ workflows:
             - integration-tests:
                   requires:
                       - install-build
-            - db-tests:
-                  requires:
-                      - install-build
+            # - db-tests:
+            #       requires:
+            #           - install-build
             - release:
                   filters:
                       branches:
