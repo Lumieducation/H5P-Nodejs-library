@@ -168,9 +168,9 @@ workflows:
             - unit-tests:
                   requires:
                       - install-build
-            - e2e-tests:
-                  requires:
-                      - install-build
+            # - e2e-tests:
+            #       requires:
+            #           - install-build
             - integration-tests:
                   requires:
                       - install-build
@@ -186,6 +186,6 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - e2e-tests
+                      # - e2e-tests
                       - integration-tests
                       # - db-tests
