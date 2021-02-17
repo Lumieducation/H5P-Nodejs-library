@@ -47,8 +47,8 @@ async function importAndExportHtml(
                 libraryStorage,
                 contentStorage,
                 config,
-                path.resolve('packages/h5p-examples/h5p/core'),
-                path.resolve('packages/h5p-examples/h5p/editor')
+                path.resolve('../../packages/h5p-examples/h5p/core'),
+                path.resolve('../../packages/h5p-examples/h5p/editor')
             );
             const contentId = (
                 await packageImporter.addPackageLibrariesAndContent(
@@ -181,7 +181,7 @@ describe('HtmlExporter', () => {
         await browser.close();
     });
 
-    const directory = path.resolve('test/data/hub-content/');
+    const directory = path.resolve('../../test/data/hub-content/');
     let files;
     try {
         files = fsExtra.readdirSync(directory);
@@ -232,7 +232,7 @@ describe('HtmlExporter template', () => {
 
         const contentId = (
             await packageImporter.addPackageLibrariesAndContent(
-                path.resolve('test/data/hub-content/H5P.Accordion.h5p'),
+                path.resolve('../../test/data/hub-content/H5P.Accordion.h5p'),
                 user
             )
         ).id;
