@@ -120,7 +120,8 @@ jobs:
             - run: npm run test:html-exporter -- --collect-coverage
             - coveralls/upload:
                   parallel: true
-                  flag_name: HTML Exporter tests
+                  base-path: ./packages/h5p-html-exporter
+                  flag_name: HTML Exporter Tests
 
     e2e-tests:
         docker:
