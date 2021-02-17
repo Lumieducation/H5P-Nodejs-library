@@ -20,7 +20,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-webcomponents": "0.2.2",
-        "react": "16.13.1"
+        "react": "16.14.0"
     },
     "devDependencies": {
         "@types/react": "16.14.4",
