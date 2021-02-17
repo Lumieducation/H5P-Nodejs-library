@@ -39,7 +39,7 @@
         "@types/express": "4.17.11",
         "@types/puppeteer": "5.4.2",
         "@types/react": "17.0.1",
-        "cross-env": "7.0.2",
+        "cross-env": "7.0.3",
         "puppeteer": "7.0.4",
         "start-server-and-test": "1.11.7"
     }
