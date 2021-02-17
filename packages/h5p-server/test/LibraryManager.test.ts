@@ -282,16 +282,29 @@ describe('basic file library manager functionality', () => {
         );
     });
 
-    it('returns null file for language en', async () => {
+    it('returns the English language file for language xx', async () => {
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${__dirname}/data/libraries`)
         );
 
         const language = await libManager.getLanguage(
             { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
-            'en'
+            'xx'
         );
-        expect(language).toBeNull();
+        expect(JSON.parse(language)).toMatchObject({
+            semantics: [
+                {
+                    label: 'Greeting text',
+                    default: 'Hello world!',
+                    description: 'The greeting text displayed to the end user.'
+                },
+                {
+                    label: 'Card image',
+                    description:
+                        'Image shown on card, optional. Without this the card will show just the text.'
+                }
+            ]
+        });
     });
 
     it('returns the de language file for de-DE', async () => {
