@@ -152,7 +152,7 @@ jobs:
                   parallel_finished: true
             - run:
                   name: release
-                  command: npm run semantic-release || true
+                  command: npx lerna version -y --conventional-commit --create-release github && npx lerna publish -y from-package
 
 workflows:
     version: 2
