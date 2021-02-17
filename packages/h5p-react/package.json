@@ -24,7 +24,7 @@
     },
     "devDependencies": {
         "@types/react": "16.14.4",
-        "@types/resize-observer-browser": "0.1.4",
+        "@types/resize-observer-browser": "0.1.5",
         "@lumieducation/h5p-server": "7.0.0-alpha.1"
     }
 }
