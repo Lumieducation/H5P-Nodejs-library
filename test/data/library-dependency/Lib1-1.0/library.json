@@ -1,0 +1,18 @@
+{
+    "title": "Lib 1",
+    "description": "",
+    "majorVersion": 1,
+    "minorVersion": 0,
+    "patchVersion": 0,
+    "runnable": 0,
+    "author": "H5P NodeJs Implementation",
+    "license": "MIT",
+    "machineName": "Lib1",
+    "preloadedDependencies": [
+        {
+            "machineName": "Lib2",
+            "majorVersion": 1,
+            "minorVersion": 0
+        }
+    ]
+}
