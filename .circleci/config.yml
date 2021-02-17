@@ -110,6 +110,18 @@ jobs:
                   parallel: true
                   flag_name: Integration tests
 
+    html-exporter-tests:
+        docker:
+            - image: circleci/node:10-browsers
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: npm run test:html-exporter -- --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: HTML Exporter tests
+
     e2e-tests:
         docker:
             - image: circleci/node:10-browsers
@@ -174,6 +186,9 @@ workflows:
             - integration-tests:
                   requires:
                       - install-build
+            - html-exporter-tests:
+                    requires:
+                      - install-build
             # - db-tests:
             #       requires:
             #           - install-build
@@ -186,6 +201,7 @@ workflows:
                       - lint
                       - format
                       - unit-tests
+                      - html-exporter-tests
                       # - e2e-tests
                       - integration-tests
                       # - db-tests
