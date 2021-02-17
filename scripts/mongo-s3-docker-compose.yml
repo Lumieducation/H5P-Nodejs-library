@@ -14,7 +14,7 @@ services:
         volumes:
             - mongodb_data:/data/db
     minio1:
-        image: minio/minio
+        image: minio/minio:latest
         volumes:
             - minio_data:/data
         ports:
