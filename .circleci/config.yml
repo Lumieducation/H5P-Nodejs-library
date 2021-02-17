@@ -53,7 +53,7 @@ jobs:
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./h5p
+                      - ./packages/h5p-examples/h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
