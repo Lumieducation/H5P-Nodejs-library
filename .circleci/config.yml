@@ -41,6 +41,14 @@ jobs:
                   paths:
                       - ./packages/h5p-server/node_modules
             - save_cache:
+                  key: h5p-webcomponents-modules-cache-{{ checksum "packages/h5p-webcomponents/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-webcomponents/node_modules
+            - save_cache:
+                  key: h5p-react-modules-cache-{{ checksum "packages/h5p-react/package-lock.json" }}
+                  paths:
+                      - ./packages/h5p-react/node_modules
+            - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
                       - ./h5p
@@ -65,6 +73,10 @@ jobs:
                       - packages/h5p-mongos3/build
                       - packages/h5p-server/node_modules
                       - packages/h5p-server/build
+                      - packages/h5p-webcomponents/node_modules
+                      - packages/h5p-webcomponents/build
+                      - packages/h5p-react/node_modules
+                      - packages/h5p-react/build
 
     lint:
         docker:
@@ -151,8 +163,11 @@ jobs:
             - coveralls/upload:
                   parallel_finished: true
             - run:
+                  name: config git
+                  command: git config --global user.email "c@Lumi.education" && git config --global user.name "Lumi"
+            - run:
                   name: release
-                  command: npx lerna version -y --conventional-commit --create-release github && npx lerna publish -y from-package
+                  command: npx lerna version -y --conventional-commits --create-release github && npx lerna publish -y from-package
 
 workflows:
     version: 2
