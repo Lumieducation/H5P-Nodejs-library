@@ -1,4 +1,6 @@
 {
+    "name": "@lumieducation/h5p-monorepo",
+    "private": true,
     "version": "6.2.0",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -49,7 +51,7 @@
         "postinstall": "npx lerna bootstrap && npm run download:content-type-cache && npm run download:h5p"
     },
     "release": {
-        "branch": "master"
+        "branch": "release"
     },
     "husky": {
         "hooks": {
