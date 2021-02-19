@@ -13,15 +13,14 @@ import {
     contentTypeCacheExpressRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
-
+import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
 import * as H5P from '@lumieducation/h5p-server';
-import expressRoutes from './expressRoutes';
+
 import startPageRenderer from './startPageRenderer';
+import expressRoutes from './expressRoutes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
-
-import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
 
 let tmpDir: DirectoryResult;
 

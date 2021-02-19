@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-express",
-    "version": "7.0.0-alpha.1",
+    "version": "7.0.1",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -45,19 +45,19 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^7.0.0-alpha.1",
+        "@lumieducation/h5p-server": "^7.0.1",
         "express": "4.17.1"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "@types/express": "4.17.9",
+        "@types/express": "4.17.11",
         "@types/express-serve-static-core": "4.17.18",
         "@types/supertest": "2.0.10",
         "axios": "0.21.1",
-        "axios-mock-adapter": "^1.19.0",
-        "body-parser": "^1.19.0",
-        "express-fileupload": "^1.2.1",
+        "axios-mock-adapter": "1.19.0",
+        "body-parser": "1.19.0",
+        "express-fileupload": "1.2.1",
         "supertest": "6.0.1",
         "tmp-promise": "3.0.2"
     }

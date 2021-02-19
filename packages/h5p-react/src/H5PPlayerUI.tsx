@@ -64,7 +64,6 @@ export default class H5PPlayerUI extends React.Component<{
     }
 
     public render(): React.ReactNode {
-        console.log('rendering', this.props.contentId);
         return (
             <h5p-player
                 ref={this.h5pPlayer}
@@ -87,9 +86,9 @@ export default class H5PPlayerUI extends React.Component<{
 
     private onxAPIStatement = (
         event: CustomEvent<{
-            statement: any;
             context: IContext;
             event: IxAPIEvent;
+            statement: any;
         }>
     ) => {
         if (this.props.xAPICallback) {
