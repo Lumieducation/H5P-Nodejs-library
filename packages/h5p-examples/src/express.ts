@@ -92,16 +92,12 @@ const start = async () => {
         }
     );
 
-    h5pEditor.setRenderer((model) => model);
-
     // The H5PPlayer object is used to display H5P content.
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         config
     );
-
-    h5pPlayer.setRenderer((model) => model);
 
     // We now set up the Express server in the usual fashion.
     const server = express();
