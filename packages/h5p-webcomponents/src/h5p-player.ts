@@ -252,18 +252,23 @@ export class H5PPlayerComponent extends HTMLElement {
 
         // attach xAPI listener
         window.H5P.externalDispatcher.on('xAPI', (event: IxAPIEvent) => {
-            const context: IContext = {
-                contentId: this.playerModel.contentId
-            };
-            this.dispatchEvent(
-                new CustomEvent('xAPI', {
-                    detail: {
-                        statement: event.data.statement,
-                        context,
-                        event
-                    }
-                })
-            );
+            if (
+                `${event.data.statement.object.definition.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
+                `${this.playerModel.contentId}`
+            ) {
+                const context: IContext = {
+                    contentId: this.playerModel.contentId
+                };
+                this.dispatchEvent(
+                    new CustomEvent('xAPI', {
+                        detail: {
+                            statement: event.data.statement,
+                            context,
+                            event
+                        }
+                    })
+                );
+            }
         });
 
         window.H5P.init(this.root);
