@@ -20,8 +20,6 @@ import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
-import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
-
 let tmpDir: DirectoryResult;
 
 const start = async () => {
@@ -64,7 +62,7 @@ const start = async () => {
 
     // Load the configuration file from the local file system
     const config = await new H5P.H5PConfig(
-        new H5P.fsImplementations.JsonStorage(path.resolve('src/config.json'))
+        new H5P.fsImplementations.JsonStorage(path.resolve('config.json'))
     ).load();
 
     // The H5PEditor object is central to all operations of h5p-nodejs-library
