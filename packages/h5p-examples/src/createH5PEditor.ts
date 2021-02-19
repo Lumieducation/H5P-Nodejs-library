@@ -1,6 +1,5 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
-
 import * as H5P from '@lumieducation/h5p-server';
 import dbImplementations from '@lumieducation/h5p-mongos3';
 
@@ -13,7 +12,7 @@ import dbImplementations from '@lumieducation/h5p-mongos3';
  * CONTENTSTORAGE=mongos3 Uses MongoDB/S3 backend for content storage
  * CONTENT_MONGO_COLLECTION Specifies the collection name for content storage
  * CONTENT_AWS_S3_BUCKET Specifies the bucket name for content storage
- * TEMPORARYSTOAGE=s3 Uses S3 backend for temporary file storage
+ * TEMPORARYSTORAGE=s3 Uses S3 backend for temporary file storage
  * TEMPORARY_AWS_S3_BUCKET Specifies the bucket name for temporary file storage
  *
  * Further environment variables to set up MongoDB and S3 can be found in

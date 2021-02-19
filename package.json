@@ -1,4 +1,6 @@
 {
+    "name": "@lumieducation/h5p-monorepo",
+    "private": true,
     "version": "6.2.0",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -49,7 +51,7 @@
         "postinstall": "npx lerna bootstrap && npm run download:content-type-cache && npm run download:h5p"
     },
     "release": {
-        "branch": "master"
+        "branch": "release"
     },
     "husky": {
         "hooks": {
@@ -88,13 +90,13 @@
         "@semantic-release/git": "9.0.0",
         "@semantic-release/github": "7.2.0",
         "@types/jest": "26.0.19",
-        "axios": "^0.21.1",
+        "axios": "0.21.1",
         "commitlint": "11.0.0",
         "husky": "4.3.6",
         "jest": "26.6.3",
         "lerna": "3.22.1",
         "prettier": "2.2.1",
-        "puppeteer": "5.5.0",
+        "puppeteer": "7.1.0",
         "semantic-release": "17.3.1",
         "ts-jest": "26.4.4",
         "ts-node": "9.1.1",

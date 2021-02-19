@@ -152,6 +152,12 @@ export default class LibraryManager {
                 );
                 return this.getLanguage(library, languageCodeMatch[1]);
             }
+            if (language !== 'en' && language !== '.en') {
+                return this.getLanguage(library, 'en');
+            }
+            if (language === 'en') {
+                return this.getLanguage(library, '.en');
+            }
             return null;
         }
     }

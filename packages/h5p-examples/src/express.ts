@@ -13,15 +13,14 @@ import {
     contentTypeCacheExpressRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
-
+import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
 import * as H5P from '@lumieducation/h5p-server';
-import expressRoutes from './expressRoutes';
+
 import startPageRenderer from './startPageRenderer';
+import expressRoutes from './expressRoutes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
-
-import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
 
 let tmpDir: DirectoryResult;
 
@@ -93,12 +92,16 @@ const start = async () => {
         }
     );
 
+    h5pEditor.setRenderer((model) => model);
+
     // The H5PPlayer object is used to display H5P content.
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         config
     );
+
+    h5pPlayer.setRenderer((model) => model);
 
     // We now set up the Express server in the usual fashion.
     const server = express();
