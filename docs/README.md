@@ -1,9 +1,5 @@
 # H5P-Nodejs-library
 
-
-
-## H5P-Nodejs-library
-
 [![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=master)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=master)
 
 This library provides everything needed to create custom H5P servers running on NodeJS. It is written in TypeScript and fully typed, which makes it much easier to work with than the official PHP server. Of course, it's also possible to use this library in projects with JavaScript \(ES5\) and you will still profit from the typings by getting code completion in your IDE.
@@ -14,7 +10,7 @@ Please note that even if most functionality of H5P seems to work, **there are pa
 
 If you have questions or want to contribute, feel free to open issues or pull requests.
 
-### Documentation
+## Documentation
 
 You can find all documentation pages in the [`docs`](docs) directory or browse through them with these links as entry points:
 
@@ -30,7 +26,7 @@ You can find all documentation pages in the [`docs`](docs) directory or browse t
 
 [Performance optimizations](docs/performance-optimizations.md)
 
-### Trying out the demo
+## Trying out the demo
 
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
 
@@ -42,7 +38,7 @@ Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
 
 You can then open the URL [http://localhost:8080](http://localhost:8080) in any browser.
 
-### Trying out the demo on Docker
+## Trying out the demo on Docker
 
 Make sure you have [`git`](https://git-scm.com/) and [`docker`](https://www.docker.com/) installed.
 
@@ -52,7 +48,7 @@ Make sure you have [`git`](https://git-scm.com/) and [`docker`](https://www.dock
 
 You can then open the URL [http://localhost:3000](http://localhost:3000) in any browser.
 
-### Contributing
+## Contributing
 
 Lumi tries to improve education wherever it is possible by providing a software that connects teachers with their students. Every help is appreciated and welcome.
 
@@ -60,19 +56,19 @@ Feel free to create pull requests.
 
 h5p-nodejs-library has adopted the code of conduct defined by the Contributor Covenant. It can be read in full [here](./CODE-OF-CONDUCT.md).
 
-#### Get in touch
+### Get in touch
 
 [Slack](https://join.slack.com/t/lumi-education/shared_invite/enQtMjY0MTM2NjIwNDU0LWU3YzVhZjdkNGFjZGE1YThjNzBiMmJjY2I2ODk2MzAzNDE3YzI0MmFkOTdmZWZhOTBmY2RjOTc3ZmZmOWMxY2U) or [c@Lumi.education](mailto:c@Lumi.education).
 
-### Versioning
+## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/Lumieducation/Lumi/tags).
 
-### License
+## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE v3 License - see the [LICENSE](LICENSE) file for details
 
-### Support
+## Support
 
 This work obtained financial support for development from the German BMBF-sponsored research project "CARO - Care Reflection Online" \(FKN: 01PD15012\).
 
@@ -81,4 +77,3 @@ Read more about them at the following websites:
 * CARO - [https://blogs.uni-bremen.de/caroprojekt/](https://blogs.uni-bremen.de/caroprojekt/)
 * University of Bremen - [https://www.uni-bremen.de/en.html](https://www.uni-bremen.de/en.html)
 * BMBF - [https://www.bmbf.de/en/index.html](https://www.bmbf.de/en/index.html)
-

@@ -20,11 +20,5 @@ This will install all dependencies in all packages, run lerna's [bootstrap](http
 
 This repository is a so called monorepo and is managed by [lerna](https://lerna.js.org). A monorepo is one repository for several packages, which can be found in the `packages/` folder. Each subfolder is its own package, published via [npm](https://www.npmjs.com). Packages are mostly self contained except for the following cases:  
 
-
 * node modules needed for every package are located in the root `package.json` and `node_module` folder. The[ jest](https://jestjs.io) testing framework and `typescript` are used in every package - therefore these are installed in the root `node_module` folder and made accessible in every package.
 * data used for unit and integration tests that are required by more than one package are located in `test/data`. Data used for only single packages is located in the respective `package/<name>/test/data` folder.
-
-
-
-
-

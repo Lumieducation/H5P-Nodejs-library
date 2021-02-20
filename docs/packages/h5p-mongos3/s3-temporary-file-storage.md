@@ -1,6 +1,6 @@
-# Using a S3-compatible system as temporary file storage
+# Temporary file storage
 
-There is an implementation of the `ITemporaryFileStorage` interface that uses a S3-compatible storage system to store files \(images, video, audio etc.\) that are uploaded in the editor. These files are later copied to the permanent content storage once the users save their changes. You can find it at [/src/implementation/db/S3TemporaryFileStorage.ts](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/src/implementation/db/S3TemporaryFileStorage.ts).
+There is an implementation of the `ITemporaryFileStorage` interface that uses a S3-compatible storage system to store files \(images, video, audio etc.\) that are uploaded in the editor. These files are later copied to the permanent content storage once the users save their changes. You can find it at [/src/implementation/db/S3TemporaryFileStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/S3TemporaryFileStorage.ts).
 
 **Note:** You must create the S3 bucket manually before it can be used by `S3TemporaryFileStorage`! **It's also your responsibility to configure the bucket to automatically delete old temporary files after a sensible timespan \(e.g. 1 day\).**
 
@@ -45,7 +45,7 @@ const temporaryStorage = new dbImplementations.S3TemporaryFileStorage(
 
 ### Notes:
 
-* The function [`initS3`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/src/implementation/db/initS3.ts) creates an S3
+* The function [`initS3`](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/initS3.ts) creates an S3
 
   client using the `aws-sdk` npm package.
 
@@ -82,7 +82,7 @@ const temporaryStorage = new dbImplementations.S3TemporaryFileStorage(
 
 ## Using S3TemporaryFileStorage in the example
 
-The [example Express application](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/examples/express.ts) can be configured to use the S3 temporary storage by setting the environment variables from above and these additional variables:
+The [example Express application](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/examples/express.ts) can be configured to use the S3 temporary storage by setting the environment variables from above and these additional variables:
 
 * TEMPORARYSTORAGE=s3
 * TEMPORARY\_AWS\_S3\_BUCKET

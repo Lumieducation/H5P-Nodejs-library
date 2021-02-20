@@ -1,6 +1,6 @@
-# Using MongoDB and a S3-compatible system as content storage
+# Content storage
 
-There is an implementation of the `IContentStorage` interface that uses MongoDB to store the parameters and metadata of content objects and a S3-compatible storage system to store files \(images, video, audio etc.\). You can find it at [/src/implementation/db/MongoS3ContentStorage.ts](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/src/implementation/db/MongoS3ContentStorage.ts).
+There is an implementation of the `IContentStorage` interface that uses MongoDB to store the parameters and metadata of content objects and a S3-compatible storage system to store files \(images, video, audio etc.\). You can find it at [/src/implementation/db/MongoS3ContentStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/MongoS3ContentStorage.ts).
 
 **Note:** You must create the S3 bucket manually before it can be used by `MongoS3ContentStorage`!
 
@@ -54,11 +54,11 @@ const storage = new dbImplementations.MongoS3ContentStorage(
 
 ### Notes:
 
-* The function [`initS3`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/src/implementation/db/initS3.ts) creates an S3
+* The function [`initS3`](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/initS3.ts) creates an S3
 
   client using the `aws-sdk` npm package.
 
-* The function [`initMongo`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/src/implementation/db/initMongo.ts) creates
+* The function [`initMongo`](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/initMongo.ts) creates
 
   a MongoDB client using the `mongodb` npm package.
 
@@ -103,7 +103,7 @@ const storage = new dbImplementations.MongoS3ContentStorage(
 
 ## Using MongoS3ContentStorage in the example
 
-The [example Express application](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/examples/express.ts) can be configured to use the MongoDB/S3 storage by setting the environment variables from above and these additional variables:
+The [example Express application](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/examples/express.ts) can be configured to use the MongoDB/S3 storage by setting the environment variables from above and these additional variables:
 
 * CONTENTSTORAGE=mongos3
 * CONTENT\_MONGO\_COLLECTION
@@ -154,9 +154,9 @@ contentFilesUrlPlayerOverride = 'https://s3server.com/bucket/{{contentId}}';
 
 ## Developing and testing
 
-There are automated tests in [`/test/implementation/db/MongoS3ContentStorage.test.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/test/implementation/db/MongoS3ContentStorage.test.ts). However, these tests will not be called automatically when you run `npm run test` or other test calls. The reason is that the tests require a running MongoDB and S3 instance and thus need more extensive setup. To manually execute the tests call `npm run test:db`.
+There are automated tests in [`/test/implementation/db/MongoS3ContentStorage.test.ts`](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/test/implementation/db/MongoS3ContentStorage.test.ts). However, these tests will not be called automatically when you run `npm run test` or other test calls. The reason is that the tests require a running MongoDB and S3 instance and thus need more extensive setup. To manually execute the tests call `npm run test:db`.
 
-To quickly get a functioning MongoDB and S3 instance, you can use the [Docker Compose file in the same directory](https://github.com/Lumieducation/H5P-Nodejs-library/tree/027b83add22a5f17a898c45f8fc3e55b83eb877d/test/implementation/db/mongo-s3-docker-compose.yml) like this \(you obviously must install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) first\):
+To quickly get a functioning MongoDB and S3 instance, you can use the [Docker Compose file in the same directory](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/test/implementation/db/mongo-s3-docker-compose.yml) like this \(you obviously must install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) first\):
 
 ```bash
 docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d
