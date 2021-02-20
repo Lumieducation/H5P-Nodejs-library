@@ -5,7 +5,7 @@ There are two ways of handling AJAX requests: You can use the out-of-the-box
 or [write your own custom router](ajax-endpoints.md#handling-requests-yourself):
 
 ![diagram of the architecture of the H5P Ajax
-endpoint](.gitbook/assets/ajax-endpoint-architecture.svg)
+endpoint](ajax-endpoint-architecture.svg)
 
 ## Handling requests with the Express adapter
 

@@ -20,7 +20,7 @@ needs, but **requires you to implement your own server and web client**.
 The diagram shows how the four components interact in a selection of use cases.
 Each use case has a specific colour and can be traced through the system by it.
 
-![Diagram showing the components at work](.gitbook/assets/editor-architecture.svg)
+![Diagram showing the components at work](editor-architecture.svg)
 
 You have to implement all the components shown in blue. This library provides
 the parts in yellow and the grey parts are provided by Joubel's H5P client

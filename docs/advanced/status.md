@@ -1,6 +1,8 @@
 # Status of h5p-nodejs-library
 
-The library is at a stage in which the major functionality of the H5P editor and player are working. You can check in the lists below, what is already implemented and what isn't.
+The library is at a stage in which the major functionality of the H5P editor and
+player are working. You can check in the lists below, what is already
+implemented and what isn't.
 
 ## Finished functionality
 
