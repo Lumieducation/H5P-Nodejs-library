@@ -120,6 +120,7 @@ jobs:
             - run: npm run test:html-exporter -- --collect-coverage
             - coveralls/upload:
                   parallel: true
+                  path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
                   flag_name: HTML Exporter Tests
 
     e2e-tests:
@@ -187,7 +188,7 @@ workflows:
                   requires:
                       - install-build
             - html-exporter-tests:
-                    requires:
+                  requires:
                       - install-build
             # - db-tests:
             #       requires:

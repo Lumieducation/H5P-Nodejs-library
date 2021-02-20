@@ -12,7 +12,7 @@
         "prepare": "npm run build",
         "build": "npx tsc",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
-        "clear": "rm -rf test/data/hub-content && rm -rf h5p && rm test/data/content-type-cache/real-content-types.json && rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "clear": "rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
     },

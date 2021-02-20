@@ -181,7 +181,9 @@ describe('HtmlExporter', () => {
         await browser.close();
     });
 
-    const directory = path.resolve('../../test/data/hub-content/');
+    const directory = path.resolve(
+        `${__dirname}/../../../test/data/hub-content/`
+    );
     let files;
     try {
         files = fsExtra.readdirSync(directory);
