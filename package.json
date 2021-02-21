@@ -27,6 +27,7 @@
         "stop:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml down",
         "test:coverage": "npm run test:coverage --prefix packages/h5p-server",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
+        "test:html-exporter": "jest --config packages/h5p-html-exporter/jest.config.js --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:server+upload": "npm run test:server+upload --repfix packages/h5p-server",
         "test:upload": "npm run test:upload --prefix packages/h5p-server",
