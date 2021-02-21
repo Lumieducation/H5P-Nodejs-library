@@ -1,9 +1,9 @@
 # H5P in NodeJS
 
-- Basic usage
-  * [Getting Started](usage/getting-started.md)
+- [Basic usage](usage/usage.md)
   * [Architecture](usage/architecture.md)  
-  * [Ajax Endpoints](usage/ajax-endpoints.md)
+  * [Integrating the core library](usage/integrating.md)
+  * [H5P Ajax Endpoints](usage/ajax-endpoints.md)
   * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
 
 - Advanced usage
