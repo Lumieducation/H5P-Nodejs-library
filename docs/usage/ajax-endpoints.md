@@ -49,7 +49,7 @@ list or delete content!
 You can customize which endpoints you want to use by setting the respective
 flags in the `options` object. By default, the adapter will handle **all**
 routes and you can turn individual ones off by setting `routeXX` to false. You
-can also turn off the error handling \(`handleErrors: false`\). Normally, the
+can also turn off the error handling (`handleErrors: false`). Normally, the
 router will send back localized responses that the H5P client can understand. If
 you turn error handling off, the routes will throw errors that you have to
 handle yourself!
@@ -102,9 +102,9 @@ an example.
 
 ## Configuring custom endpoint routes
 
-The H5P client \(run in the browser by the user\) can be configured to use
+The H5P client (run in the browser by the user) can be configured to use
 custom AJAX request endpoints. These can be configured in the config object. The
-relevant settings \(including defaults\) are:
+relevant settings (including defaults) are:
 
 ```javascript
 const config = {

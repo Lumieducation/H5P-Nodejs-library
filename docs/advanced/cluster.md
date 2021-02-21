@@ -1,11 +1,11 @@
 # Running the example in cluster mode
 
-The example can \(mostly\) be run in cluster mode to scale h5p horizontally.
+The example can (mostly) be run in cluster mode to scale h5p horizontally.
 
 The only thing that hasn't been made to work across is the configuration object.
-\(This shouldn't be a problem, as the only thing that is written back in the
+(This shouldn't be a problem, as the only thing that is written back in the
 config is the UID of the server, which is already built in for development
-purposes.\) All other components support scaling across several instances.
+purposes.) All other components support scaling across several instances.
 
 You'll need:
 
@@ -19,13 +19,13 @@ You can access the application by calling
 
 Change directories to the directory that contains the `docker-compose.yml` file.
 
-### Startup \(fires up 4 instances of h5p\)
+### Startup (fires up 4 instances of h5p)
 
 ```bash
 docker-compose up --scale h5p=4
 ```
 
-### Startup \(also rebuilds image\)
+### Startup (also rebuilds image)
 
 Execute this command after you've made changes to the code that require a
 rebuild
@@ -40,7 +40,7 @@ docker-compose up --scale h5p=4 --build
 docker-compose down
 ```
 
-### Shutdown \(and delete all data\)
+### Shutdown (and delete all data)
 
 ```bash
 docker-compose down -v
@@ -51,16 +51,16 @@ docker-compose down -v
 The `docker-compose.yml` file configures a setup in which there are several
 services that make h5p-nodejs-library work in cluster mode:
 
-* Minio \(provides S3 storage backend for content and temporary files\)
-* MongoDB \(provides database backend for content metadata\)
-* Redis \(provides a key-value cache; used for caching the content type cache
-  and caching library metadata\)
-* a named Docker volume \(added as a volume to all h5p containers to keep
-  library data consistent across instances\)
-* NGINX \(load balancer that distributes incoming request between the H5P
-  containers\)
+* Minio (provides S3 storage backend for content and temporary files)
+* MongoDB (provides database backend for content metadata)
+* Redis (provides a key-value cache; used for caching the content type cache
+  and caching library metadata)
+* a named Docker volume (added as a volume to all h5p containers to keep
+  library data consistent across instances)
+* NGINX (load balancer that distributes incoming request between the H5P
+  containers)
 
 If you want to build on this configuration to scale your application across
 several machines, bear in mind that you must make sure that the library folder
-is read **and** write accessible \(multi-node RW\) by all H5P containers. You
+is read **and** write accessible (multi-node RW) by all H5P containers. You
 could use a NFS share for this or a persistent volume claim in Kubernetes.

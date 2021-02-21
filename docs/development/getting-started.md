@@ -7,8 +7,8 @@ Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
 be problems if you use `yarn` as it doesn't use the `package-lock.json` file and
 you might get incorrect and untested dependencies.
 
-**Important:** If you use Windows, you must use Bash \(comes with Git for
-windows\) as a command shell \(otherwise scripts won't run\).
+**Important:** If you use Windows, you must use Bash (comes with Git for
+windows) as a command shell (otherwise scripts won't run).
 
 ## Installation for development purposes
 
@@ -41,9 +41,9 @@ self contained except for the following cases:
 
 ## Building the TypeScript files
 
-You must transpile the TypeScript files to ES5 for the project to work \(the
+You must transpile the TypeScript files to ES5 for the project to work (the
 TypeScript transpiler will be installed automatically if you run `npm
-install`\):
+install`):
 
 ```bash
 npm run build

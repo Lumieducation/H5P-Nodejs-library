@@ -1,8 +1,8 @@
 # Temporary file storage
 
-There is an implementation of the `ITemporaryFileStorage` interface that uses a S3-compatible storage system to store files \(images, video, audio etc.\) that are uploaded in the editor. These files are later copied to the permanent content storage once the users save their changes. You can find it at [/src/implementation/db/S3TemporaryFileStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/S3TemporaryFileStorage.ts).
+There is an implementation of the `ITemporaryFileStorage` interface that uses a S3-compatible storage system to store files (images, video, audio etc.) that are uploaded in the editor. These files are later copied to the permanent content storage once the users save their changes. You can find it at [/src/implementation/db/S3TemporaryFileStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/S3TemporaryFileStorage.ts).
 
-**Note:** You must create the S3 bucket manually before it can be used by `S3TemporaryFileStorage`! **It's also your responsibility to configure the bucket to automatically delete old temporary files after a sensible timespan \(e.g. 1 day\).**
+**Note:** You must create the S3 bucket manually before it can be used by `S3TemporaryFileStorage`! **It's also your responsibility to configure the bucket to automatically delete old temporary files after a sensible timespan (e.g. 1 day).**
 
 ## Dependencies
 

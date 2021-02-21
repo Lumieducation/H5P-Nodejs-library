@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=master)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=master)
 
-This library provides everything needed to create custom H5P servers running on NodeJS. It is written in TypeScript and fully typed, which makes it much easier to work with than the official PHP server. Of course, it's also possible to use this library in projects with JavaScript \(ES5\) and you will still profit from the typings by getting code completion in your IDE.
+This library provides everything needed to create custom H5P servers running on NodeJS. It is written in TypeScript and fully typed, which makes it much easier to work with than the official PHP server. Of course, it's also possible to use this library in projects with JavaScript (ES5) and you will still profit from the typings by getting code completion in your IDE.
 
 Even though the repository includes a sample demo project that demonstrates its functionality, it's still your job to integrate this library into your own NodeJS server. This is called an "implementation" or "plugin" in H5P terminology. The implementation is responsible for exposing HTTP endpoints, persisting data and calling maintenance functions. **This library is not an out-of-the-box solution to get a standalone H5P server.**
 
@@ -30,7 +30,7 @@ You can find all documentation pages in the [`docs`](https://github.com/Lumieduc
 
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
 
-> = 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use Windows, you must use bash \(comes with Git for windows\) as a command shell \(otherwise scripts won't run\).
+> = 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use Windows, you must use bash (comes with Git for windows) as a command shell (otherwise scripts won't run).
 
 1. Clone the repository with git
 2. `npm install`
@@ -70,7 +70,7 @@ This project is licensed under the GNU GENERAL PUBLIC LICENSE v3 License - see t
 
 ## Support
 
-This work obtained financial support for development from the German BMBF-sponsored research project "CARO - Care Reflection Online" \(FKN: 01PD15012\).
+This work obtained financial support for development from the German BMBF-sponsored research project "CARO - Care Reflection Online" (FKN: 01PD15012).
 
 Read more about them at the following websites:
 

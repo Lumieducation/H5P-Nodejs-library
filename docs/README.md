@@ -5,7 +5,7 @@
 This library provides everything needed to create custom H5P servers running on
 NodeJS. It is written in TypeScript and fully typed, which makes it much easier
 to work with than the official PHP server. Of course, it's also possible to use
-this library in projects with JavaScript \(ES5\) and you will still profit from
+this library in projects with JavaScript (ES5) and you will still profit from
 the typings by getting code completion in your IDE.
 
 Even though the repository includes a sample demo project that demonstrates its
@@ -48,8 +48,8 @@ h5p-nodejs-library](usage/architecture.md)
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
 
 > = 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use
-> Windows, you must use bash \(comes with Git for windows\) as a command shell
-> \(otherwise scripts won't run\).
+> Windows, you must use bash (comes with Git for windows) as a command shell
+> (otherwise scripts won't run).
 
 1. Clone the repository with git
 2. `npm install`
@@ -99,8 +99,8 @@ the [LICENSE](LICENSE) file for details
 ## Support
 
 This work obtained financial support for development from the German
-BMBF-sponsored research project "CARO - Care Reflection Online" \(FKN:
-01PD15012\).
+BMBF-sponsored research project "CARO - Care Reflection Online" (FKN:
+01PD15012).
 
 Read more about them at the following websites:
 

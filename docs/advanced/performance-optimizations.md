@@ -3,14 +3,14 @@
 There are a few ways in which the performance of `h5p-nodejs-library` can be
 improved:
 
-* \[Performance optimizations for production
-  use\]\(\#performance-optimizations-for-production-use\)
+* [Performance optimizations for production
+  use](\#performance-optimizations-for-production-use)
 
   * [Caching library
     storage](performance-optimizations.md#caching-library-storage)
-  * \[Serving the library files from a different
+  * [Serving the library files from a different
 
-    system\]\(\#serving-the-library-files-from-a-different-system\)
+    system](\#serving-the-library-files-from-a-different-system)
 
   * [Horizontal scaling](performance-optimizations.md#horizontal-scaling)
   * [Hardware choice](performance-optimizations.md#hardware-choice)
@@ -28,8 +28,8 @@ faster if you use the cached library storage!
 
 The class uses [the NPM package
 `cache-manager`](https://www.npmjs.com/package/cache-manager) to abstract the
-caching, so you can pass in any of the store engines supported by it \(e.g.
-redis, mongodb, fs, memcached\). See the documentation page of `cache-manager`
+caching, so you can pass in any of the store engines supported by it (e.g.
+redis, mongodb, fs, memcached). See the documentation page of `cache-manager`
 for more details.
 
 This is how you use the storage:
@@ -49,7 +49,7 @@ Check out how to construct the H5PEditor with the storage [here](h5p-editor-cons
 ## Serving the library files from a different system
 
 While you can use the inbuilt methods of `h5p-nodejs-library` to serve the
-library files \(JavaScript and CSS files used by the actual content types\) to
+library files (JavaScript and CSS files used by the actual content types) to
 the browser of the user, it is also possible to serve them directly, as they are
 simple static files.
 
@@ -60,10 +60,10 @@ with
 `new FileLibraryStorage('/directory/in/filesystem')`
 
 all libraries will be stored in `/directory/in/filesystem`. You can simply serve
-this directory under the URL specified in `IH5PConfig.librariesUrl` \(defaults
-to `/libraries`\). If you put this directory into a NFS storage or a shared
+this directory under the URL specified in `IH5PConfig.librariesUrl` (defaults
+to `/libraries`). If you put this directory into a NFS storage or a shared
 volume, you can even use different machines to serve the library files
-\(vertical scaling\)!
+(vertical scaling)!
 
 You must make sure that patches to libraries that have changed the library files
 aren't lost due to caching.
@@ -71,8 +71,8 @@ aren't lost due to caching.
 ## Horizontal scaling
 
 It is possible to use `h5p-nodejs-library` in a setup in which multiple
-instances of it are executed in parallel \(on a single machine to make use of
-multi-core processors or on multiple machines\). When doing this, pay attention
+instances of it are executed in parallel (on a single machine to make use of
+multi-core processors or on multiple machines). When doing this, pay attention
 to this:
 
 * If you use [caching](performance-optimizations.md#caching-library-storage),
@@ -81,10 +81,10 @@ to this:
 * If you run multiple instances on a single machine, the library storage
   directory can be on the local filesystem and all instances can share it.
 * If you run multiple instances on multiple machines, the library storage
-  directory must be put into a network share \(NFS\) or you must use shared
-  volumes \(Docker\).
-* It is advised to use the Mongo/S3 content storage classes. \[See
-  below\]\(\#database-based-content-storage\) for details.
+  directory must be put into a network share (NFS) or you must use shared
+  volumes (Docker).
+* It is advised to use the Mongo/S3 content storage classes. [See
+  below](\#database-based-content-storage) for details.
 
 ## Database-based content storage
 
@@ -104,5 +104,5 @@ storage classes for other databases.
 
 ## Hardware choice
 
-The library is not very CPU intensive, but requires very fast access to the disc \(IO\). To improve speed, you should always use the fastest SSD you can get for library storage. Content storage can be offloaded to a slower storage class.
+The library is not very CPU intensive, but requires very fast access to the disc (IO). To improve speed, you should always use the fastest SSD you can get for library storage. Content storage can be offloaded to a slower storage class.
 

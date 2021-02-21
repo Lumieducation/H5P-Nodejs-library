@@ -6,14 +6,14 @@ several ways:
 * You can \*\*add global custom JavaScript or CSS files to the player and editor
   by passing their URL to the constructor of `H5PPlayer` or `H5PEditor`.\*\* Use
   this method if you want to globally customize how H5P looks or behaves to make
-  it fit into your larger application. \[See
-  below\]\(\#adding-custom-scripts-to-the-player\) for more details.
+  it fit into your larger application. [See
+  below](\#adding-custom-scripts-to-the-player) for more details.
 
 * You can \*\*add global custom JavaScript or CSS files to the player and editor
   by specifying them in the configuration\*\*. Use and document this method if
   you want to allow administrators of an instance of your application to
-  customize how H5P looks and feels in their instance. \[See
-  below\]\(\#adding-custom-scripts-and-styles-via-the-configuration\) for more
+  customize how H5P looks and feels in their instance. [See
+  below](\#adding-custom-scripts-and-styles-via-the-configuration) for more
   details.
 
 * You can upload addons. This makes changing how H5P looks and behaves
@@ -219,8 +219,8 @@ const editor = new H5PEditor(
 It is possible to change the semantic structure of individual libraries without
 uploading a fork of the library. This allows you to remove or add fields in the
 H5P Editor. You can also change what HTML tags are allowed in the CKEditor, for
-instance. As the structure of the language files \(which include all the
-translations\) is identical to the semantic structure of the library, you must
+instance. As the structure of the language files (which include all the
+translations) is identical to the semantic structure of the library, you must
 also make sure that the language files are changed as well. h5p-nodejs-library
 allows you to pass two hooks in the options of the `H5PEditor` constructor to
 achieve this:
@@ -313,8 +313,8 @@ The changes to the semantic structure apply system-wide to all instance of the
 library in the editor. It doesn't make sense to customize the player this way,
 as the semantic structure and language files are only used by the editor.
 
-Exporting \(downloading\) and uploading content in the same application \(or an
-application that uses the same hooks\) works, but only the content.json file
+Exporting (downloading) and uploading content in the same application (or an
+application that uses the same hooks) works, but only the content.json file
 follows the altered semantic structure. The actual library's semantic.json file
 is left unchanged in the exported package. This means that if you upload an
 exported package with an altered semantic structure of the content to a

@@ -9,7 +9,7 @@ mathematical formulas. Addons provide a simple and reusable way of customizing
 behavior and looks of H5P content types. This allows site administrators to
 customize H5P without programming knowledge or the need to fork content types.
 
-## Using addons \(for site administrators\)
+## Using addons (for site administrators)
 
 To use an addon on your site, you must upload the addon file through the library
 management site. You **cannot** upload addons in the normal way you would upload
@@ -58,19 +58,19 @@ editor. There are two ways to enable it:
    ```
 
    Now the editor will load the H5P.MathDisplay library if a user opens the
-   editor of one these three content types \(these are the three content types
-   for which the PHP implementation also loads addons\).
+   editor of one these three content types (these are the three content types
+   for which the PHP implementation also loads addons).
 
 ## Customizing addon behavior
 
 Addons can be configured by setting the property `libraryConfig` of your
 configuration implementation of `IH5PConfig`. The property is a complex object
 with H5P library machine names as keys. The object is sent to the H5P client
-\(run in the browser\) as part of the H5PIntegration object and can be accessed
+(run in the browser) as part of the H5PIntegration object and can be accessed
 in a H5P library by calling `H5P.getLibraryConfig('H5P.MachineName')`.
 
-Example \(shows how to \(optionally\) configure the [H5P.MathDisplay
-addon](https://h5p.org/mathematical-expressions)\):
+Example (shows how to (optionally) configure the [H5P.MathDisplay
+addon](https://h5p.org/mathematical-expressions)):
 
 ```javascript
 "libraryConfig": {
@@ -98,7 +98,7 @@ addon](https://h5p.org/mathematical-expressions)\):
     }
 ```
 
-## Creating addons \(for developers\)
+## Creating addons (for developers)
 
 Addons also use the .h5p file extension but don't have the same structure as
 regular h5p packages: they only contain folders with libraries and no `h5p.json`
@@ -106,14 +106,14 @@ file or content. The library folders are basically like regular H5P libraries,
 as they contain a `library.json` file, but they can't contain `semantics.json`.
 The metadata in `library.json` is mostly the same as the metadata of normal
 libraries, but it contains the property `addTo`, which makes a library to an
-addon. \(Check out the comprehensive structure of library metadata in the
+addon. (Check out the comprehensive structure of library metadata in the
 TypeScript interface `ILibraryMetadata` in
-[`/src/types.ts`](/packages/h5p-server/src/types.ts).\)
+[`/src/types.ts`](/packages/h5p-server/src/types.ts).)
 
-A library containing the property `addTo` in its metadata will be automatically added to the player \(or editor\) by the server in certain circumstances:
+A library containing the property `addTo` in its metadata will be automatically added to the player (or editor) by the server in certain circumstances:
 
 * Always when loading the editor, if set in the global configuration of the
-  server \(see above\).
+  server (see above).
 
 * When playing content, only if the content contains a regex search string. The
   search string is set by setting this property:

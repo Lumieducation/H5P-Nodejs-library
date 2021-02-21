@@ -23,10 +23,10 @@ The library emits log messages with
 [debug](https://www.npmjs.com/package/debug). To see those messages you have to
 set the environment variable `DEBUG` to `h5p:*`. There are several log levels.
 By default you'll only see the messages sent with the level `info`. To get the
-verbose log, set the environment variable `LOG_LEVEL` to debug \(mind the
-capitalization\).
+verbose log, set the environment variable `LOG_LEVEL` to debug (mind the
+capitalization).
 
-Example \(for Linux\):
+Example (for Linux):
 
 ```bash
 DEBUG=h5p:* LOG_LEVEL=debug node script.js
@@ -62,4 +62,4 @@ We aim at achieving high code quality by following these principles:
 * All code that is merged into master must pass the CI pipeline's tests.
 
 You can check whether your own code passes most of these requirements by running
-`npm run ci` \(doesn't include tests requiring a database\).
+`npm run ci` (doesn't include tests requiring a database).

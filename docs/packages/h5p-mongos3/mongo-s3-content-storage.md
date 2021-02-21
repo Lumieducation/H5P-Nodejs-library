@@ -1,6 +1,6 @@
 # Content storage
 
-There is an implementation of the `IContentStorage` interface that uses MongoDB to store the parameters and metadata of content objects and a S3-compatible storage system to store files \(images, video, audio etc.\). You can find it at [/src/implementation/db/MongoS3ContentStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/MongoS3ContentStorage.ts).
+There is an implementation of the `IContentStorage` interface that uses MongoDB to store the parameters and metadata of content objects and a S3-compatible storage system to store files (images, video, audio etc.). You can find it at [/src/implementation/db/MongoS3ContentStorage.ts](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/src/implementation/db/MongoS3ContentStorage.ts).
 
 **Note:** You must create the S3 bucket manually before it can be used by `MongoS3ContentStorage`!
 
@@ -130,7 +130,7 @@ The function receives the contentId of the object that is being accessed and the
 
 ## Increasing scalability by getting content files directly from S3
 
-In the default setup all resources used by H5P content in the **player** \(images, video, ...\) will be requested from the H5P server. The H5P server in turn will request the resources from S3 and relay the results. This means that in a high load scenario, there will be a lot of load on the H5P server to serve these static files. You can improve scalability by setting up the player to load content resources directly from the S3 bucket. For this you must grant read access on the bucket to anonymous users. If you have content that must not be accessible to the public \(for e.g. copyright reasons\), this is probably not an option.
+In the default setup all resources used by H5P content in the **player** (images, video, ...) will be requested from the H5P server. The H5P server in turn will request the resources from S3 and relay the results. This means that in a high load scenario, there will be a lot of load on the H5P server to serve these static files. You can improve scalability by setting up the player to load content resources directly from the S3 bucket. For this you must grant read access on the bucket to anonymous users. If you have content that must not be accessible to the public (for e.g. copyright reasons), this is probably not an option.
 
 This currently only works for the player, not for the editor. Because of this you must still serve the 'get content file' route to make sure the editor can work with resources correctly.
 
@@ -156,7 +156,7 @@ contentFilesUrlPlayerOverride = 'https://s3server.com/bucket/{{contentId}}';
 
 There are automated tests in [`/test/implementation/db/MongoS3ContentStorage.test.ts`](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/test/implementation/db/MongoS3ContentStorage.test.ts). However, these tests will not be called automatically when you run `npm run test` or other test calls. The reason is that the tests require a running MongoDB and S3 instance and thus need more extensive setup. To manually execute the tests call `npm run test:db`.
 
-To quickly get a functioning MongoDB and S3 instance, you can use the [Docker Compose file in the same directory](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/test/implementation/db/mongo-s3-docker-compose.yml) like this \(you obviously must install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) first\):
+To quickly get a functioning MongoDB and S3 instance, you can use the [Docker Compose file in the same directory](https://github.com/Lumieducation/H5P-Private/tree/4119bad329f48195a023360ce2c65892cd631c7e/test/implementation/db/mongo-s3-docker-compose.yml) like this (you obviously must install [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/) first):
 
 ```bash
 docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d

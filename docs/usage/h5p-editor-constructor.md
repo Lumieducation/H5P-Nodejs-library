@@ -58,7 +58,7 @@ const contentStorage = new FileContentStorage(`h5p/content`);
 
 When the user uploads files in the H5P editor client, these files are not
 directly stored alongside the content, either because the content hasn't been
-saved before \(and there is no contentId\) or because this might create
+saved before (and there is no contentId) or because this might create
 left-over files if these files aren't used after all. Instead the server stores
 these files in a temporary storage system and adds the '\#tmp' tag to the files'
 path. When the editor client requests a file the system retrieves the file from
@@ -67,7 +67,7 @@ temporary storage instead of the regular content storage.
 The temporary storage must implement the interface `ITemporaryFileStorage`.
 Furthermore, you should regularly call
 `H5PEditor.temporaryFileManager.cleanUp()` to remove unneeded temporary files
-\(every 5 min\).
+(every 5 min).
 
 If you don't have a multi-machine setup you can use the sample implementation in
 [`/packages/h5p-server/src/implementation/fs/DirectoryTemporaryFileStorage.ts`](/packages/h5p-server/src/implementation/fs/DirectoryTemporaryFileStorage.ts):
@@ -81,7 +81,7 @@ const temporaryStorage = new DirectoryTemporaryFileStorage(
 The sample implementation has a basic authentication mechanism built in that
 makes sure that only users who have created a file can access it later.
 
-## translationCallback \(optional\)
+## translationCallback (optional)
 
 If you want to localize certain aspects of the editor, you must pass in a
 function that returns translated strings for certain keys. This function in turn
@@ -102,7 +102,7 @@ The editor will fallback to English if you don't pass any translation callback.
 Also see the [documentation page on localization](localization.md) for more
 details.
 
-## urlGenerator \(optional\)
+## urlGenerator (optional)
 
 if you need to overwrite the logic to create the urls per request you can pass a
 custom url generator. It is possible to inherit from UrlGenerator and overwrite
