@@ -16,7 +16,26 @@ persisting data and calling maintenance functions. **This library is not an
 out-of-the-box solution to get a standalone H5P server.**
 
 **Check out the [GitBook documentation](https://docs.lumi.education) for details
-how to use this library**.
+on how to use this library**.
+
+The main Git repository is a monorepo that contains several packages, which can
+be installed through NPM. The packages are meant to be combined 
+
+| Package name                      | Functionality |
+|-----------------------------------|--------------------------------------------------------------------------------------|
+| @lumieducation/h5p-server         | (backend) the core package to run H5P in NodeJS                                      |
+| @lumieducation/h5p-express        | (backend)routes and controllers for Express                                          |
+| @lumieducation/h5p-webcomponents  | (frontend) native web components to display the H5P player and editor in the browser |
+| @lumieducation/h5p-react          | (frontend) React components with the same functionality as the native web components |
+| @lumieducation/h5p-mongos3        | (backend) storage classes for MongoDB and S3                                         |
+| @lumieducation/h5p-html-exporter  | (backend) an optional component that can create bundled HTML files for exporting     |
+
+There are also two example implementations:
+
+| Example type | Tech stack | Location |
+|---|---|---|
+| server-side-rendering | server: Express with JS template rendering <br/> client: static HTML, some React for library management | `/packages/h5p-examples` |
+| Single Page Application | server: Express with REST endpoints <br/> client: React |  `/packages/h5p-rest-example-server` <br/> `/packages/h5p-rest-example-client`|
 
 Please note that even if most functionality of H5P works, **there are parts
 which haven't been implemented yet or which might be faulty.** This is
@@ -58,17 +77,16 @@ browser.
 
 Lumi tries to improve education wherever it is possible by providing a software
 that connects teachers with their students. Every help is appreciated and
-welcome.
-
-Feel free to create pull requests.
+welcome. Feel free to create pull requests. Check out the [documentation pages
+for developers](/docs/development/getting-started.md) to get started.
 
 This project has adopted the code of conduct defined by the Contributor
 Covenant. It can be read in full [here](/code-of-conduct.md).
 
 ### Get in touch
 
-[Slack](https://join.slack.com/t/lumi-education/shared_invite/enQtMjY0MTM2NjIwNDU0LWU3YzVhZjdkNGFjZGE1YThjNzBiMmJjY2I2ODk2MzAzNDE3YzI0MmFkOTdmZWZhOTBmY2RjOTc3ZmZmOWMxY2U)
-or [c@Lumi.education](mailto:c@Lumi.education).
+[Slack](https://join.slack.com/t/lumi-education/shared_invite/zt-3dcc4gpy-8XxjefFeUHEv89hCMkwmbw)
+or [c@Lumi.education](mailto:c@lumi.education).
 
 ## Versioning
 
@@ -88,8 +106,6 @@ BMBF-sponsored research project "CARO - Care Reflection Online" (FKN:
 
 Read more about them at the following websites:
 
-* CARO -
-  [https://blogs.uni-bremen.de/caroprojekt/](https://blogs.uni-bremen.de/caroprojekt/)
-* University of Bremen -
-  [https://www.uni-bremen.de/en.html](https://www.uni-bremen.de/en.html)
+* CARO - [https://blogs.uni-bremen.de/caroprojekt/](https://blogs.uni-bremen.de/caroprojekt/)
+* University of Bremen - [https://www.uni-bremen.de/en.html](https://www.uni-bremen.de/en.html)
 * BMBF - [https://www.bmbf.de/en/index.html](https://www.bmbf.de/en/index.html)
