@@ -3,7 +3,7 @@
 There are two ways of creating a H5PEditor object:
 
 * You can use the convenience function
-  [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that use
+  [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses
   basic file system implementations for all data storage services. You can use
   the function if you're just getting started. Later on, you'll want to
   construct the editor with custom implementations of the data storage services.
@@ -108,5 +108,5 @@ if you need to overwrite the logic to create the urls per request you can pass a
 custom url generator. It is possible to inherit from UrlGenerator and overwrite
 the getBaseUrl function if needed.
 
-See [H5PServer](https://github.com/BoBiene/H5PServer) for an implementation
-sample using the urlGenerator.
+See the third-party [H5PServer](https://github.com/BoBiene/H5PServer) project
+for an implementation sample using the urlGenerator.

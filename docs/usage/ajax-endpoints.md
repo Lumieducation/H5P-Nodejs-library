@@ -86,12 +86,12 @@ different in your setup.
 | HTTP Verb | Route | method in H5PAjaxEndpoint | Type | Required |
 | :--- | :--- | :--- | :--- | :--- |
 | GET | /ajax | getAjax | H5P | yes |
-| GET | /content/\/\ | getContentFile | H5P | depends on content storage: files in FileContentStorage can also be served statically |
-| GET | /libraries/\/\ | getLibraryFile | H5P | depends on library storage: files in FileLibraryStorage can also be served statically |
-| GET | /temp-files/\ | getTemporaryFile | H5P | yes |
+| GET | /content | getContentFile | H5P | depends on content storage: files in FileContentStorage can also be served statically |
+| GET | /libraries | getLibraryFile | H5P | depends on library storage: files in FileLibraryStorage can also be served statically |
+| GET | /temp-files | getTemporaryFile | H5P | yes |
 | POST | /ajax | postAjax | H5P | yes |
-| GET | /params/\ | getContentParameters | custom | if you use the default renderer script of the editor |
-| GET | /download\/ | getDownload | custom | no |
+| GET | /params | getContentParameters | custom | if you use the default renderer script of the editor |
+| GET | /download | getDownload | custom | no |
 
 Consult the [documentation of
 `H5PAjaxEndpoint`](/packages/h5p-server/src/H5PAjaxEndpoint.ts) for details on
