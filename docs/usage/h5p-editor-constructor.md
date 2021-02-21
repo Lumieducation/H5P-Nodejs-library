@@ -60,7 +60,7 @@ When the user uploads files in the H5P editor client, these files are not
 directly stored alongside the content, either because the content hasn't been
 saved before (and there is no contentId) or because this might create
 left-over files if these files aren't used after all. Instead the server stores
-these files in a temporary storage system and adds the '\#tmp' tag to the files'
+these files in a temporary storage system and adds the '#tmp' tag to the files'
 path. When the editor client requests a file the system retrieves the file from
 temporary storage instead of the regular content storage.
 
@@ -99,7 +99,7 @@ const translationCallbackAdapter = (key, language) => {
 
 The editor will fallback to English if you don't pass any translation callback.
 
-Also see the [documentation page on localization](localization.md) for more
+Also see the [documentation page on localization](../advanced/localization.md) for more
 details.
 
 ## urlGenerator (optional)

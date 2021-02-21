@@ -38,7 +38,6 @@ comparable way to the structure in the diagram.
 ## Example implementation
 
 There is a basic example implementation of the server and client (blue parts)
-using Express in the [`/packages/h5p-examples`](packages/h5p-examples),
-[`/packages/h5p-rest-example-server`](/packages/h5p-rest-example-server) and
-[`/packages/h5p-rest-example-client`](/packages/h5p-rest-example-client)
+using Express in the `/packages/h5p-examples`,
+`/packages/h5p-rest-example-server` and `/packages/h5p-rest-example-client`
 folders.

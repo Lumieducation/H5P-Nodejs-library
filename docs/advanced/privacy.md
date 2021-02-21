@@ -50,8 +50,8 @@ When the user does certain actions in the system, the following data is stored
   * kept until corresponding h5p content object is deleted
   * temporary files (used in the editor) are automatically deleted after the
     time set in `temporaryFileLifetime` in IH5PConfig (defaults to 120 min);
-    \*\*If you use the S3 storage backend, you have to configure automatic
-    deletion of temporary files yourself!\*\*
+    **If you use the S3 storage backend, you have to configure automatic
+    deletion of temporary files yourself!**
 
 ### Logging
 

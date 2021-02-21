@@ -3,17 +3,18 @@
 An application using h5p-nodejs-library can customize the way H5P behaves in
 several ways:
 
-* You can \*\*add global custom JavaScript or CSS files to the player and editor
-  by passing their URL to the constructor of `H5PPlayer` or `H5PEditor`.\*\* Use
+* You can **add global custom JavaScript or CSS files to the player and editor
+  by passing their URL to the constructor of `H5PPlayer` or `H5PEditor`.** Use
   this method if you want to globally customize how H5P looks or behaves to make
   it fit into your larger application. [See
-  below](\#adding-custom-scripts-to-the-player) for more details.
+  below](#adding-custom-scripts-and-styles-via-constructor-injection) for more
+  details.
 
-* You can \*\*add global custom JavaScript or CSS files to the player and editor
-  by specifying them in the configuration\*\*. Use and document this method if
+* You can **add global custom JavaScript or CSS files to the player and editor
+  by specifying them in the configuration**. Use and document this method if
   you want to allow administrators of an instance of your application to
   customize how H5P looks and feels in their instance. [See
-  below](\#adding-custom-scripts-and-styles-via-the-configuration) for more
+  below](#adding-custom-scripts-and-styles-via-the-configuration) for more
   details.
 
 * You can upload addons. This makes changing how H5P looks and behaves
@@ -22,13 +23,13 @@ several ways:
 
 * You can **alter the scripts and styles used in a single library**. This allows
   you to change the looks and behavior of a library without forking it. [See
-  below](customization.md#changing-javascript-and-css-files-of-individual-libraries)
+  below](#changing-javascript-and-css-files-of-individual-libraries)
   for more details
 
 * You can **alter the semantics and language files of a single library**. This
   allows you to change the default editor of libraries without forking the
   library itself. [See
-  below](customization.md#changing-the-semantics-of-individual-libraries) for
+  below](#changing-the-semantics-of-individual-libraries) for
   more details.
 
 To get a conceptual idea of how customizing works, you can also look at the

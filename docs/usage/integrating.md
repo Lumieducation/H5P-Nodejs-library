@@ -44,9 +44,8 @@ const h5pEditor = H5P.fs(
 This object is **a server-side component** that is long-lived and includes most
 of the methods that must be called when by the routes of your server. To find
 out what these routes are and how they must call H5PEditor, you can either check
-out the [section on content views in the docs](usage.md#creating-content-views)
-or the [Express example
-project](/packages/h5p-examples/src/expressRoutes.ts).
+out the [section on content views in the docs](#creating-content-views) or the
+[Express example project](/packages/h5p-examples/src/expressRoutes.ts).
 
 To render a HTML page (server-side rendering) with the editor inside (= the
 HTML user interface around the actual editor and the editor itself) for a
@@ -97,12 +96,12 @@ end user interacts with in the browser. The core files must be obtained
 separately:
 
 1. Download the [Core
-   files]([https://github.com/h5p/h5p-php-library/archive/1.24.0.zip](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip))
-   and place them into a folder called `h5p/core` in your project.
+   files](https://github.com/h5p/h5p-php-library/archive/1.24.0.zip) and place
+   them into a folder called `h5p/core` in your project.
 
 2. Download the [Editor
-   files]([https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip](https://github.com/h5p/h5p-editor-php-library/archive/1.24.0.zip))
-   and place them into a folder called `h5p/editor` in your project.
+   files](https://github.com/h5p/h5p-editor-php-library/archive/1.24.1.zip) and
+   place them into a folder called `h5p/editor` in your project.
 
 You must add a route to your implementation that serves the static files found
 under `h5p/core` and `h5p/editor` to the endpoint configured in
@@ -194,13 +193,13 @@ with errors.
 ## Localization
 
 This library supports localization. See the [respective documentation
-page](localization.md) for more details.
+page](../advanced/localization.md) for more details.
 
 ## Customization
 
 An application using h5p-nodejs-library can customize the way H5P behaves in
-several ways. See [the documentation page on customization](customization.md)
-for more details.
+several ways. See [the documentation page on
+customization](../advanced/customization.md) for more details.
 
 ## Compliance and privacy
 

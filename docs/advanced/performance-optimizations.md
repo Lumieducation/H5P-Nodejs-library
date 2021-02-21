@@ -4,14 +4,11 @@ There are a few ways in which the performance of `h5p-nodejs-library` can be
 improved:
 
 * [Performance optimizations for production
-  use](\#performance-optimizations-for-production-use)
-
+  use](#performance-optimizations-for-production-use)
   * [Caching library
     storage](performance-optimizations.md#caching-library-storage)
   * [Serving the library files from a different
-
-    system](\#serving-the-library-files-from-a-different-system)
-
+    system](#serving-the-library-files-from-a-different-system)
   * [Horizontal scaling](performance-optimizations.md#horizontal-scaling)
   * [Hardware choice](performance-optimizations.md#hardware-choice)
 
@@ -44,7 +41,8 @@ const cachedStorage = new H5P.cacheImplementations.CachedLibraryStorage(
 );
 ```
 
-Check out how to construct the H5PEditor with the storage [here](h5p-editor-constructor.md).
+Check out how to construct the H5PEditor with the storage
+[here](../usage/h5p-editor-constructor.md).
 
 ## Serving the library files from a different system
 
@@ -84,7 +82,7 @@ to this:
   directory must be put into a network share (NFS) or you must use shared
   volumes (Docker).
 * It is advised to use the Mongo/S3 content storage classes. [See
-  below](\#database-based-content-storage) for details.
+  below](#database-based-content-storage) for details.
 
 ## Database-based content storage
 
@@ -97,12 +95,12 @@ when listing content objects. They should only be used for development and
 testing purposes or in very small deployments.
 
 It is advised to use the
-[`MongoS3ContentStorage`](packages/h5p-mongos3/mongo-s3-content-storage.md) and
-[`S3TemporaryFileStorage`](packages/h5p-mongos3/s3-temporary-file-storage.md)
-classes. You can also write your own custom content storage and temporary file
-storage classes for other databases.
+[MongoS3ContentStorage](/docs/packages/h5p-mongos3/mongo-s3-content-storage.md)
+and
+[S3TemporaryFileStorage](/docs/packages/h5p-mongos3/s3-temporary-file-storage.md)
+classes of the h5p-mongos3 package. You can also write your own custom content
+storage and temporary file storage classes for other databases.
 
 ## Hardware choice
 
 The library is not very CPU intensive, but requires very fast access to the disc (IO). To improve speed, you should always use the fastest SSD you can get for library storage. Content storage can be offloaded to a slower storage class.
-
