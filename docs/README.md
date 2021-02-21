@@ -18,25 +18,6 @@ out-of-the-box solution to get a standalone H5P server.**
 **Check out the [GitBook documentation](https://docs.lumi.education) for details
 on how to use this library**.
 
-The main Git repository is a monorepo that contains several packages, which can
-be installed through NPM. The packages are meant to be combined 
-
-| Package name                      | Functionality |
-|-----------------------------------|--------------------------------------------------------------------------------------|
-| @lumieducation/h5p-server         | (backend) the core package to run H5P in NodeJS                                      |
-| @lumieducation/h5p-express        | (backend)routes and controllers for Express                                          |
-| @lumieducation/h5p-webcomponents  | (frontend) native web components to display the H5P player and editor in the browser |
-| @lumieducation/h5p-react          | (frontend) React components with the same functionality as the native web components |
-| @lumieducation/h5p-mongos3        | (backend) storage classes for MongoDB and S3                                         |
-| @lumieducation/h5p-html-exporter  | (backend) an optional component that can create bundled HTML files for exporting     |
-
-There are also two example implementations:
-
-| Example type | Tech stack | Location |
-|---|---|---|
-| server-side-rendering | server: Express with JS template rendering <br/> client: static HTML, some React for library management | `/packages/h5p-examples` |
-| Single Page Application | server: Express with REST endpoints <br/> client: React |  `/packages/h5p-rest-example-server` <br/> `/packages/h5p-rest-example-client`|
-
 Please note that even if most functionality of H5P works, **there are parts
 which haven't been implemented yet or which might be faulty.** This is
 particularly true for security concerns. For a more comprehensive list of what
@@ -44,8 +25,29 @@ works and what doesn't, check out [the documentation page on the current status
 of the project](/docs/development/status.md). The interfaces have reached some
 level of stability, but might still change in future major releases.
 
-If you have questions or want to contribute, feel free to open issues or pull
-requests.
+## Packages
+
+The main Git repository is a monorepo that contains several packages, which can
+be installed through NPM. The packages are meant to be combined 
+
+| Package name                      | Functionality                                                             | used in  |
+|-----------------------------------|---------------------------------------------------------------------------|----------|
+| **@lumieducation/h5p-server**         | the core package to run H5P in NodeJS                                     | backend  |
+| **@lumieducation/h5p-express**        | routes and controllers for Express                                        | backend  |
+| **@lumieducation/h5p-webcomponents**  | native web components to display the H5P player and editor in the browser | frontend |
+| **@lumieducation/h5p-react**          | React components with the same functionality as the native web components | frontend |
+| **@lumieducation/h5p-mongos3**        | storage classes for MongoDB and S3                                        | backend  |
+| **@lumieducation/h5p-html-exporter**  | an optional component that can create bundled HTML files for exporting    | backend  |
+
+## Examples
+
+There are two example implementations that illustrate how the packages can be
+used:
+
+| Example type | Tech stack | Location |
+|---|---|---|
+| server-side-rendering | server: Express with JS template rendering<br/>client: static HTML, some React for library management | `/packages/h5p-examples` |
+| Single Page Application | server: Express with REST endpoints<br/>client: React |  `/packages/h5p-rest-example-server`<br/>`/packages/h5p-rest-example-client`|
 
 ## Trying out the demo
 
@@ -61,18 +63,6 @@ Windows, you must use bash (comes with Git for windows) as a command shell
 You can then open the URL [http://localhost:8080](http://localhost:8080) in any
 browser.
 
-## Trying out the demo on Docker
-
-Make sure you have [`git`](https://git-scm.com/) and
-[`docker`](https://www.docker.com/) installed.
-
-1. Clone the repository with git
-2. `docker build -t <your-username>/h5p-nodejs-library .`
-3. `docker run -p 3000:8080 -d <your-username>/h5p-nodejs-library`
-
-You can then open the URL [http://localhost:3000](http://localhost:3000) in any
-browser.
-
 ## Contributing
 
 Lumi tries to improve education wherever it is possible by providing a software
@@ -83,7 +73,7 @@ for developers](/docs/development/getting-started.md) to get started.
 This project has adopted the code of conduct defined by the Contributor
 Covenant. It can be read in full [here](/code-of-conduct.md).
 
-### Get in touch
+## Get in touch
 
 [Slack](https://join.slack.com/t/lumi-education/shared_invite/zt-3dcc4gpy-8XxjefFeUHEv89hCMkwmbw)
 or [c@Lumi.education](mailto:c@lumi.education).
