@@ -4,7 +4,7 @@
   * [Getting Started](usage/getting-started.md)
   * [Architecture](usage/architecture.md)  
   * [Ajax Endpoints](usage/ajax-endpoints.md)
-  * [H5PEditorConstructor](usage/h5p-editor-constructor.md)  
+  * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
 
 - Advanced usage
   * [Localization](advanced/localization.md)
@@ -21,6 +21,6 @@
   - [h5p-react](packages/h5p-react.md)  
 - Development
   * [Getting started](development/getting-started.md)
-  * [Development & testing](development/development-testing.md)
+  * [Testing & code quality](development/testing-quality.md)
   * [Core updates](development/core-updates.md)
   * [Project Status](development/status.md)

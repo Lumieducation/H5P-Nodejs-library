@@ -1,34 +1,4 @@
-# Development & Testing
-
-## Prerequisites
-
-Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
-&gt;= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. There might
-be problems if you use `yarn` as it doesn't use the `package-lock.json` file and
-you might get incorrect and untested dependencies.
-
-**Important:** If you use Windows, you must use Bash \(comes with Git for
-windows\) as a command shell \(otherwise scripts won't run\).
-
-## Installation for development purposes
-
-```bash
-git clone https://github.com/Lumieducation/h5p-nodejs-library
-cd h5p-nodejs-library
-npm install
-```
-
-This will install all dependencies and transpile the source files.
-
-## Building the TypeScript files
-
-You must transpile the TypeScript files to ES5 for the project to work \(the
-TypeScript transpiler will be installed automatically if you run `npm
-install`\):
-
-```bash
-npm run build
-```
+# Testing and code quality
 
 ## Running Tests
 
