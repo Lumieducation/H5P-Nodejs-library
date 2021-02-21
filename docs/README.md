@@ -15,6 +15,9 @@ terminology. The implementation is responsible for exposing HTTP endpoints,
 persisting data and calling maintenance functions. **This library is not an
 out-of-the-box solution to get a standalone H5P server.**
 
+**Check out the [GitBook documentation](https://docs.lumi.education) for details
+how to use this library**.
+
 Please note that even if most functionality of H5P works, **there are parts
 which haven't been implemented yet or which might be faulty.** This is
 particularly true for security concerns. For a more comprehensive list of what
