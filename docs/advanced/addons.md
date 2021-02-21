@@ -39,8 +39,8 @@ property `playerAddons` of your configuration:
 **Editor:** The MathDisplay addon will **not** be automatically enabled in the
 editor. There are two ways to enable it:
 
-1. Use a custom H5P.MathDisplay addon, that uses a h5p-nodejs-library
-   extension to avoid the server-wide configuration below.
+1. Use a custom H5P.MathDisplay addon, that uses a lumieducation extension to
+   avoid the server-wide configuration below.
 
 2. Set the configuration property `editorAddons` in your implementation of
    `IH5PConfig` to something like:
@@ -151,10 +151,10 @@ A library containing the property `addTo` in its metadata will be automatically 
   }
   ```
 
-  _Note that this way of enabling addons in the editor is a custom
-  h5p-nodejs-library extension of the library metadata structure and is **not**
-  supported by the PHP implementation and might change in the future if this
-  feature is implemented by Joubel's PHP implementation in another way._
+  _Note that this way of enabling addons in the editor is a custom lumieducation
+  extension of the library metadata structure and is **not** supported by the
+  PHP implementation and might change in the future if this feature is
+  implemented by Joubel's PHP implementation in another way._
 
 * Always when loading the play if requested in the metadata like this:
 
@@ -168,10 +168,10 @@ A library containing the property `addTo` in its metadata will be automatically 
   }
   ```
 
-  _Note that this way of enabling addons in the player is a custom
-  h5p-nodejs-library extension of the library metadata structure and is **not**
-  supported by the PHP implementation and might change in the future if this
-  feature is implemented by Joubel's PHP implementation in another way._
+  _Note that this way of enabling addons in the player is a custom lumieducation
+  extension of the library metadata structure and is **not** supported by the
+  PHP implementation and might change in the future if this feature is
+  implemented by Joubel's PHP implementation in another way._
 
 When an addon is loaded in the editor or the player, the JavaScript and CSS
 files listed at `preloadedJs` and `preloadedCss` are loaded in the HTML file

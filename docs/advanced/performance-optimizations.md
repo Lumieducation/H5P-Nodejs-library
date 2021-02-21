@@ -1,7 +1,7 @@
 # Performance optimizations for production use
 
-There are a few ways in which the performance of `h5p-nodejs-library` can be
-improved:
+There are a few ways in which the performance of `@lumieducation/h5p-server` can
+be improved:
 
 * [Performance optimizations for production
   use](#performance-optimizations-for-production-use)
@@ -10,7 +10,6 @@ improved:
   * [Serving the library files from a different
     system](#serving-the-library-files-from-a-different-system)
   * [Horizontal scaling](performance-optimizations.md#horizontal-scaling)
-  * [Hardware choice](performance-optimizations.md#hardware-choice)
 
 ## Caching library storage
 
@@ -32,8 +31,8 @@ for more details.
 This is how you use the storage:
 
 ```javascript
-import * as H5P from 'h5p-nodejs-library';
-// const H5P = require('h5p-nodejs-library'); // old-style require alternative
+import * as H5P from '@lumieducation/h5p-server';
+// const H5P = require('@lumieducation/h5p-server'); // old-style require alternative
 
 const cachedStorage = new H5P.cacheImplementations.CachedLibraryStorage(
     new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
@@ -46,7 +45,7 @@ Check out how to construct the H5PEditor with the storage
 
 ## Serving the library files from a different system
 
-While you can use the inbuilt methods of `h5p-nodejs-library` to serve the
+While you can use the inbuilt methods of `@lumieducation/h5p-server` to serve the
 library files (JavaScript and CSS files used by the actual content types) to
 the browser of the user, it is also possible to serve them directly, as they are
 simple static files.
@@ -68,7 +67,7 @@ aren't lost due to caching.
 
 ## Horizontal scaling
 
-It is possible to use `h5p-nodejs-library` in a setup in which multiple
+It is possible to use `@lumieducation/h5p-server` in a setup in which multiple
 instances of it are executed in parallel (on a single machine to make use of
 multi-core processors or on multiple machines). When doing this, pay attention
 to this:
@@ -100,7 +99,3 @@ and
 [S3TemporaryFileStorage](/docs/packages/h5p-mongos3/s3-temporary-file-storage.md)
 classes of the h5p-mongos3 package. You can also write your own custom content
 storage and temporary file storage classes for other databases.
-
-## Hardware choice
-
-The library is not very CPU intensive, but requires very fast access to the disc (IO). To improve speed, you should always use the fastest SSD you can get for library storage. Content storage can be offloaded to a slower storage class.

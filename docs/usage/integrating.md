@@ -5,7 +5,7 @@
 Add the library to a project by executing
 
 ```bash
-npm install h5p-nodejs-library
+npm install @lumieducation/h5p-server
 ```
 
 ## Adding the library to your project
@@ -18,7 +18,7 @@ you wish so._
 After installation, you can import the library in a JavaScript file with
 
 ```javascript
-const H5P = require('h5p-nodejs-library');
+const H5P = require('@lumieducation/h5p-server');
 ```
 
 and instantiate the editor with
@@ -197,8 +197,8 @@ page](../advanced/localization.md) for more details.
 
 ## Customization
 
-An application using h5p-nodejs-library can customize the way H5P behaves in
-several ways. See [the documentation page on
+An application using @lumieducation/h5p-server can customize the way H5P behaves
+in several ways. See [the documentation page on
 customization](../advanced/customization.md) for more details.
 
 ## Compliance and privacy

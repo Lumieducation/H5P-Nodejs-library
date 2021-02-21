@@ -13,7 +13,7 @@ windows) as a command shell (otherwise scripts won't run).
 ## Installation for development purposes
 
 ```bash
-git clone https://github.com/Lumieducation/h5p-nodejs-library
+git clone https://github.com/lumieducation/h5p-nodejs-library
 cd h5p-nodejs-library
 npm install
 ```

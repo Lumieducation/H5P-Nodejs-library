@@ -1,6 +1,6 @@
 # Customization
 
-An application using h5p-nodejs-library can customize the way H5P behaves in
+An application using @lumieducation/h5p-server can customize the way H5P behaves in
 several ways:
 
 * You can **add global custom JavaScript or CSS files to the player and editor
@@ -222,9 +222,9 @@ uploading a fork of the library. This allows you to remove or add fields in the
 H5P Editor. You can also change what HTML tags are allowed in the CKEditor, for
 instance. As the structure of the language files (which include all the
 translations) is identical to the semantic structure of the library, you must
-also make sure that the language files are changed as well. h5p-nodejs-library
-allows you to pass two hooks in the options of the `H5PEditor` constructor to
-achieve this:
+also make sure that the language files are changed as well.
+@lumieducation/h5p-server allows you to pass two hooks in the options of the
+`H5PEditor` constructor to achieve this:
 
 ```typescript
 /**

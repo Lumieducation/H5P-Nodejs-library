@@ -49,7 +49,7 @@ docker-compose down -v
 ## How it works
 
 The `docker-compose.yml` file configures a setup in which there are several
-services that make h5p-nodejs-library work in cluster mode:
+services that make @lumieducation/h5p-serv work in cluster mode:
 
 * Minio (provides S3 storage backend for content and temporary files)
 * MongoDB (provides database backend for content metadata)
