@@ -156,9 +156,9 @@ export interface IIntegration {
          * The Ajax endpoint called when the user state has changed
          * Example: /h5p-ajax/content-user-data/:contentId/:dataType/:subContentId?token=XYZ
          * You can use these placeholders:
-         * :contentId
-         * :dataType
-         * :subContentId
+         * :contentId (can be null for editor)
+         * :dataType (values: state or any string)
+         * :subContentId (seems to obsolete, always 0)
          * The H5P client will replace them with the actual values.
          */
         contentUserData: string;
@@ -313,8 +313,11 @@ export interface IIntegration {
      */
     postUserStatistics: boolean;
     reportingIsEnabled?: boolean;
-    /**
-     * Set to false to disable saving user state.
+    /*
+     * How often the user state of content is saved (in seconds). Set to false
+     * to disable saving user state. Note that the user state is only saved if
+     * the user object is passed into the render method of the player. You also
+     * must set ajax.contentUserData for state saving to work.
      */
     saveFreq: number | boolean;
     /**
@@ -1871,4 +1874,43 @@ export interface ILanguageFileEntry {
      * The text displayed in a text box if the user has entered nothing so far.
      */
     placeholder?: string;
+}
+
+export interface IPostUserFinishedData {
+    contentId: string;
+    /**
+     * The date/time when the content was finished.
+     */
+    finished: number;
+    /**
+     * The maximum score attainable
+     */
+    maxScore: number;
+    /**
+     * The date/time when the content was opened.
+     */
+    opened: number;
+    /**
+     * The score received.
+     */
+    score: number;
+}
+
+export interface IPostContentUserData {
+    /**
+     * The actual data. 0 if the data should be deleted.
+     */
+    data: any | 0;
+    /**
+     * Indicates that data should be invalidated when content changes.
+     */
+    invalidate: 0 | 1;
+    /**
+     * Indicates that data should be loaded when content is loaded.
+     */
+    preload: 0 | 1;
+}
+
+export interface IGetContentUserData extends IAjaxResponse {
+    data: any;
 }

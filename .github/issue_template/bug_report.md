@@ -6,15 +6,15 @@ labels: '[type] bug'
 assignees: ''
 ---
 
-# bug\_report
+# bug_report
 
 **Describe the bug** A clear and concise description of what the bug is.
 
-**Environment \(please complete the following information\):**
+**Environment (please complete the following information):**
 
-* OS: \[e.g. macOS\]
-* Browser \[e.g. chrome, safari\]
-* Nodejs-Version \[e.g. 22\]
+* OS: [e.g. macOS]
+* Browser [e.g. chrome, safari]
+* Nodejs-Version [e.g. 22]
 
 **To Reproduce** Steps to reproduce the behavior: 1. Go to '...' 2. Click on '....' 3. Scroll down to '....' 4. See error
 

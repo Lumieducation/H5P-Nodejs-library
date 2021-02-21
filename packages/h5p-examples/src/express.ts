@@ -216,20 +216,49 @@ const start = async () => {
 
     server.use('/client', express.static(path.resolve('build/client')));
 
-    // STUB
-    server.post('/h5p/contentUserData', (req, res) => {
-        res.status(200).send();
-    });
+    // STUB, not implemented yet. You have to get the user id through a session
+    // cookie as h5P does not add it to the request. Alternatively you could add
+    // it to the URL generator.
+    server.post(
+        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
+        (
+            req: express.Request<
+                { contentId: string; dataType: string; subContentId: string },
+                {},
+                H5P.IPostContentUserData
+            >,
+            res
+        ) => {
+            res.status(200).send();
+        }
+    );
 
-    // STUB
-    server.get('/h5p/contentUserData', (req, res) => {
-        res.status(200).send();
-    });
+    // STUB, not implemented yet. You have to get the user id through a session
+    // cookie as h5P does not add it to the request. Alternatively you could add
+    // it to the URL generator.
+    server.get(
+        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
+        (
+            req: express.Request<{
+                contentId: string;
+                dataType: string;
+                subContentId: string;
+            }>,
+            res: express.Response<H5P.IGetContentUserData | {}>
+        ) => {
+            res.status(200).json({});
+        }
+    );
 
-    // STUB
-    server.post('/h5p/setFinished', (req, res) => {
-        res.status(200).send();
-    });
+    // STUB, not implemented yet. You have to get the user id through a session
+    // cookie as h5P does not add it to the request. Alternatively you could add
+    // it to the URL generator.
+    server.post(
+        '/h5p/setFinished',
+        (req: express.Request<{}, {}, H5P.IPostContentUserData>, res) => {
+            res.status(200).send();
+        }
+    );
 
     // Remove temporary directory on shutdown
     if (useTempUploads) {

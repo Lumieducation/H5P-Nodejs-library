@@ -12,23 +12,23 @@ are not bound to using React or Express in your own application, as
 Check out the architecture overview that describes which parts of the
 application are provided by which package:
 
-![Architecture overview](docs/architecture.svg)
+![Architecture overview](h5p-rest-example/architecture.svg)
 
-- This repository contains all the components in **purple** boxes. 
-- The **green** parts come from the `h5p-nodejs-library`, which is a runtime
-  dependency of the server. While `h5p-nodejs-library` is also a dev dependency
-  of the client, this is only the case to use the TypeScript interface
-  definitions exported by it. The dependency (which can be rather large) is only
-  required at build time and not at runtime. 
-- The **red** parts are web components that can be found in the package
-  `h5p-webcomponents`. The web components wrap around the actual core h5p player
-  and editor JavaScript and simplify instanciation, loading, saving and event
-  handling.
-- The **blue** parts is comprised of JavaScript and CSS files that make up the
-  core H5P player and editor. They are part of the original PHP repositories and
-  are downloaded from GitHub in the server with the script
-  [`download-core.sh`](server/download-core.sh). They must be served as static
-  files by the server and are added to the page by the web components as needed.
+-   This repository contains all the components in **purple** boxes.
+-   The **green** parts come from the `h5p-nodejs-library`, which is a runtime
+    dependency of the server. While `h5p-nodejs-library` is also a dev dependency
+    of the client, this is only the case to use the TypeScript interface
+    definitions exported by it. The dependency (which can be rather large) is only
+    required at build time and not at runtime.
+-   The **red** parts are web components that can be found in the package
+    `h5p-webcomponents`. The web components wrap around the actual core h5p player
+    and editor JavaScript and simplify instanciation, loading, saving and event
+    handling.
+-   The **blue** parts is comprised of JavaScript and CSS files that make up the
+    core H5P player and editor. They are part of the original PHP repositories and
+    are downloaded from GitHub in the server with the script
+    [`download-core.sh`](../packages/h5p-examples/download-core.sh). They must be served as static
+    files by the server and are added to the page by the web components as needed.
 
 ## Trying it out
 
@@ -44,6 +44,6 @@ BMBF-sponsored research project "lea.online -" (FKN: 41200147).
 
 Read more about them at the following websites:
 
-- lea.online Blog (German) - blogs.uni-bremen.de/leaonline
-- University of Bremen - https://www.uni-bremen.de/en.html
-- BMBF - https://www.bmbf.de/en/index.html
+-   lea.online Blog (German) - blogs.uni-bremen.de/leaonline
+-   University of Bremen - https://www.uni-bremen.de/en.html
+-   BMBF - https://www.bmbf.de/en/index.html
