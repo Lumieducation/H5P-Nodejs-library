@@ -1,28 +1,26 @@
-# Table of contents
+# H5P in NodeJS
 
-* [H5P-Nodejs-library](README.md)
+- [Basic usage](usage/usage.md)
+  * [Architecture](usage/architecture.md)  
+  * [Integrating the core library](usage/integrating.md)
+  * [H5P Ajax Endpoints](usage/ajax-endpoints.md)
+  * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
 
-## Development <a id="development-1"></a>
-
-* [Getting Started](development-1/getting-started.md)
-* [Development & Testing](development-1/development.md)
-
-## Packages
-
-* [H5P-MongoS3](packages/s3-temporary-file-storage.md)
-* [Using MongoDB and a S3-compatible system as content storage](packages/mongo-s3-content-storage.md)
-
----
-
-* [Handling AJAX requests](ajax-endpoints.md)
-* [Customization](customization.md)
-* [Constructing a H5PEditor object](h5p-editor-constructor.md)
-* [Performance optimizations for production use](performance-optimizations.md)
-* [Privacy when using h5p-nodejs-library as part of your application](privacy.md)
-* [Updating the H5P Core](core-updates.md)
-* [Localization](localization.md)
-* [Using h5p-nodejs-library to create your own H5P server application](usage.md)
-* [Architecture](architecture.md)
-* [Addons](addons.md)
-* [Status of h5p-nodejs-library](status.md)
-
+- Advanced usage
+  * [Localization](advanced/localization.md)
+  * [Cluster](advanced/cluster.md)
+  * [Addons](advanced/addons.md)
+  * [Customization](advanced/customization.md)
+  * [Performance optimizations](advanced/performance-optimizations.md)
+  * [Privacy](advanced/privacy.md)
+- NPM packages
+  - h5p-mongos3
+    * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)
+    * [S3 Temporary File Storage](packages/h5p-mongos3/s3-temporary-file-storage.md)
+  - [h5p-webcomponents](packages/h5p-webcomponents.md)
+  - [h5p-react](packages/h5p-react.md)  
+- Development
+  * [Getting started](development/getting-started.md)
+  * [Testing & code quality](development/testing-quality.md)
+  * [Core updates](development/core-updates.md)
+  * [Project Status](development/status.md)
