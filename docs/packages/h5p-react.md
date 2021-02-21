@@ -9,16 +9,16 @@ native event handlers etc.
 
 **The components only work in conjunction with a custom H5P server (e.g. one
 using
-[h5p-nodejs-library](https://github.com/lumieducation/h5p-nodejs-library))**
+[@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server))**
 that provides endpoints that do these things:
 
 - get the required data about content (one for playing, one for editing)
 - save content created in the editor
 - serve all AJAX endpoints required by the H5P core
 
-It is recommended to checkout the
-[h5p-rest-example](https://github.com/Lumieducation/h5p-rest-example) that uses
-h5p-nodejs-library to see how the component can be used in an application.
+It is recommended to checkout the rest example that uses
+@lumieducation/h5p-server to see how the component can be used in an
+application.
 
 If you are looking for a solution to get the H5P player working without any
 server-side components, you should check out [h5p-standalone by
@@ -48,13 +48,13 @@ browsers.
 Install the component with npm or yarn:
 
 ```sh
-$ npm install h5p-react
+$ npm install @lumieducation/h5p-react
 ```
 
 Then, import the component in your JavaScript / TypeScript code:
 
 ```js
- import { H5PPlayerUI, H5PEditorUI } from 'h5p-react'; 
+ import { H5PPlayerUI, H5PEditorUI } from '@lumieducation/h5p-react'; 
 ```
 
 Then, you can insert the components into your JSX:
@@ -122,19 +122,18 @@ You must provide these callbacks in the props for the components to work:
 
 ```ts
 loadContentCallback = async (contentId: string) => Promise<IPlayerModel>
-/** see types.ts in h5p-nodejs-library for details how IPlayerModel looks
+/** see types.ts in @lumieducation/h5p-server for details how IPlayerModel looks
     like **/
 ```
 
 You have to set `loadContentCallback` to a function that retrieves the necessary
 data from the backend. It returns a promise of data that follows the structure
-of IPlayerModel in
-[types.ts](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/src/types.ts)
-in h5p-nodejs-library. If there is an error, the callback should throw an error
-object with the error message in the `message` property.
+of IPlayerModel in [types.ts](/packages/h5p-server/src/types.ts) in
+@lumieducation/h5p-server. If there is an error, the callback should throw an
+error object with the error message in the `message` property.
 
-If you use h5p-nodejs-library you will get the necessary information by using a
-renderer that simply returns the player model if you call
+If you use @lumieducation/h5p-server you will get the necessary information by
+using a renderer that simply returns the player model if you call
 `H5PPlayer.render(...)`:
 
 ```ts
@@ -149,7 +148,7 @@ const playerModel = await h5pPlayerOnServer.render(contentId);
 
 ```ts
 loadContentCallback = async (contentId?: string) => Promise<
-    IEditorModel /** see types.ts in h5p-nodejs-library for details **/ & {
+    IEditorModel /** see types.ts in @lumieducation/h5p-server for details **/ & {
         library?: string;
         metadata?: IContentMetadata;
         params?: any;
@@ -159,7 +158,7 @@ loadContentCallback = async (contentId?: string) => Promise<
 This callback is executed when the component needs to load data for a content
 id. The callback must create a request to an endpoint on the server, which
 retrieves all necessary information. The server-side implementation of the
-endpoint using h5p-nodejs-library has to combine the results of
+endpoint using @lumieducation/h5p-server has to combine the results of
 H5PEditor.render(...) and H5PEditor.getContent(...). The render must be set to
 simply return the editor model like this:
 
@@ -191,7 +190,7 @@ saveContentCallback = async (
 
 This callback is executed when the editor was told to save its content. You have
 to reach out to the server and persist the changes. When using
-h5p-nodejs-library, the server-side endpoint should call
+@lumieducation/h5p-server, the server-side endpoint should call
 `H5PEditor.saveOrUpdateContentReturnMetaData(...)` and then return the result to
 the client, which returns the result as the return value of
 `saveContentCallback`.

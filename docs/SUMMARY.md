@@ -17,8 +17,10 @@
   - h5p-mongos3
     * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)
     * [S3 Temporary File Storage](packages/h5p-mongos3/s3-temporary-file-storage.md)
+  - [h5p-webcomponents](packages/h5p-webcomponents.md)
+  - [h5p-react](packages/h5p-react.md)  
 - Development
-  * [Getting Started](development/getting-started.md)
-  * [Development Testing](development/development-testing.md)
-  * [Core Updates](development/core-updates.md)
-  * [Status](development/status.md)
+  * [Getting started](development/getting-started.md)
+  * [Development & testing](development/development-testing.md)
+  * [Core updates](development/core-updates.md)
+  * [Project Status](development/status.md)

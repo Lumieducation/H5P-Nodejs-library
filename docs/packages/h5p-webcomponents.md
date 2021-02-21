@@ -4,16 +4,16 @@ This package provides plain HTML 5 Web Components that you can use in your
 project to insert H5P players or editors without having to worry about the
 details of setting up H5P, loading scripts and styles etc. **They only work in
 conjunction with a custom H5P server (e.g. one using
-[h5p-nodejs-library](https://github.com/lumieducation/h5p-nodejs-library))**
+[@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server))**
 that provides endpoints that do these things:
 
 - get the required data about content (one for playing, one for editing)
 - save content created in the editor
 - serve all AJAX endpoints required by the H5P core
 
-It is recommended to checkout the
-[h5p-rest-example](https://github.com/Lumieducation/h5p-rest-example) that uses
-h5p-nodejs-library to see how the component can be used in an application.
+It is recommended to checkout the rest example that uses
+@lumieducation/h5p-server to see how the component can be used in an
+application.
 
 If you are looking for a solution to get the H5P player working without any
 server-side components, you should check out [h5p-standalone by
@@ -43,14 +43,14 @@ browsers.
 Install the component with npm or yarn:
 
 ```sh
-$ npm install h5p-webcomponents
+$ npm install @lumieducation/h5p-webcomponents
 ```
 
 Then, import the component in your JavaScript code and register the h5p-player
 or h5p-editor tag globally:
 
 ```js
- import { H5PPlayerComponent, H5PEditorComponent } from 'h5p-webcomponents';
+ import { H5PPlayerComponent, H5PEditorComponent } from '@lumieducation/h5p-webcomponents';
  window.customElements.define('h5p-player', H5PPlayerComponent);
  window.customElements.define('h5p-editor', H5PEditorComponent);
 ```
@@ -59,7 +59,7 @@ There is also a convenience function that you can use instead of importing the
 components manually:
 
 ```js
-import { defineElements } from 'h5p-webcomponents';
+import { defineElements } from '@lumieducation/h5p-webcomponents';
 defineElements('h5p-player'); // only registers the player component
 defineElements('h5p-editor'); // only registers the editor component
 defineElements('h5p-player', 'h5p-editor'); // registers player and editor component
@@ -105,7 +105,8 @@ The components automatically (re-)load data from the server by calling
 `loadContentCallback` that you must set as a property of the DOM element (see
 above for examples). The components won't work without the callback.
 
-The content is automatically loaded from the server after **both** of these conditions have been fulfilled (in any order):
+The content is automatically loaded from the server after **both** of these
+conditions have been fulfilled (in any order):
 
 1) `loadContentCallback` is set
 2) `content-id` is set
@@ -146,18 +147,17 @@ You must provide these callbacks for the components to work:
 
 ```ts
 loadContentCallback = async (contentId: string) => Promise<IPlayerModel>
-/** see types.ts in h5p-nodejs-library for details how IPlayerModel looks
+/** see types.ts in @lumieducation/h5p-server for details how IPlayerModel looks
     like **/
 ```
 
 You have to set `loadContentCallback` to a function that retrieves the necessary
 data from the backend. It returns a promise of data that follows the structure
-of IPlayerModel in
-[types.ts](https://github.com/Lumieducation/H5P-Nodejs-library/blob/master/src/types.ts)
-in h5p-nodejs-library. If there is an error, the callback should throw an error
-object with the error message in the `message` property.
+of IPlayerModel in [types.ts](/packages/h5p-server/src/types.ts) in
+@lumieducation/h5p-server. If there is an error, the callback should throw an
+error object with the error message in the `message` property.
 
-If you use h5p-nodejs-library you will get the necessary information by using a
+If you use @lumieducation/h5p-server you will get the necessary information by using a
 renderer that simply returns the player model if you call
 `H5PPlayer.render(...)`:
 
@@ -173,7 +173,7 @@ const playerModel = await h5pPlayerOnServer.render(contentId);
 
 ```ts
 loadContentCallback = async (contentId?: string) => Promise<
-    IEditorModel /** see types.ts in h5p-nodejs-library for details **/ & {
+    IEditorModel /** see types.ts in @lumieducation/h5p-server for details **/ & {
         library?: string;
         metadata?: IContentMetadata;
         params?: any;
@@ -183,7 +183,7 @@ loadContentCallback = async (contentId?: string) => Promise<
 This callback is executed when the component needs to load data for a content
 id. The callback must create a request to an endpoint on the server, which
 retrieves all necessary information. The server-side implementation of the
-endpoint using h5p-nodejs-library has to combine the results of
+endpoint using @lumieducation/h5p-server has to combine the results of
 H5PEditor.render(...) and H5PEditor.getContent(...). The render must be set to
 simply return the editor model like this:
 
@@ -215,7 +215,7 @@ saveContentCallback = async (
 
 This callback is executed when the editor was told to save its content. You have
 to reach out to the server and persist the changes. When using
-h5p-nodejs-library, the server-side endpoint should call
+@lumieducation/h5p-server, the server-side endpoint should call
 `H5PEditor.saveOrUpdateContentReturnMetaData(...)` and then return the result to
 the client, which returns the result as the return value of
 `saveContentCallback`.
@@ -225,7 +225,8 @@ Note: `contentId` can be `undefined`, if the user is creating new content.
 ## Events
 
 The components emit a few events using the standard `dispatchEvent` method of
-the component. You can listen to them by adding an event listener with `addEventListener`.
+the component. You can listen to them by adding an event listener with
+`addEventListener`.
 
 ### H5PPlayerComponent
 
@@ -258,7 +259,8 @@ subscribing to this event.
 
 #### save-error
 
-This event is emitted when there was an error while saving the content. A more detailed message can be found in `event.detail.message`.
+This event is emitted when there was an error while saving the content. A more
+detailed message can be found in `event.detail.message`.
 
 Note: You can also simply catch errors by wrapping the `save()` method in a `try
 {...} catch {...}` block instead of subscribing to this event.
