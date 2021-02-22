@@ -9,7 +9,7 @@ describe('getting overview about multiple libraries', () => {
         return new H5PEditor(
             null,
             new H5PConfig(null),
-            new FileLibraryStorage(`${__dirname}/data/libraries`),
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`),
             null,
             null
         )
@@ -35,7 +35,7 @@ describe('getting overview about multiple libraries', () => {
         return new H5PEditor(
             null,
             new H5PConfig(null),
-            new FileLibraryStorage(`${__dirname}/data/libraries`),
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`),
             null,
             null
         )

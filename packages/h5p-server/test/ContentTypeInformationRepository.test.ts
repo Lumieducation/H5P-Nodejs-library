@@ -21,7 +21,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/test/data`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -61,7 +61,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/test/data`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -100,7 +100,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -134,7 +134,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -170,7 +170,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -197,7 +197,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
         const user = new User();
@@ -237,7 +237,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
 
@@ -277,7 +277,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/test/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
         const cache = new ContentTypeCache(config, storage);
         const user = new User();

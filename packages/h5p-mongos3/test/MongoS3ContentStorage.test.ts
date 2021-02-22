@@ -457,7 +457,6 @@ describe('MongoS3ContentStorage', () => {
                 new User()
             );
             await storage.addContent(stubMetadata, stubParameters, new User());
-
             const { asDependency, asMainLibrary } = await storage.getUsage({
                 machineName: 'H5P.Test',
                 majorVersion: 1,
@@ -465,7 +464,6 @@ describe('MongoS3ContentStorage', () => {
             });
             expect(asMainLibrary).toEqual(1);
             expect(asDependency).toEqual(1);
-
             const {
                 asDependency: asDependency2,
                 asMainLibrary: asMainLibrary2
