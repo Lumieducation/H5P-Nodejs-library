@@ -11,6 +11,7 @@ export default class User implements IUser {
         this.canUpdateAndInstallLibraries = true;
         this.canCreateRestricted = true;
         this.type = 'local';
+        this.email = 'test@example.com';
     }
 
     public canCreateRestricted: boolean;
@@ -19,4 +20,5 @@ export default class User implements IUser {
     public id: string;
     public name: string;
     public type: 'local';
+    public email: string;
 }

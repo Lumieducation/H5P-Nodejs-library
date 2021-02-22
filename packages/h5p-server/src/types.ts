@@ -507,6 +507,10 @@ export interface IUser {
      */
     canUpdateAndInstallLibraries: boolean;
     /**
+     * E-Mail address.
+     */
+    email: string;
+    /**
      * An internal id used to check if user objects are identical.
      */
     id: string;
@@ -1685,6 +1689,9 @@ export interface IEditorModel {
 }
 
 export interface IUrlGenerator {
+    ajaxEndpoint(user: IUser): string;
+    baseUrl(): string;
+    contentUserData(user: IUser): string;
     coreFile(file: string): string;
     coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
@@ -1693,6 +1700,7 @@ export interface IUrlGenerator {
     libraryFile(library: IFullLibraryName, file: string): string;
     parameters(): string;
     play(): string;
+    setFinished(user: IUser): string;
     temporaryFiles(): string;
 }
 

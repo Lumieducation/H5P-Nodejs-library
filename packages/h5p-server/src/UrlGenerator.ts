@@ -2,7 +2,8 @@ import {
     ContentId,
     IFullLibraryName,
     IH5PConfig,
-    IUrlGenerator
+    IUrlGenerator,
+    IUser
 } from './types';
 
 /**
@@ -33,22 +34,34 @@ import {
 export default class UrlGenerator implements IUrlGenerator {
     constructor(private config: IH5PConfig) {}
 
+    public ajaxEndpoint = (user: IUser): string => {
+        return `${this.config.baseUrl}${this.config.ajaxUrl}?action=`;
+    };
+
+    public baseUrl = (): string => {
+        return this.config.baseUrl;
+    };
+    
+    public contentUserData = (user: IUser): string => {
+        return `${this.config.baseUrl}/contentUserData`;
+    };
+
     /**
      * Also adds a cache buster based on IH5PConfig.h5pVersion.
      * @param file
      */
     public coreFile = (file: string) => {
-        return `${this.getBaseUrl()}${this.config.coreUrl}/${file}?version=${
+        return `${this.baseUrl()}${this.config.coreUrl}/${file}?version=${
             this.config.h5pVersion
         }`;
     };
 
     public coreFiles = () => {
-        return `${this.getBaseUrl()}${this.config.coreUrl}/js`;
+        return `${this.baseUrl()}${this.config.coreUrl}/js`;
     };
 
     public downloadPackage = (contentId: ContentId) => {
-        return `${this.getBaseUrl()}${this.config.downloadUrl}/${contentId}`;
+        return `${this.baseUrl()}${this.config.downloadUrl}/${contentId}`;
     };
 
     /**
@@ -56,20 +69,20 @@ export default class UrlGenerator implements IUrlGenerator {
      * @param file
      */
     public editorLibraryFile = (file: string): string => {
-        return `${this.getBaseUrl()}${
+        return `${this.baseUrl()}${
             this.config.editorLibraryUrl
         }/${file}?version=${this.config.h5pVersion}`;
     };
 
     public editorLibraryFiles = (): string => {
-        return `${this.getBaseUrl()}${this.config.editorLibraryUrl}/`;
+        return `${this.baseUrl()}${this.config.editorLibraryUrl}/`;
     };
 
     public libraryFile = (library: IFullLibraryName, file: string) => {
         if (file.startsWith('http://') || file.startsWith('https://')) {
             return file;
         }
-        return `${this.getBaseUrl()}${this.config.librariesUrl}/${
+        return `${this.baseUrl()}${this.config.librariesUrl}/${
             library.machineName
         }-${library.majorVersion}.${library.minorVersion}/${file}?version=${
             library.majorVersion
@@ -77,18 +90,17 @@ export default class UrlGenerator implements IUrlGenerator {
     };
 
     public parameters = () => {
-        return `${this.getBaseUrl()}${this.config.paramsUrl}`;
+        return `${this.baseUrl()}${this.config.paramsUrl}`;
     };
 
     public play = () => {
-        return `${this.getBaseUrl()}${this.config.playUrl}`;
+        return `${this.baseUrl()}${this.config.playUrl}`;
+    };
+    public setFinished = (user: IUser): string => {
+        return `${this.config.baseUrl}/setFinished`;
     };
 
     public temporaryFiles = (): string => {
-        return this.getBaseUrl() + this.config.temporaryFilesUrl;
-    };
-
-    protected getBaseUrl = (): string => {
-        return this.config.baseUrl;
+        return this.baseUrl() + this.config.temporaryFilesUrl;
     };
 }

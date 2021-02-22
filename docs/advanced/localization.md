@@ -35,8 +35,8 @@ shows where this must be done:
 
 | Place | What to do |
 | :--- | :--- |
-| 1. core language strings | Call `H5PEditor.render(contentId, language)` with the language code you need. |
-| 2. notify H5P editor client | Call `H5PEditor.render(contentId, language)` with the language code you need. |
+| 1. core language strings | Call `H5PEditor.render(contentId, language, ...)` with the language code you need. |
+| 2. notify H5P editor client | Call `H5PEditor.render(contentId, language, ...)` with the language code you need. |
 | 3. properties of IIntegration | Pass a valid `translationCallback` of type `ITranslationFunction` to the constructor of `H5PEditor` |
 | 4. error messages emitted by @lumieducation/h5p-server | Catch errors of types `H5PError` and `AggregateH5PError` and localize the message property yourself. |
 

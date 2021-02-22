@@ -80,38 +80,61 @@ export default class H5PPlayer {
     private renderer: (model: IPlayerModel) => string | any;
 
     /**
-     * Creates a frame for displaying H5P content. You can customize this frame by calling setRenderer(...).
-     * It normally is enough to call this method with the content id. Only call it with parameters and metadata
-     * if don't want to use the IContentStorage object passed into the constructor.
+     * Creates a frame for displaying H5P content. You can customize this frame
+     * by calling setRenderer(...). It normally is enough to call this method
+     * with the content id. Only call it with parameters and metadata if don't
+     * want to use the IContentStorage object passed into the constructor.
      * @param contentId the content id
-     * @param parameters (optional) the parameters of a piece of content (=content.json)
-     * @param metadata (optional) the metadata of a piece of content (=h5p.json)
+     * @param user the user who wants to access the content
+     * @param ignoreUserPermission (optional) If set to true, the user object
+     * won't be passed to the storage classes for permission checks. You can use
+     * this option if you have already checked the user's permission in a
+     * different layer.
+     * @param parametersOverride (optional) the parameters of a piece of content
+     * (=content.json); if you use this option, the parameters won't be loaded
+     * from storage
+     * @param metadataOverride (optional) the metadata of a piece of content
+     * (=h5p.json); if you use this option, the parameters won't be loaded from
+     * storage
      * @returns a HTML string that you can insert into your page
      */
     public async render(
         contentId: ContentId,
-        parameters?: ContentParameters,
-        metadata?: IContentMetadata,
-        user?: IUser
+        user: IUser,
+        options?: {
+            ignoreUserPermissions?: boolean;
+            metadataOverride?: ContentMetadata;
+            parametersOverride?: ContentParameters;
+        }
     ): Promise<string | any> {
         log.info(`rendering page for ${contentId}`);
 
-        try {
-            if (!parameters) {
-                // tslint:disable-next-line: no-parameter-reassignment
-                parameters = await this.contentStorage.getParameters(contentId);
+        let parameters: ContentParameters;
+        if (!options?.parametersOverride) {
+            try {
+                parameters = await this.contentStorage.getParameters(
+                    contentId,
+                    options?.ignoreUserPermissions ? undefined : user
+                );
+            } catch (error) {
+                throw new H5pError('h5p-player:content-missing', {}, 404);
             }
-        } catch (error) {
-            throw new H5pError('h5p-player:content-missing', {}, 404);
+        } else {
+            parameters = options.parametersOverride;
         }
 
-        try {
-            if (!metadata) {
-                // tslint:disable-next-line: no-parameter-reassignment
-                metadata = await this.contentStorage.getMetadata(contentId);
+        let metadata: ContentMetadata;
+        if (!options?.metadataOverride) {
+            try {
+                metadata = await this.contentStorage.getMetadata(
+                    contentId,
+                    options?.ignoreUserPermissions ? undefined : user
+                );
+            } catch (error) {
+                throw new H5pError('h5p-player:content-missing', {}, 404);
             }
-        } catch (error) {
-            throw new H5pError('h5p-player:content-missing', {}, 404);
+        } else {
+            metadata = options.metadataOverride;
         }
 
         log.debug('Getting list of installed addons.');
@@ -162,7 +185,8 @@ export default class H5PPlayer {
                 parameters,
                 metadata,
                 assets,
-                mainLibrarySupportsFullscreen
+                mainLibrarySupportsFullscreen,
+                user
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
@@ -290,11 +314,16 @@ export default class H5PPlayer {
         parameters: ContentParameters,
         metadata: IContentMetadata,
         assets: IAssets,
-        supportsFullscreen: boolean
+        supportsFullscreen: boolean,
+        user: IUser
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
         return {
+            ajax: {
+                contentUserData: this.urlGenerator.contentUserData(user),
+                setFinished: this.urlGenerator.setFinished(user)
+            },
             contents: {
                 [`cid-${contentId}`]: {
                     displayOptions: {
@@ -331,10 +360,15 @@ export default class H5PPlayer {
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
             saveFreq: false,
-            url: this.config.baseUrl,
+            url: this.urlGenerator.baseUrl(),
             hubIsEnabled: true,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
-            ...this.integrationObjectDefaults
+            ...this.integrationObjectDefaults,
+            user: {
+                name: user.name,
+                mail: user.email,
+                id: user.id
+            }
         };
     }
 
