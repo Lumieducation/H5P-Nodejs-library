@@ -132,6 +132,19 @@ jobs:
                   parallel: true
                   flag_name: Integration tests
 
+    html-exporter-tests:
+        docker:
+            - image: circleci/node:10-browsers
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - run: npm run test:html-exporter -- --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
+                  flag_name: HTML Exporter Tests
+
     e2e-tests:
         docker:
             - image: circleci/node:10-browsers
@@ -202,6 +215,9 @@ workflows:
             - db-tests:
                   requires:
                       - install-build
+            - html-exporter-tests:
+                  requires:
+                      - install-build
             - release:
                   filters:
                       branches:
@@ -211,6 +227,7 @@ workflows:
                       - lint
                       - format
                       - unit-tests
+                      - html-exporter-tests
                       # - e2e-tests
                       - integration-tests
                       - db-tests

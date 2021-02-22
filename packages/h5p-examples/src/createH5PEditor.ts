@@ -17,7 +17,7 @@ import dbImplementations from '@lumieducation/h5p-mongos3';
  * TEMPORARY_AWS_S3_BUCKET Specifies the bucket name for temporary file storage
  *
  * Further environment variables to set up MongoDB and S3 can be found in
- * docs/mongo-s3-content-storage.md and docs/s3-temporary-file-storage.md!
+ * docs/packages/h5p-mongos3/mongo-s3-content-storage.md and docs/packages/h5p-mongos3/s3-temporary-file-storage.md!
  * @param config the configuration object
  * @param localLibraryPath a path in the local filesystem in which the H5P libraries (content types) are stored
  * @param localContentPath a path in the local filesystem in which H5P content will be stored (only necessary if you want to use the local filesystem content storage class)
