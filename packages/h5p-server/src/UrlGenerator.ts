@@ -22,6 +22,7 @@ import {
  *
  * UrlGenerator requires these values to be set in config:
  * - baseUrl
+ * - contentUserDataUrl
  * - coreUrl
  * - downloadUrl
  * - editorLibraryUrl
@@ -29,21 +30,60 @@ import {
  * - librariesUrl
  * - paramsUrl
  * - playUrl
+ * - setFinishedUrl
  * - temporaryFilesUrl
+ *
+ * The UrlGenerator can also be used to inject CSRF tokens into URLs for POST
+ * requests that are sent by the H5P editor core (Joubel's code) over which you
+ * don't have any control. You can then check the CSRF tokens in your middleware
+ * to authenticate requests.
  */
 export default class UrlGenerator implements IUrlGenerator {
-    constructor(private config: IH5PConfig) {}
+    /**
+     * @param config the config
+     * @param csrfProtection (optional) If used, you must pass in a function
+     * that returns a CSRF query parameter for the user for who a URL is
+     * generated; the query parameter will be appended to URLs like this:
+     * "baseUrl/ajax/?name=value&action=..." You must specify which routes you
+     * want to be protected. If you don't pass in a csrfProtection object, no
+     * CSRF tokens will be added to URLs.
+     */
+    constructor(
+        private config: IH5PConfig,
+        private csrfProtection?: {
+            protectAjax: boolean;
+            protectContentUserData: boolean;
+            protectSetFinished: boolean;
+            queryParamGenerator: (
+                user: IUser
+            ) => { name: string; value: string };
+        }
+    ) {}
 
     public ajaxEndpoint = (user: IUser): string => {
+        if (
+            this.csrfProtection?.queryParamGenerator &&
+            this.csrfProtection?.protectAjax
+        ) {
+            const qs = this.csrfProtection.queryParamGenerator(user);
+            return `${this.config.baseUrl}${this.config.ajaxUrl}?${qs.name}=${qs.value}&action=`;
+        }
         return `${this.config.baseUrl}${this.config.ajaxUrl}?action=`;
     };
 
     public baseUrl = (): string => {
         return this.config.baseUrl;
     };
-    
+
     public contentUserData = (user: IUser): string => {
-        return `${this.config.baseUrl}/contentUserData`;
+        if (
+            this.csrfProtection?.queryParamGenerator &&
+            this.csrfProtection?.protectContentUserData
+        ) {
+            const qs = this.csrfProtection.queryParamGenerator(user);
+            return `${this.config.baseUrl}${this.config.contentUserDataUrl}?${qs.name}=${qs.value}`;
+        }
+        return `${this.config.baseUrl}${this.config.contentUserDataUrl}`;
     };
 
     /**
@@ -97,7 +137,14 @@ export default class UrlGenerator implements IUrlGenerator {
         return `${this.baseUrl()}${this.config.playUrl}`;
     };
     public setFinished = (user: IUser): string => {
-        return `${this.config.baseUrl}/setFinished`;
+        if (
+            this.csrfProtection?.queryParamGenerator &&
+            this.csrfProtection?.protectSetFinished
+        ) {
+            const qs = this.csrfProtection.queryParamGenerator(user);
+            return `${this.config.baseUrl}${this.config.setFinishedUrl}?${qs.name}=${qs.value}`;
+        }
+        return `${this.config.baseUrl}${this.config.setFinishedUrl}`;
     };
 
     public temporaryFiles = (): string => {
