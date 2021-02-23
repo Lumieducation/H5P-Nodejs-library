@@ -8,6 +8,7 @@ import LibraryName from '../src/LibraryName';
 import {
     IContentMetadata,
     IContentStorage,
+    IEditorModel,
     IH5PConfig,
     IKeyValueStorage,
     ILibraryFileUrlResolver,
@@ -15,15 +16,16 @@ import {
     ITemporaryFileStorage
 } from '../src/types';
 
+import User from './User';
 import { fsImplementations, H5PEditor } from '../src';
 import H5PConfig from '../src/implementation/H5PConfig';
 import PackageValidator from '../src/PackageValidator';
-
-import User from './User';
+import UrlGenerator from '../src/UrlGenerator';
 
 describe('H5PEditor', () => {
     function createH5PEditor(
-        tempPath: string
+        tempPath: string,
+        options?: { withUrlGenerator?: boolean }
     ): {
         config: IH5PConfig;
         contentStorage: IContentStorage;
@@ -51,7 +53,18 @@ describe('H5PEditor', () => {
             config,
             libraryStorage,
             contentStorage,
-            temporaryStorage
+            temporaryStorage,
+            undefined,
+            options?.withUrlGenerator
+                ? new UrlGenerator(config, {
+                      protectAjax: true,
+                      protectContentUserData: true,
+                      protectSetFinished: true,
+                      queryParamGenerator: (user) => {
+                          return { name: '_csrf', value: 'token' };
+                      }
+                  })
+                : undefined
         );
 
         return {
@@ -716,6 +729,49 @@ describe('H5PEditor', () => {
                         ).resolves.toEqual(true);
                     },
                     { keep: false, postfix: '.h5p' }
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('generates AJAX urls with CSRF token', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath, {
+                    withUrlGenerator: true
+                });
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save the content
+                const contentId = await h5pEditor.saveOrUpdateContent(
+                    undefined,
+                    mockupParametersWithoutImage,
+                    mockupMetadata,
+                    LibraryName.toUberName(
+                        mockupMetadata.preloadedDependencies[0],
+                        {
+                            useWhitespace: true
+                        }
+                    ),
+                    user
+                );
+
+                h5pEditor.setRenderer((model) => model);
+                const editorModel: IEditorModel = await h5pEditor.render(
+                    contentId,
+                    'en',
+                    user
+                );
+                expect(editorModel.integration.ajaxPath).toEqual(
+                    '/h5p/ajax?_csrf=token&action='
                 );
             },
             { keep: false, unsafeCleanup: true }

@@ -1,5 +1,3 @@
-import path from 'path';
-
 import H5PEditor from '../src/H5PEditor';
 import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
