@@ -17,8 +17,8 @@ export default class User implements IUser {
     public canCreateRestricted: boolean;
     public canInstallRecommended: boolean;
     public canUpdateAndInstallLibraries: boolean;
+    public email: string;
     public id: string;
     public name: string;
     public type: 'local';
-    public email: string;
 }
