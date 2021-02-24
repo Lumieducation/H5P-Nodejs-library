@@ -21,6 +21,7 @@
   * [h5p-react](npm-packages/h5p-react.md)
 * [Development](development/README.md)
   * [Getting started](development/getting-started.md)
+  * [REST Example](examples/rest/README.md)
   * [Testing & code quality](development/testing-quality.md)
   * [Core updates](development/core-updates.md)
   * [Project Status](development/status.md)

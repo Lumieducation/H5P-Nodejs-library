@@ -12,7 +12,7 @@ are not bound to using React or Express in your own application, as
 Check out the architecture overview that describes which parts of the
 application are provided by which package:
 
-![Architecture overview](h5p-rest-example/architecture.svg)
+![Architecture overview](./architecture.svg)
 
 -   This repository contains all the components in **purple** boxes.
 -   The **green** parts come from the `h5p-nodejs-library`, which is a runtime
@@ -27,7 +27,7 @@ application are provided by which package:
 -   The **blue** parts is comprised of JavaScript and CSS files that make up the
     core H5P player and editor. They are part of the original PHP repositories and
     are downloaded from GitHub in the server with the script
-    [`download-core.sh`](../packages/h5p-examples/download-core.sh). They must be served as static
+    [`download-core.sh`](../../../packages/h5p-examples/download-core.sh). They must be served as static
     files by the server and are added to the page by the web components as needed.
 
 ## Trying it out
@@ -36,6 +36,11 @@ application are provided by which package:
 2. Run `npm install` and `npm start`. A browser should open on
    http://localhost:3000. If there is an error, you have to reload the the page,
    as the server might not be fully initialized yet.
+
+## Client
+
+The client was bootstrapped with [Create React
+App](https://github.com/facebook/create-react-app). For more information see [client](./Client.md)
 
 ## Support
 
