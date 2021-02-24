@@ -284,7 +284,7 @@ export default class ContentListEntryComponent extends React.Component<{
                                 this.props.contentService.getPlay
                             }
                             onInitialized={this.onPlayerInitialized}
-                            xAPICallback={(
+                            onxAPIStatement={(
                                 statement: any,
                                 context: any,
                                 event

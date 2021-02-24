@@ -42,7 +42,7 @@ application are provided by which package:
 3. Run `npm build` for `h5p-rest-example-server` and `h5p-rest-example-client`.
 4. Run `npm start` for the server. (Must be up and running before you start the
    client!)
-5. Run `npm start` for the client.
+5. Run `npm start` for the client (**the server must still be running**).
 6. A browser should open on http://localhost:3000. If there is an error, you
    have to reload the the page, as the server might not be fully initialized
    yet.
