@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-express",
-    "version": "7.0.1",
+    "version": "7.0.2",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -45,7 +45,7 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^7.0.1",
+        "@lumieducation/h5p-server": "^7.0.2",
         "express": "4.17.1"
     },
     "main": "./build/index.js",
