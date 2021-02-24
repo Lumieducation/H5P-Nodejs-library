@@ -23,7 +23,7 @@
         "react": "17.0.1"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^7.0.2",
+        "@lumieducation/h5p-server": "7.0.2",
         "@types/react": "16.14.4",
         "@types/resize-observer-browser": "0.1.5"
     }
