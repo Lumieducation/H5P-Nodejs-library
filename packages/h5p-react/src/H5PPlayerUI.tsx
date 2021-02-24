@@ -25,13 +25,13 @@ export default class H5PPlayerUI extends React.Component<{
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
-    xAPICallback?: (statement: any, context: any, event: IxAPIEvent) => void;
+    onxAPIStatement?: (statement: any, context: any, event: IxAPIEvent) => void;
 }> {
     constructor(props: {
         contentId: string;
         loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
         onInitialized?: (contentId: string) => void;
-        xAPICallback?: (
+        onxAPIStatement?: (
             statement: any,
             context: any,
             event: IxAPIEvent
@@ -91,8 +91,8 @@ export default class H5PPlayerUI extends React.Component<{
             statement: any;
         }>
     ) => {
-        if (this.props.xAPICallback) {
-            this.props.xAPICallback(
+        if (this.props.onxAPIStatement) {
+            this.props.onxAPIStatement(
                 event.detail.statement,
                 event.detail.context,
                 event.detail.event
@@ -105,7 +105,7 @@ export default class H5PPlayerUI extends React.Component<{
             'initialized',
             this.onInitialized
         );
-        if (this.props.xAPICallback) {
+        if (this.props.onxAPIStatement) {
             this.h5pPlayer.current?.addEventListener(
                 'xAPI',
                 this.onxAPIStatement
@@ -124,7 +124,7 @@ export default class H5PPlayerUI extends React.Component<{
             'initialized',
             this.onInitialized
         );
-        if (this.props.xAPICallback) {
+        if (this.props.onxAPIStatement) {
             this.h5pPlayer.current?.removeEventListener(
                 'xAPI',
                 this.onxAPIStatement
