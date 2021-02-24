@@ -324,6 +324,7 @@ export default class H5PPlayer {
                 contentUserData: this.urlGenerator.contentUserData(user),
                 setFinished: this.urlGenerator.setFinished(user)
             },
+            ajaxPath: this.urlGenerator.ajaxEndpoint(user),
             contents: {
                 [`cid-${contentId}`]: {
                     displayOptions: {

@@ -17,6 +17,16 @@ declare global {
     }
 }
 
+export interface IxAPIEvent {
+    data: {
+        statement: any;
+    };
+}
+
+export interface IContext {
+    contentId: string;
+}
+
 /**
  * A Web Component displaying H5P content.
  */
@@ -239,6 +249,28 @@ export class H5PPlayerComponent extends HTMLElement {
             this
         );
         window.H5P.preventInit = false;
+
+        // attach xAPI listener
+        window.H5P.externalDispatcher.on('xAPI', (event: IxAPIEvent) => {
+            if (
+                `${event.data?.statement?.object?.definition?.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
+                `${this.playerModel.contentId}`
+            ) {
+                const context: IContext = {
+                    contentId: this.playerModel.contentId
+                };
+                this.dispatchEvent(
+                    new CustomEvent('xAPI', {
+                        detail: {
+                            statement: event.data.statement,
+                            context,
+                            event
+                        }
+                    })
+                );
+            }
+        });
+
         window.H5P.init(this.root);
     }
 

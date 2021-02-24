@@ -1,7 +1,7 @@
 {
     "name": "@lumieducation/h5p-monorepo",
     "private": true,
-    "version": "6.2.0",
+    "version": "7.0.1",
     "license": "GPL-3.0-or-later",
     "repository": {
         "type": "git",
@@ -58,7 +58,7 @@
         "hooks": {
             "pre-commit": "npm run lint && npm run format:check",
             "pre-push": "npm run test",
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+            "commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
         }
     },
     "contributors": [
@@ -94,7 +94,7 @@
         "axios": "0.21.1",
         "commitlint": "11.0.0",
         "husky": "4.3.6",
-        "jest": "26.6.3",
+        "jest": "26.6.0",
         "lerna": "3.22.1",
         "prettier": "2.2.1",
         "puppeteer": "7.1.0",

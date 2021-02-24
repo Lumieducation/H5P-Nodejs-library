@@ -1,7 +1,7 @@
 import { H5PEditorComponent } from './h5p-editor';
-import { H5PPlayerComponent } from './h5p-player';
+import { H5PPlayerComponent, IxAPIEvent, IContext } from './h5p-player';
 
-export { H5PEditorComponent, H5PPlayerComponent };
+export { H5PEditorComponent, H5PPlayerComponent, IxAPIEvent, IContext };
 
 export function defineElements(element?: string | string[]): void {
     if (

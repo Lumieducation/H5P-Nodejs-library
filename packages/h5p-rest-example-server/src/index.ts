@@ -13,11 +13,9 @@ import {
     contentTypeCacheExpressRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
-import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
-import * as H5P from '@lumieducation/h5p-server';
 
-import startPageRenderer from './startPageRenderer';
-import expressRoutes from './expressRoutes';
+import * as H5P from '@lumieducation/h5p-server';
+import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
@@ -64,7 +62,7 @@ const start = async () => {
 
     // Load the configuration file from the local file system
     const config = await new H5P.H5PConfig(
-        new H5P.fsImplementations.JsonStorage(path.resolve('src/config.json'))
+        new H5P.fsImplementations.JsonStorage(path.resolve('config.json'))
     ).load();
 
     // The H5PEditor object is central to all operations of h5p-nodejs-library
@@ -92,12 +90,16 @@ const start = async () => {
         }
     );
 
+    h5pEditor.setRenderer((model) => model);
+
     // The H5PPlayer object is used to display H5P content.
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         config
     );
+
+    h5pPlayer.setRenderer((model) => model);
 
     // We now set up the Express server in the usual fashion.
     const server = express();
@@ -167,7 +169,7 @@ const start = async () => {
     // - Deleting content
     server.use(
         h5pEditor.config.baseUrl,
-        expressRoutes(
+        restExpressRoutes(
             h5pEditor,
             h5pPlayer,
             'auto' // You can change the language of the editor here by setting
@@ -189,94 +191,6 @@ const start = async () => {
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
-
-    const htmlExporter = new H5PHtmlExporter(
-        h5pEditor.libraryStorage,
-        h5pEditor.contentStorage,
-        h5pEditor.config,
-        path.resolve('h5p/core'),
-        path.resolve('h5p/editor')
-    );
-
-    server.get('/h5p/html/:contentId', async (req, res) => {
-        const html = await htmlExporter.createSingleBundle(
-            req.params.contentId,
-            (req as any).user
-        );
-        res.setHeader(
-            'Content-disposition',
-            `attachment; filename=${req.params.contentId}.html`
-        );
-        res.status(200).send(html);
-    });
-
-    // The startPageRenderer displays a list of content objects and shows
-    // buttons to display, edit, delete and download existing content.
-    server.get('/', startPageRenderer(h5pEditor));
-
-    server.use('/client', express.static(path.resolve('build/client')));
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
-            req: express.Request<
-                { contentId: string; dataType: string; subContentId: string },
-                {},
-                H5P.IPostContentUserData
-            >,
-            res
-        ) => {
-            res.status(200).send();
-        }
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.get(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
-            req: express.Request<{
-                contentId: string;
-                dataType: string;
-                subContentId: string;
-            }>,
-            res: express.Response<H5P.IGetContentUserData | {}>
-        ) => {
-            res.status(200).json({});
-        }
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/setFinished',
-        (req: express.Request<{}, {}, H5P.IPostContentUserData>, res) => {
-            res.status(200).send();
-        }
-    );
-
-    // Remove temporary directory on shutdown
-    if (useTempUploads) {
-        [
-            'beforeExit',
-            'uncaughtException',
-            'unhandledRejection',
-            'SIGQUIT',
-            'SIGABRT',
-            'SIGSEGV',
-            'SIGTERM'
-        ].forEach((evt) =>
-            process.on(evt, async () => {
-                await tmpDir?.cleanup();
-                tmpDir = null;
-            })
-        );
-    }
 
     const port = process.env.PORT || '8080';
 

@@ -1,5 +1,6 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
+
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
 
@@ -16,7 +17,7 @@ import * as dbImplementations from '@lumieducation/h5p-mongos3';
  * TEMPORARY_AWS_S3_BUCKET Specifies the bucket name for temporary file storage
  *
  * Further environment variables to set up MongoDB and S3 can be found in
- * docs/packages/h5p-mongos3/mongo-s3-content-storage.md and docs/packages/h5p-mongos3/s3-temporary-file-storage.md!
+ * docs/mongo-s3-content-storage.md and docs/s3-temporary-file-storage.md!
  * @param config the configuration object
  * @param localLibraryPath a path in the local filesystem in which the H5P libraries (content types) are stored
  * @param localContentPath a path in the local filesystem in which H5P content will be stored (only necessary if you want to use the local filesystem content storage class)
@@ -52,38 +53,17 @@ export default async function createH5PEditor(
     }
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
-
-    const libraryStorageStorage =
-        process.env.LIBRARYSTORAGE !== 'mongos3'
-            ? new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
-            : new dbImplementations.MongoS3LibraryStorage(
-                  dbImplementations.initS3({
-                      s3ForcePathStyle: true,
-                      signatureVersion: 'v4'
-                  }),
-                  (await dbImplementations.initMongo()).collection(
-                      process.env.LIBRARY_MONGO_COLLECTION
-                  ),
-                  {
-                      s3Bucket: process.env.LIBRARY_AWS_S3_BUCKET,
-                      maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
-                          ? Number.parseInt(
-                                process.env.AWS_S3_MAX_FILE_LENGTH,
-                                10
-                            )
-                          : undefined
-                  }
-              );
-
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
         config,
         process.env.CACHE
             ? new H5P.cacheImplementations.CachedLibraryStorage(
-                  libraryStorageStorage,
+                  new H5P.fsImplementations.FileLibraryStorage(
+                      localLibraryPath
+                  ),
                   cache
               )
-            : libraryStorageStorage,
+            : new H5P.fsImplementations.FileLibraryStorage(localLibraryPath),
         process.env.CONTENTSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(

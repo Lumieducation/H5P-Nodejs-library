@@ -1,0 +1,39 @@
+{
+    "name": "@lumieducation/h5p-rest-example-server",
+    "version": "7.0.1",
+    "private": true,
+    "description": "",
+    "main": "src/index.ts",
+    "scripts": {
+        "build": "npx tsc",
+        "start": "npx ts-node src/index.ts",
+        "prepare": "sh download-core.sh 1.24.0 1.24.1",
+        "start:watch": "npx ts-node-dev --deps --respawn src/index.ts"
+    },
+    "author": "S. Rettig",
+    "license": "MIT",
+    "dependencies": {
+        "@lumieducation/h5p-express": "^7.0.1",
+        "@lumieducation/h5p-mongos3": "^7.0.1",
+        "@lumieducation/h5p-server": "^7.0.1",
+        "@types/express": "^4.17.11",
+        "body-parser": "^1.19.0",
+        "cache-manager": "^3.4.0",
+        "cache-manager-redis-store": "^2.0.0",
+        "express": "^4.17.1",
+        "express-fileupload": "^1.2.1",
+        "i18next": "^19.8.9",
+        "i18next-fs-backend": "^1.0.8",
+        "i18next-http-middleware": "3.0.6",
+        "prettier": "^2.2.1",
+        "tmp-promise": "^3.0.2",
+        "ts-node": "^9.1.1",
+        "tslint": "^6.1.3",
+        "tslint-config-airbnb": "^5.11.2",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^4.1.5"
+    },
+    "devDependencies": {
+        "ts-node-dev": "^1.1.1"
+    }
+}

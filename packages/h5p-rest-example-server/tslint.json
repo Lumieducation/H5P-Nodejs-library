@@ -1,0 +1,39 @@
+{
+    "extends": [
+        "tslint:latest",
+        "tslint-config-airbnb",
+        "tslint-config-prettier"
+    ],
+    "rules": {
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "property-declaration",
+            "member-variable-declaration"
+        ],
+        "member-ordering": [
+            true,
+            {
+                "order": [
+                    "public-constructor",
+                    "private-constructor",
+                    "public-static-field",
+                    "private-static-field",
+                    "public-instance-field",
+                    "private-instance-field",
+                    "public-static-method",
+                    "private-static-method",
+                    "public-instance-method",
+                    "private-instance-method"
+                ],
+                "alphabetize": true
+            }
+        ],
+        "object-shorthand-properties-first": false,
+        "no-implicit-dependencies": [true, "dev"],
+        "array-type": false,
+        "import-name": false,
+        "no-submodule-imports": false
+    }
+}

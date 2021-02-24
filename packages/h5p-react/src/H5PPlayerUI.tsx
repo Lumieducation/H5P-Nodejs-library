@@ -2,7 +2,9 @@ import React from 'react';
 
 import {
     defineElements,
-    H5PPlayerComponent
+    H5PPlayerComponent,
+    IxAPIEvent,
+    IContext
 } from '@lumieducation/h5p-webcomponents';
 import { IPlayerModel } from '@lumieducation/h5p-server';
 
@@ -23,11 +25,17 @@ export default class H5PPlayerUI extends React.Component<{
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
+    onxAPIStatement?: (statement: any, context: any, event: IxAPIEvent) => void;
 }> {
     constructor(props: {
         contentId: string;
         loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
         onInitialized?: (contentId: string) => void;
+        onxAPIStatement?: (
+            statement: any,
+            context: any,
+            event: IxAPIEvent
+        ) => void;
     }) {
         super(props);
         this.h5pPlayer = React.createRef();
@@ -76,11 +84,33 @@ export default class H5PPlayerUI extends React.Component<{
         }
     };
 
+    private onxAPIStatement = (
+        event: CustomEvent<{
+            context: IContext;
+            event: IxAPIEvent;
+            statement: any;
+        }>
+    ) => {
+        if (this.props.onxAPIStatement) {
+            this.props.onxAPIStatement(
+                event.detail.statement,
+                event.detail.context,
+                event.detail.event
+            );
+        }
+    };
+
     private registerEvents(): void {
         this.h5pPlayer.current?.addEventListener(
             'initialized',
             this.onInitialized
         );
+        if (this.props.onxAPIStatement) {
+            this.h5pPlayer.current?.addEventListener(
+                'xAPI',
+                this.onxAPIStatement
+            );
+        }
     }
 
     private setServiceCallbacks(): void {
@@ -94,5 +124,11 @@ export default class H5PPlayerUI extends React.Component<{
             'initialized',
             this.onInitialized
         );
+        if (this.props.onxAPIStatement) {
+            this.h5pPlayer.current?.removeEventListener(
+                'xAPI',
+                this.onxAPIStatement
+            );
+        }
     }
 }
