@@ -49,7 +49,7 @@ application are provided by which package:
 
 The client was bootstrapped with [Create React
 App](https://github.com/facebook/create-react-app). For more information see
-[client](./client.md)
+[client](./Client.md)
 
 ## Support
 
