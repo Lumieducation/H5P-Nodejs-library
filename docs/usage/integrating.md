@@ -52,7 +52,7 @@ HTML user interface around the actual editor and the editor itself) for a
 specific content ID, you call
 
 ```javascript
-const html = await h5pEditor.render(contentId);
+const html = await h5pEditor.render(contentId, user);
 // send the html to the browser, which will display it
 ```
 

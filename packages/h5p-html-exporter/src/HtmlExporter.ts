@@ -169,7 +169,7 @@ export default class HtmlExporter {
                 }
             )
         );
-        return this.player.render(contentId, undefined, undefined, user);
+        return this.player.render(contentId, user);
     }
 
     /**
@@ -193,8 +193,7 @@ export default class HtmlExporter {
                 libraries: 'inline'
             })
         );
-        return (await this.player.render(contentId, undefined, undefined, user))
-            .html;
+        return (await this.player.render(contentId, user)).html;
     }
 
     /**

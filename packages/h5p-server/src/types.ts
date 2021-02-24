@@ -507,6 +507,10 @@ export interface IUser {
      */
     canUpdateAndInstallLibraries: boolean;
     /**
+     * E-Mail address.
+     */
+    email: string;
+    /**
      * An internal id used to check if user objects are identical.
      */
     id: string;
@@ -1316,6 +1320,11 @@ export interface IH5PConfig {
      */
     contentTypeCacheRefreshInterval: number;
     /**
+     * URL prefix for content user data (e.g. the user state where a user left
+     * off displaying H5P content)
+     */
+    contentUserDataUrl: string;
+    /**
      * A list of file extensions allowed for content files.
      * Contains file extensions (without .) separated by whitespaces.
      */
@@ -1474,6 +1483,11 @@ export interface IH5PConfig {
      * User-configurable.
      */
     sendUsageStatistics: boolean;
+    /**
+     * URL prefix for the finished URL (the URL to which requests are sent when
+     * the user has finished content)
+     */
+    setFinishedUrl: string;
     /**
      * Indicates on what kind of network the site is running. Can be "local", "network" or "internet".
      * TODO: This value should not be user-configurable, but has to be determined by the system on startup.
@@ -1685,6 +1699,9 @@ export interface IEditorModel {
 }
 
 export interface IUrlGenerator {
+    ajaxEndpoint(user: IUser): string;
+    baseUrl(): string;
+    contentUserData(user: IUser): string;
     coreFile(file: string): string;
     coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
@@ -1693,6 +1710,7 @@ export interface IUrlGenerator {
     libraryFile(library: IFullLibraryName, file: string): string;
     parameters(): string;
     play(): string;
+    setFinished(user: IUser): string;
     temporaryFiles(): string;
 }
 
