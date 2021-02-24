@@ -1,28 +1,27 @@
-# Table of contents
+# H5P in NodeJS
 
-* [Introduction](README.md)
-* [Basic usage](usage/README.md)
-  * [Architecture](usage/architecture.md)
+- [Basic usage](usage/usage.md)
+  * [Architecture](usage/architecture.md)  
   * [Integrating the core library](usage/integrating.md)
   * [H5P Ajax Endpoints](usage/ajax-endpoints.md)
-  * [Constructing H5PEditor](usage/h5p-editor-constructor.md)
-* [Advanced usage](advanced-usage/README.md)
-  * [Localization](advanced-usage/localization.md)
-  * [Cluster](advanced-usage/cluster.md)
-  * [Addons](advanced-usage/addons.md)
-  * [Customization](advanced-usage/customization.md)
-  * [Performance optimizations](advanced-usage/performance-optimizations.md)
-  * [Privacy](advanced-usage/privacy.md)
-* [NPM packages](npm-packages/README.md)
-  * [h5p-mongos3](npm-packages/h5p-mongos3/README.md)
-    * [Mongo/S3 Content Storage](npm-packages/h5p-mongos3/mongo-s3-content-storage.md)
-    * [S3 Temporary File Storage](npm-packages/h5p-mongos3/s3-temporary-file-storage.md)
-  * [h5p-webcomponents](npm-packages/h5p-webcomponents.md)
-  * [h5p-react](npm-packages/h5p-react.md)
-* [Development](development/README.md)
+  * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
+
+- Advanced usage
+  * [Localization](advanced/localization.md)
+  * [Cluster](advanced/cluster.md)
+  * [Addons](advanced/addons.md)
+  * [Customization](advanced/customization.md)
+  * [Performance optimizations](advanced/performance-optimizations.md)
+  * [Privacy](advanced/privacy.md)
+- NPM packages
+  - h5p-mongos3
+    * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)
+    * [S3 Temporary File Storage](packages/h5p-mongos3/s3-temporary-file-storage.md)
+  - [h5p-webcomponents](packages/h5p-webcomponents.md)
+  - [h5p-react](packages/h5p-react.md)  
+- Development
   * [Getting started](development/getting-started.md)
   * [REST Example](examples/rest/README.md)
   * [Testing & code quality](development/testing-quality.md)
   * [Core updates](development/core-updates.md)
   * [Project Status](development/status.md)
-

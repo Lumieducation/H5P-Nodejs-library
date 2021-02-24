@@ -8,7 +8,7 @@ import LibraryName from '../src/LibraryName';
 describe('basic file library manager functionality', () => {
     it('determines dependencies of libraries', async () => {
         const storage = new FileLibraryStorage(
-            path.resolve('packages/h5p-server/test/data/library-dependency')
+            path.resolve(`${__dirname}/../../../test/data/library-dependency`)
         );
 
         const dependencyGetter = new DependencyGetter(storage);

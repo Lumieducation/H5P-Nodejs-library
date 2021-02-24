@@ -49,18 +49,13 @@ docker-compose down -v
 ## How it works
 
 The `docker-compose.yml` file configures a setup in which there are several
-services that make @lumieducation/h5p-serv work in cluster mode:
+services that make @lumieducation/h5p-server work in cluster mode:
 
-* Minio (provides S3 storage backend for content and temporary files)
-* MongoDB (provides database backend for content metadata)
-* Redis (provides a key-value cache; used for caching the content type cache
-  and caching library metadata)
-* a named Docker volume (added as a volume to all h5p containers to keep
-  library data consistent across instances)
-* NGINX (load balancer that distributes incoming request between the H5P
+- Minio (provides S3 storage backend for content, temporary and library files)
+- MongoDB (provides database backend for content and library metadata)
+- Redis (provides a key-value cache; used for caching the content type cache and
+  caching library metadata)
+- a named Docker volume (added as a volume to all h5p containers to keep library
+  data consistent across instances)
+- NGINX (load balancer that distributes incoming request between the H5P
   containers)
-
-If you want to build on this configuration to scale your application across
-several machines, bear in mind that you must make sure that the library folder
-is read **and** write accessible (multi-node RW) by all H5P containers. You
-could use a NFS share for this or a persistent volume claim in Kubernetes.

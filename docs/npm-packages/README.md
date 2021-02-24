@@ -1,2 +1,0 @@
-# NPM packages
-

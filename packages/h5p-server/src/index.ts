@@ -24,7 +24,6 @@ import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
-
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
 
@@ -32,6 +31,7 @@ import LibraryManager from './LibraryManager';
 import {
     ContentId,
     ContentParameters,
+    IAdditionalLibraryMetadata,
     IContentMetadata,
     IContentStorage,
     IEditorModel,
@@ -93,6 +93,7 @@ export {
     // interfaces
     ContentId,
     ContentParameters,
+    IAdditionalLibraryMetadata,
     IContentMetadata,
     IContentStorage,
     IEditorModel,

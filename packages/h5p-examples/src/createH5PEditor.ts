@@ -52,17 +52,38 @@ export default async function createH5PEditor(
     }
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
+
+    const libraryStorageStorage =
+        process.env.LIBRARYSTORAGE !== 'mongos3'
+            ? new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
+            : new dbImplementations.MongoS3LibraryStorage(
+                  dbImplementations.initS3({
+                      s3ForcePathStyle: true,
+                      signatureVersion: 'v4'
+                  }),
+                  (await dbImplementations.initMongo()).collection(
+                      process.env.LIBRARY_MONGO_COLLECTION
+                  ),
+                  {
+                      s3Bucket: process.env.LIBRARY_AWS_S3_BUCKET,
+                      maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
+                          ? Number.parseInt(
+                                process.env.AWS_S3_MAX_FILE_LENGTH,
+                                10
+                            )
+                          : undefined
+                  }
+              );
+
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
         config,
         process.env.CACHE
             ? new H5P.cacheImplementations.CachedLibraryStorage(
-                  new H5P.fsImplementations.FileLibraryStorage(
-                      localLibraryPath
-                  ),
+                  libraryStorageStorage,
                   cache
               )
-            : new H5P.fsImplementations.FileLibraryStorage(localLibraryPath),
+            : libraryStorageStorage,
         process.env.CONTENTSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(

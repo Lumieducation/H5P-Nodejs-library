@@ -10,18 +10,19 @@ import LibraryName from '../src/LibraryName';
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries();
         expect(Object.keys(libraryObject).length).toEqual(
-            (await fsExtra.readdir(`${__dirname}/data/libraries`)).length
+            (await fsExtra.readdir(`${__dirname}/../../../test/data/libraries`))
+                .length
         );
     });
 
     it('filters the list of all installed libraries by machine names', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries(
@@ -32,7 +33,7 @@ describe('basic file library manager functionality', () => {
 
     it('correctly detects patches', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const libraryObject = await libManager.listInstalledLibraries(
@@ -284,7 +285,7 @@ describe('basic file library manager functionality', () => {
 
     it('returns the English language file for language xx', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const language = await libManager.getLanguage(
@@ -309,7 +310,7 @@ describe('basic file library manager functionality', () => {
 
     it('returns the de language file for de-DE', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const language = await libManager.getLanguage(
@@ -336,7 +337,7 @@ describe('basic file library manager functionality', () => {
 describe('listLanguages()', () => {
     it('returns an empty array if the language folder does not exist', async () => {
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`)
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
         const library = new InstalledLibrary('H5P.Example2', 1, 2, 0);
@@ -349,7 +350,7 @@ describe('alterLibrarySemantics hook', () => {
     it('returns changed semantics when a hook is specified', async () => {
         const library = new InstalledLibrary('H5P.Example1', 1, 1, 0);
         const libManager = new LibraryManager(
-            new FileLibraryStorage(`${__dirname}/data/libraries`),
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`),
             () => '',
             (lib, semantics) => {
                 if (LibraryName.equal(lib, library)) {

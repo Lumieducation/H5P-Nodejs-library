@@ -31,7 +31,7 @@ export function validateFilename(
     // expect for ranges of non-printable ASCII characters:
     // &$@=;:+ ,?\\{^}%`]'">[~<#
 
-    if (/[^A-Za-z0-9\-._!()\/]/.test(filename)) {
+    if ((invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()\/]/g).test(filename)) {
         log.error(`Found illegal character in filename: ${filename}`);
         throw new H5pError('illegal-filename', { filename }, 400);
     }

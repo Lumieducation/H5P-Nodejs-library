@@ -90,7 +90,9 @@ describe('CachedLibraryStorage', () => {
             options?.useTemporaryDirectory
                 ? tempDir.path
                 : options?.directory ??
-                  path.resolve('packages/h5p-server/test/data/libraries')
+                  path.resolve(
+                      `${__dirname}/../../../../../test/data/libraries`
+                  )
         );
         const cachedStorage = new CachedLibraryStorage(
             uncachedStorage,
@@ -115,7 +117,7 @@ describe('CachedLibraryStorage', () => {
                     'getLibrary',
                     await fsExtra.readJSON(
                         path.resolve(
-                            'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/library.json'
+                            `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/library.json`
                         )
                     ),
                     undefined,
@@ -135,7 +137,7 @@ describe('CachedLibraryStorage', () => {
                     'getFileAsJson',
                     await fsExtra.readJSON(
                         path.resolve(
-                            'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/semantics.json'
+                            `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/semantics.json`
                         )
                     ),
                     undefined,
@@ -157,7 +159,7 @@ describe('CachedLibraryStorage', () => {
                     (
                         await fsExtra.readFile(
                             path.resolve(
-                                'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/semantics.json'
+                                `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/semantics.json`
                             )
                         )
                     ).toString(),
@@ -306,7 +308,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
@@ -316,7 +318,7 @@ describe('CachedLibraryStorage', () => {
                         async () => {
                             await libraryManager.installFromDirectory(
                                 path.resolve(
-                                    'packages/h5p-server/test/data/libraries/H5P.Example3-2.1/'
+                                    `${__dirname}/../../../../../test/data/libraries/H5P.Example3-2.1`
                                 )
                             );
                         }
@@ -340,7 +342,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
@@ -373,14 +375,14 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
                     await cacheCheck('listAddons', undefined, async () => {
                         await libraryManager.installFromDirectory(
                             path.resolve(
-                                'packages/h5p-server/test/data/libraries/H5P.Example3-2.1/'
+                                `${__dirname}/../../../../../test/data/libraries/H5P.Example3-2.1`
                             )
                         );
                     })
@@ -403,7 +405,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
@@ -449,7 +451,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
@@ -489,7 +491,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(cachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(
@@ -529,7 +531,7 @@ describe('CachedLibraryStorage', () => {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
                     path.resolve(
-                        'packages/h5p-server/test/data/libraries/H5P.Example1-1.1/'
+                        `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1`
                     )
                 );
                 expect(

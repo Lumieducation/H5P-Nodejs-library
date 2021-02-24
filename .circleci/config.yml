@@ -9,7 +9,17 @@ jobs:
         steps:
             - checkout
             - restore_cache:
-                  key: modules-cache-{{ checksum "package-lock.json" }}
+                  key: root-modules-cache-{{ checksum "package-lock.json" }}
+            - restore_cache:
+                  key: h5p-examples-modules-cache-{{ checksum "packages/h5p-examples/package-lock.json" }}
+            - restore_cache:
+                  key: h5p-express-modules-cache-{{ checksum "packages/h5p-express/package-lock.json" }}
+            - restore_cache:
+                  key: h5p-html-exporter-modules-cache-{{ checksum "packages/h5p-html-exporter/package-lock.json" }}
+            - restore_cache:
+                  key: h5p-mongos3-modules-cache-{{ checksum "packages/h5p-mongos3/package-lock.json" }}
+            - restore_cache:
+                  key: h5p-server-modules-cache-{{ checksum "packages/h5p-server/package-lock.json" }}
             - restore_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
             - run: npm install
@@ -51,7 +61,7 @@ jobs:
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./h5p
+                      - ./packages/h5p-examples/h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
@@ -202,12 +212,12 @@ workflows:
             - integration-tests:
                   requires:
                       - install-build
+            - db-tests:
+                  requires:
+                      - install-build
             - html-exporter-tests:
                   requires:
                       - install-build
-            # - db-tests:
-            #       requires:
-            #           - install-build
             - release:
                   filters:
                       branches:
@@ -220,4 +230,4 @@ workflows:
                       - html-exporter-tests
                       # - e2e-tests
                       - integration-tests
-                      # - db-tests
+                      - db-tests

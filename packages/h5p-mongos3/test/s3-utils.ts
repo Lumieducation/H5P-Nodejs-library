@@ -23,16 +23,18 @@ export async function emptyAndDeleteBucket(
                 ContinuationToken: ret?.NextContinuationToken
             })
             .promise();
-        await s3
-            .deleteObjects({
-                Bucket: bucketname,
-                Delete: {
-                    Objects: ret.Contents.map((c) => {
-                        return { Key: c.Key };
-                    })
-                }
-            })
-            .promise();
+        if (ret.Contents?.length > 0) {
+            await s3
+                .deleteObjects({
+                    Bucket: bucketname,
+                    Delete: {
+                        Objects: ret.Contents.map((c) => {
+                            return { Key: c.Key };
+                        })
+                    }
+                })
+                .promise();
+        }
     } while (ret.IsTruncated);
     await s3.deleteBucket({ Bucket: bucketname }).promise();
 }
