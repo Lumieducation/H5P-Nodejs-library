@@ -46,7 +46,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^7.0.2",
-        "aws-sdk": "2.850.0",
+        "aws-sdk": "2.851.0",
         "mongodb": "3.6.4"
     },
     "main": "./build/index.js",
