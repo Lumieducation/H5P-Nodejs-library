@@ -34,6 +34,6 @@
         "typescript": "4.1.5"
     },
     "devDependencies": {
-        "ts-node-dev": "1.1.1"
+        "ts-node-dev": "1.1.2"
     }
 }
