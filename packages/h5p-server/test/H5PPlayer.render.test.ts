@@ -55,24 +55,22 @@ describe('H5P.render()', () => {
             });
     });
 
-    it('should not generate AJAX URLs with CSRF token if option is not set', () => {
+    it('should not generate AJAX URLs with CSRF token if option is not set', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const metadata: any = {};
 
         const config = new H5PConfig(undefined);
 
-        new H5PPlayer(undefined, undefined, config)
-            .setRenderer((model) => model)
-            .render(contentId, new User(), {
-                parametersOverride: contentObject,
-                metadataOverride: metadata as any
-            })
-            .then((model) => {
-                expect((model as IPlayerModel).integration.ajaxPath).toBe(
-                    '/h5p/ajax?action='
-                );
-            });
+        const player = new H5PPlayer(undefined, undefined, config);
+        player.setRenderer((m) => m);
+        const model = await player.render(contentId, new User(), {
+            parametersOverride: contentObject,
+            metadataOverride: metadata as any
+        });
+        expect((model as IPlayerModel).integration.ajaxPath).toBe(
+            '/h5p/ajax?action='
+        );
     });
 
     it('adds user information to integration', async () => {
