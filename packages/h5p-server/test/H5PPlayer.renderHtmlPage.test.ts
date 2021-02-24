@@ -42,7 +42,7 @@ describe('Rendering the HTML page', () => {
                      "contentUserData":"/h5p/contentUserData",
                      "setFinished":"/h5p/setFinished"
                   },
-                  "ajaxPath":"/h5p/ajax?action="
+                  "ajaxPath":"/h5p/ajax?action=",
                   "contents": {
                     "cid-foo": {
                       "displayOptions": {
@@ -340,7 +340,7 @@ describe('Rendering the HTML page', () => {
                          "contentUserData":"/h5p/contentUserData",
                          "setFinished":"/h5p/setFinished"
                        },
-                      "ajaxPath":"/h5p/ajax?action="
+                      "ajaxPath":"/h5p/ajax?action=",
                       "contents": {
                         "cid-foo": {
                           "displayOptions": {
