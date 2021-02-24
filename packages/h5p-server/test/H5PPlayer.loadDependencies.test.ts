@@ -1,6 +1,7 @@
 import H5PPlayer from '../src/H5PPlayer';
 import H5PConfig from '../src/implementation/H5PConfig';
 import { ILibraryName } from '../src/types';
+import User from './User';
 
 describe('Loading dependencies', () => {
     it('resolves main dependencies', () => {
@@ -58,7 +59,10 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).styles.slice(3)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
@@ -139,7 +143,10 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).styles.slice(3)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
@@ -231,7 +238,10 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).styles.slice(3)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
@@ -316,7 +326,10 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).styles.slice(3)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
@@ -405,7 +418,10 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).styles.slice(3)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
@@ -500,11 +516,10 @@ describe('Loading dependencies', () => {
         );
 
         h5p.setRenderer((m) => m);
-        const model: any = await h5p.render(
-            contentId,
-            contentObject,
-            h5pObject as any
-        );
+        const model: any = await h5p.render(contentId, new User(), {
+            parametersOverride: contentObject,
+            metadataOverride: h5pObject as any
+        });
         expect(model.scripts).toEqual([
             `/baseUrl/coreUrl/js/jquery.js?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/js/h5p.js?version=${config.h5pVersion}`,

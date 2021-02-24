@@ -20,26 +20,36 @@ export default function (
 ): express.Router {
     const router = express.Router();
 
-    router.get(`${h5pEditor.config.playUrl}/:contentId`, async (req, res) => {
-        try {
-            const h5pPage = await h5pPlayer.render(req.params.contentId);
-            res.send(h5pPage);
-            res.status(200).end();
-        } catch (error) {
-            res.status(500).end(error.message);
+    router.get(
+        `${h5pEditor.config.playUrl}/:contentId`,
+        async (req: IRequestWithUser, res) => {
+            try {
+                const h5pPage = await h5pPlayer.render(
+                    req.params.contentId,
+                    req.user
+                );
+                res.send(h5pPage);
+                res.status(200).end();
+            } catch (error) {
+                res.status(500).end(error.message);
+            }
         }
-    });
+    );
 
-    router.get('/edit/:contentId', async (req: IRequestWithLanguage, res) => {
-        const page = await h5pEditor.render(
-            req.params.contentId,
-            languageOverride === 'auto'
-                ? req.language ?? 'en'
-                : languageOverride
-        );
-        res.send(page);
-        res.status(200).end();
-    });
+    router.get(
+        '/edit/:contentId',
+        async (req: IRequestWithLanguage & IRequestWithUser, res) => {
+            const page = await h5pEditor.render(
+                req.params.contentId,
+                languageOverride === 'auto'
+                    ? req.language ?? 'en'
+                    : languageOverride,
+                req.user
+            );
+            res.send(page);
+            res.status(200).end();
+        }
+    );
 
     router.post('/edit/:contentId', async (req: IRequestWithUser, res) => {
         const contentId = await h5pEditor.saveOrUpdateContent(
@@ -54,16 +64,20 @@ export default function (
         res.status(200).end();
     });
 
-    router.get('/new', async (req: IRequestWithLanguage, res) => {
-        const page = await h5pEditor.render(
-            undefined,
-            languageOverride === 'auto'
-                ? req.language ?? 'en'
-                : languageOverride
-        );
-        res.send(page);
-        res.status(200).end();
-    });
+    router.get(
+        '/new',
+        async (req: IRequestWithLanguage & IRequestWithUser, res) => {
+            const page = await h5pEditor.render(
+                undefined,
+                languageOverride === 'auto'
+                    ? req.language ?? 'en'
+                    : languageOverride,
+                req.user
+            );
+            res.send(page);
+            res.status(200).end();
+        }
+    );
 
     router.post('/new', async (req: IRequestWithUser, res) => {
         if (

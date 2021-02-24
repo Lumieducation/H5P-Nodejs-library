@@ -11,11 +11,13 @@ export default class User implements IUser {
         this.canUpdateAndInstallLibraries = true;
         this.canCreateRestricted = true;
         this.type = 'local';
+        this.email = 'test@example.com';
     }
 
     public canCreateRestricted: boolean;
     public canInstallRecommended: boolean;
     public canUpdateAndInstallLibraries: boolean;
+    public email: string;
     public id: string;
     public name: string;
     public type: 'local';

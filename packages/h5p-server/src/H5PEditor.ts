@@ -497,20 +497,26 @@ export default class H5PEditor {
     }
 
     /**
-     * Renders the content. This means that a frame in which the editor is displayed is generated and returned. You can
-     * override the default frame by calling setRenderer(...).
+     * Renders the content. This means that a frame in which the editor is
+     * displayed is generated and returned. You can override the default frame
+     * by calling setRenderer(...).
      * @param contentId
-     * @returns the rendered frame that you can include in your website. Normally a string, but can be anything you want it to be if you override the renderer.
+     * @param language the language to use; defaults to English
+     * @param user the user who uses the editor
+     * @returns the rendered frame that you can include in your website.
+     * Normally a string, but can be anything you want it to be if you override
+     * the renderer.
      */
     public render(
         contentId: ContentId,
-        language: string = 'en'
+        language: string = 'en',
+        user: IUser
     ): Promise<string | any> {
         log.info(`rendering ${contentId}`);
         this.validateLanguageCode(language);
 
         const model: IEditorModel = {
-            integration: this.generateIntegration(contentId, language),
+            integration: this.generateIntegration(contentId, language, user),
             scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
             urlGenerator: this.urlGenerator
@@ -948,11 +954,12 @@ export default class H5PEditor {
 
     private generateEditorIntegration(
         contentId: ContentId,
-        language: string
+        language: string,
+        user: IUser
     ): ILumiEditorIntegration {
         log.info(`generating integration for ${contentId}`);
         return {
-            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
+            ajaxPath: this.urlGenerator.ajaxEndpoint(user),
             apiVersion: {
                 majorVersion: this.config.coreApiVersion.major,
                 minorVersion: this.config.coreApiVersion.minor
@@ -978,15 +985,16 @@ export default class H5PEditor {
 
     private generateIntegration(
         contentId: ContentId,
-        language: string
+        language: string,
+        user: IUser
     ): IIntegration {
         return {
             ajax: {
-                contentUserData: `${this.config.baseUrl}/contentUserData`,
-                setFinished: `${this.config.baseUrl}/setFinished`
+                contentUserData: this.urlGenerator.contentUserData(user),
+                setFinished: this.urlGenerator.setFinished(user)
             },
-            ajaxPath: `${this.config.baseUrl}${this.config.ajaxUrl}?action=`,
-            editor: this.generateEditorIntegration(contentId, language),
+            ajaxPath: this.urlGenerator.ajaxEndpoint(user),
+            editor: this.generateEditorIntegration(contentId, language, user),
             hubIsEnabled: true,
             l10n: {
                 H5P: this.semanticsLocalizer.localize(
@@ -1000,11 +1008,12 @@ export default class H5PEditor {
             saveFreq: false,
             libraryUrl: this.urlGenerator.coreFiles(),
             pluginCacheBuster: this.cacheBusterGenerator(),
-            url: this.config.baseUrl,
+            url: this.urlGenerator.baseUrl(),
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             user: {
-                mail: '',
-                name: ''
+                mail: user.email,
+                name: user.name,
+                id: user.id
             }
         };
     }

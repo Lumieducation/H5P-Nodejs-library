@@ -1,6 +1,7 @@
 import H5PPlayer from '../src/H5PPlayer';
 import H5PConfig from '../src/implementation/H5PConfig';
 import { ILibraryName, ILibraryMetadata } from '../src/types';
+import User from './User';
 
 describe('Rendering the HTML page', () => {
     it('uses default renderer and integration values', () => {
@@ -11,7 +12,10 @@ describe('Rendering the HTML page', () => {
         const h5pObject = {};
         const config = new H5PConfig(undefined);
         return new H5PPlayer(undefined, undefined, config)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((html) => {
                 expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
@@ -34,6 +38,10 @@ describe('Rendering the HTML page', () => {
                 
                     <script>
                         window.H5PIntegration = {
+                  "ajax":{
+                     "contentUserData":"/h5p/contentUserData",
+                     "setFinished":"/h5p/setFinished"
+                  },
                   "contents": {
                     "cid-foo": {
                       "displayOptions": {
@@ -162,7 +170,12 @@ describe('Rendering the HTML page', () => {
                   "saveFreq": false,
                   "url": "/h5p",
                   "hubIsEnabled": true,
-                  "fullscreenDisabled": 0
+                  "fullscreenDisabled": 0,
+                  "user":{
+                    "name":"FirstnameSurname",
+                    "mail":"test@example.com",
+                    "id":"1"
+                  }
                 };
                     </script>
                 </head>
@@ -206,7 +219,10 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined)
         )
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect(
                     (model as any).integration.contents['cid-foo'].library
@@ -241,11 +257,10 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(
-            contentId,
-            contentObject,
-            h5pObject as any
-        );
+        const model = await player.render(contentId, new User(), {
+            parametersOverride: contentObject,
+            metadataOverride: h5pObject as any
+        });
 
         expect((model as any).scripts.includes('/test.js')).toEqual(true);
         expect((model as any).styles.includes('/test.css')).toEqual(true);
@@ -260,7 +275,10 @@ describe('Rendering the HTML page', () => {
             integration: 'test'
         } as any)
             .setRenderer((model) => model)
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((model) => {
                 expect((model as any).integration.integration).toBe('test');
             });
@@ -289,7 +307,10 @@ describe('Rendering the HTML page', () => {
                 }
             }
         )
-            .render(contentId, contentObject, h5pObject as any)
+            .render(contentId, new User(), {
+                parametersOverride: contentObject,
+                metadataOverride: h5pObject as any
+            })
             .then((html) => {
                 expect(html.replace(/ /g, '')).toBe(
                     `<!doctype html>
@@ -314,6 +335,10 @@ describe('Rendering the HTML page', () => {
                     
                         <script>
                             window.H5PIntegration = {
+                      "ajax":{
+                         "contentUserData":"/h5p/contentUserData",
+                         "setFinished":"/h5p/setFinished"
+                       },
                       "contents": {
                         "cid-foo": {
                           "displayOptions": {
@@ -446,7 +471,12 @@ describe('Rendering the HTML page', () => {
                       "saveFreq": false,
                       "url": "/h5p",
                       "hubIsEnabled": true,
-                      "fullscreenDisabled": 0
+                      "fullscreenDisabled": 0,
+                      "user":{
+                        "name":"FirstnameSurname",
+                        "mail":"test@example.com",
+                        "id":"1"
+                      }
                     };
                         </script>
                     </head>
@@ -525,11 +555,10 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(
-            contentId,
-            contentObject,
-            h5pObject as any
-        );
+        const model = await player.render(contentId, new User(), {
+            parametersOverride: contentObject,
+            metadataOverride: h5pObject as any
+        });
 
         expect(
             (model as any).scripts.includes(
@@ -623,11 +652,10 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(
-            contentId,
-            contentObject,
-            h5pObject as any
-        );
+        const model = await player.render(contentId, new User(), {
+            parametersOverride: contentObject,
+            metadataOverride: h5pObject as any
+        });
 
         expect(
             (model as any).scripts.includes(

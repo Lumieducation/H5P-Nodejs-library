@@ -138,7 +138,7 @@ using a renderer that simply returns the player model if you call
 
 ```ts
 h5pPlayerOnServer.setRenderer(model => model);
-const playerModel = await h5pPlayerOnServer.render(contentId);
+const playerModel = await h5pPlayerOnServer.render(contentId, user);
 // send playerModel to client and return it in loadContentCallback
 ```
 
