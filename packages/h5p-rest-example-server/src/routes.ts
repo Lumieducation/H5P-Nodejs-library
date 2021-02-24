@@ -1,10 +1,11 @@
 import express from 'express';
-
 import * as H5P from '@lumieducation/h5p-server';
 import {
     IRequestWithUser,
     IRequestWithLanguage
 } from '@lumieducation/h5p-express';
+
+import User from './User';
 
 /**
  * @param h5pEditor
@@ -22,7 +23,10 @@ export default function (
 
     router.get(`/:contentId/play`, async (req, res) => {
         try {
-            const content = await h5pPlayer.render(req.params.contentId);
+            const content = await h5pPlayer.render(
+                req.params.contentId,
+                new User()
+            );
             res.send(content);
             res.status(200).end();
         } catch (error) {
@@ -39,7 +43,8 @@ export default function (
                 : req.params.contentId,
             languageOverride === 'auto'
                 ? req.language ?? 'en'
-                : languageOverride
+                : languageOverride,
+            new User()
         )) as H5P.IEditorModel;
         if (!req.params.contentId || req.params.contentId === 'undefined') {
             res.send(editorModel);
