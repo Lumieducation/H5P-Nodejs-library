@@ -2,16 +2,8 @@
 
 There are two ways of creating a H5PEditor object:
 
-* You can use the convenience function
-  [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses
-  basic file system implementations for all data storage services. You can use
-  the function if you're just getting started. Later on, you'll want to
-  construct the editor with custom implementations of the data storage services.
-  Check out the JSDoc of the function for details how to use it.
-* You can construct it manually by calling `new H5P.H5PEditor(...)`. The
-  constructor arguments are used to provide data storage services and settings.
-  You can find the interfaces referenced in
-  [`src/types.ts`](/packages/h5p-server/src/types.ts).
+* You can use the convenience function [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to construct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
+* You can construct it manually by calling `new H5P.H5PEditor(...)`. The constructor arguments are used to provide data storage services and settings. You can find the interfaces referenced in [`src/types.ts`](/packages/h5p-server/src/types.ts).
 
 Explanation of the arguments of the constructor:
 
@@ -26,8 +18,7 @@ the cache must be a single point of truth and work across all processes.
 ## config
 
 An object holding all configuration parameters as properties. It must implement
-the `IH5PConfig` interface. You can use the sample implementation in
-[`/packages/h5p-server/src/implementation/H5PConfig.ts`](/packages/h5p-server/src/implementation/H5PConfig.ts).
+the `IH5PConfig` interface. You can use the sample implementation in [`/packages/h5p-server/src/implementation/H5PConfig.ts`](/packages/h5p-server/src/implementation/H5PConfig.ts).
 
 ## libraryStorage
 
@@ -35,8 +26,7 @@ The `libraryStorage` provides information about installed libraries and installs
 them. It must implement the `ILibraryStorage` interface.
 
 If you store all library information as files in folders under `./h5p/libraries`
-you can use the sample implementation in
-[`/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts`](/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts):
+you can use the sample implementation in [`/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts`](/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts):
 
 ```javascript
 const libraryStorage = new FileLibraryStorage(`h5p/libraries`);
@@ -106,7 +96,8 @@ details.
 
 if you need to overwrite the logic to create the urls per request you can pass a
 custom url generator. It is possible to inherit from UrlGenerator and overwrite
-the getBaseUrl function if needed.
+the `baseUrl` function if needed.The url generator can also be used to add CSRF
+tokens to POST URLs.
 
 See the third-party [H5PServer](https://github.com/BoBiene/H5PServer) project
 for an implementation sample using the urlGenerator.

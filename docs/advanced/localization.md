@@ -13,11 +13,9 @@ editor.
 To change the language of the H5P editor, the text strings must be localized in
 several places:
 
-1. The core language strings (found in language/xxx.js) must be referenced in
-   the HTML file and in the array which references the JS files in the
+1. The core language strings (found in language/xxx.js) must be referenced in the HTML file and in the array which references the JS files in the
    `IIntegration` object (to make sure the language is also used in iframes).
-2. The H5P editor client (running in the browser) must be notified to use a
-   certain language. It will then request the respective localized strings of
+2. The H5P editor client (running in the browser) must be notified to use a certain language. It will then request the respective localized strings of
    H5P libraries it loads.
 3. Several string properties of IIntegration must be returned localized.
 4. The errors thrown by @lumieducation/h5p-server must be localized.
@@ -41,9 +39,9 @@ shows where this must be done:
 | 4. error messages emitted by @lumieducation/h5p-server | Catch errors of types `H5PError` and `AggregateH5PError` and localize the message property yourself. |
 
 The [Express example](/packages/h5p-examples/src/express.ts) demonstrates how to
-do 1,2 and 3. The [Express adapter for the Ajax
-endpoints](/packages/h5p-express) already implements 4 but requires the `t(...)`
-function to be added to the `req` object.
+do 1,2 and 3. The [Express adapter for the Ajax endpoints](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts) 
+already implements 4 but requires the `t(...)` function to be added to the `req`
+object.
 
 The language strings used by @lumieducation/h5p-server all follow the
 conventions of [i18next](https://www.npmjs.com/package/i18next) and it is a good
@@ -86,10 +84,9 @@ strings. That's why @lumieducation/h5p-server must also follow this path and
 localize strings itself.
 
 The language strings used by @lumieducation/h5p-server can be found in
-[/packages/h5p-server/assets/translations/](/packages/h5p-server/assets/translations/).
-In there, each namespace (group of language strings) has it own directory, which
-in turn contains the language files, which are named like this `en.json`,
-`de.json` etc.
+`/packages/h5p-server/assets/translations/`. In there, each namespace (group of
+language strings) has it own directory, which in turn contains the language
+files, which are named like this `en.json`, `de.json` etc.
 
 If you want to change the text for your language or add another language, you
 must do the changes in these directories. You can also add new namespaces if you

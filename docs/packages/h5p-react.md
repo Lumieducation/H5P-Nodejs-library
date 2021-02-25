@@ -212,6 +212,11 @@ a point when all the scripts, but possibly not all resources (images etc.) might
 be loaded. You should only use the event as an indication of initialization
 state.
 
+### onxAPIStatement
+
+This event handler is called when the H5P content fires an xAPI statement. Use
+it to collect information about what the user does with your content.
+
 ### H5PEditorUI
 
 #### onLoaded

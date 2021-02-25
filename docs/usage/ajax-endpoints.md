@@ -1,18 +1,16 @@
 # Handling AJAX requests
 
 There are two ways of handling AJAX requests: You can use the out-of-the-box
-[Express adapter](ajax-endpoints.md#handling-requests-with-the-express-adapter)
-or [write your own custom router](ajax-endpoints.md#handling-requests-yourself):
+[Express adapter](#handling-requests-with-the-express-adapter)
+or [write your own custom router](#handling-requests-yourself):
 
-![diagram of the architecture of the H5P Ajax
-endpoint](ajax-endpoint-architecture.svg)
+![diagram of the architecture of the H5P Ajax endpoint](ajax-endpoint-architecture.svg)
 
 ## Handling requests with the Express adapter
 
 Your implementation must process requests to several endpoints and relay them to
 the H5PEditor or H5PPlayer objects. All Ajax endpoints are already implemented
-in the [Express
-adapter](/packages/h5p-express/build/H5PAjaxRouter/H5PAjaxExpressRouter.d.ts),
+in the [Express adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts),
 which you can use like this:
 
 Import the Express adapter router like this:
@@ -96,8 +94,7 @@ different in your setup.
 Consult the [documentation of
 `H5PAjaxEndpoint`](/packages/h5p-server/src/H5PAjaxEndpoint.ts) for details on
 who to retrieve the required parameters from the HTTP requests. You can also
-look at the [Express Ajax
-Adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
+look at the [Express Ajax Adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
 an example.
 
 ## Configuring custom endpoint routes

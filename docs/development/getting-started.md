@@ -32,7 +32,7 @@ own package, published via [npm](https://www.npmjs.com). Packages are mostly
 self contained except for the following cases:  
 
 * node modules needed for every package are located in the root `package.json`
-  and `node_module` folder. The[jest](https://jestjs.io) testing framework and
+  and `node_module` folder. The [jest](https://jestjs.io) testing framework and
   `typescript` are used in every package - therefore these are installed in the
   root `node_module` folder and made accessible in every package.
 * data used for unit and integration tests that are required by more than one

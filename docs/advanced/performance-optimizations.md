@@ -3,18 +3,15 @@
 There are a few ways in which the performance of `@lumieducation/h5p-server` can
 be improved:
 
-* [Performance optimizations for production
-  use](#performance-optimizations-for-production-use)
-  * [Caching library
-    storage](performance-optimizations.md#caching-library-storage)
-  * [Serving the library files from a different
-    system](#serving-the-library-files-from-a-different-system)
-  * [Horizontal scaling](performance-optimizations.md#horizontal-scaling)
+  - [Caching library storage](#caching-library-storage)
+  - [Serving the library files from a different system](#serving-the-library-files-from-a-different-system)
+  - [Horizontal scaling](#horizontal-scaling)
+  - [Database-based content storage](#database-based-content-storage)
 
 ## Caching library storage
 
 The
-[`CachedLibraryStorage`](/packages/h5p-server/implementation/cache/CachedLibraryStorage.ts)
+[`CachedLibraryStorage`](/packages/h5p-server/src/implementation/cache/CachedLibraryStorage.ts)
 class can be used to cache the most common calls to the library storage. This
 will improve the overall performance of the library quite a bit, as many
 functions need library metadata, semantics or language files, which they get
@@ -51,7 +48,7 @@ the browser of the user, it is also possible to serve them directly, as they are
 simple static files.
 
 If you construct
-[`FileLibraryStorage`](/packages/h5p-server/implementation/fs/ileLibraryStorage.ts)
+[`FileLibraryStorage`](/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts)
 with
 
 `new FileLibraryStorage('/directory/in/filesystem')`
@@ -72,23 +69,17 @@ instances of it are executed in parallel (on a single machine to make use of
 multi-core processors or on multiple machines). When doing this, pay attention
 to this:
 
-* If you use [caching](performance-optimizations.md#caching-library-storage),
-  you have to use a cache like Redis or memcached. Cache invalidation across
-  multiple instances will not work  with the simple default in-memory cache.
-* If you run multiple instances on a single machine, the library storage
-  directory can be on the local filesystem and all instances can share it.
-* If you run multiple instances on multiple machines, the library storage
-  directory must be put into a network share (NFS) or you must use shared
-  volumes (Docker).
-* It is advised to use the Mongo/S3 content storage classes. [See
-  below](#database-based-content-storage) for details.
+* If you use [caching](#caching-library-storage), you have to use a cache like Redis or memcached. Cache invalidation across multiple instances will not work  with the simple default in-memory cache.
+* If you run multiple instances on a single machine, the library storage directory can be on the local filesystem and all instances can share it.
+* If you run multiple instances on multiple machines, the library storage directory must be put into a network share (NFS) or you must use shared volumes (Docker).
+* It is advised to use the Mongo/S3 content storage classes. [See below](#database-based-content-storage) for details.
 
 ## Database-based content storage
 
 The simple
-[`FileContentStorage`](/packages/h5p-server/implementation/fs/FileContentStorage.ts)
+[`FileContentStorage`](/packages/h5p-server/src/implementation/fs/FileContentStorage.ts)
 and
-[`DirectoryTemporaryFileStorage`](/packages/h5p-server/implementation/fs/DirectoryTemporaryFileStorage.ts)
+[`DirectoryTemporaryFileStorage`](/packages/h5p-server/src/implementation/fs/DirectoryTemporaryFileStorage.ts)
 are not suitable for production use, as they suffer from serious scaling issues
 when listing content objects. They should only be used for development and
 testing purposes or in very small deployments.

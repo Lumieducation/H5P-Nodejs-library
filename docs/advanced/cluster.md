@@ -53,9 +53,6 @@ services that make @lumieducation/h5p-server work in cluster mode:
 
 - Minio (provides S3 storage backend for content, temporary and library files)
 - MongoDB (provides database backend for content and library metadata)
-- Redis (provides a key-value cache; used for caching the content type cache and
-  caching library metadata)
-- a named Docker volume (added as a volume to all h5p containers to keep library
-  data consistent across instances)
-- NGINX (load balancer that distributes incoming request between the H5P
-  containers)
+- Redis (provides a key-value cache; used for caching the content type cache and caching library metadata)
+- a named Docker volume (added as a volume to all h5p containers to keep library data consistent across instances)
+- NGINX (load balancer that distributes incoming request between the H5P containers)

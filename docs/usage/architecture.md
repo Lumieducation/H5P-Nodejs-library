@@ -5,15 +5,10 @@
 A H5P web-application using this library consists of four components, which
 communicate between each other:
 
-1. This library (@lumieducation/h5p-server and possibly other @lumieducation
-   packages) on the server-side (in yellow below)
-2. Your server (implementation of the interfaces of this library + other
-   endpoints, in blue below)
-3. Your web client (running in the browser, in blue below,
-   @lumieducation/h5p-webcomponents and @lumieducation/h5p-react can help your
-   here if you want to write a SPA application)
-4. Joubel's H5P player / editor client (downloaded by you and served by your
-   server, in grey below)
+1. This library (@lumieducation/h5p-server and possibly other @lumieducation packages) on the server-side (in yellow below)
+2. Your server (implementation of the interfaces of this library + other endpoints, in blue below)
+3. Your web client (running in the browser, in blue below, @lumieducation/h5p-webcomponents and @lumieducation/h5p-react can help your here if you want to write a SPA application)
+4. Joubel's H5P player / editor client (downloaded by you and served by your server, in grey below)
 
 As you can see, this library is not an out-of-the-box solution for all your
 needs, but **requires you to implement your own server and web client**.
@@ -45,4 +40,5 @@ There is a basic example implementation of the server and client (blue parts)
 using Express (and server-side rendering) in the `/packages/h5p-examples`
 folder. There is also a more advanced SPA example in the
 `/packages/h5p-rest-example-server` and `/packages/h5p-rest-example-client`
-folders.
+folders. Check out the documentation on it
+[here](/docs/examples/rest/README.md).

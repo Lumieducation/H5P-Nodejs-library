@@ -57,13 +57,9 @@ const storage = new MongoS3ContentStorage(
 
 ### Notes:
 
-* The function [`initS3`](/packages/h5p-mongos3/src/initS3.ts) creates an S3
-  client using the `aws-sdk` npm package.
-* The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a
-  MongoDB client using the `mongodb` npm package.
-* You can pass credentials and other configuration values to `initS3` and
-  `initMongo` through the function parameters. Alternatively you can use these
-  environment variables instead of using the function parameters:
+* The function [`initS3`](/packages/h5p-mongos3/src/initS3.ts) creates an S3 client using the `aws-sdk` npm package.
+* The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
+* You can pass credentials and other configuration values to `initS3` and `initMongo` through the function parameters. Alternatively you can use these environment variables instead of using the function parameters:
   * AWS_ACCESS_KEY_ID
   * AWS_SECRET_ACCESS_KEY
   * AWS_S3_ENDPOINT
@@ -72,18 +68,11 @@ const storage = new MongoS3ContentStorage(
   * MONGODB_DB
   * MONGODB_USER
   * MONGODB_PASSWORD
-* You can change the MongoDB collection name `h5p` to any name you want. If the
-  collection doesn't exist yet, it will be automatically created.
-* You can change the bucket `h5pcontentbucket` to any name you want, but you
-  must specify one. You must create the bucket manually before you can use it.
-* The configuration object passed into `initS3` is passed on to `aws-sdk`, so
-  you can set any custom configuration values you want.
-* To achieve greater configurability, you can decide not to use `initS3` or
-  `initMongo` and instantiate the required clients yourself.
-* While Amazon S3 supports keys with up to 1024 characters, some other S3
-  systems such as Minio might only support less in certain situations. To cater
-  for these system you can set the option `maxKeyLength` to the value you need.
-  It defaults to 1024.
+* You can change the MongoDB collection name `h5p` to any name you want. If the collection doesn't exist yet, it will be automatically created.
+* You can change the bucket `h5pcontentbucket` to any name you want, but you must specify one. You must create the bucket manually before you can use it.
+* The configuration object passed into `initS3` is passed on to `aws-sdk`, so you can set any custom configuration values you want.
+* To achieve greater configurability, you can decide not to use `initS3` or `initMongo` and instantiate the required clients yourself.
+* While Amazon S3 supports keys with up to 1024 characters, some other S3 systems such as Minio might only support less in certain situations. To cater for these system you can set the option `maxKeyLength` to the value you need. It defaults to 1024.
 
 ## Using MongoS3ContentStorage in the example
 

@@ -34,8 +34,7 @@ When the user does certain actions in the system, the following data is stored
 (if the user chooses to do so):
 
 * h5p content objects
-  * includes all personal data entered by the user as metadata (e.g. revision
-    history, description, etc.)
+  * includes all personal data entered by the user as metadata (e.g. revision history, description, etc.)
   * includes user id of creator
   * includes creation date and time
   * (if applicable) includes media contained in it
@@ -48,10 +47,7 @@ When the user does certain actions in the system, the following data is stored
 * h5p content objects: kept until explicitly deleted by the implementation
 * uploaded resources:
   * kept until corresponding h5p content object is deleted
-  * temporary files (used in the editor) are automatically deleted after the
-    time set in `temporaryFileLifetime` in IH5PConfig (defaults to 120 min);
-    **If you use the S3 storage backend, you have to configure automatic
-    deletion of temporary files yourself!**
+  * temporary files (used in the editor) are automatically deleted after the time set in `temporaryFileLifetime` in IH5PConfig (defaults to 120 min); **If you use the S3 storage backend, you have to configure automatic deletion of temporary files yourself!**
 
 ### Logging
 
