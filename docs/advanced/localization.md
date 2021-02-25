@@ -13,10 +13,8 @@ editor.
 To change the language of the H5P editor, the text strings must be localized in
 several places:
 
-1. The core language strings (found in language/xxx.js) must be referenced in the HTML file and in the array which references the JS files in the
-   `IIntegration` object (to make sure the language is also used in iframes).
-2. The H5P editor client (running in the browser) must be notified to use a certain language. It will then request the respective localized strings of
-   H5P libraries it loads.
+1. The core language strings (found in language/xxx.js) must be referenced in the HTML file and in the array which references the JS files in the `IIntegration` object (to make sure the language is also used in iframes).
+2. The H5P editor client (running in the browser) must be notified to use a certain language. It will then request the respective localized strings of H5P libraries it loads.
 3. Several string properties of IIntegration must be returned localized.
 4. The errors thrown by @lumieducation/h5p-server must be localized.
 
