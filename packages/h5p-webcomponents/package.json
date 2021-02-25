@@ -29,7 +29,7 @@
         "await-lock": "^2.1.0"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^7.1.0",
+        "@lumieducation/h5p-server": "7.1.0",
         "@types/resize-observer-browser": "0.1.5"
     }
 }
