@@ -240,7 +240,7 @@ initialization state.
 
 #### xAPI
 
-This is an `H5P.Event` that is emitted by this component when an action is triggered 
+This is an event that is emitted by this component when an action is triggered 
 on or inside the H5P content through the H5P player. The event includes the
 `statement` in `event.detail.statement`,`context` in  `event.detail.context`, and
 `event` in  `event.detail.event`.
