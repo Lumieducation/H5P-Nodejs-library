@@ -238,6 +238,14 @@ emitted by H5P at a point when all the scripts but possibly not all resources
 (images etc.) might be loaded. You should only use the event as an indication of
 initialization state.
 
+#### xAPI
+
+This is an event that is emitted by this component when an action is triggered 
+on or inside the H5P content through the H5P player. The event includes the
+`statement` in `event.detail.statement`,`context` in  `event.detail.context`, and
+`event` in  `event.detail.event`.
+
+
 ### H5PEditorComponent
 
 #### editorloaded
