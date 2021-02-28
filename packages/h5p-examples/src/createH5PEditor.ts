@@ -54,7 +54,13 @@ export default async function createH5PEditor(
     // of the storage interfaces.
 
     const libraryStorageStorage =
-        process.env.LIBRARYSTORAGE !== 'mongos3'
+        process.env.LIBRARYSTORAGE === 'mongo'
+            ? new dbImplementations.MongoLibraryStorage(
+                  (await dbImplementations.initMongo()).collection(
+                      process.env.LIBRARY_MONGO_COLLECTION
+                  )
+              )
+            : process.env.LIBRARYSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)
             : new dbImplementations.MongoS3LibraryStorage(
                   dbImplementations.initS3({
