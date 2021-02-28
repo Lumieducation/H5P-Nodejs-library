@@ -74,7 +74,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
 
         if (result.matchedCount !== 1) {
             throw new H5pError(
-                'mongo-library-storage:clear-library-not-found',
+                'mongo-library-storage:library-not-found',
                 {
                     ubername: LibraryName.toUberName(library)
                 },
@@ -152,7 +152,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 )} failed, as it isn't installed.`
             );
             throw new H5pError(
-                'mongo-library-storage:clear-library-not-found',
+                'mongo-library-storage:library-not-found',
                 {
                     ubername: LibraryName.toUberName(library)
                 },
@@ -596,7 +596,14 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 { ubername: LibraryName.toUberName(library) }
             );
         }
-        if (!result || !result.metadata || !result.additionalMetadata) {
+        if (!result) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        if (!result.metadata || !result.additionalMetadata) {
             throw new H5pError(
                 'mongo-library-storage:error-getting-library-metadata',
                 { ubername: LibraryName.toUberName(library) }

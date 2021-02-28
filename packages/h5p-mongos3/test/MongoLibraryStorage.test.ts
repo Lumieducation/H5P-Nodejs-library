@@ -168,6 +168,12 @@ describe('MongoS3LibraryStorage', () => {
         expect(libraryNames4).toMatchObject([]);
     });
 
+    it('getInstalledLibraryNames returns an empty list when no library has been installed', async () => {
+        await expect(storage.getInstalledLibraryNames()).resolves.toMatchObject(
+            []
+        );
+    });
+
     it('gets the metadata', async () => {
         const metadata = await fsExtra.readJSON(
             `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
@@ -182,6 +188,16 @@ describe('MongoS3LibraryStorage', () => {
             ...metadata,
             restricted: false
         });
+    });
+
+    it('throws 404 when trying to get the metadata of non-existing library', async () => {
+        await expect(
+            storage.getLibrary({
+                machineName: 'H5P.Example1',
+                majorVersion: 1,
+                minorVersion: 1
+            })
+        ).rejects.toThrowError('mongo-library-storage:library-not-found');
     });
 
     it('update additional metadata', async () => {
@@ -222,6 +238,21 @@ describe('MongoS3LibraryStorage', () => {
         });
     });
 
+    it('throws 404 when trying to update additional metadata of non-existing library', async () => {
+        await expect(
+            storage.updateAdditionalMetadata(
+                {
+                    machineName: 'H5P.Example1',
+                    majorVersion: 1,
+                    minorVersion: 1
+                },
+                {
+                    restricted: true
+                }
+            )
+        ).rejects.toThrowError('mongo-library-storage:library-not-found');
+    });
+
     it('does not update additional metadata if library not installed', async () => {
         await expect(
             storage.updateAdditionalMetadata(
@@ -254,6 +285,19 @@ describe('MongoS3LibraryStorage', () => {
             minorVersion: 1
         });
         expect(retrievedMetadata).toMatchObject(metadata2);
+    });
+
+    it('throws 404 when updating metadata of non-existing library', async () => {
+        const metadata = {
+            ...(await fsExtra.readJSON(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+            )),
+            patchVersion: 2,
+            author: 'test'
+        };
+        await expect(storage.updateLibrary(metadata)).rejects.toThrowError(
+            'mongo-library-storage:library-not-found'
+        );
     });
 
     it('lists addons', async () => {
@@ -302,7 +346,16 @@ describe('MongoS3LibraryStorage', () => {
                 minorVersion: 1
             })
         ).rejects.toThrow();
-        // TODO: Check if dependent files were removed
+    });
+
+    it('throws 404 when deleting non-existing libraries', async () => {
+        await expect(
+            storage.deleteLibrary({
+                machineName: 'H5P.Example1',
+                majorVersion: 1,
+                minorVersion: 1
+            })
+        ).rejects.toThrowError('mongo-library-storage:library-not-found');
     });
 
     it('throws 404 when trying to delete a non-existing library', async () => {
@@ -403,6 +456,30 @@ describe('MongoS3LibraryStorage', () => {
         ]);
     });
 
+    it('throws 404 when reading missing files', async () => {
+        // Prepare
+        await installMetadata(
+            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        );
+
+        // Action + Check
+        await expect(
+            storage.fileExists(example1Name, 'semantics.json')
+        ).resolves.toEqual(false);
+        await expect(
+            storage.getFileAsString(example1Name, 'semantics.json')
+        ).rejects.toThrowError('library-file-missing');
+        await expect(
+            storage.getFileAsJson(example1Name, 'semantics.json')
+        ).rejects.toThrowError('library-file-missing');
+        await expect(
+            storage.getFileStats(example1Name, 'semantics.json')
+        ).rejects.toThrowError('library-file-missing');
+        await expect(
+            storage.getFileStream(example1Name, 'semantics.json')
+        ).rejects.toThrowError('library-file-missing');
+    });
+
     it('returns the correct list of languages', async () => {
         // Prepare
         await installMetadata(
@@ -429,6 +506,15 @@ describe('MongoS3LibraryStorage', () => {
         await expect(
             storage.getLanguages(example1Name)
         ).resolves.toMatchObject(['.en', 'de']);
+    });
+
+    it('throws 404 when getting languages of non-existing library', async () => {
+        // Prepare
+
+        // Action
+        await expect(storage.getLanguages(example1Name)).rejects.toThrowError(
+            'mongo-library-storage:library-not-found'
+        );
     });
 
     it('clears files', async () => {
@@ -460,5 +546,14 @@ describe('MongoS3LibraryStorage', () => {
         await expect(
             storage.fileExists(example1Name, 'language/.en.json')
         ).resolves.toEqual(false);
+    });
+
+    it('throws 404 when clearing files of non-existing library', async () => {
+        // Prepare
+
+        // Action
+        await expect(storage.clearFiles(example1Name)).rejects.toThrowError(
+            'mongo-library-storage:library-not-found'
+        );
     });
 });
