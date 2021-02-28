@@ -63,10 +63,6 @@ export default async function createH5PEditor(
         await mongoLibraryStorage.createIndexes();
         libraryStorage = mongoLibraryStorage;
     } else if (process.env.LIBRARYSTORAGE !== 'mongos3') {
-        libraryStorage = new H5P.fsImplementations.FileLibraryStorage(
-            localLibraryPath
-        );
-    } else {
         libraryStorage = new dbImplementations.MongoS3LibraryStorage(
             dbImplementations.initS3({
                 s3ForcePathStyle: true,
@@ -81,6 +77,10 @@ export default async function createH5PEditor(
                     ? Number.parseInt(process.env.AWS_S3_MAX_FILE_LENGTH, 10)
                     : undefined
             }
+        );
+    } else {
+        libraryStorage = new H5P.fsImplementations.FileLibraryStorage(
+            localLibraryPath
         );
     }
 

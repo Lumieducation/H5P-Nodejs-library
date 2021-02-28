@@ -17,6 +17,8 @@
   - h5p-mongos3
     * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)
     * [S3 Temporary File Storage](packages/h5p-mongos3/s3-temporary-file-storage.md)
+    * [Mongo Library Storage](packages/h5p-mongos3/mongo-library-storage.md)
+    * [Mongo/S3 Library Storage](packages/h5p-mongos3/mongo-s3-library-storage.md)
   - [h5p-webcomponents](packages/h5p-webcomponents.md)
   - [h5p-react](packages/h5p-react.md)  
 - Development
