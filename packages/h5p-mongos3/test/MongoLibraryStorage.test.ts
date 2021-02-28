@@ -58,6 +58,7 @@ describe('MongoS3LibraryStorage', () => {
         }
         mongoCollection = mongo.collection(collectionName);
         storage = new MongoLibraryStorage(mongoCollection, {});
+        storage.createIndexes();
     });
 
     afterEach(async () => {

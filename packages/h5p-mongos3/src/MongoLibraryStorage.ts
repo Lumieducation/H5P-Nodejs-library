@@ -162,6 +162,31 @@ export default class MongoLibraryStorage implements ILibraryStorage {
     }
 
     /**
+     * Creates indexes to speed up read access. Can be safely used even if
+     * indexes already exist.
+     */
+    public async createIndexes(): Promise<void> {
+        this.mongodb.createIndexes([
+            {
+                key: {
+                    _id: 1,
+                    'files.filename': 1
+                }
+            },
+            {
+                key: {
+                    'metadata.machineName': 1
+                }
+            },
+            {
+                key: {
+                    'metadata.addTo': 1
+                }
+            }
+        ]);
+    }
+
+    /**
      * Removes the library and all its files from the repository.
      * Throws errors if something went wrong.
      * @param library The library to remove.
