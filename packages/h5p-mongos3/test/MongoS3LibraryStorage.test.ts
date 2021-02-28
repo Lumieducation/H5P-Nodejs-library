@@ -79,6 +79,7 @@ describe('MongoS3LibraryStorage', () => {
         storage = new MongoS3LibraryStorage(s3, mongoCollection, {
             s3Bucket: bucketName
         });
+        await storage.createIndexes();
     });
 
     afterEach(async () => {
