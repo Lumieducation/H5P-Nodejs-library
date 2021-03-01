@@ -84,7 +84,7 @@
         "@types/yazl": "2.4.2",
         "axios-mock-adapter": "1.19.0",
         "cross-env": "7.0.3",
-        "i18next": "19.9.0",
+        "i18next": "19.9.1",
         "i18next-fs-backend": "1.1.0",
         "i18next-http-middleware": "3.0.6",
         "mockdate": "3.0.2",
