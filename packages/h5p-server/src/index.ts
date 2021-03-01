@@ -26,6 +26,7 @@ import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
+import UrlGenerator from './UrlGenerator';
 
 // Interfaces
 import {
@@ -122,5 +123,6 @@ export {
     fs,
     utils,
     fsImplementations,
-    cacheImplementations
+    cacheImplementations,
+    UrlGenerator
 };
