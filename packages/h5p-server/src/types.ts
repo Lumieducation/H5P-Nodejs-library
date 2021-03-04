@@ -1307,7 +1307,7 @@ export interface IH5PConfig {
      * You can insert the contentId using the placeholder {{contentId}}.
      *
      * Example:
-     * http://127.0.0.1:9000/s3bucket/${contentId}`
+     * http://127.0.0.1:9000/s3bucket/{{contentId}}`
      *
      * You can use this URL to load content files from a different server, e.g.
      * S3 storage. Note that this only work for the player and not the editor.
