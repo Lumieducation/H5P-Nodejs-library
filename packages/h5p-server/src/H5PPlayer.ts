@@ -347,8 +347,8 @@ export default class H5PPlayer {
                         title: metadata.title || '',
                         defaultLanguage: metadata.language || 'en'
                     },
-                    scripts: this.listCoreScripts().concat(assets.scripts),
-                    styles: this.listCoreStyles().concat(assets.styles)
+                    scripts: assets.scripts,
+                    styles: assets.styles
                 }
             },
             core: {

@@ -60,22 +60,8 @@ describe('Rendering the HTML page', () => {
                         "title":"",
                         "defaultLanguage":"en"
                        },                       
-                        "scripts":[
-                        "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
-                        "/h5p/core/js/request-queue.js?version=${config.h5pVersion}"
-                        ],
-                        "styles":[
-                        "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
-                        "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
-                        "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}"
-                        ]
+                        "scripts":[],
+                        "styles":[]
                     }
                   },
                   "core":{
@@ -358,24 +344,8 @@ describe('Rendering the HTML page', () => {
                             "title":"",
                             "defaultLanguage":"en"
                           },
-                          "scripts":[
-                          "/h5p/core/js/jquery.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-event-dispatcher.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-x-api-event.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-x-api.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-content-type.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}",
-                          "/h5p/core/js/request-queue.js?version=${config.h5pVersion}",
-                          "/test.js"
-                          ],
-                          "styles":[
-                          "/h5p/core/styles/h5p.css?version=${config.h5pVersion}",
-                          "/h5p/core/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}",
-                          "/h5p/core/styles/h5p-core-button.css?version=${config.h5pVersion}",
-                          "/test.css"
-                          ]
+                          "scripts":[],
+                          "styles":[]
                         }
                       },
                       "core":{
