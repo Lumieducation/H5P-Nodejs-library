@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.1.0...v7.2.0) (2021-03-04)
+
+
+### Bug Fixes
+
+* **h5p-server:** now exports UrlGenerator ([#1120](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1120)) ([fa059a8](https://github.com/Lumieducation/H5P-Nodejs-library/commit/fa059a82d4ea5fcded674d1250c85dbd66796d22))
+
+
+
+
+
 # [7.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v6.2.0...v7.1.0) (2021-02-25)
 
 
