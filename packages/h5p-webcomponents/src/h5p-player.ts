@@ -169,6 +169,7 @@ export class H5PPlayerComponent extends HTMLElement {
                 'initialized',
                 this.onContentInitialized
             );
+            window.H5P.externalDispatcher.off('xAPI', this.onxAPI);
         }
     }
 
@@ -195,6 +196,26 @@ export class H5PPlayerComponent extends HTMLElement {
                     this.onContentInitialized
                 );
             }
+        }
+    };
+
+    private onxAPI = (event: IxAPIEvent) => {
+        if (
+            `${event.data?.statement?.object?.definition?.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
+            `${this.playerModel.contentId}`
+        ) {
+            const context: IContext = {
+                contentId: this.playerModel.contentId
+            };
+            this.dispatchEvent(
+                new CustomEvent('xAPI', {
+                    detail: {
+                        statement: event.data.statement,
+                        context,
+                        event
+                    }
+                })
+            );
         }
     };
 
@@ -250,26 +271,12 @@ export class H5PPlayerComponent extends HTMLElement {
         );
         window.H5P.preventInit = false;
 
+        // detach xAPI listener first to avoid having multiple listeners on the
+        // same content (can safely be done even if it hasn't been attached
+        // before)
+        window.H5P.externalDispatcher.off('xAPI', this.onxAPI);
         // attach xAPI listener
-        window.H5P.externalDispatcher.on('xAPI', (event: IxAPIEvent) => {
-            if (
-                `${event.data?.statement?.object?.definition?.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
-                `${this.playerModel.contentId}`
-            ) {
-                const context: IContext = {
-                    contentId: this.playerModel.contentId
-                };
-                this.dispatchEvent(
-                    new CustomEvent('xAPI', {
-                        detail: {
-                            statement: event.data.statement,
-                            context,
-                            event
-                        }
-                    })
-                );
-            }
-        });
+        window.H5P.externalDispatcher.on('xAPI', this.onxAPI);
 
         window.H5P.init(this.root);
     }
