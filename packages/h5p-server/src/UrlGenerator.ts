@@ -66,7 +66,9 @@ export default class UrlGenerator implements IUrlGenerator {
             this.csrfProtection?.protectAjax
         ) {
             const qs = this.csrfProtection.queryParamGenerator(user);
-            return `${this.config.baseUrl}${this.config.ajaxUrl}?${qs.name}=${qs.value}&action=`;
+            if (qs && qs.name && qs.value) {
+                return `${this.config.baseUrl}${this.config.ajaxUrl}?${qs.name}=${qs.value}&action=`;
+            }
         }
         return `${this.config.baseUrl}${this.config.ajaxUrl}?action=`;
     };
