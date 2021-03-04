@@ -1,10 +1,6 @@
-import MongoDB from 'mongodb';
-import AWS from 'aws-sdk';
+import MongoDB, { Binary } from 'mongodb';
 import { Readable } from 'stream';
 import * as path from 'path';
-// tslint:disable-next-line: no-submodule-imports
-import { PromiseResult } from 'aws-sdk/lib/request';
-
 import {
     IAdditionalLibraryMetadata,
     IFileStats,
@@ -18,59 +14,18 @@ import {
     streamToString,
     Logger
 } from '@lumieducation/h5p-server';
+import { ReadableStreamBuffer } from 'stream-buffers';
 
-import { validateFilename } from './S3Utils';
+const log = new Logger('MongoLibraryStorage');
 
-const log = new Logger('MongoS3LibraryStorage');
-
-export default class MongoS3LibraryStorage implements ILibraryStorage {
+export default class MongoLibraryStorage implements ILibraryStorage {
     /**
-     * @param s3 the S3 content storage; Must be either set to a bucket or the
-     * bucket must be specified in the options!
      * @param mongodb a MongoDB collection (read- and writable)
      * @param options options
      */
-    constructor(
-        private s3: AWS.S3,
-        private mongodb: MongoDB.Collection,
-        private options: {
-            /**
-             * These characters will be removed from files that are saved to S3.
-             * There is a very strict default list that basically only leaves
-             * alphanumeric filenames intact. Should you need more relaxed
-             * settings you can specify them here.
-             */
-            invalidCharactersRegexp?: RegExp;
-            /**
-             * Indicates how long keys in S3 can be. Defaults to 1024. (S3
-             * supports 1024 characters, other systems such as Minio might only
-             * support 255 on Windows).
-             */
-            maxKeyLength?: number;
-            /**
-             * The ACL to use for uploaded content files. Defaults to private.
-             */
-            s3Acl?: string;
-            /**
-             * The bucket to upload to and download from. (required)
-             */
-            s3Bucket: string;
-        }
-    ) {
+    constructor(private mongodb: MongoDB.Collection, private options?: {}) {
         log.info('initialize');
-        this.maxKeyLength =
-            options?.maxKeyLength !== undefined
-                ? options.maxKeyLength - 22
-                : 1002;
-        // By default we shorten to 1002 as S3 supports a maximum of 1024
-        // characters and we need to account for contentIds (12), unique ids
-        // appended to the name (8) and separators (2).
     }
-
-    /**
-     * Indicates how long keys can be.
-     */
-    private maxKeyLength: number;
 
     /**
      * Adds a library file to a library. The library metadata must have been installed with addLibrary(...) first.
@@ -78,35 +33,55 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * up the partly installed library.
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
-     * @param stream The stream containing the file content
+     * @param readable The Readable containing the file content
      * @returns true if successful
      */
     public async addFile(
         library: ILibraryName,
         filename: string,
-        readStream: Readable
+        readable: Readable
     ): Promise<boolean> {
-        validateFilename(filename, this.options?.invalidCharactersRegexp);
+        this.validateFilename(filename);
+        const buffer = await this.readableToBuffer(readable);
 
+        let result: MongoDB.UpdateWriteOpResult;
         try {
-            await this.s3
-                .upload({
-                    ACL: this.options.s3Acl ?? 'private',
-                    Body: readStream,
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, filename)
-                })
-                .promise();
+            result = await this.mongodb.updateOne(
+                {
+                    _id: LibraryName.toUberName(library)
+                },
+                {
+                    $push: {
+                        files: {
+                            data: new Binary(buffer),
+                            filename,
+                            lastModified: new Date(Date.now()).getTime(),
+                            size: buffer.byteLength
+                        }
+                    }
+                }
+            );
         } catch (error) {
             log.error(
-                `Error while uploading file "${filename}" to S3 storage: ${error.message}`
+                `Error while adding file "${filename}" to MongoDB: ${error.message}`
             );
             throw new H5pError(
-                `mongo-s3-library-storage:s3-upload-error`,
+                'mongo-library-storage:add-file-error',
                 { ubername: LibraryName.toUberName(library), filename },
                 500
             );
         }
+
+        if (result.matchedCount !== 1) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                {
+                    ubername: LibraryName.toUberName(library)
+                },
+                404
+            );
+        }
+
         return true;
     }
 
@@ -131,16 +106,18 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             result = await this.mongodb.insertOne({
                 _id: ubername,
                 metadata: libraryData,
-                additionalMetadata: { restricted }
+                additionalMetadata: { restricted },
+                files: []
             });
         } catch (error) {
-            throw new H5pError(
-                'mongo-s3-library-storage:error-adding-metadata',
-                { details: error.message }
-            );
+            log.error(`Error adding library to MongoDB: ${error.message}`);
+            throw new H5pError('mongo-library-storage:error-adding-metadata', {
+                details: error.message
+            });
         }
         if (!result.result.ok) {
-            throw new Error('mongo-s3-library-storage:error-adding-metadata');
+            log.error(`Error adding library to MongoDB: Insert failed.`);
+            throw new Error('mongo-library-storage:error-adding-metadata');
         }
         return InstalledLibrary.fromMetadata({ ...libraryData, restricted });
     }
@@ -150,50 +127,37 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @param library the library whose files should be deleted
      */
     public async clearFiles(library: ILibraryName): Promise<void> {
-        if (!(await this.isInstalled(library))) {
-            throw new H5pError(
-                'mongo-s3-library-storage:clear-library-not-found',
-                {
-                    ubername: LibraryName.toUberName(library)
-                }
-            );
-        }
-        const filesToDelete = await this.listFiles(library);
-        // S3 batch deletes only work with 1000 files at a time, so we
-        // might have to do this in several requests.
+        let result: MongoDB.UpdateWriteOpResult;
         try {
-            while (filesToDelete.length > 0) {
-                const next1000Files = filesToDelete.splice(0, 1000);
-                if (next1000Files.length > 0) {
-                    log.debug(
-                        `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
-                    );
-                    const deleteFilesRes = await this.s3
-                        .deleteObjects({
-                            Bucket: this.options.s3Bucket,
-                            Delete: {
-                                Objects: next1000Files.map((f) => {
-                                    return {
-                                        Key: this.getS3Key(library, f)
-                                    };
-                                })
-                            }
-                        })
-                        .promise();
-                    if (deleteFilesRes.Errors.length > 0) {
-                        log.error(
-                            `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
-                                (e) => `${e.Key}: ${e.Code} - ${e.Message}`
-                            ).join('\n')}`
-                        );
+            result = await this.mongodb.updateOne(
+                {
+                    _id: LibraryName.toUberName(library)
+                },
+                {
+                    $set: {
+                        files: []
                     }
                 }
-            }
+            );
         } catch (error) {
             log.error(
                 `There was an error while clearing the files: ${error.message}`
             );
-            throw new H5pError('mongo-s3-library-storage:deleting-files-error');
+            throw new H5pError('mongo-library-storage:deleting-files-error');
+        }
+        if (result.matchedCount !== 1) {
+            log.error(
+                `Clearing files of library ${LibraryName.toUberName(
+                    library
+                )} failed, as it isn't installed.`
+            );
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                {
+                    ubername: LibraryName.toUberName(library)
+                },
+                404
+            );
         }
     }
 
@@ -203,6 +167,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      */
     public async createIndexes(): Promise<void> {
         this.mongodb.createIndexes([
+            {
+                key: {
+                    _id: 1,
+                    'files.filename': 1
+                }
+            },
             {
                 key: {
                     'metadata.machineName': 1
@@ -222,25 +192,20 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @param library The library to remove.
      */
     public async deleteLibrary(library: ILibraryName): Promise<void> {
-        if (!(await this.isInstalled(library))) {
-            throw new H5pError('mongo-s3-library-storage:library-not-found');
-        }
-        await this.clearFiles(library);
-
         let result: MongoDB.DeleteWriteOpResultObject;
         try {
             result = await this.mongodb.deleteOne({
                 _id: LibraryName.toUberName(library)
             });
         } catch (error) {
-            throw new H5pError('mongo-s3-library-storage:error-deleting', {
+            throw new H5pError('mongo-library-storage:error-deleting', {
                 ubername: LibraryName.toUberName(library),
                 message: error.message
             });
         }
         if (result.deletedCount === 0) {
             throw new H5pError(
-                'mongo-s3-library-storage:library-not-found',
+                'mongo-library-storage:library-not-found',
                 { ubername: LibraryName.toUberName(library) },
                 404
             );
@@ -257,27 +222,28 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<boolean> {
-        validateFilename(filename, this.options?.invalidCharactersRegexp);
+        this.validateFilename(filename);
 
         try {
-            await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, filename)
-                })
-                .promise();
-        } catch (error) {
-            log.debug(
-                `File ${filename} does not exist in ${LibraryName.toUberName(
-                    library
-                )}.`
+            const found = await this.mongodb.findOne(
+                {
+                    _id: LibraryName.toUberName(library),
+                    'files.filename': filename
+                },
+                { projection: { _id: 1 } }
             );
-            return false;
+            return !!found;
+        } catch (error) {
+            log.error(
+                `Error checking if file ${filename} exists in library ${LibraryName.toUberName(
+                    library
+                )}: ${error.message}`
+            );
+            throw new H5pError('mongo-library-storage:file-exists-error', {
+                ubername: LibraryName.toUberName(library),
+                filename
+            });
         }
-        log.debug(
-            `File ${filename} does exist in ${LibraryName.toUberName(library)}.`
-        );
-        return true;
     }
 
     /**
@@ -333,7 +299,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 .toArray();
         } catch (error) {
             throw new H5pError(
-                'mongo-s3-library-storage:error-getting-dependents'
+                'mongo-library-storage:error-getting-dependents'
             );
         }
 
@@ -394,7 +360,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             });
         } catch (error) {
             throw new H5pError(
-                'mongo-s3-library-storage:error-getting-dependents',
+                'mongo-library-storage:error-getting-dependents',
                 {
                     ubername: LibraryName.toUberName(library),
                     message: error.message
@@ -430,23 +396,44 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         file: string
     ): Promise<IFileStats> {
-        validateFilename(file, this.options?.invalidCharactersRegexp);
-
+        this.validateFilename(file);
+        let fileStats: any;
         try {
-            const head = await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, file)
-                })
-                .promise();
-            return { size: head.ContentLength, birthtime: head.LastModified };
+            fileStats = await this.mongodb.findOne(
+                {
+                    _id: LibraryName.toUberName(library),
+                    'files.filename': file
+                },
+                {
+                    projection: {
+                        _id: 1,
+                        files: {
+                            $elemMatch: { filename: file }
+                        }
+                    }
+                }
+            );
         } catch (error) {
+            log.error(
+                `Error when getting stats from MongoDB: ${error.message}`
+            );
             throw new H5pError(
-                'content-file-missing',
+                'mongo-library-storage:error-getting-stats',
+                { ubername: LibraryName.toUberName(library), filename: file },
+                500
+            );
+        }
+        if (!fileStats) {
+            throw new H5pError(
+                'library-file-missing',
                 { ubername: LibraryName.toUberName(library), filename: file },
                 404
             );
         }
+        return {
+            size: fileStats.files[0].size,
+            birthtime: new Date(fileStats.files[0].lastModified)
+        };
     }
 
     /**
@@ -460,14 +447,44 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         file: string
     ): Promise<Readable> {
-        validateFilename(file, this.options?.invalidCharactersRegexp);
+        this.validateFilename(file);
+        let fileData: any;
+        try {
+            fileData = await this.mongodb.findOne(
+                {
+                    _id: LibraryName.toUberName(library),
+                    'files.filename': file
+                },
+                {
+                    projection: {
+                        _id: 1,
+                        files: { $elemMatch: { filename: file } }
+                    }
+                }
+            );
+        } catch (error) {
+            log.error(
+                `Error when getting file data from MongoDB: ${error.message}`
+            );
+            throw new H5pError(
+                'mongo-library-storage:error-getting-file-data',
+                { ubername: LibraryName.toUberName(library), filename: file },
+                500
+            );
+        }
 
-        return this.s3
-            .getObject({
-                Bucket: this.options.s3Bucket,
-                Key: this.getS3Key(library, file)
-            })
-            .createReadStream();
+        if (!fileData) {
+            throw new H5pError(
+                'library-file-missing',
+                { ubername: LibraryName.toUberName(library), filename: file },
+                404
+            );
+        } else {
+            const readable = new ReadableStreamBuffer();
+            readable.put((fileData.files[0].data as Binary).buffer);
+            readable.stop();
+            return readable;
+        }
     }
 
     /**
@@ -508,7 +525,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 .filter((e) => e);
         } catch (error) {
             throw new H5pError(
-                'mongo-s3-library-storage:error-getting-libraries',
+                'mongo-library-storage:error-getting-libraries',
                 { details: error.message }
             );
         }
@@ -520,31 +537,63 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @returns The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguages(library: ILibraryName): Promise<string[]> {
-        const prefix = this.getS3Key(library, 'language');
         let files: string[] = [];
+        let result: any[];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
-            do {
-                log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
-                files = files.concat(
-                    ret.Contents.map((c) => c.Key.substr(prefix.length))
-                );
-            } while (ret.IsTruncated && ret.NextContinuationToken);
+            result = await this.mongodb
+                .aggregate([
+                    {
+                        $match: {
+                            _id: LibraryName.toUberName(library)
+                        }
+                    },
+                    {
+                        $project: {
+                            files: {
+                                $filter: {
+                                    input: '$files',
+                                    cond: {
+                                        $regexMatch: {
+                                            input: '$$this.filename',
+                                            regex: /^language\//
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            files: {
+                                filename: 1
+                            }
+                        }
+                    }
+                ])
+                .toArray();
         } catch (error) {
-            log.debug(
-                `There was an error while getting list of files from S3. This might not be a problem if no languages were added to the library.`
+            log.error(
+                `There was an error while getting list of files from MongoDB: ${error.message}`
             );
-            return [];
+            throw new H5pError('mongo-library-storage:error-getting-languages');
         }
-        log.debug(`Found ${files.length} file(s) in S3.`);
+
+        if (result.length === 0) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        } else if (result.length > 1) {
+            throw new H5pError(
+                'mongo-library-storage:multiple-libraries',
+                { ubername: LibraryName.toUberName(library) },
+                500
+            );
+        }
+        files = result[0].files.map((f) => f.filename);
+        log.debug(`Found ${files.length} file(s) in MongoDB.`);
         return files
             .filter((file) => path.extname(file) === '.json')
             .map((file) => path.basename(file, '.json'));
@@ -568,13 +617,20 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             );
         } catch (error) {
             throw new H5pError(
-                'mongo-s3-library-storage:error-getting-library-metadata',
+                'mongo-library-storage:error-getting-library-metadata',
                 { ubername: LibraryName.toUberName(library) }
             );
         }
-        if (!result || !result.metadata || !result.additionalMetadata) {
+        if (!result) {
             throw new H5pError(
-                'mongo-s3-library-storage:error-getting-library-metadata',
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        if (!result.metadata || !result.additionalMetadata) {
+            throw new H5pError(
+                'mongo-library-storage:error-getting-library-metadata',
                 { ubername: LibraryName.toUberName(library) }
             );
         }
@@ -620,10 +676,9 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                     .toArray()
             ).map((m) => m.metadata);
         } catch (error) {
-            throw new H5pError(
-                'mongo-s3-library-storage:error-getting-addons',
-                { message: error.message }
-            );
+            throw new H5pError('mongo-library-storage:error-getting-addons', {
+                message: error.message
+            });
         }
     }
 
@@ -633,31 +688,45 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @returns all files that exist for the library
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
-        const prefix = this.getS3Key(library, '');
         let files: string[] = [];
+        let result: any;
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
-            do {
-                log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
-                files = files.concat(
-                    ret.Contents.map((c) => c.Key.substr(prefix.length))
-                );
-            } while (ret.IsTruncated && ret.NextContinuationToken);
-        } catch (error) {
-            log.debug(
-                `There was an error while getting list of files from S3. This might not be a problem if no languages were added to the library.`
+            result = await this.mongodb.findOne(
+                {
+                    _id: LibraryName.toUberName(library)
+                },
+                {
+                    projection: {
+                        _id: 1,
+                        files: {
+                            filename: 1
+                        }
+                    }
+                }
             );
-            return [];
+        } catch (error) {
+            log.error(
+                `Error listing all files of library ${LibraryName.toUberName(
+                    library
+                )}: ${error.message}`
+            );
+            throw new H5pError(
+                'mongo-library-storage:error-listing-files',
+                { ubername: LibraryName.toUberName(library) },
+                500
+            );
         }
-        log.debug(`Found ${files.length} file(s) in S3.`);
+
+        if (!result) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        }
+
+        files = result.files.map((f) => f.filename);
+        log.debug(`Found ${files.length} file(s) in MongoDB.`);
         return files;
     }
 
@@ -691,7 +760,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             );
         } catch (error) {
             throw new H5pError(
-                'mongo-s3-library-storage:update-additional-metadata-error',
+                'mongo-library-storage:update-additional-metadata-error',
                 {
                     ubername: LibraryName.toUberName(library),
                     message: error.message
@@ -701,7 +770,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
 
         if (result.matchedCount !== 1) {
             throw new H5pError(
-                'mongo-s3-library-storage:library-not-found',
+                'mongo-library-storage:library-not-found',
                 { ubername: LibraryName.toUberName(library) },
                 404
             );
@@ -710,9 +779,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Updates the library metadata. This is necessary when updating to a new patch version.
-     * After this clearFiles(...) is called by the LibraryManager to remove all old files.
-     * The next step is to add the patched files with addFile(...).
+     * Updates the library metadata. This is necessary when updating to a new
+     * patch version. After this clearFiles(...) is called by the LibraryManager
+     * to remove all old files. The next step is to add the patched files with
+     * addFile(...).
      * @param libraryMetadata the new library metadata
      * @returns The updated library object
      */
@@ -727,14 +797,14 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 { $set: { metadata: libraryMetadata } }
             );
         } catch (error) {
-            throw new H5pError('mongo-s3-library-storage:update-error', {
+            throw new H5pError('mongo-library-storage:update-error', {
                 ubername,
                 message: error.message
             });
         }
         if (result.matchedCount === 0) {
             throw new H5pError(
-                'mongo-s3-library-storage:library-not-found',
+                'mongo-library-storage:library-not-found',
                 { ubername },
                 404
             );
@@ -761,7 +831,16 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         });
     }
 
-    private getS3Key(library: ILibraryName, filename: string): string {
-        return `${LibraryName.toUberName(library)}/${filename}`;
+    private async readableToBuffer(readable: Readable): Promise<Buffer> {
+        return new Promise((resolve) => {
+            const chunks = [];
+
+            readable.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+            readable.on('end', () => resolve(Buffer.concat(chunks)));
+        });
+    }
+
+    private validateFilename(filename: string): void {
+        return;
     }
 }

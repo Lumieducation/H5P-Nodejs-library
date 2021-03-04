@@ -43,8 +43,7 @@ const storage = new MongoS3ContentStorage(
         s3ForcePathStyle: true,
         signatureVersion: 'v4'
     }),
-    (
-        await initMongo(
+    ( await initMongo(
             'mongodb://127.0.0.1:27017', // optional if env. variable is set
             'testdb1', // optional if env. variable is set
             'root', // optional if env. variable is set
@@ -55,7 +54,7 @@ const storage = new MongoS3ContentStorage(
 );
 ```
 
-### Notes:
+### Notes
 
 * The function [`initS3`](/packages/h5p-mongos3/src/initS3.ts) creates an S3 client using the `aws-sdk` npm package.
 * The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
@@ -158,7 +157,7 @@ like this (you obviously must install
 Compose](https://docs.docker.com/compose/install/) first):
 
 ```bash
-docker-compose -f test/implementation/db/mongo-s3-docker-compose.yml up -d
+docker-compose -f scripts/mongo-s3-docker-compose.yml up -d
 ```
 
 This will start a MongoDB server and MinIO instance in containers. Note that the
@@ -166,7 +165,7 @@ instances will now be started when your system boots. To stop them from doing
 this and completely wipe all files from your system, execute:
 
 ```bash
-docker-compose -f /test/implementation/db/mongo-s3-docker-compose.yml down -v
+docker-compose -f scripts/mongo-s3-docker-compose.yml down -v
 ```
 
 The MinIO instance will not include a bucket by default. You can create one with
