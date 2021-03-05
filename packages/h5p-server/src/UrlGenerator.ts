@@ -22,6 +22,8 @@ import {
  *
  * UrlGenerator requires these values to be set in config:
  * - baseUrl
+ * - contentFilesUrlPlayerOverride (includes placeholder! See documentation of
+ *   config for details!)
  * - contentUserDataUrl
  * - coreUrl
  * - downloadUrl
@@ -76,6 +78,13 @@ export default class UrlGenerator implements IUrlGenerator {
     public baseUrl = (): string => {
         return this.config.baseUrl;
     };
+
+    public contentFilesUrl(contentId: ContentId): string | undefined {
+        return this.config.contentFilesUrlPlayerOverride?.replace(
+            '{{contentId}}',
+            contentId
+        );
+    }
 
     public contentUserData = (user: IUser): string => {
         if (
@@ -152,4 +161,8 @@ export default class UrlGenerator implements IUrlGenerator {
     public temporaryFiles = (): string => {
         return this.baseUrl() + this.config.temporaryFilesUrl;
     };
+
+    public uniqueContentUrl(contentId: ContentId): string {
+        return contentId;
+    }
 }
