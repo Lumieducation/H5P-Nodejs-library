@@ -244,7 +244,10 @@ export interface IIntegration {
              */
             styles?: string[];
             /**
-             * The absolute URL to the current content.
+             * The absolute URL to the current content. Used when generating
+             * xAPI ids. (Becomes the attribute statement.object.id of the xAPI
+             * statement. If it is a content with subcontents, the subContentId
+             * will be appended like this: URL?subContentId=XXX)
              */
             url?: string;
         };
