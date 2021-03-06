@@ -338,17 +338,15 @@ export default class H5PPlayer {
                     fullScreen: supportsFullscreen ? '1' : '0',
                     jsonContent: JSON.stringify(parameters),
                     library: ContentMetadata.toUbername(metadata),
-                    contentUrl: this.config.contentFilesUrlPlayerOverride?.replace(
-                        '{{contentId}}',
-                        contentId
-                    ),
+                    contentUrl: this.urlGenerator.contentFilesUrl(contentId),
                     metadata: {
                         license: metadata.license || 'U',
                         title: metadata.title || '',
                         defaultLanguage: metadata.language || 'en'
                     },
                     scripts: assets.scripts,
-                    styles: assets.styles
+                    styles: assets.styles,
+                    url: this.urlGenerator.uniqueContentUrl(contentId)
                 }
             },
             core: {

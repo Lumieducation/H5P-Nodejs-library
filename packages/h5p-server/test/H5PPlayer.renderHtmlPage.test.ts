@@ -61,7 +61,8 @@ describe('Rendering the HTML page', () => {
                         "defaultLanguage":"en"
                        },                       
                         "scripts":[],
-                        "styles":[]
+                        "styles":[],
+                        "url":"foo"
                     }
                   },
                   "core":{
@@ -345,7 +346,8 @@ describe('Rendering the HTML page', () => {
                             "defaultLanguage":"en"
                           },
                           "scripts":[],
-                          "styles":[]
+                          "styles":[],
+                          "url":"foo"
                         }
                       },
                       "core":{

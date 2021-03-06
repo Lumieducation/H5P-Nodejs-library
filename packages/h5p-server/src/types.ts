@@ -244,7 +244,10 @@ export interface IIntegration {
              */
             styles?: string[];
             /**
-             * The absolute URL to the current content.
+             * The absolute URL to the current content. Used when generating
+             * xAPI ids. (Becomes the attribute statement.object.id of the xAPI
+             * statement. If it is a content with subcontents, the subContentId
+             * will be appended like this: URL?subContentId=XXX)
              */
             url?: string;
         };
@@ -1701,6 +1704,17 @@ export interface IEditorModel {
 export interface IUrlGenerator {
     ajaxEndpoint(user: IUser): string;
     baseUrl(): string;
+    /**
+     * Generates a URL at which the resources of the content can be loaded.
+     * Should be undefined if the default content serving mechanism is used. You
+     * only have to return a URL here if you want to change the hostname of the
+     * route, e.g. if the content files can be requested directly from S3 or a
+     * CDN.
+     * @param contentId
+     * @returns the URL or undefined (Example:
+     * http://127.0.0.1:9000/s3bucket/123`)
+     */
+    contentFilesUrl(contentId: ContentId): string | undefined;
     contentUserData(user: IUser): string;
     coreFile(file: string): string;
     coreFiles(): string;
@@ -1712,6 +1726,17 @@ export interface IUrlGenerator {
     play(): string;
     setFinished(user: IUser): string;
     temporaryFiles(): string;
+    /**
+     * Generates a URL by which the content can be globally identified (or
+     * accessed). The URL is used when generating ids for object in xAPI
+     * statements, so it could also be a fake URL that is only used to uniquely
+     * identify the content. It could also simply be the contentId. (default
+     * behavior) If you store the generated xAPI statement in a neutral LRS and
+     * users will see or be able to click the URL, you should customize the URL
+     * by overriding this method.
+     * @param contentId
+     */
+    uniqueContentUrl(contentId: ContentId): string;
 }
 
 /**
