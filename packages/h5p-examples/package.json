@@ -5,14 +5,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "CACHE=in-memory node build/express.js",
+        "start": "cross-env CACHE=in-memory node build/express.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build:server": "npx tsc -p ./tsconfig.server.json",
         "build:client": "npx tsc -p ./tsconfig.client.json",
         "build": "npm run build:server && npm run build:client",
         "prepare": "npm run build:server && npm run build:client",
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
-        "test:e2e": "cross-env start-server-and-test start http://localhost:8080 test:e2e:tests",
+        "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:server+upload": "start-server-and-test start http://localhost:8080 test:upload",
         "test:upload": "npx ts-node test/e2e/customUpload.ts ${H5P_FILES} ${ERROR_FILE}"
     },

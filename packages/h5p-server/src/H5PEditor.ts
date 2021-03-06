@@ -1,6 +1,5 @@
 import { file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
-import { ReadStream } from 'fs';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import fsExtra from 'fs-extra';

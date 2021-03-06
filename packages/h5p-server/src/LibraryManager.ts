@@ -5,7 +5,6 @@ import path from 'path';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
-import { streamToString } from './helpers/StreamHelpers';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
