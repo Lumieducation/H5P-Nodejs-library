@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Der Inhalt, den du aufrufen möchtest, existiert nicht.",
+    "deleting-content-error": "Es ist ein Fehler beim Löschen des Inhalts aufgetreten.",
+    "deleting-file-error": "Es ist beim Löschen der Datei {{filename}} ein Fehler aufgetreten.",
+    "filename-too-long": "Der Dateiname ist zu lang: {{filename}}",
+    "illegal-filename": "Der Dateiname {{filename}} ist nicht erlaubt.",
+    "listing-content-error": "Es ist ein Fehler beim Auflisten der Inhalte aufgetreten.",
+    "missing-delete-permission": "Du hast nicht die erforderliche Berechtigung, diesen Inhalt zu löschen.",
+    "missing-list-content-permission": "Du hast nicht die Berechtigung Inhalte aufzulisten.",
+    "missing-view-permission": "Du hast nicht die Berechtigung diesen Inhalt anzusehen.",
+    "missing-write-permission": "Du hast nicht die Berechtigung diesen Inhalt zu bearbeiten.",
+    "mongo-add-update-error": "Es ist ein Fehler beim Hinzufügen oder Aktualisieren des Inhalts in der Datenbank aufgetreten.",
+    "mongo-replace-error": "Es ist ein Fehler beim Aktualisieren des Inhalts in der Datenbank aufgetreten.",
+    "s3-upload-error": "Es ist ein Fehler beim Hochladen der Datei {{filename}} nach S3 aufgetreten."
+}

@@ -16,11 +16,11 @@
     "source": "Quelle",
     "license": "Lizenz",
     "thumbnail": "Vorschaubild",
-    "noCopyrights": "Keine Copyright Informationen für diesen Inhalt hinterlegt.",
+    "noCopyrights": "Keine Copyright-Informationen für diesen Inhalt hinterlegt.",
     "reuse": "Weiterverwenden",
     "reuseContent": "Inhalt weiterverwenden",
     "reuseDescription": "Diesen Inhalt an einer anderen Stelle nutzen.",
-    "downloadDescription": "Inhalt als H5P Datei herunterladen.",
+    "downloadDescription": "Inhalt als H5P-Datei herunterladen.",
     "copyrightsDescription": "Copyright-Informationen für diesen Inhalt zeigen.",
     "embedDescription": "Einbetten-Code für diesen Inhalt anzeigen.",
     "h5pDescription": "Besuche H5P.org für mehr tollen Inhalt!",
@@ -62,8 +62,8 @@
     "connectionReestablished": "Verbindung wiederhergestellt.",
     "resubmitScores": "Versuche, gespeicherte Ergebnisse zu übermitteln.",
     "offlineDialogHeader": "Die Verbindung zum Server wurde unterbrochen",
-    "offlineDialogBody": "Es konnten keine Informationen über den Aufgabenfortschritt übermittelt werden. Bitte überprüfe Deine Internetverbindung!",
+    "offlineDialogBody": "Es konnten keine Informationen über den Aufgabenfortschritt übermittelt werden. Bitte überprüfe deine Internetverbindung!",
     "offlineDialogRetryMessage": "Neuer Versuch in :num...",
     "offlineDialogRetryButtonLabel": "Jetzt erneut versuchen",
-    "offlineSuccessfulSubmit": "Ergebnisse erfolgreich übermittelt"
+    "offlineSuccessfulSubmit": "Ergebnisse erfolgreich übermittelt."
 }

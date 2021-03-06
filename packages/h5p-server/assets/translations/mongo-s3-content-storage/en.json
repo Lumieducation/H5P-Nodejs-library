@@ -1,7 +1,7 @@
 {
     "content-not-found": "The content you're trying to access does not exist.",
     "deleting-content-error": "There was an error while deleting the content object.",
-    "deleting-file-error": "There was an error while the file {{filename}} from the content object.",
+    "deleting-file-error": "There was an error while deleting the file {{filename}} from the content object.",
     "filename-too-long": "The filename is too long: {{filename}}",
     "illegal-filename": "The filename {{filename}} is not allowed.",
     "listing-content-error": "There was an error while getting the list of content objects",
