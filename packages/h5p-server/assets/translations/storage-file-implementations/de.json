@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Die datei {{filename}} konnte nicht zum Inhalt mit der ID {{id}} hinzugefügt werden: Der Inhalt existiert nicht.",
+    "add-library-file-not-installed": "Die Datei {{filename}} konnte nicht zur Bibliothek {{libraryName}} hinzugefügt werden, da die Bibliothek nicht installiert ist.",
+    "clear-library-not-found": "Die Bibliothek {{libraryName}} kann nicht geleert werden, da sie nicht installiert ist.",
+    "delete-content-file-not-found": "Die Datei {{filename}} kann nicht gelöscht werden, da sie nicht existiert.",
+    "delete-content-not-found": "Inhalt kann nicht gelöscht werden, da er nicht existiert.",
+    "error-creating-content": "Inhalt konnte nicht erstellt werden.",
+    "error-generating-content-id": "Es konnte keine ID für den neuen Inhalt erstellt werden.",
+    "error-generating-unique-temporary-filename": "Es konnte kein eindeutiger Dateiname für {{name}} erzeugt werden",
+    "error-updating-metadata": "Die zusätzlichen Metadaten der Bibliothek {{library}} konnten nicht aktualisiert werden. Fehler: {{error}}",
+    "get-library-metadata-not-installed": "Konnte die Metadaten der Bibliothek {{libraryName}} nicht laden, da sie nicht installiert ist.",
+    "illegal-absolute-filename": "Absolute Pfade sind in Dateinamen nicht erlaubt: {{filename}} ist unzulässig",
+    "illegal-relative-filename": "Relative Pfade sind in Dateinamen nicht erlaubt: {{filename}} ist unzulässig",
+    "install-library-already-installed": "Die Bibliothek {{libraryName}} ist bereits installiert.",
+    "remove-library-library-missing": "Die Bibliothek {{libraryName}} ist nicht auf diesem System installiert.",
+    "temporary-file-not-found": "Die Datei {{filename}} kann vom Nutzer {{userId}} nicht zugegriffen werden oder existiert nicht.",
+    "update-library-library-missing": "Die Bibliothek {{libraryName}} kann nicht aktualisiert werden, da sie noch nicht installiert wurde."
+}

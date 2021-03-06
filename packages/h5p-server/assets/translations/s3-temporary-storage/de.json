@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Es ist beim Löschen der Datei ein Fehler aufgetreten.",
+    "file-not-found": "Diese Datei existiert nicht.",
+    "missing-delete-permission": "Du hast nicht die erforderliche Berechtigung, diese Datei zu löschen.",
+    "missing-view-permission": "Du hast nicht die Berechtigung, diese Datei anzusehen.",
+    "missing-write-permission": "Du hast nicht die Berechtigung, temporäre Dateien zu speichern.",
+    "s3-upload-error": "Es ist ein Fehler beim Hochladen der temporären Datei nach S3 aufgetreten."
+}
