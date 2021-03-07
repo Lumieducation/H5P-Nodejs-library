@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.1.0...v7.2.0) (2021-03-04)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([f01d554](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f01d554143cbbf2c5ed832ca2f360cd8cf2324be))
+* **deps:** update dependency typescript to v4.2.2 ([87f414c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/87f414ca2a332ac9fb84f697ce8b4dce842e8ca2))
+
+
+
+
+
 # [7.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v6.2.0...v7.1.0) (2021-02-25)
 
 
