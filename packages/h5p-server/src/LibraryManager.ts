@@ -142,7 +142,7 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const languageCodeMatch = /^([a-zA-Z]+)\-([a-zA-Z]+)$/.exec(
+            const languageCodeMatch = /^([a-zA-Z]+)-([a-zA-Z]+)$/.exec(
                 language
             );
             if (languageCodeMatch && languageCodeMatch.length === 3) {
@@ -169,7 +169,7 @@ export default class LibraryManager {
     public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
         try {
             log.debug(`loading library ${LibraryName.toUberName(library)}`);
-            return this.libraryStorage.getLibrary(library);
+            return await this.libraryStorage.getLibrary(library);
         } catch (ignored) {
             log.warn(
                 `library ${LibraryName.toUberName(library)} is not installed`
@@ -273,7 +273,7 @@ export default class LibraryManager {
             // Check if library is already installed.
             let oldVersion: IFullLibraryName;
             if (
-                // tslint:disable-next-line: no-conditional-assignment
+                // eslint-disable-next-line no-cond-assign
                 (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
             ) {
                 // Update the library if it is only a patch of an existing library

@@ -221,11 +221,7 @@ export default class H5PPlayer {
     private aggregateAssetsRecursive(
         dependencies: ILibraryName[],
         libraries: { [ubername: string]: IInstalledLibrary },
-        assets: IAssets = ({
-            scripts: [],
-            styles: [],
-            translations: {}
-        } = { scripts: [], styles: [], translations: {} }),
+        assets: IAssets = { scripts: [], styles: [], translations: {} },
         loaded: { [ubername: string]: boolean } = {}
     ): IAssets {
         log.verbose(

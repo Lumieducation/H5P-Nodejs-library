@@ -55,17 +55,21 @@ describe('Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
         app.use((req: RequestEx, res, next) => {
             req.user = user;

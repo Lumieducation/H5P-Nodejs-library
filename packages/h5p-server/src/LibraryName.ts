@@ -67,10 +67,10 @@ export default class LibraryName implements ILibraryName {
         }
         const nameRegex: RegExp =
             options.useHyphen && options.useWhitespace
-                ? /^([\w\.]+)[-\s](\d+)\.(\d+)$/i
+                ? /^([\w.]+)[-\s](\d+)\.(\d+)$/i
                 : options.useHyphen
-                ? /^([\w\.]+)-(\d+)\.(\d+)$/i
-                : /^([\w\.]+)\s(\d+)\.(\d+)$/i;
+                ? /^([\w.]+)-(\d+)\.(\d+)$/i
+                : /^([\w.]+)\s(\d+)\.(\d+)$/i;
 
         const result = nameRegex.exec(ubername);
 
@@ -118,7 +118,7 @@ export default class LibraryName implements ILibraryName {
     ): string {
         if (options.useHyphen) {
             const ubername = `${libraryName.machineName}-${libraryName.majorVersion}.${libraryName.minorVersion}`;
-            if (!/^([\w\.]+)-(\d+)\.(\d+)$/.test(ubername)) {
+            if (!/^([\w.]+)-(\d+)\.(\d+)$/.test(ubername)) {
                 throw new Error(
                     `Ubername ${ubername} is not a valid ubername with hyphen separator.`
                 );
@@ -127,7 +127,7 @@ export default class LibraryName implements ILibraryName {
         }
         if (options.useWhitespace) {
             const ubername = `${libraryName.machineName} ${libraryName.majorVersion}.${libraryName.minorVersion}`;
-            if (!/^([\w\.]+)\s(\d+)\.(\d+)$/.test(ubername)) {
+            if (!/^([\w.]+)\s(\d+)\.(\d+)$/.test(ubername)) {
                 throw new Error(
                     `Ubername ${ubername} is not a valid ubername with whitespace separator.`
                 );
@@ -168,7 +168,7 @@ export default class LibraryName implements ILibraryName {
      * @param machineName
      */
     public static validateMachineName(machineName: string): void {
-        if (!/^[\w\.]+$/i.test(machineName)) {
+        if (!/^[\w.]+$/i.test(machineName)) {
             throw new Error(`Machine name "${machineName}" is illegal.`);
         }
     }

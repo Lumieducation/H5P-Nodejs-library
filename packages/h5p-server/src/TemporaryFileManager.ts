@@ -78,7 +78,6 @@ export default class TemporaryFileManager {
                 this.storage.deleteFile(f.filename, f.ownedByUserId)
             )
         );
-        return;
     }
 
     /**

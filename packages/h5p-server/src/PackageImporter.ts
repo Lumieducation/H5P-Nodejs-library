@@ -302,6 +302,7 @@ export default class PackageImporter {
                     installedLibraries
                 };
             }
+            // eslint-disable-next-line no-useless-catch
         } catch (error) {
             // if we don't do this, finally weirdly just swallows the errors
             throw error;

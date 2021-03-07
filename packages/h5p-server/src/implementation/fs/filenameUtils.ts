@@ -1,4 +1,4 @@
-import { H5pError } from '../..';
+import H5pError from '../../helpers/H5pError';
 import { generalizedSanitizeFilename } from '../utils';
 
 export function checkFilename(filename: string): void {
@@ -36,7 +36,7 @@ export function sanitizeFilename(
 ): string {
     return generalizedSanitizeFilename(
         filename,
-        invalidCharactersRegex ?? /[^A-Za-z0-9\-._!()\/]/g,
+        invalidCharactersRegex ?? /[^A-Za-z0-9\-._!()/]/g,
         maxFileLength
     );
 }

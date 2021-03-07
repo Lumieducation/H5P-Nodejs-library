@@ -10,7 +10,7 @@ import {
     IAdditionalLibraryMetadata
 } from '../../types';
 import LibraryName from '../../LibraryName';
-import { InstalledLibrary } from '../..';
+import InstalledLibrary from '../../InstalledLibrary';
 
 /**
  * A wrapper around an actual library storage which adds caching and also

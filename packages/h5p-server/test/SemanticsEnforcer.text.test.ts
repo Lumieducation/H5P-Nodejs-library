@@ -2,6 +2,7 @@ import LibraryManager from '../src/LibraryManager';
 import SemanticsEnforcer from '../src/SemanticsEnforcer';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import { IInstalledLibrary, ILibraryName, ISemanticsEntry } from '../src/types';
+
 jest.mock('../src/implementation/fs/FileLibraryStorage');
 
 // The tests here try some of the (many) XSS attacks listed here:

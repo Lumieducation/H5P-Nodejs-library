@@ -13,11 +13,11 @@ import PackageImporter from '../src/PackageImporter';
 
 import User from './User';
 
-export async function importAndExportPackage(
+export function importAndExportPackage(
     packagePath: string,
     exportMaxContentPathLength: number = 255
 ): Promise<void> {
-    await withDir(
+    return withDir(
         async ({ path: tmpDirPath }) => {
             const contentDir = path.join(tmpDirPath, 'content');
             const libraryDir = path.join(tmpDirPath, 'libraries');
@@ -61,7 +61,7 @@ export async function importAndExportPackage(
                         writeStream,
                         user
                     );
-                    await new Promise<void>(async (resolve, reject) => {
+                    await new Promise<void>((resolve, reject) => {
                         const whenStreamClosed = jest.fn();
                         writeStream.on('close', whenStreamClosed);
                         writeStream.on('close', async () => {

@@ -1,16 +1,16 @@
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import path from 'path';
+import fsExtra from 'fs-extra';
 
 import H5PEditor from '../src/H5PEditor';
 import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
-import path from 'path';
-
 import User from './User';
 
 describe('H5PEditor: general', () => {
-    const axiosMock = new axiosMockAdapter(axios);
+    const axiosMock = new AxiosMockAdapter(axios);
 
     it("updates ContentTypeCache if it hasn't been downloaded before", async () => {
         const config = new H5PConfig(new InMemoryStorage());
@@ -26,17 +26,21 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/1-content-type.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/1-content-type.json'
+                    )
+                )
             );
 
         await expect(
@@ -58,17 +62,21 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/1-content-type.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/1-content-type.json'
+                    )
+                )
             );
         axiosMock
             .onGet(`${config.hubContentTypesEndpoint}H5P.Example1`)

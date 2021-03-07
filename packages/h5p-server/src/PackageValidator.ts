@@ -4,6 +4,7 @@ import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
 import * as yauzlPromise from 'yauzl-promise';
+import fsExtra from 'fs-extra';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import H5pError from './helpers/H5pError';
@@ -483,9 +484,15 @@ export default class PackageValidator {
 
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
-        const h5pJsonSchema = require('./schemas/h5p-schema.json');
-        const libraryNameSchema = require('./schemas/library-name-schema.json');
-        const librarySchema = require('./schemas/library-schema.json');
+        const h5pJsonSchema = await fsExtra.readJSON(
+            './schemas/h5p-schema.json'
+        );
+        const libraryNameSchema = await fsExtra.readJSON(
+            './schemas/library-name-schema.json'
+        );
+        const librarySchema = await fsExtra.readJSON(
+            './schemas/library-schema.json'
+        );
         jsonValidator.addSchema([
             h5pJsonSchema,
             libraryNameSchema,

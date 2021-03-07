@@ -1,14 +1,14 @@
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import mockdate from 'mockdate';
+import path from 'path';
+import fsExtra from 'fs-extra';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import H5PConfig from '../src/implementation/H5PConfig';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 
-import path from 'path';
-
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 
 describe('registering the site at H5P Hub', () => {
     it('returns a uuid', async () => {
@@ -20,9 +20,11 @@ describe('registering the site at H5P Hub', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
 
         const uuid = await cache.registerOrGetUuid();
@@ -66,17 +68,21 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         let updated = await cache.updateIfNecessary();
@@ -99,17 +105,21 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         const updated1 = await cache.updateIfNecessary();
@@ -136,17 +146,21 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         expect(await cache.isOutdated()).toEqual(true);

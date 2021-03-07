@@ -1,4 +1,4 @@
-import { IUser } from '../src/';
+import { IUser } from '../src';
 
 /**
  * Example user object

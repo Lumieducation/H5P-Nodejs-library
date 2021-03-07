@@ -74,7 +74,7 @@ export default class LibraryAdministration {
                     restricted: metadata.restricted,
                     // We coerce the inconsistent H5P type boolean | 0 | 1 into
                     // boolean.
-                    // tslint:disable-next-line: triple-equals
+                    // eslint-disable-next-line eqeqeq
                     runnable: metadata.runnable == true,
                     instancesCount: usage.asMainLibrary,
                     instancesAsDependencyCount: usage.asDependency,

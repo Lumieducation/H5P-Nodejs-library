@@ -241,13 +241,6 @@ describe('ContentManager', () => {
                 expect(contentIdsAllUsers).toMatchObject(
                     [contentId1, contentId2, contentId3].sort()
                 );
-                // TODO: add later when FileContentStorage supports user access rights
-                /*const contentIdsUser1 = (
-                    await contentManager.listContent(user1)
-                ).sort();
-                expect(contentIdsUser1).toMatchObject(
-                    [contentId1, contentId2].sort()
-                );*/
             },
             { keep: false, unsafeCleanup: true }
         );

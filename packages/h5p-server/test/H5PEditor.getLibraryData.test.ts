@@ -96,7 +96,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            { ...new H5PConfig(null), baseUrl: '/h5p' },
             null,
             null,
             null
@@ -190,7 +190,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            { ...new H5PConfig(null), baseUrl: '/h5p' },
             null,
             null,
             null
@@ -372,7 +372,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            { ...new H5PConfig(null), baseUrl: '/h5p' },
             null,
             null,
             null
@@ -446,7 +446,7 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            { ...new H5PConfig(null), baseUrl: '/h5p' },
             null,
             null,
             null
