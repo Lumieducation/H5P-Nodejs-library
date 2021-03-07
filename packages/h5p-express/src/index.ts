@@ -1,7 +1,6 @@
 import {
     IRequestWithLanguage,
     IRequestWithUser,
-    IRequestWithTranslator,
     IActionRequest
 } from './expressTypes';
 import h5pAjaxExpressRouter from './H5PAjaxRouter/H5PAjaxExpressRouter';
@@ -11,7 +10,6 @@ import contentTypeCacheExpressRouter from './ContentTypeCacheRouter/ContentTypeC
 export {
     IRequestWithLanguage,
     IRequestWithUser,
-    IRequestWithTranslator,
     IActionRequest,
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,

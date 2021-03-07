@@ -15,7 +15,7 @@ const axiosMock = new axiosMockAdapter(axios);
 
 interface RequestEx extends express.Request {
     language: string;
-    languages: string | string[];
+    languages: string[];
     t: (id: string, replacements: any) => string;
     user: H5P.IUser;
 }
@@ -79,7 +79,7 @@ describe('Content Type Cache endpoint adapter', () => {
         app.use((req: RequestEx, res, next) => {
             req.user = user;
             req.language = 'en';
-            req.languages = 'en';
+            req.languages = ['en'];
             req.t = (id, replacements) => id;
             next();
         });

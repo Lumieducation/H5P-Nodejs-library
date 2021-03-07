@@ -11,7 +11,7 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "sh build.sh",
         "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
-        "clear": "rm -rf test/data/hub-content && rm -rf h5p && rm test/data/content-type-cache/real-content-types.json && rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "prepare": "npm run build",
         "test:coverage": "npx jest --config jest.coverage.config.js --collect-coverage --testTimeout=120000",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",

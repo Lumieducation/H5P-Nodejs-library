@@ -6,9 +6,10 @@
     "main": "src/index.ts",
     "scripts": {
         "build": "npx tsc",
-        "start": "npx ts-node src/index.ts",
+        "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "prepare": "sh download-core.sh 1.24.0 1.24.1",
-        "start:watch": "npx ts-node-dev --deps --respawn src/index.ts"
+        "start:watch": "npx ts-node-dev --deps --respawn src/index.ts",
+        "start": "npx ts-node src/index.ts"
     },
     "author": "S. Rettig",
     "license": "MIT",

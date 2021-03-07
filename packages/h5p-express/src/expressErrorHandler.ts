@@ -4,7 +4,6 @@ import {
 } from '@lumieducation/h5p-server';
 import { H5pError } from '@lumieducation/h5p-server';
 import { Request, Response, NextFunction } from 'express';
-import { IRequestWithTranslator } from './expressTypes';
 
 export function undefinedOrTrue(option: boolean): boolean {
     return option === undefined || option;
@@ -46,7 +45,7 @@ export const catchAndPassOnErrors = (
 export function errorHandler(languageOverride: string | 'auto' = 'auto') {
     return async (
         err: Error | H5pError | AggregateH5pError,
-        req: IRequestWithTranslator,
+        req: Request & { t: any; i18n: any },
         res: Response,
         next: NextFunction
     ): Promise<void> => {

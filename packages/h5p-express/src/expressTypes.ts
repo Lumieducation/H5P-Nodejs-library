@@ -9,16 +9,7 @@ export interface IRequestWithUser extends Request {
     user: IUser;
 }
 
-export interface IRequestWithTranslator extends Request {
-    i18n: {
-        changeLanguage(language: string): Promise<void>;
-    };
-    t: (errorId: string, replacements: any) => string;
-}
-
-export interface IActionRequest
-    extends IRequestWithUser,
-        IRequestWithTranslator {
+export interface IActionRequest extends IRequestWithUser {
     files: {
         file: {
             data?: Buffer;

@@ -163,7 +163,7 @@ export default class H5PAjaxExpressController {
      * client works and we can't change it.
      */
     public postAjax = async (
-        req: IActionRequest,
+        req: IActionRequest & { t: any },
         res: express.Response
     ): Promise<void> => {
         const result = await this.ajaxEndpoint.postAjax(
