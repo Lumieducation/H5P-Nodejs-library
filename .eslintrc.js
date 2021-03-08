@@ -30,7 +30,7 @@ module.exports = {
         'no-await-in-loop': 1,
         '@typescript-eslint/no-loop-func': 0,
         'no-return-assign': 1,
-        'import/prefer-default-export': 1,
+        'import/prefer-default-export': 0, // TODO: change to 1 later
         '@typescript-eslint/no-unused-vars': 1,
         'class-methods-use-this': 1,
         'no-param-reassign': 1,

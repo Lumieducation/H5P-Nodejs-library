@@ -1,17 +1,18 @@
 import { dir } from 'tmp-promise';
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
+import * as H5P from '@lumieducation/h5p-server';
+import fsExtra from 'fs-extra';
 
 import User from './User';
-import * as H5P from '@lumieducation/h5p-server';
 import ContentTypeCacheExpressRouter from '../src/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 
 interface RequestEx extends express.Request {
     language: string;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
@@ -7,12 +7,12 @@ import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
 import fsExtra from 'fs-extra';
+import * as H5P from '@lumieducation/h5p-server';
 
 import User from './User';
-import * as H5P from '@lumieducation/h5p-server';
 import H5PAjaxExpressRouter from '../src/H5PAjaxRouter/H5PAjaxExpressRouter';
 
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 interface RequestEx extends express.Request {
     language: string;
     languages: any;
@@ -438,16 +438,12 @@ describe('Express Ajax endpoint adapter', () => {
     it('installs content types from the H5P Hub', async () => {
         axiosMock
             .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
-            .reply(() => {
-                return [
-                    200,
-                    fsExtra.createReadStream(
-                        path.resolve(
-                            'test/data/example-packages/H5P.DragText.h5p'
-                        )
-                    )
-                ];
-            });
+            .reply(() => [
+                200,
+                fsExtra.createReadStream(
+                    path.resolve('test/data/example-packages/H5P.DragText.h5p')
+                )
+            ]);
         const result = await supertest(app).post(
             `/ajax?action=library-install&id=H5P.DragText`
         );

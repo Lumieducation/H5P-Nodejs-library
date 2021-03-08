@@ -1,8 +1,8 @@
 import {
     AggregateH5pError,
-    AjaxErrorResponse
+    AjaxErrorResponse,
+    H5pError
 } from '@lumieducation/h5p-server';
-import { H5pError } from '@lumieducation/h5p-server';
 import { Request, Response, NextFunction } from 'express';
 
 export function undefinedOrTrue(option: boolean): boolean {
@@ -71,15 +71,13 @@ export function errorHandler(languageOverride: string | 'auto' = 'auto') {
             clientErrorId = err.clientErrorId || '';
 
             if (err instanceof AggregateH5pError) {
-                detailsList = err.getErrors().map((e) => {
-                    return {
-                        code: e.errorId,
-                        message:
-                            req.t === undefined
-                                ? e.errorId
-                                : req.t(e.errorId, e.replacements)
-                    };
-                });
+                detailsList = err.getErrors().map((e) => ({
+                    code: e.errorId,
+                    message:
+                        req.t === undefined
+                            ? e.errorId
+                            : req.t(e.errorId, e.replacements)
+                }));
             }
         } else {
             statusText = err.message;

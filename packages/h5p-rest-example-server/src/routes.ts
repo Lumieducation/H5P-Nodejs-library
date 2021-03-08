@@ -142,13 +142,11 @@ export default function (
         );
 
         res.status(200).send(
-            contentObjects.map((o) => {
-                return {
-                    contentId: o.id,
-                    title: o.content.title,
-                    mainLibrary: o.content.mainLibrary
-                };
-            })
+            contentObjects.map((o) => ({
+                contentId: o.id,
+                title: o.content.title,
+                mainLibrary: o.content.mainLibrary
+            }))
         );
     });
 

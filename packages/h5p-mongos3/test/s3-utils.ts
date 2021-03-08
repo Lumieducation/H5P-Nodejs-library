@@ -28,9 +28,7 @@ export async function emptyAndDeleteBucket(
                 .deleteObjects({
                     Bucket: bucketname,
                     Delete: {
-                        Objects: ret.Contents.map((c) => {
-                            return { Key: c.Key };
-                        })
+                        Objects: ret.Contents.map((c) => ({ Key: c.Key }))
                     }
                 })
                 .promise();

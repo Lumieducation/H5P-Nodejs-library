@@ -85,9 +85,7 @@ const start = async () => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
-        (key, language) => {
-            return translationFunction(key, { lng: language });
-        }
+        (key, language) => translationFunction(key, { lng: language })
     );
 
     h5pEditor.setRenderer((model) => model);

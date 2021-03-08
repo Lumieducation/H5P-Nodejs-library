@@ -8,10 +8,10 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
+import { IContentMetadata, Permission } from '@lumieducation/h5p-server';
 
 import MongoS3ContentStorage from '../src/MongoS3ContentStorage';
 import User from './User';
-import { IContentMetadata, Permission } from '@lumieducation/h5p-server';
 import initS3 from '../src/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
 
@@ -409,9 +409,7 @@ describe('MongoS3ContentStorage', () => {
     it('rejects write operations for unprivileged users', async () => {
         storage = new MongoS3ContentStorage(s3, mongoCollection, {
             s3Bucket: bucketName,
-            getPermissions: async () => {
-                return [Permission.View];
-            }
+            getPermissions: async () => [Permission.View]
         });
         await expect(
             storage.addContent(stubMetadata, stubParameters, new User())

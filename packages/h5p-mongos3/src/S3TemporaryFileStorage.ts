@@ -404,9 +404,8 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
             `Setting up object expiration for bucket ${this.options.s3Bucket}.`
         );
 
-        const roundToNearestDay = (milliseconds: number): number => {
-            return Math.max(1, Math.round(milliseconds / (1000 * 60 * 24)));
-        };
+        const roundToNearestDay = (milliseconds: number): number =>
+            Math.max(1, Math.round(milliseconds / (1000 * 60 * 24)));
 
         let expirationNeedsToBeSet = false;
         try {

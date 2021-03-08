@@ -200,6 +200,7 @@ export default class H5PAjaxExpressController {
 
             return range[0];
         }
+        return undefined;
     };
 
     /**

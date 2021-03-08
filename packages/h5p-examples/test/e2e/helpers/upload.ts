@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import puppeteer from 'puppeteer';
 
 // On 4th Oct 2020, the Puppeteer types didn't include waitForTimeout, so we
@@ -9,6 +10,7 @@ declare module 'puppeteer' {
     }
 }
 
+// eslint-disable-next-line vars-on-top, no-var
 declare var window;
 
 let serverHost;

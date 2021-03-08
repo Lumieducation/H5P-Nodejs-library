@@ -39,7 +39,7 @@ async function main(): Promise<void> {
             );
             const timeoutPromise = new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    reject('timeout');
+                    reject(new Error('timeout'));
                 }, 30000);
             });
             try {

@@ -1,4 +1,4 @@
-import { IIntegration } from '@lumieducation/h5p-server';
+import type { IIntegration } from '@lumieducation/h5p-server';
 
 /**
  * Merges the new IIntegration object with the global one.
