@@ -387,16 +387,14 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
                 axiosMock
                     .onGet(`${config.hubContentTypesEndpoint}H5P.DragText`)
-                    .reply(() => {
-                        return [
-                            200,
-                            fsExtra.createReadStream(
-                                path.resolve(
-                                    'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
-                                )
+                    .reply(() => [
+                        200,
+                        fsExtra.createReadStream(
+                            path.resolve(
+                                'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
                             )
-                        ];
-                    });
+                        )
+                    ]);
 
                 await cache.updateIfNecessary();
                 const repository = new ContentTypeInformationRepository(

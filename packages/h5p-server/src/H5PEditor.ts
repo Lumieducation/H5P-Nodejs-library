@@ -155,8 +155,12 @@ export default class H5PEditor {
         }
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
-        const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
-        const libraryNameSchema = require('./schemas/library-name-schema.json');
+        const saveMetadataJsonSchema = fsExtra.readJSONSync(
+            path.join(__dirname, 'schemas/save-metadata.json')
+        );
+        const libraryNameSchema = fsExtra.readJSONSync(
+            path.join(__dirname, 'schemas/library-name-schema.json')
+        );
         jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
         this.contentMetadataValidator = jsonValidator.compile(
             saveMetadataJsonSchema

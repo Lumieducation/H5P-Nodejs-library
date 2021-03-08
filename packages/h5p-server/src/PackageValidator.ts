@@ -467,9 +467,8 @@ export default class PackageValidator {
          */
         return async (
             zipEntries: yauzlPromise.Entry[]
-        ): Promise<yauzlPromise.Entry[]> => {
-            return zipEntries.filter((e) => !filter(e));
-        };
+        ): Promise<yauzlPromise.Entry[]> =>
+            zipEntries.filter((e) => !filter(e));
     }
 
     /**

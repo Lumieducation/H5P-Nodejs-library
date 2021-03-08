@@ -13,23 +13,16 @@ Happy linting! 💖
 */
 module.exports = {
     env: {
-        browser: true
+        browser: true,
+        node: true
     },
-    extends: ['airbnb-typescript', 'plugin:prettier/recommended'],
+    extends: ['airbnb-typescript', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: 'tsconfig.json',
         sourceType: 'module'
     },
-    plugins: [
-        'eslint-plugin-import',
-        'eslint-plugin-jsdoc',
-        'eslint-plugin-prefer-arrow',
-        'prettier',
-        'eslint-plugin-react',
-        '@typescript-eslint',
-        '@typescript-eslint/tslint'
-    ],
+    plugins: ['prettier', '@typescript-eslint', '@typescript-eslint/tslint'],
     rules: {
         'no-script-url': 0,
         'no-restricted-syntax': 0,
@@ -41,6 +34,9 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 1,
         'class-methods-use-this': 1,
         'no-param-reassign': 1,
-        'no-nested-ternary': 1
+        'no-nested-ternary': 1,
+        'no-continue': 0,
+        'no-case-declarations': 0,
+        'prettier/prettier': 'error'
     }
 };

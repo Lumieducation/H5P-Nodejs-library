@@ -21,11 +21,10 @@ describe('aggregating data from library folders for the editor', () => {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
-            getLibrary: () => {
-                return Promise.resolve({
+            getLibrary: () =>
+                Promise.resolve({
                     editorDependencies: []
-                });
-            },
+                }),
             getSemantics: () => Promise.resolve([])
         });
 
@@ -65,19 +64,17 @@ describe('aggregating data from library folders for the editor', () => {
             libraryExists: () => Promise.resolve(true),
             listLanguages: () => Promise.resolve([]),
             getLanguage: () => Promise.resolve(null),
-            getLibrary: () => {
-                return Promise.resolve({
+            getLibrary: () =>
+                Promise.resolve({
                     editorDependencies: []
-                });
-            },
-            getSemantics: (library) => {
-                return Promise.resolve({
+                }),
+            getSemantics: (library) =>
+                Promise.resolve({
                     arbitrary: 'content',
                     machineName: library.machineName,
                     majorVersion: library.majorVersion,
                     minorVersion: library.minorVersion
-                });
-            }
+                })
         });
 
         h5pEditor.libraryManager = libraryManager;
@@ -96,7 +93,8 @@ describe('aggregating data from library folders for the editor', () => {
         const h5pEditor = new H5PEditor(
             null,
             // tslint:disable-next-line: prefer-object-spread
-            { ...new H5PConfig(null), baseUrl: '/h5p' },
+            // eslint-disable-next-line prefer-object-spread
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -189,8 +187,8 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes dependencies of dependencies in the javascript field', () => {
         const h5pEditor = new H5PEditor(
             null,
-            // tslint:disable-next-line: prefer-object-spread
-            { ...new H5PConfig(null), baseUrl: '/h5p' },
+            // eslint-disable-next-line prefer-object-spread
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -287,9 +285,9 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('loads the language', () => {
-        const getLanguage = jest.fn(() => {
-            return Promise.resolve("{arbitrary: 'languageObject'}");
-        }) as jest.Mocked<any>;
+        const getLanguage = jest.fn(() =>
+            Promise.resolve("{arbitrary: 'languageObject'}")
+        ) as jest.Mocked<any>;
 
         const h5pEditor = new H5PEditor(
             null,
@@ -365,14 +363,14 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('lists all available languages', () => {
-        const listLanguages = jest.fn(() => {
-            return Promise.resolve(['array', 'with', 'languages']);
-        }) as jest.Mock<any>;
+        const listLanguages = jest.fn(() =>
+            Promise.resolve(['array', 'with', 'languages'])
+        ) as jest.Mock<any>;
 
         const h5pEditor = new H5PEditor(
             null,
-            // tslint:disable-next-line: prefer-object-spread
-            { ...new H5PConfig(null), baseUrl: '/h5p' },
+            // eslint-disable-next-line prefer-object-spread
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null
@@ -445,8 +443,8 @@ describe('aggregating data from library folders for the editor', () => {
     it('lists dependencies in correct order', () => {
         const h5pEditor = new H5PEditor(
             null,
-            // tslint:disable-next-line: prefer-object-spread
-            { ...new H5PConfig(null), baseUrl: '/h5p' },
+            // eslint-disable-next-line prefer-object-spread
+            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
             null

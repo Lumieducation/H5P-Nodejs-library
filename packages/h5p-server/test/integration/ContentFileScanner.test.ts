@@ -105,9 +105,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
                 user
             );
 
-            const normalizedFoundFiles = foundFiles.map((f) => {
-                return { ...f };
-            });
+            const normalizedFoundFiles = foundFiles.map((f) => ({ ...f }));
             normalizedFoundFiles.forEach(
                 (f) => (f.filePath = path.normalize(f.filePath))
             );

@@ -291,7 +291,7 @@ export default class H5PPlayer {
                 return true;
             }
         } else if (type === 'object') {
-            // tslint:disable-next-line: forin
+            // eslint-disable-next-line guard-for-in
             for (const property in parameters) {
                 const found = this.checkIfRegexIsInParameters(
                     parameters[property],

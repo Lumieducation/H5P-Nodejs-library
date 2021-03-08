@@ -543,15 +543,10 @@ export default class LibraryManager {
         );
         const missingFiles = (
             await Promise.all(
-                requiredFiles.map(async (file: string) => {
-                    return {
-                        path: file,
-                        status: await this.libraryStorage.fileExists(
-                            library,
-                            file
-                        )
-                    };
-                })
+                requiredFiles.map(async (file: string) => ({
+                    path: file,
+                    status: await this.libraryStorage.fileExists(library, file)
+                }))
             )
         )
             .filter((file: { status: boolean }) => !file.status)

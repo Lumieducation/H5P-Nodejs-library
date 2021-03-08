@@ -136,8 +136,9 @@ export class ContentFileScanner extends ContentScanner {
                             }
                         }
                         return true; // returning true aborts further recursion
+                    default:
+                        return false;
                 }
-                return false;
             }
         );
         return results;

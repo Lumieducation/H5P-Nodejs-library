@@ -3,8 +3,8 @@ import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 
 describe('getting overview about multiple libraries', () => {
-    it('returns basic information about single library', () => {
-        return new H5PEditor(
+    it('returns basic information about single library', () =>
+        new H5PEditor(
             null,
             new H5PConfig(null),
             new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`),
@@ -26,11 +26,10 @@ describe('getting overview about multiple libraries', () => {
                         uberName: 'H5P.Example1 1.1'
                     }
                 ])
-            );
-    });
+            ));
 
-    it('return information about multiple libraries', () => {
-        return new H5PEditor(
+    it('return information about multiple libraries', () =>
+        new H5PEditor(
             null,
             new H5PConfig(null),
             new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`),
@@ -44,6 +43,5 @@ describe('getting overview about multiple libraries', () => {
                     'H5P.Example1 1.1',
                     'H5P.Example3 2.1'
                 ]);
-            });
-    });
+            }));
 });

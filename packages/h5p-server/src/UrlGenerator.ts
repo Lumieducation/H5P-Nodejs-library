@@ -75,9 +75,7 @@ export default class UrlGenerator implements IUrlGenerator {
         return `${this.config.baseUrl}${this.config.ajaxUrl}?action=`;
     };
 
-    public baseUrl = (): string => {
-        return this.config.baseUrl;
-    };
+    public baseUrl = (): string => this.config.baseUrl;
 
     public contentFilesUrl(contentId: ContentId): string | undefined {
         return this.config.contentFilesUrlPlayerOverride?.replace(
@@ -101,33 +99,27 @@ export default class UrlGenerator implements IUrlGenerator {
      * Also adds a cache buster based on IH5PConfig.h5pVersion.
      * @param file
      */
-    public coreFile = (file: string) => {
-        return `${this.baseUrl()}${this.config.coreUrl}/${file}?version=${
+    public coreFile = (file: string) =>
+        `${this.baseUrl()}${this.config.coreUrl}/${file}?version=${
             this.config.h5pVersion
         }`;
-    };
 
-    public coreFiles = () => {
-        return `${this.baseUrl()}${this.config.coreUrl}/js`;
-    };
+    public coreFiles = () => `${this.baseUrl()}${this.config.coreUrl}/js`;
 
-    public downloadPackage = (contentId: ContentId) => {
-        return `${this.baseUrl()}${this.config.downloadUrl}/${contentId}`;
-    };
+    public downloadPackage = (contentId: ContentId) =>
+        `${this.baseUrl()}${this.config.downloadUrl}/${contentId}`;
 
     /**
      * Also adds a cache buster based on IH5PConfig.h5pVersion.
      * @param file
      */
-    public editorLibraryFile = (file: string): string => {
-        return `${this.baseUrl()}${
-            this.config.editorLibraryUrl
-        }/${file}?version=${this.config.h5pVersion}`;
-    };
+    public editorLibraryFile = (file: string): string =>
+        `${this.baseUrl()}${this.config.editorLibraryUrl}/${file}?version=${
+            this.config.h5pVersion
+        }`;
 
-    public editorLibraryFiles = (): string => {
-        return `${this.baseUrl()}${this.config.editorLibraryUrl}/`;
-    };
+    public editorLibraryFiles = (): string =>
+        `${this.baseUrl()}${this.config.editorLibraryUrl}/`;
 
     public libraryFile = (library: IFullLibraryName, file: string) => {
         if (file.startsWith('http://') || file.startsWith('https://')) {
@@ -140,13 +132,9 @@ export default class UrlGenerator implements IUrlGenerator {
         }.${library.minorVersion}.${library.patchVersion}`;
     };
 
-    public parameters = () => {
-        return `${this.baseUrl()}${this.config.paramsUrl}`;
-    };
+    public parameters = () => `${this.baseUrl()}${this.config.paramsUrl}`;
 
-    public play = () => {
-        return `${this.baseUrl()}${this.config.playUrl}`;
-    };
+    public play = () => `${this.baseUrl()}${this.config.playUrl}`;
     public setFinished = (user: IUser): string => {
         if (
             this.csrfProtection?.queryParamGenerator &&
@@ -158,9 +146,8 @@ export default class UrlGenerator implements IUrlGenerator {
         return `${this.config.baseUrl}${this.config.setFinishedUrl}`;
     };
 
-    public temporaryFiles = (): string => {
-        return this.baseUrl() + this.config.temporaryFilesUrl;
-    };
+    public temporaryFiles = (): string =>
+        this.baseUrl() + this.config.temporaryFilesUrl;
 
     public uniqueContentUrl(contentId: ContentId): string {
         return contentId;

@@ -359,9 +359,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         );
         return libraryDirectories
             .filter((name) => nameRegex.test(name))
-            .map((name) => {
-                return LibraryName.fromUberName(name);
-            })
+            .map((name) => LibraryName.fromUberName(name))
             .filter((lib) => !machineName || lib.machineName === machineName);
     }
 

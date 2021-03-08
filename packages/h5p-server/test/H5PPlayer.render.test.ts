@@ -38,9 +38,10 @@ describe('H5P.render()', () => {
                 protectAjax: true,
                 protectContentUserData: true,
                 protectSetFinished: true,
-                queryParamGenerator: (user) => {
-                    return { name: '_csrf', value: 'token' };
-                }
+                queryParamGenerator: (user) => ({
+                    name: '_csrf',
+                    value: 'token'
+                })
             })
         )
             .setRenderer((model) => model)

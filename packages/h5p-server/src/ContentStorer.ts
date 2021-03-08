@@ -211,7 +211,7 @@ export default class ContentStorer {
             // Check for relative paths
             log.debug(`Checking if file ${ref.filePath} is a relative path.`);
             const matches = ref.filePath.match(
-                /^\.\.\/(content\/)?([\w\-._]+)\/([\w\-.\/_]+)$/
+                /^\.\.\/(content\/)?([\w\-._]+)\/([\w\-./_]+)$/
             );
             if (!matches || matches.length === 0) {
                 continue;
@@ -457,18 +457,16 @@ export default class ContentStorer {
     private getUniqueFilename = (
         contentId: ContentId,
         filename: string
-    ): Promise<string> => {
-        return generateFilename(
+    ): Promise<string> =>
+        generateFilename(
             filename,
             this.contentManager.sanitizeFilename,
-            async (filenameToCheck) => {
-                return this.contentManager.contentFileExists(
+            async (filenameToCheck) =>
+                this.contentManager.contentFileExists(
                     contentId,
                     filenameToCheck
-                );
-            }
+                )
         );
-    };
 
     /**
      * Checks if a path to a file is broken, if it is actually a URL without a
@@ -480,7 +478,7 @@ export default class ContentStorer {
         return (
             // Check if a path is a URL without a protocol prefix, like
             // youtu.be/XXX
-            /^[^.\/]+?\.[^.\/]+\/.+$/.test(brokenPath) ||
+            /^[^./]+?\.[^./]+\/.+$/.test(brokenPath) ||
             // The H5P editor produces this non-standard mime-type, so we can
             // use it to detect URLs.
             (mimetype && mimetype.toLowerCase() === 'video/youtube')
