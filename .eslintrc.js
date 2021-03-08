@@ -22,7 +22,7 @@ module.exports = {
         project: 'tsconfig.json',
         sourceType: 'module'
     },
-    plugins: ['prettier', '@typescript-eslint', '@typescript-eslint/tslint'],
+    plugins: ['prettier', '@typescript-eslint'],
     rules: {
         'no-script-url': 0,
         'no-restricted-syntax': 0,
