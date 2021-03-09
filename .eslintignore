@@ -1,3 +1,4 @@
 build/
 scripts/
+packages/h5p-rest-example-client
 *.d.ts

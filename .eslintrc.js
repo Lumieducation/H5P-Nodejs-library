@@ -16,7 +16,12 @@ module.exports = {
         browser: true,
         node: true
     },
-    extends: ['airbnb-typescript', 'prettier'],
+    extends: [
+        //'eslint:recommended',
+        //'plugin:@typescript-eslint/recommended',
+        'airbnb-typescript',
+        'prettier'
+    ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         project: 'tsconfig.json',
@@ -42,6 +47,23 @@ module.exports = {
             'error',
             'always',
             { ignoreClassFields: true }
+        ],
+        '@typescript-eslint/member-ordering': [
+            'error',
+            {
+                default: [
+                    'public-constructor',
+                    'private-constructor',
+                    'public-static-field',
+                    'private-static-field',
+                    'public-instance-field',
+                    'private-instance-field',
+                    'public-static-method',
+                    'private-static-method',
+                    'public-instance-method',
+                    'private-instance-method'
+                ]
+            }
         ]
     }
 };
