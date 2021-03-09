@@ -7,73 +7,13 @@ jobs:
         docker:
             - image: circleci/node:14
         steps:
-            - checkout
-            - restore_cache:
-                  key: root-modules-cache-{{ checksum "package-lock.json" }}
-            - restore_cache:
-                  key: h5p-examples-modules-cache-{{ checksum "packages/h5p-examples/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-express-modules-cache-{{ checksum "packages/h5p-express/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-html-exporter-modules-cache-{{ checksum "packages/h5p-html-exporter/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-mongos3-modules-cache-{{ checksum "packages/h5p-mongos3/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-server-modules-cache-{{ checksum "packages/h5p-server/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-react-modules-cache-{{ checksum "packages/h5p-react/package-lock.json" }}            
-            - restore_cache:
-                  key: h5p-rest-example-client-modules-cache-{{ checksum "packages/h5p-rest-example-client/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-rest-example-server-cache-modules-{{ checksum "packages/h5p-rest-example-server/package-lock.json" }}
-            - restore_cache:
-                  key: h5p-webcomponents-modules-cache-{{ checksum "packages/h5p-webcomponents/package-lock.json" }}
+            - checkout         
             - restore_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
             - run: npm install
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
-            - run: npm run download:content
-            - save_cache:
-                  key: root-modules-cache-{{ checksum "package-lock.json" }}
-                  paths:
-                      - ./node_modules
-            - save_cache:
-                  key: h5p-examples-modules-cache-{{ checksum "packages/h5p-examples/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-examples/node_modules
-            - save_cache:
-                  key: h5p-express-modules-cache-{{ checksum "packages/h5p-express/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-express/node_modules
-            - save_cache:
-                  key: h5p-html-exporter-modules-cache-{{ checksum "packages/h5p-html-exporter/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-html-exporter/node_modules
-            - save_cache:
-                  key: h5p-mongos3-modules-cache-{{ checksum "packages/h5p-mongos3/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-mongos3/node_modules
-            - save_cache:
-                  key: h5p-react-modules-cache-{{ checksum "packages/h5p-react/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-react/node_modules
-            - save_cache:
-                  key: h5p-rest-example-client-modules-cache-{{ checksum "packages/h5p-rest-example-client/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-rest-example-client/node_modules
-            - save_cache:
-                  key: h5p-rest-example-server-cache-modules-{{ checksum "packages/h5p-rest-example-server/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-rest-example-server/node_modules
-            - save_cache:
-                  key: h5p-server-modules-cache-{{ checksum "packages/h5p-server/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-server/node_modules
-            - save_cache:
-                  key: h5p-webcomponents-modules-cache-{{ checksum "packages/h5p-webcomponents/package-lock.json" }}
-                  paths:
-                      - ./packages/h5p-webcomponents/node_modules
+            - run: npm run download:content           
             - save_cache:
                   key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
                   paths:
@@ -101,6 +41,10 @@ jobs:
                       - packages/h5p-server/node_modules
                       - packages/h5p-webcomponents/build
                       - packages/h5p-webcomponents/node_modules
+                      - packages/h5p-rest-example-client/node_modules
+                      - packages/h5p-rest-example-client/build
+                      - packages/h5p-rest-example-server/node_modules
+                      - packages/h5p-rest-example-server/build
                       - test/data/content-type-cache/real-content-types.json
                       - test/data/hub-content
 
