@@ -9,15 +9,21 @@ jobs:
         steps:
             - checkout         
             - restore_cache:
-                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
-            - run: npm install
+                  key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
+            - restore_cache:
+                  key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
+            - run: npm ci
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: npm run download:content           
             - save_cache:
-                  key: h5p-core-cache-{{ checksum "scripts/install.sh" }}
+                  key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
                   paths:
                       - ./packages/h5p-examples/h5p
+            - save_cache:
+                  key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
+                  paths:
+                      - ./packages/h5p-rest-example-server/h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
