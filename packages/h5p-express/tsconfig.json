@@ -8,11 +8,10 @@
         "removeComments": false,
         "noImplicitAny": false,
         "sourceMap": true,
-        "baseUrl": "./",
         "resolveJsonModule": true,
         "declaration": true,
         "outDir": "./build"
     },
-    "exclude": ["node_modules"],
-    "include": ["src/**/*"]
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
 }
