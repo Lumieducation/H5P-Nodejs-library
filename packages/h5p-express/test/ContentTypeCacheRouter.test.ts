@@ -14,13 +14,6 @@ import ContentTypeCacheExpressRouter from '../src/ContentTypeCacheRouter/Content
 
 const axiosMock = new AxiosMockAdapter(axios);
 
-interface RequestEx extends express.Request {
-    language: string;
-    languages: string[];
-    t: (id: string, replacements: any) => string;
-    user: H5P.IUser;
-}
-
 describe('Content Type Cache endpoint adapter', () => {
     const user: H5P.IUser = new User();
     let app: express.Application;
@@ -54,34 +47,34 @@ describe('Content Type Cache endpoint adapter', () => {
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
         );
 
-        axiosMock.onPost(h5pEditor.config.hubRegistrationEndpoint).reply(
-            200,
-            fsExtra.readJSONSync(
-                path.resolve(
-                    // '..',
-                    // '..',
-                    'test',
-                    'data',
-                    'content-type-cache',
-                    'registration.json'
+        axiosMock
+            .onPost(h5pEditor.config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test',
+                        'data',
+                        'content-type-cache',
+                        'registration.json'
+                    )
                 )
-            )
-        );
-        axiosMock.onPost(h5pEditor.config.hubContentTypesEndpoint).reply(
-            200,
-            fsExtra.readJSONSync(
-                path.resolve(
-                    // '..',
-                    // '..',
-                    'test',
-                    'data',
-                    'content-type-cache',
-                    'real-content-types.json'
+            );
+        axiosMock
+            .onPost(h5pEditor.config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test',
+                        'data',
+                        'content-type-cache',
+                        'real-content-types.json'
+                    )
                 )
-            )
-        );
+            );
 
-        app.use((req: RequestEx, res, next) => {
+        app.use((req: any, res, next) => {
             req.user = user;
             req.language = 'en';
             req.languages = ['en'];

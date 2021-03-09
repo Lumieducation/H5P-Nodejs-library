@@ -484,13 +484,13 @@ export default class PackageValidator {
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
         const h5pJsonSchema = await fsExtra.readJSON(
-            './schemas/h5p-schema.json'
+            path.join(__dirname, 'schemas/h5p-schema.json')
         );
         const libraryNameSchema = await fsExtra.readJSON(
-            './schemas/library-name-schema.json'
+            path.join(__dirname, 'schemas/library-name-schema.json')
         );
         const librarySchema = await fsExtra.readJSON(
-            './schemas/library-schema.json'
+            path.join(__dirname, 'schemas/library-schema.json')
         );
         jsonValidator.addSchema([
             h5pJsonSchema,
