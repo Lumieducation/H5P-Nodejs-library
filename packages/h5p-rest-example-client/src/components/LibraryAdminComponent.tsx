@@ -19,7 +19,19 @@ import {
  * It uses Bootstrap 4 to layout the component. You can override or replace the
  * render() method to customize looks.
  */
-export default class LibraryAdmin extends React.Component {
+export default class LibraryAdmin extends React.Component<
+    { endpointUrl: string },
+    {
+        isUploading: boolean;
+        libraries?: ILibraryViewModel[] | null;
+        message: {
+            text: string;
+            type: 'primary' | 'success' | 'danger';
+        } | null;
+    }
+> {
+    protected librariesService: LibraryAdministrationService;
+
     /**
      * @param endpointUrl the URL of the REST library administration endpoint.
      */
@@ -36,188 +48,8 @@ export default class LibraryAdmin extends React.Component {
         );
     }
 
-    public state: {
-        isUploading: boolean;
-        libraries: ILibraryViewModel[] | null;
-        message: {
-            text: string;
-            type: 'primary' | 'success' | 'danger';
-        } | null;
-    };
-
-    protected librariesService: LibraryAdministrationService;
-
     public async componentDidMount(): Promise<void> {
         return this.updateList();
-    }
-
-    public render(): React.ReactNode {
-        return (
-            <div>
-                <h2>
-                    <span className="fa fa-book-open"></span> Installed
-                    libraries
-                </h2>
-                <form>
-                    <div className="form-group">
-                        <label
-                            className={`btn btn-primary ${
-                                this.state.isUploading ? 'disabled' : ''
-                            }`}
-                        >
-                            {this.state.isUploading ? (
-                                <div
-                                    className="spinner-border spinner-border-sm m-2 align-middle"
-                                    role="status"
-                                ></div>
-                            ) : (
-                                <span className="fa fa-upload m-2"></span>
-                            )}{' '}
-                            Upload libraries
-                            <input
-                                disabled={this.state.isUploading}
-                                type="file"
-                                id="file2"
-                                hidden
-                                onChange={(e) =>
-                                    this.fileSelected(e.target.files)
-                                }
-                            ></input>
-                        </label>
-                    </div>
-                </form>
-                {this.state.message ? (
-                    <div className={`alert alert-${this.state.message.type}`}>
-                        {this.state.message.text}
-                    </div>
-                ) : null}
-                {this.state.libraries === null ? (
-                    <div>
-                        <div
-                            className="spinner-grow spinner-grow-sm text-primary align-middle mr-2"
-                            role="status"
-                        >
-                            <span className="sr-only"></span>
-                        </div>
-                        <span className="align-middle">
-                            Loading installed libraries from REST endpoint ...
-                        </span>
-                    </div>
-                ) : (
-                    <div>
-                        <p>
-                            The following libraries are installed in the library
-                            storage:
-                        </p>
-                        <table className="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Restricted</th>
-                                    <th># used directly</th>
-                                    <th># used in other content types</th>
-                                    <th># dependent libraries</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.libraries?.map((info) => (
-                                    <React.Fragment
-                                        key={`${info.machineName}-${info.majorVersion}.${info.minorVersion}`}
-                                    >
-                                        <tr>
-                                            <td>
-                                                {info.title} (
-                                                {info.majorVersion}.
-                                                {info.minorVersion}.
-                                                {info.patchVersion})
-                                            </td>
-                                            <td>
-                                                {info.runnable ? (
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={
-                                                            info.restricted
-                                                        }
-                                                        onChange={() =>
-                                                            this.restrict(info)
-                                                        }
-                                                    ></input>
-                                                ) : null}
-                                            </td>
-                                            <td>{info.instancesCount}</td>
-                                            <td>
-                                                {
-                                                    info.instancesAsDependencyCount
-                                                }
-                                            </td>
-                                            <td>{info.dependentsCount}</td>
-                                            <td>
-                                                <button
-                                                    className="btn btn-info"
-                                                    onClick={() =>
-                                                        this.showDetails(info)
-                                                    }
-                                                >
-                                                    <span
-                                                        className="fa fa-info m-2"
-                                                        style={{
-                                                            display: 'inline'
-                                                        }}
-                                                    ></span>
-                                                    <span>details</span>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                {info.canBeDeleted ? (
-                                                    <button
-                                                        className="btn btn-danger"
-                                                        disabled={
-                                                            info.isDeleting
-                                                        }
-                                                        onClick={() =>
-                                                            this.deleteLibrary(
-                                                                info
-                                                            )
-                                                        }
-                                                    >
-                                                        <span
-                                                            className="fa fa-trash-alt m-2"
-                                                            style={{
-                                                                display:
-                                                                    'inline'
-                                                            }}
-                                                        ></span>
-                                                        <span>delete</span>
-                                                    </button>
-                                                ) : (
-                                                    <div></div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                        {info.isShowingDetails ? (
-                                            <tr>
-                                                <td colSpan={7}>
-                                                    <LibraryDetails
-                                                        details={info.details}
-                                                        onClose={() =>
-                                                            this.closeDetails(
-                                                                info
-                                                            )
-                                                        }
-                                                    ></LibraryDetails>
-                                                </td>
-                                            </tr>
-                                        ) : null}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-        );
     }
 
     protected closeDetails(library: ILibraryViewModel): void {
@@ -228,17 +60,18 @@ export default class LibraryAdmin extends React.Component {
         const newState = this.updateLibraryState(library, {
             isDeleting: true
         });
+        const { libraries } = this.state;
 
         try {
             await this.librariesService.deleteLibrary(library);
-            const libraryIndex = this.state.libraries?.indexOf(newState);
+            const libraryIndex = libraries?.indexOf(newState);
             if (libraryIndex === undefined) {
                 throw new Error('Could not find old entry in list');
             }
             this.setState({
-                libraries: this.state.libraries
+                libraries: libraries
                     ?.slice(0, libraryIndex)
-                    .concat(this.state.libraries?.slice(libraryIndex + 1))
+                    .concat(libraries?.slice(libraryIndex + 1))
             });
             this.displayMessage(
                 `Successfully deleted library ${library.title} (${library.majorVersion}.${library.minorVersion}).`
@@ -349,24 +182,194 @@ export default class LibraryAdmin extends React.Component {
         library: ILibraryViewModel,
         changes: Partial<ILibraryViewModel>
     ): ILibraryViewModel {
-        if (!this.state.libraries) {
+        const { libraries } = this.state;
+
+        if (!libraries) {
             return {
                 ...library,
                 ...changes
             };
         }
-        const libraryIndex = this.state.libraries.indexOf(library);
+        const libraryIndex = libraries.indexOf(library);
         const newState = {
             ...library,
             ...changes
         };
         this.setState({
             libraries: [
-                ...this.state.libraries.slice(0, libraryIndex),
+                ...libraries.slice(0, libraryIndex),
                 newState,
-                ...this.state.libraries.slice(libraryIndex + 1)
+                ...libraries.slice(libraryIndex + 1)
             ]
         });
         return newState;
+    }
+
+    public render(): React.ReactNode {
+        return (
+            <div>
+                <h2>
+                    <span className="fa fa-book-open" /> Installed libraries
+                </h2>
+                <form>
+                    <div className="form-group">
+                        <label
+                            className={`btn btn-primary ${
+                                this.state.isUploading ? 'disabled' : ''
+                            }`}
+                        >
+                            {this.state.isUploading ? (
+                                <div
+                                    className="spinner-border spinner-border-sm m-2 align-middle"
+                                    role="status"
+                                />
+                            ) : (
+                                <span className="fa fa-upload m-2" />
+                            )}{' '}
+                            Upload libraries
+                            <input
+                                disabled={this.state.isUploading}
+                                type="file"
+                                id="file2"
+                                hidden
+                                onChange={(e) =>
+                                    this.fileSelected(e.target.files)
+                                }
+                            />
+                        </label>
+                    </div>
+                </form>
+                {this.state.message ? (
+                    <div className={`alert alert-${this.state.message.type}`}>
+                        {this.state.message.text}
+                    </div>
+                ) : null}
+                {this.state.libraries === null ? (
+                    <div>
+                        <div
+                            className="spinner-grow spinner-grow-sm text-primary align-middle mr-2"
+                            role="status"
+                        >
+                            <span className="sr-only" />
+                        </div>
+                        <span className="align-middle">
+                            Loading installed libraries from REST endpoint ...
+                        </span>
+                    </div>
+                ) : (
+                    <div>
+                        <p>
+                            The following libraries are installed in the library
+                            storage:
+                        </p>
+                        <table className="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Restricted</th>
+                                    <th># used directly</th>
+                                    <th># used in other content types</th>
+                                    <th># dependent libraries</th>
+                                    <th />
+                                    <th />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.libraries?.map((info) => (
+                                    <React.Fragment
+                                        key={`${info.machineName}-${info.majorVersion}.${info.minorVersion}`}
+                                    >
+                                        <tr>
+                                            <td>
+                                                {info.title} (
+                                                {info.majorVersion}.
+                                                {info.minorVersion}.
+                                                {info.patchVersion})
+                                            </td>
+                                            <td>
+                                                {info.runnable ? (
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={
+                                                            info.restricted
+                                                        }
+                                                        onChange={() =>
+                                                            this.restrict(info)
+                                                        }
+                                                    />
+                                                ) : null}
+                                            </td>
+                                            <td>{info.instancesCount}</td>
+                                            <td>
+                                                {
+                                                    info.instancesAsDependencyCount
+                                                }
+                                            </td>
+                                            <td>{info.dependentsCount}</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-info"
+                                                    onClick={() =>
+                                                        this.showDetails(info)
+                                                    }
+                                                >
+                                                    <span
+                                                        className="fa fa-info m-2"
+                                                        style={{
+                                                            display: 'inline'
+                                                        }}
+                                                    />
+                                                    <span>details</span>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {info.canBeDeleted ? (
+                                                    <button
+                                                        className="btn btn-danger"
+                                                        disabled={
+                                                            info.isDeleting
+                                                        }
+                                                        onClick={() =>
+                                                            this.deleteLibrary(
+                                                                info
+                                                            )
+                                                        }
+                                                    >
+                                                        <span
+                                                            className="fa fa-trash-alt m-2"
+                                                            style={{
+                                                                display:
+                                                                    'inline'
+                                                            }}
+                                                        />
+                                                        <span>delete</span>
+                                                    </button>
+                                                ) : (
+                                                    <div />
+                                                )}
+                                            </td>
+                                        </tr>
+                                        {info.isShowingDetails ? (
+                                            <tr>
+                                                <td colSpan={7}>
+                                                    <LibraryDetails
+                                                        details={info.details}
+                                                        onClose={() =>
+                                                            this.closeDetails(
+                                                                info
+                                                            )
+                                                        }
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ) : null}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        );
     }
 }

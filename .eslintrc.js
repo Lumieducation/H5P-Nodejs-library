@@ -19,7 +19,7 @@ module.exports = {
     extends: ['airbnb-typescript', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        project: 'tsconfig.json',
+        project: 'tsconfig.eslint.json',
         sourceType: 'module'
     },
     plugins: ['prettier', '@typescript-eslint'],
@@ -37,6 +37,11 @@ module.exports = {
         'no-nested-ternary': 1,
         'no-continue': 0,
         'no-case-declarations': 0,
-        'prettier/prettier': 'error'
+        'prettier/prettier': 'error',
+        'react/destructuring-assignment': [
+            'error',
+            'always',
+            { ignoreClassFields: true }
+        ]
     }
 };

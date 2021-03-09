@@ -201,8 +201,8 @@ export default class SemanticsEnforcer {
                     allowedStyles['font-family'] = [/^[-a-z0-9," ]+$/i];
                 }
                 if (semantics.font.color) {
-                    // tslint:disable-next-line: no-string-literal
-                    allowedStyles.color = [
+                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                    allowedStyles['color'] = [
                         /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
                     ];
                 }
@@ -212,8 +212,8 @@ export default class SemanticsEnforcer {
                     ];
                 }
                 if (semantics.font.spacing) {
-                    // tslint:disable-next-line: no-string-literal
-                    allowedStyles.spacing = [/^[0-9.]+(em|px|%)$/i];
+                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                    allowedStyles['spacing'] = [/^[0-9.]+(em|px|%)$/i];
                 }
                 if (semantics.font.height) {
                     allowedStyles['line-height'] = [/^[0-9.]+(em|px|%)$/i];
