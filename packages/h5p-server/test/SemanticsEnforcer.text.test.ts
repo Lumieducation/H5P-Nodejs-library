@@ -31,7 +31,7 @@ describe('SemanticsEnforcer', () => {
                 ) => 0
             });
         const libraryManager = new LibraryManager(libraryStorage);
-        libraryManager.getSemantics = (library) => Promise.resolve(semantics);
+        libraryManager.getSemantics = () => Promise.resolve(semantics);
 
         const enforcer = new SemanticsEnforcer(libraryManager);
         return enforcer;

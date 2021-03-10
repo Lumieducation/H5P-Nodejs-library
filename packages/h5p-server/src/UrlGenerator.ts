@@ -99,14 +99,15 @@ export default class UrlGenerator implements IUrlGenerator {
      * Also adds a cache buster based on IH5PConfig.h5pVersion.
      * @param file
      */
-    public coreFile = (file: string) =>
+    public coreFile = (file: string): string =>
         `${this.baseUrl()}${this.config.coreUrl}/${file}?version=${
             this.config.h5pVersion
         }`;
 
-    public coreFiles = () => `${this.baseUrl()}${this.config.coreUrl}/js`;
+    public coreFiles = (): string =>
+        `${this.baseUrl()}${this.config.coreUrl}/js`;
 
-    public downloadPackage = (contentId: ContentId) =>
+    public downloadPackage = (contentId: ContentId): string =>
         `${this.baseUrl()}${this.config.downloadUrl}/${contentId}`;
 
     /**
@@ -121,7 +122,7 @@ export default class UrlGenerator implements IUrlGenerator {
     public editorLibraryFiles = (): string =>
         `${this.baseUrl()}${this.config.editorLibraryUrl}/`;
 
-    public libraryFile = (library: IFullLibraryName, file: string) => {
+    public libraryFile = (library: IFullLibraryName, file: string): string => {
         if (file.startsWith('http://') || file.startsWith('https://')) {
             return file;
         }
@@ -132,9 +133,10 @@ export default class UrlGenerator implements IUrlGenerator {
         }.${library.minorVersion}.${library.patchVersion}`;
     };
 
-    public parameters = () => `${this.baseUrl()}${this.config.paramsUrl}`;
+    public parameters = (): string =>
+        `${this.baseUrl()}${this.config.paramsUrl}`;
 
-    public play = () => `${this.baseUrl()}${this.config.playUrl}`;
+    public play = (): string => `${this.baseUrl()}${this.config.playUrl}`;
     public setFinished = (user: IUser): string => {
         if (
             this.csrfProtection?.queryParamGenerator &&

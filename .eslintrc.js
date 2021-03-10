@@ -49,6 +49,29 @@ module.exports = {
             'always',
             { ignoreClassFields: true }
         ],
+        '@typescript-eslint/typedef': [
+            'error',
+            {
+                parameter: true,
+                propertyDeclaration: true,
+                memberVariableDeclaration: true,
+                variableDeclarationIgnoreFunction: true
+            }
+        ],
+        '@typescript-eslint/explicit-module-boundary-types': [
+            'error',
+            {
+                allowArgumentsExplicitlyTypedAsAny: true,
+                allowHigherOrderFunctions: true,
+                allowTypedFunctionExpressions: true
+            }
+        ],
+        '@typescript-eslint/explicit-function-return-type': [
+            'error',
+            {
+                allowExpressions: true
+            }
+        ],
         '@typescript-eslint/member-ordering': [
             'error',
             {

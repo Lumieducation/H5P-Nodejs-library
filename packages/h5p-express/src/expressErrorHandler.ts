@@ -19,7 +19,7 @@ export function undefinedOrTrue(option: boolean): boolean {
 export const catchAndPassOnErrors = (
     fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>,
     handleErrors: boolean
-) => async (req: Request, res: Response, next: NextFunction) => {
+) => async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (undefinedOrTrue(handleErrors)) {
         try {
             return await fn(req, res);

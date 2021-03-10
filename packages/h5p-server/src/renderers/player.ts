@@ -1,4 +1,6 @@
-export default (model) => `<!doctype html>
+import { IPlayerModel } from 'src';
+
+export default (model: IPlayerModel): string => `<!doctype html>
 <html class="h5p-iframe">
 <head>
     <meta charset="utf-8">

@@ -43,7 +43,7 @@ describe('H5PEditor', () => {
         const contentStorage = new fsImplementations.FileContentStorage(
             path.join(tempPath, 'content')
         );
-        const libraryFileUrlResolver = () => '';
+        const libraryFileUrlResolver = (): string => '';
         const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
             path.join(tempPath, 'tmp')
         );

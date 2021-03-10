@@ -194,7 +194,8 @@ export default class H5PEditor {
      * The default generator creates strings like '?version=1.24.0', which are
      * simply added to the URL.
      */
-    public cacheBusterGenerator = () => `?version=${this.config.h5pVersion}`;
+    public cacheBusterGenerator = (): string =>
+        `?version=${this.config.h5pVersion}`;
 
     /**
      * Deletes a piece of content and all files dependent on it.

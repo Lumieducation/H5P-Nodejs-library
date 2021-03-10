@@ -199,7 +199,7 @@ export class H5PPlayerComponent extends HTMLElement {
         }
     };
 
-    private onxAPI = (event: IxAPIEvent) => {
+    private onxAPI = (event: IxAPIEvent): void => {
         if (
             `${event.data?.statement?.object?.definition?.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
             `${this.playerModel.contentId}`

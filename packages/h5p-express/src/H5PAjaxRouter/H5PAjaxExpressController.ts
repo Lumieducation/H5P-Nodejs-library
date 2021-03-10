@@ -220,7 +220,7 @@ export default class H5PAjaxExpressController {
         totalLength: number,
         start: number,
         end: number
-    ) => {
+    ): void => {
         response.writeHead(206, {
             'Content-Type': mimetype,
             'Content-Length': end - start + 1,
@@ -247,7 +247,7 @@ export default class H5PAjaxExpressController {
         response: express.Response,
         contentLength: number,
         additionalHeaders?: { [key: string]: string }
-    ) => {
+    ): void => {
         response.writeHead(200, {
             ...(additionalHeaders || {}),
             'Content-Type': mimetype,

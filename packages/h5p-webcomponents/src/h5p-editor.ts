@@ -409,7 +409,10 @@ export class H5PEditorComponent extends HTMLElement {
         h5pCreateDiv.appendChild(h5pEditorDiv);
 
         // Set up the H5P core editor.
-        H5PEditor.getAjaxUrl = (action, parameters) => {
+        H5PEditor.getAjaxUrl = (
+            action: string,
+            parameters: { [x: string]: any }
+        ): string => {
             let url = editorModel.integration.editor.ajaxPath + action;
 
             if (parameters !== undefined) {
