@@ -1674,7 +1674,6 @@ export interface IHubContentTypeWithLocalInfo extends IHubContentType {
  */
 export interface IHubInfo {
     apiVersion: { major: number; minor: number };
-    // tslint:disable-next-line: prefer-array-literal
     details: Array<{ code: string; message: string }>;
     libraries: IHubContentTypeWithLocalInfo[];
     outdated: boolean;

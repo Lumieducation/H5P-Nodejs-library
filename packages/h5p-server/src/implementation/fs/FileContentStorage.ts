@@ -121,7 +121,6 @@ export default class FileContentStorage implements IContentStorage {
         id?: ContentId
     ): Promise<ContentId> {
         if (id === undefined || id === null) {
-            // tslint:disable-next-line: no-parameter-reassignment
             id = await this.createContentId();
         }
         try {

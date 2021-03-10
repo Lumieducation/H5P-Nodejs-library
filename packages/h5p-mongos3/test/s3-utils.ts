@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-// tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 export async function emptyAndDeleteBucket(

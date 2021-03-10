@@ -1,5 +1,4 @@
 import axios from 'axios';
-// tslint:disable-next-line: no-implicit-dependencies
 import AxiosMockAdapter from 'axios-mock-adapter';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';

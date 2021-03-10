@@ -91,9 +91,7 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('includes assets of preloaded and editor dependencies', () => {
         const h5pEditor = new H5PEditor(
-            null,
-            // tslint:disable-next-line: prefer-object-spread
-            // eslint-disable-next-line prefer-object-spread
+            null, // eslint-disable-next-line prefer-object-spread
             Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
             null,
             null,
@@ -411,7 +409,6 @@ describe('aggregating data from library folders for the editor', () => {
                         });
                 }
             },
-            // tslint:disable-next-line: object-literal-sort-keys
             getLanguage: () => Promise.resolve([]),
             getSemantics: () => Promise.resolve({})
         });

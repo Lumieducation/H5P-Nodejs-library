@@ -43,7 +43,6 @@ export default class SemanticsLocalizer {
         localizeAllFields?: boolean
     ): any {
         let copy = Array.isArray(semantics) ? [] : {};
-        // tslint:disable-next-line: forin
         if (Object.keys(semantics).length === 0) {
             copy = semantics;
         } else {

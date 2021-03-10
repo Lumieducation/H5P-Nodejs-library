@@ -1,5 +1,3 @@
-// tslint:disable: no-console
-
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { performance } from 'perf_hooks';

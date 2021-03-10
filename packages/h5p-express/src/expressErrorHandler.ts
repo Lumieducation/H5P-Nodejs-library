@@ -40,9 +40,7 @@ export const catchAndPassOnErrors = (
  * req.i18n.changeLanguage to be present. Defaults to auto, which means the
  * a language detector must have detected language and req.t translated to the
  * detected language.
- */
-// tslint:disable-next-line: typedef
-export function errorHandler(languageOverride: string | 'auto' = 'auto') {
+ */ export function errorHandler(languageOverride: string | 'auto' = 'auto') {
     return async (
         err: Error | H5pError | AggregateH5pError,
         req: Request & { t: any; i18n: any },

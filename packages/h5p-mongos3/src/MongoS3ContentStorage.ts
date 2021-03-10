@@ -3,7 +3,6 @@
 import MongoDB, { ObjectId } from 'mongodb';
 import { Stream, Readable } from 'stream';
 import AWS from 'aws-sdk';
-// tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {

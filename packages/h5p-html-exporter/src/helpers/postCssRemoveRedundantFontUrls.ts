@@ -47,7 +47,6 @@ export default function (
 
     return {
         postcssPlugin: 'postcss-remove-redundant-font-urls',
-        // tslint:disable-next-line: function-name
         async Once(styles: Root): Promise<void> {
             styles.walkAtRules('font-face', (atRule) => {
                 const fonts: {
