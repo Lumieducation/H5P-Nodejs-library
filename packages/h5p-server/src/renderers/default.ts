@@ -1,4 +1,4 @@
-import { IEditorModel } from 'src';
+import { IEditorModel } from '../types';
 
 export default (model: IEditorModel): string => `<html>
 <head>
