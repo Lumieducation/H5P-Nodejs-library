@@ -15,7 +15,11 @@ jobs:
             - run: npm ci
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
-            - run: npm run download:content           
+            - run: |
+                npm run build --prefix packages/h5p-rest-example-client
+                npm run build --prefix packages/h5p-rest-example-server
+                npm run download:content
+            
             - save_cache:
                   key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
                   paths:
@@ -51,6 +55,7 @@ jobs:
                       - packages/h5p-rest-example-client/build
                       - packages/h5p-rest-example-server/node_modules
                       - packages/h5p-rest-example-server/build
+                      - packages/h5p-rest-example-server/h5p
                       - test/data/content-type-cache/real-content-types.json
                       - test/data/hub-content
 
