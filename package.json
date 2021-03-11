@@ -100,7 +100,7 @@
         "puppeteer": "8.0.0",
         "remark-cli": "9.0.0",
         "remark-validate-links": "10.0.3",
-        "semantic-release": "17.4.1",
+        "semantic-release": "17.4.2",
         "ts-jest": "26.5.3",
         "ts-node": "9.1.1",
         "tslint": "6.1.3",
