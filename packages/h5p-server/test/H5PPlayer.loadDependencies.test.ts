@@ -450,8 +450,8 @@ describe('Loading dependencies', () => {
             ]
         };
         const mockLibraryStorage: any = {
-            getLibrary: (libName: ILibraryName) => {
-                return {
+            getLibrary: (libName: ILibraryName) =>
+                ({
                     Bar21: {
                         machineName: 'Bar',
                         majorVersion: 2,
@@ -499,8 +499,7 @@ describe('Loading dependencies', () => {
                     libName.machineName +
                         libName.majorVersion +
                         libName.minorVersion
-                ];
-            }
+                ])
         };
         const config = new H5PConfig(undefined, {
             baseUrl: '/baseUrl',

@@ -60,8 +60,7 @@ export class ContentFileScanner extends ContentScanner {
     /**
      * Used to differentiate between local files and URLs.
      */
-    // tslint:disable-next-line: typedef
-    private static urlRegExp = /^https?:\/\//;
+    private static urlRegExp: RegExp = /^https?:\/\//;
 
     /**
      * Loads the specified content from the ContentManager and scans its
@@ -136,8 +135,9 @@ export class ContentFileScanner extends ContentScanner {
                             }
                         }
                         return true; // returning true aborts further recursion
+                    default:
+                        return false;
                 }
-                return false;
             }
         );
         return results;

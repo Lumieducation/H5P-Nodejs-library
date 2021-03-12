@@ -92,10 +92,7 @@ export default class H5PAjaxEndpoint {
                         'You must specify a user when calling getAjax(...).'
                     );
                 }
-                const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    user
-                );
-                return contentTypeCache;
+                return this.h5pEditor.getContentTypeCache(user);
             case 'libraries':
                 if (
                     machineName === undefined ||
@@ -114,13 +111,12 @@ export default class H5PAjaxEndpoint {
 
                 // getLibraryData validates the library name and language code,
                 // so we don't do it here.
-                const library = await this.h5pEditor.getLibraryData(
+                return this.h5pEditor.getLibraryData(
                     machineName.toString(),
                     majorVersion.toString(),
                     minorVersion.toString(),
                     language?.toString()
                 );
-                return library;
             default:
                 throw new H5pError(
                     'malformed-request',

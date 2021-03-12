@@ -67,9 +67,7 @@ export default class ContentManager {
     public contentFileExists = async (
         contentId: ContentId,
         filename: string
-    ): Promise<boolean> => {
-        return this.contentStorage.fileExists(contentId, filename);
-    };
+    ): Promise<boolean> => this.contentStorage.fileExists(contentId, filename);
 
     /**
      * Adds content from a H5P package (in a temporary directory) to the installation.

@@ -8,15 +8,11 @@ describe('validating H5P files', () => {
         const h5pFile1 = path.resolve('test/data/validator/valid1.h5p');
         const h5pFile2 = path.resolve('test/data/validator/valid2.h5p');
 
-        try {
-            const validator = new PackageValidator(new H5PConfig(null));
-            let result = await validator.validatePackage(h5pFile1);
-            expect(result).toBeDefined();
-            result = await validator.validatePackage(h5pFile2);
-            expect(result).toBeDefined();
-        } catch (e) {
-            throw e;
-        }
+        const validator = new PackageValidator(new H5PConfig(null));
+        let result = await validator.validatePackage(h5pFile1);
+        expect(result).toBeDefined();
+        result = await validator.validatePackage(h5pFile2);
+        expect(result).toBeDefined();
     });
 
     it('rejects non-valid zip files', async () => {

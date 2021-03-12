@@ -196,9 +196,7 @@ describe('Rendering the HTML page', () => {
         };
 
         const mockLibraryStorage: any = {
-            getLibrary: async (libName: ILibraryName) => {
-                return {};
-            }
+            getLibrary: async (libName: ILibraryName) => ({})
         };
 
         return new H5PPlayer(
@@ -224,9 +222,7 @@ describe('Rendering the HTML page', () => {
         const h5pObject = {};
 
         const mockLibraryStorage: any = {
-            getLibrary: async (libName: ILibraryName) => {
-                return {};
-            }
+            getLibrary: async (libName: ILibraryName) => ({})
         };
 
         const player = new H5PPlayer(
@@ -480,24 +476,19 @@ describe('Rendering the HTML page', () => {
         const mockLibraryStorage: any = {
             getLibrary: async (
                 libName: ILibraryName
-            ): Promise<ILibraryMetadata> => {
-                return {
-                    machineName: 'Foo',
-                    majorVersion: 1,
-                    minorVersion: 0,
-                    patchVersion: 0,
-                    runnable: 1,
-                    title: 'Foo',
-                    preloadedCss: [
-                        { path: 'preload1.css' },
-                        { path: 'preload2.css' }
-                    ],
-                    preloadedJs: [
-                        { path: 'preload1.js' },
-                        { path: 'preload2.js' }
-                    ]
-                };
-            }
+            ): Promise<ILibraryMetadata> => ({
+                machineName: 'Foo',
+                majorVersion: 1,
+                minorVersion: 0,
+                patchVersion: 0,
+                runnable: 1,
+                title: 'Foo',
+                preloadedCss: [
+                    { path: 'preload1.css' },
+                    { path: 'preload2.css' }
+                ],
+                preloadedJs: [{ path: 'preload1.js' }, { path: 'preload2.js' }]
+            })
         };
 
         const player = new H5PPlayer(
@@ -577,24 +568,19 @@ describe('Rendering the HTML page', () => {
         const mockLibraryStorage: any = {
             getLibrary: async (
                 libName: ILibraryName
-            ): Promise<ILibraryMetadata> => {
-                return {
-                    machineName: 'Foo',
-                    majorVersion: 1,
-                    minorVersion: 0,
-                    patchVersion: 0,
-                    runnable: 1,
-                    title: 'Foo',
-                    preloadedCss: [
-                        { path: 'preload1.css' },
-                        { path: 'preload2.css' }
-                    ],
-                    preloadedJs: [
-                        { path: 'preload1.js' },
-                        { path: 'preload2.js' }
-                    ]
-                };
-            }
+            ): Promise<ILibraryMetadata> => ({
+                machineName: 'Foo',
+                majorVersion: 1,
+                minorVersion: 0,
+                patchVersion: 0,
+                runnable: 1,
+                title: 'Foo',
+                preloadedCss: [
+                    { path: 'preload1.css' },
+                    { path: 'preload2.css' }
+                ],
+                preloadedJs: [{ path: 'preload1.js' }, { path: 'preload2.js' }]
+            })
         };
 
         const player = new H5PPlayer(

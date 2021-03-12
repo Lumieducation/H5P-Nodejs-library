@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { ContentTypeCache } from '@lumieducation/h5p-server';
 
 import {
     errorHandler,
@@ -6,7 +7,6 @@ import {
     undefinedOrTrue
 } from '../expressErrorHandler';
 import ContentTypeCacheController from './ContentTypeCacheController';
-import { ContentTypeCache } from '@lumieducation/h5p-server';
 
 export default function (
     contentTypeCache: ContentTypeCache,

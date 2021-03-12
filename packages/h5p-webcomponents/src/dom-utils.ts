@@ -1,4 +1,5 @@
 import AwaitLock from 'await-lock';
+
 const lock = new AwaitLock();
 
 /**
@@ -44,7 +45,7 @@ export async function addScripts(
                 scriptTag.async = false;
                 scriptTag.defer = true;
                 const promise = new Promise<void>((res, rej) => {
-                    scriptTag.onload = () => {
+                    scriptTag.onload = (): void => {
                         res();
                     };
                     scriptTag.onerror = rej;

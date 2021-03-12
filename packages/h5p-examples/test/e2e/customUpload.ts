@@ -1,5 +1,3 @@
-// tslint:disable: no-console
-
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { performance } from 'perf_hooks';
@@ -39,7 +37,7 @@ async function main(): Promise<void> {
             );
             const timeoutPromise = new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    reject('timeout');
+                    reject(new Error('timeout'));
                 }, 30000);
             });
             try {

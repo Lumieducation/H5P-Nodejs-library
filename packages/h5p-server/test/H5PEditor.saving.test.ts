@@ -43,7 +43,7 @@ describe('H5PEditor', () => {
         const contentStorage = new fsImplementations.FileContentStorage(
             path.join(tempPath, 'content')
         );
-        const libraryFileUrlResolver = () => '';
+        const libraryFileUrlResolver = (): string => '';
         const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
             path.join(tempPath, 'tmp')
         );
@@ -60,9 +60,10 @@ describe('H5PEditor', () => {
                       protectAjax: true,
                       protectContentUserData: true,
                       protectSetFinished: true,
-                      queryParamGenerator: (user) => {
-                          return { name: '_csrf', value: 'token' };
-                      }
+                      queryParamGenerator: (user) => ({
+                          name: '_csrf',
+                          value: 'token'
+                      })
                   })
                 : undefined
         );

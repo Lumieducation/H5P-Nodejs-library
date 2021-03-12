@@ -1,5 +1,6 @@
 import { H5pError, Logger, utils } from '@lumieducation/h5p-server';
-const generalizedSanitizeFilename = utils.generalizedSanitizeFilename;
+
+const { generalizedSanitizeFilename } = utils;
 
 const log = new Logger('S3Utils');
 
@@ -31,7 +32,7 @@ export function validateFilename(
     // expect for ranges of non-printable ASCII characters:
     // &$@=;:+ ,?\\{^}%`]'">[~<#
 
-    if ((invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()\/]/g).test(filename)) {
+    if ((invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()/]/g).test(filename)) {
         log.error(`Found illegal character in filename: ${filename}`);
         throw new H5pError('illegal-filename', { filename }, 400);
     }
@@ -55,7 +56,7 @@ export function sanitizeFilename(
 ): string {
     return generalizedSanitizeFilename(
         filename,
-        invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()\/]/g,
+        invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()/]/g,
         maxFileLength
     );
 }

@@ -6,7 +6,7 @@ import {
     IxAPIEvent,
     IContext
 } from '@lumieducation/h5p-webcomponents';
-import { IPlayerModel } from '@lumieducation/h5p-server';
+import type { IPlayerModel } from '@lumieducation/h5p-server';
 
 defineElements('h5p-player');
 

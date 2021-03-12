@@ -1,0 +1,10 @@
+build/
+build-ide/
+coverage/
+scripts/
+h5p/
+node_modules/
+packages/h5p-rest-example-client
+*.d.ts
+.eslintrc.js
+.config.js

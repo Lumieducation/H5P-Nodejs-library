@@ -24,7 +24,7 @@ import { displayIps, clearTempFiles } from './utils';
 
 let tmpDir: DirectoryResult;
 
-const start = async () => {
+const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS === 'true';
     if (useTempUploads) {
         tmpDir = await dir({ keep: false, unsafeCleanup: true });
@@ -87,9 +87,7 @@ const start = async () => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
-        (key, language) => {
-            return translationFunction(key, { lng: language });
-        }
+        (key, language) => translationFunction(key, { lng: language })
     );
 
     // The H5PPlayer object is used to display H5P content.

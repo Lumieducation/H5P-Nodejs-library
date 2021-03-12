@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-implicit-dependencies
 import React from 'react';
 import { IInstalledLibrary } from '@lumieducation/h5p-server';
 
@@ -7,10 +6,7 @@ const yesNo = (value: boolean | 0 | 1) =>
         <span className="fa fa-check text-success"></span>
     ) : (
         <span className="fa fa-times text-danger"></span>
-    );
-
-// tslint:disable-next-line: function-name
-export default (props: {
+    );export default (props: {
     details: IInstalledLibrary & {
         dependentsCount: number;
         instancesAsDependencyCount: number;

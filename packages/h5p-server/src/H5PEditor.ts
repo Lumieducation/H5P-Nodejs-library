@@ -155,8 +155,12 @@ export default class H5PEditor {
         }
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
-        const saveMetadataJsonSchema = require('./schemas/save-metadata.json');
-        const libraryNameSchema = require('./schemas/library-name-schema.json');
+        const saveMetadataJsonSchema = fsExtra.readJSONSync(
+            path.join(__dirname, 'schemas/save-metadata.json')
+        );
+        const libraryNameSchema = fsExtra.readJSONSync(
+            path.join(__dirname, 'schemas/library-name-schema.json')
+        );
         jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
         this.contentMetadataValidator = jsonValidator.compile(
             saveMetadataJsonSchema
@@ -190,7 +194,8 @@ export default class H5PEditor {
      * The default generator creates strings like '?version=1.24.0', which are
      * simply added to the URL.
      */
-    public cacheBusterGenerator = () => `?version=${this.config.h5pVersion}`;
+    public cacheBusterGenerator = (): string =>
+        `?version=${this.config.h5pVersion}`;
 
     /**
      * Deletes a piece of content and all files dependent on it.

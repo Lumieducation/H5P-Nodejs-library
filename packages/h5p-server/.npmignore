@@ -18,8 +18,8 @@ assets/
 .circleci/
 release.config.js
 renovate.json
-tslint.json
 tsconfig*.json
 Dockerfile
 commitlint.config.js
 .dockerignore
+.eslintrc.js

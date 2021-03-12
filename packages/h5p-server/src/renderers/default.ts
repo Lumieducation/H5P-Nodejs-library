@@ -1,4 +1,6 @@
-export default (model) => `<html>
+import { IEditorModel } from '../types';
+
+export default (model: IEditorModel): string => `<html>
 <head>
 <meta charset="UTF-8">
 <script> window.H5PIntegration = parent.H5PIntegration || ${JSON.stringify(

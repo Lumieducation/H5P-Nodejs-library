@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-// tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 export async function emptyAndDeleteBucket(
@@ -28,9 +27,7 @@ export async function emptyAndDeleteBucket(
                 .deleteObjects({
                     Bucket: bucketname,
                     Delete: {
-                        Objects: ret.Contents.map((c) => {
-                            return { Key: c.Key };
-                        })
+                        Objects: ret.Contents.map((c) => ({ Key: c.Key }))
                     }
                 })
                 .promise();

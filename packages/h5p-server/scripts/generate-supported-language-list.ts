@@ -8,7 +8,9 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
 
-const languages = fsExtra.readdirSync(path.resolve('../h5p-examples/h5p/editor/language'));
+const languages = fsExtra.readdirSync(
+    path.resolve('../h5p-examples/h5p/editor/language')
+);
 fsExtra.writeJsonSync(
     path.resolve('assets/editorLanguages.json'),
     languages.map((l) => l.replace('.js', ''))

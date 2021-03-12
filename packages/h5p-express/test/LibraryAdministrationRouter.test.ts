@@ -1,35 +1,39 @@
 import { dir } from 'tmp-promise';
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import supertest from 'supertest';
-
-import User from './User';
-import * as H5P from '@lumieducation/h5p-server';
 import {
     ILibraryAdministrationOverviewItem,
-    LibraryName
+    IUser,
+    LibraryName,
+    fs,
+    fsImplementations,
+    H5PConfig,
+    H5PEditor
 } from '@lumieducation/h5p-server';
+
+import User from './User';
 import LibraryAdministrationExpressRouter from '../src/LibraryAdministrationRouter/LibraryAdministrationExpressRouter';
 
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 
 interface RequestEx extends express.Request {
     language: string;
     languages: any;
     t: (id: string, replacements: any) => string;
-    user: H5P.IUser;
+    user: IUser;
 }
 
 describe('Express Library Administration endpoint adapter', () => {
-    const user: H5P.IUser = new User();
+    const user: IUser = new User();
     let app: express.Application;
     let cleanup: () => Promise<void>;
-    let h5pEditor: H5P.H5PEditor;
+    let h5pEditor: H5PEditor;
     let tempDir: string;
 
     beforeEach(async () => {
@@ -49,8 +53,8 @@ describe('Express Library Administration endpoint adapter', () => {
         );
         tempDir = tDir.path;
         cleanup = tDir.cleanup;
-        h5pEditor = H5P.fs(
-            new H5P.H5PConfig(new H5P.fsImplementations.InMemoryStorage(), {
+        h5pEditor = fs(
+            new H5PConfig(new fsImplementations.InMemoryStorage(), {
                 baseUrl: ''
             }),
             path.resolve(path.join(tempDir, 'libraries')), // the path on the local disc where libraries should be stored
@@ -62,17 +66,21 @@ describe('Express Library Administration endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         app.use((req: RequestEx, res, next) => {

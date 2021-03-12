@@ -1,17 +1,18 @@
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
+import * as H5P from '@lumieducation/h5p-server';
+import fsExtra from 'fs-extra';
 
 import User from './User';
-import * as H5P from '@lumieducation/h5p-server';
 import H5PAjaxExpressRouter from '../src/H5PAjaxRouter/H5PAjaxExpressRouter';
 
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 interface RequestEx extends express.Request {
     language: string;
     languages: any;
@@ -55,17 +56,21 @@ describe('Configuration of the Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
         app.use((req: RequestEx, res, next) => {
             req.user = user;

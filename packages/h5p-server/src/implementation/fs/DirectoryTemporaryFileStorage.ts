@@ -5,12 +5,12 @@ import promisepipe from 'promisepipe';
 import globPromise from 'glob-promise';
 
 import {
-    H5pError,
     ITemporaryFile,
     ITemporaryFileStorage,
     IUser,
     IFileStats
-} from '../../../src';
+} from '../../types';
+import H5pError from '../../helpers/H5pError';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
 
 /**

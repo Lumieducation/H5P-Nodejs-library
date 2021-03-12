@@ -221,11 +221,7 @@ export default class H5PPlayer {
     private aggregateAssetsRecursive(
         dependencies: ILibraryName[],
         libraries: { [ubername: string]: IInstalledLibrary },
-        assets: IAssets = ({
-            scripts: [],
-            styles: [],
-            translations: {}
-        } = { scripts: [], styles: [], translations: {} }),
+        assets: IAssets = { scripts: [], styles: [], translations: {} },
         loaded: { [ubername: string]: boolean } = {}
     ): IAssets {
         log.verbose(
@@ -295,7 +291,7 @@ export default class H5PPlayer {
                 return true;
             }
         } else if (type === 'object') {
-            // tslint:disable-next-line: forin
+            // eslint-disable-next-line guard-for-in
             for (const property in parameters) {
                 const found = this.checkIfRegexIsInParameters(
                     parameters[property],

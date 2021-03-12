@@ -8,9 +8,9 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
+import { Permission, H5PConfig } from '@lumieducation/h5p-server';
 
 import User from './User';
-import { Permission, H5PConfig } from '@lumieducation/h5p-server';
 import initS3 from '../src/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
 import S3TemporaryFileStorage from '../src/S3TemporaryFileStorage';
@@ -208,9 +208,7 @@ describe('S3TemporaryFileStorage', () => {
     it('rejects write operations for unprivileged users', async () => {
         storage = new S3TemporaryFileStorage(s3, {
             s3Bucket: bucketName,
-            getPermissions: async () => {
-                return [Permission.View];
-            }
+            getPermissions: async () => [Permission.View]
         });
         await expect(
             storage.saveFile('123', undefined, new User(), new Date())

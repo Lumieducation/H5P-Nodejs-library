@@ -209,9 +209,8 @@ export default class PackageExporter {
         let contentStream: Readable;
         try {
             contentStream = new Readable();
-            contentStream._read = () => {
-                return;
-            };
+            // eslint-disable-next-line no-underscore-dangle
+            contentStream._read = () => {};
             contentStream.push(JSON.stringify(parameters));
             contentStream.push(null);
         } catch (error) {
@@ -233,9 +232,8 @@ export default class PackageExporter {
         try {
             metadata = await this.contentStorage.getMetadata(contentId, user);
             metadataStream = new Readable();
-            metadataStream._read = () => {
-                return;
-            };
+            // eslint-disable-next-line no-underscore-dangle
+            metadataStream._read = () => {};
             metadataStream.push(JSON.stringify(metadata));
             metadataStream.push(null);
         } catch (error) {

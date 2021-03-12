@@ -1,4 +1,4 @@
-import {
+import type {
     IEditorModel,
     IPlayerModel,
     IContentMetadata
@@ -113,7 +113,6 @@ export class ContentService implements IContentService {
         }
         return res.json();
     };
-    generateDownloadLink = (contentId: string): string => {
-        return `${this.baseUrl}/download/${contentId}`;
-    };
+    generateDownloadLink = (contentId: string): string =>
+        `${this.baseUrl}/download/${contentId}`;
 }

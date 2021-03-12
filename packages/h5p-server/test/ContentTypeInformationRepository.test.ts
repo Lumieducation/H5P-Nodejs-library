@@ -1,6 +1,5 @@
 import axios from 'axios';
-// tslint:disable-next-line: no-implicit-dependencies
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';
 import fsExtra from 'fs-extra';
@@ -14,7 +13,7 @@ import LibraryManager from '../src/LibraryManager';
 
 import User from './User';
 
-const axiosMock = new axiosMockAdapter(axios);
+const axiosMock = new AxiosMockAdapter(axios);
 
 describe('Content type information repository (= connection to H5P Hub)', () => {
     it('gets content types from hub', async () => {
@@ -29,17 +28,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         await cache.updateIfNecessary();
@@ -52,9 +55,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
-            require(path.resolve(
-                'test/data/content-type-cache/real-content-types.json'
-            )).contentTypes.length
+            fsExtra.readJSONSync(
+                path.resolve(
+                    'test/data/content-type-cache/real-content-types.json'
+                )
+            ).contentTypes.length
         );
     });
     it("doesn't fail if update wasn't called", async () => {
@@ -69,17 +74,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         const repository = new ContentTypeInformationRepository(
@@ -90,9 +99,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
         expect(content.libraries.length).toEqual(
-            require(path.resolve(
-                'test/data/content-type-cache/real-content-types.json'
-            )).contentTypes.length
+            fsExtra.readJSONSync(
+                path.resolve(
+                    'test/data/content-type-cache/real-content-types.json'
+                )
+            ).contentTypes.length
         );
     });
 
@@ -108,17 +119,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/0-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/0-content-types.json'
+                    )
+                )
             );
 
         const repository = new ContentTypeInformationRepository(
@@ -142,17 +157,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/1-content-type.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/1-content-type.json'
+                    )
+                )
             );
 
         const repository = new ContentTypeInformationRepository(
@@ -178,9 +197,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
 
@@ -210,9 +231,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock.onPost(config.hubContentTypesEndpoint).reply(500);
 
@@ -245,17 +268,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         await cache.updateIfNecessary();
@@ -286,17 +313,21 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/registration.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
             );
         axiosMock
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                require(path.resolve(
-                    'test/data/content-type-cache/real-content-types.json'
-                ))
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
             );
 
         await cache.updateIfNecessary();
@@ -336,31 +367,33 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     .onPost(config.hubRegistrationEndpoint)
                     .reply(
                         200,
-                        require(path.resolve(
-                            'test/data/content-type-cache/registration.json'
-                        ))
+                        fsExtra.readJSONSync(
+                            path.resolve(
+                                'test/data/content-type-cache/registration.json'
+                            )
+                        )
                     );
                 axiosMock
                     .onPost(config.hubContentTypesEndpoint)
                     .reply(
                         200,
-                        require(path.resolve(
-                            'test/data/content-type-cache/real-content-types.json'
-                        ))
+                        fsExtra.readJSONSync(
+                            path.resolve(
+                                'test/data/content-type-cache/real-content-types.json'
+                            )
+                        )
                     );
 
                 axiosMock
                     .onGet(`${config.hubContentTypesEndpoint}H5P.DragText`)
-                    .reply(() => {
-                        return [
-                            200,
-                            fsExtra.createReadStream(
-                                path.resolve(
-                                    'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
-                                )
+                    .reply(() => [
+                        200,
+                        fsExtra.createReadStream(
+                            path.resolve(
+                                'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
                             )
-                        ];
-                    });
+                        )
+                    ]);
 
                 await cache.updateIfNecessary();
                 const repository = new ContentTypeInformationRepository(

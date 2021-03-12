@@ -214,6 +214,8 @@ export class ContentScanner {
                     counter += 1;
                 }
                 break;
+            default:
+                break;
         }
     }
 

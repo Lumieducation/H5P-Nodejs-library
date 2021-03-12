@@ -36,8 +36,6 @@ describe('H5PEditor.saveH5P()', () => {
                             ContentMetadata.toUbername(metadata),
                             user
                         );
-
-                        return;
                     })
                 ).then(() => done());
             },

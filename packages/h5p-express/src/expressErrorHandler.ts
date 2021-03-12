@@ -1,8 +1,8 @@
 import {
     AggregateH5pError,
-    AjaxErrorResponse
+    AjaxErrorResponse,
+    H5pError
 } from '@lumieducation/h5p-server';
-import { H5pError } from '@lumieducation/h5p-server';
 import { Request, Response, NextFunction } from 'express';
 
 export function undefinedOrTrue(option: boolean): boolean {
@@ -19,7 +19,7 @@ export function undefinedOrTrue(option: boolean): boolean {
 export const catchAndPassOnErrors = (
     fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>,
     handleErrors: boolean
-) => async (req: Request, res: Response, next: NextFunction) => {
+) => async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     if (undefinedOrTrue(handleErrors)) {
         try {
             return await fn(req, res);
@@ -40,9 +40,7 @@ export const catchAndPassOnErrors = (
  * req.i18n.changeLanguage to be present. Defaults to auto, which means the
  * a language detector must have detected language and req.t translated to the
  * detected language.
- */
-// tslint:disable-next-line: typedef
-export function errorHandler(languageOverride: string | 'auto' = 'auto') {
+ */ export function errorHandler(languageOverride: string | 'auto' = 'auto') {
     return async (
         err: Error | H5pError | AggregateH5pError,
         req: Request & { t: any; i18n: any },
@@ -71,15 +69,13 @@ export function errorHandler(languageOverride: string | 'auto' = 'auto') {
             clientErrorId = err.clientErrorId || '';
 
             if (err instanceof AggregateH5pError) {
-                detailsList = err.getErrors().map((e) => {
-                    return {
-                        code: e.errorId,
-                        message:
-                            req.t === undefined
-                                ? e.errorId
-                                : req.t(e.errorId, e.replacements)
-                    };
-                });
+                detailsList = err.getErrors().map((e) => ({
+                    code: e.errorId,
+                    message:
+                        req.t === undefined
+                            ? e.errorId
+                            : req.t(e.errorId, e.replacements)
+                }));
             }
         } else {
             statusText = err.message;

@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-implicit-dependencies
 import React from 'react';
 
 // We reference the build directory (which contains a .d.ts file) to avoid

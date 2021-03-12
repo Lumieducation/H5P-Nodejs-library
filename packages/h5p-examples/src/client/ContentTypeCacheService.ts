@@ -10,7 +10,7 @@ export default class ContentTypeCacheService {
     public async getCacheUpdate(): Promise<Date> {
         const response = await fetch(`${this.baseUrl}/update`);
         if (response.ok) {
-            const lastUpdate = (await response.json()).lastUpdate;
+            const { lastUpdate } = await response.json();
             return lastUpdate === null ? null : new Date(lastUpdate);
         }
         throw new Error(

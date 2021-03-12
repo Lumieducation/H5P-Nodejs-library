@@ -2,9 +2,9 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 
 import PackageImporter from '@lumieducation/h5p-server/src/PackageImporter';
-import logger from '@lumieducation/h5p-server/src/helpers/Logger';
+import Logger from '@lumieducation/h5p-server/src/helpers/Logger';
 
-const log = new logger('exportPackage');
+const log = new Logger('exportPackage');
 /**
  * Extracts the files in a h5p package into the appropriate directories on the
  * disk. This function can be used to prepare e2e tests with the file storage

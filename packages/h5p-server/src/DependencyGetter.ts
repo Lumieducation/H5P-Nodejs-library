@@ -2,6 +2,7 @@ import LibraryName from './LibraryName';
 import { ILibraryName, ILibraryStorage } from './types';
 
 import Logger from './helpers/Logger';
+
 const log = new Logger('DependencyGetter');
 /**
  * Gets the libraries required to run a specific library.

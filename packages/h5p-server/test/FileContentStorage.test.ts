@@ -131,16 +131,14 @@ describe('FileContentStorage (repository that saves content objects to a local d
                     user
                 );
                 const stream1 = new Readable();
-                stream1._read = () => {
-                    return;
-                };
+                // eslint-disable-next-line no-underscore-dangle
+                stream1._read = () => {};
                 stream1.push('dummy');
                 stream1.push(null);
                 await storage.addFile(id, 'file1.txt', stream1, user);
                 const stream2 = new Readable();
-                stream2._read = () => {
-                    return;
-                };
+                // eslint-disable-next-line no-underscore-dangle
+                stream2._read = () => {};
                 stream2.push('dummy');
                 stream2.push(null);
                 await storage.addFile(id, 'file2.txt', stream2, user);
@@ -162,9 +160,8 @@ describe('FileContentStorage (repository that saves content objects to a local d
                     user
                 );
                 const stream1 = new Readable();
-                stream1._read = () => {
-                    return;
-                };
+                // eslint-disable-next-line no-underscore-dangle
+                stream1._read = () => {};
                 stream1.push('dummy');
                 stream1.push(null);
                 await expect(

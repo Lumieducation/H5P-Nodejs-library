@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 import { Logger } from '@lumieducation/h5p-server';
 
@@ -23,7 +23,7 @@ export default async (
     db?: string,
     user?: string,
     password?: string
-) => {
+): Promise<Db> => {
     try {
         const auth = process.env.MONGODB_USER
             ? {

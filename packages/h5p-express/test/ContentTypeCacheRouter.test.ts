@@ -1,24 +1,18 @@
 import { dir } from 'tmp-promise';
 import axios from 'axios';
-import axiosMockAdapter from 'axios-mock-adapter';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
+import * as H5P from '@lumieducation/h5p-server';
+import fsExtra from 'fs-extra';
 
 import User from './User';
-import * as H5P from '@lumieducation/h5p-server';
 import ContentTypeCacheExpressRouter from '../src/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 
-const axiosMock = new axiosMockAdapter(axios);
-
-interface RequestEx extends express.Request {
-    language: string;
-    languages: string[];
-    t: (id: string, replacements: any) => string;
-    user: H5P.IUser;
-}
+const axiosMock = new AxiosMockAdapter(axios);
 
 describe('Content Type Cache endpoint adapter', () => {
     const user: H5P.IUser = new User();
@@ -53,30 +47,34 @@ describe('Content Type Cache endpoint adapter', () => {
             path.resolve(path.join(tempDir, 'content')) // the path on the local disc where content is stored
         );
 
-        axiosMock.onPost(h5pEditor.config.hubRegistrationEndpoint).reply(
-            200,
-            require(path.resolve(
-                // '..',
-                // '..',
-                'test',
-                'data',
-                'content-type-cache',
-                'registration.json'
-            ))
-        );
-        axiosMock.onPost(h5pEditor.config.hubContentTypesEndpoint).reply(
-            200,
-            require(path.resolve(
-                // '..',
-                // '..',
-                'test',
-                'data',
-                'content-type-cache',
-                'real-content-types.json'
-            ))
-        );
+        axiosMock
+            .onPost(h5pEditor.config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test',
+                        'data',
+                        'content-type-cache',
+                        'registration.json'
+                    )
+                )
+            );
+        axiosMock
+            .onPost(h5pEditor.config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test',
+                        'data',
+                        'content-type-cache',
+                        'real-content-types.json'
+                    )
+                )
+            );
 
-        app.use((req: RequestEx, res, next) => {
+        app.use((req: any, res, next) => {
             req.user = user;
             req.language = 'en';
             req.languages = ['en'];

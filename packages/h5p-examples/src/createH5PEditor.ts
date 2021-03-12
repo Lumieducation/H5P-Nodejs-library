@@ -62,7 +62,7 @@ export default async function createH5PEditor(
         );
         await mongoLibraryStorage.createIndexes();
         libraryStorage = mongoLibraryStorage;
-    } else if (process.env.LIBRARYSTORAGE !== 'mongos3') {
+    } else if (process.env.LIBRARYSTORAGE === 'mongos3') {
         const mongoS3LibraryStorage = new dbImplementations.MongoS3LibraryStorage(
             dbImplementations.initS3({
                 s3ForcePathStyle: true,

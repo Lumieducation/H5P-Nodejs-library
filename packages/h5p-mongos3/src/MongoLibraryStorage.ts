@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import MongoDB, { Binary } from 'mongodb';
 import { Readable } from 'stream';
 import * as path from 'path';
@@ -293,9 +295,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                         }
                     }
                 )
-                .map((d) => {
-                    return { ...d.metadata, ubername: d._id };
-                })
+                .map((d) => ({ ...d.metadata, ubername: d._id }))
                 .toArray();
         } catch (error) {
             throw new H5pError(
@@ -840,7 +840,5 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         });
     }
 
-    private validateFilename(filename: string): void {
-        return;
-    }
+    private validateFilename(filename: string): void {}
 }

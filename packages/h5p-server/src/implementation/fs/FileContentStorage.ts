@@ -3,21 +3,22 @@ import fsExtra from 'fs-extra';
 import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { streamToString } from '../../helpers/StreamHelpers';
-
 import { Stream } from 'stream';
+
+import { streamToString } from '../../helpers/StreamHelpers';
 import {
     ContentId,
-    H5pError,
     IContentMetadata,
     IContentStorage,
     IUser,
     Permission,
-    ContentParameters
-} from '../../../src';
+    ContentParameters,
+    IFileStats,
+    ILibraryName
+} from '../../types';
 import { checkFilename, sanitizeFilename } from './filenameUtils';
-import { IFileStats, ILibraryName } from '../../types';
 import { hasDependencyOn } from '../../helpers/DependencyChecker';
+import H5pError from '../../helpers/H5pError';
 
 /**
  * Persists content to the disk.
@@ -120,7 +121,6 @@ export default class FileContentStorage implements IContentStorage {
         id?: ContentId
     ): Promise<ContentId> {
         if (id === undefined || id === null) {
-            // tslint:disable-next-line: no-parameter-reassignment
             id = await this.createContentId();
         }
         try {

@@ -16,4 +16,4 @@ renovate.json
 src/
 test/
 tsconfig*.json
-tslint.json
+.eslintrc.js

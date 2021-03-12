@@ -1,4 +1,4 @@
-import { IPlayerModel } from '@lumieducation/h5p-server';
+import type { IPlayerModel } from '@lumieducation/h5p-server';
 
 import { mergeH5PIntegration, removeUnusedContent } from './h5p-utils';
 import { addScripts, addStylesheets } from './dom-utils';
@@ -199,7 +199,7 @@ export class H5PPlayerComponent extends HTMLElement {
         }
     };
 
-    private onxAPI = (event: IxAPIEvent) => {
+    private onxAPI = (event: IxAPIEvent): void => {
         if (
             `${event.data?.statement?.object?.definition?.extensions['http://h5p.org/x-api/h5p-local-content-id']}` ===
             `${this.playerModel.contentId}`

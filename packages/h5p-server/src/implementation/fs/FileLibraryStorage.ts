@@ -3,20 +3,21 @@ import globPromise from 'glob-promise';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { Readable } from 'stream';
-import { streamToString } from '../../helpers/StreamHelpers';
 import upath from 'upath';
 
+import { checkFilename } from './filenameUtils';
 import {
-    H5pError,
+    IFileStats,
+    IAdditionalLibraryMetadata,
     IInstalledLibrary,
     ILibraryMetadata,
     ILibraryName,
-    ILibraryStorage,
-    InstalledLibrary,
-    LibraryName
-} from '../../../src';
-import { checkFilename } from './filenameUtils';
-import { IFileStats, IAdditionalLibraryMetadata } from '../../types';
+    ILibraryStorage
+} from '../../types';
+import { streamToString } from '../../helpers/StreamHelpers';
+import H5pError from '../../helpers/H5pError';
+import InstalledLibrary from '../../InstalledLibrary';
+import LibraryName from '../../LibraryName';
 
 /**
  * Stores libraries in a directory.
@@ -352,15 +353,13 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async getInstalledLibraryNames(
         machineName?: string
     ): Promise<ILibraryName[]> {
-        const nameRegex = /^([\w\.]+)-(\d+)\.(\d+)$/i;
+        const nameRegex = /^([\w.]+)-(\d+)\.(\d+)$/i;
         const libraryDirectories = await fsExtra.readdir(
             this.getLibrariesDirectory()
         );
         return libraryDirectories
             .filter((name) => nameRegex.test(name))
-            .map((name) => {
-                return LibraryName.fromUberName(name);
-            })
+            .map((name) => LibraryName.fromUberName(name))
             .filter((lib) => !machineName || lib.machineName === machineName);
     }
 

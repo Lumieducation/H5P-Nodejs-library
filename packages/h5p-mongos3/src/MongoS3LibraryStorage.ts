@@ -1,8 +1,9 @@
+/* eslint-disable no-underscore-dangle */
+
 import MongoDB from 'mongodb';
 import AWS from 'aws-sdk';
 import { Readable } from 'stream';
 import * as path from 'path';
-// tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {
@@ -172,11 +173,9 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                         .deleteObjects({
                             Bucket: this.options.s3Bucket,
                             Delete: {
-                                Objects: next1000Files.map((f) => {
-                                    return {
-                                        Key: this.getS3Key(library, f)
-                                    };
-                                })
+                                Objects: next1000Files.map((f) => ({
+                                    Key: this.getS3Key(library, f)
+                                }))
                             }
                         })
                         .promise();
@@ -327,9 +326,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                         }
                     }
                 )
-                .map((d) => {
-                    return { ...d.metadata, ubername: d._id };
-                })
+                .map((d) => ({ ...d.metadata, ubername: d._id }))
                 .toArray();
         } catch (error) {
             throw new H5pError(

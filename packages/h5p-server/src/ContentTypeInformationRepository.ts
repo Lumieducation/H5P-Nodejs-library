@@ -18,6 +18,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
+
 const log = new Logger('ContentTypeInformationRepository');
 
 /**
@@ -164,35 +165,33 @@ export default class ContentTypeInformationRepository {
                         (hubLib) => hubLib.machineName === lib.machineName
                     ) && lib.runnable
             )
-            .map(async (localLib) => {
-                return {
-                    canInstall: false,
-                    description: '',
-                    icon: (await this.libraryManager.libraryFileExists(
-                        localLib,
-                        'icon.svg'
-                    ))
-                        ? this.libraryManager.getLibraryFileUrl(
-                              localLib,
-                              'icon.svg'
-                          )
-                        : undefined,
-                    installed: true,
-                    isUpToDate: true,
-                    localMajorVersion: localLib.majorVersion,
-                    localMinorVersion: localLib.minorVersion,
-                    localPatchVersion: localLib.patchVersion,
-                    machineName: localLib.machineName,
-                    majorVersion: localLib.majorVersion,
-                    minorVersion: localLib.minorVersion,
-                    owner: '',
-                    patchVersion: localLib.patchVersion,
-                    restricted:
-                        this.libraryIsRestricted(localLib) &&
-                        !user.canCreateRestricted,
-                    title: localLib.title
-                };
-            });
+            .map(async (localLib) => ({
+                canInstall: false,
+                description: '',
+                icon: (await this.libraryManager.libraryFileExists(
+                    localLib,
+                    'icon.svg'
+                ))
+                    ? this.libraryManager.getLibraryFileUrl(
+                          localLib,
+                          'icon.svg'
+                      )
+                    : undefined,
+                installed: true,
+                isUpToDate: true,
+                localMajorVersion: localLib.majorVersion,
+                localMinorVersion: localLib.minorVersion,
+                localPatchVersion: localLib.patchVersion,
+                machineName: localLib.machineName,
+                majorVersion: localLib.majorVersion,
+                minorVersion: localLib.minorVersion,
+                owner: '',
+                patchVersion: localLib.patchVersion,
+                restricted:
+                    this.libraryIsRestricted(localLib) &&
+                    !user.canCreateRestricted,
+                title: localLib.title
+            }));
         const finalLocalLibs = await Promise.all(localLibs);
         log.info(
             `adding local libraries: ${finalLocalLibs

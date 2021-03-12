@@ -2,6 +2,7 @@ import LibraryManager from '../src/LibraryManager';
 import SemanticsEnforcer from '../src/SemanticsEnforcer';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import { IInstalledLibrary, ILibraryName, ISemanticsEntry } from '../src/types';
+
 jest.mock('../src/implementation/fs/FileLibraryStorage');
 
 // The tests here try some of the (many) XSS attacks listed here:
@@ -30,7 +31,7 @@ describe('SemanticsEnforcer', () => {
                 ) => 0
             });
         const libraryManager = new LibraryManager(libraryStorage);
-        libraryManager.getSemantics = (library) => Promise.resolve(semantics);
+        libraryManager.getSemantics = () => Promise.resolve(semantics);
 
         const enforcer = new SemanticsEnforcer(libraryManager);
         return enforcer;

@@ -10,7 +10,7 @@ import {
     IAdditionalLibraryMetadata
 } from '../../types';
 import LibraryName from '../../LibraryName';
-import { InstalledLibrary } from '../..';
+import InstalledLibrary from '../../InstalledLibrary';
 
 /**
  * A wrapper around an actual library storage which adds caching and also
@@ -159,9 +159,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 filename,
                 this.FILE_EXISTS_CACHE_KEY
             ),
-            () => {
-                return this.storage.fileExists(library, filename);
-            }
+            () => this.storage.fileExists(library, filename)
         );
     }
 
@@ -187,9 +185,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     ): Promise<any> {
         return this.cache.wrap(
             this.getCacheKeyForFile(library, file, this.JSON_CACHE_KEY),
-            () => {
-                return this.storage.getFileAsJson(library, file);
-            }
+            () => this.storage.getFileAsJson(library, file)
         );
     }
 
@@ -199,9 +195,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     ): Promise<string> {
         return this.cache.wrap(
             this.getCacheKeyForFile(library, file, this.STRING_CACHE_KEY),
-            () => {
-                return this.storage.getFileAsString(library, file);
-            }
+            () => this.storage.getFileAsString(library, file)
         );
     }
 
@@ -211,9 +205,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     ): Promise<IFileStats> {
         return this.cache.wrap(
             this.getCacheKeyForFile(library, file, this.STATS_CACHE_KEY),
-            () => {
-                return this.storage.getFileStats(library, file);
-            }
+            () => this.storage.getFileStats(library, file)
         );
     }
 
@@ -236,32 +228,26 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         if (machineName) {
             return this.cache.wrap(
                 this.getCacheKeyForLibraryListByMachineName(machineName),
-                () => {
-                    return this.storage.getInstalledLibraryNames(machineName);
-                }
+                () => this.storage.getInstalledLibraryNames(machineName)
             );
         }
 
-        return this.cache.wrap(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY, () => {
-            return this.storage.getInstalledLibraryNames();
-        });
+        return this.cache.wrap(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY, () =>
+            this.storage.getInstalledLibraryNames()
+        );
     }
 
     public async getLanguages(library: ILibraryName): Promise<string[]> {
         return this.cache.wrap(
             this.getCacheKeyForMetadata(library, this.LANGUAGES_CACHE_KEY),
-            () => {
-                return this.storage.getLanguages(library);
-            }
+            () => this.storage.getLanguages(library)
         );
     }
 
     public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
         const result: IInstalledLibrary = await this.cache.wrap(
             this.getCacheKeyForMetadata(library, this.METADATA_CACHE_KEY),
-            () => {
-                return this.storage.getLibrary(library);
-            }
+            () => this.storage.getLibrary(library)
         );
         // The ILibraryInterface contains methods, so we must construct an
         // object with these methods if we obtained the data from the cache.
@@ -277,17 +263,15 @@ export default class CachedLibraryStorage implements ILibraryStorage {
                 library,
                 this.LIBRARY_IS_INSTALLED_CACHE_KEY
             ),
-            () => {
-                return this.storage.isInstalled(library);
-            }
+            () => this.storage.isInstalled(library)
         );
     }
 
     public async listAddons?(): Promise<ILibraryMetadata[]> {
         if (this.storage.listAddons) {
-            return this.cache.wrap(this.ADDONS_CACHE_KEY, () => {
-                return this.storage.listAddons();
-            });
+            return this.cache.wrap(this.ADDONS_CACHE_KEY, () =>
+                this.storage.listAddons()
+            );
         }
         return [];
     }
@@ -295,9 +279,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     public async listFiles(library: ILibraryName): Promise<string[]> {
         return this.cache.wrap(
             this.getCacheKeyForMetadata(library, this.FILE_LIST),
-            () => {
-                return this.storage.listFiles(library);
-            }
+            () => this.storage.listFiles(library)
         );
     }
 

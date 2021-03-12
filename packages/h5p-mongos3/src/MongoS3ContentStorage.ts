@@ -1,7 +1,8 @@
+/* eslint-disable no-underscore-dangle */
+
 import MongoDB, { ObjectId } from 'mongodb';
 import { Stream, Readable } from 'stream';
 import AWS from 'aws-sdk';
-// tslint:disable-next-line: no-submodule-imports
 import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {
@@ -13,7 +14,6 @@ import {
     Permission,
     ILibraryName,
     H5pError,
-    LibraryName,
     Logger
 } from '@lumieducation/h5p-server';
 import { validateFilename, sanitizeFilename } from './S3Utils';
@@ -305,14 +305,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
                         .deleteObjects({
                             Bucket: this.options.s3Bucket,
                             Delete: {
-                                Objects: next1000Files.map((f) => {
-                                    return {
-                                        Key: MongoS3ContentStorage.getS3Key(
-                                            contentId,
-                                            f
-                                        )
-                                    };
-                                })
+                                Objects: next1000Files.map((f) => ({
+                                    Key: MongoS3ContentStorage.getS3Key(
+                                        contentId,
+                                        f
+                                    )
+                                }))
                             }
                         })
                         .promise();

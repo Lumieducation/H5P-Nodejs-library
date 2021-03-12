@@ -1,4 +1,4 @@
-import { IEditorModel, IContentMetadata } from '@lumieducation/h5p-server';
+import type { IEditorModel, IContentMetadata } from '@lumieducation/h5p-server';
 
 import { mergeH5PIntegration } from './h5p-utils';
 import { addScripts } from './dom-utils';
@@ -25,11 +25,12 @@ declare global {
     /**
      * The H5P core "class" for the editor.
      */
-    // tslint:disable-next-line: variable-name
+    // eslint-disable-next-line vars-on-top, no-var
     var H5PEditor;
     /**
      * Used by the H5P core for namespacing.
      */
+    // eslint-disable-next-line vars-on-top, no-var
     var ns;
 }
 
@@ -408,12 +409,20 @@ export class H5PEditorComponent extends HTMLElement {
         h5pCreateDiv.appendChild(h5pEditorDiv);
 
         // Set up the H5P core editor.
-        H5PEditor.getAjaxUrl = (action, parameters) => {
+        H5PEditor.getAjaxUrl = (
+            action: string,
+            parameters: { [x: string]: any }
+        ): string => {
             let url = editorModel.integration.editor.ajaxPath + action;
 
             if (parameters !== undefined) {
                 for (const property in parameters) {
-                    if (parameters.hasOwnProperty(property)) {
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            parameters,
+                            property
+                        )
+                    ) {
                         url = `${url}&${property}=${parameters[property]}`;
                     }
                 }
