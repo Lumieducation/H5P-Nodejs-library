@@ -123,7 +123,11 @@ export default class UrlGenerator implements IUrlGenerator {
         `${this.baseUrl()}${this.config.editorLibraryUrl}/`;
 
     public libraryFile = (library: IFullLibraryName, file: string): string => {
-        if (file.startsWith('http://') || file.startsWith('https://')) {
+        if (
+            file.startsWith('http://') ||
+            file.startsWith('https://') ||
+            file.startsWith('/')
+        ) {
             return file;
         }
         return `${this.baseUrl()}${this.config.librariesUrl}/${
