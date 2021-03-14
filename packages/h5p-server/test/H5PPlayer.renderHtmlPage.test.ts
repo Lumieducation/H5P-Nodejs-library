@@ -509,6 +509,7 @@ describe('Rendering the HTML page', () => {
                                 scripts: [
                                     ...scripts,
                                     'preload3.js',
+                                    '/preload4.js',
                                     'https://example.com/script.js'
                                 ],
                                 styles: [styles[0], styles[1]]
@@ -540,6 +541,7 @@ describe('Rendering the HTML page', () => {
                 '/h5p/libraries/Foo-1.0/preload3.js?version=1.0.0'
             )
         ).toBe(true);
+        expect((model as any).scripts.includes('/preload4.js')).toBe(true);
         expect(
             (model as any).scripts.includes('https://example.com/script.js')
         ).toBe(true);
