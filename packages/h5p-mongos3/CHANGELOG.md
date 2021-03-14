@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.2.0...v7.3.0) (2021-03-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.852.0 ([5efe810](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5efe810ec07deca9e5502f021f9fe0cda1d135e5))
+* **deps:** update dependency aws-sdk to v2.853.0 ([a6c0096](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a6c0096ef8a6c10e5b6c17a38f08fbd060962fd2))
+* **deps:** update dependency aws-sdk to v2.854.0 ([47067ba](https://github.com/Lumieducation/H5P-Nodejs-library/commit/47067badc4b7c341caa8b5978cfabf1f54aacef6))
+* **deps:** update dependency aws-sdk to v2.855.0 ([e0ff15d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e0ff15d8f90d1e714c2090d2dd1a36a2fa11756b))
+* **deps:** update dependency aws-sdk to v2.856.0 ([21abf87](https://github.com/Lumieducation/H5P-Nodejs-library/commit/21abf87e75b633f567c4bb6a8c861fb1ed15d8ab))
+* **deps:** update dependency aws-sdk to v2.857.0 ([621a53f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/621a53f0c15e186fb2ca64bbd59c4e0b0327d6b3))
+* **deps:** update dependency aws-sdk to v2.858.0 ([52aec33](https://github.com/Lumieducation/H5P-Nodejs-library/commit/52aec339824b514cd4944c52df4a503a580262b6))
+* **deps:** update dependency aws-sdk to v2.859.0 ([71393dd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/71393dd2d784527d074cc3b55c69f7d70013edd1))
+* **deps:** update dependency aws-sdk to v2.860.0 ([92bde6c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/92bde6c14634729eef6f9333db037f52f63cdd5c))
+* **deps:** update dependency aws-sdk to v2.861.0 ([75748b0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/75748b0e8d8db757fd132578ae40192857080184))
+* **deps:** update dependency aws-sdk to v2.862.0 ([aafe36c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aafe36c6a21c78ff5334fae5448995a26241adba))
+* **deps:** update dependency aws-sdk to v2.863.0 ([04baa97](https://github.com/Lumieducation/H5P-Nodejs-library/commit/04baa9702051fbf9c24cecd5ffea9a57aca2ba47))
+
+
+### Features
+
+* **h5p-mongos3:** new MongoLibraryStorage class ([#1118](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1118)) ([050360f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/050360f7411339959624d35793373e6f4503ddb9))
+
+
+
+
+
 # [7.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.1.0...v7.2.0) (2021-03-04)
 
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.2.0...v7.3.0) (2021-03-14)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([e1420f6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e1420f6c63cb4a667d5ce53409392164cc4b7c54))
+* **deps:** update dependency @testing-library/user-event to v12.8.0 ([dda5e8c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/dda5e8cd1ea054c392ae957d05e2caae5851a82f))
+* **deps:** update dependency @testing-library/user-event to v12.8.1 ([05144b0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/05144b0b55e7d61e89af849e51bd06ea7c41c31d))
+* **deps:** update dependency react-bootstrap to v1.5.1 ([969ad52](https://github.com/Lumieducation/H5P-Nodejs-library/commit/969ad527ff5ddc0da97994eb4db469288a1ceb8b))
+* **deps:** update dependency react-bootstrap to v1.5.2 ([5f8aca3](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5f8aca3cd7169a4ee1c07b626f2bf44bbb0b160e))
+* **deps:** update dependency typescript to v4.2.2 ([5062806](https://github.com/Lumieducation/H5P-Nodejs-library/commit/506280685b02ee47d948e7de5e6c8a77d6855698))
+* **deps:** update dependency typescript to v4.2.3 ([1424804](https://github.com/Lumieducation/H5P-Nodejs-library/commit/142480416763e34d79626a605032c8fa11f8f76c))
+
+
+
+
+
 # [7.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.1.0...v7.2.0) (2021-03-04)
 
 
