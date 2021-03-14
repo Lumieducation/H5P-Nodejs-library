@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-webcomponents",
-    "version": "7.2.0",
+    "version": "7.3.0",
     "description": "A Web Component wrapper around the H5P Editor and Player",
     "author": "Sebastian Rettig",
     "license": "GPL-3.0-or-later",
@@ -30,7 +30,7 @@
         "await-lock": "^2.1.0"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^7.2.0",
+        "@lumieducation/h5p-server": "^7.3.0",
         "@types/resize-observer-browser": "0.1.5"
     }
 }
