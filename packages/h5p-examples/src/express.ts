@@ -52,6 +52,7 @@ const start = async (): Promise<void> => {
             ns: [
                 'client',
                 'copyright-semantics',
+                'hub',
                 'metadata-semantics',
                 'mongo-s3-content-storage',
                 's3-temporary-storage',

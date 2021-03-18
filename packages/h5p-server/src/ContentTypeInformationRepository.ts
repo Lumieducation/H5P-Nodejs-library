@@ -14,6 +14,7 @@ import {
     IHubInfo,
     IInstalledLibrary,
     ILibraryInstallResult,
+    ITranslationFunction,
     IUser
 } from './types';
 
@@ -40,17 +41,22 @@ export default class ContentTypeInformationRepository {
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
-        private config: IH5PConfig
+        private config: IH5PConfig,
+        private translationCallback: ITranslationFunction
     ) {
         log.info(`initialize`);
     }
 
     /**
-     * Gets the information about available content types with all the extra information as listed in the class description.
+     * Gets the information about available content types with all the extra
+     * information as listed in the class description.
      */
-    public async get(user: IUser): Promise<IHubInfo> {
+    public async get(user: IUser, language?: string): Promise<IHubInfo> {
         log.info(`getting information about available content types`);
-        const cachedHubInfo = await this.contentTypeCache.get();
+        let cachedHubInfo = await this.contentTypeCache.get();
+        if (language) {
+            cachedHubInfo = this.localizeHubInfo(cachedHubInfo, language);
+        }
         let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
             cachedHubInfo,
             user
@@ -293,5 +299,31 @@ export default class ContentTypeInformationRepository {
             return true;
         }
         return library.restricted;
+    }
+
+    private localizeHubInfo(
+        contentTypes: IHubContentType[],
+        language: string
+    ): IHubContentType[] {
+        return contentTypes.map((ct) => ({
+            ...ct,
+            summary: this.translationCallback(
+                `hub:${ct.machineName.replace('.', '_')}.summary`,
+                language
+            ),
+            description: this.translationCallback(
+                `hub:${ct.machineName.replace('.', '_')}.description`,
+                language
+            ),
+            keywords: ct.keywords.map((kw) =>
+                this.translationCallback(
+                    `hub:${ct.machineName.replace(
+                        '.',
+                        '_'
+                    )}.keywords.${kw.replace('_', ' ')}`,
+                    language
+                )
+            )
+        }));
     }
 }
