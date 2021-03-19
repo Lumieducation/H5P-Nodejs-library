@@ -58,7 +58,12 @@ export default class ContentTypeInformationRepository {
     public async get(user: IUser, language?: string): Promise<IHubInfo> {
         log.info(`getting information about available content types`);
         let cachedHubInfo = await this.contentTypeCache.get();
-        if (this.translationCallback && language) {
+        if (
+            this.translationCallback &&
+            language &&
+            language.toLowerCase() !== 'en' && // We don't localize English as the base strings already are in English
+            !language.toLowerCase().startsWith('en-')
+        ) {
             cachedHubInfo = this.localizeHubInfo(cachedHubInfo, language);
         }
         let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
@@ -343,6 +348,10 @@ export default class ContentTypeInformationRepository {
                         )}.keywords.${kw.replace('_', ' ')}`,
                         language
                     )
+                ),
+                title: this.translationCallback(
+                    `hub:${cleanMachineName}.title`,
+                    language
                 )
             };
         });

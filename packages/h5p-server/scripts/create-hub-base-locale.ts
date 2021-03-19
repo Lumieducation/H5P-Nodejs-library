@@ -12,6 +12,7 @@ const hubData = fsExtra.readJSONSync(
 
 const reducedHubData = hubData.contentTypes.reduce((prev, ct) => {
     prev[ct.id.replace('.', '_')] = {
+        title: `${ct.title} (${ct.title})`,
         summary: ct.summary,
         description: ct.description,
         keywords: ct.keywords?.reduce((prev, curr) => {
