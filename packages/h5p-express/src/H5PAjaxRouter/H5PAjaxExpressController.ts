@@ -32,7 +32,7 @@ export default class H5PAjaxExpressController {
             req.query.machineName as string,
             req.query.majorVersion as string,
             req.query.minorVersion as string,
-            req.query.language as string,
+            (req as any).language ?? (req.query.language as string),
             req.user
         );
         res.status(200).send(result);

@@ -14,6 +14,7 @@ import {
     IHubInfo,
     IInstalledLibrary,
     ILibraryInstallResult,
+    ITranslationFunction,
     IUser
 } from './types';
 
@@ -36,21 +37,35 @@ export default class ContentTypeInformationRepository {
      * @param contentTypeCache
      * @param libraryManager
      * @param config
+     * @param translationCallback (optional) if passed in, the object will try
+     * to localize content type information (if a language is passed to the
+     * `get(...)` method). You can safely leave it out if you don't want to
+     * localize hub information.
      */
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
-        private config: IH5PConfig
+        private config: IH5PConfig,
+        private translationCallback?: ITranslationFunction
     ) {
         log.info(`initialize`);
     }
 
     /**
-     * Gets the information about available content types with all the extra information as listed in the class description.
+     * Gets the information about available content types with all the extra
+     * information as listed in the class description.
      */
-    public async get(user: IUser): Promise<IHubInfo> {
+    public async get(user: IUser, language?: string): Promise<IHubInfo> {
         log.info(`getting information about available content types`);
-        const cachedHubInfo = await this.contentTypeCache.get();
+        let cachedHubInfo = await this.contentTypeCache.get();
+        if (
+            this.translationCallback &&
+            language &&
+            language.toLowerCase() !== 'en' && // We don't localize English as the base strings already are in English
+            !language.toLowerCase().startsWith('en-')
+        ) {
+            cachedHubInfo = this.localizeHubInfo(cachedHubInfo, language);
+        }
         let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
             cachedHubInfo,
             user
@@ -293,5 +308,78 @@ export default class ContentTypeInformationRepository {
             return true;
         }
         return library.restricted;
+    }
+
+    /**
+     * Returns a transformed list of content type information in which the
+     * visible strings are localized into the desired language. Only works if
+     * the namespace 'hub' has been initialized and populated by the i18n
+     * system.
+     * @param contentTypes
+     * @param language
+     * @returns the transformed list of content types
+     */
+    private localizeHubInfo(
+        contentTypes: IHubContentType[],
+        language: string
+    ): IHubContentType[] {
+        if (!this.translationCallback) {
+            throw new Error(
+                'You need to instantiate ContentTypeInformationRepository with a translationCallback if you want to localize Hub information.'
+            );
+        }
+
+        return contentTypes.map((ct) => {
+            const cleanMachineName = ct.machineName.replace('.', '_');
+            return {
+                ...ct,
+                summary: this.tryLocalize(
+                    `${cleanMachineName}.summary`,
+                    ct.summary,
+                    language
+                ),
+                description: this.tryLocalize(
+                    `${cleanMachineName}.description`,
+                    ct.description,
+                    language
+                ),
+                keywords: ct.keywords.map((kw) =>
+                    this.tryLocalize(
+                        `${ct.machineName.replace(
+                            '.',
+                            '_'
+                        )}.keywords.${kw.replace('_', ' ')}`,
+                        kw,
+                        language
+                    )
+                ),
+                title: this.tryLocalize(
+                    `${cleanMachineName}.title`,
+                    ct.title,
+                    language
+                )
+            };
+        });
+    }
+
+    /**
+     * Tries localizing the entry of the content type information. If it fails
+     * (indicated by the fact that the key is part of the localized string), it
+     * will return the original source string.
+     * @param key the key to look up the translation in the i18n data
+     * @param sourceString the original English string received from the Hub
+     * @param language the desired language
+     * @returns the localized string or the original English source string
+     */
+    private tryLocalize(
+        key: string,
+        sourceString: string,
+        language: string
+    ): string {
+        const localized = this.translationCallback(`hub:${key}`, language);
+        if (localized.includes(key)) {
+            return sourceString;
+        }
+        return localized;
     }
 }

@@ -113,7 +113,8 @@ export default class H5PEditor {
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
-            config
+            config,
+            options?.enableHubLocalization ? translationCallback : undefined
         );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
@@ -305,12 +306,16 @@ export default class H5PEditor {
     }
 
     /**
-     * Returns the content type cache for a specific user. This includes all available content types for the user (some
-     * might be restricted) and what the user can do with them (update, install from Hub).
+     * Returns the content type cache for a specific user. This includes all
+     * available content types for the user (some might be restricted) and what
+     * the user can do with them (update, install from Hub).
      */
-    public getContentTypeCache(user: IUser): Promise<IHubInfo> {
+    public getContentTypeCache(
+        user: IUser,
+        language?: string
+    ): Promise<IHubInfo> {
         log.info(`getting content type cache`);
-        return this.contentTypeRepository.get(user);
+        return this.contentTypeRepository.get(user, language);
     }
 
     /**
