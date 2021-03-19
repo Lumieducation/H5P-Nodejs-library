@@ -1,0 +1,403 @@
+{
+    "H5P_Accordion": {
+        "title": "Accordion (Accordion)",
+        "summary": "Create vertically stacked expandable items",
+        "description": "Reduce the amount of text presented to readers by using this responsive accordion. Readers decide which headlines to take a closer look at by expanding the title. Excellent for providing an overview with optional in-depth explanations.",
+        "keywords": {
+            "accordion": "accordion",
+            "collapsible_text": "collapsible text"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Arithmetic Quiz (Arithmetic Quiz)",
+        "summary": "Create time-based arithmetic quizzes",
+        "description": "Create arithmetic quizzes consisting of multiple choice questions. As an author, all you have to do is decide the type and length of the quiz. Users keep track of score and time spent when solving the quiz.",
+        "keywords": {
+            "math": "math",
+            "arithmetic_quiz": "arithmetic quiz",
+            "countdown": "countdown"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Chart (Chart)",
+        "summary": "Quickly generate bar and pie charts",
+        "description": "Need to present simple statistical data graphically without creating the artwork manually? Chart is your answer.",
+        "keywords": {
+            "chart": "chart",
+            "bar_chart": "bar chart",
+            "pie_chart": "pie chart",
+            "graph": "graph"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Collage (Collage)",
+        "summary": "Create a collage of multiple images",
+        "description": "The Collage tool allows you to organize images into a soothing composition. ",
+        "keywords": {
+            "collage": "collage",
+            "image": "image"
+        }
+    },
+    "H5P_Column": {
+        "title": "Column (Column)",
+        "summary": "Organize H5P content into a column layout",
+        "description": "Organize your content type into a column layout with H5P Column. Content types that address similar material or share a common theme can now be grouped together to create a coherent learning experience. In addition, authors are free to be creative by combining almost all of the existing H5P content types.",
+        "keywords": {
+            "column": "column",
+            "layout": "layout",
+            "compound": "compound"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Course Presentation (Course Presentation)",
+        "summary": "Create a presentation with interactive slides",
+        "description": "Course presentations consist of slides with multimedia, text, and many different types of interactions like interactive summaries, multiple choice questions and interactive videos. Learners can experience new interactive learning material and test their knowledge and memory in Course Presentations. As always with H5P, content is editable in web browsers, and the Course Presentation activity type includes a WYSIWYG drag and drop based authoring tool. A typical use of the Course Presentation activity is to use a few slides to introduce a subject and follow these with a few more slides in which the user’s knowledge is tested. Course Presentations may however be used in many different ways, including as a presentation tool for use in the classroom, or as a game where the usual navigation is replaced with navigation buttons on top of the slides to let the user make choices and see the consequences of their choices.",
+        "keywords": {
+            "course_presentation": "course presentation",
+            "slides": "slides",
+            "powerpoint": "powerpoint"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "Dialog Cards (Dialog Cards)",
+        "summary": "Create text-based turning cards",
+        "description": "Dialog cards can be used as a drill to help learners memorize words, expressions or sentences. On the front of the card, there's a hint for a word or expression. By turning the card the learner reveals a corresponding word or expression. Dialog cards can be used in language learning, to present math problems or help learners remember facts such as historical events, formulas or names.",
+        "keywords": {
+            "dialog_cards": "dialog cards"
+        }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Documentation Tool (Documentation Tool)",
+        "summary": "Create a form wizard with text export",
+        "description": "The documentation tool aims to make it easy to create assessment wizards for goal driven activities. It can also be used as a form wizard. While editing, the author can add multiple steps to the wizard. In each step, the author can define which content goes into that step. Content can be plain text, input fields, goal definition and goal assessment. Once published, the end user will be taken through the steps of the wizard. On the last step of the wizard, the user can generate a document with all the input that has been submitted. This document can be downloaded. The Documentation tool is fully responsive and works great on smaller screens as well as on your desktop.",
+        "keywords": {
+            "dialog_cards": "dialog cards"
+        }
+    },
+    "H5P_DragQuestion": {
+        "title": "Drag and Drop (Drag and Drop)",
+        "summary": "Create drag and drop tasks with images",
+        "description": "Drag and drop question enables the learner to associate two or more elements and to make logical connections in a visual way. Create Drag and drop questions using both text and images as draggable alternatives. H5P Drag and drop questions support one-to-one, one-to-many, many-to-one and many-to-many relations between questions and answers. ",
+        "keywords": {
+            "drag_and drop": "drag and drop"
+        }
+    },
+    "H5P_DragText": {
+        "title": "Drag the Words (Drag the Words)",
+        "summary": "Create text-based drag and drop tasks",
+        "description": "Drag the Words allows content designers to create textual expressions with missing pieces of text. The end user drags a missing piece of text to its correct place, to form a complete expression. May be used to check if the user remembers a text she has read, or if she understands something. Helps the user think through a text. It's super easy to create a drag the words task. The editor just writes the text and encloses the words that are to be draggable with asterisk signs like *draggableWord*.",
+        "keywords": {
+            "drag": "drag",
+            "words": "words"
+        }
+    },
+    "H5P_Blanks": {
+        "title": "Fill in the Blanks (Fill in the Blanks)",
+        "summary": "Create a task with missing words in a text",
+        "description": "Learners fill in the missing words in a text. The learner is shown a solution after filling in all the missing words, or after each word depending on settings. Authors enter text and mark words to be replaced with an asterix. In addition to native and second language learning, Fill in the blanks can be used to test the learner's ability to reproduce facts or produce mathematical inferences.",
+        "keywords": {
+            "fill": "fill",
+            "blanks": "blanks",
+            "text": "text"
+        }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Find the Hotspot (Find the Hotspot)",
+        "summary": "Create image hotspots for users to find",
+        "description": "This content type allows end users to press somewhere on an image and get feedback on whether that was correct or incorrect according to the task description. The author uploads an image and defines various hotspots corresponding to details or sections of the image. Hotspots can either be defined as correct or incorrect, and the author provides appropriate feedback text in both cases. The author can also define a feedback if the end user presses somewhere which is neither defined as a correct nor incorrect hotspot.",
+        "keywords": {
+            "find": "find",
+            "hotspot": "hotspot",
+            "image": "image"
+        }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Guess the Answer (Guess the Answer)",
+        "summary": "Create an image with a question and answer",
+        "description": "This content type allows authors to upload an image and add a suitable description. End users can guess the answer and press the bar below the image to reveal the correct answer.",
+        "keywords": {
+            "guess": "guess",
+            "answer": "answer"
+        }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "Iframe Embedder (Iframe Embedder)",
+        "summary": "Embed from a url or a set of files",
+        "description": "The Iframe embedder makes it easy to make an H5P of already existing JavaScript applications.",
+        "keywords": {
+            "embed": "embed",
+            "iframe": "iframe"
+        }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Interactive Video (Interactive Video)",
+        "summary": "Create videos enriched with interactions",
+        "description": "Add interactivity to your video with explanations, extra pictures, tables, Fill in the Blank and multiple choice questions. Quiz questions support adaptivity, meaning that you can jump to another part of the video based on the user's input.  Interactive summaries can be added at the end of the video. Interactive videos are created and edited using the H5P authoring tool in a standard web browser.",
+        "keywords": {
+            "interactive": "interactive",
+            "video": "video"
+        }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Mark the Words (Mark the Words)",
+        "summary": "Create a task where users highlight words",
+        "description": "Mark the words allows content designers to create textual expressions with a defined set of correct words. The end user highlights words according to the task description and is given a score. For the editor it is super easy to create a click the words challenge. The editor types in the text and encloses the words that the user is supposed to click, the right answers, in asterix like *correctWord*.",
+        "keywords": {
+            "mark": "mark",
+            "words": "words"
+        }
+    },
+    "H5P_MemoryGame": {
+        "title": "Memory Game (Memory Game)",
+        "summary": "Create the classic image pairing game",
+        "description": "Create your own memory games and test the memory of your site's users with this simple yet beautiful HTML5 game.",
+        "keywords": {
+            "memory": "memory",
+            "game": "game",
+            "cards": "cards"
+        }
+    },
+    "H5P_MultiChoice": {
+        "title": "Multiple Choice (Multiple Choice)",
+        "summary": "Create flexible multiple choice questions",
+        "description": "Multiple Choice questions can be an effective assesment tool. The learner is given immediate performance feedback. The H5P Multiple Choice questions can have a single or multiple correct options per question.",
+        "keywords": {
+            "multiple": "multiple",
+            "choice": "choice",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Personality Quiz (Personality Quiz)",
+        "summary": "Create personality quizzes",
+        "description": "In this content type, the author defines a series of questions with alternatives, where each alternative is matched against one or more personalities. At the end of the quiz, the end user will see which personality matches the best. There are several ways of making this quiz visually appealing, by eg. representing questions, alternatives, and personalities using images.",
+        "keywords": {
+            "personality": "personality",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_Questionnaire": {
+        "title": "Questionnaire (Questionnaire)",
+        "summary": "Create a questionnaire to receive feedback",
+        "description": "Gain feedback and ask open ended questions in Interactive Videos and other content types with Questionnaire. Questionnaire makes the user's answers available via an xAPI integration. This means that website owners may store the answers in many different ways. Answers may be stored in an LRS, the sites own custom storage or a script can fetch the e-mail address and use it to send the user an e-mail. On H5P.org answers are stored in Google Analytics.",
+        "keywords": {
+            "questionnaire": "questionnaire"
+        }
+    },
+    "H5P_QuestionSet": {
+        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "summary": "Create a sequence of various question types",
+        "description": "Question Set is your typical quiz content type. It allows the learner to solve a sequence of various question types such as Multichoice, Drag and drop and Fill in the blanks in a Question set. As an author, there are many settings you can use to make it behave just the way you want it to. You may, for instance, customize the Question set with background images and define a pass percentage for the learner. The Question Set also allows you to add videos that are played at the end. One video for success, another if the learner fails the test. This might motivate learners to try again if they fail so that they get to see the success video.",
+        "keywords": {
+            "question_set": "question set",
+            "collection": "collection",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Single Choice Set (Single Choice Set)",
+        "summary": "Create questions with one correct answer",
+        "description": "Single choice set allows content designers to create question sets with one correct answer per question. The end user gets immediate feedback after submitting each answer.",
+        "keywords": {
+            "collection": "collection",
+            "quiz": "quiz",
+            "choice": "choice"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Summary (Summary)",
+        "summary": "Create tasks with a list of statements",
+        "description": "Summaries help the learner remember key information in a text, video or presentation, by actively buliding a summary about the topic at hand. When the learner has completed a summary, a complete list of key statements about the topic is shown.",
+        "keywords": {
+            "summary": "summary"
+        }
+    },
+    "H5P_Timeline": {
+        "title": "Timeline (Timeline)",
+        "summary": "Create a timeline of events with multimedia",
+        "description": "This is Timeline.js developed by Knight Lab, packaged as an H5P content type in order to make timelines easily editable, shareable and reuseable. The Timeline content type allows you to place a sequence of events in a chronological order. For each event you may add images and texts. You may also include assets from Twitter, YouTube, Flickr, Vimeo, Google Maps and SoundCloud.",
+        "keywords": {
+            "timeline": "timeline",
+            "slider": "slider"
+        }
+    },
+    "H5P_TrueFalse": {
+        "title": "True/False Question (True/False Question)",
+        "summary": "Create True/False questions",
+        "description": "True/False Question is a simple and straightforward content type that can work by itself or be inserted into other content types such as Course Presentation. A more complex question can be created by adding an image or a video.",
+        "keywords": {
+            "true": "true",
+            "false": "false"
+        }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Image Hotspots (Image Hotspots)",
+        "summary": "Create an image with multiple info hotspots",
+        "description": "Image hotspots makes it possible to create an image with interactive hotspots. When the user presses a hotspot, a popup containing a header and text or video is displayed. Using the H5P editor, you may add as many hotspots as you like.",
+        "keywords": {
+            "image": "image",
+            "hotspot": "hotspot"
+        }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Find Multiple Hotspots (Find Multiple Hotspots)",
+        "summary": "Create many hotspots for users to find",
+        "description": "A free HTML5 based question type allowing creatives to create an image based test where the learner is to find the correct spots on an image. Use this content type with the H5P plugin for WordPress, Moodle or Drupal to challenge your users."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Image Juxtaposition (Image Juxtaposition)",
+        "summary": "Create interactive images",
+        "description": "A free HTML5-based image content type that allows users to compare two images interactively. Tell your image stories with H5P and Image Juxtaposition on WordPress, Moodle or Drupal."
+    },
+    "H5P_Audio": {
+        "title": "Audio (Audio)",
+        "summary": "Upload an audio recording",
+        "description": "Upload an audio recording in .mp3, .wav, .ogg or provide the link for an audio recording."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Audio Recorder (Audio Recorder)",
+        "summary": "Create an audio recording",
+        "description": "An HTML5 audio recorder. Record your voice and play back or download a .wav file of your recording. Use the H5P plugin to create the H5P Audio Recorder to your Drupal, Wordpress or Moodle site. ",
+        "keywords": {
+            "audio": "audio",
+            "recorder": "recorder"
+        }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Speak the Words (Speak the Words)",
+        "summary": "Answer a question using your voice (Chrome only)",
+        "description": "Speak the Words is only supported in browsers that implements the Web Speech API (Chrome browsers, except on iOS). You need a microphone to answer the question. Ask a question to users and make them answer using their voice. You can choose multiple correct answers. The user will be able to see what his words were interpreted as, and how close it was to the correct answers.",
+        "keywords": {
+            "language": "language",
+            "translation": "translation",
+            "voice": "voice",
+            "recognition": "recognition",
+            "speech": "speech",
+            "mic": "mic",
+            "microphone": "microphone"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "summary": "Present a sequence of images and explanations",
+        "description": "Present a sequence of images that people are supposed to look at one after the other, e.g. photos of an item that changes over time, schematics or maps that are organized in different layers or images that reveal more and more details.",
+        "keywords": {
+            "image": "image",
+            "images": "images",
+            "transition": "transition"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Image Sequencing (Image Sequencing)",
+        "summary": "Place images in the correct order",
+        "description": "A free HTML5 based image sequencing content type that allows authors to add a sequence of their own images (and optional image description) to the game in a particular order. The order of the images will be randomized and players will have to reorder them based on the task description. ",
+        "keywords": {
+            "image": "image",
+            "sequence": "sequence",
+            "order": "order"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Flashcards (Flashcards)",
+        "summary": "Create stylish and modern flashcards",
+        "description": "This content type allows authors to create a single flash card or a set of flashcards, where each card has images paired with questions and answers. Learners are required to fill in the text field and then check the correctness of their solution.",
+        "keywords": {
+            "cards": "cards",
+            "animation": "animation"
+        }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Speak the Words Set (Speak the Words Set)",
+        "summary": "Create a series of questions answered by speech (Chrome only)",
+        "description": "Speak the Words Set is only supported in browsers that implement the Web Speech API (Chrome browsers, except on ios). You need a microphone to answer the question. Create a set of questions that learners can answer using their voice. you can choose multiple correct answers. The user will be able to see what his words were interpreted as, and how close it was to the correct answers.",
+        "keywords": {
+            "language": "language",
+            "translation": "translation",
+            "voice": "voice",
+            "quiz": "quiz",
+            "set": "set",
+            "recognition": "recognition",
+            "mic": "mic",
+            "microphone": "microphone"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Image Slider (Image Slider)",
+        "summary": "Easily create an Image Slider",
+        "description": "Present your images in an appealing way with ease. Authors just have to upload images and provide alternative texts for the images. \r\n\r\nThe next two images are always preloaded so switching between images will usually be snappy with no delay for loading the next image.\r\n\r\nImages may be experienced as part of the page or in full-screen mode. When used as part of the page the system will pick a fixed aspect ratio depending on the images being used. Authors may decide to handle aspect ratios differently.",
+        "keywords": {
+            "image": "image",
+            "images": "images",
+            "slider": "slider",
+            "carousel": "carousel"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Essay (Essay)",
+        "summary": "Create Essay with instant feedback",
+        "description": "In this content type, the author defines a set of keywords that represent crucial aspects of a topic. These keywords are matched against a text that students have composed and can be used to immediately provide feedback - either suggesting to revise certain topic details if a keyword is missing or, confirming the student's ideas if the text contains a keyword.\r\n",
+        "keywords": {
+            "Essay": "Essay"
+        }
+    },
+    "H5P_ImagePair": {
+        "title": "Image Pairing (Image Pairing)",
+        "summary": "Drag and drop image matching game",
+        "description": "Image pairing is a simple and effective activity that require learners to match pairs of images. Since it is not required for both images in a pair to be the same, authors are also able to test the understanding of a relation between two different images. ",
+        "keywords": {
+            "image_images matching pair": "image images matching pair"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Dictation (Dictation)",
+        "summary": "Create a dictation with instant feedback",
+        "description": "You can add audio samples containing a sentence for dictation and enter the correct transcription. Your students can listen to the samples and enter what they have heard in to a text field. Their answers will be evaluated automatically. Several options will allow you to control the exercise's difficulty. You can optionally add a second audio sample for a sentence that could hold a version spoken slowly. You can also set a limit for how often a sample can be played, define if punctuation should be relevant for scoring, and decide whether small mistakes like typing errors should be counted as no mistake, a full mistake, or just a half mistake.",
+        "keywords": {
+            "language": "language",
+            "audio": "audio"
+        }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Branching Scenario (beta) (Branching Scenario (beta))",
+        "summary": "Create dilemmas and self paced learning",
+        "description": "Branching Scenario allow authors to present the learners with a variety of rich interactive content and choices. The choices the learners make will determine the next content they see. May be used to create dilemmas, serious games, and self-paced learning."
+    },
+    "H5P_ThreeImage": {
+        "title": "Virtual Tour (360) (Virtual Tour (360))",
+        "summary": "Create 360 environments with interactions",
+        "description": "360 (equirectangular) and normal images may be enriched with interactivities like explanations, videos, sounds, and interactive questions. The images create scenes that also may be linked together to give the user an impression of moving between environments or between different viewpoints within the same environment."
+    },
+    "H5P_FindTheWords": {
+        "title": "Find the words (Find the words)",
+        "summary": "Grid word search game",
+        "description": "A free HTML5-based word search activity that allows authors to create a list of words that will be drawn in a grid. The learner's task is to find and select the words in the grid."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Interactive Book (Interactive Book)",
+        "summary": "Create small courses, books and tests",
+        "description": "Create small courses, books, or tests. Interactive Book allows authors to combine large amounts of interactive content like interactive videos, questions, course presentations, and more on multiple pages. There is a summary at the end summing up the scores obtained by the learner throughout the book.",
+        "keywords": {
+            "book": "book",
+            "course": "course"
+        }
+    },
+    "H5P_KewArCode": {
+        "title": "KewAr Code (KewAr Code)",
+        "summary": "Create QR codes for different purposes",
+        "description": "KewAr Code enables content designers to create well-known QR codes. Those QR codes can encode URLs, but also contact information, events, geo-locations, etc. People can scan them with a QR code reader in order to trigger the chosen action.",
+        "keywords": {
+            "QR": "QR"
+        }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Advent Calendar (beta) (Advent Calendar (beta))",
+        "summary": "Create surprises that will be unveiled daily",
+        "description": "Build and customize a beautiful advent calendar. You may add a background image to the entire calendar, on each door, and as a background on the content inside each door. You may also add snow- effect and music. Inside each door, you may add a sound, video, text, image, or link.\r\n\r\nDo note that it is easy for computer-savvy users to reveal the content of all doors right away. If you plan to reveal big secrets on future days you should wait until that day before adding your big secrets to the calendar.",
+        "keywords": {
+            "christmas": "christmas",
+            "advent": "advent",
+            "holidays": "holidays",
+            "calendar": "calendar"
+        }
+    }
+}

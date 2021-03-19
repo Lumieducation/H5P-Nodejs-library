@@ -1835,6 +1835,21 @@ export interface IH5PEditorOptions {
             styles?: string[];
         };
     };
+    /**
+     * If true, the system will localize the information about content types
+     * displayed in the H5P Hub. It will use the translationCallback that is
+     * passed to H5PEditor for this by getting translations from the namespace
+     * 'hub'. It will try to localize these language strings:
+     * hub:H5P_Example.description
+     * hub:H5P_Example.summary
+     * hub:H5P_Example.keywords.key_word1
+     * hub:H5P_Example.keywords.key_word2
+     * hub:H5P_Example.keywords. ...
+     * Note that "H5P_Example" is a transformed version of the machineName of
+     * the content type main library, in which . is replaced by _. In the key
+     * words whitespaces are replaced by _.
+     */
+    enableHubLocalization?: boolean;
 }
 
 /**

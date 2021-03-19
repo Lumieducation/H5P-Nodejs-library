@@ -92,7 +92,7 @@ export default class H5PAjaxEndpoint {
                         'You must specify a user when calling getAjax(...).'
                     );
                 }
-                return this.h5pEditor.getContentTypeCache(user);
+                return this.h5pEditor.getContentTypeCache(user, language);
             case 'libraries':
                 if (
                     machineName === undefined ||
@@ -650,7 +650,8 @@ export default class H5PAjaxEndpoint {
                 ).length;
 
                 const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    user
+                    user,
+                    language
                 );
                 return new AjaxSuccessResponse(
                     contentTypeCache,
@@ -685,7 +686,8 @@ export default class H5PAjaxEndpoint {
                 ).length;
 
                 const contentTypes = await this.h5pEditor.getContentTypeCache(
-                    user
+                    user,
+                    language
                 );
                 return new AjaxSuccessResponse(
                     {

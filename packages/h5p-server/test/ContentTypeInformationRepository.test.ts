@@ -62,6 +62,101 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             ).contentTypes.length
         );
     });
+
+    it('localizes information from hub', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PConfig(storage);
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data`)
+        );
+        const cache = new ContentTypeCache(config, storage);
+
+        axiosMock
+            .onPost(config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
+            );
+        axiosMock
+            .onPost(config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/real-content-types.json'
+                    )
+                )
+            );
+
+        await cache.updateIfNecessary();
+
+        const translationSpy = jest.fn(
+            (name, language) => `_translated_${name.replace('.', '#')}`
+        );
+        const repository = new ContentTypeInformationRepository(
+            cache,
+            libManager,
+            config,
+            translationSpy
+        );
+        const content = await repository.get(new User(), 'de');
+        expect(
+            content.libraries[0].description.startsWith('_translated_')
+        ).toBe(true);
+        expect(translationSpy).toBeCalled();
+    });
+
+    it('leaves information from hub as it is if no locale was found', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PConfig(storage);
+        const libManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data`)
+        );
+        const cache = new ContentTypeCache(config, storage);
+
+        axiosMock
+            .onPost(config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
+            );
+        axiosMock
+            .onPost(config.hubContentTypesEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/1-content-type.json'
+                    )
+                )
+            );
+
+        await cache.updateIfNecessary();
+
+        const translationSpy = jest.fn((key: string, language) =>
+            key.substr(key.indexOf(':') + 1)
+        );
+        const repository = new ContentTypeInformationRepository(
+            cache,
+            libManager,
+            config,
+            translationSpy
+        );
+        const content = await repository.get(new User(), 'de');
+        expect(content.libraries[0].description).toEqual(
+            'The description of content type 1'
+        );
+        expect(translationSpy).toBeCalled();
+    });
+
     it("doesn't fail if update wasn't called", async () => {
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
