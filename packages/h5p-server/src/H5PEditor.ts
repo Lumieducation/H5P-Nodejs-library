@@ -114,7 +114,7 @@ export default class H5PEditor {
             this.contentTypeCache,
             this.libraryManager,
             config,
-            translationCallback
+            options?.enableHubLocalization ? translationCallback : undefined
         );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,

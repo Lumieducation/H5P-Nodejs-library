@@ -37,12 +37,16 @@ export default class ContentTypeInformationRepository {
      * @param contentTypeCache
      * @param libraryManager
      * @param config
+     * @param translationCallback (optional) if passed in, the object will try
+     * to localize content type information (if a language is passed to the
+     * `get(...)` method). You can safely leave it out if you don't want to
+     * localize hub information.
      */
     constructor(
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
         private config: IH5PConfig,
-        private translationCallback: ITranslationFunction
+        private translationCallback?: ITranslationFunction
     ) {
         log.info(`initialize`);
     }
@@ -54,7 +58,7 @@ export default class ContentTypeInformationRepository {
     public async get(user: IUser, language?: string): Promise<IHubInfo> {
         log.info(`getting information about available content types`);
         let cachedHubInfo = await this.contentTypeCache.get();
-        if (language) {
+        if (this.translationCallback && language) {
             cachedHubInfo = this.localizeHubInfo(cachedHubInfo, language);
         }
         let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
@@ -301,29 +305,46 @@ export default class ContentTypeInformationRepository {
         return library.restricted;
     }
 
+    /**
+     * Returns a transformed list of content type information in which the
+     * visible strings are localized into the desired language. Only works if
+     * the namespace 'hub' has been initialized and populated by the i18n
+     * system.
+     * @param contentTypes
+     * @param language
+     * @returns the transformed list of content types
+     */
     private localizeHubInfo(
         contentTypes: IHubContentType[],
         language: string
     ): IHubContentType[] {
-        return contentTypes.map((ct) => ({
-            ...ct,
-            summary: this.translationCallback(
-                `hub:${ct.machineName.replace('.', '_')}.summary`,
-                language
-            ),
-            description: this.translationCallback(
-                `hub:${ct.machineName.replace('.', '_')}.description`,
-                language
-            ),
-            keywords: ct.keywords.map((kw) =>
-                this.translationCallback(
-                    `hub:${ct.machineName.replace(
-                        '.',
-                        '_'
-                    )}.keywords.${kw.replace('_', ' ')}`,
+        if (!this.translationCallback) {
+            throw new Error(
+                'You need to instantiate ContentTypeInformationRepository with a translationCallback if you want to localize Hub information.'
+            );
+        }
+        return contentTypes.map((ct) => {
+            const cleanMachineName = ct.machineName.replace('.', '_');
+            return {
+                ...ct,
+                summary: this.translationCallback(
+                    `hub:${cleanMachineName}.summary`,
                     language
+                ),
+                description: this.translationCallback(
+                    `hub:${cleanMachineName}.description`,
+                    language
+                ),
+                keywords: ct.keywords.map((kw) =>
+                    this.translationCallback(
+                        `hub:${ct.machineName.replace(
+                            '.',
+                            '_'
+                        )}.keywords.${kw.replace('_', ' ')}`,
+                        language
+                    )
                 )
-            )
-        }));
+            };
+        });
     }
 }

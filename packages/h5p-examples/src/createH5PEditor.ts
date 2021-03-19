@@ -134,7 +134,11 @@ export default async function createH5PEditor(
             : new H5P.fsImplementations.DirectoryTemporaryFileStorage(
                   localTemporaryPath
               ),
-        translationCallback
+        translationCallback,
+        undefined,
+        {
+            enableHubLocalization: true
+        }
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
