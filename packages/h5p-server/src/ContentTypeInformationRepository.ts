@@ -328,32 +328,58 @@ export default class ContentTypeInformationRepository {
                 'You need to instantiate ContentTypeInformationRepository with a translationCallback if you want to localize Hub information.'
             );
         }
+
         return contentTypes.map((ct) => {
             const cleanMachineName = ct.machineName.replace('.', '_');
             return {
                 ...ct,
-                summary: this.translationCallback(
-                    `hub:${cleanMachineName}.summary`,
+                summary: this.tryLocalize(
+                    `${cleanMachineName}.summary`,
+                    ct.summary,
                     language
                 ),
-                description: this.translationCallback(
-                    `hub:${cleanMachineName}.description`,
+                description: this.tryLocalize(
+                    `${cleanMachineName}.description`,
+                    ct.description,
                     language
                 ),
                 keywords: ct.keywords.map((kw) =>
-                    this.translationCallback(
-                        `hub:${ct.machineName.replace(
+                    this.tryLocalize(
+                        `${ct.machineName.replace(
                             '.',
                             '_'
                         )}.keywords.${kw.replace('_', ' ')}`,
+                        kw,
                         language
                     )
                 ),
-                title: this.translationCallback(
-                    `hub:${cleanMachineName}.title`,
+                title: this.tryLocalize(
+                    `${cleanMachineName}.title`,
+                    ct.title,
                     language
                 )
             };
         });
+    }
+
+    /**
+     * Tries localizing the entry of the content type information. If it fails
+     * (indicated by the fact that the key is part of the localized string), it
+     * will return the original source string.
+     * @param key the key to look up the translation in the i18n data
+     * @param sourceString the original English string received from the Hub
+     * @param language the desired language
+     * @returns the localized string or the original English source string
+     */
+    private tryLocalize(
+        key: string,
+        sourceString: string,
+        language: string
+    ): string {
+        const localized = this.translationCallback(`hub:${key}`, language);
+        if (localized.includes(key)) {
+            return sourceString;
+        }
+        return localized;
     }
 }
