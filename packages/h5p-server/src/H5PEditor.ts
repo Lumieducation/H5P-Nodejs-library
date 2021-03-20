@@ -107,7 +107,10 @@ export default class H5PEditor {
             libraryStorage,
             this.urlGenerator.libraryFile,
             this.options?.customization?.alterLibrarySemantics,
-            this.options?.customization?.alterLibraryLanguageFile
+            this.options?.customization?.alterLibraryLanguageFile,
+            this.options?.enableLibraryNameLocalization
+                ? translationCallback
+                : undefined
         );
         this.contentManager = new ContentManager(contentStorage);
         this.contentTypeRepository = new ContentTypeInformationRepository(
@@ -368,7 +371,7 @@ export default class H5PEditor {
             this.libraryManager.getSemantics(library),
             this.libraryManager.getLanguage(library, language),
             this.libraryManager.listLanguages(library),
-            this.libraryManager.getLibrary(library),
+            this.libraryManager.getLibrary(library, language),
             this.libraryManager.getUpgradesScriptPath(library)
         ]);
         return {
@@ -407,12 +410,18 @@ export default class H5PEditor {
     /**
      * Gets a rough overview of information about the requested libraries.
      * @param ubernames
+     * @param language (optional) if set, the system will try to localize the
+     * title of the library (the namespace 'library-metadata' must be loaded in
+     * the i18n system)
      */
     public async getLibraryOverview(
-        ubernames: string[]
+        ubernames: string[],
+        language?: string
     ): Promise<ILibraryOverviewForClient[]> {
-        log.info(
-            `getting library overview for libraries: ${ubernames.join(', ')}`
+        log.debug(
+            `getting library overview for libraries: ${ubernames.join(
+                ', '
+            )}. Requested language: ${language}`
         );
         return (
             await Promise.all(
@@ -426,7 +435,8 @@ export default class H5PEditor {
                     .map(async (lib) => {
                         try {
                             const loadedLibrary = await this.libraryManager.getLibrary(
-                                lib
+                                lib,
+                                language
                             );
                             if (!loadedLibrary) {
                                 return undefined;

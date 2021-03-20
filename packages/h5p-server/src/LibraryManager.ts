@@ -18,8 +18,10 @@ import {
     ILibraryName,
     ILibraryStorage,
     IPath,
-    ISemanticsEntry
+    ISemanticsEntry,
+    ITranslationFunction
 } from './types';
+import TranslatorWithFallback from './helpers/TranslatorWithFallback';
 
 const log = new Logger('LibraryManager');
 
@@ -43,6 +45,9 @@ export default class LibraryManager {
      * change the language files of certain libraries; should be used together
      * with alterLibrarySemantics if you plan to use any other language than
      * English! See the documentation of IH5PEditorOptions for more details.
+     * @param translationFunction (optional) The translation function to use if
+     * you want to localize library metadata (titles). If undefined, no
+     * localization will be performed.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
@@ -58,10 +63,19 @@ export default class LibraryManager {
             library: ILibraryName,
             languageFile: ILanguageFileEntry[],
             language: string
-        ) => ILanguageFileEntry[]
+        ) => ILanguageFileEntry[],
+        translationFunction?: ITranslationFunction
     ) {
         log.info('initialize');
+        if (translationFunction) {
+            this.translator = new TranslatorWithFallback(translationFunction, [
+                'hub',
+                'library-metadata'
+            ]);
+        }
     }
+
+    private translator: TranslatorWithFallback;
 
     /**
      * Returns a readable stream of a library file's contents.
@@ -162,15 +176,40 @@ export default class LibraryManager {
     }
 
     /**
-     * Returns the information about the library that is contained in library.json.
-     * @param library The library to get (machineName, majorVersion and minorVersion is enough)
+     * Returns the information about the library that is contained in
+     * library.json.
+     * @param library The library to get (machineName, majorVersion and
+     * minorVersion is enough)
+     * @param language (optional) the language to use for the title, will always
+     * fall back to English if it is not possible to localize
      * @returns the decoded JSON data or undefined if library is not installed
      */
-    public async getLibrary(library: ILibraryName): Promise<IInstalledLibrary> {
+    public async getLibrary(
+        library: ILibraryName,
+        language?: string
+    ): Promise<IInstalledLibrary> {
         try {
-            log.debug(`loading library ${LibraryName.toUberName(library)}`);
-            return await this.libraryStorage.getLibrary(library);
-        } catch (ignored) {
+            log.debug(
+                `loading library ${LibraryName.toUberName(
+                    library
+                )}. Requested language: ${language}`
+            );
+            const metadata = await this.libraryStorage.getLibrary(library);
+            if (
+                this.translator &&
+                language &&
+                language.toLowerCase() !== 'en' &&
+                !language.toLowerCase().startsWith('en-')
+            ) {
+                log.debug(`Trying to localize title`);
+                metadata.title = this.translator.tryLocalize(
+                    `${metadata.machineName.replace('.', '_')}.title`,
+                    metadata.title,
+                    language
+                );
+            }
+            return metadata;
+        } catch {
             log.warn(
                 `library ${LibraryName.toUberName(library)} is not installed`
             );

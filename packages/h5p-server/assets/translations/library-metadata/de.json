@@ -1,0 +1,63 @@
+{
+    "H5P_Image": {
+        "title": "Bild"
+    },
+    "H5P_ContinuousText": {
+        "title": "Fortlaufender Text"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "Freitexteingabe"
+    },
+    "H5P_GoToScene": {
+        "title": "Gehe zu Szene"
+    },
+    "H5P_GoToQuestion": {
+        "title": "Verzweigung"
+    },
+    "H5P_GoalsPage": {
+        "title": "Ziele-Seite"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Zielbewertungs-Seite"
+    },
+    "H5P_StandardPage": {
+        "title": "Standard-Seite"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "Dokumenten-Export-Seite"
+    },
+    "H5P_Link": {
+        "title": "Link"
+    },
+    "H5P_Nil": { "title": "Beschriftung" },
+    "H5P_IVHotspot": {
+        "title": "Navigations-Button"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "Offene Frage"
+    },
+    "H5P_Shape": {
+        "title": "Formen"
+    },
+    "H5P_Summary": {
+        "title": "Zusammenfassung"
+    },
+    "H5P_Table": {
+        "title": "Tabelle"
+    },
+    "H5P_Text": {
+        "title": "Text"
+    },
+    "H5P_Video": {
+        "title": "Video"
+    },
+    "H5P_AdvancedText": {
+        "title": "Text"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "Einfaches Multiple-Choice"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "Verzweigungsfrage"
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "H5P_Image": {
+        "title": "Image"
+    },
+    "H5P_ContinuousText": {
+        "title": "Continuous Text"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "Free Text Question"
+    },
+    "H5P_GoToScene": {
+        "title": "Go To Scene"
+    },
+    "H5P_GoToQuestion": {
+        "title": "Crossroads"
+    },
+    "H5P_GoalsPage": {
+        "title": "Goals page"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Goals assessment page"
+    },
+    "H5P_StandardPage": {
+        "title": "Standard page"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "Document Export Page"
+    },
+    "H5P_Link": {
+        "title": "Link"
+    },
+    "H5P_Nil": { "title": "Label" },
+    "H5P_IVHotspot": {
+        "title": "Navigation Hotspot"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "Open Ended Question"
+    },
+    "H5P_Shape": {
+        "title": "Shapes"
+    },
+    "H5P_Summary": {
+        "title": "Summary"
+    },
+    "H5P_Table": {
+        "title": "Table"
+    },
+    "H5P_Text": {
+        "title": "Text"
+    },
+    "H5P_Video": {
+        "title": "Video"
+    },
+    "H5P_AdvancedText": {
+        "title": "Text"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "Simple Multi Choice"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "Branching Question"
+    }
+}

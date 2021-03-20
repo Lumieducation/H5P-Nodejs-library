@@ -53,6 +53,7 @@ const start = async (): Promise<void> => {
                 'client',
                 'copyright-semantics',
                 'hub',
+                'library-metadata',
                 'metadata-semantics',
                 'mongo-s3-content-storage',
                 's3-temporary-storage',
@@ -65,7 +66,9 @@ const start = async (): Promise<void> => {
 
     // Load the configuration file from the local file system
     const config = await new H5P.H5PConfig(
-        new H5P.fsImplementations.JsonStorage(path.resolve('src/config.json'))
+        new H5P.fsImplementations.JsonStorage(
+            path.join(__dirname, '../config.json')
+        )
     ).load();
 
     // The H5PEditor object is central to all operations of h5p-nodejs-library
@@ -80,12 +83,12 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
-        path.resolve('h5p/libraries'), // the path on the local disc where
+        path.join(__dirname, '../h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
-        path.resolve('h5p/content'), // the path on the local disc where content
+        path.join(__dirname, '../h5p/content'), // the path on the local disc where content
         // is stored. Only used / necessary if you use the local filesystem
         // content storage class.
-        path.resolve('h5p/temporary-storage'), // the path on the local disc
+        path.join(__dirname, '../h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
         (key, language) => translationFunction(key, { lng: language })
@@ -148,9 +151,9 @@ const start = async (): Promise<void> => {
         h5pEditor.config.baseUrl,
         h5pAjaxExpressRouter(
             h5pEditor,
-            path.resolve('h5p/core'), // the path on the local disc where the
+            path.resolve(path.join(__dirname, '../h5p/core')), // the path on the local disc where the
             // files of the JavaScript client of the player are stored
-            path.resolve('h5p/editor'), // the path on the local disc where the
+            path.resolve(path.join(__dirname, '../h5p/editor')), // the path on the local disc where the
             // files of the JavaScript client of the editor are stored
             undefined,
             'auto' // You can change the language of the editor here by setting
@@ -169,7 +172,7 @@ const start = async (): Promise<void> => {
         expressRoutes(
             h5pEditor,
             h5pPlayer,
-            'auto' // You can change the language of the editor here by setting
+            'auto' // You can change the language of the editor by setting
             // the language code you need here. 'auto' means the route will try
             // to use the language detected by the i18next language detector.
         )
@@ -193,8 +196,8 @@ const start = async (): Promise<void> => {
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
         h5pEditor.config,
-        path.resolve('h5p/core'),
-        path.resolve('h5p/editor')
+        path.join(__dirname, '../h5p/core'),
+        path.join(__dirname, '../h5p/editor')
     );
 
     server.get('/h5p/html/:contentId', async (req, res) => {
@@ -213,7 +216,7 @@ const start = async (): Promise<void> => {
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
 
-    server.use('/client', express.static(path.resolve('build/client')));
+    server.use('/client', express.static(path.join(__dirname, 'client')));
 
     // STUB, not implemented yet. You have to get the user id through a session
     // cookie as h5P does not add it to the request. Alternatively you could add
