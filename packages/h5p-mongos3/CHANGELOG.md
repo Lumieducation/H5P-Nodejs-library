@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.4.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.4.0) (2021-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.864.0 ([cec9d82](https://github.com/Lumieducation/H5P-Nodejs-library/commit/cec9d82985f246b7b649b5bcb598eedfcae45406))
+* **deps:** update dependency aws-sdk to v2.865.0 ([ad16870](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ad168703d8ee7cfb0ff305be9066c740bd205364))
+* **deps:** update dependency aws-sdk to v2.866.0 ([e1f021d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e1f021dc5bdccc77b0cffbbf38f26f23fdf200d9))
+* **deps:** update dependency aws-sdk to v2.867.0 ([7101840](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7101840cd978ee3804f9ecd8f727f600a81a7aac))
+* **deps:** update dependency aws-sdk to v2.868.0 ([496221d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/496221d11172c15ee96c070ef857f0f8673844ce))
+* **deps:** update dependency mongodb to v3.6.5 ([afd3f40](https://github.com/Lumieducation/H5P-Nodejs-library/commit/afd3f40b934a36d3636fef3594e9bef362a52219))
+
+
+
+
+
 ## [7.3.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.0...v7.3.1) (2021-03-14)
 
 **Note:** Version bump only for package @lumieducation/h5p-mongos3
