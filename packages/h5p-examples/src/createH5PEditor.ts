@@ -137,7 +137,8 @@ export default async function createH5PEditor(
         translationCallback,
         undefined,
         {
-            enableHubLocalization: true
+            enableHubLocalization: true,
+            enableLibraryNameLocalization: true
         }
     );
 

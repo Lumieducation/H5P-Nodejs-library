@@ -422,8 +422,9 @@ export default class H5PAjaxEndpoint {
      *                      installs the libraries in it; returns the parameters
      *                      and metadata in it
      * @param body the parsed JSON content of the request body
-     * @param language (needed for 'translations') the language code for which
-     * the translations should be retrieved, e.g. 'en'. This paramter is part
+     * @param language (needed for 'translations' and optionally possible for
+     * 'libraries') the language code for which the translations should be
+     * retrieved, e.g. 'en'. This paramter is part
      * of the query URL, e.g. POST /ajax?action=translations&language=en
      * @param user (needed for 'files' and 'library-install') the user who is
      * performing the action. It is the job of the implementation to inject this
@@ -515,7 +516,10 @@ export default class H5PAjaxEndpoint {
                 }
                 // getLibraryOverview validates the library list, so we don't do
                 // it here.
-                return this.h5pEditor.getLibraryOverview(body.libraries);
+                return this.h5pEditor.getLibraryOverview(
+                    body.libraries,
+                    language
+                );
             case 'translations':
                 if (!('libraries' in body) || !Array.isArray(body.libraries)) {
                     throw new H5pError(

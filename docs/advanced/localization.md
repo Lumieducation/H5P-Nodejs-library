@@ -34,7 +34,8 @@ shows where this must be done:
 | 2. notify H5P editor client | Call `H5PEditor.render(contentId, language, ...)` with the language code you need. |
 | 3. properties of IIntegration | Pass a valid `translationCallback` of type `ITranslationFunction` to the constructor of `H5PEditor` |
 | 4. error messages emitted by @lumieducation/h5p-server | Catch errors of types `H5PError` and `AggregateH5PError` and localize the message property yourself. |
-| 5. H5P Hub | When constructing `H5PEditor` set the option `enableHubLocalization` to true and load the namespace `hub` in your localization system. Call `H5PEditor.getContentTypeCache()` with a language or make sure that `req.language` is set in the get AJAX route when using `h5p-express`. |
+| 5. H5P Hub | When constructing `H5PEditor` set the option `enableHubLocalization` to true and load the namespace `hub` in your localization system. Call `H5PEditor.getContentTypeCache()` with a language or make sure that `req.language` is set in the GET AJAX route when using `h5p-express`. |
+| 6. library selector | When constructing `H5PEditor` set the option `enableLibraryNameLocalization` to true and load the namespace `library-metadata` in your localization system. Call `H5PEditor.getLibraryOverview()` with a language or make sure that `req.language` is set in the POST AJAX route when using `h5p-express`. |
 
 The [Express example](/packages/h5p-examples/src/express.ts) demonstrates how to
 do 1,2 and 3. The [Express adapter for the Ajax endpoints](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts)
@@ -45,8 +46,8 @@ The language strings used by @lumieducation/h5p-server all follow the
 conventions of [i18next](https://www.npmjs.com/package/i18next) and it is a good
 library to perform the translation for cases 3 and 4. However, you are free to
 use whatever translation library you want as long as you make sure to pass a
-valid `translationCallback` to `H5PEditor` (case 3+5) and add the required
-`t(...)` function to `req` (case 4).
+valid `translationCallback` to `H5PEditor` (case 3, 5 and 6) and add the
+required `t(...)` function to `req` (case 4).
 
 ### Initializing the JavaScript H5P client (in the browser)
 

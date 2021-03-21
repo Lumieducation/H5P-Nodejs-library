@@ -32,7 +32,7 @@ export default class H5PAjaxExpressController {
             req.query.machineName as string,
             req.query.majorVersion as string,
             req.query.minorVersion as string,
-            (req as any).language ?? (req.query.language as string),
+            (req.query.language as string) ?? (req as any).language,
             req.user
         );
         res.status(200).send(result);
@@ -169,7 +169,7 @@ export default class H5PAjaxExpressController {
         const result = await this.ajaxEndpoint.postAjax(
             req.query.action as string,
             req.body as any,
-            req.query.language as string,
+            (req.query.language as string) ?? (req as any).language,
             req.user,
             req.files?.file,
             req.query.id as string,
