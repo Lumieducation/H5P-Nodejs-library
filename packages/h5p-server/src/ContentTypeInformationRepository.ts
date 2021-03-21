@@ -19,6 +19,7 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
+import TranslatorWithFallback from './helpers/TranslatorWithFallback';
 
 const log = new Logger('ContentTypeInformationRepository');
 
@@ -46,10 +47,17 @@ export default class ContentTypeInformationRepository {
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
         private config: IH5PConfig,
-        private translationCallback?: ITranslationFunction
+        translationCallback?: ITranslationFunction
     ) {
         log.info(`initialize`);
+        if (translationCallback) {
+            this.translator = new TranslatorWithFallback(translationCallback, [
+                'hub'
+            ]);
+        }
     }
+
+    private translator: TranslatorWithFallback;
 
     /**
      * Gets the information about available content types with all the extra
@@ -59,7 +67,7 @@ export default class ContentTypeInformationRepository {
         log.info(`getting information about available content types`);
         let cachedHubInfo = await this.contentTypeCache.get();
         if (
-            this.translationCallback &&
+            this.translator &&
             language &&
             language.toLowerCase() !== 'en' && // We don't localize English as the base strings already are in English
             !language.toLowerCase().startsWith('en-')
@@ -323,7 +331,7 @@ export default class ContentTypeInformationRepository {
         contentTypes: IHubContentType[],
         language: string
     ): IHubContentType[] {
-        if (!this.translationCallback) {
+        if (!this.translator) {
             throw new Error(
                 'You need to instantiate ContentTypeInformationRepository with a translationCallback if you want to localize Hub information.'
             );
@@ -333,18 +341,18 @@ export default class ContentTypeInformationRepository {
             const cleanMachineName = ct.machineName.replace('.', '_');
             return {
                 ...ct,
-                summary: this.tryLocalize(
+                summary: this.translator.tryLocalize(
                     `${cleanMachineName}.summary`,
                     ct.summary,
                     language
                 ),
-                description: this.tryLocalize(
+                description: this.translator.tryLocalize(
                     `${cleanMachineName}.description`,
                     ct.description,
                     language
                 ),
                 keywords: ct.keywords.map((kw) =>
-                    this.tryLocalize(
+                    this.translator.tryLocalize(
                         `${ct.machineName.replace(
                             '.',
                             '_'
@@ -353,33 +361,12 @@ export default class ContentTypeInformationRepository {
                         language
                     )
                 ),
-                title: this.tryLocalize(
+                title: this.translator.tryLocalize(
                     `${cleanMachineName}.title`,
                     ct.title,
                     language
                 )
             };
         });
-    }
-
-    /**
-     * Tries localizing the entry of the content type information. If it fails
-     * (indicated by the fact that the key is part of the localized string), it
-     * will return the original source string.
-     * @param key the key to look up the translation in the i18n data
-     * @param sourceString the original English string received from the Hub
-     * @param language the desired language
-     * @returns the localized string or the original English source string
-     */
-    private tryLocalize(
-        key: string,
-        sourceString: string,
-        language: string
-    ): string {
-        const localized = this.translationCallback(`hub:${key}`, language);
-        if (localized.includes(key)) {
-            return sourceString;
-        }
-        return localized;
     }
 }

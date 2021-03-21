@@ -1850,6 +1850,17 @@ export interface IH5PEditorOptions {
      * words whitespaces are replaced by _.
      */
     enableHubLocalization?: boolean;
+    /**
+     * If true, the system will localize library titles. It will use the
+     * translationCallback that is passed to H5PEditor for this by getting
+     * translations from the namespace 'library-metadata'. It will try to
+     * localize these language strings:
+     * hub:H5P_Example.title
+     * Note that "H5P_Example" is a transformed version of the machineName of
+     * the content type main library, in which . is replaced by _. In the key
+     * words whitespaces are replaced by _.
+     */
+    enableLibraryNameLocalization?: boolean;
 }
 
 /**

@@ -51,6 +51,7 @@ const start = async (): Promise<void> => {
                 'client',
                 'copyright-semantics',
                 'hub',
+                'library-metadata',
                 'metadata-semantics',
                 'mongo-s3-content-storage',
                 's3-temporary-storage',
