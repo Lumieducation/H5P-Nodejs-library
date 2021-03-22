@@ -2,7 +2,6 @@
 // npm run test:db to run it!
 // It requires a running MongoDB instance!
 
-import AWS from 'aws-sdk';
 import mongodb, { ObjectID } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';

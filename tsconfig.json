@@ -17,7 +17,9 @@
         "packages/h5p-server/src/**/*",
         "packages/h5p-server/test/**/*",
         "packages/h5p-webcomponents/src/**/*",
-        "packages/h5p-webcomponents/test/**/*"
+        "packages/h5p-webcomponents/test/**/*",
+        "packages/h5p-mongo-gridfs/src/**/*",
+        "packages/h5p-mongo-gridfs/test/**/*"
     ],
     "compilerOptions": {
         "outDir": "./build-ide",

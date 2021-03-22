@@ -15,8 +15,7 @@ import {
     InstalledLibrary,
     H5pError,
     streamToString,
-    Logger,
-    fs
+    Logger
 } from '@lumieducation/h5p-server';
 
 import { validateFilename } from './Utils';
@@ -163,9 +162,7 @@ export default class MongoGridFSLibraryStorage implements ILibraryStorage {
                 .project({ _id: 1 })
                 .toArray();
 
-            Promise.all(
-                idsToDelete.map(async (o) => await this.bucket.delete(o._id))
-            );
+            Promise.all(idsToDelete.map((o) => this.bucket.delete(o._id)));
         } catch (error) {
             log.error(
                 `There was an error while clearing the files: ${error.message}`
@@ -505,14 +502,12 @@ export default class MongoGridFSLibraryStorage implements ILibraryStorage {
                 `Requesting list from GridFS storage with prefix ${prefix}`
             );
 
-            let ret = await this.bucket.find({});
+            const ret = await this.bucket.find({});
 
             files = files.concat(
                 (await ret.toArray())
                     .filter((c) => c.filename.indexOf(prefix) > -1)
-                    .map((c) => {
-                        return c.filename.substr(prefix.length);
-                    })
+                    .map((c) => c.filename.substr(prefix.length))
             );
         } catch (error) {
             log.debug(
@@ -614,9 +609,8 @@ export default class MongoGridFSLibraryStorage implements ILibraryStorage {
         const prefix = this.getKey(library, '');
         let files: string[] = [];
         try {
-            let ret: MongoDB.Cursor;
             log.debug(`Requesting list from GridFS storage.`);
-            ret = await this.bucket.find({});
+            const ret: MongoDB.Cursor = this.bucket.find({});
 
             files = files.concat(
                 (await ret.toArray())

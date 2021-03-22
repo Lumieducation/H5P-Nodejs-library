@@ -2,7 +2,6 @@
 
 import MongoDB, { ObjectId } from 'mongodb';
 import { Stream, Readable } from 'stream';
-import { PromiseResult } from 'aws-sdk/lib/request';
 
 import {
     ContentId,
@@ -16,7 +15,6 @@ import {
     Logger
 } from '@lumieducation/h5p-server';
 import { validateFilename, sanitizeFilename } from './Utils';
-import { MongoGridFSLibraryStorage } from '.';
 
 const log = new Logger('MongoGridFSContentStorage');
 
@@ -56,8 +54,7 @@ export default class MongoGridFSContentStorage implements IContentStorage {
             invalidCharactersRegexp?: RegExp;
             /**
              * Indicates how long keys in GridFS can be. Defaults to 1024. (GridFS
-             * supports 1024 characters, other systems such as Minio might only
-             * support 255 on Windows).
+             * supports 1024 characters).
              */
             maxKeyLength?: number;
         }
@@ -213,7 +210,7 @@ export default class MongoGridFSContentStorage implements IContentStorage {
         }
 
         try {
-            return new Promise((y, n) => {
+            return await new Promise((y, n) => {
                 stream
                     .pipe(
                         this.bucket.openUploadStream(
@@ -756,10 +753,8 @@ export default class MongoGridFSContentStorage implements IContentStorage {
         const prefix = MongoGridFSContentStorage.getGridFSKey(contentId, '');
         let files: string[] = [];
         try {
-            let ret: MongoDB.Cursor;
-
             log.debug(`Requesting list from GridFS storage.`);
-            ret = await this.bucket.find({});
+            const ret = this.bucket.find({});
 
             files = files.concat(
                 (await ret.toArray())
