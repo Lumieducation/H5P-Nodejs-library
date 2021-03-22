@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.4.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.4.0) (2021-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update font awesome ([d956d81](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d956d81070b23dd36cb29f3817151a54f19df488))
+
+
+
+
+
 ## [7.3.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.0...v7.3.1) (2021-03-14)
 
 **Note:** Version bump only for package @lumieducation/h5p-rest-example-client
