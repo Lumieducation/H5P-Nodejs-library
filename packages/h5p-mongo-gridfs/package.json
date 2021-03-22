@@ -1,0 +1,62 @@
+{
+    "name": "@lumieducation/h5p-mongo-gridfs",
+    "version": "7.3.1",
+    "description": "A community re-implementation of the H5P server",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
+    },
+    "scripts": {
+        "build:watch": "npx tsc -w -p ./tsconfig.build.json",
+        "prepare": "npm run build",
+        "build": "npx tsc",
+        "ci": "npm run build && npm run lint && npm run format:check && npm run test && npm run test:integration && npm run test:e2e",
+        "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "test:watch": "jest --watch",
+        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+    },
+    "release": {
+        "branch": "master"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        },
+        {
+            "name": "Nikolas Martens"
+        },
+        {
+            "name": "Jan Philip Schellenberg",
+            "email": "jps@Lumi.education",
+            "url": "http://Lumi.education"
+        },
+        {
+            "name": "Bo Biene",
+            "email": "biene@inray.de",
+            "url": "https://www.qm-team.de/mymento-kursportal/"
+        },
+        {
+            "name": "jdavidavendano"
+        },
+        {
+            "name": "jankapunkt"
+        }
+    ],
+    "dependencies": {
+        "@lumieducation/h5p-server": "^7.3.1",
+        "mongodb": "3.6.5",
+        "stream-buffers": "^3.0.2"
+    },
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
+    "devDependencies": {
+        "@types/fs-extra": "9.0.8",
+        "@types/mongodb": "3.6.10",
+        "@types/stream-buffers": "3.0.3",
+        "fs-extra": "9.1.0",
+        "promisepipe": "3.0.0",
+        "stream-mock": "2.0.5"
+    }
+}
