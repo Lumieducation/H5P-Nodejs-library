@@ -141,7 +141,9 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:db -- --collect-coverage
+            - run: |
+                npm run test:db -- --collect-coverage
+                npm run test:db:gridfs -- --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: DB tests
