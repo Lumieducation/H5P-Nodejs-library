@@ -754,13 +754,14 @@ export default class MongoGridFSContentStorage implements IContentStorage {
         let files: string[] = [];
         try {
             log.debug(`Requesting list from GridFS storage.`);
-            const ret = this.bucket.find({});
-
-            files = files.concat(
-                (await ret.toArray())
-                    .filter((c) => c.filename.indexOf(prefix) > -1)
-                    .map((c) => c.filename.substr(prefix.length))
-            );
+            const ret = await this.bucket
+                .find({
+                    filename: {
+                        $regex: new RegExp(`^${prefix}`)
+                    }
+                })
+                .toArray();
+            files = ret.map((f) => f.filename.replace(prefix, ''));
         } catch (error) {
             log.debug(
                 `There was an error while getting list of files from GridFS. This might not be a problem if no files were added to the content object.`
