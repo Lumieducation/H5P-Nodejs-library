@@ -353,9 +353,9 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @param library the library to check
      * @returns the number of libraries that depend on this library.
      */
-    public async getDependentsCount(library: ILibraryName): Promise<number> {
+    public getDependentsCount(library: ILibraryName): Promise<number> {
         try {
-            return await this.mongodb.countDocuments({
+            return this.mongodb.countDocuments({
                 'metadata.preloadedDependencies': library
             });
         } catch (error) {
