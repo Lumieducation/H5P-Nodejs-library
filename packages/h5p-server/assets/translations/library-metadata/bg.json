@@ -1,0 +1,25 @@
+{
+    "H5P_Image": { "title": "Изображение" },
+    "H5P_ContinuousText": { "title": "Непрекъснат текст" },
+    "H5P_FreeTextQuestion": { "title": "Въпрос за свободен текст" },
+    "H5P_GoToScene": { "title": "Отидете на сцена" },
+    "H5P_GoToQuestion": { "title": "Кръстопът" },
+    "H5P_GoalsPage": { "title": "Страница с цели" },
+    "H5P_GoalsAssessmentPage": { "title": "Страница за оценка на целите" },
+    "H5P_StandardPage": { "title": "Стандартна страница" },
+    "H5P_DocumentExportPage": {
+        "title": "Страница за експортиране на документи"
+    },
+    "H5P_Link": { "title": "Връзка" },
+    "H5P_Nil": { "title": "Етикет" },
+    "H5P_IVHotspot": { "title": "Точка за навигация" },
+    "H5P_OpenEndedQuestion": { "title": "Отворен въпрос" },
+    "H5P_Shape": { "title": "Фигури" },
+    "H5P_Summary": { "title": "Обобщение" },
+    "H5P_Table": { "title": "Таблица" },
+    "H5P_Text": { "title": "Текст" },
+    "H5P_Video": { "title": "Видео" },
+    "H5P_AdvancedText": { "title": "Текст" },
+    "H5P_SimpleMultiChoice": { "title": "Прост множествен избор" },
+    "H5P_BranchingQuestion": { "title": "Въпрос за разклоняване" }
+}

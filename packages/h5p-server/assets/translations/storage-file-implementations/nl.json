@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Kan bestand {{filename}} niet toevoegen aan inhoud met id {{id}} : Inhoud met bestaat niet.",
+    "add-library-file-not-installed": "<span>Kan 0</span> niet toevoegen aan bibliotheek {{libraryName}} omdat de bibliotheek niet is geïnstalleerd.",
+    "clear-library-not-found": "Kan bibliotheek {{libraryName}} niet wissen omdat de bibliotheek niet is geïnstalleerd.",
+    "delete-content-file-not-found": "Kan bestand {{filename}} niet verwijderen: het bestaat niet.",
+    "delete-content-not-found": "Kan inhoud niet verwijderen: het bestaat niet.",
+    "error-creating-content": "Kan geen inhoud maken.",
+    "error-generating-content-id": "Kan geen ID genereren voor nieuwe inhoud.",
+    "error-generating-unique-temporary-filename": "Kan geen unieke bestandsnaam bepalen voor {{name}}",
+    "error-updating-metadata": "De aanvullende metagegevens van bibliotheek {{library}} kunnen niet worden bijgewerkt. Fout: {{error}}",
+    "get-library-metadata-not-installed": "Kan metagegevens voor bibliotheek {{libraryName}} niet ophalen omdat de bibliotheek niet is geïnstalleerd.",
+    "illegal-absolute-filename": "Absolute paden in bestandsnamen zijn niet toegestaan: {{filename}} is illegaal",
+    "illegal-relative-filename": "Relatieve paden in bestandsnamen zijn niet toegestaan: {{filename}} is illegaal",
+    "install-library-already-installed": "Bibliotheek {{libraryName}} is al geïnstalleerd.",
+    "remove-library-library-missing": "Bibliotheek {{libraryName}} is niet op het systeem geïnstalleerd.",
+    "temporary-file-not-found": "Het bestand {{filename}} is niet toegankelijk voor gebruiker {{userId}} of bestaat niet.",
+    "update-library-library-missing": "Bibliotheek {{libraryName}} kan niet worden bijgewerkt omdat deze nog niet is geïnstalleerd."
+}

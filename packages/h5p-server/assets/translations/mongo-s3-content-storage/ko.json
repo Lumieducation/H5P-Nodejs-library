@@ -1,0 +1,15 @@
+{
+    "content-not-found": "액세스하려는 콘텐츠가 존재하지 않습니다.",
+    "deleting-content-error": "콘텐츠 개체를 삭제하는 동안 오류가 발생했습니다.",
+    "deleting-file-error": "콘텐츠 개체에서 {{filename}} 파일을 삭제하는 동안 오류가 발생했습니다.",
+    "filename-too-long": "파일 이름이 너무 깁니다 : {{filename}}",
+    "illegal-filename": "파일 이름 {{filename}} 은 허용되지 않습니다.",
+    "listing-content-error": "콘텐츠 개체 목록을 가져 오는 동안 오류가 발생했습니다.",
+    "missing-delete-permission": "이 콘텐츠 개체를 삭제할 권한이 없습니다.",
+    "missing-list-content-permission": "콘텐츠 개체를 나열 할 권한이 없습니다.",
+    "missing-view-permission": "이 콘텐츠 개체를 볼 수있는 권한이 없습니다.",
+    "missing-write-permission": "이 콘텐츠 개체를 변경할 권한이 없습니다.",
+    "mongo-add-update-error": "데이터베이스에서 콘텐츠를 추가하거나 업데이트하는 동안 오류가 발생했습니다.",
+    "mongo-replace-error": "데이터베이스의 콘텐츠를 업데이트하는 동안 오류가 발생했습니다.",
+    "s3-upload-error": "{{filename}} 파일을 S3에 업로드하는 동안 오류가 발생했습니다."
+}

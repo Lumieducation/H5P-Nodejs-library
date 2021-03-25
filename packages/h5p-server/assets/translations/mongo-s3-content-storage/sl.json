@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Vsebina, do katere želite dostopati, ne obstaja.",
+    "deleting-content-error": "Pri brisanju predmeta vsebine je prišlo do napake.",
+    "deleting-file-error": "<span>Pri brisanju datoteke 0</span> iz predmeta vsebine je prišlo do napake.",
+    "filename-too-long": "Ime datoteke je predolgo: {{filename}}",
+    "illegal-filename": "Ime datoteke {{filename}} ni dovoljeno.",
+    "listing-content-error": "Pri pridobivanju seznama predmetov vsebine je prišlo do napake",
+    "missing-delete-permission": "Nimate dovoljenja za brisanje tega predmeta vsebine.",
+    "missing-list-content-permission": "Nimate dovoljenja za naštevanje predmetov vsebine.",
+    "missing-view-permission": "Nimate dovoljenja za ogled tega vsebinskega predmeta.",
+    "missing-write-permission": "Nimate dovoljenja za spreminjanje tega predmeta vsebine.",
+    "mongo-add-update-error": "Pri dodajanju ali posodabljanju vsebine v zbirki podatkov je prišlo do napake.",
+    "mongo-replace-error": "Pri posodabljanju vsebine v bazi je prišlo do napake.",
+    "s3-upload-error": "<span>Pri nalaganju datoteke 0</span> na S3 je prišlo do napake."
+}

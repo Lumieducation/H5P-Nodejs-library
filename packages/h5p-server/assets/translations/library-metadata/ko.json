@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "영상" },
+    "H5P_ContinuousText": { "title": "연속 텍스트" },
+    "H5P_FreeTextQuestion": { "title": "자유 텍스트 질문" },
+    "H5P_GoToScene": { "title": "장면으로 이동" },
+    "H5P_GoToQuestion": { "title": "교차로" },
+    "H5P_GoalsPage": { "title": "목표 페이지" },
+    "H5P_GoalsAssessmentPage": { "title": "목표 평가 페이지" },
+    "H5P_StandardPage": { "title": "표준 페이지" },
+    "H5P_DocumentExportPage": { "title": "문서 내보내기 페이지" },
+    "H5P_Link": { "title": "링크" },
+    "H5P_Nil": { "title": "상표" },
+    "H5P_IVHotspot": { "title": "탐색 핫스팟" },
+    "H5P_OpenEndedQuestion": { "title": "개방형 질문" },
+    "H5P_Shape": { "title": "모양" },
+    "H5P_Summary": { "title": "요약" },
+    "H5P_Table": { "title": "표" },
+    "H5P_Text": { "title": "본문" },
+    "H5P_Video": { "title": "비디오" },
+    "H5P_AdvancedText": { "title": "본문" },
+    "H5P_SimpleMultiChoice": { "title": "단순 객관식" },
+    "H5P_BranchingQuestion": { "title": "분기 질문" }
+}

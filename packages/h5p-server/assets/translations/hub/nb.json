@@ -1,0 +1,331 @@
+{
+    "H5P_Accordion": {
+        "title": "Trekkspill (Accordion)",
+        "summary": "Lag vertikalt stablede utvidbare gjenstander",
+        "description": "Reduser mengden tekst som presenteres for leserne ved å bruke dette responsive trekkspillet. Lesere bestemmer hvilke overskrifter de skal se nærmere på ved å utvide tittelen. Utmerket for å gi en oversikt med valgfrie grundige forklaringer.",
+        "keywords": {
+            "accordion": "trekkspill",
+            "collapsible_text": "sammenleggbar tekst"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Aritmetisk quiz (Arithmetic Quiz)",
+        "summary": "Lag tidsbaserte aritmetiske spørrekonkurranser",
+        "description": "Lag aritmetiske spørrekonkurranser som består av flervalgsspørsmål. Som forfatter er alt du trenger å gjøre å bestemme typen og lengden på quizen. Brukere holder oversikt over poengsummen og tiden de bruker når de løser quizen.",
+        "keywords": {
+            "math": "matte",
+            "arithmetic_quiz": "aritmetisk quiz",
+            "countdown": "nedtelling"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Diagram (Chart)",
+        "summary": "Generer raskt søyle- og kakediagrammer",
+        "description": "Trenger du å presentere enkle statistiske data grafisk uten å lage kunstverket manuelt? Diagram er svaret ditt.",
+        "keywords": {
+            "chart": "diagram",
+            "bar_chart": "søylediagram",
+            "pie_chart": "Kake diagram",
+            "graph": "kurve"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Liming (Collage)",
+        "summary": "Lag en collage med flere bilder",
+        "description": "Collage-verktøyet lar deg organisere bilder i en beroligende komposisjon.",
+        "keywords": { "collage": "collage", "image": "bilde" }
+    },
+    "H5P_Column": {
+        "title": "Kolonne (Column)",
+        "summary": "Organiser H5P-innhold i en kolonneoppsett",
+        "description": "Organiser innholdstypen din i et kolonneoppsett med H5P-kolonnen. Innholdstyper som adresserer lignende materiale eller deler et felles tema, kan nå grupperes sammen for å skape en sammenhengende læringsopplevelse. I tillegg står forfatterne fritt til å være kreative ved å kombinere nesten alle eksisterende H5P-innholdstyper.",
+        "keywords": {
+            "column": "kolonne",
+            "layout": "oppsett",
+            "compound": "forbindelse"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Kurspresentasjon (Course Presentation)",
+        "summary": "Lag en presentasjon med interaktive lysbilder",
+        "description": "Kurspresentasjoner består av lysbilder med multimedia, tekst og mange forskjellige typer interaksjoner som interaktive sammendrag, flervalgsspørsmål og interaktive videoer. Elevene kan oppleve nytt interaktivt læringsmateriale og teste sin kunnskap og hukommelse i kurspresentasjoner. Som alltid med H5P, kan innhold redigeres i nettlesere, og kurspresentasjonstypen inkluderer et WYSIWYG dra og slipp-basert redigeringsverktøy. En typisk bruk av kurspresentasjonsaktiviteten er å bruke noen lysbilder for å introdusere et emne og følge disse med noen flere lysbilder der brukerens kunnskap blir testet. Kurspresentasjoner kan imidlertid brukes på mange forskjellige måter, inkludert som et presentasjonsverktøy for bruk i klasserommet, eller som et spill der den vanlige navigasjonen erstattes med navigasjonsknapper på toppen av lysbildene for å la brukeren ta valg og se konsekvensene. av deres valg.",
+        "keywords": {
+            "course_presentation": "kurspresentasjon",
+            "slides": "lysbilder",
+            "powerpoint": "powerpoint"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "Dialogkort (Dialog Cards)",
+        "summary": "Lag tekstbaserte vendekort",
+        "description": "Dialogkort kan brukes som øvelse for å hjelpe elever å huske ord, uttrykk eller setninger. På forsiden av kortet er det et hint for et ord eller uttrykk. Ved å vri på kortet avslører eleven et tilsvarende ord eller uttrykk. Dialogkort kan brukes i språkopplæring, for å presentere matematiske problemer eller hjelpe elever å huske fakta som historiske hendelser, formler eller navn.",
+        "keywords": { "dialog_cards": "dialogkort" }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Dokumentasjonsverktøy (Documentation Tool)",
+        "summary": "Lag en skjemaveiviser med teksteksport",
+        "description": "Dokumentasjonsverktøyet har som mål å gjøre det enkelt å lage vurderingsveivisere for målstyrte aktiviteter. Den kan også brukes som skjemaveiviser. Under redigering kan forfatteren legge til flere trinn i veiviseren. I hvert trinn kan forfatteren definere hvilket innhold som går inn i det trinnet. Innhold kan være ren tekst, inntastingsfelt, måldefinisjon og målvurdering. Når den er publisert, blir sluttbrukeren tatt gjennom trinnene i veiviseren. På det siste trinnet i veiviseren kan brukeren generere et dokument med alle innspillene som er sendt. Dette dokumentet kan lastes ned. Dokumentasjonsverktøyet er fullt responsivt og fungerer utmerket på mindre skjermer så vel som på skrivebordet.",
+        "keywords": { "dialog_cards": "dialogkort" }
+    },
+    "H5P_DragQuestion": {
+        "title": "Dra og slipp (Drag and Drop)",
+        "summary": "Lag dra og slipp oppgaver med bilder",
+        "description": "Dra og slipp-spørsmål gjør det mulig for eleven å knytte to eller flere elementer og lage logiske forbindelser på en visuell måte. Lag dra og slipp-spørsmål ved å bruke både tekst og bilder som drabare alternativer. H5P Dra og slipp-spørsmål støtter en-til-en, en-til-mange, mange-til-en og mange-til-mange forhold mellom spørsmål og svar.",
+        "keywords": { "drag_and drop": "dra og slipp" }
+    },
+    "H5P_DragText": {
+        "title": "Dra ordene (Drag the Words)",
+        "summary": "Lag tekstbaserte dra og slipp-oppgaver",
+        "description": "Drag the Words lar innholdsdesignere lage tekstuttrykk med manglende biter av tekst. Sluttbrukeren drar et manglende stykke tekst til riktig sted for å danne et komplett uttrykk. Kan brukes til å sjekke om brukeren husker en tekst hun har lest, eller om hun forstår noe. Hjelper brukeren å tenke gjennom en tekst. Det er veldig enkelt å lage en drag the words-oppgave. Redaktøren skriver bare teksten og lukker ordene som skal kunne dras med stjernetegn som * draggableWord *.",
+        "keywords": { "drag": "dra", "words": "ord" }
+    },
+    "H5P_Blanks": {
+        "title": "Fyll ut blankene (Fill in the Blanks)",
+        "summary": "Lag en oppgave med manglende ord i en tekst",
+        "description": "Elevene fyller ut de manglende ordene i en tekst. Eleven får vist en løsning etter å ha fylt ut alle ordene som mangler, eller etter hvert ord, avhengig av innstillingene. Forfattere skriver inn tekst og merker ord som skal erstattes med en stjerne. I tillegg til læring på morsmål og andrespråk, kan Fill in the blanks brukes til å teste elevens evne til å reprodusere fakta eller produsere matematiske slutninger.",
+        "keywords": { "fill": "fylle", "blanks": "blanks", "text": "tekst" }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Finn hotspot (Find the Hotspot)",
+        "summary": "Opprett hotspots for bilder som brukerne kan finne",
+        "description": "Denne innholdstypen lar sluttbrukere trykke et sted på et bilde og få tilbakemelding på om det var riktig eller feil i henhold til oppgavebeskrivelsen. Forfatteren laster opp et bilde og definerer forskjellige hotspots som tilsvarer detaljer eller deler av bildet. Hotspots kan enten defineres som riktige eller feil, og forfatteren gir passende tilbakemeldingstekst i begge tilfeller. Forfatteren kan også definere en tilbakemelding hvis sluttbrukeren trykker et sted som verken er definert som et riktig eller feil hotspot.",
+        "keywords": { "find": "finne", "hotspot": "hotspot", "image": "bilde" }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Gjett svaret (Guess the Answer)",
+        "summary": "Lag et bilde med et spørsmål og svar",
+        "description": "Denne innholdstypen lar forfattere laste opp et bilde og legge til en passende beskrivelse. Sluttbrukere kan gjette svaret og trykke på linjen under bildet for å avsløre det riktige svaret.",
+        "keywords": { "guess": "Gjett", "answer": "svar" }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "Iframe Embedder",
+        "summary": "Bygg inn fra en url eller et sett med filer",
+        "description": "Iframe-embedder gjør det enkelt å lage en H5P av allerede eksisterende JavaScript-applikasjoner.",
+        "keywords": { "embed": "legge inn", "iframe": "iframe" }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Interaktiv video (Interactive Video)",
+        "summary": "Lag videoer beriket med interaksjoner",
+        "description": "Legg til interaktivitet i videoen din med forklaringer, ekstra bilder, tabeller, fyll ut det tomme og flervalgsspørsmål. Quizspørsmål støtter tilpasningsevne, noe som betyr at du kan hoppe til en annen del av videoen basert på brukerens innspill. Interaktive sammendrag kan legges til på slutten av videoen. Interaktive videoer opprettes og redigeres ved hjelp av H5P-redigeringsverktøyet i en standard nettleser.",
+        "keywords": { "interactive": "interaktiv", "video": "video" }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Mark the Words",
+        "summary": "Lag en oppgave der brukerne fremhever ord",
+        "description": "Merk ordene lar innholdsdesignere lage tekstuttrykk med et definert sett med riktige ord. Sluttbrukeren fremhever ord i henhold til oppgavebeskrivelsen og får en poengsum. For redaktøren er det superenkelt å lage et klikk ordene utfordring. Redaktøren skriver inn teksten og lukker ordene som brukeren skal klikke på, de riktige svarene, i asteriks som * correctWord *.",
+        "keywords": { "mark": "merke", "words": "ord" }
+    },
+    "H5P_MemoryGame": {
+        "title": "Memory Game",
+        "summary": "Lag det klassiske bildeparingsspillet",
+        "description": "Lag dine egne minnespill og test minnet til nettstedets brukere med dette enkle, men vakre HTML5-spillet.",
+        "keywords": { "memory": "hukommelse", "game": "spill", "cards": "kort" }
+    },
+    "H5P_MultiChoice": {
+        "title": "Multiple Choice",
+        "summary": "Lag fleksible flervalgsspørsmål",
+        "description": "Multiple Choice-spørsmål kan være et effektivt vurderingsverktøy. Eleven får umiddelbar tilbakemelding på ytelsen. H5P Multiple Choice-spørsmålene kan ha ett eller flere riktige alternativer per spørsmål.",
+        "keywords": { "multiple": "flere", "choice": "valg", "quiz": "quiz" }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Personality Quiz",
+        "summary": "Lag personlighetsquizzer",
+        "description": "I denne innholdstypen definerer forfatteren en rekke spørsmål med alternativer, der hvert alternativ matches mot en eller flere personligheter. På slutten av quizen vil sluttbrukeren se hvilken personlighet som passer best. Det er flere måter å gjøre denne quizen visuelt tiltalende, f.eks. representerer spørsmål, alternativer og personligheter ved hjelp av bilder.",
+        "keywords": { "personality": "personlighet", "quiz": "quiz" }
+    },
+    "H5P_Questionnaire": {
+        "title": "Spørreskjemaet (Questionnaire)",
+        "summary": "Lag et spørreskjema for å få tilbakemelding",
+        "description": "Få tilbakemelding og still åpne spørsmål i Interaktive videoer og andre innholdstyper med Spørreskjema. Spørreskjema gjør brukerens svar tilgjengelige via en xAPI-integrasjon. Dette betyr at eiere av nettsteder kan lagre svarene på mange forskjellige måter. Svarene kan lagres i en LRS, nettstedene har egen tilpasset lagring eller et skript kan hente e-postadressen og bruke den til å sende brukeren en e-post. På H5P.org lagres svar i Google Analytics.",
+        "keywords": { "questionnaire": "spørreskjema" }
+    },
+    "H5P_QuestionSet": {
+        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "summary": "Lag en sekvens av forskjellige spørsmålstyper",
+        "description": "Spørsmålssett er din typiske quiz-innholdstype. Det gjør det mulig for eleven å løse en sekvens av forskjellige spørsmålstyper, for eksempel Multichoice, Dra og slipp og fyll ut blankene i et spørsmålssett. Som forfatter er det mange innstillinger du kan bruke for å få den til å oppføre seg slik du vil. Du kan for eksempel tilpasse spørsmålssettet med bakgrunnsbilder og definere en bestått prosentandel for eleven. Spørsmålssettet lar deg også legge til videoer som spilles av på slutten. Én video for suksess, en annen hvis eleven ikke klarer testen. Dette kan motivere elever til å prøve igjen hvis de ikke klarer, slik at de får se suksessvideoen.",
+        "keywords": {
+            "question_set": "spørsmålssett",
+            "collection": "samling",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Single Choice Set",
+        "summary": "Lag spørsmål med ett riktig svar",
+        "description": "Enkeltvalgssett lar innholdsdesignere lage spørsmålssett med ett riktig svar per spørsmål. Sluttbrukeren får umiddelbar tilbakemelding etter å ha sendt hvert svar.",
+        "keywords": {
+            "collection": "samling",
+            "quiz": "quiz",
+            "choice": "valg"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Sammendrag (Summary)",
+        "summary": "Lag oppgaver med en liste over utsagn",
+        "description": "Sammendrag hjelper eleven med å huske nøkkelinformasjon i en tekst, video eller presentasjon, ved å aktivt bulide et sammendrag om det aktuelle emnet. Når eleven har fullført et sammendrag, vises en komplett liste over viktige utsagn om emnet.",
+        "keywords": { "summary": "sammendrag" }
+    },
+    "H5P_Timeline": {
+        "title": "Tidslinje (Timeline)",
+        "summary": "Lag en tidslinje over hendelser med multimedia",
+        "description": "Dette er Timeline.js utviklet av Knight Lab, pakket som en H5P-innholdstype for å gjøre tidslinjer lett redigerbare, delbare og gjenbrukbare. Innholdstypen for tidslinjen lar deg plassere en sekvens av hendelser i kronologisk rekkefølge. For hvert arrangement kan du legge til bilder og tekster. Du kan også inkludere eiendeler fra Twitter, YouTube, Flickr, Vimeo, Google Maps og SoundCloud.",
+        "keywords": { "timeline": "tidslinje", "slider": "glidebryteren" }
+    },
+    "H5P_TrueFalse": {
+        "title": "Sann / usant spørsmål (True/False Question)",
+        "summary": "Lag sanne / falske spørsmål",
+        "description": "Sann / usann spørsmål er en enkel og grei innholdstype som kan fungere av seg selv eller settes inn i andre innholdstyper som kurspresentasjon. Et mer komplekst spørsmål kan opprettes ved å legge til et bilde eller en video.",
+        "keywords": { "true": "ekte", "false": "falsk" }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Image Hotspots",
+        "summary": "Lag et bilde med flere infotone",
+        "description": "Image hotspots gjør det mulig å lage et bilde med interaktive hotspots. Når brukeren trykker på et sone, vises en popup som inneholder en overskrift og tekst eller video. Ved hjelp av H5P-editoren kan du legge til så mange hotspots du vil.",
+        "keywords": { "image": "bilde", "hotspot": "hotspot" }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Finn flere hotspots (Find Multiple Hotspots)",
+        "summary": "Lag mange hotspots for brukere å finne",
+        "description": "En gratis HTML5-basert spørsmålstype som gjør at reklamer kan lage en bildebasert test der eleven skal finne de rette stedene på et bilde. Bruk denne innholdstypen med H5P-plugin for WordPress, Moodle eller Drupal for å utfordre brukerne dine."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Image Juxtaposition",
+        "summary": "Lag interaktive bilder",
+        "description": "En gratis HTML5-basert bildeinnholdstype som lar brukerne sammenligne to bilder interaktivt. Fortell bildeshistoriene dine med H5P og Image Juxtaposition på WordPress, Moodle eller Drupal."
+    },
+    "H5P_Audio": {
+        "title": "Lyd (Audio)",
+        "summary": "Last opp et lydopptak",
+        "description": "Last opp et lydopptak i .mp3, .wav, .ogg eller oppgi lenken for et lydopptak."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Audio Recorder",
+        "summary": "Lag et lydopptak",
+        "description": "En HTML5 lydopptaker. Ta opp stemmen din og spill av eller last ned en .wav-fil av opptaket ditt. Bruk H5P-pluginet til å lage H5P Audio Recorder til Drupal-, Wordpress- eller Moodle-nettstedet.",
+        "keywords": { "audio": "lyd", "recorder": "opptaker" }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Speak the Words",
+        "summary": "Svar på et spørsmål med stemmen din (Chrome only)",
+        "description": "Speak the Words støttes bare i nettlesere som implementerer Web Speech API (Chrome-nettlesere, unntatt på iOS). Du trenger en mikrofon for å svare på spørsmålet. Still et spørsmål til brukerne og få dem til å svare med stemmen. Du kan velge flere riktige svar. Brukeren vil kunne se hva ordene hans ble tolket som, og hvor nær det var de riktige svarene.",
+        "keywords": {
+            "language": "Språk",
+            "translation": "oversettelse",
+            "voice": "stemme",
+            "recognition": "Anerkjennelse",
+            "speech": "tale",
+            "mic": "litt",
+            "microphone": "mikrofon"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "summary": "Presentere en sekvens av bilder og forklaringer",
+        "description": "Presentere en sekvens av bilder som folk skal se på etter hverandre, f.eks. bilder av et element som endres over tid, skjemaer eller kart som er organisert i forskjellige lag eller bilder som avslører flere og flere detaljer.",
+        "keywords": {
+            "image": "bilde",
+            "images": "Bilder",
+            "transition": "overgang"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Bildesekvensering (Image Sequencing)",
+        "summary": "Plasser bilder i riktig rekkefølge",
+        "description": "En gratis HTML5-basert innholdstype for bildesekvensering som lar forfattere legge til en sekvens av sine egne bilder (og valgfri bildebeskrivelse) til spillet i en bestemt rekkefølge. Rekkefølgen på bildene vil bli randomisert og spillerne må omorganisere dem basert på oppgavebeskrivelsen.",
+        "keywords": {
+            "image": "bilde",
+            "sequence": "sekvens",
+            "order": "rekkefølge"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Flashcards",
+        "summary": "Lag stilige og moderne flashcards",
+        "description": "Denne innholdstypen lar forfattere lage et enkelt flashkort eller et sett med flashcards, der hvert kort har bilder sammen med spørsmål og svar. Det kreves at elevene fyller ut tekstfeltet og deretter sjekker riktigheten av løsningen.",
+        "keywords": { "cards": "kort", "animation": "animasjon" }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Speak the Words Set",
+        "summary": "Lag en serie spørsmål besvart med tale (Chrome only)",
+        "description": "Speak the Words Set støttes bare i nettlesere som implementerer Web Speech API (Chrome-nettlesere, unntatt på iOS). Du trenger en mikrofon for å svare på spørsmålet. Lag et sett med spørsmål som elevene kan svare på med stemmen. du kan velge flere riktige svar. Brukeren vil kunne se hva ordene hans ble tolket som, og hvor nær det var de riktige svarene.",
+        "keywords": {
+            "language": "Språk",
+            "translation": "oversettelse",
+            "voice": "stemme",
+            "quiz": "quiz",
+            "set": "sett",
+            "recognition": "Anerkjennelse",
+            "mic": "litt",
+            "microphone": "mikrofon"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Image Slider",
+        "summary": "Det er enkelt å lage en glidebryter for bilder",
+        "description": "Presentere bildene dine på en tiltalende måte med letthet. Forfattere må bare laste opp bilder og gi alternative tekster til bildene.\r\n\r\nDe to neste bildene er alltid forhåndslastet, så det vil vanligvis være raskt å bytte mellom bilder uten forsinkelse for innlasting av neste bilde.\r\n\r\nBilder kan oppleves som en del av siden eller i fullskjermmodus. Når det brukes som en del av siden, velger systemet et fast sideforhold avhengig av bildene som brukes. Forfattere kan bestemme seg for å håndtere bildeforhold på en annen måte.",
+        "keywords": {
+            "image": "bilde",
+            "images": "Bilder",
+            "slider": "glidebryteren",
+            "carousel": "karusell"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Essay",
+        "summary": "Lag essay med øyeblikkelig tilbakemelding",
+        "description": "I denne innholdstypen definerer forfatteren et sett med nøkkelord som representerer viktige aspekter av et emne. Disse nøkkelordene samsvares med en tekst som studentene har komponert og kan brukes til å gi tilbakemelding umiddelbart - enten å foreslå å revidere visse emnedetaljer hvis et nøkkelord mangler, eller bekrefte studentens ideer hvis teksten inneholder et nøkkelord.\r\n",
+        "keywords": { "Essay": "Essay" }
+    },
+    "H5P_ImagePair": {
+        "title": "Bildeparing (Image Pairing)",
+        "summary": "Dra og slipp spill som samsvarer med bilder",
+        "description": "Bildekobling er en enkel og effektiv aktivitet som krever at elevene må matche par bilder. Siden det ikke er nødvendig at begge bildene i et par er de samme, er forfattere også i stand til å teste forståelsen av et forhold mellom to forskjellige bilder.",
+        "keywords": {
+            "image_images matching pair": "bildebilder som matcher par"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Diktat (Dictation)",
+        "summary": "Lag en diktat med øyeblikkelig tilbakemelding",
+        "description": "Du kan legge til lydeksempler som inneholder en setning for diktering og angi riktig transkripsjon. Studentene dine kan lytte til prøvene og legge inn det de har hørt i et tekstfelt. Svarene deres vil bli evaluert automatisk. Flere alternativer lar deg kontrollere øvelsens vanskeligheter. Du kan eventuelt legge til et ekstra lydeksempel for en setning som kan inneholde en versjon som blir talt sakte. Du kan også sette en grense for hvor ofte en prøve kan spilles, definere om tegnsetting skal være relevant for poengsum, og bestemme om små feil som skrivefeil skal regnes som ingen feil, en full feil eller bare en halv feil.",
+        "keywords": { "language": "Språk", "audio": "lyd" }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Forgreningsscenario (beta) (Branching Scenario (beta))",
+        "summary": "Lag dilemmaer og læring på egenhånd",
+        "description": "Grensing Scenario tillater forfattere å presentere elevene med en rekke rikt interaktivt innhold og valg. Valgene elevene tar vil avgjøre neste innhold de ser. Kan brukes til å skape dilemmaer, seriøse spill og selvstendig læring."
+    },
+    "H5P_ThreeImage": {
+        "title": "Virtual Tour (360) (Virtual Tour (360))",
+        "summary": "Lag 360 miljøer med interaksjoner",
+        "description": "360 (likevektige) og normale bilder kan berikes med interaktiviteter som forklaringer, videoer, lyder og interaktive spørsmål. Bildene skaper scener som også kan kobles sammen for å gi brukeren et inntrykk av å bevege seg mellom miljøer eller mellom forskjellige synspunkter i samme miljø."
+    },
+    "H5P_FindTheWords": {
+        "title": "Finn ordene (Find the words)",
+        "summary": "Rutenett søkespill",
+        "description": "En gratis HTML5-basert ordsøkaktivitet som lar forfattere lage en liste over ord som blir tegnet i et rutenett. Lærerens oppgave er å finne og velge ordene i rutenettet."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Interactive Book",
+        "summary": "Lag små kurs, bøker og tester",
+        "description": "Lag små kurs, bøker eller tester. Interactive Book lar forfattere kombinere store mengder interaktivt innhold som interaktive videoer, spørsmål, kurspresentasjoner og mer på flere sider. Det er et sammendrag på slutten som oppsummerer poengene som eleven oppnår gjennom hele boka.",
+        "keywords": { "book": "bok", "course": "kurs" }
+    },
+    "H5P_KewArCode": {
+        "title": "KewAr-kode (KewAr Code)",
+        "summary": "Lag QR-koder for forskjellige formål",
+        "description": "KewAr Code lar innholdsdesignere lage kjente QR-koder. Disse QR-kodene kan kode URL-er, men også kontaktinformasjon, hendelser, geografiske steder osv. Folk kan skanne dem med en QR-kodeleser for å utløse den valgte handlingen.",
+        "keywords": { "QR": "QR" }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Adventskalender (beta) (Advent Calendar (beta))",
+        "summary": "Lag overraskelser som blir avduket hver dag",
+        "description": "Bygg og tilpass en vakker adventskalender. Du kan legge til et bakgrunnsbilde i hele kalenderen, på hver dør og som bakgrunn på innholdet på innsiden av hver dør. Du kan også legge til snøeffekt og musikk. Inne i hver dør kan du legge til lyd, video, tekst, bilde eller lenke.\r\n\r\nVær oppmerksom på at det er enkelt for datamaskinkunne brukere å avsløre innholdet i alle dører med en gang. Hvis du planlegger å avsløre store hemmeligheter på fremtidige dager, bør du vente til den dagen før du legger til dine store hemmeligheter i kalenderen.",
+        "keywords": {
+            "christmas": "jul",
+            "advent": "advent",
+            "holidays": "høytider",
+            "calendar": "kalender"
+        }
+    }
+}

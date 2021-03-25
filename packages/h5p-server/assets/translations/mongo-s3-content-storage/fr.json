@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Le contenu auquel vous essayez d'accéder n'existe pas.",
+    "deleting-content-error": "Une erreur s'est produite lors de la suppression de l'objet de contenu.",
+    "deleting-file-error": "Une erreur s&#39;est produite lors de la suppression du fichier {{filename}} de l&#39;objet de contenu.",
+    "filename-too-long": "Le nom du fichier est trop long: {{filename}}",
+    "illegal-filename": "Le nom de fichier {{filename}} n&#39;est pas autorisé.",
+    "listing-content-error": "Une erreur s'est produite lors de l'obtention de la liste des objets de contenu",
+    "missing-delete-permission": "Vous n'êtes pas autorisé à supprimer cet objet de contenu.",
+    "missing-list-content-permission": "Vous n'êtes pas autorisé à répertorier les objets de contenu.",
+    "missing-view-permission": "Vous n'êtes pas autorisé à afficher cet objet de contenu.",
+    "missing-write-permission": "Vous n'êtes pas autorisé à modifier cet objet de contenu.",
+    "mongo-add-update-error": "Une erreur s'est produite lors de l'ajout ou de la mise à jour du contenu dans la base de données.",
+    "mongo-replace-error": "Une erreur s'est produite lors de la mise à jour du contenu de la base de données.",
+    "s3-upload-error": "Une erreur s&#39;est produite lors du téléchargement du fichier {{filename}} vers S3."
+}

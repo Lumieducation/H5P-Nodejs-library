@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Imatge" },
+    "H5P_ContinuousText": { "title": "Text continu" },
+    "H5P_FreeTextQuestion": { "title": "Pregunta de text lliure" },
+    "H5P_GoToScene": { "title": "Vés a l'escena" },
+    "H5P_GoToQuestion": { "title": "Cruïlla de camins" },
+    "H5P_GoalsPage": { "title": "Pàgina d’objectius" },
+    "H5P_GoalsAssessmentPage": { "title": "Pàgina d’avaluació d’objectius" },
+    "H5P_StandardPage": { "title": "Pàgina estàndard" },
+    "H5P_DocumentExportPage": { "title": "Pàgina d'exportació de documents" },
+    "H5P_Link": { "title": "Enllaç" },
+    "H5P_Nil": { "title": "Etiqueta" },
+    "H5P_IVHotspot": { "title": "Punt d'accés de navegació" },
+    "H5P_OpenEndedQuestion": { "title": "Pregunta oberta" },
+    "H5P_Shape": { "title": "Formes" },
+    "H5P_Summary": { "title": "Resum" },
+    "H5P_Table": { "title": "Taula" },
+    "H5P_Text": { "title": "Text" },
+    "H5P_Video": { "title": "Vídeo" },
+    "H5P_AdvancedText": { "title": "Text" },
+    "H5P_SimpleMultiChoice": { "title": "Elecció múltiple simple" },
+    "H5P_BranchingQuestion": { "title": "Pregunta de ramificació" }
+}

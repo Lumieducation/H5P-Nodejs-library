@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Při mazání tohoto souboru došlo k chybě.",
+    "file-not-found": "Soubor neexistuje.",
+    "missing-delete-permission": "K odstranění tohoto souboru nemáte oprávnění.",
+    "missing-view-permission": "K prohlížení tohoto souboru nemáte oprávnění.",
+    "missing-write-permission": "Nemáte oprávnění k ukládání dočasných souborů.",
+    "s3-upload-error": "Při nahrávání dočasného souboru na S3 došlo k chybě."
+}

@@ -1,0 +1,339 @@
+{
+    "H5P_Accordion": {
+        "title": "Akordeon (Accordion)",
+        "summary": "Dikey olarak istiflenmiş genişletilebilir öğeler oluşturun",
+        "description": "Bu duyarlı akordiyonu kullanarak okuyuculara sunulan metin miktarını azaltın. Okuyucular, başlığı genişleterek hangi başlıklara daha yakından bakacaklarına karar verirler. İsteğe bağlı ayrıntılı açıklamalarla genel bir bakış sağlamak için mükemmeldir.",
+        "keywords": {
+            "accordion": "akordeon",
+            "collapsible_text": "daraltılabilir metin"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Aritmetik Sınav (Arithmetic Quiz)",
+        "summary": "Zamana dayalı aritmetik sınavlar oluşturun",
+        "description": "Çoktan seçmeli sorulardan oluşan aritmetik sınavlar oluşturun. Bir yazar olarak tek yapmanız gereken sınavın türüne ve uzunluğuna karar vermektir. Kullanıcılar, sınavı çözerken harcanan puanı ve zamanı takip eder.",
+        "keywords": {
+            "math": "matematik",
+            "arithmetic_quiz": "aritmetik sınav",
+            "countdown": "geri sayım"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Çizelge (Chart)",
+        "summary": "Hızla çubuk ve pasta grafikleri oluşturun",
+        "description": "Resmi manuel olarak oluşturmadan basit istatistiksel verileri grafik olarak sunmanız mı gerekiyor? Cevabınız grafiktir.",
+        "keywords": {
+            "chart": "grafik",
+            "bar_chart": "grafik çubuğu",
+            "pie_chart": "yuvarlak diyagram",
+            "graph": "grafik"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Yapıştırma (Collage)",
+        "summary": "Birden çok görüntüden oluşan bir kolaj oluşturun",
+        "description": "Kolaj aracı, görüntüleri rahatlatıcı bir kompozisyon halinde düzenlemenize olanak tanır.",
+        "keywords": { "collage": "kolaj", "image": "görüntü" }
+    },
+    "H5P_Column": {
+        "title": "Sütun (Column)",
+        "summary": "H5P içeriğini bir sütun düzeninde düzenleyin",
+        "description": "H5P Sütunu ile içerik türünüzü bir sütun düzeninde düzenleyin. Benzer materyalleri ele alan veya ortak bir temayı paylaşan içerik türleri, artık tutarlı bir öğrenme deneyimi oluşturmak için birlikte gruplanabilir. Ek olarak, yazarlar neredeyse tüm mevcut H5P içerik türlerini birleştirerek yaratıcı olmakta özgürdürler.",
+        "keywords": {
+            "column": "sütun",
+            "layout": "Yerleşim",
+            "compound": "bileşik"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Ders Sunumu (Course Presentation)",
+        "summary": "Etkileşimli slaytlarla bir sunum oluşturun",
+        "description": "Kurs sunumları, multimedya, metin ve etkileşimli özetler, çoktan seçmeli sorular ve etkileşimli videolar gibi birçok farklı etkileşim türü içeren slaytlardan oluşur. Öğrenciler yeni etkileşimli öğrenim materyallerini deneyimleyebilir ve bilgi ve hafızalarını Kurs Sunumlarında test edebilirler. H5P ile her zaman olduğu gibi, içerik web tarayıcılarında düzenlenebilir ve Kurs Sunumu etkinlik türü, WYSIWYG sürükle ve bırak tabanlı bir yazma aracı içerir. Kurs Sunumu etkinliğinin tipik bir kullanımı, bir konuyu tanıtmak için birkaç slayt kullanmak ve bunları, kullanıcının bilgisinin test edildiği birkaç slayt ile takip etmektir. Bununla birlikte, Ders Sunumları, sınıfta kullanım için bir sunum aracı olarak veya kullanıcının seçimler yapmasına ve sonuçlarını görmesine izin vermek için normal gezinmenin slaytların üstündeki gezinme düğmeleriyle değiştirildiği bir oyun dahil olmak üzere birçok farklı şekilde kullanılabilir. seçimlerinden.",
+        "keywords": {
+            "course_presentation": "kurs sunumu",
+            "slides": "slaytlar",
+            "powerpoint": "priz"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "İletişim Kartları (Dialog Cards)",
+        "summary": "Metin tabanlı çevirme kartları oluşturun",
+        "description": "İletişim kartları, öğrencilerin kelimeleri, ifadeleri veya cümleleri ezberlemelerine yardımcı olacak bir alıştırma olarak kullanılabilir. Kartın ön yüzünde bir kelime veya ifade için bir ipucu var. Kartı çevirerek öğrenci karşılık gelen bir kelime veya ifadeyi ortaya çıkarır. İletişim kartları, matematik problemlerini sunmak veya öğrencilerin tarihsel olaylar, formüller veya isimler gibi gerçekleri hatırlamasına yardımcı olmak için dil öğrenmede kullanılabilir.",
+        "keywords": { "dialog_cards": "iletişim kartları" }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Dokümantasyon Aracı (Documentation Tool)",
+        "summary": "Metin dışa aktarımıyla bir form sihirbazı oluşturun",
+        "description": "Belgeleme aracı, hedef odaklı faaliyetler için değerlendirme sihirbazları oluşturmayı kolaylaştırmayı amaçlamaktadır. Ayrıca bir form sihirbazı olarak da kullanılabilir. Yazar, düzenleme sırasında sihirbaza birden çok adım ekleyebilir. Her adımda, yazar o adıma hangi içeriğin gireceğini tanımlayabilir. İçerik düz metin, giriş alanları, hedef tanımlama ve hedef değerlendirme olabilir. Yayınlandıktan sonra, son kullanıcı sihirbazın adımlarına yönlendirilecektir. Sihirbazın son adımında, kullanıcı gönderilen tüm girdileri içeren bir belge oluşturabilir. Bu belge indirilebilir. Dokümantasyon aracı tamamen duyarlıdır ve masaüstünüzde olduğu kadar küçük ekranlarda da harika çalışır.",
+        "keywords": { "dialog_cards": "iletişim kartları" }
+    },
+    "H5P_DragQuestion": {
+        "title": "Sürükle ve Bırak (Drag and Drop)",
+        "summary": "Görüntülerle sürükle ve bırak görevleri oluşturun",
+        "description": "Sürükle ve bırak sorusu, öğrencinin iki veya daha fazla öğeyi ilişkilendirmesini ve görsel bir şekilde mantıksal bağlantılar kurmasını sağlar. Sürüklenebilir alternatifler olarak hem metin hem de resimler kullanarak soruları sürükleyip bırakın. H5P Sürükle ve bırak soruları, sorular ve yanıtlar arasında bire bir, bire çok, çoka bir ve çoktan çoğa ilişkileri destekler.",
+        "keywords": { "drag_and drop": "sürükle ve bırak" }
+    },
+    "H5P_DragText": {
+        "title": "Kelimeleri Sürükleyin (Kelimeleri (Drag the Words)",
+        "summary": "Metin tabanlı sürükle ve bırak görevleri oluşturun",
+        "description": "Kelimeleri Sürükle, içerik tasarımcılarının eksik metin parçalarıyla metinsel ifadeler oluşturmasına olanak tanır. Son kullanıcı, eksiksiz bir ifade oluşturmak için eksik bir metin parçasını doğru yerine sürükler. Kullanıcının okuduğu bir metni hatırlayıp hatırlamadığını veya bir şeyi anlayıp anlamadığını kontrol etmek için kullanılabilir. Kullanıcının bir metin üzerinde düşünmesine yardımcı olur. Bir sözcük görevi oluşturmak çok kolay. Düzenleyici sadece metni yazar ve sürüklenebilecek kelimeleri * draggableWord * gibi yıldız işaretleri ile ekler.",
+        "keywords": { "drag": "sürüklemek", "words": "kelimeler" }
+    },
+    "H5P_Blanks": {
+        "title": "Boşlukları (Fill in the Blanks)",
+        "summary": "Bir metinde eksik kelimeler olan bir görev oluşturun",
+        "description": "Öğrenciler bir metindeki eksik kelimeleri doldurur. Öğrenciye, tüm eksik kelimeleri doldurduktan sonra veya ayarlara bağlı olarak her kelimeden sonra bir çözüm gösterilir. Yazarlar metin girer ve bir yıldız ile değiştirilecek kelimeleri işaretler. Anadili ve ikinci dil öğrenimine ek olarak, boşlukları doldur, öğrencinin gerçekleri yeniden üretme veya matematiksel çıkarımlar üretme yeteneğini test etmek için kullanılabilir.",
+        "keywords": {
+            "fill": "doldurmak",
+            "blanks": "boşluklar",
+            "text": "Metin"
+        }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Hotspot&#39;u Bul (Hotspot&#39;u (Find the Hotspot)",
+        "summary": "Kullanıcıların bulması için görüntü noktaları oluşturun",
+        "description": "Bu içerik türü, son kullanıcıların bir resim üzerinde bir yere basmasına ve görev açıklamasına göre bunun doğru veya yanlış olup olmadığı konusunda geri bildirim almasına olanak tanır. Yazar bir görüntü yükler ve görüntünün ayrıntılarına veya bölümlerine karşılık gelen çeşitli etkin noktaları tanımlar. Sıcak noktalar doğru veya yanlış olarak tanımlanabilir ve yazar her iki durumda da uygun geri bildirim metni sağlar. Yazar ayrıca, son kullanıcı ne doğru ne de yanlış sıcak nokta olarak tanımlanmayan bir yere basarsa bir geri bildirim tanımlayabilir.",
+        "keywords": {
+            "find": "bulmak",
+            "hotspot": "sıcak nokta",
+            "image": "görüntü"
+        }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Cevabı Tahmin Et (Cevabı (Guess the Answer)",
+        "summary": "Soru cevap içeren bir resim oluşturun",
+        "description": "Bu içerik türü, yazarların bir resim yüklemesine ve uygun bir açıklama eklemesine izin verir. Son kullanıcılar cevabı tahmin edebilir ve doğru cevabı ortaya çıkarmak için resmin altındaki çubuğa basabilir.",
+        "keywords": { "guess": "tahmin", "answer": "Cevap" }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "Iframe Embedder",
+        "summary": "Bir url'den veya bir dizi dosyadan yerleştirme",
+        "description": "Iframe yerleştirici, halihazırda mevcut JavaScript uygulamalarının H5P'sini yapmayı kolaylaştırır.",
+        "keywords": { "embed": "Göm", "iframe": "iframe" }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Etkileşimli Video (Interactive Video)",
+        "summary": "Etkileşimlerle zenginleştirilmiş videolar oluşturun",
+        "description": "Videonuza açıklamalar, ekstra resimler, tablolar, Boşluk Doldurma ve çoktan seçmeli sorularla etkileşim katın. Test soruları uyarlanabilirliği destekler, yani kullanıcının girdisine göre videonun başka bir bölümüne atlayabilirsiniz. Videonun sonuna interaktif özetler eklenebilir. Etkileşimli videolar, standart bir web tarayıcısında H5P yazma aracı kullanılarak oluşturulur ve düzenlenir.",
+        "keywords": { "interactive": "etkileşimli", "video": "video" }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Kelimeleri İşaretle (Kelimeleri (Mark the Words)",
+        "summary": "Kullanıcıların kelimeleri vurguladığı bir görev oluşturun",
+        "description": "Kelimeleri işaretle, içerik tasarımcılarının tanımlanmış bir dizi doğru kelime ile metinsel ifadeler oluşturmasına izin verir. Son kullanıcı, görev açıklamasına göre kelimeleri vurgular ve bir puan verilir. Editör için bir tıklama kelime mücadelesi oluşturmak çok kolaydır. Editör metni yazar ve kullanıcının tıklaması gereken kelimeleri, doğru cevapları yıldız şeklinde * doğru Kelime * gibi ekler.",
+        "keywords": { "mark": "işaret", "words": "kelimeler" }
+    },
+    "H5P_MemoryGame": {
+        "title": "Hafıza Oyunu (Memory Game)",
+        "summary": "Klasik görüntü eşleştirme oyununu oluşturun",
+        "description": "Bu basit ama güzel HTML5 oyunuyla kendi hafıza oyunlarınızı oluşturun ve sitenizin kullanıcılarının hafızasını test edin.",
+        "keywords": { "memory": "hafıza", "game": "oyun", "cards": "kartları" }
+    },
+    "H5P_MultiChoice": {
+        "title": "Çoktan Seçmeli (Multiple Choice)",
+        "summary": "Esnek çoktan seçmeli sorular oluşturun",
+        "description": "Çoktan Seçmeli sorular etkili bir değerlendirme aracı olabilir. Öğrenciye anında performans geri bildirimi verilir. H5P Çoktan Seçmeli soruları, soru başına bir veya birden çok doğru seçeneğe sahip olabilir.",
+        "keywords": { "multiple": "çoklu", "choice": "seçim", "quiz": "sınav" }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Kişilik Testi (Personality Quiz)",
+        "summary": "Kişilik testleri oluşturun",
+        "description": "Bu içerik türünde yazar, her alternatifin bir veya daha fazla kişiliğe karşı eşleştirildiği alternatifli bir dizi soru tanımlar. Testin sonunda, son kullanıcı hangi kişiliğin en iyi eşleştiğini görecek. Bu testi görsel olarak çekici hale getirmenin birkaç yolu vardır, örneğin. görüntüleri kullanarak soruları, alternatifleri ve kişilikleri temsil etmek.",
+        "keywords": { "personality": "kişilik", "quiz": "sınav" }
+    },
+    "H5P_Questionnaire": {
+        "title": "Anket (Questionnaire)",
+        "summary": "Geri bildirim almak için bir anket oluşturun",
+        "description": "Anket ile Etkileşimli Videolar ve diğer içerik türlerinde geri bildirim alın ve açık uçlu sorular sorun. Anket, kullanıcının yanıtlarını bir xAPI entegrasyonu aracılığıyla kullanılabilir hale getirir. Bu, web sitesi sahiplerinin yanıtları birçok farklı şekilde saklayabileceği anlamına gelir. Yanıtlar bir LRS'de depolanabilir, sitelerin kendi özel deposu olabilir veya bir komut dosyası e-posta adresini alabilir ve kullanıcıya bir e-posta göndermek için kullanabilir. H5P.org'da yanıtlar Google Analytics'te saklanır.",
+        "keywords": { "questionnaire": "anket" }
+    },
+    "H5P_QuestionSet": {
+        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "summary": "Çeşitli soru türleri dizisi oluşturun",
+        "description": "Soru Seti, tipik sınav içerik türünüzdür. Öğrencinin, Çoklu Ses, Sürükle ve bırak ve bir Soru setindeki boşlukları Doldur gibi çeşitli soru türlerini çözmesine olanak tanır. Bir yazar olarak, tam istediğiniz gibi davranmasını sağlamak için kullanabileceğiniz birçok ayar vardır. Örneğin, Soru setini arka plan görüntüleriyle özelleştirebilir ve öğrenci için bir geçiş yüzdesi tanımlayabilirsiniz. Soru Seti, sonunda oynatılan videoları eklemenize de olanak tanır. Başarı için bir video, öğrenci testi geçemezse başka bir video. Bu, öğrencileri başarısız olurlarsa başarı videosunu görmeleri için tekrar denemeye motive edebilir.",
+        "keywords": {
+            "question_set": "soru seti",
+            "collection": "Toplamak",
+            "quiz": "sınav"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Tek Seçimli Set (Single Choice Set)",
+        "summary": "Tek bir doğru cevapla sorular oluşturun",
+        "description": "Tekli seçim seti, içerik tasarımcılarının soru başına bir doğru yanıtla soru setleri oluşturmasına olanak tanır. Son kullanıcı, her cevabı gönderdikten sonra anında geri bildirim alır.",
+        "keywords": {
+            "collection": "Toplamak",
+            "quiz": "sınav",
+            "choice": "seçim"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Özet (Summary)",
+        "summary": "İfade listesiyle görevler oluşturun",
+        "description": "Özetler, öğrencinin bir metin, video veya sunumdaki önemli bilgileri, eldeki konu hakkında aktif bir şekilde özetleyerek hatırlamasına yardımcı olur. Öğrenci bir özeti tamamladığında, konuyla ilgili temel ifadelerin tam bir listesi gösterilir.",
+        "keywords": { "summary": "özet" }
+    },
+    "H5P_Timeline": {
+        "title": "Zaman Çizelgesi (Timeline)",
+        "summary": "Multimedya ile olayların zaman çizelgesini oluşturun",
+        "description": "Bu, Knight Lab tarafından geliştirilen, zaman çizelgelerini kolayca düzenlenebilir, paylaşılabilir ve yeniden kullanılabilir hale getirmek için bir H5P içerik türü olarak paketlenmiş Timeline.js'dir. Zaman çizelgesi içerik türü, bir dizi olayı kronolojik bir sıraya yerleştirmenize olanak tanır. Her olay için resimler ve metinler ekleyebilirsiniz. Ayrıca Twitter, YouTube, Flickr, Vimeo, Google Haritalar ve SoundCloud'dan varlıklar da ekleyebilirsiniz.",
+        "keywords": { "timeline": "zaman çizelgesi", "slider": "kaydırıcı" }
+    },
+    "H5P_TrueFalse": {
+        "title": "Doğru / Yanlış Soru (True/False Question)",
+        "summary": "Doğru / Yanlış sorular oluşturun",
+        "description": "Doğru / Yanlış Soru, kendi başına çalışabilen veya Kurs Sunumu gibi diğer içerik türlerine eklenebilen basit ve anlaşılır bir içerik türüdür. Bir görüntü veya video eklenerek daha karmaşık bir soru oluşturulabilir.",
+        "keywords": { "true": "doğru", "false": "yanlış" }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Görüntü Etkin Noktaları (Image Hotspots)",
+        "summary": "Birden çok bilgi noktası olan bir görüntü oluşturun",
+        "description": "Görüntü sıcak noktaları, etkileşimli sıcak noktalara sahip bir görüntü oluşturmayı mümkün kılar. Kullanıcı bir sıcak noktaya bastığında, başlık ve metin veya video içeren bir açılır pencere görüntülenir. H5P düzenleyiciyi kullanarak istediğiniz kadar çok etkin nokta ekleyebilirsiniz.",
+        "keywords": { "image": "görüntü", "hotspot": "sıcak nokta" }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Birden Fazla Erişim Noktası (Find Multiple Hotspots)",
+        "summary": "Kullanıcıların bulması için birçok erişim noktası oluşturun",
+        "description": "Reklam öğelerinin, öğrencinin bir resim üzerinde doğru noktaları bulacağı resim tabanlı bir test oluşturmasına olanak tanıyan ücretsiz bir HTML5 tabanlı soru türü. Kullanıcılarınıza meydan okumak için bu içerik türünü WordPress, Moodle veya Drupal için H5P eklentisiyle kullanın."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Görüntü Yan yana Konumlandırma (Image Juxtaposition)",
+        "summary": "Etkileşimli görüntüler oluşturun",
+        "description": "Kullanıcıların iki görüntüyü etkileşimli olarak karşılaştırmalarına olanak tanıyan ücretsiz bir HTML5 tabanlı görüntü içerik türü. Görsel hikayelerinizi WordPress, Moodle veya Drupal'da H5P ve Image Juxtaposition ile anlatın."
+    },
+    "H5P_Audio": {
+        "title": "Ses (Audio)",
+        "summary": "Bir ses kaydı yükleyin",
+        "description": ".Mp3, .wav, .ogg biçiminde bir ses kaydı yükleyin veya bir ses kaydı için bağlantı sağlayın."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Ses Kaydedici (Audio Recorder)",
+        "summary": "Bir ses kaydı oluşturun",
+        "description": "Bir HTML5 ses kaydedici. Sesinizi kaydedin ve kaydınızın bir .wav dosyasını oynatın veya indirin. Drupal, Wordpress veya Moodle sitenizde H5P Ses Kaydediciyi oluşturmak için H5P eklentisini kullanın.",
+        "keywords": { "audio": "ses", "recorder": "ses kayıt cihazı" }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Kelimeleri Söyleyin (Kelimeleri (Speak the Words)",
+        "summary": "Sesinizi kullanarak bir soruyu cevaplayın (Chrome only)",
+        "description": "Kelimeleri Konuş, yalnızca Web Konuşma API'sini uygulayan tarayıcılarda (iOS hariç Chrome tarayıcılarında) desteklenir. Soruyu cevaplamak için mikrofona ihtiyacınız var. Kullanıcılara bir soru sorun ve seslerini kullanarak cevaplamalarını sağlayın. Birden çok doğru cevap seçebilirsiniz. Kullanıcı, sözlerinin ne olarak yorumlandığını ve doğru cevaplara ne kadar yakın olduğunu görebilecektir.",
+        "keywords": {
+            "language": "dil",
+            "translation": "tercüme",
+            "voice": "ses",
+            "recognition": "tanıma",
+            "speech": "konuşma",
+            "mic": "küçük",
+            "microphone": "mikrofon"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "summary": "Bir dizi görüntü ve açıklama sunun",
+        "description": "İnsanların birbiri ardına bakması gereken bir dizi resim sunun, örn. zamanla değişen bir öğenin fotoğrafları, farklı katmanlar halinde düzenlenmiş şemalar veya haritalar veya gittikçe daha fazla ayrıntı ortaya çıkaran görüntüler.",
+        "keywords": {
+            "image": "görüntü",
+            "images": "Görüntüler",
+            "transition": "geçiş"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Görüntü Sıralama (Image Sequencing)",
+        "summary": "Resimleri doğru sıraya yerleştirin",
+        "description": "Yazarların oyuna belirli bir sırayla kendi görüntülerinin bir dizisini (ve isteğe bağlı görüntü açıklamasını) eklemelerine olanak tanıyan ücretsiz bir HTML5 tabanlı görüntü sıralama içerik türü. Görüntülerin sırası rastgele hale getirilecek ve oyuncuların bunları görev açıklamasına göre yeniden sıralaması gerekecek.",
+        "keywords": {
+            "image": "görüntü",
+            "sequence": "sıra",
+            "order": "sipariş"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Bilgi Kartları (Flashcards)",
+        "summary": "Şık ve modern bilgi kartları oluşturun",
+        "description": "Bu içerik türü, yazarların tek bir flash kart veya her kartın soru ve yanıtlarla eşleştirilmiş görüntülere sahip olduğu bir dizi bilgi kartı oluşturmasına olanak tanır. Öğrencilerin metin alanını doldurmaları ve ardından çözümlerinin doğruluğunu kontrol etmeleri gerekir.",
+        "keywords": { "cards": "kartları", "animation": "animasyon" }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Sözcük Kümesini Söyle (Speak the Words Set)",
+        "summary": "Konuşarak yanıtlanan bir dizi soru oluşturun (Chrome only)",
+        "description": "Kelimeleri Konuş Kümesi, yalnızca Web Konuşma API'sini uygulayan tarayıcılarda (iOS hariç Chrome tarayıcılarında) desteklenir. Soruyu cevaplamak için mikrofona ihtiyacınız var. Öğrencilerin kendi seslerini kullanarak cevaplayabilecekleri bir dizi soru oluşturun. birden çok doğru cevap seçebilirsiniz. Kullanıcı, sözlerinin ne olarak yorumlandığını ve doğru cevaplara ne kadar yakın olduğunu görebilecektir.",
+        "keywords": {
+            "language": "dil",
+            "translation": "tercüme",
+            "voice": "ses",
+            "quiz": "sınav",
+            "set": "Ayarlamak",
+            "recognition": "tanıma",
+            "mic": "küçük",
+            "microphone": "mikrofon"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Resim Kaydırıcı (Image Slider)",
+        "summary": "Kolayca bir Görüntü Kaydırıcısı oluşturun",
+        "description": "Görsellerinizi kolaylıkla çekici bir şekilde sunun. Yazarlar sadece resimleri yüklemeli ve resimler için alternatif metinler sağlamalıdır.\r\n\r\nSonraki iki görüntü her zaman önceden yüklenmiştir, bu nedenle görüntüler arasında geçiş yapmak genellikle sonraki görüntüyü yüklemek için gecikme olmaksızın hızlı olacaktır.\r\n\r\nGörüntüler, sayfanın bir parçası olarak veya tam ekran modunda görüntülenebilir. Sayfanın bir parçası olarak kullanıldığında, sistem, kullanılan görüntülere bağlı olarak sabit bir en boy oranı seçecektir. Yazarlar en boy oranlarını farklı şekilde ele almaya karar verebilirler.",
+        "keywords": {
+            "image": "görüntü",
+            "images": "Görüntüler",
+            "slider": "kaydırıcı",
+            "carousel": "atlıkarınca"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Deneme (Essay)",
+        "summary": "Anında geri bildirim ile Deneme Oluşturun",
+        "description": "Bu içerik türünde yazar, bir konunun önemli yönlerini temsil eden bir dizi anahtar sözcük tanımlar. Bu anahtar kelimeler, öğrencilerin oluşturduğu bir metinle eşleştirilir ve anında geri bildirim sağlamak için kullanılabilir - ya bir anahtar kelime eksikse belirli konu ayrıntılarını gözden geçirmeyi önerir ya da metin bir anahtar kelime içeriyorsa öğrencinin fikirlerini onaylar.\r\n",
+        "keywords": { "Essay": "Makale" }
+    },
+    "H5P_ImagePair": {
+        "title": "Görüntü Eşleştirme (Image Pairing)",
+        "summary": "Resim eşleştirme oyununu sürükle ve bırak",
+        "description": "Görüntü eşleştirme, öğrencilerin görüntü çiftlerini eşleştirmelerini gerektiren basit ve etkili bir etkinliktir. Bir çiftteki her iki görüntünün aynı olması gerekmediğinden, yazarlar iki farklı görüntü arasındaki bir ilişkinin anlaşılmasını da test edebilirler.",
+        "keywords": {
+            "image_images matching pair": "görüntü çifti eşleşen görüntü"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Dikte (Dictation)",
+        "summary": "Anında geri bildirim ile bir dikte oluşturun",
+        "description": "Dikte için bir cümle içeren ses örnekleri ekleyebilir ve doğru transkripsiyonu girebilirsiniz. Öğrencileriniz örnekleri dinleyebilir ve duyduklarını bir metin alanına girebilirler. Cevapları otomatik olarak değerlendirilecektir. Birkaç seçenek, egzersizin zorluğunu kontrol etmenize izin verecektir. Yavaş konuşulan bir versiyonu tutabilecek bir cümle için isteğe bağlı olarak ikinci bir ses örneği ekleyebilirsiniz. Ayrıca, bir örneğin ne sıklıkla çalınabileceğine dair bir sınır belirleyebilir, noktalama işaretinin puanlamayla ilgili olup olmayacağını belirleyebilir ve yazım hataları gibi küçük hataların hata yok mu, tam hata mı yoksa sadece yarım hata olarak mı sayılacağına karar verebilirsiniz.",
+        "keywords": { "language": "dil", "audio": "ses" }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Dallanma Senaryosu (beta) (Branching Scenario (beta))",
+        "summary": "İkilemler yaratın ve kendi hızınızda öğrenme",
+        "description": "Dallanma Senaryosu, yazarların öğrencilere çeşitli zengin etkileşimli içerik ve seçenekler sunmasına olanak tanır. Öğrencilerin yaptığı seçimler, görecekleri sonraki içeriği belirleyecektir. İkilemler, ciddi oyunlar ve kendi hızınıza göre öğrenme yaratmak için kullanılabilir."
+    },
+    "H5P_ThreeImage": {
+        "title": "Sanal Tur (360) (Virtual Tour (360))",
+        "summary": "Etkileşimlerle 360 ortamlar oluşturun",
+        "description": "360 (eşit dikdörtgen) ve normal görüntüler, açıklamalar, videolar, sesler ve etkileşimli sorular gibi etkileşimlerle zenginleştirilebilir. Görüntüler, kullanıcıya aynı ortam içinde ortamlar arasında veya farklı bakış açıları arasında hareket etme izlenimi vermek için birbirine bağlanabilen sahneler yaratır."
+    },
+    "H5P_FindTheWords": {
+        "title": "Kelimeleri bul (Kelimeleri (Find the words)",
+        "summary": "Grid kelime arama oyunu",
+        "description": "Yazarların bir ızgarada çizilecek bir kelime listesi oluşturmasına olanak tanıyan ücretsiz bir HTML5 tabanlı kelime arama etkinliği. Öğrencinin görevi, ızgaradaki kelimeleri bulup seçmektir."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Etkileşimli Kitap (Interactive Book)",
+        "summary": "Küçük kurslar, kitaplar ve testler oluşturun",
+        "description": "Küçük kurslar, kitaplar veya testler oluşturun. Etkileşimli Kitap, yazarların etkileşimli videolar, sorular, kurs sunumları ve daha fazlası gibi büyük miktarda etkileşimli içeriği birden çok sayfada birleştirmesine olanak tanır. Sonunda öğrencinin kitap boyunca aldığı puanları özetleyen bir özet var.",
+        "keywords": { "book": "kitap", "course": "kurs" }
+    },
+    "H5P_KewArCode": {
+        "title": "KewAr Kodu (KewAr Code)",
+        "summary": "Farklı amaçlar için QR kodları oluşturun",
+        "description": "KewAr Code, içerik tasarımcılarının iyi bilinen QR kodları oluşturmasını sağlar. Bu QR kodları URL'leri kodlayabilir, aynı zamanda iletişim bilgilerini, olayları, coğrafi konumları, vb. De kodlayabilir. Kişiler, seçilen eylemi tetiklemek için bunları bir QR kod okuyucu ile tarayabilir.",
+        "keywords": { "QR": "QR" }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Şenlik Takvimi (beta) (Advent Calendar (beta))",
+        "summary": "Her gün ortaya çıkacak sürprizler yaratın",
+        "description": "Güzel bir Noel takvimi oluşturun ve özelleştirin. Tüm takvime, her kapıda ve her kapının içindeki içeriğin arka planına bir arka plan resmi ekleyebilirsiniz. Ayrıca kar efekti ve müzik de ekleyebilirsiniz. Her kapının içine bir ses, video, metin, resim veya bağlantı ekleyebilirsiniz.\r\n\r\nBilgisayardan anlayan kullanıcılar için tüm kapıların içeriğini hemen ortaya çıkarmanın kolay olduğunu unutmayın. Gelecek günlerde büyük sırları açığa çıkarmayı planlıyorsanız, büyük sırlarınızı takvime eklemeden önce o güne kadar beklemelisiniz.",
+        "keywords": {
+            "christmas": "Noel",
+            "advent": "geliş",
+            "holidays": "Bayram",
+            "calendar": "takvim"
+        }
+    }
+}

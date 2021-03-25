@@ -1,0 +1,343 @@
+{
+    "H5P_Accordion": {
+        "title": "Akordeoi (Accordion)",
+        "summary": "Sortu bertikalean pilatutako elementu zabalgarriak",
+        "description": "Irakurleei aurkezten zaien testu kopurua murriztu sentikorrena den akordeoia erabiliz. Irakurleek erabakitzen dute zein izenburuk begiratu nahi duten izenburua zabalduz. Aukera sakoneko azalpenekin ikuspegi orokorra emateko bikaina.",
+        "keywords": {
+            "accordion": "akordeoia",
+            "collapsible_text": "testu tolestagarria"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Arithmetic Quiz",
+        "summary": "Sortu denboran oinarritutako galdeketa aritmetikoak",
+        "description": "Sortu aukera anitzeko galderaz osatutako galdeketa aritmetikoak. Egile gisa, galdetegiaren mota eta iraupena erabakitzea besterik ez duzu egin behar. Erabiltzaileek galdeketa ebaztean puntuazioaren eta emandako denboraren jarraipena egiten dute.",
+        "keywords": {
+            "math": "matematika",
+            "arithmetic_quiz": "galdeketa aritmetikoa",
+            "countdown": "atzerako kontaketa"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Taula (Chart)",
+        "summary": "Sortu bizkor barra eta diagrama grafikoak",
+        "description": "Datu estatistiko sinpleak grafikoki aurkeztu behar dituzu artelanak eskuz sortu gabe? Taula da zure erantzuna.",
+        "keywords": {
+            "chart": "taula",
+            "bar_chart": "barra-diagrama",
+            "pie_chart": "sektore-diagrama",
+            "graph": "grafikoa"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Itsatsi (Collage)",
+        "summary": "Sortu hainbat irudi dituen collage bat",
+        "description": "Collage tresnak irudiak konposizio lasaigarri batean antolatzeko aukera ematen du.",
+        "keywords": { "collage": "collagea", "image": "irudia" }
+    },
+    "H5P_Column": {
+        "title": "Zutabea (Column)",
+        "summary": "Antolatu H5P edukia zutabe baten diseinuan",
+        "description": "Antolatu zure eduki mota zutabe baten diseinuan H5P zutabearekin. Antzeko materiala jorratzen duten edo gai komuna partekatzen duten eduki motak taldeka daitezke orain ikaskuntza esperientzia koherentea sortzeko. Gainera, egileak sormen askeak dira, dauden H5P eduki mota guztiak konbinatuz.",
+        "keywords": {
+            "column": "zutabea",
+            "layout": "maketazioa",
+            "compound": "konposatua"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Ikastaroaren aurkezpena (Course Presentation)",
+        "summary": "Sortu aurkezpen bat diapositiba interaktiboekin",
+        "description": "Ikastaroaren aurkezpenak multimedia, testua eta elkarreragin mota ugari dituzten diapositibek osatzen dute, hala nola laburpen interaktiboak, aukera anitzeko galderak eta bideo interaktiboak. Ikasleek ikasteko material interaktibo berria bizi dezakete eta beren ezagutza eta memoria ikastaroetako aurkezpenetan probatu dezakete. H5P-rekin beti bezala, edukia web arakatzaileetan editagarria da eta Ikastaroa aurkezteko jarduera motak WYSIWYG arrastatu eta jaregin oinarritutako egile tresna biltzen du. Ikastaroaren Aurkezpeneko jardueraren ohiko erabilera diapositiba batzuk erabiltzea da gaia aurkezteko eta erabiltzailearen ezagutzak probatzen diren diapositiba batzuekin jarraitzea. Ikastaroaren Aurkezpenak, hala ere, modu desberdinetan erabil daitezke, besteak beste, ikasgelan erabiltzeko aurkezpen tresna gisa, edo ohiko nabigazioa diapositiben gainean nabigazio botoiekin ordezkatzen den joko gisa erabiltzaileari aukerak egin eta ondorioak ikusteko. beren aukeren artean.",
+        "keywords": {
+            "course_presentation": "ikastaroaren aurkezpena",
+            "slides": "diapositibak",
+            "powerpoint": "powerpoint"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "Elkarrizketa txartelak (Dialog Cards)",
+        "summary": "Sortu testuan oinarritutako inflexio txartelak",
+        "description": "Elkarrizketa-txartelak zulagailu gisa erabil daitezke ikasleei hitzak, esamoldeak edo esaldiak buruz ikasten laguntzeko. Txartelaren aurrealdean, hitz edo esamoldeentzako iradokizuna dago. Txartela biratzean ikasleak dagokion hitza edo esamoldea agerian uzten du. Elkarrizketa txartelak hizkuntza ikasteko erabil daitezke, matematikako arazoak aurkezteko edo ikasleei gertaera historikoak, formulak edo izenak bezalako gertaerak gogoratzen laguntzeko.",
+        "keywords": { "dialog_cards": "elkarrizketa-txartelak" }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Dokumentazio tresna (Documentation Tool)",
+        "summary": "Sortu inprimaki morroia testu esportazioarekin",
+        "description": "Dokumentazio tresnak helburuak bideratutako jardueretarako ebaluazio morroiak sortzea erraztea du helburu. Inprimaki morroi gisa ere erabil daiteke. Editatzen ari den bitartean, egileak morroiari hainbat urrats gehi ditzake. Pauso bakoitzean, egileak urrats horretan zer eduki zehazten duen zehaztu dezake. Edukia testu arrunta, sarrera eremuak, helburuen definizioa eta helburuen ebaluazioa izan daiteke. Argitaratu ondoren, azken erabiltzailea morroiaren urratsen bidez egingo da. Morroiaren azken urratsean, erabiltzaileak dokumentu bat sor dezake bidalitako sarrera guztiekin. Dokumentu hau deskargatu daiteke. Dokumentazio tresna guztiz sentikorra da eta oso ondo funtzionatzen du pantaila txikiagoetan eta baita zure mahaigainean ere.",
+        "keywords": { "dialog_cards": "elkarrizketa-txartelak" }
+    },
+    "H5P_DragQuestion": {
+        "title": "Arrastatu eta jaregin (Drag and Drop)",
+        "summary": "Sortu arrastatu eta jaregin zereginak irudiekin",
+        "description": "Arrastatu eta askatu galderak bi elementu edo gehiago elkartzeko eta konexio logikoak modu bisualean egiteko aukera ematen dio ikasleari. Sortu arrastatu eta jaregin galderak testua eta irudiak alternatiba arrastagarri gisa erabiliz. H5P Arrastatu eta askatu galderak galderen eta erantzunen arteko harremanak banan-banan, banan-banan, anitz eta anitzetan onartzen dituzte.",
+        "keywords": { "drag_and drop": "arrastatu eta askatu" }
+    },
+    "H5P_DragText": {
+        "title": "Arrastatu hitzak (Drag the Words)",
+        "summary": "Sortu testuan oinarritutako arrastatu eta jaregin zereginak",
+        "description": "Drag the Words-ek edukien diseinatzaileei falta zaizkien testu zatiekin testu-adierazpenak sor ditzake. Azken erabiltzaileak falta den testu zati bat bere lekura arrastatzen du, adierazpen osoa osatzeko. Erabiltzaileak irakurritako testu bat gogoratzen duen edo zerbait ulertzen duen egiaztatzeko erabil daiteke. Erabiltzaileari testu baten bidez pentsatzen laguntzen dio. Oso erraza da hitzak arrastatzea zeregina sortzea. Editoreak testua idatzi eta arrastaka eraman behar diren hitzak * arrastagarriak diren hitza * bezalako izartxoekin biltzen ditu.",
+        "keywords": { "drag": "arrastatu", "words": "hitzak" }
+    },
+    "H5P_Blanks": {
+        "title": "Bete hutsuneak (Fill in the Blanks)",
+        "summary": "Sortu zeregin bat testu batean falta diren hitzekin",
+        "description": "Ikasleek testu batean falta diren hitzak betetzen dituzte. Ikasleari irtenbide bat agertzen zaio falta diren hitz guztiak bete ondoren, edo hitz bakoitzaren ondoren ezarpenen arabera. Egileek testua sartzen dute eta ordeztu beharreko hitzak izartxo batekin markatzen dituzte. Jatorrizko hizkuntza eta bigarren hizkuntza ikasteaz gain, bete hutsuneak ikaslearen datuak gertaerak erreproduzitzeko edo inferentzia matematikoak ekoizteko duen gaitasuna probatzeko erabil daiteke.",
+        "keywords": { "fill": "bete", "blanks": "hutsuneak", "text": "testua" }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Find the Hotspot",
+        "summary": "Sortu irudi-guneak erabiltzaileek aurki ditzaten",
+        "description": "Eduki mota honi esker, azken erabiltzaileek irudi bat nonbait sakatu dezakete eta zereginaren deskribapenaren arabera zuzena edo okerra izan den ala ez jakiteko. Egileak irudi bat kargatzen du eta irudiaren xehetasun edo atalei dagozkien hainbat gune zehazten ditu. Fokuak zuzenak edo okerrak bezala defini daitezke, eta egileak bi kasuetan feedback egokia ematen du. Egileak iritzia ere defini dezake azken erabiltzaileak nonbait puntu zuzena edo okerra gisa definitzen ez den tokian sakatzen badu.",
+        "keywords": {
+            "find": "aurkitu",
+            "hotspot": "puntu beroa",
+            "image": "irudia"
+        }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Asmatu Erantzuna (Guess the Answer)",
+        "summary": "Sortu irudi bat galdera-erantzun batekin",
+        "description": "Eduki mota honi esker, egileek irudi bat igo eta deskribapen egokia gehi dezakete. Azken erabiltzaileek erantzuna asmatu eta irudiaren azpiko barra sakatu dezakete erantzun zuzena agerian uzteko.",
+        "keywords": { "guess": "asmatu", "answer": "erantzun" }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "Iframe Embedder",
+        "summary": "Txertatu URL edo fitxategi multzo batetik",
+        "description": "Iframe embedder-ek dagoeneko existitzen diren JavaScript aplikazioen H5P bat egitea errazten du.",
+        "keywords": { "embed": "txertatu", "iframe": "iframe" }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Bideo Interaktiboa (Interactive Video)",
+        "summary": "Sortu elkarreraginez aberastutako bideoak",
+        "description": "Gehitu interaktibitatea zure bideoarekin azalpenak, irudi gehigarriak, taulak, Bete hutsunea eta aukera anitzeko galderak. Galdetegien galderak moldagarritasuna onartzen du, hau da, erabiltzailearen sarreran oinarrituta bideoaren beste atal batera jo dezakezu. Laburpen interaktiboak bideoaren amaieran gehitu daitezke. Bideo interaktiboak H5P egile tresna erabiliz sortu eta editatzen dira web arakatzaile estandar batean.",
+        "keywords": { "interactive": "interaktiboa", "video": "bideoa" }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Mark the Words",
+        "summary": "Sortu zeregin bat erabiltzaileek hitzak nabarmentzeko",
+        "description": "Markatu hitzak, eduki-diseinatzaileek testuzko adierazpenak sortzeko aukera ematen dute hitz zuzenen multzo zehatz batekin. Azken erabiltzaileak atazaren deskribapenaren arabera hitzak nabarmentzen ditu eta puntuazioa ematen zaio. Editorearentzat oso erraza da erronka hitzak klik bat sortzea. Editoreak testua idazten du eta erabiltzaileak klik egin behar dituen hitzak, erantzun egokiak, biltzen ditu * correctWord * bezalako asterixean.",
+        "keywords": { "mark": "marka", "words": "hitzak" }
+    },
+    "H5P_MemoryGame": {
+        "title": "Memoria Jokoa (Memory Game)",
+        "summary": "Sortu irudi parekatze joko klasikoa",
+        "description": "Sortu zure memoria jokoak eta probatu zure webguneko erabiltzaileen memoria HTML5 joko sinple baina eder honekin.",
+        "keywords": {
+            "memory": "memoria",
+            "game": "jokoa",
+            "cards": "txartelak"
+        }
+    },
+    "H5P_MultiChoice": {
+        "title": "Aukera anitza (Multiple Choice)",
+        "summary": "Sortu aukera anitzeko galderak malguak",
+        "description": "Aukera anitzeko galderak ebaluazio tresna eraginkorra izan daitezke. Ikasleari berehalako errendimendua ematen zaio. Aukera anitzeko H5P galderak aukera bakoitza zuzena edo bakarra izan dezake galdera bakoitzeko.",
+        "keywords": {
+            "multiple": "anitz",
+            "choice": "aukera",
+            "quiz": "galdetegia"
+        }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Personality Quiz",
+        "summary": "Sortu nortasun galdetegiak",
+        "description": "Eduki mota honetan, egileak galdera sorta bat definitzen du alternatibekin, non alternatiba bakoitza pertsonalitate bat edo gehiagorekin parekatzen den. Galdetegia amaitzean, azken erabiltzaileak ikusiko du zein nortasun datorren onena. Galdetegi hau ikusmen erakargarri bihurtzeko hainbat modu daude, adibidez. irudiak erabiliz galderak, alternatibak eta pertsonalitateak irudikatzea.",
+        "keywords": { "personality": "nortasuna", "quiz": "galdetegia" }
+    },
+    "H5P_Questionnaire": {
+        "title": "Galdetegia (Questionnaire)",
+        "summary": "Sortu galdeketa iritzia jasotzeko",
+        "description": "Lortu iritzia eta egin galdera irekiak Bideo Interaktiboetan eta beste eduki mota batzuetan Galdeketa-rekin. Galdetegiak erabiltzailearen erantzunak eskuragarri jartzen ditu xAPI integrazio baten bidez. Horrek esan nahi du webguneen jabeek erantzunak modu askotan gorde ditzaketela. Erantzunak LRS batean gorde daitezke, guneek pertsonalizatutako biltegiratze propioa edo script batek helbide elektronikoa eskuratu eta erabiltzaileari mezu elektronikoa bidaltzeko erabil dezakete. H5P.org webgunean erantzunak Google Analytics-en gordetzen dira.",
+        "keywords": { "questionnaire": "galdetegia" }
+    },
+    "H5P_QuestionSet": {
+        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "summary": "Sortu galdera mota desberdinen sekuentzia",
+        "description": "Galdera multzoa zure ohiko galdetegiaren eduki mota da. Ikasleari galdera mota desberdinen sekuentzia ebazteko aukera ematen dio, hala nola Multichoice, Arrastatu eta askatu eta Galdera multzo bateko hutsuneak bete. Egile gisa, ezarpen asko erabil ditzakezu nahi duzun moduan joka dezaten. Adibidez, galdera multzoa atzeko irudiekin pertsonaliza dezakezu eta ikaslearen gainditze portzentajea zehaztu. Galdera multzoak amaieran erreproduzitzen diren bideoak gehitzeko aukera ere ematen du. Bideo bat arrakastarako, beste bat ikasleak probak huts egiten badu. Horrek motibatzen ditu ikasleak berriro huts egitera, huts egiten badute arrakasta bideoa ikus dezaten.",
+        "keywords": {
+            "question_set": "galdera sorta",
+            "collection": "bilduma",
+            "quiz": "galdetegia"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Aukera bakarreko multzoa (Single Choice Set)",
+        "summary": "Sortu galderak erantzun zuzen batekin",
+        "description": "Aukera bakarreko multzoari esker, eduki diseinatzaileek galdera multzoak sortu ditzakete galdera bakoitzeko erantzun zuzen batekin. Azken erabiltzaileak berehala jasotzen du erantzun bakoitza bidali ondoren.",
+        "keywords": {
+            "collection": "bilduma",
+            "quiz": "galdetegia",
+            "choice": "aukera"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Laburpena (Summary)",
+        "summary": "Sortu zereginak adierazpenen zerrendarekin",
+        "description": "Laburpenek ikasleari testu, bideo edo aurkezpen bateko funtsezko informazioa gogoratzen laguntzen diote, esku artean duen gaiari buruzko laburpena aktiboki bultzatuz. Ikasleak laburpen bat osatu duenean, gaiari buruzko funtsezko adierazpenen zerrenda osoa agertzen da.",
+        "keywords": { "summary": "laburpen" }
+    },
+    "H5P_Timeline": {
+        "title": "Denbora-lerroa (Timeline)",
+        "summary": "Sortu gertaeren kronograma multimediarekin",
+        "description": "Hau da Knight Lab-ek garatutako Timeline.js, H5P eduki mota gisa bilduta, denbora-lerroak erraz editatu, partekatu eta berrerabili daitezen. Timeline eduki motak gertaeren sekuentzia ordena kronologikoan kokatzeko aukera ematen du. Ekitaldi bakoitzerako irudiak eta testuak gehi ditzakezu. Twitter, YouTube, Flickr, Vimeo, Google Maps eta SoundCloud-eko aktiboak ere sar ditzakezu.",
+        "keywords": { "timeline": "denbora-lerroa", "slider": "graduatzailea" }
+    },
+    "H5P_TrueFalse": {
+        "title": "Egia / Gezurra Galdera (True/False Question)",
+        "summary": "Sortu galdera egiazkoak / faltsuak",
+        "description": "Egia / Gezurra Galdera eduki mota sinple eta zuzena da, berez funtziona dezake edo beste eduki mota batzuetan txertatu daiteke, hala nola Ikastaroaren aurkezpena. Galdera konplexuagoa sor daiteke irudi edo bideo bat gehituz.",
+        "keywords": { "true": "egia", "false": "faltsua" }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Irudien puntu beroak (Image Hotspots)",
+        "summary": "Sortu irudi bat informazio puntu bikoitzekin",
+        "description": "Irudi guneei esker, gune interaktiboekin irudi bat sortzea posible da. Erabiltzaileak puntu aktibo bat sakatzen duenean, goiburua eta testua edo bideoa dituen leiho gainerakorra bistaratzen da. H5P editorea erabiliz, nahi adina puntu bero gehi ditzakezu.",
+        "keywords": { "image": "irudia", "hotspot": "puntu beroa" }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Bilatu hainbat puntu (Find Multiple Hotspots)",
+        "summary": "Sortu gune ugari erabiltzaileek aurki ditzaten",
+        "description": "Doako HTML5ean oinarritutako galdera mota, sortzaileek irudian oinarritutako proba bat sortzea ahalbidetzen duenean, ikasleak irudi batean puntu egokiak aurkitzeko. Erabili eduki mota hau H5P pluginarekin WordPress, Moodle edo Drupal-ekin zure erabiltzaileei erronka egiteko."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Irudi Juxtaposizioa (Image Juxtaposition)",
+        "summary": "Sortu irudi interaktiboak",
+        "description": "Doako HTML5ean oinarritutako irudien eduki mota, erabiltzaileek bi irudi elkarreragiteko alderatzea ahalbidetzen duena. Kontatu zure irudi istorioak H5P eta Irudi Juxtaposizioarekin WordPress, Moodle edo Drupal-en."
+    },
+    "H5P_Audio": {
+        "title": "Audio",
+        "summary": "Kargatu audio grabazio bat",
+        "description": "Kargatu audio grabazio bat .mp3, .wav, .ogg edo eman esteka audio grabazio baterako."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Audio Grabagailua (Audio Recorder)",
+        "summary": "Sortu audio grabazio bat",
+        "description": "HTML5 audio grabagailua. Grabatu zure ahotsa eta erreproduzitu edo deskargatu zure grabazioaren .wav fitxategia. Erabili H5P plugina H5P Audio Recorder sortzeko zure Drupal, Wordpress edo Moodle gunean.",
+        "keywords": { "audio": "audioa", "recorder": "grabagailua" }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Speak the Words",
+        "summary": "Erantzun galdera bati zure ahotsa erabiliz (Chrome only)",
+        "description": "Speak the Words Web Speech APIa inplementatzen duten arakatzaileetan soilik onartzen da (Chrome arakatzaileak, iOS-n izan ezik). Mikrofonoa behar duzu galderari erantzuteko. Galdetu erabiltzaileei eta erantzun ahotsa erabiliz. Erantzun zuzenak anitz aukera ditzakezu. Erabiltzaileak ikusi ahal izango du bere hitzak nolakoak ziren interpretatu eta erantzun egokietatik zenbateraino hurbildu ziren.",
+        "keywords": {
+            "language": "hizkuntza",
+            "translation": "itzulpena",
+            "voice": "ahotsa",
+            "recognition": "aitortza",
+            "speech": "hizketa",
+            "mic": "gutxi",
+            "microphone": "mikrofonoa"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "summary": "Irudi eta azalpen segida aurkeztu",
+        "description": "Aurkeztu jendeak bata bestearen atzetik begiratu beharreko irudien sekuentzia, adibidez. denboran zehar aldatzen den elementuaren argazkiak, geruza desberdinetan antolatutako eskemak edo mapak edo gero eta xehetasun gehiago agerian uzten dituzten irudiak.",
+        "keywords": {
+            "image": "irudia",
+            "images": "irudiak",
+            "transition": "trantsizioa"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Irudi Sekuentziazioa (Image Sequencing)",
+        "summary": "Jarri irudiak orden egokian",
+        "description": "Doako HTML5ean oinarritutako irudien sekuentziatzeko eduki mota, egileei beren irudi propioak (eta aukerako irudien deskribapena) jokoari ordena jakin batean gehitzeko aukera ematen diena. Irudien ordena ausazkoa izango da eta jokalariek berriro ordenatu beharko dituzte atazaren deskribapenean oinarrituta.",
+        "keywords": {
+            "image": "irudia",
+            "sequence": "sekuentzia",
+            "order": "agindua"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Flashcards",
+        "summary": "Sortu flashcard dotoreak eta modernoak",
+        "description": "Eduki mota honi esker, egileek flash txartel bakarra edo flashcard sorta bat sor dezakete, non txartel bakoitzak galderak eta erantzunak dituen irudiak dituen. Ikasleek testu-eremua bete behar dute eta gero ebazpenaren zuzentasuna egiaztatu.",
+        "keywords": { "cards": "txartelak", "animation": "animazioa" }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Speak the Words Set",
+        "summary": "Sortu hizketarekin erantzuniko galdera sorta (Chrome only)",
+        "description": "Speak the Words Set Web Speech APIa inplementatzen duten arakatzaileetan soilik onartzen da (Chrome arakatzaileak, iOS-en izan ezik). Mikrofonoa behar duzu galderari erantzuteko. Sortu ikasleek beren ahotsa erabiliz erantzun ditzaketen galdera multzoa. erantzun zuzen anitz aukera ditzakezu. Erabiltzaileak ikusi ahal izango du bere hitzak nolakoak ziren interpretatu eta erantzun egokietatik zenbateraino hurbildu ziren.",
+        "keywords": {
+            "language": "hizkuntza",
+            "translation": "itzulpena",
+            "voice": "ahotsa",
+            "quiz": "galdetegia",
+            "set": "multzoa",
+            "recognition": "aitortza",
+            "mic": "gutxi",
+            "microphone": "mikrofonoa"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Irudi graduatzailea (Image Slider)",
+        "summary": "Sortu erraz Irudi graduatzailea",
+        "description": "Aurkeztu zure irudiak modu erakargarrian erraz. Egileek irudiak igo eta testu alternatiboak eman behar dituzte irudiei.\r\n\r\nHurrengo bi irudiak beti kargatuta daude, beraz, irudien artean aldatzea normalean azkarra izango da hurrengo irudia kargatzeko atzerapenik gabe.\r\n\r\nIrudiak orrialdearen zati gisa edo pantaila osoko moduan bizi daitezke. Orriaren zati gisa erabiltzen denean, sistemak itxura erlazio finkoa hautatuko du erabiltzen diren irudien arabera. Egileek aspektu erlazioak modu desberdinean maneiatzea erabaki dezakete.",
+        "keywords": {
+            "image": "irudia",
+            "images": "irudiak",
+            "slider": "graduatzailea",
+            "carousel": "karrusela"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Saiakera (Essay)",
+        "summary": "Sortu Saiakera berehalako iritziekin",
+        "description": "Eduki mota honetan, egileak gai baten alderdi erabakigarriak adierazten dituzten gako-hitz multzoa definitzen du. Hitz gako hauek ikasleek konposatu duten testuarekin parekatzen dira eta berehala iritzia emateko erabil daitezke - gako-hitz bat falta bada gaiaren zenbait xehetasun berrikustea proposatuz edo ikaslearen ideiak baieztatuz testuak hitz gako bat badu.\r\n",
+        "keywords": { "Essay": "Saiakera" }
+    },
+    "H5P_ImagePair": {
+        "title": "Irudi parekatzea (Image Pairing)",
+        "summary": "Arrastatu eta jaregin irudia bat datorren jokoa",
+        "description": "Irudien parekatzea jarduera sinplea eta eraginkorra da, eta ikasleek irudi bikoteak batzea eskatzen dute. Bikote bateko bi irudiak berdinak izatea beharrezkoa ez denez, egileek ere bi irudi desberdinen arteko erlazioa ulertzeko gai dira.",
+        "keywords": {
+            "image_images matching pair": "irudia bikotearekin bat datozen irudiak"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Diktaketa (Dictation)",
+        "summary": "Sortu diktaketa berehalako feedbackarekin",
+        "description": "Diktatzeko esaldi bat duten audio laginak gehi ditzakezu eta transkripzio zuzena idatzi. Zure ikasleek laginak entzun ditzakete eta entzun dutena testu-eremu batean sar dezakete. Haien erantzunak automatikoki ebaluatuko dira. Hainbat aukera ariketaren zailtasuna kontrolatzeko aukera emango dizu. Aukeran, bigarren audio lagina gehi dezakezu poliki mintzatutako bertsio bat eduki dezakeen esaldi baterako. Lagin bat maiztasunez erreproduzitzeko muga ere ezar dezakezu, puntuazioak puntuazioa egokia izan behar duen ala ez zehaztu eta idazteko akatsak bezalako akats txikiak akatsik gabe, akats osotzat edo akats erdi gisa kontatu behar diren erabaki dezakezu.",
+        "keywords": { "language": "hizkuntza", "audio": "audioa" }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Adarkatze Eszenatokia (beta) (Branching Scenario (beta))",
+        "summary": "Sortu dilemak eta norberaren erritmoaren ikaskuntza",
+        "description": "Adarkatze Eszenatokiari esker, egileek eduki interaktibo eta aukera aberats ugari aurkez ditzakete ikasleei. Ikasleek hartzen dituzten aukerek zehaztuko dute ikusten duten hurrengo edukia. Dilemak, jolas serioak eta norberaren ikaskuntzak sortzeko erabil daiteke."
+    },
+    "H5P_ThreeImage": {
+        "title": "Tour birtuala (360) (Virtual Tour (360))",
+        "summary": "Sortu 360 ingurune elkarreraginekin",
+        "description": "Irudi 360 (zirkular angeluzuzenak) eta normalak interaktibitateekin aberastu daitezke, hala nola azalpenak, bideoak, soinuak eta galdera interaktiboak. Irudiek elkarrekin lotura izan dezaketen eszenak sortzen dituzte, erabiltzailea ingurune batetik bestera edo ingurune bereko ikuspuntu desberdinen artean mugitzen denaren irudipena izan dadin."
+    },
+    "H5P_FindTheWords": {
+        "title": "Bilatu hitzak (Find the words)",
+        "summary": "Sareko hitz bilaketa jokoa",
+        "description": "HTML5ean oinarritutako hitz bilaketa jarduera doakoa, egileek sareta batean marraztuko diren hitzen zerrenda sor dezaten. Ikaslearen zeregina saretako hitzak aurkitzea eta hautatzea da."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Liburu interaktiboa (Interactive Book)",
+        "summary": "Sortu ikastaro txikiak, liburuak eta probak",
+        "description": "Sortu ikastaro txikiak, liburuak edo probak. Liburu Interaktiboari esker, egileek eduki interaktibo ugari konbinatu ditzakete, hala nola bideo interaktiboak, galderak, ikastaroen aurkezpenak eta gehiago orrialde anitzetan. Liburuan zehar ikasleak lortutako puntuazioak laburbilduz laburpen bat dago amaieran.",
+        "keywords": { "book": "liburua", "course": "ikastaroa" }
+    },
+    "H5P_KewArCode": {
+        "title": "KewAr kodea (KewAr Code)",
+        "summary": "Sortu QR kodeak helburu desberdinetarako",
+        "description": "KewAr Code-k eduki-diseinatzaileek QR kode ezagunak sor ditzakete. QR kode horiek URLak kodetu ditzakete, baina baita harremanetarako informazioa, gertaerak, geokokapenak, etab. Jendeak QR kode irakurgailuarekin eskaneatu ditzakete aukeratutako ekintza abiarazteko.",
+        "keywords": { "QR": "QR" }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Abentura Egutegia (beta) (Advent Calendar (beta))",
+        "summary": "Sortu egunero ezagutzera emango diren sorpresak",
+        "description": "Sortu eta pertsonalizatu abentura egutegi ederra. Atzeko irudia gehi dezakezu egutegi osora, ate bakoitzean eta atzeko atzeko edukiaren atzeko plano gisa. Elur efektua eta musika ere gehi ditzakezu. Ate bakoitzaren barruan, soinua, bideoa, testua, irudia edo esteka gehi ditzakezu.\r\n\r\nKontuan izan ordenagailua duten erabiltzaileek erraza dutela ate guztien edukia berehala erakustea. Etorkizuneko egunetan sekretu handiak agertzeko asmoa baduzu egun horretara arte itxaron beharko zenuke zure sekretu handiak egutegian sartu aurretik.",
+        "keywords": {
+            "christmas": "gabonak",
+            "advent": "etorrera",
+            "holidays": "oporrak",
+            "calendar": "egutegia"
+        }
+    }
+}

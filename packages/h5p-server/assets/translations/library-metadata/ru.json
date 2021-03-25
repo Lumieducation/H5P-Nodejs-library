@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Изображение" },
+    "H5P_ContinuousText": { "title": "Непрерывный текст" },
+    "H5P_FreeTextQuestion": { "title": "Бесплатный текстовый вопрос" },
+    "H5P_GoToScene": { "title": "Перейти к сцене" },
+    "H5P_GoToQuestion": { "title": "Перекресток" },
+    "H5P_GoalsPage": { "title": "Страница целей" },
+    "H5P_GoalsAssessmentPage": { "title": "Страница оценки целей" },
+    "H5P_StandardPage": { "title": "Стандартная страница" },
+    "H5P_DocumentExportPage": { "title": "Страница экспорта документа" },
+    "H5P_Link": { "title": "Связь" },
+    "H5P_Nil": { "title": "Этикетка" },
+    "H5P_IVHotspot": { "title": "Точка доступа для навигации" },
+    "H5P_OpenEndedQuestion": { "title": "Открытый вопрос" },
+    "H5P_Shape": { "title": "Формы" },
+    "H5P_Summary": { "title": "Резюме" },
+    "H5P_Table": { "title": "Стол" },
+    "H5P_Text": { "title": "Текст" },
+    "H5P_Video": { "title": "видео" },
+    "H5P_AdvancedText": { "title": "Текст" },
+    "H5P_SimpleMultiChoice": { "title": "Простой множественный выбор" },
+    "H5P_BranchingQuestion": { "title": "Ветвящийся вопрос" }
+}

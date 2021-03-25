@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Kuva" },
+    "H5P_ContinuousText": { "title": "Jatkuva teksti" },
+    "H5P_FreeTextQuestion": { "title": "Vapaa tekstikysymys" },
+    "H5P_GoToScene": { "title": "Siirry kohtaukseen" },
+    "H5P_GoToQuestion": { "title": "Risteys" },
+    "H5P_GoalsPage": { "title": "Tavoitteet-sivu" },
+    "H5P_GoalsAssessmentPage": { "title": "Tavoitteiden arviointisivu" },
+    "H5P_StandardPage": { "title": "Vakiosivu" },
+    "H5P_DocumentExportPage": { "title": "Asiakirjan vientisivu" },
+    "H5P_Link": { "title": "Linkki" },
+    "H5P_Nil": { "title": "Tarra" },
+    "H5P_IVHotspot": { "title": "Navigointipiste" },
+    "H5P_OpenEndedQuestion": { "title": "Avoin kysymys" },
+    "H5P_Shape": { "title": "Muodot" },
+    "H5P_Summary": { "title": "Yhteenveto" },
+    "H5P_Table": { "title": "Pöytä" },
+    "H5P_Text": { "title": "Teksti" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Teksti" },
+    "H5P_SimpleMultiChoice": { "title": "Yksinkertainen monivalinta" },
+    "H5P_BranchingQuestion": { "title": "Haarautumiskysymys" }
+}

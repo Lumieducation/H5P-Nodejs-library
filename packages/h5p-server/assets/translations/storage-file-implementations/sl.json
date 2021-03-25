@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "<span>Datoteke 0</span> ni mogoče dodati v vsebino z id {{id}} : Vsebina z ne obstaja.",
+    "add-library-file-not-installed": "V knjižnico {{libraryName}} ni mogoče dodati <span>0,</span> ker knjižnica ni nameščena.",
+    "clear-library-not-found": "<span>Knjižnice 0</span> ni mogoče počistiti, ker knjižnica ni nameščena.",
+    "delete-content-file-not-found": "<span>Datoteke 0</span> ni mogoče izbrisati: ne obstaja.",
+    "delete-content-not-found": "Vsebine ni mogoče izbrisati: ne obstaja.",
+    "error-creating-content": "Vsebine ni bilo mogoče ustvariti.",
+    "error-generating-content-id": "ID-ja za novo vsebino ni bilo mogoče ustvariti.",
+    "error-generating-unique-temporary-filename": "Enoličnega imena datoteke za <span>0 ni mogoče določiti</span>",
+    "error-updating-metadata": "Dodatnih metapodatkov knjižnice {{library}} ni mogoče posodobiti. Napaka: {{error}}",
+    "get-library-metadata-not-installed": "Ne morem dobiti metapodatkov za knjižnico <span>0,</span> ker knjižnica ni nameščena.",
+    "illegal-absolute-filename": "Absolutne poti v imenih datotek niso dovoljene: {{filename}} je nezakonito",
+    "illegal-relative-filename": "Relativne poti v imenih datotek niso dovoljene: {{filename}} je nezakonito",
+    "install-library-already-installed": "Knjižnica {{libraryName}} je že nameščena.",
+    "remove-library-library-missing": "Knjižnica {{libraryName}} ni nameščena v sistemu.",
+    "temporary-file-not-found": "Datoteka {{filename}} ni dostopna za uporabnika {{userId}} ali ne obstaja.",
+    "update-library-library-missing": "Knjižnice {{libraryName}} ni mogoče posodobiti, ker še ni nameščena."
+}

@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Ocorreu um erro ao excluir este arquivo.",
+    "file-not-found": "O arquivo não existe.",
+    "missing-delete-permission": "Você não tem permissão para excluir este arquivo.",
+    "missing-view-permission": "Você não tem permissão para visualizar este arquivo.",
+    "missing-write-permission": "Você não tem permissão para salvar arquivos temporários.",
+    "s3-upload-error": "Ocorreu um erro ao enviar o arquivo temporário para S3."
+}

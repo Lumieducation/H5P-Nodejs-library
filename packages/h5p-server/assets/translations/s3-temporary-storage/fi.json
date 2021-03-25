@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Tiedoston poistamisessa tapahtui virhe.",
+    "file-not-found": "Tiedostoa ei ole olemassa.",
+    "missing-delete-permission": "Sinulla ei ole lupaa poistaa tätä tiedostoa.",
+    "missing-view-permission": "Sinulla ei ole lupaa tarkastella tätä tiedostoa.",
+    "missing-write-permission": "Sinulla ei ole lupaa tallentaa väliaikaisia tiedostoja.",
+    "s3-upload-error": "Tilapäisen tiedoston lataamisessa S3: een tapahtui virhe."
+}

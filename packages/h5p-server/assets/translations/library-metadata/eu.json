@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Irudia" },
+    "H5P_ContinuousText": { "title": "Testu jarraitua" },
+    "H5P_FreeTextQuestion": { "title": "Testu libreko galdera" },
+    "H5P_GoToScene": { "title": "Joan Eszenara" },
+    "H5P_GoToQuestion": { "title": "Bidegurutzea" },
+    "H5P_GoalsPage": { "title": "Helburuen orria" },
+    "H5P_GoalsAssessmentPage": { "title": "Helburuak ebaluatzeko orria" },
+    "H5P_StandardPage": { "title": "Orri estandarra" },
+    "H5P_DocumentExportPage": { "title": "Dokumentuak esportatzeko orria" },
+    "H5P_Link": { "title": "Esteka" },
+    "H5P_Nil": { "title": "Etiketa" },
+    "H5P_IVHotspot": { "title": "Nabigazio puntua" },
+    "H5P_OpenEndedQuestion": { "title": "Galdera irekia" },
+    "H5P_Shape": { "title": "Formak" },
+    "H5P_Summary": { "title": "Laburpen" },
+    "H5P_Table": { "title": "Taula" },
+    "H5P_Text": { "title": "Testua" },
+    "H5P_Video": { "title": "Bideoa" },
+    "H5P_AdvancedText": { "title": "Testua" },
+    "H5P_SimpleMultiChoice": { "title": "Aukera anizkoitza sinplea" },
+    "H5P_BranchingQuestion": { "title": "Adarkatze galdera" }
+}

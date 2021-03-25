@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Imagem" },
+    "H5P_ContinuousText": { "title": "Texto Contínuo" },
+    "H5P_FreeTextQuestion": { "title": "Questão de texto livre" },
+    "H5P_GoToScene": { "title": "Vá para a cena" },
+    "H5P_GoToQuestion": { "title": "Encruzilhada" },
+    "H5P_GoalsPage": { "title": "Página de metas" },
+    "H5P_GoalsAssessmentPage": { "title": "Página de avaliação de metas" },
+    "H5P_StandardPage": { "title": "Página padrão" },
+    "H5P_DocumentExportPage": { "title": "Página de exportação de documento" },
+    "H5P_Link": { "title": "Ligação" },
+    "H5P_Nil": { "title": "Rótulo" },
+    "H5P_IVHotspot": { "title": "Ponto de acesso de navegação" },
+    "H5P_OpenEndedQuestion": { "title": "Pergunta aberta" },
+    "H5P_Shape": { "title": "Formas" },
+    "H5P_Summary": { "title": "Resumo" },
+    "H5P_Table": { "title": "Mesa" },
+    "H5P_Text": { "title": "Texto" },
+    "H5P_Video": { "title": "Vídeo" },
+    "H5P_AdvancedText": { "title": "Texto" },
+    "H5P_SimpleMultiChoice": { "title": "Múltipla Escolha Simples" },
+    "H5P_BranchingQuestion": { "title": "Questão de Ramificação" }
+}

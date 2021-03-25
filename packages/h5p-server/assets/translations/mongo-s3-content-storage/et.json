@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Sisu, millele proovite juurde pääseda, pole olemas.",
+    "deleting-content-error": "Sisuobjekti kustutamisel ilmnes viga.",
+    "deleting-file-error": "<span>Faili 0</span> sisuobjektist kustutamisel tekkis viga.",
+    "filename-too-long": "Failinimi on liiga pikk: {{filename}}",
+    "illegal-filename": "Failinimi {{filename}} pole lubatud.",
+    "listing-content-error": "Sisuobjektide loendi hankimisel ilmnes viga",
+    "missing-delete-permission": "Teil pole luba selle sisuobjekti kustutamiseks.",
+    "missing-list-content-permission": "Teil pole luba sisuobjektide loetlemiseks.",
+    "missing-view-permission": "Teil pole selle sisuobjekti vaatamiseks luba.",
+    "missing-write-permission": "Teil pole luba selle sisuobjekti muutmiseks.",
+    "mongo-add-update-error": "Andmebaasi sisu lisamisel või värskendamisel tekkis viga.",
+    "mongo-replace-error": "Andmebaasi sisu värskendamisel ilmnes viga.",
+    "s3-upload-error": "<span>Faili 0</span> S3 üleslaadimisel ilmnes viga."
+}

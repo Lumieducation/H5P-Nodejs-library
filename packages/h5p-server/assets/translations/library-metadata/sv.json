@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Bild" },
+    "H5P_ContinuousText": { "title": "Kontinuerlig text" },
+    "H5P_FreeTextQuestion": { "title": "Fritextfråga" },
+    "H5P_GoToScene": { "title": "Gå till scen" },
+    "H5P_GoToQuestion": { "title": "Korsning" },
+    "H5P_GoalsPage": { "title": "Målsida" },
+    "H5P_GoalsAssessmentPage": { "title": "Målbedömningssida" },
+    "H5P_StandardPage": { "title": "Standardsida" },
+    "H5P_DocumentExportPage": { "title": "Sidan för dokumentexport" },
+    "H5P_Link": { "title": "Länk" },
+    "H5P_Nil": { "title": "Märka" },
+    "H5P_IVHotspot": { "title": "Navigationshotspot" },
+    "H5P_OpenEndedQuestion": { "title": "Öppen fråga" },
+    "H5P_Shape": { "title": "Former" },
+    "H5P_Summary": { "title": "Sammanfattning" },
+    "H5P_Table": { "title": "Tabell" },
+    "H5P_Text": { "title": "Text" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Text" },
+    "H5P_SimpleMultiChoice": { "title": "Enkelt flerval" },
+    "H5P_BranchingQuestion": { "title": "Förgreningsfråga" }
+}

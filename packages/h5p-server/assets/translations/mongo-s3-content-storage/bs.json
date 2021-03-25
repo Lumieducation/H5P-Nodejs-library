@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Sadržaj kojem pokušavate pristupiti ne postoji.",
+    "deleting-content-error": "Došlo je do greške prilikom brisanja objekta sadržaja.",
+    "deleting-file-error": "Došlo je do greške prilikom brisanja datoteke {{filename}} iz objekta sadržaja.",
+    "filename-too-long": "Ime datoteke je predugo: {{filename}}",
+    "illegal-filename": "Ime datoteke {{filename}} nije dozvoljeno.",
+    "listing-content-error": "Došlo je do greške prilikom dobivanja liste objekata sadržaja",
+    "missing-delete-permission": "Nemate dozvolu za brisanje ovog objekta sadržaja.",
+    "missing-list-content-permission": "Nemate dozvolu za popis objekata sadržaja.",
+    "missing-view-permission": "Nemate dozvolu za pregled ovog sadržaja.",
+    "missing-write-permission": "Nemate dozvolu za promjenu ovog objekta sadržaja.",
+    "mongo-add-update-error": "Došlo je do greške prilikom dodavanja ili ažuriranja sadržaja u bazi podataka.",
+    "mongo-replace-error": "Došlo je do greške prilikom ažuriranja sadržaja u bazi podataka.",
+    "s3-upload-error": "Došlo je do greške prilikom prijenosa datoteke {{filename}} na S3."
+}

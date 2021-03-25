@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Image" },
+    "H5P_ContinuousText": { "title": "Texte continu" },
+    "H5P_FreeTextQuestion": { "title": "Question en texte libre" },
+    "H5P_GoToScene": { "title": "Aller à la scène" },
+    "H5P_GoToQuestion": { "title": "Carrefour" },
+    "H5P_GoalsPage": { "title": "Page des objectifs" },
+    "H5P_GoalsAssessmentPage": { "title": "Page d'évaluation des objectifs" },
+    "H5P_StandardPage": { "title": "Page standard" },
+    "H5P_DocumentExportPage": { "title": "Page d'exportation de document" },
+    "H5P_Link": { "title": "Lien" },
+    "H5P_Nil": { "title": "Étiqueter" },
+    "H5P_IVHotspot": { "title": "Point d'accès de navigation" },
+    "H5P_OpenEndedQuestion": { "title": "Question ouverte" },
+    "H5P_Shape": { "title": "Formes" },
+    "H5P_Summary": { "title": "Résumé" },
+    "H5P_Table": { "title": "Table" },
+    "H5P_Text": { "title": "Texte" },
+    "H5P_Video": { "title": "Vidéo" },
+    "H5P_AdvancedText": { "title": "Texte" },
+    "H5P_SimpleMultiChoice": { "title": "Choix multiple simple" },
+    "H5P_BranchingQuestion": { "title": "Question de branchement" }
+}

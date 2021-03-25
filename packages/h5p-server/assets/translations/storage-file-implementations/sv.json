@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Det går inte att lägga till fil {{filename}} till innehåll med id {{id}} : Innehåll med finns inte.",
+    "add-library-file-not-installed": "Det går inte att lägga till {{filename}} i bibliotek {{libraryName}} eftersom biblioteket inte har installerats.",
+    "clear-library-not-found": "Det går inte att rensa bibliotek {{libraryName}} eftersom biblioteket inte har installerats.",
+    "delete-content-file-not-found": "Det går inte att ta bort fil {{filename}} : Den finns inte.",
+    "delete-content-not-found": "Det går inte att ta bort innehåll: Det finns inte.",
+    "error-creating-content": "Det gick inte att skapa innehåll.",
+    "error-generating-content-id": "Det gick inte att generera id för nytt innehåll.",
+    "error-generating-unique-temporary-filename": "Det går inte att bestämma ett unikt filnamn för {{name}}",
+    "error-updating-metadata": "Ytterligare metadata för biblioteket {{library}} kan inte uppdateras. Fel: {{error}}",
+    "get-library-metadata-not-installed": "Kan inte hämta metadata för bibliotek {{libraryName}} eftersom biblioteket inte har installerats.",
+    "illegal-absolute-filename": "Absoluta sökvägar i filnamn är inte tillåtna: {{filename}} är olagligt",
+    "illegal-relative-filename": "Relativa sökvägar i filnamn är inte tillåtna: {{filename}} är olagligt",
+    "install-library-already-installed": "Bibliotek {{libraryName}} har redan installerats.",
+    "remove-library-library-missing": "Bibliotek {{libraryName}} är inte installerat på systemet.",
+    "temporary-file-not-found": "Filen {{filename}} är inte tillgänglig för användare {{userId}} eller finns inte.",
+    "update-library-library-missing": "Bibliotek {{libraryName}} kan inte uppdateras eftersom det inte har installerats ännu."
+}

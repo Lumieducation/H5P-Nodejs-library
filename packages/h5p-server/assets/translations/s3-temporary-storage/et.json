@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Selle faili kustutamisel ilmnes viga.",
+    "file-not-found": "Faili pole olemas.",
+    "missing-delete-permission": "Teil pole luba seda faili kustutada.",
+    "missing-view-permission": "Teil pole selle faili vaatamiseks luba.",
+    "missing-write-permission": "Teil pole luba ajutiste failide salvestamiseks.",
+    "s3-upload-error": "Ajutise faili S3 üleslaadimisel ilmnes viga."
+}

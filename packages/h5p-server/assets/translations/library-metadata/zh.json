@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "图像" },
+    "H5P_ContinuousText": { "title": "连续文字" },
+    "H5P_FreeTextQuestion": { "title": "自由文本问题" },
+    "H5P_GoToScene": { "title": "前往现场" },
+    "H5P_GoToQuestion": { "title": "十字路口" },
+    "H5P_GoalsPage": { "title": "目标页面" },
+    "H5P_GoalsAssessmentPage": { "title": "目标评估页面" },
+    "H5P_StandardPage": { "title": "标准页" },
+    "H5P_DocumentExportPage": { "title": "文件汇出页面" },
+    "H5P_Link": { "title": "关联" },
+    "H5P_Nil": { "title": "标签" },
+    "H5P_IVHotspot": { "title": "导航热点" },
+    "H5P_OpenEndedQuestion": { "title": "开放式问题" },
+    "H5P_Shape": { "title": "形状" },
+    "H5P_Summary": { "title": "概括" },
+    "H5P_Table": { "title": "桌子" },
+    "H5P_Text": { "title": "文本" },
+    "H5P_Video": { "title": "视频" },
+    "H5P_AdvancedText": { "title": "文本" },
+    "H5P_SimpleMultiChoice": { "title": "简单的多项选择" },
+    "H5P_BranchingQuestion": { "title": "分支问题" }
+}

@@ -1,0 +1,335 @@
+{
+    "H5P_Accordion": {
+        "title": "Accordeon (Accordion)",
+        "summary": "Maak verticaal gestapelde uitbreidbare items",
+        "description": "Verminder de hoeveelheid tekst die aan lezers wordt gepresenteerd door deze responsieve accordeon te gebruiken. Lezers beslissen welke koppen ze nader bekijken door de titel uit te breiden. Uitstekend geschikt om een overzicht te geven met optionele diepgaande uitleg.",
+        "keywords": {
+            "accordion": "accordeon",
+            "collapsible_text": "inklapbare tekst"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Rekenquiz (Arithmetic Quiz)",
+        "summary": "Maak op tijd gebaseerde rekenkundige quizzen",
+        "description": "Maak rekenkundige quizzen die bestaan uit meerkeuzevragen. Als auteur hoef je alleen maar het type en de lengte van de quiz te bepalen. Gebruikers houden de score en de tijd bij die ze hebben besteed aan het oplossen van de quiz.",
+        "keywords": {
+            "math": "wiskunde",
+            "arithmetic_quiz": "rekenkundige quiz",
+            "countdown": "aftellen"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Grafiek (Chart)",
+        "summary": "Genereer snel staaf- en cirkeldiagrammen",
+        "description": "Wilt u eenvoudige statistische gegevens grafisch presenteren zonder de illustratie handmatig te maken? Grafiek is uw antwoord.",
+        "keywords": {
+            "chart": "grafiek",
+            "bar_chart": "staafdiagram",
+            "pie_chart": "cirkeldiagram",
+            "graph": "grafiek"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Lijmen (Collage)",
+        "summary": "Maak een collage van meerdere afbeeldingen",
+        "description": "Met de Collage-tool kun je afbeeldingen ordenen in een rustgevende compositie.",
+        "keywords": { "collage": "collage", "image": "beeld" }
+    },
+    "H5P_Column": {
+        "title": "Kolom (Column)",
+        "summary": "Organiseer H5P-inhoud in een kolomlay-out",
+        "description": "Organiseer uw inhoudstype in een kolomlay-out met H5P Column. Inhoudstypen die vergelijkbaar materiaal behandelen of een gemeenschappelijk thema delen, kunnen nu worden gegroepeerd om een samenhangende leerervaring te creëren. Bovendien zijn auteurs vrij om creatief te zijn door bijna alle bestaande H5P-inhoudstypen te combineren.",
+        "keywords": {
+            "column": "kolom",
+            "layout": "lay-out",
+            "compound": "verbinding"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Cursuspresentatie (Course Presentation)",
+        "summary": "Maak een presentatie met interactieve dia's",
+        "description": "Cursuspresentaties bestaan uit dia's met multimedia, tekst en veel verschillende soorten interacties, zoals interactieve samenvattingen, meerkeuzevragen en interactieve video's. Leerlingen kunnen nieuw interactief leermateriaal ervaren en hun kennis en geheugen testen in cursuspresentaties. Zoals altijd bij H5P, kan de inhoud worden bewerkt in webbrowsers, en het activiteitstype Cursuspresentatie bevat een WYSIWYG-auteurstool op basis van slepen en neerzetten. Een typisch gebruik van de activiteit Cursuspresentatie is om een paar dia's te gebruiken om een onderwerp te introduceren en deze te volgen met nog een paar dia's waarin de kennis van de gebruiker wordt getest. Cursuspresentaties kunnen echter op veel verschillende manieren worden gebruikt, ook als presentatietool voor gebruik in de klas, of als een spel waarbij de gebruikelijke navigatie wordt vervangen door navigatieknoppen bovenop de dia's om de gebruiker keuzes te laten maken en de consequenties te laten zien. van hun keuzes.",
+        "keywords": {
+            "course_presentation": "cursus presentatie",
+            "slides": "dia's",
+            "powerpoint": "Power Point"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "Dialoogkaarten (Dialog Cards)",
+        "summary": "Maak op tekst gebaseerde draaikaarten",
+        "description": "Dialoogkaarten kunnen worden gebruikt als oefening om leerlingen te helpen bij het onthouden van woorden, uitdrukkingen of zinnen. Op de voorkant van de kaart staat een hint voor een woord of uitdrukking. Door de kaart om te draaien, onthult de leerling een overeenkomstig woord of uitdrukking. Dialoogkaarten kunnen worden gebruikt bij het leren van talen, om wiskundige problemen te presenteren of om leerlingen te helpen bij het onthouden van feiten zoals historische gebeurtenissen, formules of namen.",
+        "keywords": { "dialog_cards": "dialoog kaarten" }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Documentatietool (Documentation Tool)",
+        "summary": "Maak een formulierwizard met tekstexport",
+        "description": "De documentatietool is bedoeld om het eenvoudig maken van beoordelingswizards voor doelgerichte activiteiten. Het kan ook worden gebruikt als een formulierwizard. Tijdens het bewerken kan de auteur meerdere stappen aan de wizard toevoegen. Bij elke stap kan de auteur bepalen welke inhoud in die stap wordt opgenomen. Inhoud kan platte tekst, invoervelden, doeldefinitie en doelbeoordeling zijn. Na publicatie wordt de eindgebruiker door de stappen van de wizard geleid. Bij de laatste stap van de wizard kan de gebruiker een document genereren met alle input die is ingediend. Dit document kan worden gedownload. De documentatie-tool is volledig responsief en werkt zowel op kleinere schermen als op uw desktop uitstekend.",
+        "keywords": { "dialog_cards": "dialoog kaarten" }
+    },
+    "H5P_DragQuestion": {
+        "title": "Slepen en neerzetten (Drag and Drop)",
+        "summary": "Maak slepen en neerzetten taken met afbeeldingen",
+        "description": "Door een vraag te slepen en neer te zetten, kan de leerling twee of meer elementen associëren en op een visuele manier logische verbanden leggen. Maak vragen met slepen en neerzetten met zowel tekst als afbeeldingen als versleepbare alternatieven. H5P Drag-and-drop-vragen ondersteunen één-op-één, één-op-veel, veel-op-één en veel-op-veel relaties tussen vragen en antwoorden.",
+        "keywords": { "drag_and drop": "slepen en neerzetten" }
+    },
+    "H5P_DragText": {
+        "title": "Sleep de woorden (Drag the Words)",
+        "summary": "Maak op tekst gebaseerde taken voor slepen en neerzetten",
+        "description": "Met Drag the Words kunnen contentontwerpers tekstuele uitdrukkingen maken met ontbrekende stukjes tekst. De eindgebruiker sleept een ontbrekend stuk tekst naar de juiste plaats om een volledige uitdrukking te vormen. Kan worden gebruikt om te controleren of de gebruiker zich een tekst herinnert die ze heeft gelezen, of dat ze iets begrijpt. Helpt de gebruiker na te denken over een tekst. Het is super eenvoudig om een taak voor het slepen van de woorden te maken. De editor schrijft alleen de tekst en plaatst de woorden die versleepbaar moeten worden, met asterisk-tekens zoals * draggableWord *.",
+        "keywords": { "drag": "slepen", "words": "woorden" }
+    },
+    "H5P_Blanks": {
+        "title": "Vul de lege plekken in (Fill in the Blanks)",
+        "summary": "Maak een taak met ontbrekende woorden in een tekst",
+        "description": "Leerders vullen de ontbrekende woorden in een tekst in. De leerling krijgt een oplossing te zien na het invullen van alle ontbrekende woorden, of na elk woord, afhankelijk van de instellingen. Auteurs voeren tekst in en markeren woorden die moeten worden vervangen door een asterix. Naast het leren van moedertaal en tweede taal, kan Invuloefening worden gebruikt om het vermogen van de leerling te testen om feiten te reproduceren of wiskundige gevolgtrekkingen te produceren.",
+        "keywords": { "fill": "vullen", "blanks": "blanco's", "text": "tekst" }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Zoek de hotspot (Find the Hotspot)",
+        "summary": "Creëer afbeeldingshotspots die gebruikers kunnen vinden",
+        "description": "Met dit inhoudstype kunnen eindgebruikers ergens op een afbeelding drukken en feedback krijgen of dat correct of onjuist was volgens de taakbeschrijving. De auteur uploadt een afbeelding en definieert verschillende hotspots die overeenkomen met details of secties van de afbeelding. Hotspots kunnen als correct of incorrect worden gedefinieerd en de auteur geeft in beide gevallen de juiste feedbacktekst. De auteur kan ook een feedback definiëren als de eindgebruiker ergens op drukt die niet is gedefinieerd als een juiste of onjuiste hotspot.",
+        "keywords": { "find": "vind", "hotspot": "hotspot", "image": "beeld" }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Raad het antwoord (Guess the Answer)",
+        "summary": "Maak een afbeelding met een vraag en antwoord",
+        "description": "Met dit inhoudstype kunnen auteurs een afbeelding uploaden en een geschikte beschrijving toevoegen. Eindgebruikers kunnen het antwoord raden en op de balk onder de afbeelding drukken om het juiste antwoord weer te geven.",
+        "keywords": { "guess": "Raad eens", "answer": "antwoord" }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "Iframe Embedder",
+        "summary": "Embed vanaf een url of een set bestanden",
+        "description": "De Iframe-embedder maakt het gemakkelijk om een H5P te maken van reeds bestaande JavaScript-applicaties.",
+        "keywords": { "embed": "integreren", "iframe": "iframe" }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Interactieve video (Interactive Video)",
+        "summary": "Maak video's die zijn verrijkt met interacties",
+        "description": "Voeg interactiviteit toe aan uw video met uitleg, extra afbeeldingen, tabellen, invuloefeningen en meerkeuzevragen. Quizvragen ondersteunen aanpassingsvermogen, wat betekent dat u naar een ander deel van de video kunt springen op basis van de invoer van de gebruiker. Aan het einde van de video kunnen interactieve samenvattingen worden toegevoegd. Interactieve video's worden gemaakt en bewerkt met de H5P-ontwerptool in een standaard webbrowser.",
+        "keywords": { "interactive": "interactief", "video": "video-" }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Mark the Words",
+        "summary": "Maak een taak waarin gebruikers woorden markeren",
+        "description": "Met Mark the words kunnen contentontwerpers tekstuele uitdrukkingen maken met een gedefinieerde set correcte woorden. De eindgebruiker markeert woorden volgens de taakomschrijving en krijgt een score. Voor de redacteur is het super eenvoudig om een klik op de woordenuitdaging te maken. De editor typt de tekst in en plaatst de woorden waarop de gebruiker moet klikken, de juiste antwoorden, in asterix zoals * correctWord *.",
+        "keywords": { "mark": "Mark", "words": "woorden" }
+    },
+    "H5P_MemoryGame": {
+        "title": "Geheugenspel (Memory Game)",
+        "summary": "Creëer het klassieke spel voor het koppelen van afbeeldingen",
+        "description": "Maak je eigen geheugenspellen en test het geheugen van de gebruikers van je site met deze eenvoudige maar mooie HTML5-game.",
+        "keywords": { "memory": "geheugen", "game": "spel", "cards": "kaarten" }
+    },
+    "H5P_MultiChoice": {
+        "title": "Meerkeuze (Multiple Choice)",
+        "summary": "Maak flexibele meerkeuzevragen",
+        "description": "Meerkeuzevragen kunnen een effectief beoordelingsinstrument zijn. De leerling krijgt onmiddellijk feedback over de prestaties. De H5P Meerkeuzevragen kunnen een enkele of meerdere juiste opties per vraag hebben.",
+        "keywords": {
+            "multiple": "meerdere",
+            "choice": "keuze",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Persoonlijkheidsquiz (Personality Quiz)",
+        "summary": "Maak persoonlijkheidsquizzen",
+        "description": "In dit inhoudstype definieert de auteur een reeks vragen met alternatieven, waarbij elk alternatief wordt vergeleken met een of meer persoonlijkheden. Aan het einde van de quiz ziet de eindgebruiker welke persoonlijkheid het beste past. Er zijn verschillende manieren om deze quiz visueel aantrekkelijk te maken, bijvoorbeeld door. vragen, alternatieven en persoonlijkheden weergeven met behulp van afbeeldingen.",
+        "keywords": { "personality": "persoonlijkheid", "quiz": "quiz" }
+    },
+    "H5P_Questionnaire": {
+        "title": "De vragenlijst (Questionnaire)",
+        "summary": "Maak een vragenlijst om feedback te krijgen",
+        "description": "Krijg feedback en stel open vragen in interactieve video's en andere inhoudstypen met Vragenlijst. Vragenlijst stelt de antwoorden van de gebruiker beschikbaar via een xAPI-integratie. Dit betekent dat website-eigenaren de antwoorden op veel verschillende manieren kunnen opslaan. Antwoorden kunnen worden opgeslagen in een LRS, de eigen aangepaste opslag van de site of een script kan het e-mailadres ophalen en het gebruiken om de gebruiker een e-mail te sturen. Op H5P.org worden antwoorden opgeslagen in Google Analytics.",
+        "keywords": { "questionnaire": "vragenlijst" }
+    },
+    "H5P_QuestionSet": {
+        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "summary": "Maak een reeks verschillende vraagtypen",
+        "description": "Vragenset is uw typische inhoudstype voor quizzen. Hiermee kan de leerling een reeks verschillende vraagtypen oplossen, zoals Multichoice, slepen en neerzetten en de lege plekken in een vragenreeks invullen. Als auteur zijn er veel instellingen die u kunt gebruiken om ervoor te zorgen dat het zich gedraagt zoals u dat wilt. U kunt bijvoorbeeld de vragenreeks aanpassen met achtergrondafbeeldingen en een slagingspercentage voor de leerling definiëren. Met de vragenreeks kun je ook video's toevoegen die aan het einde worden afgespeeld. Een video voor succes, een andere als de leerling de test niet haalt. Dit kan leerlingen motiveren om het opnieuw te proberen als ze niet slagen, zodat ze de succesvideo te zien krijgen.",
+        "keywords": {
+            "question_set": "vragen set",
+            "collection": "verzameling",
+            "quiz": "quiz"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Single Choice-set (Single Choice Set)",
+        "summary": "Maak vragen met één juist antwoord",
+        "description": "Met een enkele keuzeset kunnen contentontwerpers vragenreeksen maken met één juist antwoord per vraag. De eindgebruiker krijgt onmiddellijk feedback na het indienen van elk antwoord.",
+        "keywords": {
+            "collection": "verzameling",
+            "quiz": "quiz",
+            "choice": "keuze"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Samenvatting (Summary)",
+        "summary": "Maak taken met een lijst met uitspraken",
+        "description": "Samenvattingen helpen de leerling om belangrijke informatie in een tekst, video of presentatie te onthouden door actief een samenvatting over het betreffende onderwerp te maken. Wanneer de leerling een samenvatting heeft gemaakt, wordt een volledige lijst met belangrijke uitspraken over het onderwerp weergegeven.",
+        "keywords": { "summary": "overzicht" }
+    },
+    "H5P_Timeline": {
+        "title": "Tijdlijn (Timeline)",
+        "summary": "Maak een tijdlijn van evenementen met multimedia",
+        "description": "Dit is Timeline.js ontwikkeld door Knight Lab, verpakt als een H5P-inhoudstype om tijdlijnen gemakkelijk bewerkbaar, deelbaar en herbruikbaar te maken. Met het inhoudstype Tijdlijn kunt u een reeks gebeurtenissen in chronologische volgorde plaatsen. Per evenement kun je afbeeldingen en teksten toevoegen. U kunt ook items van Twitter, YouTube, Flickr, Vimeo, Google Maps en SoundCloud opnemen.",
+        "keywords": { "timeline": "tijdlijn", "slider": "schuifregelaar" }
+    },
+    "H5P_TrueFalse": {
+        "title": "Waar / niet waar vraag (True/False Question)",
+        "summary": "Maak waar / onwaar-vragen",
+        "description": "Waar / niet-vraag is een eenvoudig en duidelijk inhoudstype dat op zichzelf kan werken of kan worden ingevoegd in andere inhoudstypen, zoals cursuspresentatie. Een complexere vraag kan worden gemaakt door een afbeelding of een video toe te voegen.",
+        "keywords": { "true": "waar", "false": "false" }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Afbeeldingshotspots (Image Hotspots)",
+        "summary": "Maak een afbeelding met meerdere info-hotspots",
+        "description": "Image hotspots maakt het mogelijk om een afbeelding te maken met interactieve hotspots. Wanneer de gebruiker op een hotspot drukt, wordt een pop-upvenster met een koptekst en tekst of video weergegeven. Met de H5P-editor kunt u zoveel hotspots toevoegen als u wilt.",
+        "keywords": { "image": "beeld", "hotspot": "hotspot" }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Vind meerdere hotspots (Find Multiple Hotspots)",
+        "summary": "Maak veel hotspots die gebruikers kunnen vinden",
+        "description": "Een gratis op HTML5 gebaseerd vraagtype waarmee adverteerders een op afbeeldingen gebaseerde test kunnen maken waarbij de leerling de juiste plekken op een afbeelding kan vinden. Gebruik dit inhoudstype met de H5P-plug-in voor WordPress, Moodle of Drupal om uw gebruikers uit te dagen."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Juxtapositie van (Image Juxtaposition)",
+        "summary": "Maak interactieve afbeeldingen",
+        "description": "Een gratis op HTML5 gebaseerd inhoudstype voor afbeeldingen waarmee gebruikers twee afbeeldingen interactief kunnen vergelijken. Vertel uw beeldverhalen met H5P en Image Juxtaposition op WordPress, Moodle of Drupal."
+    },
+    "H5P_Audio": {
+        "title": "Audio",
+        "summary": "Upload een audio-opname",
+        "description": "Upload een audio-opname in .mp3, .wav, .ogg of geef de link voor een audio-opname."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Audiorecorder (Audio Recorder)",
+        "summary": "Maak een audio-opname",
+        "description": "Een HTML5-audiorecorder. Neem uw stem op en speel of download een .wav-bestand van uw opname. Gebruik de H5P-plug-in om de H5P-audiorecorder naar uw Drupal-, Wordpress- of Moodle-site te maken.",
+        "keywords": { "audio": "audio", "recorder": "recorder" }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Spreek de woorden (Speak the Words)",
+        "summary": "Beantwoord een vraag met je stem (Chrome only)",
+        "description": "Speak the Words wordt alleen ondersteund in browsers die de Web Speech API implementeren (Chrome-browsers, behalve op iOS). Je hebt een microfoon nodig om de vraag te beantwoorden. Stel een vraag aan gebruikers en laat ze antwoorden met hun stem. U kunt meerdere juiste antwoorden kiezen. De gebruiker zal kunnen zien hoe zijn woorden werden geïnterpreteerd en hoe dicht het bij de juiste antwoorden lag.",
+        "keywords": {
+            "language": "taal",
+            "translation": "vertaling",
+            "voice": "stem",
+            "recognition": "herkenning",
+            "speech": "toespraak",
+            "mic": "weinig",
+            "microphone": "microfoon"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "summary": "Presenteer een reeks afbeeldingen en uitleg",
+        "description": "Presenteer een reeks afbeeldingen die mensen de een na de ander zouden moeten bekijken, bijv. foto's van een item dat in de loop van de tijd verandert, schema's of kaarten die in verschillende lagen zijn georganiseerd of afbeeldingen die steeds meer details onthullen.",
+        "keywords": {
+            "image": "beeld",
+            "images": "afbeeldingen",
+            "transition": "overgang"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Beeldreeksen (Image Sequencing)",
+        "summary": "Plaats afbeeldingen in de juiste volgorde",
+        "description": "Een gratis op HTML5 gebaseerd inhoudstype voor het reeksen van afbeeldingen waarmee auteurs een reeks van hun eigen afbeeldingen (en optionele afbeeldingsbeschrijving) in een bepaalde volgorde aan het spel kunnen toevoegen. De volgorde van de afbeeldingen wordt willekeurig verdeeld en spelers zullen ze opnieuw moeten ordenen op basis van de taakomschrijving.",
+        "keywords": {
+            "image": "beeld",
+            "sequence": "volgorde",
+            "order": "bestellen"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Flashcards",
+        "summary": "Maak stijlvolle en moderne flashcards",
+        "description": "Met dit inhoudstype kunnen auteurs een enkele flashkaart of een set flashcards maken, waarbij elke kaart afbeeldingen heeft die zijn gekoppeld aan vragen en antwoorden. De leerlingen moeten het tekstveld invullen en vervolgens de juistheid van hun oplossing controleren.",
+        "keywords": { "cards": "kaarten", "animation": "animatie" }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Speak the Words Set",
+        "summary": "Maak een reeks vragen die door middel van spraak worden beantwoord (Chrome only)",
+        "description": "Speak the Words Set wordt alleen ondersteund in browsers die de Web Speech API implementeren (Chrome-browsers, behalve op ios). Je hebt een microfoon nodig om de vraag te beantwoorden. Maak een reeks vragen die leerlingen met hun stem kunnen beantwoorden. u kunt meerdere juiste antwoorden kiezen. De gebruiker zal kunnen zien hoe zijn woorden werden geïnterpreteerd en hoe dicht het bij de juiste antwoorden lag.",
+        "keywords": {
+            "language": "taal",
+            "translation": "vertaling",
+            "voice": "stem",
+            "quiz": "quiz",
+            "set": "set",
+            "recognition": "herkenning",
+            "mic": "weinig",
+            "microphone": "microfoon"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Afbeeldingsschuifregelaar (Image Slider)",
+        "summary": "Maak eenvoudig een afbeeldingsschuifregelaar",
+        "description": "Presenteer uw afbeeldingen gemakkelijk op een aantrekkelijke manier. Auteurs hoeven alleen maar afbeeldingen te uploaden en alternatieve teksten voor de afbeeldingen te leveren.\r\n\r\nDe volgende twee afbeeldingen zijn altijd voorgeladen, dus het wisselen tussen afbeeldingen zal meestal pittig zijn zonder vertraging voor het laden van de volgende afbeelding.\r\n\r\nAfbeeldingen kunnen worden ervaren als onderdeel van de pagina of in de modus Volledig scherm. Bij gebruik als onderdeel van de pagina kiest het systeem een vaste aspectverhouding, afhankelijk van de gebruikte afbeeldingen. Auteurs kunnen besluiten aspectverhoudingen anders te behandelen.",
+        "keywords": {
+            "image": "beeld",
+            "images": "afbeeldingen",
+            "slider": "schuifregelaar",
+            "carousel": "carrousel"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Essay",
+        "summary": "Maak een essay met onmiddellijke feedback",
+        "description": "In dit inhoudstype definieert de auteur een reeks trefwoorden die cruciale aspecten van een onderwerp vertegenwoordigen. Deze trefwoorden worden vergeleken met een tekst die studenten hebben samengesteld en kunnen worden gebruikt om onmiddellijk feedback te geven - ofwel suggereren om bepaalde onderwerpdetails te herzien als een trefwoord ontbreekt, ofwel de ideeën van de student bevestigen als de tekst een trefwoord bevat.\r\n",
+        "keywords": { "Essay": "Essay" }
+    },
+    "H5P_ImagePair": {
+        "title": "Afbeeldingen koppelen (Image Pairing)",
+        "summary": "Versleep het spel voor het matchen van afbeeldingen",
+        "description": "Het koppelen van afbeeldingen is een eenvoudige en effectieve activiteit waarbij leerlingen moeten paren met afbeeldingen. Omdat het niet vereist is dat beide afbeeldingen in een paar hetzelfde zijn, kunnen auteurs ook het begrip van een relatie tussen twee verschillende afbeeldingen testen.",
+        "keywords": {
+            "image_images matching pair": "afbeelding afbeeldingen die overeenkomen met paar"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Dicteren (Dictation)",
+        "summary": "Maak een dictaat met onmiddellijke feedback",
+        "description": "U kunt audiofragmenten met een zin toevoegen om te dicteren en de juiste transcriptie invoeren. Uw studenten kunnen naar de voorbeelden luisteren en invoeren wat ze hebben gehoord in een tekstveld. Hun antwoorden worden automatisch geëvalueerd. Met verschillende opties kunt u de moeilijkheidsgraad van de oefening bepalen. U kunt optioneel een tweede audiofragment toevoegen voor een zin die een versie die langzaam wordt uitgesproken, kan bevatten. U kunt ook een limiet instellen voor hoe vaak een sample kan worden afgespeeld, bepalen of interpunctie relevant moet zijn voor het scoren en beslissen of kleine fouten, zoals typefouten, als geen fout, een volledige fout of slechts een halve fout moeten worden geteld.",
+        "keywords": { "language": "taal", "audio": "audio" }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Vertakkingsscenario (beta) (Branching Scenario (beta))",
+        "summary": "Creëer dilemma's en leer op eigen tempo",
+        "description": "Met vertakkingsscenario's kunnen auteurs de leerlingen een verscheidenheid aan rijke interactieve inhoud en keuzes presenteren. De keuzes die de leerlingen maken, zijn bepalend voor de volgende inhoud die ze zien. Kan worden gebruikt om dilemma's, serious games en leren in eigen tempo te creëren."
+    },
+    "H5P_ThreeImage": {
+        "title": "Virtuele tour (360) (Virtual Tour (360))",
+        "summary": "Creëer 360-omgevingen met interacties",
+        "description": "360 (rechthoekig) en normale afbeeldingen kunnen worden verrijkt met interactiviteiten zoals uitleg, video's, geluiden en interactieve vragen. De afbeeldingen creëren scènes die ook aan elkaar kunnen worden gekoppeld om de gebruiker een indruk te geven van beweging tussen omgevingen of tussen verschillende gezichtspunten binnen dezelfde omgeving."
+    },
+    "H5P_FindTheWords": {
+        "title": "Vind de woorden (Find the words)",
+        "summary": "Raster woordzoekspel",
+        "description": "Een gratis op HTML5 gebaseerde woordzoekactiviteit waarmee auteurs een lijst met woorden kunnen maken die in een raster worden getekend. Het is de taak van de leerling om de woorden in het raster te zoeken en te selecteren."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Interactief boek (Interactive Book)",
+        "summary": "Maak kleine cursussen, boeken en tests",
+        "description": "Maak kleine cursussen, boeken of tests. Met Interactive Book kunnen auteurs grote hoeveelheden interactieve inhoud zoals interactieve video's, vragen, cursuspresentaties en meer op meerdere pagina's combineren. Aan het einde vindt u een samenvatting met de scores die de leerling in het hele boek heeft behaald.",
+        "keywords": { "book": "boek", "course": "Cursus" }
+    },
+    "H5P_KewArCode": {
+        "title": "KewAr-code (KewAr Code)",
+        "summary": "Maak QR-codes voor verschillende doeleinden",
+        "description": "Met KewAr Code kunnen contentontwerpers bekende QR-codes maken. Die QR-codes kunnen URL's coderen, maar ook contactgegevens, evenementen, geolocaties, enz. Mensen kunnen ze scannen met een QR-codelezer om de gekozen actie te activeren.",
+        "keywords": { "QR": "QR" }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Adventskalender (beta) (Advent Calendar (beta))",
+        "summary": "Creëer verrassingen die dagelijks worden onthuld",
+        "description": "Bouw en pas een prachtige adventskalender aan. U kunt een achtergrondafbeelding toevoegen aan de volledige kalender, aan elke deur en als achtergrond voor de inhoud binnen elke deur. Je kunt ook sneeuweffect en muziek toevoegen. Binnen elke deur kun je een geluid, video, tekst, afbeelding of link toevoegen.\r\n\r\nHoud er rekening mee dat het voor computerbewuste gebruikers gemakkelijk is om de inhoud van alle deuren meteen te onthullen. Als je van plan bent om in de toekomst grote geheimen te onthullen, moet je tot die dag wachten voordat je je grote geheimen aan de kalender toevoegt.",
+        "keywords": {
+            "christmas": "Kerstmis",
+            "advent": "komst",
+            "holidays": "vakantie",
+            "calendar": "kalender"
+        }
+    }
+}

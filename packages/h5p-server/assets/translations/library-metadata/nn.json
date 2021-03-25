@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Bilde" },
+    "H5P_ContinuousText": { "title": "Kontinuerlig tekst" },
+    "H5P_FreeTextQuestion": { "title": "Fritekstspørsmål" },
+    "H5P_GoToScene": { "title": "Gå til scene" },
+    "H5P_GoToQuestion": { "title": "Tverrveier" },
+    "H5P_GoalsPage": { "title": "Målside" },
+    "H5P_GoalsAssessmentPage": { "title": "Målvurderingsside" },
+    "H5P_StandardPage": { "title": "Standardside" },
+    "H5P_DocumentExportPage": { "title": "Dokumenteksportside" },
+    "H5P_Link": { "title": "Link" },
+    "H5P_Nil": { "title": "Merkelapp" },
+    "H5P_IVHotspot": { "title": "Navigasjonspunkt" },
+    "H5P_OpenEndedQuestion": { "title": "Åpent spørsmål" },
+    "H5P_Shape": { "title": "Former" },
+    "H5P_Summary": { "title": "Sammendrag" },
+    "H5P_Table": { "title": "Bord" },
+    "H5P_Text": { "title": "Tekst" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Tekst" },
+    "H5P_SimpleMultiChoice": { "title": "Enkelt flervalg" },
+    "H5P_BranchingQuestion": { "title": "Forgreningsspørsmål" }
+}

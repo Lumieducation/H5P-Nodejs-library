@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Pilt" },
+    "H5P_ContinuousText": { "title": "Pidev tekst" },
+    "H5P_FreeTextQuestion": { "title": "Vaba teksti küsimus" },
+    "H5P_GoToScene": { "title": "Mine stseeni" },
+    "H5P_GoToQuestion": { "title": "Ristmik" },
+    "H5P_GoalsPage": { "title": "Eesmärkide leht" },
+    "H5P_GoalsAssessmentPage": { "title": "Eesmärkide hindamise leht" },
+    "H5P_StandardPage": { "title": "Standardleht" },
+    "H5P_DocumentExportPage": { "title": "Dokumendi eksportimise leht" },
+    "H5P_Link": { "title": "Link" },
+    "H5P_Nil": { "title": "Silt" },
+    "H5P_IVHotspot": { "title": "Navigeerimise leviala" },
+    "H5P_OpenEndedQuestion": { "title": "Avatud lõpuga küsimus" },
+    "H5P_Shape": { "title": "Kujundid" },
+    "H5P_Summary": { "title": "Kokkuvõte" },
+    "H5P_Table": { "title": "Tabel" },
+    "H5P_Text": { "title": "Tekst" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Tekst" },
+    "H5P_SimpleMultiChoice": { "title": "Lihtne valikvastused" },
+    "H5P_BranchingQuestion": { "title": "Hargnemise küsimus" }
+}

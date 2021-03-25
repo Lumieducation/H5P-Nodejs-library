@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "<span>Faili 0</span> ei saa lisada sisuga, mille ID on {{id}} : sisu pole olemas.",
+    "add-library-file-not-installed": "Teeki {{libraryName}} ei saa {{filename}} lisada, kuna teeki pole installitud.",
+    "clear-library-not-found": "<span>Teeki 0</span> ei saa kustutada, kuna teeki pole installitud.",
+    "delete-content-file-not-found": "<span>Faili 0</span> ei saa kustutada: seda pole olemas.",
+    "delete-content-not-found": "Sisu ei saa kustutada: seda pole olemas.",
+    "error-creating-content": "Sisu ei saanud luua.",
+    "error-generating-content-id": "Uue sisu jaoks ei saanud ID-d genereerida.",
+    "error-generating-unique-temporary-filename": "{{name}} unikaalset failinime ei saa kindlaks määrata",
+    "error-updating-metadata": "<span>Teegi 0</span> täiendavaid metaandmeid ei saa värskendada. Viga: {{error}}",
+    "get-library-metadata-not-installed": "<span>Teegi 0</span> metaandmeid ei saa hankida, kuna teeki pole installitud.",
+    "illegal-absolute-filename": "Absoluutsed teed failinimedes pole lubatud: {{filename}} on ebaseaduslik",
+    "illegal-relative-filename": "Suhtelised teed failinimedes pole lubatud: {{filename}} on ebaseaduslik",
+    "install-library-already-installed": "Teek {{libraryName}} on juba installitud.",
+    "remove-library-library-missing": "Teeki {{libraryName}} pole süsteemi installitud.",
+    "temporary-file-not-found": "Failile {{filename}} pole kasutajale {{userId}} juurdepääs või seda pole olemas.",
+    "update-library-library-missing": "Teeki {{libraryName}} ei saa värskendada, kuna seda pole veel installitud."
+}

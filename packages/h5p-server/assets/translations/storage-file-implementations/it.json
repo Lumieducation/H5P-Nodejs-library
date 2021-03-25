@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Impossibile aggiungere il file {{filename}} al contenuto con ID {{id}} : il contenuto con non esiste.",
+    "add-library-file-not-installed": "Impossibile aggiungere {{filename}} alla libreria {{libraryName}} perché la libreria non è stata installata.",
+    "clear-library-not-found": "Impossibile cancellare la libreria {{libraryName}} perché la libreria non è stata installata.",
+    "delete-content-file-not-found": "Impossibile eliminare il file {{filename}} : non esiste.",
+    "delete-content-not-found": "Impossibile eliminare il contenuto: non esiste.",
+    "error-creating-content": "Impossibile creare contenuto.",
+    "error-generating-content-id": "Impossibile generare l'ID per il nuovo contenuto.",
+    "error-generating-unique-temporary-filename": "Impossibile determinare un nome file univoco per {{name}}",
+    "error-updating-metadata": "I metadati aggiuntivi della libreria {{library}} non possono essere aggiornati. Errore: {{error}}",
+    "get-library-metadata-not-installed": "Impossibile ottenere i metadati per la libreria {{libraryName}} perché la libreria non è stata installata.",
+    "illegal-absolute-filename": "I percorsi assoluti nei nomi dei file non sono consentiti: {{filename}} è illegale",
+    "illegal-relative-filename": "I percorsi relativi nei nomi dei file non sono consentiti: {{filename}} è illegale",
+    "install-library-already-installed": "La libreria {{libraryName}} è già stata installata.",
+    "remove-library-library-missing": "La libreria {{libraryName}} non è installata nel sistema.",
+    "temporary-file-not-found": "Il file {{filename}} non è accessibile per l&#39;utente {{userId}} o non esiste.",
+    "update-library-library-missing": "La libreria {{libraryName}} non può essere aggiornata perché non è stata ancora installata."
+}

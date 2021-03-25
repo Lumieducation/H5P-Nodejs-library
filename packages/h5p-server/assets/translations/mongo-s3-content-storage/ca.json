@@ -1,0 +1,15 @@
+{
+    "content-not-found": "El contingut al qual intenteu accedir no existeix.",
+    "deleting-content-error": "S'ha produït un error en suprimir l'objecte de contingut.",
+    "deleting-file-error": "S&#39;ha produït un error en suprimir el fitxer {{filename}} de l&#39;objecte de contingut.",
+    "filename-too-long": "El nom del fitxer és massa llarg: {{filename}}",
+    "illegal-filename": "No es permet el nom de fitxer <span>0.</span>",
+    "listing-content-error": "S'ha produït un error en obtenir la llista d'objectes de contingut",
+    "missing-delete-permission": "No teniu permís per suprimir aquest objecte de contingut.",
+    "missing-list-content-permission": "No teniu permís per llistar objectes de contingut.",
+    "missing-view-permission": "No teniu permís per veure aquest objecte de contingut.",
+    "missing-write-permission": "No teniu permís per canviar aquest objecte de contingut.",
+    "mongo-add-update-error": "S'ha produït un error en afegir o actualitzar contingut a la base de dades.",
+    "mongo-replace-error": "S'ha produït un error en actualitzar el contingut de la base de dades.",
+    "s3-upload-error": "S&#39;ha produït un error en penjar el fitxer {{filename}} a S3."
+}

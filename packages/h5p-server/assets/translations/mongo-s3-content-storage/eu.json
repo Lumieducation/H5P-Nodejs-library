@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Atzitzen saiatzen ari zaren edukia ez da existitzen.",
+    "deleting-content-error": "Errorea gertatu da edukia objektua ezabatzean.",
+    "deleting-file-error": "Errorea gertatu da {{filename}} fitxategia edukiaren objektutik ezabatzean.",
+    "filename-too-long": "Fitxategi izena luzeegia da: {{filename}}",
+    "illegal-filename": "{{filename}} fitxategi izena ez da onartzen.",
+    "listing-content-error": "Akats bat izan da eduki objektuen zerrenda eskuratzean",
+    "missing-delete-permission": "Ez duzu eduki objektu hau ezabatzeko baimenik.",
+    "missing-list-content-permission": "Ez duzu edukiaren objektuak zerrendatzeko baimenik.",
+    "missing-view-permission": "Ez duzu edukia objektu hau ikusteko baimenik.",
+    "missing-write-permission": "Ez duzu baimenik eduki objektu hau aldatzeko.",
+    "mongo-add-update-error": "Errore bat gertatu da datu basean edukia gehitzean edo eguneratzean.",
+    "mongo-replace-error": "Errore bat gertatu da datu-baseko edukia eguneratzean.",
+    "s3-upload-error": "Errorea gertatu da {{filename}} fitxategia S3ra kargatzean."
+}

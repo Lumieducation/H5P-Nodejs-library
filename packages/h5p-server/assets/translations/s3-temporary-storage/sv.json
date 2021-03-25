@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Det uppstod ett fel när filen skulle raderas.",
+    "file-not-found": "Filen finns inte.",
+    "missing-delete-permission": "Du har inte behörighet att radera den här filen.",
+    "missing-view-permission": "Du har inte behörighet att visa den här filen.",
+    "missing-write-permission": "Du har inte behörighet att spara tillfälliga filer.",
+    "s3-upload-error": "Det gick inte att ladda upp den tillfälliga filen till S3."
+}

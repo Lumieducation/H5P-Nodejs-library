@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "រូបភាព" },
+    "H5P_ContinuousText": { "title": "អត្ថបទបន្ត" },
+    "H5P_FreeTextQuestion": { "title": "សំណួរអត្ថបទឥតគិតថ្លៃ" },
+    "H5P_GoToScene": { "title": "ទៅឈុតឆាក" },
+    "H5P_GoToQuestion": { "title": "ផ្លូវបំបែក" },
+    "H5P_GoalsPage": { "title": "ទំព័រគោលដៅ" },
+    "H5P_GoalsAssessmentPage": { "title": "ទំព័រវាយតម្លៃគោលដៅ" },
+    "H5P_StandardPage": { "title": "ទំព័រស្តង់ដារ" },
+    "H5P_DocumentExportPage": { "title": "ទំព័រនាំចេញឯកសារ" },
+    "H5P_Link": { "title": "តំណ" },
+    "H5P_Nil": { "title": "ស្លាក​សញ្ញា" },
+    "H5P_IVHotspot": { "title": "ការរុករកហតស្ពត" },
+    "H5P_OpenEndedQuestion": { "title": "បើកសំណួរបញ្ចប់" },
+    "H5P_Shape": { "title": "រាង" },
+    "H5P_Summary": { "title": "សង្ខេប" },
+    "H5P_Table": { "title": "តុ" },
+    "H5P_Text": { "title": "អត្ថបទ" },
+    "H5P_Video": { "title": "វីដេអូ" },
+    "H5P_AdvancedText": { "title": "អត្ថបទ" },
+    "H5P_SimpleMultiChoice": { "title": "ជំរើសច្រើនបែបសាមញ្ញ" },
+    "H5P_BranchingQuestion": { "title": "សំណួរសាខា" }
+}

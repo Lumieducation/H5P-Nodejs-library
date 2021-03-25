@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Bu dosyayı silerken bir hata oluştu.",
+    "file-not-found": "Dosya yok.",
+    "missing-delete-permission": "Bu dosyayı silme izniniz yok.",
+    "missing-view-permission": "Bu dosyayı görüntüleme izniniz yok.",
+    "missing-write-permission": "Geçici dosyaları kaydetme izniniz yok.",
+    "s3-upload-error": "Geçici dosyayı S3'e yüklerken bir hata oluştu."
+}

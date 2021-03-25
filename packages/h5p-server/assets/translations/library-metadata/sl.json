@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Slika" },
+    "H5P_ContinuousText": { "title": "Neprekinjeno besedilo" },
+    "H5P_FreeTextQuestion": { "title": "Vprašanje za prosto besedilo" },
+    "H5P_GoToScene": { "title": "Pojdi na sceno" },
+    "H5P_GoToQuestion": { "title": "Križišče" },
+    "H5P_GoalsPage": { "title": "Stran s cilji" },
+    "H5P_GoalsAssessmentPage": { "title": "Stran za oceno ciljev" },
+    "H5P_StandardPage": { "title": "Standardna stran" },
+    "H5P_DocumentExportPage": { "title": "Stran za izvoz dokumentov" },
+    "H5P_Link": { "title": "Povezava" },
+    "H5P_Nil": { "title": "Oznaka" },
+    "H5P_IVHotspot": { "title": "Navigacijska dostopna točka" },
+    "H5P_OpenEndedQuestion": { "title": "Odprto vprašanje" },
+    "H5P_Shape": { "title": "Oblike" },
+    "H5P_Summary": { "title": "Povzetek" },
+    "H5P_Table": { "title": "Tabela" },
+    "H5P_Text": { "title": "Besedilo" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Besedilo" },
+    "H5P_SimpleMultiChoice": { "title": "Preprosta večkratna izbira" },
+    "H5P_BranchingQuestion": { "title": "Vprašanje veje" }
+}

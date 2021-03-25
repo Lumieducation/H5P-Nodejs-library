@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Errore bat gertatu da fitxategia ezabatzean.",
+    "file-not-found": "Fitxategia ez da existitzen.",
+    "missing-delete-permission": "Ez duzu fitxategi hau ezabatzeko baimenik.",
+    "missing-view-permission": "Ez duzu baimenik fitxategi hau ikusteko.",
+    "missing-write-permission": "Ez duzu baimenik aldi baterako fitxategiak gordetzeko.",
+    "s3-upload-error": "Errore bat gertatu da aldi baterako fitxategia S3ra kargatzean."
+}

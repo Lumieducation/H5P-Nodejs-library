@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Δεν είναι δυνατή η προσθήκη του αρχείου {{filename}} στο περιεχόμενο με αναγνωριστικό {{id}} : Το περιεχόμενο με δεν υπάρχει.",
+    "add-library-file-not-installed": "Δεν είναι δυνατή η προσθήκη {{filename}} στη βιβλιοθήκη {{libraryName}} επειδή η βιβλιοθήκη δεν έχει εγκατασταθεί.",
+    "clear-library-not-found": "Δεν είναι δυνατή η εκκαθάριση της βιβλιοθήκης {{libraryName}} επειδή η βιβλιοθήκη δεν έχει εγκατασταθεί.",
+    "delete-content-file-not-found": "Δεν είναι δυνατή η διαγραφή του αρχείου {{filename}} : Δεν υπάρχει.",
+    "delete-content-not-found": "Δεν είναι δυνατή η διαγραφή περιεχομένου: Δεν υπάρχει.",
+    "error-creating-content": "Δεν ήταν δυνατή η δημιουργία περιεχομένου.",
+    "error-generating-content-id": "Δεν ήταν δυνατή η δημιουργία αναγνωριστικού για νέο περιεχόμενο.",
+    "error-generating-unique-temporary-filename": "Δεν είναι δυνατός ο προσδιορισμός ενός μοναδικού ονόματος αρχείου για το {{name}}",
+    "error-updating-metadata": "Δεν είναι δυνατή η ενημέρωση των πρόσθετων μεταδεδομένων της βιβλιοθήκης <span>0.</span> Σφάλμα: {{error}}",
+    "get-library-metadata-not-installed": "Δεν είναι δυνατή η λήψη μεταδεδομένων για τη βιβλιοθήκη {{libraryName}} επειδή η βιβλιοθήκη δεν έχει εγκατασταθεί.",
+    "illegal-absolute-filename": "Δεν επιτρέπονται απόλυτες διαδρομές σε ονόματα αρχείων: το {{filename}} είναι παράνομο",
+    "illegal-relative-filename": "Δεν επιτρέπονται σχετικές διαδρομές σε ονόματα αρχείων: το {{filename}} είναι παράνομο",
+    "install-library-already-installed": "Η βιβλιοθήκη {{libraryName}} έχει ήδη εγκατασταθεί.",
+    "remove-library-library-missing": "Η βιβλιοθήκη {{libraryName}} δεν είναι εγκατεστημένη στο σύστημα.",
+    "temporary-file-not-found": "Το αρχείο {{filename}} δεν είναι προσβάσιμο για τον χρήστη {{userId}} ή δεν υπάρχει.",
+    "update-library-library-missing": "Δεν είναι δυνατή η ενημέρωση της βιβλιοθήκης <span>0 καθώς δεν έχει εγκατασταθεί ακόμη.</span>"
+}

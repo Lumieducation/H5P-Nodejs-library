@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Erişmeye çalıştığınız içerik mevcut değil.",
+    "deleting-content-error": "İçerik nesnesi silinirken bir hata oluştu.",
+    "deleting-file-error": "{{filename}} dosyasını içerik nesnesinden silerken bir hata oluştu.",
+    "filename-too-long": "Dosya adı çok uzun: {{filename}}",
+    "illegal-filename": "{{filename}} dosya adına izin verilmiyor.",
+    "listing-content-error": "İçerik nesnelerinin listesi alınırken bir hata oluştu",
+    "missing-delete-permission": "Bu içerik nesnesini silme izniniz yok.",
+    "missing-list-content-permission": "İçerik nesnelerini listeleme izniniz yok.",
+    "missing-view-permission": "Bu içerik nesnesini görüntüleme izniniz yok.",
+    "missing-write-permission": "Bu içerik nesnesini değiştirme izniniz yok.",
+    "mongo-add-update-error": "Veritabanına içerik eklenirken veya güncellenirken bir hata oluştu.",
+    "mongo-replace-error": "Veritabanındaki içerik güncellenirken bir hata oluştu.",
+    "s3-upload-error": "{{filename}} dosyasını S3&#39;e yüklerken bir hata oluştu."
+}

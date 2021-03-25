@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "이 파일을 삭제하는 중에 오류가 발생했습니다.",
+    "file-not-found": "파일이 없습니다.",
+    "missing-delete-permission": "이 파일을 삭제할 권한이 없습니다.",
+    "missing-view-permission": "이 파일을 볼 수있는 권한이 없습니다.",
+    "missing-write-permission": "임시 파일을 저장할 권한이 없습니다.",
+    "s3-upload-error": "S3에 임시 파일을 업로드하는 중에 오류가 발생했습니다."
+}

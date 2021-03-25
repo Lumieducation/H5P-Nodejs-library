@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "obraz" },
+    "H5P_ContinuousText": { "title": "Souvislý text" },
+    "H5P_FreeTextQuestion": { "title": "Otázka volného textu" },
+    "H5P_GoToScene": { "title": "Přejít na scénu" },
+    "H5P_GoToQuestion": { "title": "Rozcestí" },
+    "H5P_GoalsPage": { "title": "Stránka cílů" },
+    "H5P_GoalsAssessmentPage": { "title": "Stránka hodnocení cílů" },
+    "H5P_StandardPage": { "title": "Standardní stránka" },
+    "H5P_DocumentExportPage": { "title": "Stránka exportu dokumentu" },
+    "H5P_Link": { "title": "Odkaz" },
+    "H5P_Nil": { "title": "Označení" },
+    "H5P_IVHotspot": { "title": "Hotspot navigace" },
+    "H5P_OpenEndedQuestion": { "title": "Otevřená otázka" },
+    "H5P_Shape": { "title": "Tvary" },
+    "H5P_Summary": { "title": "souhrn" },
+    "H5P_Table": { "title": "Stůl" },
+    "H5P_Text": { "title": "Text" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Text" },
+    "H5P_SimpleMultiChoice": { "title": "Jednoduchá vícenásobná volba" },
+    "H5P_BranchingQuestion": { "title": "Větvicí otázka" }
+}

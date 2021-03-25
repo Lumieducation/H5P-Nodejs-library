@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Resim" },
+    "H5P_ContinuousText": { "title": "Sürekli Metin" },
+    "H5P_FreeTextQuestion": { "title": "Serbest Metin Sorusu" },
+    "H5P_GoToScene": { "title": "Sahneye Git" },
+    "H5P_GoToQuestion": { "title": "Kavşak" },
+    "H5P_GoalsPage": { "title": "Hedefler sayfası" },
+    "H5P_GoalsAssessmentPage": { "title": "Hedef değerlendirme sayfası" },
+    "H5P_StandardPage": { "title": "Standart sayfa" },
+    "H5P_DocumentExportPage": { "title": "Belge Dışa Aktarma Sayfası" },
+    "H5P_Link": { "title": "Bağlantı" },
+    "H5P_Nil": { "title": "Etiket" },
+    "H5P_IVHotspot": { "title": "Gezinme etkin noktası" },
+    "H5P_OpenEndedQuestion": { "title": "Açık uçlu soru" },
+    "H5P_Shape": { "title": "Şekiller" },
+    "H5P_Summary": { "title": "Özet" },
+    "H5P_Table": { "title": "Tablo" },
+    "H5P_Text": { "title": "Metin" },
+    "H5P_Video": { "title": "Video" },
+    "H5P_AdvancedText": { "title": "Metin" },
+    "H5P_SimpleMultiChoice": { "title": "Basit Çoktan Seçmeli" },
+    "H5P_BranchingQuestion": { "title": "Dallanma Sorusu" }
+}

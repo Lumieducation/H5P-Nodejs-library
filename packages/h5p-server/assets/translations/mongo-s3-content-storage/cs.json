@@ -1,0 +1,15 @@
+{
+    "content-not-found": "Obsah, ke kterému se pokoušíte získat přístup, neexistuje.",
+    "deleting-content-error": "Při mazání objektu obsahu došlo k chybě.",
+    "deleting-file-error": "Při mazání souboru {{filename}} z objektu obsahu došlo k chybě.",
+    "filename-too-long": "Název souboru je příliš dlouhý: {{filename}}",
+    "illegal-filename": "Název souboru {{filename}} není povolen.",
+    "listing-content-error": "Při načítání seznamu objektů obsahu došlo k chybě",
+    "missing-delete-permission": "Nemáte oprávnění k odstranění tohoto objektu obsahu.",
+    "missing-list-content-permission": "Nemáte oprávnění k seznamu objektů obsahu.",
+    "missing-view-permission": "Pro zobrazení tohoto objektu obsahu nemáte oprávnění.",
+    "missing-write-permission": "Nemáte oprávnění ke změně tohoto objektu obsahu.",
+    "mongo-add-update-error": "Při přidávání nebo aktualizaci obsahu v databázi došlo k chybě.",
+    "mongo-replace-error": "Při aktualizaci obsahu v databázi došlo k chybě.",
+    "s3-upload-error": "Při nahrávání souboru {{filename}} do S3 došlo k chybě."
+}

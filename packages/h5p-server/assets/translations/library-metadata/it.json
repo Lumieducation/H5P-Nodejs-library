@@ -1,0 +1,27 @@
+{
+    "H5P_Image": { "title": "Immagine" },
+    "H5P_ContinuousText": { "title": "Testo continuo" },
+    "H5P_FreeTextQuestion": { "title": "Domanda a testo libero" },
+    "H5P_GoToScene": { "title": "Vai alla scena" },
+    "H5P_GoToQuestion": { "title": "Incrocio stradale" },
+    "H5P_GoalsPage": { "title": "Pagina degli obiettivi" },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Pagina di valutazione degli obiettivi"
+    },
+    "H5P_StandardPage": { "title": "Pagina standard" },
+    "H5P_DocumentExportPage": {
+        "title": "Pagina di esportazione del documento"
+    },
+    "H5P_Link": { "title": "Link" },
+    "H5P_Nil": { "title": "Etichetta" },
+    "H5P_IVHotspot": { "title": "Hotspot di navigazione" },
+    "H5P_OpenEndedQuestion": { "title": "Domanda a risposta a perta" },
+    "H5P_Shape": { "title": "Forme" },
+    "H5P_Summary": { "title": "Sommario" },
+    "H5P_Table": { "title": "tavolo" },
+    "H5P_Text": { "title": "Testo" },
+    "H5P_Video": { "title": "video" },
+    "H5P_AdvancedText": { "title": "Testo" },
+    "H5P_SimpleMultiChoice": { "title": "Scelta multipla semplice" },
+    "H5P_BranchingQuestion": { "title": "Domanda ramificata" }
+}

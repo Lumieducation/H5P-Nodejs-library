@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Nije moguće dodati datoteku {{filename}} sadržaju s id {{id}} : Sadržaj sa ne postoji.",
+    "add-library-file-not-installed": "Nije moguće dodati {{filename}} u knjižnicu {{libraryName}} jer knjižnica nije instalirana.",
+    "clear-library-not-found": "Nije moguće očistiti knjižnicu {{libraryName}} jer knjižnica nije instalirana.",
+    "delete-content-file-not-found": "Nije moguće izbrisati datoteku {{filename}} : Ne postoji.",
+    "delete-content-not-found": "Ne mogu izbrisati sadržaj: Ne postoji.",
+    "error-creating-content": "Nije moguće stvoriti sadržaj.",
+    "error-generating-content-id": "Nije moguće generirati ID za novi sadržaj.",
+    "error-generating-unique-temporary-filename": "Ne može se odrediti jedinstveno ime datoteke za {{name}}",
+    "error-updating-metadata": "Dodatni metapodaci biblioteke {{library}} ne mogu se ažurirati. Pogreška: {{error}}",
+    "get-library-metadata-not-installed": "Ne mogu dobiti metapodatke za knjižnicu {{libraryName}} jer knjižnica nije instalirana.",
+    "illegal-absolute-filename": "Apsolutne staze u imenima datoteka nisu dozvoljene: {{filename}} je ilegalno",
+    "illegal-relative-filename": "Relativne staze u imenima datoteka nisu dozvoljene: {{filename}} je ilegalno",
+    "install-library-already-installed": "Biblioteka {{libraryName}} je već instalirana.",
+    "remove-library-library-missing": "Biblioteka {{libraryName}} nije instalirana na sistemu.",
+    "temporary-file-not-found": "Datoteka {{filename}} nije dostupna za korisnika {{userId}} ili ne postoji.",
+    "update-library-library-missing": "Biblioteka {{libraryName}} se ne može ažurirati jer još nije instalirana."
+}

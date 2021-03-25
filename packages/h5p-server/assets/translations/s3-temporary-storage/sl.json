@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Pri brisanju te datoteke je prišlo do napake.",
+    "file-not-found": "Datoteka ne obstaja.",
+    "missing-delete-permission": "Nimate dovoljenja za brisanje te datoteke.",
+    "missing-view-permission": "Nimate dovoljenja za ogled te datoteke.",
+    "missing-write-permission": "Nimate dovoljenja za shranjevanje začasnih datotek.",
+    "s3-upload-error": "Pri nalaganju začasne datoteke v S3 je prišlo do napake."
+}

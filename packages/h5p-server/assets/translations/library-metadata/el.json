@@ -1,0 +1,23 @@
+{
+    "H5P_Image": { "title": "Εικόνα" },
+    "H5P_ContinuousText": { "title": "Συνεχές κείμενο" },
+    "H5P_FreeTextQuestion": { "title": "Ερώτηση ελεύθερου κειμένου" },
+    "H5P_GoToScene": { "title": "Μετάβαση στη σκηνή" },
+    "H5P_GoToQuestion": { "title": "Σταυροδρόμι" },
+    "H5P_GoalsPage": { "title": "Σελίδα στόχων" },
+    "H5P_GoalsAssessmentPage": { "title": "Σελίδα αξιολόγησης στόχων" },
+    "H5P_StandardPage": { "title": "Τυπική σελίδα" },
+    "H5P_DocumentExportPage": { "title": "Σελίδα εξαγωγής εγγράφων" },
+    "H5P_Link": { "title": "Σύνδεσμος" },
+    "H5P_Nil": { "title": "Επιγραφή" },
+    "H5P_IVHotspot": { "title": "Σημείο πρόσβασης πλοήγησης" },
+    "H5P_OpenEndedQuestion": { "title": "Ανοιχτή ερώτηση" },
+    "H5P_Shape": { "title": "Σχήματα" },
+    "H5P_Summary": { "title": "Περίληψη" },
+    "H5P_Table": { "title": "Τραπέζι" },
+    "H5P_Text": { "title": "Κείμενο" },
+    "H5P_Video": { "title": "βίντεο" },
+    "H5P_AdvancedText": { "title": "Κείμενο" },
+    "H5P_SimpleMultiChoice": { "title": "Απλή πολλαπλή επιλογή" },
+    "H5P_BranchingQuestion": { "title": "Ερώτηση διακλάδωσης" }
+}

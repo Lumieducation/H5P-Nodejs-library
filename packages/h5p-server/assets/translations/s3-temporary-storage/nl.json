@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "Er is een fout opgetreden bij het verwijderen van dit bestand.",
+    "file-not-found": "Het bestand bestaat niet.",
+    "missing-delete-permission": "U heeft geen toestemming om dit bestand te verwijderen.",
+    "missing-view-permission": "U heeft geen toestemming om dit bestand te bekijken.",
+    "missing-write-permission": "U heeft geen toestemming om tijdelijke bestanden op te slaan.",
+    "s3-upload-error": "Er is een fout opgetreden bij het uploaden van het tijdelijke bestand naar S3."
+}

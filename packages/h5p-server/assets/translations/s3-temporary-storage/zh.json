@@ -1,0 +1,8 @@
+{
+    "deleting-file-error": "删除此文件时出错。",
+    "file-not-found": "该文件不存在。",
+    "missing-delete-permission": "您无权删除此文件。",
+    "missing-view-permission": "您无权查看此文件。",
+    "missing-write-permission": "您无权保存临时文件。",
+    "s3-upload-error": "将临时文件上传到S3时出错。"
+}
