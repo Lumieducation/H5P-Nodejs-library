@@ -4,7 +4,7 @@
     "deleting-file-error": "Se produjo un error al eliminar el archivo {{filename}} del objeto de contenido.",
     "filename-too-long": "El nombre del archivo es demasiado largo: {{filename}}",
     "illegal-filename": "El nombre de archivo {{filename}} no está permitido.",
-    "listing-content-error": "Se produjo un error al obtener la lista de objetos de contenido.",
+    "listing-content-error": "Se produjo un error al obtener la lista de objetos de contenido",
     "missing-delete-permission": "No tiene permiso para eliminar este objeto de contenido.",
     "missing-list-content-permission": "No tiene permiso para mostrar objetos de contenido.",
     "missing-view-permission": "No tiene permiso para ver este objeto de contenido.",
