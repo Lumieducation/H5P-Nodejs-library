@@ -43,7 +43,7 @@
     "library-used": "De bibliotheek {{library}} kan niet worden verwijderd omdat deze nog in gebruik is.",
     "malformed-request": "Het verzoek dat door de client is verzonden, heeft een onjuiste indeling: {{error}}",
     "missing-h5p-extension": "Het bestand dat u heeft geüpload, is geen geldig HTML5-pakket (het heeft niet de bestandsextensie .h5p)",
-    "not-in-whitelist": "Bestand &quot; {{filename}} &quot; niet toegestaan. Alleen bestanden met de volgende extensies zijn toegestaan: {{files-allowed}} .",
+    "not-in-whitelist": "Bestand \" {{filename}} \" niet toegestaan. Alleen bestanden met de volgende extensies zijn toegestaan: {{files-allowed}} .",
     "package-validation-failed": "Validatie van h5p-pakket is mislukt.",
     "total-size-too-large": "De totale grootte van de uitgepakte bestanden overschrijdt de maximaal toegestane grootte.​",
     "unable-to-parse-package": "Kan JSON-bestand uit het pakket niet parseren: {{fileName}}",
