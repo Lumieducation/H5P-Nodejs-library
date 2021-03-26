@@ -6,10 +6,10 @@
         "title": "Texto Continuo"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Pregunta de texto libre"
+        "title": "Pregunta de Texto Libre"
     },
     "H5P_GoToScene": {
-        "title": "Ir a la escena"
+        "title": "Ir A Escena"
     },
     "H5P_GoToQuestion": {
         "title": "Cruce"
@@ -24,7 +24,7 @@
         "title": "Página estándar"
     },
     "H5P_DocumentExportPage": {
-        "title": "Página de exportación de documentos"
+        "title": "Página de Exportación de Documentos"
     },
     "H5P_Link": {
         "title": "Enlace"
@@ -36,7 +36,7 @@
         "title": "Punto de acceso de navegación"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Pregunta abierta"
+        "title": "Pregunta Abierta"
     },
     "H5P_Shape": {
         "title": "Formas"

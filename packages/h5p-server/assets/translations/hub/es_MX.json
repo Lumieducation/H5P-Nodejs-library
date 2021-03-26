@@ -1,6 +1,6 @@
 {
     "H5P_Accordion": {
-        "title": "Acordión (Accordion)",
+        "title": "Acordeón (Accordion)",
         "summary": "Crear elementos expandibles apilados verticalmente",
         "description": "Reducir la cantidad de texto presentado a los lectores al usar este acordeón responsivo. Los lectores deciden cuales encabezados ver con más detalle al expandir el título. Excelente para proporcionar una vista general con explicaciones a profundidad opcionales.",
         "keywords": {
@@ -68,7 +68,7 @@
     },
     "H5P_DocumentationTool": {
         "title": "Herramienta de Documentación (Documentation Tool)",
-        "summary": "Crear un mago de formato con exportación de texto",
+        "summary": "Crear un asistente de formato con exportación de texto",
         "description": "La herramienta de documentación intenta hacer fácil el crear asistentes de evaluación para actividades encaminadas a metas. También puede ser usada como un asistente de formatos. Mientras se edita, el autor puede añadir múltiples pasos al asistente. En cada paso, el autor puede definir cual contenido va a ese paso. El contenido puede ser texto simple, campos para escribir, definición y valoración de meta. Una vez publicado, el usuario final será llevado a cada paso del asistente. En el último paso del asistente, el usuario puede generar un documento con todo lo escrito que haya sido enviado. Este documento puede ser descargado. La herramienta de documentación es completamente responsiva y funciona muy bien en pantallas pequeñas y en su PC de escritorio.",
         "keywords": {
             "dialog_cards": "tarjetas de diálogo"
@@ -103,11 +103,11 @@
     },
     "H5P_ImageHotspotQuestion": {
         "title": "Encontrar el Hotspot (Find the Hotspot)",
-        "summary": "Crear hotspots de imagen para que los encuentre el usuario",
-        "description": "Este tipo de contenido le permite a los usuarios finales el oprimir en algún lugar en la imagen y obtener retroalimentación acerca de si estaba correcto o incorrecto de acuerdo a la descripción del trabajo. El autor sube una imagen y define varios hotspots que corresponden a detalles o secciones de la imagen. Los hotspots pueden ser definidos como correctos o incorrectos, y el autor proporciona texto de retroalimentación apropiada en ambos casos.El autor también puede definir una retroalimentación si el usuario final presiona en algún lugar que no estuviera definido como hotspot correcto ni como hotspot incorrecto.",
+        "summary": "Crear puntos calientes (hotspots) de imagen para que los encuentre el usuario",
+        "description": "Este tipo de contenido le permite a los usuarios finales el oprimir en algún lugar en la imagen y obtener retroalimentación acerca de si estaba correcto o incorrecto de acuerdo a la descripción del trabajo. El autor sube una imagen y define varios puntos calientes (hotspots) que corresponden a detalles o secciones de la imagen. Los hotspots pueden ser definidos como correctos o incorrectos, y el autor proporciona texto de retroalimentación apropiada en ambos casos.El autor también puede definir una retroalimentación si el usuario final presiona en algún lugar que no estuviera definido como hotspot correcto ni como hotspot incorrecto.",
         "keywords": {
             "find": "encontrar",
-            "hotspot": "hotspot",
+            "hotspot": "punto caliente (hotspot)",
             "image": "imagen"
         }
     },
@@ -232,22 +232,22 @@
     },
     "H5P_ImageHotspots": {
         "title": "Hotspots de Imagen (Image Hotspots)",
-        "summary": "Crear una imagen con varios hotspots informativos",
+        "summary": "Crear una imagen con varios puntos calientes (hotspots) informativos",
         "description": "Hotspots de imagen hace posible el crear una imagen con hotspots (puntos calientes) interactivos. Cuando un usuario oprime un hotspot, se muestra una ventana emergente que contiene un encabezado y texto o video. Usando el editor de H5P, Usted puede añadir cuantos hotspots quiera.",
         "keywords": {
             "image": "imagen",
-            "hotspot": "hotspot"
+            "hotspot": "punto caliente (hotspot)"
         }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Encontrar Múltiples Hotspots (Find Multiple Hotspots)",
-        "summary": "Crear muchos hotspots para que los usuarios los encuentren",
-        "description": "Un tipo de pregunta libre HTML5 que les permite a los creativos el crear un test basado en una imagen, donde el estudiante debe encontrar los puntos correctos en una imagen. Use este tipo de contenido con el pluginH5P para WordPress, Moodle o Drupal para retar a sus usuarios."
+        "summary": "Crear muchos puntos calientes (hotspots) para que los usuarios los encuentren",
+        "description": "Un tipo de pregunta gratuita HTML5 que les permite a los creativos el crear un test basado en una imagen, donde el estudiante debe encontrar los puntos correctos en una imagen. Use este tipo de contenido con el pluginH5P para WordPress, Moodle o Drupal para retar a sus usuarios."
     },
     "H5P_ImageJuxtaposition": {
         "title": "Yuxtaposición de Imagen (Image Juxtaposition)",
         "summary": "Crear imágenes interactivas",
-        "description": "Un tipo gratuito de contenido de imagen basada enHTML-5 que le permite a los usuarios comparar interactivamente dos imágenes. Narre las historias de sus imágenes con H5P y Yuxtaposición de Imagen en WordPress, Moodle o Drupal."
+        "description": "Un tipo gratuito de contenido de imagen basada en HTML-5 que le permite a los usuarios comparar interactivamente dos imágenes. Narre las historias de sus imágenes con H5P y Yuxtaposición de Imagen en WordPress, Moodle o Drupal."
     },
     "H5P_Audio": {
         "title": "Audio (Audio)",
@@ -280,7 +280,7 @@
     "H5P_Agamotto": {
         "title": "Agamotto (Mezcladora de Imagen) (Agamotto Image Blender)",
         "summary": "Presentar una secuencia de imágenes y explicaciones",
-        "description": "Presentar una secuencia de imágenes a las cuales la gente se supone que debe verlas una tras otra, como por ejemplo, fotos de un artículo que cambia con el tiempo, diagramas o mapas, que están organizados en diferentes capas o imágenes que revelan más y más detalles.",
+        "description": "Presentar una secuencia de imágenes a las cuales la gente se supone que debe verlas una tras otra; como por ejemplo, fotos de un artículo que cambia con el tiempo, diagramas o mapas, que están organizados en diferentes capas o imágenes que revelan más y más detalles.",
         "keywords": {
             "image": "imagen",
             "images": "imágenes",
@@ -289,7 +289,7 @@
     },
     "H5P_ImageSequencing": {
         "title": "Secuenciado de Imágenes (Image Sequencing)",
-        "summary": "Poner imágenes en el orden correcto",
+        "summary": "Coloca las imágenes en el orden correcto",
         "description": "Un tipo gratuito de contenido HTML5 de secuenciado de imágenes que le permite a los autores el añadirle una secuencia a sus propias imágenes ( y una descripción opcional de imagen) al juego en un orden particular. El orden de las imágenes será aleatorizado y los jugadores tendrán que re-ordenarlas basadas en la descripción del trabajo. ",
         "keywords": {
             "image": "imagen",
@@ -298,18 +298,18 @@
         }
     },
     "H5P_Flashcards": {
-        "title": "Flashcards (Flashcards)",
-        "summary": "Crear flashcards (fichas o tarjetas flash) modernas y estilizadas",
-        "description": "Este tipo de contenido le permite a los autores el crear una sola tarjeta flash o un conjunto de flashcards, donde cada tarjeta tiene imágenes apareadas con preguntas y respuestas. A los estudiantes se les pide que llenen el campo de texto y después revisen la exactitud de su solución.",
+        "title": "Tarjetas didácticas (Flashcards)",
+        "summary": "Crea tarjetas didácticas (flashcards) modernas y con estilo",
+        "description": "Este tipo de contenido le permite a los autores el crear una sola tarjeta flash o un conjunto de tarjetas didácticas (flashcards), donde cada tarjeta tiene imágenes apareadas con preguntas y respuestas. A los estudiantes se les pide que llenen el campo de texto y después revisen la exactitud de su solución.",
         "keywords": {
             "cards": "tarjetas",
             "animation": "animación"
         }
     },
     "H5P_SpeakTheWordsSet": {
-        "title": "Conjunto Diga las Palabras (Speak the Words Set)",
+        "title": "Conjunto de Pronunciar las Palabras (Speak the Words Set)",
         "summary": "Crear una serie de preguntas que se contestan con voz (Chrome solamente)",
-        "description": "Conjunto Diga las Palabras solamente está soportado en navegadores que implementan la Web Speech API (navegadores Chrome, excepto en iOS). Usted necesita un micrófono para contestar la pregunta. Cree un conjunto de preguntas que los estudiantes pueden contestar usando su voz. Usted puede elegir múltiples respuestas correctas. El usuario podrá ver como fueron interpretadas sus palabras, y que tan cerca estuvo de las respuestas correctas.",
+        "description": "Conjunto Pronunciar las Palabras solamente está soportado en navegadores que implementan la Web Speech API (navegadores Chrome, excepto en iOS). Usted necesita un micrófono para contestar la pregunta. Cree un conjunto de preguntas que los estudiantes pueden contestar usando su voz. Usted puede elegir múltiples respuestas correctas. El usuario podrá ver como fueron interpretadas sus palabras, y que tan cerca estuvo de las respuestas correctas.",
         "keywords": {
             "language": "idioma",
             "translation": "traducción",
@@ -341,8 +341,8 @@
         }
     },
     "H5P_ImagePair": {
-        "title": "Apareado de Imagen (Image Pairing)",
-        "summary": "Juego de apareado Arrastrar y soltar imágenes",
+        "title": "Apareado de Imágenes (Image Pairing)",
+        "summary": "Juego de apareado de imágenes mediante Arrastrar y soltar",
         "description": "Apareado de imagen es una actividad simple y efectiva que requiere que los estudiantes hagan coincidir parejas de imágenes. Dado que no es necesario que ambas imágenes en un par sean las mismas, los autores también pueden probar la comprensión de una relación entre dos diferentes imágenes. ",
         "keywords": {
             "image_images matching pair": "par de imágenes coincidentes"
@@ -360,44 +360,44 @@
     "H5P_BranchingScenario": {
         "title": "Escenario Ramificado (beta) (Branching Scenario (beta))",
         "summary": "Crear dilemas y aprendizaje a su propio ritmo",
-        "description": ""
+        "description": "El Escenario Ramificado le permite a los autores presentar a los alumnos una variedad de opciones y contenido interactivo enriquecido. Las elecciones que hagan los alumnos determinarán el próximo contenido que vean. Puede usarse para crear dilemas, juegos serios y aprendizaje a su propio ritmo."
     },
     "H5P_ThreeImage": {
-        "title": "",
-        "summary": "",
-        "description": ""
+        "title": "Visita virtual (360) (Virtual Tour (360))",
+        "summary": "Crea entornos 360 con interacciones",
+        "description": "Las imágenes 360 (equirrectangulares) y normales pueden enriquecerse con interactividades como explicaciones, videos, sonidos y preguntas interactivas. Las imágenes crean escenas que también pueden vincularse entre sí para dar al usuario la impresión de moverse entre entornos o entre diferentes puntos de vista dentro del mismo entorno."
     },
     "H5P_FindTheWords": {
-        "title": "",
-        "summary": "",
-        "description": ""
+        "title": "Encuentra las palabras (Find the words)",
+        "summary": "Juego de búsqueda de palabras en cuadrícula",
+        "description": "Una actividad gratuita de búsqueda de palabras basada en HTML5 que permite a los autores crear una lista de palabras que se dibujarán en una cuadrícula. La tarea del alumno es encontrar y seleccionar las palabras en la cuadrícula."
     },
     "H5P_InteractiveBook": {
-        "title": "",
-        "summary": "",
-        "description": "",
+        "title": "Libro Interactivo (Interactive Book)",
+        "summary": "Crear pequeños cursos, libros y exámenes",
+        "description": "Cree pequeños cursos, libros o exámenes. Libro interactivo permite a los autores combinar grandes cantidades de contenido interactivo como videos interactivos, preguntas, presentaciones de cursos y más en varias páginas. Hay un resumen al final que resume las puntuaciones obtenidas por el alumno a lo largo del libro.",
         "keywords": {
-            "book": "",
-            "course": ""
+            "book": "libro",
+            "course": "curso"
         }
     },
     "H5P_KewArCode": {
-        "title": "",
-        "summary": "",
-        "description": "",
+        "title": "Código KewAr (KewAr Code)",
+        "summary": "Crea códigos QR para diferentes propósitos",
+        "description": "KewAr Code permite a los diseñadores de contenido crear códigos QR conocidos. Esos códigos QR pueden codificar URL, pero también información de contacto, eventos, ubicaciones geográficas, etc. Las personas pueden escanearlos con un lector de códigos QR para activar la acción elegida.",
         "keywords": {
-            "QR": ""
+            "QR": "QR"
         }
     },
     "H5P_AdventCalendar": {
-        "title": "",
-        "summary": "",
-        "description": "",
+        "title": "Calendario de Adviento (beta) (Advent Calendar (beta))",
+        "summary": "Crea sorpresas que se develarán a diario",
+        "description": "Crea y personaliza un hermoso calendario de adviento. Puede agregar una imagen de fondo a todo el calendario, en cada puerta y como fondo en el contenido dentro de cada puerta. También puede agregar efectos de nieve y música. Dentro de cada puerta, puede agregar un sonido, video, texto, imagen o enlace.\n\nTenga en cuenta que es fácil para los usuarios expertos en informática revelar el contenido de todas las puertas de inmediato. Si planea revelar grandes secretos en días futuros, debe esperar hasta ese día antes de agregar sus grandes secretos al calendario.",
         "keywords": {
-            "christmas": "",
-            "advent": "",
-            "holidays": "",
-            "calendar": ""
+            "christmas": "Navidad",
+            "advent": "adviento",
+            "holidays": "vacaciones",
+            "calendar": "calendario"
         }
     }
 }
