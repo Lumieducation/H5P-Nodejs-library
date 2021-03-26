@@ -90,7 +90,7 @@
         }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Cerca el punt d&#39;accés (Find the Hotspot)",
+        "title": "Cerca el punt d'accés (Find the Hotspot)",
         "summary": "Creeu punts d'accés d'imatges perquè els usuaris els puguin trobar",
         "description": "Aquest tipus de contingut permet als usuaris finals prémer en algun lloc de la imatge i obtenir comentaris sobre si això era correcte o incorrecte segons la descripció de la tasca. L'autor penja una imatge i defineix diversos punts d'accés corresponents a detalls o seccions de la imatge. Els punts d'accés es poden definir com a correctes o incorrectes i l'autor proporciona un text de comentaris adequat en ambdós casos. L'autor també pot definir un comentari si l'usuari final prem en algun lloc que no es defineix com un punt d'accés correcte ni incorrecte.",
         "keywords": {
@@ -162,7 +162,7 @@
         }
     },
     "H5P_SingleChoiceSet": {
-        "title": "Conjunt d&#39;elecció única (Single Choice Set)",
+        "title": "Conjunt d'elecció única (Single Choice Set)",
         "summary": "Creeu preguntes amb una resposta correcta",
         "description": "El conjunt d’elecció única permet als dissenyadors de contingut crear conjunts de preguntes amb una resposta correcta per pregunta. L’usuari final rep informació immediata després d’enviar cada resposta.",
         "keywords": {
@@ -196,7 +196,7 @@
         "keywords": { "image": "imatge", "hotspot": "punt d’accés" }
     },
     "H5P_ImageMultipleHotspotQuestion": {
-        "title": "Cerca diversos punts d&#39;accés (Find Multiple Hotspots)",
+        "title": "Cerca diversos punts d'accés (Find Multiple Hotspots)",
         "summary": "Creeu molts punts d'accés que els usuaris puguin trobar",
         "description": "Un tipus de pregunta gratuït basat en HTML5 que permet als creatius crear una prova basada en imatges on l'aprenent trobi els punts correctes en una imatge. Utilitzeu aquest tipus de contingut amb el connector H5P per a WordPress, Moodle o Drupal per desafiar els vostres usuaris."
     },
@@ -211,7 +211,7 @@
         "description": "Pengeu una gravació d'àudio a .mp3, .wav, .ogg o proporcioneu l'enllaç per a una gravació d'àudio."
     },
     "H5P_AudioRecorder": {
-        "title": "Gravadora d&#39;àudio (Audio Recorder)",
+        "title": "Gravadora d'àudio (Audio Recorder)",
         "summary": "Crea una gravació d'àudio",
         "description": "Una gravadora d'àudio HTML5. Enregistreu la vostra veu i reproduïu-la o descarregueu-ne un fitxer .wav. Utilitzeu el connector H5P per crear l’enregistrador d’àudio H5P al vostre lloc de Drupal, Wordpress o Moodle.",
         "keywords": { "audio": "àudio", "recorder": "gravadora" }
@@ -289,7 +289,7 @@
         "keywords": { "Essay": "Assaig" }
     },
     "H5P_ImagePair": {
-        "title": "Emparellament d&#39;imatges (Image Pairing)",
+        "title": "Emparellament d'imatges (Image Pairing)",
         "summary": "Arrossega i deixa anar el joc de coincidència d’imatges",
         "description": "El maridatge d’imatges és una activitat senzilla i eficaç que requereix que els aprenents facin coincidir parells d’imatges. Com que no és necessari que les dues imatges d'un parell siguin iguals, els autors també poden comprovar la comprensió d'una relació entre dues imatges diferents.",
         "keywords": {

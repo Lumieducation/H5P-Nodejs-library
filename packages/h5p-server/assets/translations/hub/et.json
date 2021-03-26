@@ -98,7 +98,7 @@
         "keywords": { "guess": "arvan ära", "answer": "vastus" }
     },
     "H5P_IFrameEmbed": {
-        "title": "Iframe&#39;i sisestaja (Iframe Embedder)",
+        "title": "Iframe'i sisestaja (Iframe Embedder)",
         "summary": "Manusta URL-ist või failikomplektist",
         "description": "Iframe'i embderi abil on lihtne juba olemasolevatest JavaScripti rakendustest H5P-d teha.",
         "keywords": { "embed": "kinnistada", "iframe": "iframe" }

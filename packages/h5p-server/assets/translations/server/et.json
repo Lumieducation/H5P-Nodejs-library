@@ -32,7 +32,7 @@
     "invalid-patch-request": "Teegi muutmise taotlus oli valesti vormistatud.",
     "invalid-schema-library-json-file": "<span>Teegi 0</span> library.jsoni fail on vale ( {{reason}} )",
     "invalid-semantics-json-file": "Kehtetu semantics.jsoni fail on lisatud teeki {{name}}",
-    "invalid-ubername-pattern": "&#39; {{name}} &#39; ei ole kehtiv H5P teegi nimi (&quot;ubername&quot;). Peate järgima seda mustrit: {{example}} &#39;",
+    "invalid-ubername-pattern": "' {{name}} ' ei ole kehtiv H5P teegi nimi (&quot;ubername&quot;). Peate järgima seda mustrit: {{example}} '",
     "library-consistency-check-file-missing": "Puuduvad failid teegis {{name}} : {{files}}",
     "library-consistency-check-library-json-unreadable": "Viga teegis {{name}} : library.json pole loetav: {{message}}",
     "library-consistency-check-not-installed": "Ei saa kontrollida raamatukogu järjepidevuse {{name}} kui raamatukogu ei ole paigaldatud.",

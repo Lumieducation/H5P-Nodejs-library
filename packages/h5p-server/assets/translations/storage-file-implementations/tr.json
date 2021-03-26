@@ -1,6 +1,6 @@
 {
-    "add-file-content-not-found": "{{id}} no&#39;lu içeriğe {{filename}} dosyası eklenemiyor: İçerik mevcut değil.",
-    "add-library-file-not-installed": "Kitaplık kurulmadığı için kitaplık <span>1&#39;e</span> {{filename}} eklenemiyor.",
+    "add-file-content-not-found": "{{id}} no'lu içeriğe {{filename}} dosyası eklenemiyor: İçerik mevcut değil.",
+    "add-library-file-not-installed": "Kitaplık kurulmadığı için kitaplık <span>1'e</span> {{filename}} eklenemiyor.",
     "clear-library-not-found": "Kitaplık kurulmadığı için <span>kitaplık 0 temizlenemiyor.</span>",
     "delete-content-file-not-found": "Dosya silinemiyor {{filename}} : Mevcut değil.",
     "delete-content-not-found": "İçerik silinemez: Mevcut değil.",

@@ -11,5 +11,5 @@
     "missing-write-permission": "Bu içerik nesnesini değiştirme izniniz yok.",
     "mongo-add-update-error": "Veritabanına içerik eklenirken veya güncellenirken bir hata oluştu.",
     "mongo-replace-error": "Veritabanındaki içerik güncellenirken bir hata oluştu.",
-    "s3-upload-error": "{{filename}} dosyasını S3&#39;e yüklerken bir hata oluştu."
+    "s3-upload-error": "{{filename}} dosyasını S3'e yüklerken bir hata oluştu."
 }

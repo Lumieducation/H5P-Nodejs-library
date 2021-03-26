@@ -90,7 +90,7 @@
         }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Trova l&#39;hotspot (Find the Hotspot)",
+        "title": "Trova l'hotspot (Find the Hotspot)",
         "summary": "Crea hotspot di immagini che gli utenti possono trovare",
         "description": "Questo tipo di contenuto consente agli utenti finali di premere da qualche parte su un'immagine e ottenere feedback sul fatto che fosse corretto o errato in base alla descrizione dell'attività. L'autore carica un'immagine e definisce vari hotspot corrispondenti a dettagli o sezioni dell'immagine. Gli hotspot possono essere definiti corretti o errati e l'autore fornisce un testo di feedback appropriato in entrambi i casi. L'autore può anche definire un feedback se l'utente finale preme da qualche parte che non è né definito come un hotspot corretto né errato.",
         "keywords": {
@@ -330,7 +330,7 @@
         "keywords": { "QR": "QR" }
     },
     "H5P_AdventCalendar": {
-        "title": "Calendario dell&#39;Avvento (beta) (Advent Calendar (beta))",
+        "title": "Calendario dell'Avvento (beta) (Advent Calendar (beta))",
         "summary": "Crea sorprese che verranno svelate quotidianamente",
         "description": "Costruisci e personalizza un bellissimo calendario dell'avvento. Puoi aggiungere un'immagine di sfondo all'intero calendario, su ogni porta e come sfondo sul contenuto all'interno di ciascuna porta. Puoi anche aggiungere effetti di neve e musica. All'interno di ogni porta, puoi aggiungere un suono, un video, un testo, un'immagine o un collegamento.\r\n\r\nTieni presente che è facile per gli utenti esperti di computer rivelare immediatamente il contenuto di tutte le porte. Se hai intenzione di rivelare grandi segreti nei giorni futuri, dovresti aspettare fino a quel giorno prima di aggiungere i tuoi grandi segreti al calendario.",
         "keywords": {

@@ -32,7 +32,7 @@
     "invalid-patch-request": "Заявката за промяна на библиотека беше неправилно оформена.",
     "invalid-schema-library-json-file": "Файлът library.json на библиотеката {{name}} е невалиден ( {{reason}} )",
     "invalid-semantics-json-file": "Невалиден файл semantics.json е включен в библиотеката {{name}}",
-    "invalid-ubername-pattern": "„ {{name}} “ не е валидно име на библиотека H5P („ubername“). Трябва да следвате този модел: {{example}} &#39;",
+    "invalid-ubername-pattern": "„ {{name}} “ не е валидно име на библиотека H5P („ubername“). Трябва да следвате този модел: {{example}} '",
     "library-consistency-check-file-missing": "Липсващи файлове в библиотеката {{name}} : {{files}}",
     "library-consistency-check-library-json-unreadable": "Грешка в библиотека {{name}} : library.json не се чете: {{message}}",
     "library-consistency-check-not-installed": "Не може да се провери последователността на библиотеката за <span>0,</span> тъй като библиотеката не е инсталирана.",
