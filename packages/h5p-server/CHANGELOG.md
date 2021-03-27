@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.5.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.5.0) (2021-03-27)
+
+
+### Bug Fixes
+
+* **h5p-server:** added / updated Spanish locales ([41b7ab4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/41b7ab427ee4f278732efacd245ffdc04953997f))
+* **h5p-server:** added auto-translated locales ([#1231](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1231)) ([9660bbf](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9660bbfed4e71b6909717486c74586c7ccd5592e))
+* **h5p-server:** added Spanish (int) + Spanish (Mex) translations ([a2d51bd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a2d51bd0986eedfc9f8e28e429891a65300eb65f))
+* **h5p-server:** added Spanish locales ([87e7fa9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/87e7fa924a7cc7d6fd7605830d5c5b69d7d90095))
+* **h5p-server:** corrected auto-translated locales ([aec92f7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aec92f7b57ac73e071f128a154be1742d8d68ff9))
+* **h5p-server:** Updated Spanish locales ([5251b93](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5251b937b301e2752de8bae311a31949dd3a3f77))
+
+
+### Features
+
+* **h5p-server:** hub now localizable ([#1200](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1200)) ([2d8505c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2d8505c55cf0c3bc95a60103f73d973cf92837cb))
+* **h5p-server:** localization of library names ([#1205](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1205)) ([977ec84](https://github.com/Lumieducation/H5P-Nodejs-library/commit/977ec844ee64f4c8f9af037e1f0bcd97ff84e42d))
+
+
+
+
+
 # [7.4.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.4.0) (2021-03-21)
 
 

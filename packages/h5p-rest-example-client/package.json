@@ -1,12 +1,12 @@
 {
     "name": "@lumieducation/h5p-rest-example-client",
-    "version": "7.4.0",
+    "version": "7.5.0",
     "private": true,
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "1.2.35",
         "@fortawesome/free-solid-svg-icons": "5.15.3",
         "@fortawesome/react-fontawesome": "0.1.14",
-        "@lumieducation/h5p-react": "^7.4.0",
+        "@lumieducation/h5p-react": "^7.5.0",
         "bootstrap": "4.6.0",
         "http-proxy-middleware": "1.0.6",
         "react": "17.0.2",
@@ -15,7 +15,7 @@
         "react-scripts": "4.0.3"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^7.4.0",
+        "@lumieducation/h5p-server": "^7.5.0",
         "@testing-library/jest-dom": "5.11.10",
         "@testing-library/react": "11.2.5",
         "@testing-library/user-event": "13.0.16",
