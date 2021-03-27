@@ -32,7 +32,7 @@
     "H5P_Collage": {
         "title": "Pegado (Collage)",
         "summary": "Crea un collage de varias imágenes",
-        "description": "La herramienta Collage le permite organizar imágenes en una composición relajante.",
+        "description": "La herramienta Collage le permite organizar imágenes en una composición relajante. ",
         "keywords": {
             "collage": "collage",
             "image": "imagen"
@@ -77,7 +77,7 @@
     "H5P_DragQuestion": {
         "title": "Arrastrar y soltar (Drag and Drop)",
         "summary": "Crea tareas de arrastrar y soltar con imágenes",
-        "description": "La pregunta de arrastrar y soltar permite al alumno asociar dos o más elementos y hacer conexiones lógicas de forma visual. Cree preguntas de arrastrar y soltar utilizando texto e imágenes como alternativas que se pueden arrastrar. Las preguntas de arrastrar y soltar de H5P admiten relaciones uno a uno, uno a varios, varios a uno y varios a varios entre preguntas y respuestas.",
+        "description": "La pregunta de arrastrar y soltar permite al alumno asociar dos o más elementos y hacer conexiones lógicas de forma visual. Cree preguntas de arrastrar y soltar utilizando texto e imágenes como alternativas que se pueden arrastrar. Las preguntas de arrastrar y soltar de H5P admiten relaciones uno a uno, uno a varios, varios a uno y varios a varios entre preguntas y respuestas. ",
         "keywords": {
             "drag_and drop": "arrastrar y soltar"
         }
@@ -290,7 +290,7 @@
     "H5P_ImageSequencing": {
         "title": "Secuenciación de imágenes (Image Sequencing)",
         "summary": "Coloca las imágenes en el orden correcto",
-        "description": "Un tipo de contenido de secuenciación de imágenes basado en HTML5 gratuito que permite a los autores agregar una secuencia de sus propias imágenes (y una descripción de imagen opcional) al juego en un orden particular. El orden de las imágenes será aleatorio y los jugadores deberán reordenarlas según la descripción de la tarea.",
+        "description": "Un tipo de contenido de secuenciación de imágenes basado en HTML5 gratuito que permite a los autores agregar una secuencia de sus propias imágenes (y una descripción de imagen opcional) al juego en un orden particular. El orden de las imágenes será aleatorio y los jugadores deberán reordenarlas según la descripción de la tarea. ",
         "keywords": {
             "image": "imagen",
             "sequence": "secuencia",
@@ -343,7 +343,7 @@
     "H5P_ImagePair": {
         "title": "Emparejamiento de imágenes (Image Pairing)",
         "summary": "Juego de combinación de imágenes de arrastrar y soltar",
-        "description": "El emparejamiento de imágenes es una actividad simple y eficaz que requiere que los alumnos hagan coincidir pares de imágenes. Dado que no es necesario que ambas imágenes en un par sean iguales, los autores también pueden probar la comprensión de una relación entre dos imágenes diferentes.",
+        "description": "El emparejamiento de imágenes es una actividad simple y eficaz que requiere que los alumnos hagan coincidir pares de imágenes. Dado que no es necesario que ambas imágenes en un par sean iguales, los autores también pueden probar la comprensión de una relación entre dos imágenes diferentes. ",
         "keywords": {
             "image_images matching pair": "par de imágenes coincidentes"
         }
