@@ -214,10 +214,19 @@ export default class H5PEditor {
     }
 
     /**
-     * Creates a .h5p-package for the specified content file and pipes it to the stream.
-     * Throws H5pErrors if something goes wrong. The contents of the stream should be disregarded then.
+     * Creates a .h5p-package for the specified content file and pipes it to the
+     * stream. Throws H5pErrors if something goes wrong. The contents of the
+     * stream should be disregarded then.
+     *
+     * IMPORTANT: This method's returned promise will resolve BEFORE piping to
+     * the writeable has been finished. If you outputStream is directly piped to
+     * a download that's not an issue, but if you do something else with this
+     * stream, you have to wait for the piping to finish by subscribing to the
+     * 'finish' event of the stream!
+     *
      * @param contentId The contentId for which the package should be created.
-     * @param outputWritable The writable that the package is written to (e.g. the response stream fo Express)
+     * @param outputWritable The writable that the package is written to (e.g.
+     * the response stream fo Express)
      */
     public async exportContent(
         contentId: ContentId,
