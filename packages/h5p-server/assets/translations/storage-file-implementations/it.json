@@ -13,6 +13,6 @@
     "illegal-relative-filename": "I percorsi relativi nei nomi dei file non sono consentiti: {{filename}} è illegale",
     "install-library-already-installed": "La libreria {{libraryName}} è già stata installata.",
     "remove-library-library-missing": "La libreria {{libraryName}} non è installata nel sistema.",
-    "temporary-file-not-found": "Il file {{filename}} non è accessibile per l&#39;utente {{userId}} o non esiste.",
+    "temporary-file-not-found": "Il file {{filename}} non è accessibile per l'utente {{userId}} o non esiste.",
     "update-library-library-missing": "La libreria {{libraryName}} non può essere aggiornata perché non è stata ancora installata."
 }

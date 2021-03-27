@@ -86,7 +86,7 @@
         "keywords": { "fill": "remplir", "blanks": "blancs", "text": "texte" }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Trouvez le point d&#39;accès (Find the Hotspot)",
+        "title": "Trouvez le point d'accès (Find the Hotspot)",
         "summary": "Créez des zones sensibles d'image que les utilisateurs peuvent trouver",
         "description": "Ce type de contenu permet aux utilisateurs finaux d'appuyer quelque part sur une image et d'obtenir des commentaires pour savoir si cela était correct ou incorrect selon la description de la tâche. L'auteur télécharge une image et définit divers hotspots correspondant à des détails ou à des sections de l'image. Les hotspots peuvent être définis comme corrects ou incorrects, et l'auteur fournit un texte de rétroaction approprié dans les deux cas. L'auteur peut également définir un retour d'information si l'utilisateur final appuie sur quelque part qui n'est ni défini comme un hotspot correct ni incorrect.",
         "keywords": {
@@ -186,7 +186,7 @@
         "keywords": { "true": "vrai", "false": "faux" }
     },
     "H5P_ImageHotspots": {
-        "title": "Hotspots d&#39;image (Image Hotspots)",
+        "title": "Hotspots d'image (Image Hotspots)",
         "summary": "Créer une image avec plusieurs hotspots d'informations",
         "description": "Les hotspots d'image permettent de créer une image avec des hotspots interactifs. Lorsque l'utilisateur appuie sur un hotspot, une fenêtre contextuelle contenant un en-tête et du texte ou une vidéo s'affiche. En utilisant l'éditeur H5P, vous pouvez ajouter autant de hotspots que vous le souhaitez.",
         "keywords": { "image": "image", "hotspot": "point chaud" }
@@ -197,7 +197,7 @@
         "description": "Un type de question HTML5 gratuit permettant aux créatifs de créer un test basé sur une image dans lequel l'apprenant doit trouver les emplacements appropriés sur une image. Utilisez ce type de contenu avec le plugin H5P pour WordPress, Moodle ou Drupal pour défier vos utilisateurs."
     },
     "H5P_ImageJuxtaposition": {
-        "title": "Juxtaposition d&#39;images (Image Juxtaposition)",
+        "title": "Juxtaposition d'images (Image Juxtaposition)",
         "summary": "Créez des images interactives",
         "description": "Un type de contenu d'image gratuit basé sur HTML5 qui permet aux utilisateurs de comparer deux images de manière interactive. Racontez vos histoires d'images avec H5P et la juxtaposition d'images sur WordPress, Moodle ou Drupal."
     },
@@ -237,7 +237,7 @@
         }
     },
     "H5P_ImageSequencing": {
-        "title": "Séquençage d&#39;images (Image Sequencing)",
+        "title": "Séquençage d'images (Image Sequencing)",
         "summary": "Placez les images dans le bon ordre",
         "description": "Un type de contenu de séquencement d'images gratuit basé sur HTML5 qui permet aux auteurs d'ajouter une séquence de leurs propres images (et une description d'image facultative) au jeu dans un ordre particulier. L'ordre des images sera aléatoire et les joueurs devront les réorganiser en fonction de la description de la tâche.",
         "keywords": {
@@ -253,7 +253,7 @@
         "keywords": { "cards": "cartes", "animation": "animation" }
     },
     "H5P_SpeakTheWordsSet": {
-        "title": "Prononcez l&#39;ensemble de mots (Speak the Words Set)",
+        "title": "Prononcez l'ensemble de mots (Speak the Words Set)",
         "summary": "Créer une série de questions répondues par la parole (Chrome only)",
         "description": "Speak the Words Set n'est pris en charge que dans les navigateurs qui implémentent l'API Web Speech (navigateurs Chrome, sauf sous iOS). Vous avez besoin d'un microphone pour répondre à la question. Créez un ensemble de questions auxquelles les apprenants peuvent répondre en utilisant leur voix. vous pouvez choisir plusieurs bonnes réponses. L'utilisateur pourra voir comment ses mots ont été interprétés et à quel point il était proche des bonnes réponses.",
         "keywords": {
@@ -268,7 +268,7 @@
         }
     },
     "H5P_ImageSlider": {
-        "title": "Curseur d&#39;image (Image Slider)",
+        "title": "Curseur d'image (Image Slider)",
         "summary": "Créez facilement un curseur d'image",
         "description": "Présentez facilement vos images de manière attrayante. Les auteurs doivent simplement télécharger des images et fournir des textes alternatifs pour les images.\r\n\r\nLes deux images suivantes sont toujours préchargées, de sorte que la commutation entre les images sera généralement rapide sans délai pour le chargement de l'image suivante.\r\n\r\nLes images peuvent être visualisées dans le cadre de la page ou en mode plein écran. Lorsqu'il est utilisé dans le cadre de la page, le système choisira un rapport hauteur / largeur fixe en fonction des images utilisées. Les auteurs peuvent décider de gérer différemment les proportions.",
         "keywords": {
@@ -285,7 +285,7 @@
         "keywords": { "Essay": "Essai" }
     },
     "H5P_ImagePair": {
-        "title": "Couplage d&#39;images (Image Pairing)",
+        "title": "Couplage d'images (Image Pairing)",
         "summary": "Faites glisser et déposez le jeu de correspondance d'images",
         "description": "L'appariement d'images est une activité simple et efficace qui oblige les apprenants à faire correspondre des paires d'images. Comme il n'est pas nécessaire que les deux images d'une paire soient identiques, les auteurs peuvent également tester la compréhension d'une relation entre deux images différentes.",
         "keywords": {
@@ -326,7 +326,7 @@
         "keywords": { "QR": "QR" }
     },
     "H5P_AdventCalendar": {
-        "title": "Calendrier de l&#39;Avent (beta) (Advent Calendar (beta))",
+        "title": "Calendrier de l'Avent (beta) (Advent Calendar (beta))",
         "summary": "Créez des surprises qui seront dévoilées quotidiennement",
         "description": "Créez et personnalisez un beau calendrier de l'Avent. Vous pouvez ajouter une image d'arrière-plan à l'ensemble du calendrier, sur chaque porte, et comme arrière-plan sur le contenu à l'intérieur de chaque porte. Vous pouvez également ajouter des effets de neige et de la musique. À l'intérieur de chaque porte, vous pouvez ajouter un son, une vidéo, du texte, une image ou un lien.\r\n\r\nNotez qu'il est facile pour les utilisateurs avertis en informatique de révéler immédiatement le contenu de toutes les portes. Si vous prévoyez de révéler de grands secrets les jours à venir, vous devriez attendre ce jour-là avant d'ajouter vos grands secrets au calendrier.",
         "keywords": {

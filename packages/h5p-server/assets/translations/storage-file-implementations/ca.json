@@ -1,18 +1,18 @@
 {
-    "add-file-content-not-found": "No es pot afegir el fitxer {{filename}} al contingut amb l&#39;identificador {{id}} : el contingut amb no existeix.",
-    "add-library-file-not-installed": "No es pot afegir {{filename}} a la biblioteca {{libraryName}} perquè la biblioteca no s&#39;ha instal·lat.",
-    "clear-library-not-found": "No es pot esborrar la biblioteca {{libraryName}} perquè la biblioteca no s&#39;ha instal·lat.",
+    "add-file-content-not-found": "No es pot afegir el fitxer {{filename}} al contingut amb l'identificador {{id}} : el contingut amb no existeix.",
+    "add-library-file-not-installed": "No es pot afegir {{filename}} a la biblioteca {{libraryName}} perquè la biblioteca no s'ha instal·lat.",
+    "clear-library-not-found": "No es pot esborrar la biblioteca {{libraryName}} perquè la biblioteca no s'ha instal·lat.",
     "delete-content-file-not-found": "No es pot suprimir el fitxer {{filename}} : no existeix.",
     "delete-content-not-found": "No es pot suprimir el contingut: no existeix.",
     "error-creating-content": "No s'ha pogut crear contingut.",
     "error-generating-content-id": "No s'ha pogut generar l'identificador de contingut nou.",
     "error-generating-unique-temporary-filename": "No es pot determinar un nom de fitxer únic per a {{name}}",
     "error-updating-metadata": "Les metadades addicionals de la biblioteca {{library}} no es poden actualitzar. Error: {{error}}",
-    "get-library-metadata-not-installed": "No es poden obtenir metadades de la biblioteca {{libraryName}} perquè la biblioteca no s&#39;ha instal·lat.",
+    "get-library-metadata-not-installed": "No es poden obtenir metadades de la biblioteca {{libraryName}} perquè la biblioteca no s'ha instal·lat.",
     "illegal-absolute-filename": "No es permeten camins absoluts als noms de fitxer: {{filename}} és il·legal",
     "illegal-relative-filename": "No es permeten camins relatius als noms de fitxer: {{filename}} és il·legal",
     "install-library-already-installed": "La biblioteca {{libraryName}} ja està instal·lada.",
     "remove-library-library-missing": "La biblioteca {{libraryName}} no està instal·lada al sistema.",
-    "temporary-file-not-found": "El fitxer {{filename}} no és accessible per a l&#39;usuari {{userId}} o no existeix.",
-    "update-library-library-missing": "La biblioteca {{libraryName}} no es pot actualitzar perquè encara no s&#39;ha instal·lat."
+    "temporary-file-not-found": "El fitxer {{filename}} no és accessible per a l'usuari {{userId}} o no existeix.",
+    "update-library-library-missing": "La biblioteca {{libraryName}} no es pot actualitzar perquè encara no s'ha instal·lat."
 }

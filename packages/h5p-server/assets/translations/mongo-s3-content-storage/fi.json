@@ -1,7 +1,7 @@
 {
     "content-not-found": "Sisältöä, jota yrität käyttää, ei ole.",
     "deleting-content-error": "Sisältöobjektin poistamisessa tapahtui virhe.",
-    "deleting-file-error": "<span>Tiedoston 0</span> poistamisessa sisältöobjektista tapahtui virhe.",
+    "deleting-file-error": "{{filename}} poistamisessa sisältöobjektista tapahtui virhe.",
     "filename-too-long": "Tiedostonimi on liian pitkä: {{filename}}",
     "illegal-filename": "Tiedostonimi {{filename}} ei ole sallittu.",
     "listing-content-error": "Sisältöobjektien luettelon noutamisessa tapahtui virhe",
@@ -11,5 +11,5 @@
     "missing-write-permission": "Sinulla ei ole lupaa muuttaa tätä sisältöobjektia.",
     "mongo-add-update-error": "Tietokannan sisältöä lisätessä tai päivitettäessä tapahtui virhe.",
     "mongo-replace-error": "Tietokannan sisältöä päivitettäessä tapahtui virhe.",
-    "s3-upload-error": "<span>Tiedoston 0</span> lataamisessa S3: een tapahtui virhe."
+    "s3-upload-error": "{{filename}} lataamisessa S3: een tapahtui virhe."
 }

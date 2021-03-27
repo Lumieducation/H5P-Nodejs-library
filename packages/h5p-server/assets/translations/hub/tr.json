@@ -90,7 +90,7 @@
         }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Hotspot&#39;u Bul (Hotspot&#39;u (Find the Hotspot)",
+        "title": "Hotspot'u Bul (Hotspot'u (Find the Hotspot)",
         "summary": "Kullanıcıların bulması için görüntü noktaları oluşturun",
         "description": "Bu içerik türü, son kullanıcıların bir resim üzerinde bir yere basmasına ve görev açıklamasına göre bunun doğru veya yanlış olup olmadığı konusunda geri bildirim almasına olanak tanır. Yazar bir görüntü yükler ve görüntünün ayrıntılarına veya bölümlerine karşılık gelen çeşitli etkin noktaları tanımlar. Sıcak noktalar doğru veya yanlış olarak tanımlanabilir ve yazar her iki durumda da uygun geri bildirim metni sağlar. Yazar ayrıca, son kullanıcı ne doğru ne de yanlış sıcak nokta olarak tanımlanmayan bir yere basarsa bir geri bildirim tanımlayabilir.",
         "keywords": {

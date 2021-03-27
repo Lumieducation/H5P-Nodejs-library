@@ -1,18 +1,18 @@
 {
-    "add-file-content-not-found": "Impossible d&#39;ajouter le fichier {{filename}} au contenu avec l&#39;ID {{id}} : le contenu avec n&#39;existe pas.",
-    "add-library-file-not-installed": "Impossible d&#39;ajouter {{filename}} à la bibliothèque {{libraryName}} car la bibliothèque n&#39;a pas été installée.",
-    "clear-library-not-found": "Impossible d&#39;effacer la bibliothèque {{libraryName}} car la bibliothèque n&#39;a pas été installée.",
-    "delete-content-file-not-found": "Impossible de supprimer le fichier {{filename}} : il n&#39;existe pas.",
+    "add-file-content-not-found": "Impossible d'ajouter le fichier {{filename}} au contenu avec l'ID {{id}} : le contenu avec n'existe pas.",
+    "add-library-file-not-installed": "Impossible d'ajouter {{filename}} à la bibliothèque {{libraryName}} car la bibliothèque n'a pas été installée.",
+    "clear-library-not-found": "Impossible d'effacer la bibliothèque {{libraryName}} car la bibliothèque n'a pas été installée.",
+    "delete-content-file-not-found": "Impossible de supprimer le fichier {{filename}} : il n'existe pas.",
     "delete-content-not-found": "Impossible de supprimer le contenu: il n'existe pas.",
     "error-creating-content": "Impossible de créer le contenu.",
     "error-generating-content-id": "Impossible de générer l'ID du nouveau contenu.",
     "error-generating-unique-temporary-filename": "Impossible de déterminer un nom de fichier unique pour {{name}}",
     "error-updating-metadata": "Les métadonnées supplémentaires de la bibliothèque {{library}} ne peuvent pas être mises à jour. Erreur: {{error}}",
-    "get-library-metadata-not-installed": "Impossible d&#39;obtenir les métadonnées pour la bibliothèque {{libraryName}} car la bibliothèque n&#39;a pas été installée.",
+    "get-library-metadata-not-installed": "Impossible d'obtenir les métadonnées pour la bibliothèque {{libraryName}} car la bibliothèque n'a pas été installée.",
     "illegal-absolute-filename": "Les chemins absolus dans les noms de fichiers ne sont pas autorisés: {{filename}} est illégal",
     "illegal-relative-filename": "Les chemins relatifs dans les noms de fichiers ne sont pas autorisés: {{filename}} est illégal",
     "install-library-already-installed": "La bibliothèque {{libraryName}} a déjà été installée.",
-    "remove-library-library-missing": "La bibliothèque {{libraryName}} n&#39;est pas installée sur le système.",
-    "temporary-file-not-found": "Le fichier {{filename}} n&#39;est pas accessible pour l&#39;utilisateur {{userId}} ou n&#39;existe pas.",
-    "update-library-library-missing": "La bibliothèque {{libraryName}} ne peut pas être mise à jour car elle n&#39;a pas encore été installée."
+    "remove-library-library-missing": "La bibliothèque {{libraryName}} n'est pas installée sur le système.",
+    "temporary-file-not-found": "Le fichier {{filename}} n'est pas accessible pour l'utilisateur {{userId}} ou n'existe pas.",
+    "update-library-library-missing": "La bibliothèque {{libraryName}} ne peut pas être mise à jour car elle n'a pas encore été installée."
 }

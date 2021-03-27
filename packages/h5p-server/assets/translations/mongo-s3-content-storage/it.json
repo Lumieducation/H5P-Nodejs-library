@@ -1,7 +1,7 @@
 {
     "content-not-found": "Il contenuto a cui stai tentando di accedere non esiste.",
     "deleting-content-error": "Si è verificato un errore durante l'eliminazione dell'oggetto contenuto.",
-    "deleting-file-error": "Si è verificato un errore durante l&#39;eliminazione del file {{filename}} dall&#39;oggetto contenuto.",
+    "deleting-file-error": "Si è verificato un errore durante l'eliminazione del file {{filename}} dall'oggetto contenuto.",
     "filename-too-long": "Il nome del file è troppo lungo: {{filename}}",
     "illegal-filename": "Il nome del file {{filename}} non è consentito.",
     "listing-content-error": "Si è verificato un errore durante il recupero dell'elenco degli oggetti contenuto",
