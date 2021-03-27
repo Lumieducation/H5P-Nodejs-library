@@ -1,6 +1,6 @@
 {
     "add-file-content-not-found": "Kan bestand {{filename}} niet toevoegen aan inhoud met id {{id}} : Inhoud met bestaat niet.",
-    "add-library-file-not-installed": "<span>Kan 0</span> niet toevoegen aan bibliotheek {{libraryName}} omdat de bibliotheek niet is geïnstalleerd.",
+    "add-library-file-not-installed": "{{filename}} niet toevoegen aan bibliotheek {{libraryName}} omdat de bibliotheek niet is geïnstalleerd.",
     "clear-library-not-found": "Kan bibliotheek {{libraryName}} niet wissen omdat de bibliotheek niet is geïnstalleerd.",
     "delete-content-file-not-found": "Kan bestand {{filename}} niet verwijderen: het bestaat niet.",
     "delete-content-not-found": "Kan inhoud niet verwijderen: het bestaat niet.",

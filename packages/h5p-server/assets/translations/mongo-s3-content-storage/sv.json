@@ -1,7 +1,7 @@
 {
     "content-not-found": "Innehållet du försöker komma åt finns inte.",
     "deleting-content-error": "Det uppstod ett fel när innehållsobjektet skulle raderas.",
-    "deleting-file-error": "Det uppstod ett fel när filen <span>0 skulle</span> raderas från innehållsobjektet.",
+    "deleting-file-error": "Det uppstod ett fel när filen {{filename}} raderas från innehållsobjektet.",
     "filename-too-long": "Filnamnet är för långt: {{filename}}",
     "illegal-filename": "Filnamnet {{filename}} är inte tillåtet.",
     "listing-content-error": "Det uppstod ett fel när listan över innehållsobjekt hämtades",

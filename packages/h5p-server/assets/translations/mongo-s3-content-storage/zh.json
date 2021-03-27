@@ -1,9 +1,9 @@
 {
     "content-not-found": "您尝试访问的内容不存在。",
     "deleting-content-error": "删除内容对象时出错。",
-    "deleting-file-error": "从内容对象删除文件<span>0时出错。</span>",
+    "deleting-file-error": "从内容对象删除文件{{filename}}",
     "filename-too-long": "文件名太长： {{filename}}",
-    "illegal-filename": "不允许使用文件名<span>0。</span>",
+    "illegal-filename": "不允许使用文件名{{filename}}",
     "listing-content-error": "获取内容对象列表时出错",
     "missing-delete-permission": "您无权删除此内容对象。",
     "missing-list-content-permission": "您无权列出内容对象。",

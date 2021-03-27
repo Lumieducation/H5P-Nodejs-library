@@ -1,5 +1,5 @@
 {
-    "api-version-unsupported": "O sistema não conseguiu instalar o <span>componente 0</span> do pacote, ele requer uma versão mais recente do plug-in H5P. Este site está executando a versão {{current}} , enquanto a versão necessária é {{required}} ou superior. Você deve considerar a atualização e tentar novamente.",
+    "api-version-unsupported": "O sistema não conseguiu instalar o {{component}} do pacote, ele requer uma versão mais recente do plug-in H5P. Este site está executando a versão {{current}} , enquanto a versão necessária é {{required}} ou superior. Você deve considerar a atualização e tentar novamente.",
     "content-file-missing": "Arquivo {{filename}} não existe em {{contentId}}",
     "corrupt-file": "O arquivo {{file}} não pôde ser lido do pacote H5P. O pacote parece estar corrompido.",
     "download-content-forbidden": "Você não tem permissão para baixar conteúdo com id {{contentId}} .",
@@ -37,7 +37,7 @@
     "library-consistency-check-library-json-unreadable": "Erro na biblioteca {{name}} : library.json não legível: {{message}}",
     "library-consistency-check-not-installed": "Não é possível verificar a consistência da biblioteca para {{name}} porque a biblioteca não está instalada.",
     "library-directory-name-mismatch": "O nome do diretório da biblioteca deve corresponder a machineName ou machineName-majorVersion.minorVersion (de library.json). (Diretório: {{directoryName}} , machineName: {{machineName}} , majorVersion: {{majorVersion}} , minorVersion: {{minorVersion}} )",
-    "library-file-missing": "O arquivo de biblioteca {{filename}} <span>da biblioteca 1</span> não existe.",
+    "library-file-missing": "O arquivo de biblioteca {{filename}} {{library}} não existe.",
     "library-missing": "A biblioteca {{library}} não está instalada neste sistema.",
     "library-not-found": "A biblioteca {{name}} não foi encontrada.",
     "library-used": "A biblioteca {{library}} não pode ser excluída porque ainda está em uso.",

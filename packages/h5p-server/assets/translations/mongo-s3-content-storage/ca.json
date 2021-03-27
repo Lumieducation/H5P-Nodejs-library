@@ -3,7 +3,7 @@
     "deleting-content-error": "S'ha produït un error en suprimir l'objecte de contingut.",
     "deleting-file-error": "S'ha produït un error en suprimir el fitxer {{filename}} de l'objecte de contingut.",
     "filename-too-long": "El nom del fitxer és massa llarg: {{filename}}",
-    "illegal-filename": "No es permet el nom de fitxer <span>0.</span>",
+    "illegal-filename": "No es permet el nom de fitxer {{filename}}",
     "listing-content-error": "S'ha produït un error en obtenir la llista d'objectes de contingut",
     "missing-delete-permission": "No teniu permís per suprimir aquest objecte de contingut.",
     "missing-list-content-permission": "No teniu permís per llistar objectes de contingut.",

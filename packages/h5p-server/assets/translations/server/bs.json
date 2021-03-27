@@ -1,5 +1,5 @@
 {
-    "api-version-unsupported": "Sistem nije mogao instalirati <span>komponentu 0</span> iz paketa, potrebna mu je novija verzija dodatka H5P. Ova web lokacija trenutno ima verziju {{current}} , dok je potrebna verzija {{required}} ili novija. Razmislite o nadogradnji, a zatim pokušajte ponovo.",
+    "api-version-unsupported": "Sustav nije mogao instalirati {{component}} komponentu iz paketa, potrebna mu je novija verzija dodatka H5P. Ova web lokacija trenutno ima verziju {{current}} , dok je potrebna verzija {{required}} ili novija. Razmislite o nadogradnji, a zatim pokušajte ponovo.",
     "content-file-missing": "Datoteka {{filename}} ne postoji u {{contentId}}",
     "corrupt-file": "Datoteka {{file}} se ne može pročitati iz paketa H5P. Čini se da je paket oštećen.",
     "download-content-forbidden": "Nemate dozvolu za preuzimanje sadržaja s id {{contentId}} .",

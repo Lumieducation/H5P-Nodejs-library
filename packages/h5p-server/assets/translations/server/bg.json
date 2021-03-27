@@ -1,5 +1,5 @@
 {
-    "api-version-unsupported": "Системата не успя да инсталира <span>компонента 0</span> от пакета, изисква се по-нова версия на приставката H5P. Понастоящем този сайт работи с версия {{current}} , докато необходимата версия е {{required}} или по-нова. Трябва да помислите за надстройка и след това да опитате отново.",
+    "api-version-unsupported": "Системата не успя да инсталира {{component}} от пакета, изисква се по-нова версия на приставката H5P. Понастоящем този сайт работи с версия {{current}} , докато необходимата версия е {{required}} или по-нова. Трябва да помислите за надстройка и след това да опитате отново.",
     "content-file-missing": "Файл {{filename}} не съществува в {{contentId}}",
     "corrupt-file": "Файлът {{file}} не може да бъде прочетен от пакета H5P. Пакетът изглежда е повреден.",
     "download-content-forbidden": "Нямате разрешение за изтегляне на съдържание с идентификатор {{contentId}} .",
@@ -35,7 +35,7 @@
     "invalid-ubername-pattern": "„ {{name}} “ не е валидно име на библиотека H5P („ubername“). Трябва да следвате този модел: {{example}} '",
     "library-consistency-check-file-missing": "Липсващи файлове в библиотеката {{name}} : {{files}}",
     "library-consistency-check-library-json-unreadable": "Грешка в библиотека {{name}} : library.json не се чете: {{message}}",
-    "library-consistency-check-not-installed": "Не може да се провери последователността на библиотеката за <span>0,</span> тъй като библиотеката не е инсталирана.",
+    "library-consistency-check-not-installed": "Не може да се провери последователността на библиотеката за {{name}} тъй като библиотеката не е инсталирана.",
     "library-directory-name-mismatch": "Името на директорията на библиотеката трябва да съвпада с machineName или machineName-majorVersion.minorVersion (от library.json). (Directory: {{directoryName}} , machineName: {{machineName}} , majorVersion: {{majorVersion}} , minorVersion: {{minorVersion}} )",
     "library-file-missing": "Библиотечният файл {{filename}} на библиотека {{library}} не съществува.",
     "library-missing": "Библиотеката {{library}} не е инсталирана на тази система.",

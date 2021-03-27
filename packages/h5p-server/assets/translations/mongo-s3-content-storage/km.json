@@ -1,9 +1,9 @@
 {
     "content-not-found": "មាតិកាដែលអ្នកព្យាយាមចូលប្រើមិនមានទេ។",
     "deleting-content-error": "មានកំហុសពេលលុបវត្ថុមាតិកា។",
-    "deleting-file-error": "មានកំហុសពេលលុបឯកសារ <span>០</span> ពីវត្ថុមាតិកា។",
-    "filename-too-long": "ឈ្មោះឯកសារវែងពេក៖ <span>០</span>",
-    "illegal-filename": "ឈ្មោះឯកសារ <span>០</span> មិនត្រូវបានអនុញ្ញាតទេ។",
+    "deleting-file-error": "មានកំហុសពេលលុបឯកសារ {{filename}} ពីវត្ថុមាតិកា។",
+    "filename-too-long": "ឈ្មោះឯកសារវែងពេក៖ {{filename}}",
+    "illegal-filename": "ឈ្មោះឯកសារ {{filename}} មិនត្រូវបានអនុញ្ញាតទេ។",
     "listing-content-error": "មានកំហុសពេលកំពុងទទួលបញ្ជីវត្ថុមាតិកា",
     "missing-delete-permission": "អ្នកមិនមានសិទ្ធិក្នុងការលុបវត្ថុមាតិកានេះទេ។",
     "missing-list-content-permission": "អ្នកមិនមានសិទ្ធិក្នុងការរាយវត្ថុមាតិកា។",
@@ -11,5 +11,5 @@
     "missing-write-permission": "អ្នកគ្មានសិទ្ធិផ្លាស់ប្តូរវត្ថុមាតិកានេះទេ។",
     "mongo-add-update-error": "មានកំហុសមួយខណៈពេលបន្ថែមឬធ្វើបច្ចុប្បន្នភាពមាតិកានៅក្នុងឃ្លាំងទិន្នន័យ។",
     "mongo-replace-error": "មានកំហុសពេលកំពុងធ្វើបច្ចុប្បន្នភាពមាតិកាក្នុងឃ្លាំងទិន្នន័យ។",
-    "s3-upload-error": "មានកំហុសពេលផ្ទុកឯកសារ <span>០</span> ទៅស៊ី ៣ ។"
+    "s3-upload-error": "មានកំហុសពេលផ្ទុកឯកសារ {{filename}} ទៅស៊ី ៣ ។"
 }

@@ -1,18 +1,18 @@
 {
-    "add-file-content-not-found": "ID가 <span>1 인</span> <span>콘텐츠에 파일 0</span> 을 추가 할 수 없습니다. 콘텐츠가 없습니다.",
-    "add-library-file-not-installed": "라이브러리가 설치되지 않았으므로 라이브러리 {{libraryName}} <span>에 0</span> 을 추가 할 수 없습니다.",
+    "add-file-content-not-found": "ID가 {{id}} {{filename}} 을 추가 할 수 없습니다. 콘텐츠가 없습니다.",
+    "add-library-file-not-installed": "라이브러리가 설치되지 않았으므로 라이브러리 {{libraryName}} {{filename}} 을 추가 할 수 없습니다.",
     "clear-library-not-found": "라이브러리가 설치되지 않았기 때문에 {{libraryName}} 라이브러리를 지울 수 없습니다.",
     "delete-content-file-not-found": "파일을 삭제할 수 없습니다. {{filename}} : 존재하지 않습니다.",
     "delete-content-not-found": "콘텐츠를 삭제할 수 없습니다 : 존재하지 않습니다.",
     "error-creating-content": "콘텐츠를 만들 수 없습니다.",
     "error-generating-content-id": "새 콘텐츠에 대한 ID를 생성 할 수 없습니다.",
     "error-generating-unique-temporary-filename": "{{name}} 의 고유 한 파일 이름을 확인할 수 없습니다.",
-    "error-updating-metadata": "<span>라이브러리 0</span> 의 추가 메타 데이터는 업데이트 할 수 없습니다. 오류 : {{error}}",
-    "get-library-metadata-not-installed": "라이브러리가 설치되지 않았기 때문에 <span>라이브러리 0에</span> 대한 메타 데이터를 가져올 수 없습니다.",
+    "error-updating-metadata": "{{library}} 의 추가 메타 데이터는 업데이트 할 수 없습니다. 오류 : {{error}}",
+    "get-library-metadata-not-installed": "라이브러리가 설치되지 않았기 때문에 {{libraryName}} 대한 메타 데이터를 가져올 수 없습니다.",
     "illegal-absolute-filename": "파일 이름의 절대 경로는 허용되지 않습니다. {{filename}} 은 불법입니다.",
     "illegal-relative-filename": "파일 이름의 상대 경로는 허용되지 않습니다. {{filename}} 은 불법입니다.",
     "install-library-already-installed": "라이브러리 {{libraryName}} 이 이미 설치되었습니다.",
     "remove-library-library-missing": "라이브러리 {{libraryName}} 이 시스템에 설치되어 있지 않습니다.",
-    "temporary-file-not-found": "<span>사용자 1</span> 이 파일 {{filename}} 에 액세스 할 수 없거나 존재하지 않습니다.",
+    "temporary-file-not-found": "{{userId}} 이 파일 {{filename}} 에 액세스 할 수 없거나 존재하지 않습니다.",
     "update-library-library-missing": "라이브러리 {{libraryName}} 은 아직 설치되지 않았으므로 업데이트 할 수 없습니다."
 }

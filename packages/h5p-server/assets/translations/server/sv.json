@@ -1,5 +1,5 @@
 {
-    "api-version-unsupported": "Systemet kunde inte installera <span>0-</span> komponenten från paketet, det kräver en nyare version av H5P-plugin. Den här webbplatsen kör för närvarande version {{current}} , medan den erforderliga versionen är {{required}} eller högre. Du bör överväga att uppgradera och sedan försöka igen.",
+    "api-version-unsupported": "Systemet kunde inte installera {{component}} komponenten från paketet, det kräver en nyare version av H5P-plugin. Den här webbplatsen kör för närvarande version {{current}} , medan den erforderliga versionen är {{required}} eller högre. Du bör överväga att uppgradera och sedan försöka igen.",
     "content-file-missing": "Fil {{filename}} finns inte i {{contentId}}",
     "corrupt-file": "Filen {{file}} kunde inte läsas från H5P-paketet. Paketet verkar vara korrupt.",
     "download-content-forbidden": "Du har inte behörighet att ladda ner innehåll med id {{contentId}} .",
