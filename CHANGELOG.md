@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.5.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.5.0) (2021-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.864.0 ([25a41a4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/25a41a46cc2a9249285f9db3bfeed84982a51b78))
+* **deps:** update dependency aws-sdk to v2.865.0 ([f6cc040](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f6cc040f6aa05b3c9c1d879c50fd325da2f07d3d))
+* **deps:** update dependency aws-sdk to v2.866.0 ([05316ad](https://github.com/Lumieducation/H5P-Nodejs-library/commit/05316ad80daa550c6d2dfbb772e54da6d5f8847c))
+* **deps:** update dependency aws-sdk to v2.867.0 ([aa2ee01](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aa2ee0123349a695251a49a91448019cc31122ba))
+* **deps:** update dependency aws-sdk to v2.868.0 ([6e858d0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6e858d04ebc74db43e724c18f321f4fe4a224078))
+* **deps:** update dependency aws-sdk to v2.869.0 ([e0214ff](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e0214ff15b6f761248c791f8b9e917bfd7bfab03))
+* **deps:** update dependency aws-sdk to v2.870.0 ([5929c17](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5929c179092974304ee6fb5d9fec114ab8271eff))
+* **deps:** update dependency aws-sdk to v2.871.0 ([1f5fdae](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1f5fdae7b7fe4123b53e925670df2a9b005482eb))
+* **deps:** update dependency aws-sdk to v2.873.0 ([#1239](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1239)) ([5f3e2ee](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5f3e2eedc1cfe2135c9cdcceb4ecf2c899db1eb3))
+* **deps:** update dependency aws-sdk to v2.874.0 ([f2f476c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f2f476c2b025b160931eb6493dba399788e6fc6f))
+* **deps:** update dependency i18next to v20 ([#1215](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1215)) ([5f6dd7d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5f6dd7df2dbf00d26f60a18e89156eb207c66b74))
+* **deps:** update dependency i18next to v20.1.0 ([85c7b0b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/85c7b0ba8985f315c99f6efdb76dbb74709b19e6))
+* **deps:** update dependency mongodb to v3.6.5 ([691cabc](https://github.com/Lumieducation/H5P-Nodejs-library/commit/691cabcb6f06370a90efbf5e9660520acc917bba))
+* **deps:** update font awesome ([56808d5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/56808d59c5143627de5faca8f179a25ed8c61994))
+* **deps:** update react monorepo to v17.0.2 ([333a447](https://github.com/Lumieducation/H5P-Nodejs-library/commit/333a447caf0ecb2dbee9ecd9116afd7b7064d56c))
+* **h5p-server:** added / updated Spanish locales ([41b7ab4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/41b7ab427ee4f278732efacd245ffdc04953997f))
+* **h5p-server:** added auto-translated locales ([#1231](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1231)) ([9660bbf](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9660bbfed4e71b6909717486c74586c7ccd5592e))
+* **h5p-server:** added Spanish (int) + Spanish (Mex) translations ([a2d51bd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a2d51bd0986eedfc9f8e28e429891a65300eb65f))
+* **h5p-server:** added Spanish locales ([87e7fa9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/87e7fa924a7cc7d6fd7605830d5c5b69d7d90095))
+* **h5p-server:** corrected auto-translated locales ([aec92f7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aec92f7b57ac73e071f128a154be1742d8d68ff9))
+* **h5p-server:** Updated Spanish locales ([5251b93](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5251b937b301e2752de8bae311a31949dd3a3f77))
+
+
+### Features
+
+* **h5p-server:** hub now localizable ([#1200](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1200)) ([2d8505c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2d8505c55cf0c3bc95a60103f73d973cf92837cb))
+* **h5p-server:** localization of library names ([#1205](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1205)) ([977ec84](https://github.com/Lumieducation/H5P-Nodejs-library/commit/977ec844ee64f4c8f9af037e1f0bcd97ff84e42d))
+
+
+
+
+
 # [7.4.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.4.0) (2021-03-21)
 
 

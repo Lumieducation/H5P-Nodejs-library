@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.5.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.5.0) (2021-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update font awesome ([56808d5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/56808d59c5143627de5faca8f179a25ed8c61994))
+* **deps:** update react monorepo to v17.0.2 ([333a447](https://github.com/Lumieducation/H5P-Nodejs-library/commit/333a447caf0ecb2dbee9ecd9116afd7b7064d56c))
+
+
+
+
+
 # [7.4.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.4.0) (2021-03-21)
 
 
