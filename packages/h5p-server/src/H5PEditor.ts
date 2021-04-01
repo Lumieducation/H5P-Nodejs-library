@@ -579,12 +579,20 @@ export default class H5PEditor {
         path: string;
         width?: number;
     }> {
-        // We extract the image size from the file as some content types need the dimensions
-        // of the image.
+        // We extract the image size from the file as some content types need
+        // the dimensions of the image.
         let imageDimensions: {
             height: number;
             width: number;
         };
+        if (
+            (field.type === 'image' && !file.mimetype.startsWith('image/')) ||
+            (field.type === 'video' && !file.mimetype.startsWith('video/')) ||
+            (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
+        ) {
+            throw new H5pError('upload-validation-error', {}, 400);
+        }
+
         try {
             if (file.mimetype.startsWith('image/')) {
                 imageDimensions = imageSize(
@@ -592,15 +600,25 @@ export default class H5PEditor {
                 );
             }
         } catch (error) {
-            // A caught error means that the file format is not supported by image-size. This usually
-            // means that the file is corrupt.
+            // A caught error means that the file format is not supported by
+            // image-size. This usually means that the file is corrupt.
             log.debug(`Invalid image upload: ${error}`);
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
+        const extension = path.extname(file.name);
+        const cleanExtension = extension.length > 1 ? extension.substr(1) : '';
+        if (!this.config.contentWhitelist.split(' ').includes(cleanExtension)) {
+            throw new H5pError('not-in-whitelist', {
+                filename: file.name,
+                'files-allowed': this.config.contentWhitelist
+            });
+        }
+
         // We discard the old filename and construct a new one
         let cleanFilename =
-            // We check if the field type is allowed to protect against injections
+            // We check if the field type is allowed to protect against
+            // injections
             (field.type &&
             [
                 'file',
@@ -616,10 +634,12 @@ export default class H5PEditor {
                 'audio'
             ].includes(field.type)
                 ? field.type
-                : 'file') + path.extname(file.name);
+                : 'file') + extension;
 
-        // Some PHP implementations of H5P (Moodle) expect the uploaded files to be in sub-directories of the content
-        // folder. To achieve compatibility, we also put them into these directories by their mime-types.
+        // Some PHP implementations of H5P (Moodle) expect the uploaded files to
+        // be in sub-directories of the content folder. To achieve
+        // compatibility, we also put them into these directories by their
+        // mime-types.
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
         let dataStream;
