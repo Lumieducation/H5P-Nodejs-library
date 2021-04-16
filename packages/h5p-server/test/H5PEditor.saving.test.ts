@@ -165,6 +165,38 @@ describe('H5PEditor', () => {
         );
     });
 
+    it('stores content files with UPPERCASE extensions', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const { path: savedFilePath } = await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.JPG',
+                        size: fsExtra.statSync(originalPath).size
+                    },
+                    user
+                );
+
+                expect(savedFilePath).toBeDefined();
+                expect(savedFilePath.endsWith('#tmp')).toBeTruthy();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
     it('saves content and returns the data', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
