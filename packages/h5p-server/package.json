@@ -70,7 +70,7 @@
         "yazl": "^2.5.1"
     },
     "devDependencies": {
-        "@types/escape-html": "1.0.0",
+        "@types/escape-html": "1.0.1",
         "@types/fs-extra": "9.0.11",
         "@types/jest": "26.0.22",
         "@types/jsonpath": "0.2.0",
