@@ -606,7 +606,7 @@ export default class H5PEditor {
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
-        const extension = path.extname(file.name);
+        const extension = path.extname(file.name).toLowerCase();
         const cleanExtension = extension.length > 1 ? extension.substr(1) : '';
         if (!this.config.contentWhitelist.split(' ').includes(cleanExtension)) {
             throw new H5pError('not-in-whitelist', {
