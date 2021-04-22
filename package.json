@@ -53,13 +53,6 @@
     "release": {
         "branch": "release"
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint && npm run format:check",
-            "pre-push": "npm run test",
-            "commit-msg": "npx commitlint -E HUSKY_GIT_PARAMS"
-        }
-    },
     "contributors": [
         {
             "name": "Sebastian Rettig",
