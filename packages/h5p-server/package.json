@@ -48,7 +48,7 @@
     ],
     "dependencies": {
         "ajv": "^7.0.0",
-        "ajv-keywords": "^4.0.0",
+        "ajv-keywords": "^5.0.0",
         "axios": "^0.21.0",
         "cache-manager": "^3.3.0",
         "crc": "^3.8.0",
