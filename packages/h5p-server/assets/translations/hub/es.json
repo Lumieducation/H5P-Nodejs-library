@@ -135,11 +135,11 @@
         "description": "Agregue interactividad a su video con explicaciones, imágenes adicionales, tablas, Complete el espacio en blanco y preguntas de opción múltiple. Las preguntas del cuestionario apoyan la adaptabilidad, lo que significa que puede saltar a otra parte del video según la entrada del usuario. Se pueden agregar resúmenes interactivos al final del video. Los videos interactivos se crean y editan utilizando la herramienta de creación H5P en un navegador web estándar.",
         "keywords": {
             "interactive": "interactivo",
-            "video": "video"
+            "video": "vídeo"
         }
     },
     "H5P_MarkTheWords": {
-        "title": "Marque las palabras (Mark the Words)",
+        "title": "Marque las Palabras (Mark the Words)",
         "summary": "Cree una tarea en la que los usuarios resalten palabras",
         "description": "Marcar las palabras permite a los diseñadores de contenido crear expresiones textuales con un conjunto definido de palabras correctas. El usuario final destaca las palabras de acuerdo con la descripción de la tarea y se le asigna una puntuación. Para el editor, es muy fácil crear un desafío de hacer clic en las palabras. El editor escribe el texto y encierra las palabras en las que se supone que el usuario debe hacer clic, las respuestas correctas, en asterisco como * correctWord *.",
         "keywords": {
@@ -250,7 +250,7 @@
         "description": "Un tipo de contenido de imagen gratuito basado en HTML5 que permite a los usuarios comparar dos imágenes de forma interactiva. Cuente sus historias de imágenes con H5P y yuxtaposición de imágenes en WordPress, Moodle o Drupal."
     },
     "H5P_Audio": {
-        "title": "Audio",
+        "title": "Audio (Audio)",
         "summary": "Cargar una grabación de audio",
         "description": "Cargue una grabación de audio en .mp3, .wav, .ogg o proporcione el enlace para una grabación de audio."
     },
@@ -264,7 +264,7 @@
         }
     },
     "H5P_SpeakTheWords": {
-        "title": "Habla las palabras (Speak the Words)",
+        "title": "Diga las Palabras (Speak the Words)",
         "summary": "Responder una pregunta usando su voz (solamente Chrome)",
         "description": "Habla las palabras solo es compatible con los navegadores que implementan la API Web Speech (navegadores Chrome, excepto en iOS). Necesita un micrófono para responder la pregunta. Haga una pregunta a los usuarios y hágales responder usando su voz. Puede elegir varias respuestas correctas. El usuario podrá ver cómo se interpretaron sus palabras y qué tan cerca estaba de las respuestas correctas.",
         "keywords": {
@@ -317,7 +317,7 @@
             "quiz": "prueba",
             "set": "colocar",
             "recognition": "reconocimiento",
-            "mic": "poco",
+            "mic": "mic",
             "microphone": "micrófono"
         }
     },
