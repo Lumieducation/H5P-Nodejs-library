@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
+import getAllFiles from 'get-all-files';
 import path from 'path';
 
 import H5pError from './helpers/H5pError';
@@ -600,7 +600,7 @@ export default class LibraryManager {
     }
 
     /**
-     * Copies all library files from a directory (excludes library.json) to the storage.
+     * Copies all library file s from a directory (excludes library.json) to the storage.
      * Throws errors if something went wrong.
      * @param fromDirectory The directory to copy from
      * @param libraryInfo the library object
@@ -611,7 +611,7 @@ export default class LibraryManager {
         libraryInfo: ILibraryName
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
-        const files: string[] = await globPromise(`${fromDirectory}/**/*.*`);
+        const files: string[] = await getAllFiles.async.array(fromDirectory);
         await Promise.all(
             files.map((fileFullPath: string) => {
                 const fileLocalPath: string = path.relative(

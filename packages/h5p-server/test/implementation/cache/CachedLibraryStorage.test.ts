@@ -272,6 +272,7 @@ describe('CachedLibraryStorage', () => {
                     [
                         'greetingcard.css',
                         'greetingcard.js',
+                        'language/.en.json',
                         'language/de.json',
                         'library.json',
                         'semantics.json'

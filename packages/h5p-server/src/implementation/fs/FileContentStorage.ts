@@ -1,9 +1,9 @@
 import { ReadStream } from 'fs';
+import { Stream } from 'stream';
 import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
+import getAllFiles from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { Stream } from 'stream';
 
 import { streamToString } from '../../helpers/StreamHelpers';
 import {
@@ -438,17 +438,14 @@ export default class FileContentStorage implements IContentStorage {
             this.getContentPath(),
             contentId.toString()
         );
-        const absolutePaths = await globPromise(
-            path.join(contentDirectoryPath, '**', '*.*'),
-            {
-                ignore: [
-                    path.join(contentDirectoryPath, 'content.json'),
-                    path.join(contentDirectoryPath, 'h5p.json')
-                ],
-                nodir: true
-            }
+        const absolutePaths = await getAllFiles.async.array(
+            path.join(contentDirectoryPath)
         );
-        return absolutePaths.map((p) => path.relative(contentDirectoryPath, p));
+        const contentPath = path.join(contentDirectoryPath, 'content.json');
+        const h5pPath = path.join(contentDirectoryPath, 'h5p.json');
+        return absolutePaths
+            .filter((p) => p !== contentPath && p !== h5pPath)
+            .map((p) => path.relative(contentDirectoryPath, p));
     }
 
     /**

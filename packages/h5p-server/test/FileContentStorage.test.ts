@@ -143,7 +143,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 stream2.push(null);
                 await storage.addFile(id, 'file2.txt', stream2, user);
                 const files = await storage.listFiles(id, user);
-                expect(files).toMatchObject(['file1.txt', 'file2.txt']);
+                expect(files.sort()).toMatchObject(['file1.txt', 'file2.txt']);
             },
             { keep: false, unsafeCleanup: true }
         );

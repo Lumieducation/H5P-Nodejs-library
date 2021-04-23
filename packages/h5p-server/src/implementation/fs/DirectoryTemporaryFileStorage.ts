@@ -1,8 +1,8 @@
 import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
+import getAllFiles from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import globPromise from 'glob-promise';
 
 import {
     ITemporaryFile,
@@ -127,11 +127,8 @@ export default class DirectoryTemporaryFileStorage
         return (
             await Promise.all(
                 users.map(async (u) => {
-                    const filesOfUser = await globPromise(
-                        path.join(
-                            this.getAbsoluteUserDirectoryPath(u),
-                            '**/*.*'
-                        )
+                    const filesOfUser = await getAllFiles.async.array(
+                        this.getAbsoluteUserDirectoryPath(u)
                     );
                     return Promise.all(
                         filesOfUser

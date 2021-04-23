@@ -1,8 +1,8 @@
+import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
+import getAllFiles from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { Readable } from 'stream';
 import upath from 'upath';
 
 import { checkFilename } from './filenameUtils';
@@ -430,10 +430,11 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
-        return (await globPromise(path.join(libPath, '**/*.*')))
+        return (await getAllFiles.async.array(libPath))
             .map((p) => path.relative(libPath, p))
             .filter((p) => !this.isIgnored(p))
-            .map((p) => upath.toUnix(p));
+            .map((p) => upath.toUnix(p))
+            .sort();
     }
 
     /**
