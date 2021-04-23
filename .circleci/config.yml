@@ -111,7 +111,7 @@ jobs:
             - attach_workspace:
                   at: .
             - run: |
-                ln -s /home/circleci/project/node_modules/puppeteer/.local-chromium/linux-869685 /home/circleci/project/.local-chromium/linux-869685 
+                ln -s /home/circleci/project/.local-chromium/linux-869685 /home/circleci/project/node_modules/puppeteer/.local-chromium/linux-869685
                 npm run test:html-exporter -- --collect-coverage
             - coveralls/upload:
                   parallel: true
