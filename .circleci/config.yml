@@ -6,6 +6,8 @@ jobs:
     install-build:
         docker:
             - image: cimg/node:15.14
+              environment: 
+                  NODE_ENV: development
         steps:
             - checkout         
             - restore_cache:
@@ -110,9 +112,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: |
-                node node_modules/puppeteer/install.js
-                npm run test:html-exporter -- --collect-coverage
+            - run: npm run test:html-exporter -- --collect-coverage
             - coveralls/upload:
                   parallel: true
                   path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
