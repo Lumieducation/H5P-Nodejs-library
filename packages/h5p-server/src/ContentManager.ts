@@ -1,7 +1,7 @@
-import fsExtra from 'fs-extra';
-import globPromise from 'glob-promise';
-import * as path from 'path';
 import { Stream, Readable } from 'stream';
+import * as path from 'path';
+import fsExtra from 'fs-extra';
+import getAllFiles from 'get-all-files';
 
 import { ContentMetadata } from './ContentMetadata';
 import {
@@ -92,7 +92,9 @@ export default class ContentManager {
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (
-            await globPromise(path.join(packageDirectory, 'content', '**/*.*'))
+            await getAllFiles.async.array(
+                path.join(packageDirectory, 'content')
+            )
         ).filter(
             (file: string) =>
                 path.relative(packageDirectory, file) !== 'content.json'
