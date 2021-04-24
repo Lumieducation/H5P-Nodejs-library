@@ -622,7 +622,7 @@ export default class PackageValidator {
             if (!schemaValidator(jsonData)) {
                 log.error(`json ${filename} does not conform to schema`);
                 errorReplacements.reason = schemaValidator.errors
-                    .map((e) => `${e.dataPath} ${e.message}`)
+                    .map((e) => `${e.instancePath} ${e.message}`)
                     .join(' ')
                     .trim();
                 throw error.addError(
