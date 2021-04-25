@@ -27,7 +27,8 @@
         }
     ],
     "dependencies": {
-        "await-lock": "^2.1.0"
+        "await-lock": "^2.1.0",
+        "deepmerge": "^4.2.2"
     },
     "devDependencies": {
         "@lumieducation/h5p-server": "^7.5.0",

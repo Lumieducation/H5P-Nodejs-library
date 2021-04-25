@@ -1,3 +1,4 @@
+import * as merge from 'deepmerge';
 import type { IIntegration } from '@lumieducation/h5p-server';
 
 /**
@@ -25,13 +26,14 @@ export function mergeH5PIntegration(
             newIntegration.contents[`cid-${contentId}`];
     }
 
-    // The editor doesn't include core script and style lists
-    if (!window.H5PIntegration.core && newIntegration.core) {
-        window.H5PIntegration.core = newIntegration.core;
-    }
-    if (newIntegration.editor && !window.H5PIntegration.editor) {
-        window.H5PIntegration.editor = newIntegration.editor;
-    }
+    // We don't want to mutate the newIntegration parameter, so we shallow clone
+    // it.
+    const newIntegrationDup = { ...newIntegration };
+    // We don't merge content object information, as there might be issues with
+    // this.
+    delete newIntegration.contents;
+
+    window.H5PIntegration = merge(window.H5PIntegration, newIntegrationDup);
 }
 
 /**
