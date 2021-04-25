@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-mongos3",
-    "version": "7.5.1",
+    "version": "7.5.2",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -45,8 +45,8 @@
         }
     ],
     "dependencies": {
+        "@lumieducation/h5p-server": "^7.5.2",
         "aws-sdk": "2.892.0",
-        "@lumieducation/h5p-server": "^7.5.1",
         "mongodb": "3.6.6",
         "stream-buffers": "^3.0.2"
     },
