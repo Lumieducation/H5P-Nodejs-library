@@ -51,8 +51,8 @@ used:
 
 ## Trying out the demo
 
-Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
->= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use
+Make sure you have [`git`](https://git-scm.com/), [`node ≥ 10.16`](https://nodejs.org/)
+, and [`npm`](https://www.npmjs.com/get-npm) installed. If you use
 Windows, you must use bash (comes with Git for windows) as a command shell
 (otherwise scripts won't run).
 
