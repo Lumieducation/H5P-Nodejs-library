@@ -75,6 +75,7 @@ module.exports = {
                     'private-instance-method'
                 ]
             }
-        ]
+        ],
+        'class-methods-use-this': 0
     }
 };

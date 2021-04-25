@@ -5,6 +5,7 @@ import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
 import * as yauzlPromise from 'yauzl-promise';
 import fsExtra from 'fs-extra';
+import upath from 'upath';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import H5pError from './helpers/H5pError';
@@ -127,19 +128,6 @@ export default class PackageValidator {
             log.error(`zip file ${file} could not be opened: ${ignored}`);
             return undefined;
         }
-    }
-
-    /**
-     * Similar to path.join(...) but uses slashes (/) as separators regardless of OS.
-     * We have to use slashes when dealing with zip files as the specification for zips require them. If the program
-     * runs on Windows path.join(...) uses backslashes \ which don't work for zip files.
-     * @param parts The parts of the path to join
-     * @returns the full path
-     */
-    private static pathJoin(...parts: string[]): string {
-        const separator = '/';
-        const replace = new RegExp(`${separator}{1,}`, 'g');
-        return parts.join(separator).replace(replace, separator);
     }
 
     /**
@@ -706,7 +694,7 @@ export default class PackageValidator {
             `checking if language files in library ${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion} have the correct naming schema and are valid JSON`
         );
         const uberName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
-        const languagePath = PackageValidator.pathJoin(uberName, 'language/');
+        const languagePath = upath.join(uberName, 'language/');
         const languageFileRegex = /^(-?[a-z]+){1,7}\.json$/i;
         for (const languageFileEntry of zipEntries.filter(
             (e) =>
@@ -823,7 +811,7 @@ export default class PackageValidator {
             await Promise.all(
                 jsonData.preloadedJs.map((file) =>
                     this.fileMustExist(
-                        PackageValidator.pathJoin(uberName, file.path),
+                        upath.join(uberName, file.path),
                         'library-file-missing',
                         false,
                         { filename: file.path, library: uberName }
@@ -837,7 +825,7 @@ export default class PackageValidator {
             await Promise.all(
                 jsonData.preloadedCss.map((file) =>
                     this.fileMustExist(
-                        PackageValidator.pathJoin(uberName, file.path),
+                        upath.join(uberName, file.path),
                         'library-file-missing',
                         false,
                         { filename: file.path, library: uberName }
