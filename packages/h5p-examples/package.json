@@ -9,7 +9,6 @@
         "build:server": "npx tsc -p ./tsconfig.server.json",
         "build": "npm run build:server && npm run build:client",
         "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "prepare": "npm run build:server && npm run build:client",
         "start": "cross-env CACHE=in-memory node build/express.js",
         "test:e2e:tests": "npx jest --config jest.e2e.config.js --maxWorkers=1",
         "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
