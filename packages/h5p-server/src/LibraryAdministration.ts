@@ -7,6 +7,9 @@ import {
     ILibraryAdministrationOverviewItem,
     IInstalledLibrary
 } from './types';
+import Logger from './helpers/Logger';
+
+const log = new Logger('LibraryAdministration');
 
 /**
  * This class has methods that perform library administration, i.e, deleted
@@ -48,6 +51,7 @@ export default class LibraryAdministration {
      * usage of libraries across all content objects on the system.
      */
     public async getLibraries(): Promise<ILibraryAdministrationOverviewItem[]> {
+        log.debug('Getting all libraries');
         const libraryNames = await this.libraryManager.libraryStorage.getInstalledLibraryNames();
         const libraryMetadata = (
             await Promise.all(
@@ -55,10 +59,14 @@ export default class LibraryAdministration {
             )
         ).sort((a, b) => a.compare(b));
 
+        log.debug('Getting all dependents count');
         const dependents = await this.libraryManager.libraryStorage.getAllDependentsCount();
 
         return Promise.all(
             libraryMetadata.map(async (metadata) => {
+                log.debug(
+                    `Getting usage data of ${LibraryName.toUberName(metadata)}`
+                );
                 const usage = await this.contentManager.contentStorage.getUsage(
                     metadata
                 );

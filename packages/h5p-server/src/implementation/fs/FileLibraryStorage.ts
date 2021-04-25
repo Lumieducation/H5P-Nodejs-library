@@ -235,7 +235,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 const ubername = LibraryName.toUberName(dependency);
                 const index = librariesMetadataMap[
                     ubername
-                ].preloadedDependencies?.findIndex((ln) =>
+                ]?.preloadedDependencies?.findIndex((ln) =>
                     LibraryName.equal(ln, libraryMetadata)
                 );
                 if (index >= 0) {
