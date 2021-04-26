@@ -21,7 +21,7 @@
         "@testing-library/user-event": "13.1.5",
         "@types/jest": "26.0.23",
         "@types/node": "14.14.42",
-        "@types/react": "17.0.3",
+        "@types/react": "17.0.4",
         "@types/react-dom": "17.0.3"
     },
     "scripts": {
