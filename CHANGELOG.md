@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.5.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.0...v7.5.1) (2021-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.875.0 ([7a4360f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7a4360fc0dac7a77fb0d908b05e418674f20e81b))
+* **deps:** update dependency aws-sdk to v2.876.0 ([91c9db7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/91c9db7b36b999bceabaa338e4cf563c83615db3))
+* **deps:** update dependency aws-sdk to v2.877.0 ([db3063d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/db3063d4bd5f0cac836471938b310cd9d45487e7))
+* **deps:** update dependency cache-manager to v3.4.2 ([0e84c95](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0e84c95c88fcd063c2bb180e3e2421a8534bbaae))
+* **deps:** update dependency cache-manager to v3.4.3 ([3321b47](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3321b47c04a8ef3c43b4976da8ceae4f8f2cde56))
+* **deps:** update dependency http-proxy-middleware to v1.1.0 ([ae286f8](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ae286f830ab0ef9e80457bb84b7c8bc75f9f6040))
+* **deps:** update dependency i18next-fs-backend to v1.1.1 ([308d2e3](https://github.com/Lumieducation/H5P-Nodejs-library/commit/308d2e3faa9f93583d7b2f634ee5c97e45df9586))
+* **h5p-server:** stricter file upload validation ([#1268](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1268)) ([8e8df77](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8e8df7791d9bec953514ee05dd9ae2c6ac5de4cb))
+
+
+
+
+
 # [7.5.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.5.0) (2021-03-27)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.5.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.0...v7.5.1) (2021-04-01)
+
+
+### Bug Fixes
+
+* **h5p-server:** stricter file upload validation ([#1268](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1268)) ([8e8df77](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8e8df7791d9bec953514ee05dd9ae2c6ac5de4cb))
+
+
+
+
+
 # [7.5.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.3.1...v7.5.0) (2021-03-27)
 
 

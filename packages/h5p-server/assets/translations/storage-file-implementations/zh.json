@@ -1,7 +1,7 @@
 {
     "add-file-content-not-found": "无法将文件{{filename}}添加到ID为{{id}}内容中：的内容不存在。",
-    "add-library-file-not-installed": "由于尚未安装库，因此无法将{{filename}}添加到库{{libraryName}}",
-    "clear-library-not-found": "由于尚未安装库，因此无法清除库{{libraryName}}",
+    "add-library-file-not-installed": "由于尚未安装库，因此无法将{{filename}}添加到{{libraryName}}库。",
+    "clear-library-not-found": "由于尚未安装库，因此无法清除库{{libraryName}}。",
     "delete-content-file-not-found": "无法删除文件{{filename}} ：不存在。",
     "delete-content-not-found": "无法删除内容：不存在。",
     "error-creating-content": "无法创建内容。",
@@ -12,7 +12,7 @@
     "illegal-absolute-filename": "文件名中的绝对路径是不允许的： {{filename}}是非法的",
     "illegal-relative-filename": "文件名中的相对路径是不允许的： {{filename}}是非法的",
     "install-library-already-installed": "库{{libraryName}}已安装。",
-    "remove-library-library-missing": "系统上未安装库{{libraryName}}",
+    "remove-library-library-missing": "系统上未安装库{{libraryName}}。",
     "temporary-file-not-found": "{{userId}}无法访问文件{{filename}}或文件0不存在。",
     "update-library-library-missing": "库{{libraryName}}尚未安装，因此无法更新。"
 }

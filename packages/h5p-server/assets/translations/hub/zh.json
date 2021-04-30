@@ -3,7 +3,10 @@
         "title": "手风琴(Accordion)",
         "summary": "创建垂直堆叠的可扩展项目",
         "description": "通过使用这种响应式手风琴，减少了向读者呈现的文本量。读者可以通过扩展标题来决定要仔细看的标题。非常适合提供概述和可选的深入说明。",
-        "keywords": { "accordion": "手风琴", "collapsible_text": "可折叠文字" }
+        "keywords": {
+            "accordion": "手风琴",
+            "collapsible_text": "可折叠文字"
+        }
     },
     "H5P_ArithmeticQuiz": {
         "title": "算术测验(Arithmetic Quiz)",
@@ -29,14 +32,21 @@
     "H5P_Collage": {
         "title": "胶合(Collage)",
         "summary": "创建多个图像的拼贴",
-        "description": "拼贴工具可让您将图像整理成舒缓的构图。",
-        "keywords": { "collage": "大学", "image": "图像" }
+        "description": "拼贴工具可让您将图像整理成舒缓的构图。 ",
+        "keywords": {
+            "collage": "大学",
+            "image": "图像"
+        }
     },
     "H5P_Column": {
         "title": "列(Column)",
         "summary": "将H5P内容组织到列布局中",
         "description": "使用H5P列将您的内容类型组织到列布局中。现在，可以将处理相似材料或具有共同主题的内容类型组合在一起，以创建一致的学习体验。此外，通过结合几乎所有现有的H5P内容类型，作者可以自由发挥创造力。",
-        "keywords": { "column": "柱子", "layout": "布局", "compound": "化合物" }
+        "keywords": {
+            "column": "柱子",
+            "layout": "布局",
+            "compound": "化合物"
+        }
     },
     "H5P_CoursePresentation": {
         "title": "课程介绍(Course Presentation)",
@@ -52,85 +62,127 @@
         "title": "对话框卡(Dialog Cards)",
         "summary": "创建基于文本的转弯卡",
         "description": "对话卡可以用作练习，以帮助学习者记忆单词，表达方式或句子。在卡片的正面，有一个单词或表情的提示。通过转动卡片，学习者可以看到相应的单词或表情。对话卡可用于语言学习中，以提出数学问题或帮助学习者记住诸如历史事件，公式或名称之类的事实。",
-        "keywords": { "dialog_cards": "对话卡" }
+        "keywords": {
+            "dialog_cards": "对话卡"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "文档工具(Documentation Tool)",
         "summary": "创建带有文本导出功能的表单向导",
         "description": "该文档工具旨在简化为目标驱动的活动创建评估向导的过程。它也可以用作表单向导。编辑时，作者可以向向导添加多个步骤。在每个步骤中，作者都可以定义要进入该步骤的内容。内容可以是纯文本，输入字段，目标定义和目标评估。一旦发布，最终用户将被引导通过向导的步骤。在向导的最后一步，用户可以生成包含所有已提交输入的文档。可以下载该文件。文档工具具有完全的响应能力，在较小的屏幕以及桌面上都可以很好地工作。",
-        "keywords": { "dialog_cards": "对话卡" }
+        "keywords": {
+            "dialog_cards": "对话卡"
+        }
     },
     "H5P_DragQuestion": {
         "title": "拖放(Drag and Drop)",
         "summary": "使用图像创建拖放任务",
-        "description": "拖放问题使学习者可以关联两个或多个元素，并以可视方式进行逻辑连接。使用文本和图像作为可拖动替代品来创建拖放问题。 H5P拖放问题支持问题和答案之间的一对一，一对多，多对一和多对多关系。",
-        "keywords": { "drag_and drop": "拖放" }
+        "description": "拖放问题使学习者可以关联两个或多个元素，并以可视方式进行逻辑连接。使用文本和图像作为可拖动替代品来创建拖放问题。 H5P拖放问题支持问题和答案之间的一对一，一对多，多对一和多对多关系。 ",
+        "keywords": {
+            "drag_and drop": "拖放"
+        }
     },
     "H5P_DragText": {
         "title": "拖动单词(Drag the Words)",
         "summary": "创建基于文本的拖放任务",
         "description": "单词拖曳允许内容设计人员创建缺少文本片段的文本表达。最终用户将缺少的文本拖到正确的位置，以形成完整的表达。可用于检查用户是否记得自己阅读过的文字，或者她是否理解某些内容。帮助用户思考文本。创建拖拽单词任务非常容易。编辑器只编写文本，并用* draggableWord *之类的星号将要拖动的单词括起来。",
-        "keywords": { "drag": "拖", "words": "字" }
+        "keywords": {
+            "drag": "拖",
+            "words": "字"
+        }
     },
     "H5P_Blanks": {
         "title": "填写空白(Fill in the Blanks)",
         "summary": "创建文本中缺少单词的任务",
         "description": "学习者在文本中填写缺失的单词。在填写所有缺少的单词后，或根据设置在每个单词之后，向学习者显示一个解决方案。作者输入文本并标记要用星号替换的单词。除了母语和第二语言学习外，“填空”还可用于测试学习者重现事实或产生数学推论的能力。",
-        "keywords": { "fill": "充满", "blanks": "空白", "text": "文本" }
+        "keywords": {
+            "fill": "充满",
+            "blanks": "空白",
+            "text": "文本"
+        }
     },
     "H5P_ImageHotspotQuestion": {
         "title": "查找热点(Find the Hotspot)",
         "summary": "创建图像热点供用户查找",
         "description": "此内容类型使最终用户可以根据任务描述在图像上的某个位置按一下，以获取有关正确还是不正确的反馈。作者上传图像，并定义与图像细节或部分相对应的各种热点。可以将热点定义为正确或不正确，并且在两种情况下作者均提供适当的反馈文本。如果最终用户按了既未定义为正确热点又未定义热点的某个地方，则作者还可以定义反馈。",
-        "keywords": { "find": "找", "hotspot": "热点", "image": "图像" }
+        "keywords": {
+            "find": "找",
+            "hotspot": "热点",
+            "image": "图像"
+        }
     },
     "H5P_GuessTheAnswer": {
         "title": "猜答案(Guess the Answer)",
         "summary": "创建带有问题和答案的图像",
         "description": "此内容类型使作者可以上传图像并添加适当的描述。最终用户可以猜测答案，然后按图片下方的栏来显示正确的答案。",
-        "keywords": { "guess": "猜测", "answer": "回答" }
+        "keywords": {
+            "guess": "猜测",
+            "answer": "回答"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Iframe嵌入器(Iframe Embedder)",
         "summary": "从网址或一组文件中嵌入",
         "description": "Iframe嵌入程序使创建现有JavaScript应用程序的H5P变得容易。",
-        "keywords": { "embed": "嵌入", "iframe": "iframe" }
+        "keywords": {
+            "embed": "嵌入",
+            "iframe": "iframe (嵌入）"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "互动视频(Interactive Video)",
         "summary": "制作充满互动的视频",
         "description": "通过说明，额外的图片，表格，在“空白处”和多项选择题中添加视频互动性。测验问题支持适应性，这意味着您可以根据用户的输入跳到视频的另一部分。可以在视频末尾添加交互式摘要。交互式视频是使用标准Web浏览器中的H5P创作工具创建和编辑的。",
-        "keywords": { "interactive": "交互的", "video": "视频" }
+        "keywords": {
+            "interactive": "交互的",
+            "video": "视频"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "标记单词(Mark the Words)",
         "summary": "创建一个任务，让用户突出显示单词",
         "description": "标记单词使内容设计者可以使用一组定义正确的单词来创建文本表达。最终用户根据任务描述突出显示单词并获得分数。对于编辑者而言，创建单击单词挑战是非常容易的。编辑器键入文本，并用诸如* correctWord *之类的星号将用户应单击的单词，正确的答案括起来。",
-        "keywords": { "mark": "标记", "words": "字" }
+        "keywords": {
+            "mark": "标记",
+            "words": "字"
+        }
     },
     "H5P_MemoryGame": {
         "title": "记忆游戏(Memory Game)",
         "summary": "创建经典的图像配对游戏",
         "description": "使用此简单而精美的HTML5游戏创建您自己的记忆游戏并测试您网站用户的记忆。",
-        "keywords": { "memory": "记忆", "game": "游戏", "cards": "牌" }
+        "keywords": {
+            "memory": "记忆",
+            "game": "游戏",
+            "cards": "牌"
+        }
     },
     "H5P_MultiChoice": {
         "title": "多项选择(Multiple Choice)",
         "summary": "创建灵活的多项选择题",
         "description": "多项选择题可能是有效的评估工具。立即向学习者提供性能反馈。 H5P多项选择题可以对每个问题有一个或多个正确的选项。",
-        "keywords": { "multiple": "多", "choice": "选择", "quiz": "测验" }
+        "keywords": {
+            "multiple": "多",
+            "choice": "选择",
+            "quiz": "测验"
+        }
     },
     "H5P_PersonalityQuiz": {
         "title": "个性测验(Personality Quiz)",
         "summary": "创建个性测验",
         "description": "在这种内容类型中，作者定义了一系列带有替代方案的问题，其中每个替代方案都针对一个或多个个性。在测验结束时，最终用户将看到哪个个性最匹配。有多种方法可以使此测验具有视觉吸引力，例如：使用图像表示问题，替代方案和个性。",
-        "keywords": { "personality": "性格", "quiz": "测验" }
+        "keywords": {
+            "personality": "性格",
+            "quiz": "测验"
+        }
     },
     "H5P_Questionnaire": {
         "title": "问卷(Questionnaire)",
         "summary": "创建调查表以接收反馈",
         "description": "通过问卷调查获得反馈并在互动视频和其他内容类型中提出开放式问题。问卷通过xAPI集成使用户的答案可用。这意味着网站所有者可以用许多不同的方式存储答案。答案可能存储在LRS中，站点拥有自定义存储，或者脚本可以获取电子邮件地址并使用它向用户发送电子邮件。在H5P.org上，答案存储在Google Analytics（分析）中。",
-        "keywords": { "questionnaire": "问卷调查" }
+        "keywords": {
+            "questionnaire": "问卷调查"
+        }
     },
     "H5P_QuestionSet": {
         "title": "测验(Question Set) (Quiz (Question Set))",
@@ -146,31 +198,46 @@
         "title": "单选集(Single Choice Set)",
         "summary": "用正确答案创建问题",
         "description": "单一选择集允许内容设计人员创建每个问题有一个正确答案的问题集。提交每个答案后，最终用户将立即获得反馈。",
-        "keywords": { "collection": "收藏", "quiz": "测验", "choice": "选择" }
+        "keywords": {
+            "collection": "收藏",
+            "quiz": "测验",
+            "choice": "选择"
+        }
     },
     "H5P_Summary": {
         "title": "摘要(Summary)",
         "summary": "使用语句列表创建任务",
         "description": "总结可通过积极汇总有关当前主题的摘要，帮助学习者记住文本，视频或演示文稿中的关键信息。学习者完成摘要后，将显示有关该主题的关键陈述的完整列表。",
-        "keywords": { "summary": "概括" }
+        "keywords": {
+            "summary": "概括"
+        }
     },
     "H5P_Timeline": {
         "title": "时间轴(Timeline)",
         "summary": "用多媒体创建事件时间表",
         "description": "这是Knight Lab开发的Timeline.js，打包为H5P内容类型，以使时间线易于编辑，共享和重用。时间轴内容类型使您可以按时间顺序放置事件序列。对于每个事件，您都可以添加图像和文本。您可能还包括来自Twitter，YouTube，Flickr，Vimeo，Google Maps和SoundCloud的资产。",
-        "keywords": { "timeline": "时间线", "slider": "滑杆" }
+        "keywords": {
+            "timeline": "时间线",
+            "slider": "滑杆"
+        }
     },
     "H5P_TrueFalse": {
         "title": "正确/错误问题(True/False Question)",
         "summary": "创建对/错问题",
         "description": "正确/错误问题是一种简单直接的内容类型，可以单独使用，也可以插入其他内容类型（如“课程演示”）中。可以通过添加图像或视频来创建更复杂的问题。",
-        "keywords": { "true": "真的", "false": "错误的" }
+        "keywords": {
+            "true": "真的",
+            "false": "错误的"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "图像热点(Image Hotspots)",
         "summary": "创建具有多个信息热点的图像",
         "description": "图像热点使创建具有交互式热点的图像成为可能。当用户按下热点时，将显示一个包含标题和文本或视频的弹出窗口。使用H5P编辑器，您可以根据需要添加任意多个热点。",
-        "keywords": { "image": "图像", "hotspot": "热点" }
+        "keywords": {
+            "image": "图像",
+            "hotspot": "热点"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "查找多个热点(Find Multiple Hotspots)",
@@ -190,8 +257,11 @@
     "H5P_AudioRecorder": {
         "title": "录音机(Audio Recorder)",
         "summary": "创建录音",
-        "description": "HTML5录音机。记录您的声音并播放或下载您的记录的.wav文件。使用H5P插件为您的Drupal，Wordpress或Moodle网站创建H5P录音机。",
-        "keywords": { "audio": "声音的", "recorder": "录音机" }
+        "description": "HTML5录音机。记录您的声音并播放或下载您的记录的.wav文件。使用H5P插件为您的Drupal，Wordpress或Moodle网站创建H5P录音机。 ",
+        "keywords": {
+            "audio": "声音的",
+            "recorder": "录音机"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "讲单词(Speak the Words)",
@@ -208,22 +278,33 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "title": "Agamotto (图片混合) (Agamotto (Image Blender))",
         "summary": "呈现一系列图像和说明",
         "description": "呈现一系列人们应该一个接一个看的图像，例如随时间变化的项目的照片，组织在不同图层中的示意图或地图或揭示越来越多细节的图像。",
-        "keywords": { "image": "图像", "images": "图片", "transition": "过渡" }
+        "keywords": {
+            "image": "图像",
+            "images": "图片",
+            "transition": "过渡"
+        }
     },
     "H5P_ImageSequencing": {
         "title": "图像排序(Image Sequencing)",
         "summary": "以正确的顺序放置图像",
-        "description": "一种免费的基于HTML5的图像排序内容类型，允许作者以特定顺序将自己的图像序列（和可选的图像描述）添加到游戏中。图像的顺序将是随机的，玩家将必须根据任务描述对图像进行重新排序。",
-        "keywords": { "image": "图像", "sequence": "顺序", "order": "命令" }
+        "description": "一种免费的基于HTML5的图像排序内容类型，允许作者以特定顺序将自己的图像序列（和可选的图像描述）添加到游戏中。图像的顺序将是随机的，玩家将必须根据任务描述对图像进行重新排序。 ",
+        "keywords": {
+            "image": "图像",
+            "sequence": "顺序",
+            "order": "命令"
+        }
     },
     "H5P_Flashcards": {
         "title": "抽认卡(Flashcards)",
         "summary": "创建时尚和现代的抽认卡",
         "description": "此内容类型使创作者可以创建单个闪存卡或一组闪存卡，其中每个闪存卡均具有与问题和答案配对的图像。学习者必须填写文本字段，然后检查其解决方案的正确性。",
-        "keywords": { "cards": "牌", "animation": "动画片" }
+        "keywords": {
+            "cards": "牌",
+            "animation": "动画片"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "说出话语集(Speak the Words Set)",
@@ -255,19 +336,26 @@
         "title": "随笔(Essay)",
         "summary": "利用即时反馈创建随笔",
         "description": "在这种内容类型中，作者定义了一组代表主题关键方面的关键字。这些关键字与学生撰写的文本相匹配，可用于立即提供反馈-如果缺少关键字，则建议修改某些主题详细信息，或者如果文本包含关键字，则确认学生的想法。\r\n",
-        "keywords": { "Essay": "散文" }
+        "keywords": {
+            "Essay": "散文"
+        }
     },
     "H5P_ImagePair": {
         "title": "图像配对(Image Pairing)",
         "summary": "拖放图像匹配游戏",
-        "description": "图像配对是一项简单而有效的活动，要求学习者匹配图像对。由于不需要一对中的两个图像都相同，因此作者还可以测试对两个不同图像之间关系的理解。",
-        "keywords": { "image_images matching pair": "图像图像匹配对" }
+        "description": "图像配对是一项简单而有效的活动，要求学习者匹配图像对。由于不需要一对中的两个图像都相同，因此作者还可以测试对两个不同图像之间关系的理解。 ",
+        "keywords": {
+            "image_images matching pair": "图像图像匹配对"
+        }
     },
     "H5P_Dictation": {
         "title": "听写(Dictation)",
         "summary": "通过即时反馈创建听写",
         "description": "您可以添加包含用于听写的句子的音频样本，然后输入正确的转录。您的学生可以听这些样本，然后将他们听到的内容输入文本字段。他们的答案将被自动评估。有几个选项可让您控制练习的难度。您可以选择为可能包含缓慢口译版本的句子添加第二个音频样本。您还可以设置一个样本播放频率的限制，定义标点符号是否与评分相关，并确定是否应将诸如打字错误之类的小错误算作无误，全误或半误。",
-        "keywords": { "language": "语言", "audio": "声音的" }
+        "keywords": {
+            "language": "语言",
+            "audio": "声音的"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "分支方案(beta) (Branching Scenario (beta))",
@@ -288,13 +376,18 @@
         "title": "互动书(Interactive Book)",
         "summary": "创建小课程，书籍和测试",
         "description": "创建小课程，书籍或测试。交互式书允许作者在多个页面上组合大量交互式内容，例如交互式视频，问题，课程演示等等。最后有一个总结，总结了学习者在整本书中获得的分数。",
-        "keywords": { "book": "书", "course": "课程" }
+        "keywords": {
+            "book": "书",
+            "course": "课程"
+        }
     },
     "H5P_KewArCode": {
         "title": "KewAr代码(KewAr Code)",
         "summary": "创建用于不同目的的QR码",
         "description": "KewAr代码使内容设计人员可以创建知名的QR代码。这些QR码可以对URL进行编码，但是也可以对联系信息，事件，地理位置等进行编码。人们可以使用QR码阅读器对其进行扫描，以触发所选的操作。",
-        "keywords": { "QR": "二维码" }
+        "keywords": {
+            "QR": "二维码"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "出现日历(beta) (Advent Calendar (beta))",

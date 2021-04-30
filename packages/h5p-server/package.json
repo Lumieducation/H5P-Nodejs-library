@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-server",
-    "version": "7.5.0",
+    "version": "7.5.1",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -70,7 +70,7 @@
     "devDependencies": {
         "@types/escape-html": "1.0.1",
         "@types/fs-extra": "9.0.11",
-        "@types/jest": "26.0.22",
+        "@types/jest": "26.0.23",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
         "@types/sanitize-html": "2.3.1",

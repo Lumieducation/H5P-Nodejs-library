@@ -8,3 +8,4 @@ packages/h5p-rest-example-client
 *.d.ts
 .eslintrc.js
 .config.js
+packages/h5p-html-exporter/src/*.js
