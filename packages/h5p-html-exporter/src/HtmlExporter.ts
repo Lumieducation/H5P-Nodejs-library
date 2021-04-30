@@ -31,54 +31,9 @@ import LibrariesFilesList from './helpers/LibrariesFilesList';
  * can't be modified that way.
  */
 const getLibraryFilePathOverrideScript = uglifyJs.minify(
-    `H5P.ContentType = function (isRootLibrary) {
-    function ContentType() {}                  
-    ContentType.prototype = new H5P.EventDispatcher();                  
-    ContentType.prototype.isRoot = function () {
-      return isRootLibrary;
-    };                  
-    ContentType.prototype.getLibraryFilePath = function (filePath) {
-        return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
-    };                  
-    return ContentType;
-  };
-
-  nativeSetScriptAttribute = HTMLScriptElement.prototype.setAttribute;
-    HTMLScriptElement.prototype.setAttribute = function (name, value) {
-        if (name === 'src') {
-            if(value.startsWith('./libraries/')) {
-                const file = value.substr(12);
-                if(furtherH5PInlineResources[file]) {
-                    value = furtherH5PInlineResources[file];
-                }
-            }
-        }
-        nativeSetScriptAttribute.call(this, name, value);
-    }
-    Object.defineProperty(HTMLScriptElement.prototype, 'src', { // also apply the modification if the src is set with the src property
-        set(value) {
-            this.setAttribute('src', value);
-        }
-    });
-
-    nativeSetLinkAttribute = HTMLLinkElement.prototype.setAttribute;
-    HTMLLinkElement.prototype.setAttribute = function (name, value) {
-        if (name === 'href') {
-            if(value.startsWith('./libraries/')) {
-                const file = value.substr(12);
-                if(furtherH5PInlineResources[file]) {
-                    value = furtherH5PInlineResources[file];
-                }
-            }
-        }
-        nativeSetLinkAttribute.call(this, name, value);
-    }
-    Object.defineProperty(HTMLLinkElement.prototype, 'src', { // also apply the modification if the src is set with the src property
-        set(value) {
-            this.setAttribute('src', value);
-        }
-    });  
-  `
+    fsExtra.readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
+        encoding: 'utf8'
+    })
 ).code;
 
 const getContentPathOverrideScript = uglifyJs.minify(
