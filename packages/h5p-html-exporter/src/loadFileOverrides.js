@@ -14,7 +14,7 @@ H5P.ContentType = function (isRootLibrary) {
     ContentType.prototype.getLibraryFilePath = function (filePath) {
         return furtherH5PInlineResources[
             this.libraryInfo.versionedNameNoSpaces + '/' + filePath
-        ];
+        ] || filePath;
     };
     return ContentType;
 };
