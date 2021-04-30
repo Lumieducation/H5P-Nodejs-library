@@ -494,6 +494,8 @@ export default class HtmlExporter {
                             !usedFiles.checkFile(library, filename) &&
                             !filename.startsWith('language/') &&
                             (filename !== 'library.json' ||
+                                // We allow the library.json file for timeline
+                                // as it's needed at runtime.
                                 ubername.startsWith('H5P.Timeline-')) &&
                             filename !== 'semantics.json' &&
                             filename !== 'icon.svg' &&
