@@ -6,7 +6,6 @@ import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import uglifyJs from 'uglify-js';
 import postCssSafeParser from 'postcss-safe-parser';
-
 import {
     ContentId,
     IContentStorage,
@@ -21,6 +20,7 @@ import {
     LibraryManager,
     streamToString
 } from '@lumieducation/h5p-server';
+
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
 
@@ -31,17 +31,9 @@ import LibrariesFilesList from './helpers/LibrariesFilesList';
  * can't be modified that way.
  */
 const getLibraryFilePathOverrideScript = uglifyJs.minify(
-    `H5P.ContentType = function (isRootLibrary) {
-    function ContentType() {}                  
-    ContentType.prototype = new H5P.EventDispatcher();                  
-    ContentType.prototype.isRoot = function () {
-      return isRootLibrary;
-    };                  
-    ContentType.prototype.getLibraryFilePath = function (filePath) {
-        return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
-    };                  
-    return ContentType;
-  };`
+    fsExtra.readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
+        encoding: 'utf8'
+    })
 ).code;
 
 const getContentPathOverrideScript = uglifyJs.minify(
@@ -501,7 +493,10 @@ export default class HtmlExporter {
                         if (
                             !usedFiles.checkFile(library, filename) &&
                             !filename.startsWith('language/') &&
-                            filename !== 'library.json' &&
+                            (filename !== 'library.json' ||
+                                // We allow the library.json file for timeline
+                                // as it's needed at runtime.
+                                ubername.startsWith('H5P.Timeline-')) &&
                             filename !== 'semantics.json' &&
                             filename !== 'icon.svg' &&
                             filename !== 'upgrades.js' &&
@@ -511,11 +506,14 @@ export default class HtmlExporter {
                                 path.basename(filename)
                             );
                             if (
-                                mt &&
-                                (mt.startsWith('audio/') ||
-                                    mt.startsWith('video/') ||
-                                    mt.startsWith('image/')) &&
-                                !filename.includes('font')
+                                filename.endsWith('.js') ||
+                                filename.endsWith('.css') ||
+                                filename.endsWith('.json') ||
+                                (mt &&
+                                    (mt.startsWith('audio/') ||
+                                        mt.startsWith('video/') ||
+                                        mt.startsWith('image/')) &&
+                                    !filename.includes('font'))
                             ) {
                                 return true;
                             }
