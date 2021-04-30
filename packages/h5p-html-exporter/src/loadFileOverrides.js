@@ -16,7 +16,7 @@
             return (
                 furtherH5PInlineResources[
                     this.libraryInfo.versionedNameNoSpaces + '/' + filePath
-                ] || filePath
+                ] || file
             );
         };
         return ContentType;
@@ -27,8 +27,9 @@
     var nativeSetScriptAttribute = HTMLScriptElement.prototype.setAttribute;
     HTMLScriptElement.prototype.setAttribute = function (name, value) {
         if (name === 'src') {
-            if (value.startsWith('./libraries/')) {
-                const file = value.substr(12);
+            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/)
+            if (match) {
+                const file = match[1];
                 if (furtherH5PInlineResources[file]) {
                     value = furtherH5PInlineResources[file];
                 }
@@ -48,8 +49,9 @@
     var nativeSetLinkAttribute = HTMLLinkElement.prototype.setAttribute;
     HTMLLinkElement.prototype.setAttribute = function (name, value) {
         if (name === 'href') {
-            if (value.startsWith('./libraries/')) {
-                const file = value.substr(12);
+            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/)
+            if (match) {
+                const file = match[1];
                 if (furtherH5PInlineResources[file]) {
                     value = furtherH5PInlineResources[file];
                 }
