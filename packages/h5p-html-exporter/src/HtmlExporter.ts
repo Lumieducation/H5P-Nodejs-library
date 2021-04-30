@@ -6,7 +6,6 @@ import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import uglifyJs from 'uglify-js';
 import postCssSafeParser from 'postcss-safe-parser';
-
 import {
     ContentId,
     IContentStorage,
@@ -21,6 +20,7 @@ import {
     LibraryManager,
     streamToString
 } from '@lumieducation/h5p-server';
+
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
 
@@ -41,7 +41,44 @@ const getLibraryFilePathOverrideScript = uglifyJs.minify(
         return furtherH5PInlineResources[this.libraryInfo.versionedNameNoSpaces + '/' + filePath];
     };                  
     return ContentType;
-  };`
+  };
+
+  nativeSetScriptAttribute = HTMLScriptElement.prototype.setAttribute;
+    HTMLScriptElement.prototype.setAttribute = function (name, value) {
+        if (name === 'src') {
+            if(value.startsWith('./libraries/')) {
+                const file = value.substr(12);
+                if(furtherH5PInlineResources[file]) {
+                    value = furtherH5PInlineResources[file];
+                }
+            }
+        }
+        nativeSetScriptAttribute.call(this, name, value);
+    }
+    Object.defineProperty(HTMLScriptElement.prototype, 'src', { // also apply the modification if the src is set with the src property
+        set(value) {
+            this.setAttribute('src', value);
+        }
+    });
+
+    nativeSetLinkAttribute = HTMLLinkElement.prototype.setAttribute;
+    HTMLLinkElement.prototype.setAttribute = function (name, value) {
+        if (name === 'href') {
+            if(value.startsWith('./libraries/')) {
+                const file = value.substr(12);
+                if(furtherH5PInlineResources[file]) {
+                    value = furtherH5PInlineResources[file];
+                }
+            }
+        }
+        nativeSetLinkAttribute.call(this, name, value);
+    }
+    Object.defineProperty(HTMLLinkElement.prototype, 'src', { // also apply the modification if the src is set with the src property
+        set(value) {
+            this.setAttribute('src', value);
+        }
+    });  
+  `
 ).code;
 
 const getContentPathOverrideScript = uglifyJs.minify(
@@ -511,11 +548,13 @@ export default class HtmlExporter {
                                 path.basename(filename)
                             );
                             if (
-                                mt &&
-                                (mt.startsWith('audio/') ||
-                                    mt.startsWith('video/') ||
-                                    mt.startsWith('image/')) &&
-                                !filename.includes('font')
+                                filename.endsWith('.js') ||
+                                filename.endsWith('.css') ||
+                                (mt &&
+                                    (mt.startsWith('audio/') ||
+                                        mt.startsWith('video/') ||
+                                        mt.startsWith('image/')) &&
+                                    !filename.includes('font'))
                             ) {
                                 return true;
                             }
