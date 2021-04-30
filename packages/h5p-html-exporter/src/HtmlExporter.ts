@@ -493,7 +493,8 @@ export default class HtmlExporter {
                         if (
                             !usedFiles.checkFile(library, filename) &&
                             !filename.startsWith('language/') &&
-                            filename !== 'library.json' &&
+                            (filename !== 'library.json' ||
+                                ubername.startsWith('H5P.Timeline-')) &&
                             filename !== 'semantics.json' &&
                             filename !== 'icon.svg' &&
                             filename !== 'upgrades.js' &&
@@ -505,6 +506,7 @@ export default class HtmlExporter {
                             if (
                                 filename.endsWith('.js') ||
                                 filename.endsWith('.css') ||
+                                filename.endsWith('.json') ||
                                 (mt &&
                                     (mt.startsWith('audio/') ||
                                         mt.startsWith('video/') ||
