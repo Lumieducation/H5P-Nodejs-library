@@ -1,7 +1,7 @@
 {
     "offlineSuccessfulSubmit": "成功提交结果。",
     "offlineDialogRetryButtonLabel": "立即重试",
-    "offlineDialogRetryMessage": "在 :num.... 中重试",
+    "offlineDialogRetryMessage": "在 :num.... 中重试。",
     "offlineDialogBody": "我们无法发送有关您完成此任务的信息。 请检查您的互联网连接。",
     "offlineDialogHeader": "您与服务器的连接已丢失",
     "resubmitScores": "尝试提交存储的结果。",
