@@ -16,7 +16,7 @@
             return (
                 furtherH5PInlineResources[
                     this.libraryInfo.versionedNameNoSpaces + '/' + filePath
-                ] || file
+                ] || filePath
             );
         };
         return ContentType;
