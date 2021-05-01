@@ -1,14 +1,14 @@
 H5PCore:
 
-  public function replaceContentHubMetadataCache($metadata, $lang);
-  public function getContentHubMetadataCache($lang = 'en');
-  public function getContentHubMetadataChecked($lang = 'en');
-  public function setContentHubMetadataChecked($time, $lang = 'en');
+GET /ajax?action=content-hub-metadata-cache
+->
+    {
+        success: boolean;
+        data: metadata
+    }
 
-const METADATA = 'hub-api.h5p.org/v1/metadata';
-const CONTENT = 'hub-api.h5p.org/v1/contents';
-const REGISTER = 'hub-api.h5p.org/v1/accounts';
-
-hub functions
-
-new locales of hub
+POST /ajax?action=get-hub-content
+    CSRF check
+    getHubContent(hubId, localContentId)
+        --> https://hub-api.h5p.org/v1/contents/<hubId>/export
+        save .h5p file and upload like a normal file

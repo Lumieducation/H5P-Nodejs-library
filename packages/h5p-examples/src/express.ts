@@ -6,6 +6,7 @@ import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
+import httpProxy from 'express-http-proxy';
 
 import {
     h5pAjaxExpressRouter,
@@ -217,6 +218,8 @@ const start = async (): Promise<void> => {
     server.get('/', startPageRenderer(h5pEditor));
 
     server.use('/client', express.static(path.join(__dirname, 'client')));
+
+    server.use('/hub', httpProxy('https://hub-api.h5p.org/v1/contents'));
 
     // STUB, not implemented yet. You have to get the user id through a session
     // cookie as h5P does not add it to the request. Alternatively you could add

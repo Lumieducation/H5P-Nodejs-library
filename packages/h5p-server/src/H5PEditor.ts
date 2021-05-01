@@ -1027,7 +1027,11 @@ export default class H5PEditor {
                 language
             ),
             nodeVersionId: contentId,
-            language
+            language,
+            hub: {
+                contentSearchUrl: '/hub'
+            },
+            enableContentHub: true
         };
     }
 
@@ -1062,6 +1066,9 @@ export default class H5PEditor {
                 mail: user.email,
                 name: user.name,
                 id: user.id
+            },
+            Hub: {
+                contentSearchUrl: '/hub'
             }
         };
     }
