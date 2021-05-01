@@ -9,7 +9,8 @@ import {
     IContentMetadata,
     ContentParameters,
     ILibraryOverviewForClient,
-    IFileStats
+    IFileStats,
+    IAjaxResponse
 } from './types';
 import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
@@ -84,7 +85,7 @@ export default class H5PAjaxEndpoint {
         minorVersion?: number | string,
         language?: string,
         user?: IUser
-    ): Promise<IHubInfo | ILibraryDetailedDataForClient> => {
+    ): Promise<IHubInfo | ILibraryDetailedDataForClient | IAjaxResponse> => {
         switch (action) {
             case 'content-type-cache':
                 if (!user) {
@@ -93,6 +94,10 @@ export default class H5PAjaxEndpoint {
                     );
                 }
                 return this.h5pEditor.getContentTypeCache(user, language);
+            case 'content-hub-metadata-cache':
+                return new AjaxSuccessResponse(
+                    await this.h5pEditor.contentHub.getMetadata()
+                );
             case 'libraries':
                 if (
                     machineName === undefined ||
@@ -450,6 +455,7 @@ export default class H5PAjaxEndpoint {
             | 'filter'
             | 'library-install'
             | 'library-upload'
+            | 'content-hub-metadata-cache'
             | string,
         body?:
             | { libraries: string[] }

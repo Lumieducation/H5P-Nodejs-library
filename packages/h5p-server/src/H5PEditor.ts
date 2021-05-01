@@ -59,6 +59,7 @@ import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
 import DependencyGetter from './DependencyGetter';
+import ContentHub from './ContentHub';
 
 const log = new Logger('H5PEditor');
 
@@ -171,6 +172,7 @@ export default class H5PEditor {
         );
     }
 
+    public contentHub: ContentHub = new ContentHub();
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public contentTypeRepository: ContentTypeInformationRepository;
@@ -1029,7 +1031,7 @@ export default class H5PEditor {
             nodeVersionId: contentId,
             language,
             hub: {
-                contentSearchUrl: '/hub'
+                contentSearchUrl: 'https://hub-api.h5p.org/v1/contents/search'
             },
             enableContentHub: true
         };
@@ -1068,7 +1070,7 @@ export default class H5PEditor {
                 id: user.id
             },
             Hub: {
-                contentSearchUrl: '/hub'
+                contentSearchUrl: 'https://hub-api.h5p.org/v1/contents/search'
             }
         };
     }
