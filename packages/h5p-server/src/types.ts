@@ -116,6 +116,7 @@ export interface IContentChange {
  * It is also used when creating h5p.json files for .h5p packages.
  */
 export interface IContentMetadata {
+    a11yTitle?: string;
     author?: string;
     authorComments?: string;
     authors?: IContentAuthor[];
@@ -348,6 +349,9 @@ export interface IIntegration {
         mail: string;
         name: string;
     };
+    Hub?: {
+        contentSearchUrl: string;
+    };
 }
 
 /**
@@ -378,6 +382,7 @@ export interface IEditorIntegration {
     };
     basePath?: string;
     copyrightSemantics?: any;
+    enableContentHub?: boolean;
     fileIcon?: {
         height: number;
         path: string;
@@ -387,6 +392,9 @@ export interface IEditorIntegration {
      * The path at which **temporary** files can be retrieved from.
      */
     filesPath: string;
+    hub?: {
+        contentSearchUrl: string;
+    };
     language?: string;
     libraryUrl: string;
     metadataSemantics?: any;

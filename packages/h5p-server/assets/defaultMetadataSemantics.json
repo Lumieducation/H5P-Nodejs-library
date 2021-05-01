@@ -6,6 +6,12 @@
         "placeholder": "metadata-semantics:title-placeholder"
     },
     {
+        "name": "a11yTitle",
+        "type": "text",
+        "label": "metadata-semantics:a11y-title",
+        "optional": true
+    },
+    {
         "name": "license",
         "type": "select",
         "label": "metadata-semantics:license",

@@ -181,6 +181,9 @@ var ns = H5PEditor;
         return url;
     };
 
+    H5PEditor.enableContentHub = H5PIntegration.editor.enableContentHub
+        || false;
+    
     $(document).ready(H5PEditor.init);
 })(H5P.jQuery);
 </script>

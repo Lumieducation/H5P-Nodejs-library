@@ -1,0 +1,8 @@
+core:
+
+js/h5p-hub-registration.js
+js/h5p-hub-sharing.js
+styles/h5p-hub-registration.js
+styles/h5p-hub-sharing.js
+
+all seem to be unreferenced in code

@@ -64,7 +64,7 @@ export default class H5PConfig implements IH5PConfig {
     public enableLrsContentTypes: boolean = true;
     public exportMaxContentPathLength: number = 255;
     public fetchingDisabled: 0 | 1 = 0;
-    public h5pVersion: string = '1.24.0';
+    public h5pVersion: string = '1.24-master';
     public hubContentTypesEndpoint: string =
         'https://api.h5p.org/v1/content-types/';
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';

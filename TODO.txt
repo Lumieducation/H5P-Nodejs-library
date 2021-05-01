@@ -1,0 +1,14 @@
+H5PCore:
+
+  public function replaceContentHubMetadataCache($metadata, $lang);
+  public function getContentHubMetadataCache($lang = 'en');
+  public function getContentHubMetadataChecked($lang = 'en');
+  public function setContentHubMetadataChecked($time, $lang = 'en');
+
+const METADATA = 'hub-api.h5p.org/v1/metadata';
+const CONTENT = 'hub-api.h5p.org/v1/contents';
+const REGISTER = 'hub-api.h5p.org/v1/accounts';
+
+hub functions
+
+new locales of hub

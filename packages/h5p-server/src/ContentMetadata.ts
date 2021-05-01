@@ -29,6 +29,7 @@ export class ContentMetadata implements IContentMetadata {
             this.changes = undefined;
         }
     }
+    public a11yTitle?: string;
     public author?: string;
     public authorComments?: string;
     public authors?: IContentAuthor[];
