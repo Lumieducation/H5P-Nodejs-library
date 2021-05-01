@@ -24,6 +24,7 @@ export default class H5PConfig implements IH5PConfig {
     public contentFilesUrl: string = '/content';
     public contentFilesUrlPlayerOverride: string;
     public contentTypeCacheRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
+    public contentHubMetadataRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
     public contentUserDataUrl: string = '/contentUserData';
     public contentWhitelist: string =
         'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt';
@@ -68,6 +69,8 @@ export default class H5PConfig implements IH5PConfig {
     public hubContentTypesEndpoint: string =
         'https://api.h5p.org/v1/content-types/';
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
+    public hubContentEndpoint: string = 'https://hub-api.h5p.org/v1/contents';
+    public hubMetadataEndpoint: string = 'https://hub-api.h5p.org/v1/metadata';
     public librariesUrl: string = '/libraries';
     public libraryConfig: { [machineName: string]: any };
     public libraryWhitelist: string = 'js css';
@@ -98,6 +101,7 @@ export default class H5PConfig implements IH5PConfig {
      */
     public async load(): Promise<H5PConfig> {
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
+        await this.loadSettingFromStorage('contentHubMetadataRefreshInterval');
         await this.loadSettingFromStorage('contentWhitelist');
         await this.loadSettingFromStorage('editorAddons');
         await this.loadSettingFromStorage('enableLrsContentTypes');
@@ -124,6 +128,7 @@ export default class H5PConfig implements IH5PConfig {
      */
     public async save(): Promise<void> {
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
+        await this.saveSettingToStorage('contentHubMetadataRefreshInterval');
         await this.saveSettingToStorage('contentWhitelist');
         await this.saveSettingToStorage('editorAddons');
         await this.saveSettingToStorage('enableLrsContentTypes');

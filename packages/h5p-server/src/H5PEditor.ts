@@ -104,6 +104,7 @@ export default class H5PEditor {
 
         this.renderer = defaultRenderer;
         this.contentTypeCache = new ContentTypeCache(config, cache);
+        this.contentHub = new ContentHub(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
             this.urlGenerator.libraryFile,
@@ -172,7 +173,7 @@ export default class H5PEditor {
         );
     }
 
-    public contentHub: ContentHub = new ContentHub();
+    public contentHub: ContentHub;
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public contentTypeRepository: ContentTypeInformationRepository;

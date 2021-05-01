@@ -96,7 +96,7 @@ export default class H5PAjaxEndpoint {
                 return this.h5pEditor.getContentTypeCache(user, language);
             case 'content-hub-metadata-cache':
                 return new AjaxSuccessResponse(
-                    await this.h5pEditor.contentHub.getMetadata()
+                    await this.h5pEditor.contentHub.getMetadata(language)
                 );
             case 'libraries':
                 if (

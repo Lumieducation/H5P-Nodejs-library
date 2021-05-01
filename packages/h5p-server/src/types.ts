@@ -1,5 +1,5 @@
 import { ReadStream } from 'fs';
-import { Stream, Readable } from 'stream';
+import { Readable, Stream } from 'stream';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -1326,10 +1326,15 @@ export interface IH5PConfig {
     contentFilesUrlPlayerOverride: string;
 
     /**
-     * Time after which the content type cache is considered to be outdated in milliseconds.
-     * User-configurable.
+     * Time after which the content type cache is considered to be outdated in
+     * milliseconds. User-configurable.
      */
     contentTypeCacheRefreshInterval: number;
+    /**
+     * Time after which the content hub metadata is considered to be outdated in
+     * milliseconds. User-configurable.
+     */
+    contentHubMetadataRefreshInterval: number;
     /**
      * URL prefix for content user data (e.g. the user state where a user left
      * off displaying H5P content)
@@ -1430,6 +1435,14 @@ export interface IH5PConfig {
      * User-configurable.
      */
     hubRegistrationEndpoint: string;
+    /**
+     * The URL of the Content Hub that is used to query content.
+     */
+    hubContentEndpoint: string;
+    /**
+     * The URL of the Content Hub at which you can retrieve metadata
+     */
+    hubMetadataEndpoint: string;
     /**
      * The URL of the library files (= content types).
      */
