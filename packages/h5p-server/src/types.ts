@@ -383,6 +383,10 @@ export interface IEditorIntegration {
     basePath?: string;
     copyrightSemantics?: any;
     enableContentHub?: boolean;
+    /**
+     * This is a reference ot a generic binary file icon used in some content
+     * types.
+     */
     fileIcon?: {
         height: number;
         path: string;

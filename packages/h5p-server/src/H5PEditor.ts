@@ -7,6 +7,7 @@ import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import { withFile } from 'tmp-promise';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
@@ -60,6 +61,7 @@ import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
 import DependencyGetter from './DependencyGetter';
 import ContentHub from './ContentHub';
+import { downloadFile } from './helpers/downloadFile';
 
 const log = new Logger('H5PEditor');
 
@@ -917,6 +919,40 @@ export default class H5PEditor {
     }
 
     /**
+     * Downloads a .h5p file from the content hub. Then "uploads" the file as if
+     * the user uploaded the file manually.
+     * @param contentHubId the content hub id; this is a id of the external
+     * service and not related to local contentId
+     * @param user the user who is using the content hub; relevant for temporary
+     * file access rights
+     * @returns the content information extracted from the package.
+     */
+    public async getContentHubContent(
+        contentHubId: string,
+        user: IUser
+    ): Promise<{
+        installedLibraries: ILibraryInstallResult[];
+        metadata?: IContentMetadata;
+        parameters?: any;
+    }> {
+        log.debug(`Getting content hub content with id ${contentHubId}.`);
+        return withFile(
+            async ({ path: tmpFile }) => {
+                await downloadFile(
+                    `${this.config.hubContentEndpoint}/${contentHubId}/export`,
+                    tmpFile
+                );
+                log.debug(`Hub content downloaded to ${tmpFile}`);
+                return this.uploadPackage(tmpFile, user);
+            },
+            {
+                postfix: '.h5p',
+                keep: false
+            }
+        );
+    }
+
+    /**
      * If a file is a video, an audio file or an image, the filename is suffixed
      * with the corresponding directory (videos, audios, images).
      * @param filename the filename including the file extension
@@ -1023,6 +1059,13 @@ export default class H5PEditor {
                 this.copyrightSemantics,
                 language
             ),
+            fileIcon: {
+                path: this.urlGenerator.editorLibraryFile(
+                    'images/binary-file.png'
+                ),
+                height: 100,
+                width: 100
+            },
             filesPath: this.urlGenerator.temporaryFiles(),
             libraryUrl: this.urlGenerator.editorLibraryFiles(),
             metadataSemantics: this.semanticsLocalizer.localize(
