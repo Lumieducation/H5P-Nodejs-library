@@ -1,4 +1,4 @@
-import { file as createTempFile, FileResult } from 'tmp-promise';
+import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
@@ -7,7 +7,6 @@ import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { withFile } from 'tmp-promise';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
