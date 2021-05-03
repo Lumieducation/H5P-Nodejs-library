@@ -1,5 +1,18 @@
+# Reverse Engineering docs of the new H5P Content Hub
+
+## New files in core
+
+js/h5p-hub-registration.js
+js/h5p-hub-sharing.js
+styles/h5p-hub-registration.js
+styles/h5p-hub-sharing.js
+
+all seem to be unreferenced in core code
+
+## Authorization
 Authorization header: 'Basic ' . base64_encode("$site_uuid:$hub_secret");
 
+## Endpoints
 
 GET https://hub-api.h5p.org/v1/metadata?lang=en
 variables: lastChecked, lastModified

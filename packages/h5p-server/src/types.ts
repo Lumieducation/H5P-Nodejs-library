@@ -1335,6 +1335,18 @@ export interface IH5PConfig {
      */
     contentTypeCacheRefreshInterval: number;
     /**
+     * If true, the content hub is enabled.
+     */
+    contentHubEnabled: boolean;
+    /**
+     * The URL of the Content Hub that is used to query content.
+     */
+    contentHubContentEndpoint: string;
+    /**
+     * The URL of the Content Hub at which you can retrieve metadata
+     */
+    contentHubMetadataEndpoint: string;
+    /**
      * Time after which the content hub metadata is considered to be outdated in
      * milliseconds. User-configurable.
      */
@@ -1439,14 +1451,6 @@ export interface IH5PConfig {
      * User-configurable.
      */
     hubRegistrationEndpoint: string;
-    /**
-     * The URL of the Content Hub that is used to query content.
-     */
-    hubContentEndpoint: string;
-    /**
-     * The URL of the Content Hub at which you can retrieve metadata
-     */
-    hubMetadataEndpoint: string;
     /**
      * The URL of the library files (= content types).
      */

@@ -31,7 +31,7 @@ export async function downloadFile(
         .catch((reason: AxiosError) => {
             if (reason.isAxiosError) {
                 throw new H5pError(
-                    'content-hub-download-error',
+                    'content-hub-download-error-with-message',
                     { message: reason.message },
                     Number.parseInt(reason.code, 10)
                 );

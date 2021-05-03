@@ -938,7 +938,7 @@ export default class H5PEditor {
         return withFile(
             async ({ path: tmpFile }) => {
                 await downloadFile(
-                    `${this.config.hubContentEndpoint}/${contentHubId}/export`,
+                    `${this.config.contentHubContentEndpoint}/${contentHubId}/export`,
                     tmpFile
                 );
                 log.debug(`Hub content downloaded to ${tmpFile}`);
@@ -1074,9 +1074,9 @@ export default class H5PEditor {
             nodeVersionId: contentId,
             language,
             hub: {
-                contentSearchUrl: 'https://hub-api.h5p.org/v1/contents/search'
+                contentSearchUrl: `${this.config.contentHubContentEndpoint}/search`
             },
-            enableContentHub: true
+            enableContentHub: this.config.contentHubEnabled
         };
     }
 
@@ -1113,7 +1113,7 @@ export default class H5PEditor {
                 id: user.id
             },
             Hub: {
-                contentSearchUrl: 'https://hub-api.h5p.org/v1/contents/search'
+                contentSearchUrl: `${this.config.contentHubContentEndpoint}/search`
             }
         };
     }

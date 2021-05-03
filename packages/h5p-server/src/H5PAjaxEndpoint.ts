@@ -46,30 +46,30 @@ export default class H5PAjaxEndpoint {
     private semanticsEnforcer: SemanticsEnforcer;
 
     /**
-     * This method must be called by the GET route at the Ajax URL, e.g.
-     * GET /ajax. This route must be implemented for editor to work.
+     * This method must be called by the GET route at the Ajax URL, e.g. GET
+     * /ajax. This route must be implemented for editor to work.
      * @param action This is the sub action that should be executed. It is part
-     * of the query like this: GET /ajax?action=xyz
-     * Possible values:
+     * of the query like this: GET /ajax?action=xyz Possible values:
      *   - content-type-cache: Requests information about available content
      *     types from the server. The user parameter must be set, as the
      *     accessible content types and possible actions (update, etc.) can vary
      *     from user to user
+     *   - content-hub-metadata-cache: Requests information about the metadata
+     *     currently in use by the H5P Content Hub.
      *   - libraries: Requests detailed data about a single library. The
      *     parameters machineName, majorVersion, minorVersion and language must
-     *     be set in this case.
-     *     Queries look like this:
-     *     GET /ajax?action=libraries?machineName=<machine_name>&majorVersion=<major_version>&minorVersion=<minor_version>
+     *     be set in this case. Queries look like this: GET
+     *     /ajax?action=libraries?machineName=<machine_name>&majorVersion=<major_version>&minorVersion=<minor_version>
      * @param machineName (need if action == 'libraries') The machine name of
-     * the library about which information is requested, e.g. 'H5P.Example'.
-     * It is part of the query, e.g. +machineName=H5P.Example
+     * the library about which information is requested, e.g. 'H5P.Example'. It
+     * is part of the query, e.g. +machineName=H5P.Example
      * @param majorVersion (need if action == 'libraries') The major version of
      * the library about which information is requested, e.g. '1'.
      * @param minorVersion (need if action == 'libraries') The minor version of
      * the library about which information is requested, e.g. '0'.
-     * @param language (can be set if action == 'libraries') The language in which the
-     * editor is currently displayed, e.g. 'en'. Will default to English if
-     * unset.
+     * @param language (can be set if action == 'libraries') The language in
+     * which the editor is currently displayed, e.g. 'en'. Will default to
+     * English if unset.
      * @param user (needed if action == 'content-type-cache') The user who is
      * displaying the H5P Content Type Hub. It is the job of the implementation
      * to inject this object.

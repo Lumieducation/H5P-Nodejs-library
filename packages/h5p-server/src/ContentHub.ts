@@ -61,8 +61,8 @@ export default class ContentHub {
 
         const response = await axios.get(
             lang
-                ? `${this.config.hubMetadataEndpoint}?lang=${isoLanguage}`
-                : this.config.hubMetadataEndpoint,
+                ? `${this.config.contentHubMetadataEndpoint}?lang=${isoLanguage}`
+                : this.config.contentHubMetadataEndpoint,
             {
                 headers: lastUpdate
                     ? {
