@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "No s'ha pogut desar el paquet carregat al fitxer temporal.",
     "upload-validation-error": "El fitxer que heu penjat no és vàlid.",
     "unsatisfiable-range": "L'interval sol·licitat del fitxer no es troba dins de la mida del fitxer real.",
-    "multipart-ranges-unsupported": "Les sol·licituds d'abast multipart no són compatibles amb aquest servidor."
+    "multipart-ranges-unsupported": "Les sol·licituds d'abast multipart no són compatibles amb aquest servidor.",
+    "h5p-hub-connection-failed": "S'ha produït un error en connectar-se al centre de contingut H5P. Siusplau, intenta-ho més tard.",
+    "content-hub-download-error-with-message": "S'ha produït un error en connectar-se al centre de contingut H5P ( {{message}} ). Siusplau, intenta-ho més tard.",
+    "content-hub-download-error": "S'ha produït un error en connectar-se al centre de contingut H5P. Siusplau, intenta-ho més tard."
 }

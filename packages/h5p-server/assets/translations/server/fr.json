@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Impossible d'enregistrer le package téléchargé dans un fichier temporaire.",
     "upload-validation-error": "Le fichier que vous avez téléversé n'est pas valide.",
     "unsatisfiable-range": "La plage demandée du fichier ne correspond pas à la taille du fichier réel.",
-    "multipart-ranges-unsupported": "Les demandes de plage en plusieurs parties ne sont pas prises en charge sur ce serveur."
+    "multipart-ranges-unsupported": "Les demandes de plage en plusieurs parties ne sont pas prises en charge sur ce serveur.",
+    "h5p-hub-connection-failed": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard.",
+    "content-hub-download-error-with-message": "Une erreur s'est produite lors de la connexion au H5P Content Hub ( {{message}} ). Veuillez réessayer plus tard.",
+    "content-hub-download-error": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard."
 }

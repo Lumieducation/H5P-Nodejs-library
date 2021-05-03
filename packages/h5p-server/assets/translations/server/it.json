@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Impossibile salvare il pacchetto caricato in un file temporaneo.",
     "upload-validation-error": "Il file che hai caricato non è valido.",
     "unsatisfiable-range": "L'intervallo richiesto del file non rientra nelle dimensioni del file effettivo.",
-    "multipart-ranges-unsupported": "Le richieste di intervallo multiparte non sono supportate su questo server."
+    "multipart-ranges-unsupported": "Le richieste di intervallo multiparte non sono supportate su questo server.",
+    "h5p-hub-connection-failed": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
+    "content-hub-download-error-with-message": "Si è verificato un errore durante la connessione a H5P Content Hub ( {{message}} ). Per favore riprova più tardi.",
+    "content-hub-download-error": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi."
 }

@@ -23,3 +23,5 @@ test/data/hub-content/*
 test/data/content-type-cache/real-content-types.json
 test/data/hub-content-extracted/*
 packages/h5p-html-exporter/test/data/content/*
+
+.google_translate.json

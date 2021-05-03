@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Učitani paket nije moguće sačuvati u privremenu datoteku.",
     "upload-validation-error": "Datoteka koju ste prenijeli je nevaljana.",
     "unsatisfiable-range": "Traženi opseg datoteke nije unutar veličine stvarne datoteke.",
-    "multipart-ranges-unsupported": "Zahtjevi za više dijelova nisu podržani na ovom poslužitelju."
+    "multipart-ranges-unsupported": "Zahtjevi za više dijelova nisu podržani na ovom poslužitelju.",
+    "h5p-hub-connection-failed": "Došlo je do greške prilikom povezivanja sa H5P Content Hubom. Pokušajte ponovo kasnije.",
+    "content-hub-download-error-with-message": "Došlo je do greške pri povezivanju sa H5P Content Hub ( {{message}} ). Pokušajte ponovo kasnije.",
+    "content-hub-download-error": "Došlo je do greške prilikom povezivanja sa H5P Content Hubom. Pokušajte ponovo kasnije."
 }

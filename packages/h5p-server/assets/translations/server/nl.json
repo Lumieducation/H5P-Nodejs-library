@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Kan het geüploade pakket niet opslaan in een tijdelijk bestand.",
     "upload-validation-error": "Het bestand dat u heeft geüpload, is ongeldig.",
     "unsatisfiable-range": "Het gevraagde bereik van het bestand valt niet binnen de grootte van het daadwerkelijke bestand.",
-    "multipart-ranges-unsupported": "Meerdelige bereikverzoeken worden niet ondersteund op deze server."
+    "multipart-ranges-unsupported": "Meerdelige bereikverzoeken worden niet ondersteund op deze server.",
+    "h5p-hub-connection-failed": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens.",
+    "content-hub-download-error-with-message": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub ( {{message}} ). Probeer het later nog eens.",
+    "content-hub-download-error": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens."
 }

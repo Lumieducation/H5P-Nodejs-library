@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Não foi possível salvar o pacote carregado em um arquivo temporário.",
     "upload-validation-error": "O arquivo que você carregou é inválido.",
     "unsatisfiable-range": "O intervalo solicitado do arquivo não está dentro do tamanho do arquivo real.",
-    "multipart-ranges-unsupported": "As solicitações de intervalo de várias partes não são suportadas neste servidor."
+    "multipart-ranges-unsupported": "As solicitações de intervalo de várias partes não são suportadas neste servidor.",
+    "h5p-hub-connection-failed": "Ocorreu um erro ao conectar ao H5P Content Hub. Por favor, tente novamente mais tarde.",
+    "content-hub-download-error-with-message": "Ocorreu um erro ao conectar ao H5P Content Hub ( {{message}} ). Por favor, tente novamente mais tarde.",
+    "content-hub-download-error": "Ocorreu um erro ao conectar ao H5P Content Hub. Por favor, tente novamente mais tarde."
 }
