@@ -37,7 +37,7 @@
     },
     "devDependencies": {
         "@types/express": "4.17.11",
-        "@types/puppeteer": "5.4.2",
+        "@types/puppeteer": "5.4.3",
         "@types/react": "17.0.5",
         "cross-env": "7.0.3",
         "puppeteer": "9.1.1",
