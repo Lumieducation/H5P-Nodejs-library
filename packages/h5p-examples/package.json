@@ -1,7 +1,7 @@
 {
     "name": "@lumieducation/h5p-examples",
     "private": "true",
-    "version": "7.5.2",
+    "version": "8.0.0",
     "description": "",
     "main": "build/express.js",
     "scripts": {
@@ -19,10 +19,10 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@lumieducation/h5p-express": "^7.5.2",
-        "@lumieducation/h5p-html-exporter": "^7.5.2",
-        "@lumieducation/h5p-mongos3": "^7.5.2",
-        "@lumieducation/h5p-server": "^7.5.2",
+        "@lumieducation/h5p-express": "^8.0.0",
+        "@lumieducation/h5p-html-exporter": "^8.0.0",
+        "@lumieducation/h5p-mongos3": "^8.0.0",
+        "@lumieducation/h5p-server": "^8.0.0",
         "body-parser": "1.19.0",
         "cache-manager": "3.4.3",
         "cache-manager-redis-store": "2.0.0",
