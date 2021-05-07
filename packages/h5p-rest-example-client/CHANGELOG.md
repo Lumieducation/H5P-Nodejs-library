@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.5.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.1...v7.5.2) (2021-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8 ([#1248](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1248)) ([90fcabd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/90fcabda1cb756c4842de54a72095364183974fe))
+* **deps:** update dependency http-proxy-middleware to v1.1.1 ([6b331bc](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6b331bcab2835d52ff9ed222574a71b19b71bd2b))
+* **deps:** update dependency http-proxy-middleware to v1.1.2 ([1c70a7e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1c70a7e8ff141a7e7b5b247ff1ab95733318a614))
+* **deps:** update dependency http-proxy-middleware to v1.2.0 ([3dbea06](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3dbea067d23bfdc83dd9708395f44a9638f663d4))
+* **deps:** update dependency http-proxy-middleware to v1.2.1 ([213d416](https://github.com/Lumieducation/H5P-Nodejs-library/commit/213d4161345ff696d110abf28d99c1a7b4e1787a))
+
+
+
+
+
 ## [7.5.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.0...v7.5.1) (2021-04-01)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.5.2](https://github.com/Lumieducation/h5p-webcomponents/compare/v7.5.1...v7.5.2) (2021-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8 ([#1248](https://github.com/Lumieducation/h5p-webcomponents/issues/1248)) ([90fcabd](https://github.com/Lumieducation/h5p-webcomponents/commit/90fcabda1cb756c4842de54a72095364183974fe))
+* **h5p-webcomponent:** h5p integration object performs deep merge  ([#1340](https://github.com/Lumieducation/h5p-webcomponents/issues/1340)) ([841c360](https://github.com/Lumieducation/h5p-webcomponents/commit/841c360599998a52032eef073fa2d4c3bf148dba)), closes [#1296](https://github.com/Lumieducation/h5p-webcomponents/issues/1296)
+
+
+
+
+
 ## [7.5.1](https://github.com/Lumieducation/h5p-webcomponents/compare/v7.5.0...v7.5.1) (2021-04-01)
 
 **Note:** Version bump only for package @lumieducation/h5p-webcomponents

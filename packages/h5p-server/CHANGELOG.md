@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.5.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.1...v7.5.2) (2021-04-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8 ([#1248](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1248)) ([90fcabd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/90fcabda1cb756c4842de54a72095364183974fe))
+* **deps:** update dependency ajv-keywords to v5 ([#1252](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1252)) ([91c37ec](https://github.com/Lumieducation/H5P-Nodejs-library/commit/91c37ecdd466b5ec330b1fbbf75ff0c397191ace))
+* **deps:** update dependency image-size to v1 ([#1300](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1300)) ([9c96e70](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9c96e703ab3a28b363c7858a3ddebf520e1773a4))
+* **h5p-server:** accepts library directories that look like files ([#1331](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1331)) ([5ec660c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5ec660c2288e495967a47aaa4e9477e09d0f83d3)), closes [#1317](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1317)
+* **h5p-server:** file format filter now case insensitive ([#1313](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1313)) ([0bbf7bc](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0bbf7bc0cd7293713971636ef06e86e73d7144a5)), closes [#1299](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1299)
+* **h5p-server:** library list works if library dependencies are missing ([#1342](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1342)) ([6dab877](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6dab87701327f966f95dc88a020e26979beb340b)), closes [#1183](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1183)
+* **h5p-server:** package validator accepts dots in library file paths ([#1341](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1341)) ([e5ac643](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e5ac6432df5e9cc5dec0755e71fb0d6eb247db0e)), closes [#1339](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1339)
+
+
+
+
+
 ## [7.5.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.0...v7.5.1) (2021-04-01)
 
 
