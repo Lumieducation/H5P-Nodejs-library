@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Det gick inte att spara uppladdat paket i tillfällig fil.",
     "upload-validation-error": "Filen du laddade upp är ogiltig.",
     "unsatisfiable-range": "Det begärda intervallet för filen ligger inte inom storleken på den faktiska filen.",
-    "multipart-ranges-unsupported": "Förfrågningar om flera delar stöds inte på denna server."
+    "multipart-ranges-unsupported": "Förfrågningar om flera delar stöds inte på denna server.",
+    "h5p-hub-connection-failed": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare.",
+    "content-hub-download-error-with-message": "Det uppstod ett fel vid anslutning till H5P Content Hub ( {{message}} ). Vänligen försök igen senare.",
+    "content-hub-download-error": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare."
 }

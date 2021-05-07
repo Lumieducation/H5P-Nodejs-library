@@ -42,5 +42,6 @@
     "change-description": "Muutoksen kuvaus",
     "change-description-placeholder": "Valokuva rajattu, tekstiä muutettu jne.",
     "author-comments": "Kirjoittajan kommentit",
-    "author-comments-description": "Kommentit sisällön muokkaajalle (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Kommentit sisällön muokkaajalle (This text will not be published as a part of copyright info)",
+    "a11y-title": "Assistive Technologies -tarra"
 }

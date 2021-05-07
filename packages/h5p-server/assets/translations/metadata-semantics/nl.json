@@ -42,5 +42,6 @@
     "change-description": "Beschrijving van Verandering",
     "change-description-placeholder": "Foto bijgesneden, tekst gewijzigd, etc.",
     "author-comments": "Commentaar van de auteur",
-    "author-comments-description": "Opmerkingen voor de redacteur van de inhoud (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Opmerkingen voor de redacteur van de inhoud (This text will not be published as a part of copyright info)",
+    "a11y-title": "Label met ondersteunende technologieën"
 }

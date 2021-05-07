@@ -42,5 +42,6 @@
     "change-description": "변경 설명",
     "change-description-placeholder": "사진 잘림, 텍스트 변경 등",
     "author-comments": "작성자 의견",
-    "author-comments-description": "콘텐츠 편집자를위한 설명 (This text will not be published as a part of copyright info)"
+    "author-comments-description": "콘텐츠 편집자를위한 설명 (This text will not be published as a part of copyright info)",
+    "a11y-title": "보조 기술 레이블"
 }

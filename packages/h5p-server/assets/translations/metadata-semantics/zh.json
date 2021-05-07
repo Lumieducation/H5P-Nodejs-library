@@ -42,5 +42,6 @@
     "change-description": "变更说明",
     "change-description-placeholder": "裁剪照片，更改文字等。",
     "author-comments": "作者评论",
-    "author-comments-description": "内容编辑者的注释(This text will not be published as a part of copyright info)"
+    "author-comments-description": "内容编辑者的注释(This text will not be published as a part of copyright info)",
+    "a11y-title": "辅助技术标签"
 }

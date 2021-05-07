@@ -1,5 +1,5 @@
 import { ReadStream } from 'fs';
-import { Stream, Readable } from 'stream';
+import { Readable, Stream } from 'stream';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
@@ -116,6 +116,7 @@ export interface IContentChange {
  * It is also used when creating h5p.json files for .h5p packages.
  */
 export interface IContentMetadata {
+    a11yTitle?: string;
     author?: string;
     authorComments?: string;
     authors?: IContentAuthor[];
@@ -348,6 +349,9 @@ export interface IIntegration {
         mail: string;
         name: string;
     };
+    Hub?: {
+        contentSearchUrl: string;
+    };
 }
 
 /**
@@ -378,6 +382,11 @@ export interface IEditorIntegration {
     };
     basePath?: string;
     copyrightSemantics?: any;
+    enableContentHub?: boolean;
+    /**
+     * This is a reference ot a generic binary file icon used in some content
+     * types.
+     */
     fileIcon?: {
         height: number;
         path: string;
@@ -387,6 +396,9 @@ export interface IEditorIntegration {
      * The path at which **temporary** files can be retrieved from.
      */
     filesPath: string;
+    hub?: {
+        contentSearchUrl: string;
+    };
     language?: string;
     libraryUrl: string;
     metadataSemantics?: any;
@@ -1318,10 +1330,27 @@ export interface IH5PConfig {
     contentFilesUrlPlayerOverride: string;
 
     /**
-     * Time after which the content type cache is considered to be outdated in milliseconds.
-     * User-configurable.
+     * Time after which the content type cache is considered to be outdated in
+     * milliseconds. User-configurable.
      */
     contentTypeCacheRefreshInterval: number;
+    /**
+     * If true, the content hub is enabled.
+     */
+    contentHubEnabled: boolean;
+    /**
+     * The URL of the Content Hub that is used to query content.
+     */
+    contentHubContentEndpoint: string;
+    /**
+     * The URL of the Content Hub at which you can retrieve metadata
+     */
+    contentHubMetadataEndpoint: string;
+    /**
+     * Time after which the content hub metadata is considered to be outdated in
+     * milliseconds. User-configurable.
+     */
+    contentHubMetadataRefreshInterval: number;
     /**
      * URL prefix for content user data (e.g. the user state where a user left
      * off displaying H5P content)

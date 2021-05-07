@@ -24,6 +24,8 @@ export default class H5PConfig implements IH5PConfig {
     public contentFilesUrl: string = '/content';
     public contentFilesUrlPlayerOverride: string;
     public contentTypeCacheRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
+    public contentHubEnabled: boolean = false;
+    public contentHubMetadataRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
     public contentUserDataUrl: string = '/contentUserData';
     public contentWhitelist: string =
         'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt';
@@ -64,10 +66,14 @@ export default class H5PConfig implements IH5PConfig {
     public enableLrsContentTypes: boolean = true;
     public exportMaxContentPathLength: number = 255;
     public fetchingDisabled: 0 | 1 = 0;
-    public h5pVersion: string = '1.24.0';
+    public h5pVersion: string = '1.24-master';
     public hubContentTypesEndpoint: string =
         'https://api.h5p.org/v1/content-types/';
     public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
+    public contentHubContentEndpoint: string =
+        'https://hub-api.h5p.org/v1/contents';
+    public contentHubMetadataEndpoint: string =
+        'https://hub-api.h5p.org/v1/metadata';
     public librariesUrl: string = '/libraries';
     public libraryConfig: { [machineName: string]: any };
     public libraryWhitelist: string = 'js css';
@@ -97,11 +103,16 @@ export default class H5PConfig implements IH5PConfig {
      * Loads all changeable settings from storage. (Should be called when the system initializes.)
      */
     public async load(): Promise<H5PConfig> {
+        await this.loadSettingFromStorage('baseUrl');
+        await this.loadSettingFromStorage('contentHubEnabled');
+        await this.loadSettingFromStorage('contentHubMetadataRefreshInterval');
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
         await this.loadSettingFromStorage('contentWhitelist');
+        await this.loadSettingFromStorage('customization');
+        await this.loadSettingFromStorage('disableFullscreen');
         await this.loadSettingFromStorage('editorAddons');
         await this.loadSettingFromStorage('enableLrsContentTypes');
-        await this.loadSettingFromStorage('disableFullscreen');
+        await this.loadSettingFromStorage('exportMaxContentPathLength');
         await this.loadSettingFromStorage('fetchingDisabled');
         await this.loadSettingFromStorage('hubContentTypesEndpoint');
         await this.loadSettingFromStorage('hubRegistrationEndpoint');
@@ -113,9 +124,6 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
-        await this.loadSettingFromStorage('exportMaxContentPathLength');
-        await this.loadSettingFromStorage('customization');
-        await this.loadSettingFromStorage('baseUrl');
         return this;
     }
 
@@ -123,11 +131,15 @@ export default class H5PConfig implements IH5PConfig {
      * Saves all changeable settings to storage. (Should be called when a setting was changed.)
      */
     public async save(): Promise<void> {
+        await this.saveSettingToStorage('contentHubEnabled');
+        await this.saveSettingToStorage('contentHubMetadataRefreshInterval');
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
         await this.saveSettingToStorage('contentWhitelist');
+        await this.saveSettingToStorage('customization');
+        await this.saveSettingToStorage('disableFullscreen');
         await this.saveSettingToStorage('editorAddons');
         await this.saveSettingToStorage('enableLrsContentTypes');
-        await this.saveSettingToStorage('disableFullscreen');
+        await this.saveSettingToStorage('exportMaxContentPathLength');
         await this.saveSettingToStorage('fetchingDisabled');
         await this.saveSettingToStorage('hubContentTypesEndpoint');
         await this.saveSettingToStorage('hubRegistrationEndpoint');
@@ -139,8 +151,6 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
-        await this.saveSettingToStorage('exportMaxContentPathLength');
-        await this.saveSettingToStorage('customization');
     }
 
     /**

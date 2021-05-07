@@ -461,6 +461,8 @@ export class H5PEditorComponent extends HTMLElement {
         H5PEditor.assets = editorModel.integration.editor.assets;
         H5PEditor.baseUrl = '';
         H5PEditor.contentId = contentId === 'new' ? undefined : contentId;
+        H5PEditor.enableContentHub =
+            editorModel.integration.editor.enableContentHub || false;
 
         if (contentId === 'new') {
             // Create an empty editor for new content

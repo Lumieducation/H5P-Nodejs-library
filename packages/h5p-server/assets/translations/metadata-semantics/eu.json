@@ -42,5 +42,6 @@
     "change-description": "Aldaketaren deskribapena",
     "change-description-placeholder": "Argazkia moztuta, testua aldatuta, etab.",
     "author-comments": "Egilearen iruzkinak",
-    "author-comments-description": "Edukiaren editorearentzako iruzkinak (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Edukiaren editorearentzako iruzkinak (This text will not be published as a part of copyright info)",
+    "a11y-title": "Laguntza Teknologien etiketa"
 }

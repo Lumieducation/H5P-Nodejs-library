@@ -42,5 +42,6 @@
     "change-description": "Değişimin tanımı",
     "change-description-placeholder": "Fotoğraf kırpıldı, metin değiştirildi vb.",
     "author-comments": "Yazar yorumları",
-    "author-comments-description": "İçeriğin editörü için yorumlar (This text will not be published as a part of copyright info)"
+    "author-comments-description": "İçeriğin editörü için yorumlar (This text will not be published as a part of copyright info)",
+    "a11y-title": "Yardımcı Teknolojiler etiketi"
 }

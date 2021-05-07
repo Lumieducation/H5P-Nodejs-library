@@ -42,5 +42,6 @@
     "change-description": "Описание изменений",
     "change-description-placeholder": "Фотография обрезана, текст изменен и т. Д.",
     "author-comments": "Комментарии автора",
-    "author-comments-description": "Комментарии для редактора контента (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Комментарии для редактора контента (This text will not be published as a part of copyright info)",
+    "a11y-title": "Этикетка вспомогательных технологий"
 }

@@ -42,5 +42,6 @@
     "change-description": "Beskrivning av förändring",
     "change-description-placeholder": "Foto beskuret, text ändrad etc.",
     "author-comments": "Författarens kommentarer",
-    "author-comments-description": "Kommentarer till redaktören för innehållet (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Kommentarer till redaktören för innehållet (This text will not be published as a part of copyright info)",
+    "a11y-title": "Hjälpmedelsteknik"
 }

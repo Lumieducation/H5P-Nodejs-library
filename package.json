@@ -48,7 +48,8 @@
         "test:watch:h5p-express": "npm run test:watch --prefix packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --prefix packages/h5p-mongos3",
         "test:watch": "npm run test:watch --prefix packages/h5p-server",
-        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
+        "localize": "./localize.sh"
     },
     "release": {
         "branch": "release"
@@ -99,6 +100,7 @@
         "eslint-plugin-react-hooks": "4.2.0",
         "husky": "6.0.0",
         "jest": "26.6.0",
+        "json-autotranslate": "^1.8.0",
         "lerna": "4.0.0",
         "prettier": "2.2.1",
         "puppeteer": "9.1.1",

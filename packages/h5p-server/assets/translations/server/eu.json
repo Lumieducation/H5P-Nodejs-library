@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Ezin izan da kargatutako paketea aldi baterako fitxategian gorde.",
     "upload-validation-error": "Kargatu duzun fitxategia baliogabea da.",
     "unsatisfiable-range": "Eskatutako fitxategiaren barrutia ez dago benetako fitxategiaren tamainakoa.",
-    "multipart-ranges-unsupported": "Zerbitzari honetan ez dira onartzen hainbat ataleko eskaerak."
+    "multipart-ranges-unsupported": "Zerbitzari honetan ez dira onartzen hainbat ataleko eskaerak.",
+    "h5p-hub-connection-failed": "Errore bat gertatu da H5P Eduki Zentrora konektatzean. Saiatu berriro geroago.",
+    "content-hub-download-error-with-message": "Errore bat gertatu da H5P Eduki Zentrora konektatzean ( {{message}} ). Saiatu berriro geroago.",
+    "content-hub-download-error": "Errore bat gertatu da H5P Eduki Zentrora konektatzean. Saiatu berriro geroago."
 }

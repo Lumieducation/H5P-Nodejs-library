@@ -174,7 +174,8 @@ export default class H5PAjaxExpressController {
             req.files?.file,
             req.query.id as string,
             req.t,
-            req.files?.h5p
+            req.files?.h5p,
+            req.query.hubId as string
         );
         res.status(200).send(result);
     };

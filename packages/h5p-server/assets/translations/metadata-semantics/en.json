@@ -42,5 +42,6 @@
     "change-description": "Description of change",
     "change-description-placeholder": "Photo cropped, text changed, etc.",
     "author-comments": "Author comments",
-    "author-comments-description": "Comments for the editor of the content (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Comments for the editor of the content (This text will not be published as a part of copyright info)",
+    "a11y-title": "Assistive Technologies label"
 }

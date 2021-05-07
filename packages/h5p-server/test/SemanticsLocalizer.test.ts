@@ -300,6 +300,12 @@ describe('SemanticsLocalizer', () => {
                 placeholder: 'La Gioconda'
             },
             {
+                name: 'a11yTitle',
+                type: 'text',
+                label: 'Assistive Technologies label',
+                optional: true
+            },
+            {
                 name: 'license',
                 type: 'select',
                 label: 'License',

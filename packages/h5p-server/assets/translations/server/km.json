@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "មិនអាចរក្សាទុកកញ្ចប់ដែលបានផ្ទុកទៅឯកសារបណ្តោះអាសន្នទេ។",
     "upload-validation-error": "ឯកសារដែលអ្នកបានបញ្ចូលមិនត្រឹមត្រូវ។",
     "unsatisfiable-range": "ជួរឯកសារដែលបានស្នើមិនមានទំហំនៃឯកសារពិតប្រាកដទេ។",
-    "multipart-ranges-unsupported": "ការស្នើជួរជួរច្រើនមិនត្រូវបានគាំទ្រនៅលើម៉ាស៊ីនមេនេះទេ។"
+    "multipart-ranges-unsupported": "ការស្នើជួរជួរច្រើនមិនត្រូវបានគាំទ្រនៅលើម៉ាស៊ីនមេនេះទេ។",
+    "h5p-hub-connection-failed": "មានកំហុសក្នុងការភ្ជាប់ទៅនឹង H5P Content Hub ។ សូម​ព្យាយាម​ម្តង​ទៀត​នៅ​ពេល​ក្រោយ។",
+    "content-hub-download-error-with-message": "មានកំហុសក្នុងការភ្ជាប់ទៅនឹង H5P Content Hub ( {{message}} ) ។ សូម​ព្យាយាម​ម្តង​ទៀត​នៅ​ពេល​ក្រោយ។",
+    "content-hub-download-error": "មានកំហុសក្នុងការភ្ជាប់ទៅនឹង H5P Content Hub ។ សូម​ព្យាយាម​ម្តង​ទៀត​នៅ​ពេល​ក្រោយ។"
 }

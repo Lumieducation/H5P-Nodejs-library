@@ -9,7 +9,8 @@ import {
     IContentMetadata,
     ContentParameters,
     ILibraryOverviewForClient,
-    IFileStats
+    IFileStats,
+    IAjaxResponse
 } from './types';
 import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
@@ -45,30 +46,30 @@ export default class H5PAjaxEndpoint {
     private semanticsEnforcer: SemanticsEnforcer;
 
     /**
-     * This method must be called by the GET route at the Ajax URL, e.g.
-     * GET /ajax. This route must be implemented for editor to work.
+     * This method must be called by the GET route at the Ajax URL, e.g. GET
+     * /ajax. This route must be implemented for editor to work.
      * @param action This is the sub action that should be executed. It is part
-     * of the query like this: GET /ajax?action=xyz
-     * Possible values:
+     * of the query like this: GET /ajax?action=xyz Possible values:
      *   - content-type-cache: Requests information about available content
      *     types from the server. The user parameter must be set, as the
      *     accessible content types and possible actions (update, etc.) can vary
      *     from user to user
+     *   - content-hub-metadata-cache: Requests information about the metadata
+     *     currently in use by the H5P Content Hub.
      *   - libraries: Requests detailed data about a single library. The
      *     parameters machineName, majorVersion, minorVersion and language must
-     *     be set in this case.
-     *     Queries look like this:
-     *     GET /ajax?action=libraries?machineName=<machine_name>&majorVersion=<major_version>&minorVersion=<minor_version>
+     *     be set in this case. Queries look like this: GET
+     *     /ajax?action=libraries?machineName=<machine_name>&majorVersion=<major_version>&minorVersion=<minor_version>
      * @param machineName (need if action == 'libraries') The machine name of
-     * the library about which information is requested, e.g. 'H5P.Example'.
-     * It is part of the query, e.g. +machineName=H5P.Example
+     * the library about which information is requested, e.g. 'H5P.Example'. It
+     * is part of the query, e.g. +machineName=H5P.Example
      * @param majorVersion (need if action == 'libraries') The major version of
      * the library about which information is requested, e.g. '1'.
      * @param minorVersion (need if action == 'libraries') The minor version of
      * the library about which information is requested, e.g. '0'.
-     * @param language (can be set if action == 'libraries') The language in which the
-     * editor is currently displayed, e.g. 'en'. Will default to English if
-     * unset.
+     * @param language (can be set if action == 'libraries') The language in
+     * which the editor is currently displayed, e.g. 'en'. Will default to
+     * English if unset.
      * @param user (needed if action == 'content-type-cache') The user who is
      * displaying the H5P Content Type Hub. It is the job of the implementation
      * to inject this object.
@@ -84,7 +85,7 @@ export default class H5PAjaxEndpoint {
         minorVersion?: number | string,
         language?: string,
         user?: IUser
-    ): Promise<IHubInfo | ILibraryDetailedDataForClient> => {
+    ): Promise<IHubInfo | ILibraryDetailedDataForClient | IAjaxResponse> => {
         switch (action) {
             case 'content-type-cache':
                 if (!user) {
@@ -93,6 +94,10 @@ export default class H5PAjaxEndpoint {
                     );
                 }
                 return this.h5pEditor.getContentTypeCache(user, language);
+            case 'content-hub-metadata-cache':
+                return new AjaxSuccessResponse(
+                    await this.h5pEditor.contentHub.getMetadata(language)
+                );
             case 'libraries':
                 if (
                     machineName === undefined ||
@@ -401,14 +406,12 @@ export default class H5PAjaxEndpoint {
     };
 
     /**
-     * Implements the POST /ajax route.
-     * Performs various actions. Don't be confused by the fact that many of the
-     * requests dealt with here are not really POST requests, but look more like
-     * GET requests. This is simply how the H5P client works and we can't
-     * change it.
+     * Implements the POST /ajax route. Performs various actions. Don't be
+     * confused by the fact that many of the requests dealt with here are not
+     * really POST requests, but look more like GET requests. This is simply how
+     * the H5P client works and we can't change it.
      * @param action This is the sub action that should be executed. It is part
-     * of the query like this: POST /ajax?action=xyz
-     * Possible values:
+     * of the query like this: POST /ajax?action=xyz Possible values:
      *   - libraries:       returns basic information about a list of libraries
      *   - translations:    returns translation data about a list of libraries
      *                      in a specific language
@@ -424,19 +427,22 @@ export default class H5PAjaxEndpoint {
      * @param body the parsed JSON content of the request body
      * @param language (needed for 'translations' and optionally possible for
      * 'libraries') the language code for which the translations should be
-     * retrieved, e.g. 'en'. This paramter is part
-     * of the query URL, e.g. POST /ajax?action=translations&language=en
-     * @param user (needed for 'files' and 'library-install') the user who is
-     * performing the action. It is the job of the implementation to inject this
-     * object.
-     * @param filesFile (needed for 'files') the file uploaded to the server; this
-     * file is part of the HTTP request and has the name 'file'.
+     * retrieved, e.g. 'en'. This paramter is part of the query URL, e.g. POST
+     * /ajax?action=translations&language=en
+     * @param user (needed for 'files', 'library-install' and 'get-content') the
+     * user who is performing the action. It is the job of the implementation to
+     * inject this object.
+     * @param filesFile (needed for 'files') the file uploaded to the server;
+     * this file is part of the HTTP request and has the name 'file'.
      * @param id (needed for 'library-install') the machine name of the library
-     * to  install. The id is part of the query URL, e.g. POST /ajax?action=library-install&id=H5P.Example
+     * to  install. The id is part of the query URL, e.g. POST
+     * /ajax?action=library-install&id=H5P.Example
      * @param translate (needed for 'library-install' and 'library-upload') a
      * translation function used to localize messages
      * @param filesFile (needed for 'library-upload') the file uploaded to the
      * server; this file is part of the HTTP request and has the name 'h5p'.
+     * @param hubId (need for 'get-content') the id of a content object on the
+     * H5P Content Hub
      * @returns an object which must be sent back in the response as JSON with
      * HTTP status code 200
      * @throws H5pErrors with HTTP status codes, which you must catch and then
@@ -450,6 +456,8 @@ export default class H5PAjaxEndpoint {
             | 'filter'
             | 'library-install'
             | 'library-upload'
+            | 'content-hub-metadata-cache'
+            | 'get-content'
             | string,
         body?:
             | { libraries: string[] }
@@ -475,7 +483,8 @@ export default class H5PAjaxEndpoint {
             name: string;
             size: number;
             tempFilePath?: string;
-        }
+        },
+        hubId?: string
     ): Promise<
         | AjaxSuccessResponse
         | { height?: number; mime: string; path: string; width?: number }
@@ -698,6 +707,36 @@ export default class H5PAjaxEndpoint {
                         content: parameters,
                         contentTypes,
                         h5p: metadata
+                    },
+                    installedLibCount + updatedLibCount > 0
+                        ? getLibraryResultText(
+                              installedLibCount,
+                              updatedLibCount
+                          )
+                        : undefined
+                );
+            case 'get-content':
+                const {
+                    installedLibraries: installedLibraries2,
+                    metadata: metadata2,
+                    parameters: parameters2
+                } = await this.h5pEditor.getContentHubContent(hubId, user);
+                updatedLibCount = installedLibraries2.filter(
+                    (l) => l.type === 'patch'
+                ).length;
+                installedLibCount = installedLibraries2.filter(
+                    (l) => l.type === 'new'
+                ).length;
+
+                const contentTypes2 = await this.h5pEditor.getContentTypeCache(
+                    user,
+                    language
+                );
+                return new AjaxSuccessResponse(
+                    {
+                        content: parameters2,
+                        contentTypes: contentTypes2,
+                        h5p: metadata2
                     },
                     installedLibCount + updatedLibCount > 0
                         ? getLibraryResultText(

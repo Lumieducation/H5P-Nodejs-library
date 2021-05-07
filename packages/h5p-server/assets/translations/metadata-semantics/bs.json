@@ -42,5 +42,6 @@
     "change-description": "Opis promjene",
     "change-description-placeholder": "Fotografija je izrezana, tekst promijenjen itd.",
     "author-comments": "Komentari autora",
-    "author-comments-description": "Komentari za urednika sadržaja (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Komentari za urednika sadržaja (This text will not be published as a part of copyright info)",
+    "a11y-title": "Oznaka Assistive Technologies"
 }

@@ -42,5 +42,6 @@
     "change-description": "Descrição de Mudança",
     "change-description-placeholder": "Foto cortada, texto alterado, etc.",
     "author-comments": "Comentários do autor",
-    "author-comments-description": "Comentários para o editor do conteúdo (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Comentários para o editor do conteúdo (This text will not be published as a part of copyright info)",
+    "a11y-title": "Rótulo de tecnologias assistivas"
 }

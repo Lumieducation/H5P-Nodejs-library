@@ -42,5 +42,6 @@
     "change-description": "Descripció del canvi",
     "change-description-placeholder": "Foto retallada, text canviat, etc.",
     "author-comments": "Comentaris de l'autor",
-    "author-comments-description": "Comentaris per a l'editor del contingut (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Comentaris per a l'editor del contingut (This text will not be published as a part of copyright info)",
+    "a11y-title": "Etiqueta de tecnologies assistives"
 }

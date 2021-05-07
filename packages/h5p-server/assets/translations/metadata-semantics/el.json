@@ -42,5 +42,6 @@
     "change-description": "Περιγραφή αλλαγής",
     "change-description-placeholder": "Περικοπή φωτογραφίας, αλλαγή κειμένου κ.λπ.",
     "author-comments": "Σχόλια συγγραφέα",
-    "author-comments-description": "Σχόλια για τον συντάκτη του περιεχομένου (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Σχόλια για τον συντάκτη του περιεχομένου (This text will not be published as a part of copyright info)",
+    "a11y-title": "Ετικέτα Assistive Technologies"
 }

@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Каченият пакет не можа да бъде запазен във временен файл.",
     "upload-validation-error": "Каченият от вас файл е невалиден.",
     "unsatisfiable-range": "Исканият диапазон на файла не е в рамките на размера на действителния файл.",
-    "multipart-ranges-unsupported": "Заявките за няколко части не се поддържат на този сървър."
+    "multipart-ranges-unsupported": "Заявките за няколко части не се поддържат на този сървър.",
+    "h5p-hub-connection-failed": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно.",
+    "content-hub-download-error-with-message": "Възникна грешка при свързването към H5P Content Hub ( {{message}} ). Моля, опитайте отново по-късно.",
+    "content-hub-download-error": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно."
 }

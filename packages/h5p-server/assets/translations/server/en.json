@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Could not save uploaded package to temporary file.",
     "upload-validation-error": "The file you've uploaded is invalid.",
     "unsatisfiable-range": "The requested range of the file is not within the size of the actual file.",
-    "multipart-ranges-unsupported": "Multipart range requests are not supported on this server."
+    "multipart-ranges-unsupported": "Multipart range requests are not supported on this server.",
+    "h5p-hub-connection-failed": "There was an error connecting to the H5P Content Hub. Please try again later.",
+    "content-hub-download-error-with-message": "There was an error connecting to the H5P Content Hub ({{message}}). Please try again later.",
+    "content-hub-download-error": "There was an error connecting to the H5P Content Hub. Please try again later."
 }

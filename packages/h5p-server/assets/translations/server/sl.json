@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Naloženega paketa ni bilo mogoče shraniti v začasno datoteko.",
     "upload-validation-error": "Datoteka, ki ste jo naložili, je neveljavna.",
     "unsatisfiable-range": "Zahtevani obseg datoteke ni v velikosti dejanske datoteke.",
-    "multipart-ranges-unsupported": "Zahteve za večdelni obseg niso podprte na tem strežniku."
+    "multipart-ranges-unsupported": "Zahteve za večdelni obseg niso podprte na tem strežniku.",
+    "h5p-hub-connection-failed": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje.",
+    "content-hub-download-error-with-message": "Napaka pri povezovanju s H5P Content Hub ( {{message}} ). Prosim poskusite kasneje.",
+    "content-hub-download-error": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje."
 }

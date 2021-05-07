@@ -5,7 +5,7 @@
     "undisclosed": "Unbestimmt",
     "creative-commons": "Creative Commons",
     "CC-BY": "Namensnennung (CC BY)",
-    "4.0-international": "4.0 International",
+    "40-international": "4.0 International",
     "30-unported": "3.0 Unported",
     "25-generic": "2.5 Generic",
     "20-generic": "2.0 Generic",
@@ -43,5 +43,5 @@
     "change-description-placeholder": "Bild beschnitten, Text verändert usw.",
     "author-comments": "Anmerkungen des Autors",
     "author-comments-description": "Hier können Kommentare für weitere Bearbeiter hinterlassen werden. (Dieser Text wird nicht als Teil der Urheberrechtsangaben angezeigt)",
-    "40-international": "4.0 International"
+    "a11y-title": "barrierefreier Titel"
 }

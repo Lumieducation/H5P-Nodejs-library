@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Das hochgeladene H5P-Paket konnte nicht in einer temporären Datei gespeichert werden.",
     "upload-validation-error": "Die Datei, die du hochgeladen hast, ist fehlerhaft.",
     "unsatisfiable-range": "Der angeforderte Bereich der Datei liegt außerhalb der Dateigröße.",
-    "multipart-ranges-unsupported": "Dieser Server unterstützt keine Multipart Range Requests."
+    "multipart-ranges-unsupported": "Dieser Server unterstützt keine Multipart Range Requests.",
+    "h5p-hub-connection-failed": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.",
+    "content-hub-download-error-with-message": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten ({{message}}). Bitte versuche es später noch einmal.",
+    "content-hub-download-error": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen es später noch einmal."
 }

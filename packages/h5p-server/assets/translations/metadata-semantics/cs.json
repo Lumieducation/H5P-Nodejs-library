@@ -42,5 +42,6 @@
     "change-description": "Popis změny",
     "change-description-placeholder": "Oříznutí fotografie, změna textu atd.",
     "author-comments": "Komentáře autorů",
-    "author-comments-description": "Komentáře pro editor obsahu (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Komentáře pro editor obsahu (This text will not be published as a part of copyright info)",
+    "a11y-title": "Štítek Assistive Technologies"
 }

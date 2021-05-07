@@ -42,5 +42,6 @@
     "change-description": "Описание на промяната",
     "change-description-placeholder": "Снимката е изрязана, текстът е променен и т.н.",
     "author-comments": "Коментари на автора",
-    "author-comments-description": "Коментари за редактора на съдържанието (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Коментари за редактора на съдържанието (This text will not be published as a part of copyright info)",
+    "a11y-title": "Етикет „Помощни технологии“"
 }

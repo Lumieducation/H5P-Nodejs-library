@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "Lähetettyä pakettia ei voitu tallentaa väliaikaiseen tiedostoon.",
     "upload-validation-error": "Lataamasi tiedosto on virheellinen.",
     "unsatisfiable-range": "Tiedoston pyydetty alue ei ole varsinaisen tiedoston kokoinen.",
-    "multipart-ranges-unsupported": "Usean osan aluepyyntöjä ei tueta tässä palvelimessa."
+    "multipart-ranges-unsupported": "Usean osan aluepyyntöjä ei tueta tässä palvelimessa.",
+    "h5p-hub-connection-failed": "H5P-sisältökeskukseen yhdistämisessä tapahtui virhe. Yritä uudelleen myöhemmin.",
+    "content-hub-download-error-with-message": "Yhdistettäessä H5P Content Hubiin ( {{message}} ) tapahtui virhe. Yritä uudelleen myöhemmin.",
+    "content-hub-download-error": "H5P-sisältökeskukseen yhdistämisessä tapahtui virhe. Yritä uudelleen myöhemmin."
 }

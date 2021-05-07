@@ -42,5 +42,6 @@
     "change-description": "Muudatuse kirjeldus",
     "change-description-placeholder": "Foto kärbitud, teksti muudetud jne",
     "author-comments": "Autori kommentaarid",
-    "author-comments-description": "Kommentaarid sisu redaktorile (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Kommentaarid sisu redaktorile (This text will not be published as a part of copyright info)",
+    "a11y-title": "Abistavate tehnoloogiate silt"
 }

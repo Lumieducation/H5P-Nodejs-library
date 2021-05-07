@@ -1,3 +1,5 @@
+type NestedStructure = string | { [key: string]: NestedStructure };
+
 /**
  * This class performs translations using a simple object with string keys as
  * a place to look up the translations. Can be used in tests and as a fallback
@@ -12,9 +14,9 @@ export default class SimpleTranslator {
     constructor(
         private translationStrings:
             | {
-                  [namespace: string]: { [key: string]: string };
+                  [namespace: string]: { [key: string]: NestedStructure };
               }
-            | { [key: string]: string }
+            | { [key: string]: NestedStructure }
     ) {}
 
     /**

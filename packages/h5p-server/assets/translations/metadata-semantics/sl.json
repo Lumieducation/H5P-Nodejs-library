@@ -42,5 +42,6 @@
     "change-description": "Opis spremembe",
     "change-description-placeholder": "Fotografija obrezana, besedilo spremenjeno itd.",
     "author-comments": "Komentarji avtorja",
-    "author-comments-description": "Komentarji za urejevalnik vsebine (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Komentarji za urejevalnik vsebine (This text will not be published as a part of copyright info)",
+    "a11y-title": "Oznaka Assistive Technologies"
 }
