@@ -13,7 +13,7 @@
         "build:h5p-html-exporter": "npm run build --prefix packages/h5p-html-exporter",
         "build:h5p-react": "npm run build --prefix packages/h5p-react",
         "build:h5p-webcomponents": "npm run build --prefix packages/h5p-webcomponents",
-        "build": "(npm run build --prefix packages/h5p-server) && (concurrently \"npm run build --prefix packages/h5p-express\" \"npm run build --prefix packages/h5p-html-exporter\" \"npm run build --prefix packages/h5p-mongos3\") && (concurrently \"npm run build --prefix packages/h5p-examples\" \"npm run build:h5p-webcomponents\") && (npm run build:h5p-react)",
+        "build": "npm run build --prefix packages/h5p-server && concurrently \"npm run build --prefix packages/h5p-express\" \"npm run build --prefix packages/h5p-html-exporter\" \"npm run build --prefix packages/h5p-mongos3\" && concurrently \"npm run build --prefix packages/h5p-examples\" \"npm run build:h5p-webcomponents\" && npm run build:h5p-react",
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:h5p": "sh scripts/install.sh",
