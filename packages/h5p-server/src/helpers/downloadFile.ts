@@ -1,9 +1,11 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import fs from 'fs';
-
 import * as stream from 'stream';
 import { promisify } from 'util';
+
+import { IH5PConfig } from '../types';
 import H5pError from './H5pError';
+import HttpClient from './HttpClient';
 
 const finished = promisify(stream.finished);
 
@@ -16,10 +18,12 @@ const finished = promisify(stream.finished);
  */
 export async function downloadFile(
     fileUrl: string,
-    outputLocationPath: string
+    outputLocationPath: string,
+    config: IH5PConfig
 ): Promise<any> {
     const writer = fs.createWriteStream(outputLocationPath);
-    return axios({
+    const client = HttpClient(config);
+    return client({
         method: 'get',
         url: fileUrl,
         responseType: 'stream'

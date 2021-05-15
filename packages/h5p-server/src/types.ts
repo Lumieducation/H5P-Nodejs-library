@@ -1511,8 +1511,27 @@ export interface IH5PConfig {
      */
     playUrl: string;
     /**
-     * If true, the instance will send usage statistics to the H5P Hub whenever it looks for new content types or updates.
-     * User-configurable.
+     * Allows settings a http(s) proxy for outgoing requests. No proxy will be
+     * used if left undefined (or the one specified in the HTTPS_PROXY
+     * environment variable).
+     */
+    proxy?: {
+        /**
+         * The hostname of the proxy without any protocol prefix (e.g. only 10.1.2.3)
+         */
+        host: string;
+        /**
+         * The port of the proxy, e.g. 8080.
+         */
+        port: number;
+        /**
+         * The protocol to use to access the proxy. Can be left undefined if http is used.
+         */
+        protocol?: 'http' | 'https';
+    };
+    /**
+     * If true, the instance will send usage statistics to the H5P Hub whenever
+     * it looks for new content types or updates. User-configurable.
      */
     sendUsageStatistics: boolean;
     /**

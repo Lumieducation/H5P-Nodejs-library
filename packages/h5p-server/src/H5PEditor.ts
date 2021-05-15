@@ -939,7 +939,8 @@ export default class H5PEditor {
             async ({ path: tmpFile }) => {
                 await downloadFile(
                     `${this.config.contentHubContentEndpoint}/${contentHubId}/export`,
-                    tmpFile
+                    tmpFile,
+                    this.config
                 );
                 log.debug(`Hub content downloaded to ${tmpFile}`);
                 return this.uploadPackage(tmpFile, user);

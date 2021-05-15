@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { AxiosInstance } from 'axios';
 import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
@@ -12,6 +12,7 @@ import {
     IRegistrationData,
     IUsageStatistics
 } from './types';
+import HttpClient from './helpers/HttpClient';
 
 const log = new Logger('ContentTypeCache');
 
@@ -39,10 +40,13 @@ export default class ContentTypeCache {
         log.info(`initialize`);
         this.config = config;
         this.storage = storage;
+        this.httpClient = HttpClient(config);
     }
 
     private config: IH5PConfig;
     private storage: IKeyValueStorage;
+    private httpClient: AxiosInstance;
+
     /**
      * Converts an entry from the H5P Hub into a format with flattened versions and integer date values.
      * @param entry the entry as received from H5P Hub
@@ -102,8 +106,7 @@ export default class ContentTypeCache {
                 this.compileUsageStatistics()
             );
         }
-
-        const response = await axios.post(
+        const response = await this.httpClient.post(
             this.config.hubContentTypesEndpoint,
             qs.stringify(formData)
         );
@@ -222,7 +225,7 @@ export default class ContentTypeCache {
         if (this.config.uuid && this.config.uuid !== '') {
             return this.config.uuid;
         }
-        const response = await axios.post(
+        const response = await this.httpClient.post(
             this.config.hubRegistrationEndpoint,
             this.compileRegistrationData()
         );

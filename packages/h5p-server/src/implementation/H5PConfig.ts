@@ -90,12 +90,17 @@ export default class H5PConfig implements IH5PConfig {
         [machineName: string]: string[];
     };
     public playUrl: string = '/play';
+    public proxy?: {
+        host: string;
+        port: number;
+        protocol?: 'http' | 'https';
+    };
     public sendUsageStatistics: boolean = false;
     public setFinishedUrl: string = '/setFinished';
     public siteType: 'local' | 'network' | 'internet' = 'local';
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
     public temporaryFilesUrl: string = '/temp-files';
-    public uuid: string = ''; // TODO: revert to''
+    public uuid: string = '';
 
     private storage: IKeyValueStorage;
 
@@ -121,6 +126,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('maxFileSize');
         await this.loadSettingFromStorage('maxTotalSize');
         await this.loadSettingFromStorage('playerAddons');
+        await this.loadSettingFromStorage('proxy');
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
@@ -148,6 +154,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('maxFileSize');
         await this.saveSettingToStorage('maxTotalSize');
         await this.saveSettingToStorage('playerAddons');
+        await this.saveSettingToStorage('proxy');
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
