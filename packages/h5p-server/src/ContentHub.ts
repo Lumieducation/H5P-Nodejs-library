@@ -1,8 +1,9 @@
-import axios from 'axios';
-import H5pError from './helpers/H5pError';
+import { AxiosInstance } from 'axios';
 
-import Logger from './helpers/Logger';
+import HttpClient from './helpers/HttpClient';
 import { IH5PConfig, IKeyValueStorage } from './types';
+import H5pError from './helpers/H5pError';
+import Logger from './helpers/Logger';
 
 const log = new Logger('ContentHub');
 
@@ -14,7 +15,10 @@ export default class ContentHub {
      */
     constructor(private config: IH5PConfig, private storage: IKeyValueStorage) {
         log.info(`initialize`);
+        this.httpClient = HttpClient(config);
     }
+
+    private httpClient: AxiosInstance;
 
     getMetadata = async (lang?: string): Promise<any> => {
         const updateKey = lang
@@ -59,7 +63,7 @@ export default class ContentHub {
             }
         }
 
-        const response = await axios.get(
+        const response = await this.httpClient.get(
             lang
                 ? `${this.config.contentHubMetadataEndpoint}?lang=${isoLanguage}`
                 : this.config.contentHubMetadataEndpoint,

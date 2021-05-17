@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { AxiosInstance } from 'axios';
 import * as fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
@@ -17,9 +17,9 @@ import {
     ITranslationFunction,
     IUser
 } from './types';
-
 import Logger from './helpers/Logger';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
+import HttpClient from './helpers/HttpClient';
 
 const log = new Logger('ContentTypeInformationRepository');
 
@@ -55,9 +55,11 @@ export default class ContentTypeInformationRepository {
                 'hub'
             ]);
         }
+        this.httpClient = HttpClient(config);
     }
 
     private translator: TranslatorWithFallback;
+    private httpClient: AxiosInstance;
 
     /**
      * Gets the information about available content types with all the extra
@@ -132,7 +134,7 @@ export default class ContentTypeInformationRepository {
         }
 
         // Download content type package from the Hub
-        const response = await axios.get(
+        const response = await this.httpClient.get(
             this.config.hubContentTypesEndpoint + machineName,
             { responseType: 'stream' }
         );
