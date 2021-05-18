@@ -223,12 +223,7 @@ export default class PackageImporter {
         log.info(`processing package ${packagePath}`);
         const packageValidator = new PackageValidator(this.config);
         // no need to check result as the validator throws an exception if there is an error
-        await packageValidator.validatePackage(
-            packagePath,
-            copyMode === ContentCopyModes.Install ||
-                copyMode === ContentCopyModes.Temporary,
-            true
-        );
+        await packageValidator.validateFileSizes(packagePath);
         // we don't use withDir here, to have better error handling (catch & finally block below)
         const { path: tempDirPath } = await dir();
 
@@ -244,6 +239,13 @@ export default class PackageImporter {
                     copyMode === ContentCopyModes.Install ||
                     copyMode === ContentCopyModes.Temporary
             });
+
+            await packageValidator.validateExtractedPackage(
+                tempDirPath,
+                copyMode === ContentCopyModes.Install ||
+                    copyMode === ContentCopyModes.Temporary,
+                true
+            );
             const dirContent = await fsExtra.readdir(tempDirPath);
 
             // install all libraries

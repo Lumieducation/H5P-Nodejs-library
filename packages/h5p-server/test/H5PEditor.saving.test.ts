@@ -758,7 +758,11 @@ describe('H5PEditor', () => {
                         // check if saved H5P package is valid
                         const validator = new PackageValidator(config);
                         await expect(
-                            validator.validatePackage(h5pFilePath, true, true)
+                            validator.validateExtractedPackage(
+                                h5pFilePath,
+                                true,
+                                true
+                            )
                         ).resolves.toEqual(true);
                     },
                     { keep: false, postfix: '.h5p' }
