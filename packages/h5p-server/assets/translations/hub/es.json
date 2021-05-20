@@ -257,7 +257,7 @@
     "H5P_AudioRecorder": {
         "title": "Grabadora de audio (Audio Recorder)",
         "summary": "Crea una grabación de audio",
-        "description": "Una grabadora de audio HTML5. Grabe su voz y reproduzca o descargue un archivo .wav de su grabación. Utilice el complemento H5P para crear la grabadora de audio H5P en su sitio Drupal, Wordpress o Moodle.",
+        "description": "Una grabadora de audio HTML5. Grabe su voz y reproduzca o descargue un archivo .wav de su grabación. Utilice el complemento H5P para crear la grabadora de audio H5P en su sitio Drupal, Wordpress o Moodle. ",
         "keywords": {
             "audio": "audio",
             "recorder": "grabadora"
