@@ -16,7 +16,6 @@ import {
     ILibraryInstallResult,
     IUser
 } from './types';
-
 import Logger from './helpers/Logger';
 
 const log = new Logger('PackageImporter');
@@ -82,9 +81,10 @@ export default class PackageImporter {
     ): Promise<void> {
         log.info(`extracting package ${packagePath} to ${directoryPath}`);
         const zipFile = await yauzlPromise.open(packagePath);
-        await zipFile.walkEntries(async (entry: any) => {
+        await zipFile.walkEntries(async (entry: yauzlPromise.Entry) => {
             const basename = path.basename(entry.fileName);
             if (
+                !entry.fileName.endsWith('/') &&
                 !basename.startsWith('.') &&
                 !basename.startsWith('_') &&
                 ((includeContent && entry.fileName.startsWith('content/')) ||
@@ -95,7 +95,6 @@ export default class PackageImporter {
             ) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.fileName);
-
                 await fsExtra.mkdirp(path.dirname(writePath));
                 const writeStream = fsExtra.createWriteStream(writePath);
                 await promisepipe(readStream, writeStream);

@@ -122,6 +122,7 @@ export default class PackageValidator {
 
         const result = await new ValidatorBuilder()
             .addRule(this.fileSizeMustBeWithinLimits)
+            .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
             .validate(await zipArchive.readEntries(), '');
 
@@ -182,7 +183,12 @@ export default class PackageValidator {
                 this.jsonMustConformToSchema(
                     'h5p.json',
                     this.h5pMetadataValidator,
-                    'invalid-h5p-json-file-2'
+                    'invalid-h5p-json-file-2',
+                    'unable-to-parse-package',
+                    undefined,
+                    {
+                        filename: 'h5p.json'
+                    }
                 ),
                 checkContent
             )
@@ -195,7 +201,13 @@ export default class PackageValidator {
                 checkContent
             )
             .addRuleWhen(
-                this.jsonMustBeParsable('content/content.json'),
+                this.jsonMustBeParsable(
+                    'content/content.json',
+                    'unable-to-parse-package',
+                    undefined,
+                    undefined,
+                    { filename: 'content/content.json' }
+                ),
                 checkContent
             )
             .addRule(throwErrorsNowRule)
