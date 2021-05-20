@@ -152,7 +152,7 @@ describe('validating H5P files', () => {
         );
         const config = new H5PConfig(null);
         await expect(validatePackage(config, h5pFile)).rejects.toThrow(
-            'package-validation-failed:invalid-language-file'
+            'package-validation-failed:invalid-language-file,invalid-schema-library-json-file'
         );
     });
 });

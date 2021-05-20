@@ -34,6 +34,7 @@ export default class AggregateH5pError extends H5pError {
         this.errors.push(error);
         this.message = `${this.errorId}:${this.getErrors()
             .map((e) => e.message)
+            .sort()
             .join(',')}`;
         return this;
     }
