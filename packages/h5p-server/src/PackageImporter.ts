@@ -220,7 +220,10 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`processing package ${packagePath}`);
-        const packageValidator = new PackageValidator(this.config);
+        const packageValidator = new PackageValidator(
+            this.config,
+            this.libraryManager
+        );
         // no need to check result as the validator throws an exception if there is an error
         await packageValidator.validateFileSizes(packagePath);
         // we don't use withDir here, to have better error handling (catch & finally block below)

@@ -4,6 +4,11 @@ import * as path from 'path';
 import H5PConfig from '../../src/implementation/H5PConfig';
 import { validatePackage } from '../helpers/PackageValidatorHelper';
 
+const libraryManagerMock = {
+    isPatchedLibrary: () => Promise.resolve(undefined),
+    libraryExists: () => Promise.resolve(false)
+} as any;
+
 describe('validate all H5P files from the Hub', () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
     let files;
@@ -20,7 +25,11 @@ describe('validate all H5P files from the Hub', () => {
             const config = new H5PConfig(null);
             config.contentWhitelist += ' html';
             await expect(
-                validatePackage(config, `${directory}/${file}`)
+                validatePackage(
+                    libraryManagerMock,
+                    config,
+                    `${directory}/${file}`
+                )
             ).resolves.toBeDefined();
         });
     }

@@ -100,6 +100,12 @@ export class ValidatorBuilder {
             // occur step by step
             // eslint-disable-next-line no-await-in-loop
             returnValue = await rule(returnValue, pathPrefix, error);
+            if (returnValue === undefined) {
+                // An undefined return value means that the validation should be
+                // aborted because it's not necessary (e.g. because it would be
+                // redundant to validate an already installed library)
+                break;
+            }
         }
         return returnValue;
     }

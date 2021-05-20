@@ -757,7 +757,13 @@ describe('H5PEditor', () => {
 
                         // check if saved H5P package is valid
                         await expect(
-                            validatePackage(config, h5pFilePath, true, true)
+                            validatePackage(
+                                h5pEditor.libraryManager,
+                                config,
+                                h5pFilePath,
+                                true,
+                                true
+                            )
                         ).resolves.toEqual(true);
                     },
                     { keep: false, postfix: '.h5p' }

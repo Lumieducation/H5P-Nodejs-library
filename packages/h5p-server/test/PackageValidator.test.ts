@@ -3,14 +3,27 @@ import * as path from 'path';
 import H5PConfig from '../src/implementation/H5PConfig';
 import { validatePackage } from './helpers/PackageValidatorHelper';
 
+const libraryManagerMock = {
+    isPatchedLibrary: () => Promise.resolve(undefined),
+    libraryExists: () => Promise.resolve(false)
+} as any;
+
 describe('validating H5P files', () => {
     it('correctly validates valid h5p files', async () => {
         const h5pFile1 = path.resolve('test/data/validator/valid1.h5p');
         const h5pFile2 = path.resolve('test/data/validator/valid2.h5p');
 
-        let result = await validatePackage(new H5PConfig(null), h5pFile1);
+        let result = await validatePackage(
+            libraryManagerMock,
+            new H5PConfig(null),
+            h5pFile1
+        );
         expect(result).toBeDefined();
-        result = await validatePackage(new H5PConfig(null), h5pFile2);
+        result = await validatePackage(
+            libraryManagerMock,
+            new H5PConfig(null),
+            h5pFile2
+        );
         expect(result).toBeDefined();
     });
 
@@ -18,7 +31,7 @@ describe('validating H5P files', () => {
         const h5pFile = path.resolve('test/data/validator/corrupt_archive.h5p');
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow('unable-to-unzip');
     });
 
@@ -27,9 +40,9 @@ describe('validating H5P files', () => {
         const config = new H5PConfig(null);
         config.maxFileSize = 1024;
 
-        await expect(validatePackage(config, h5pFile)).rejects.toThrow(
-            'package-validation-failed:file-size-too-large'
-        );
+        await expect(
+            validatePackage(libraryManagerMock, config, h5pFile)
+        ).rejects.toThrow('package-validation-failed:file-size-too-large');
     });
 
     it('rejects too large total content size', async () => {
@@ -37,9 +50,9 @@ describe('validating H5P files', () => {
         const config = new H5PConfig(null);
         config.maxTotalSize = 10;
 
-        await expect(validatePackage(config, h5pFile)).rejects.toThrow(
-            'package-validation-failed:total-size-too-large'
-        );
+        await expect(
+            validatePackage(libraryManagerMock, config, h5pFile)
+        ).rejects.toThrow('package-validation-failed:total-size-too-large');
     });
 
     it('rejects invalid file extensions', async () => {
@@ -48,9 +61,9 @@ describe('validating H5P files', () => {
         config.libraryWhitelist = 'json js css';
         config.contentWhitelist = 'json';
 
-        await expect(validatePackage(config, h5pFile)).rejects.toThrow(
-            'package-validation-failed:not-in-whitelist'
-        );
+        await expect(
+            validatePackage(libraryManagerMock, config, h5pFile)
+        ).rejects.toThrow('package-validation-failed:not-in-whitelist');
     });
 
     it('rejects broken json files', async () => {
@@ -62,10 +75,10 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile1)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile1)
         ).rejects.toThrow('package-validation-failed:unable-to-parse-package');
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile2)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile2)
         ).rejects.toThrow('package-validation-failed:unable-to-parse-package');
     });
 
@@ -75,7 +88,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow('package-validation-failed:invalid-h5p-json-file-2');
     });
 
@@ -85,7 +98,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow('package-validation-failed:invalid-library-name');
     });
 
@@ -95,7 +108,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow(
             'package-validation-failed:invalid-schema-library-json-file'
         );
@@ -107,7 +120,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow('package-validation-failed:library-file-missing');
     });
 
@@ -117,7 +130,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow(
             'package-validation-failed:library-directory-name-mismatch'
         );
@@ -129,7 +142,7 @@ describe('validating H5P files', () => {
         );
 
         await expect(
-            validatePackage(new H5PConfig(null), h5pFile)
+            validatePackage(libraryManagerMock, new H5PConfig(null), h5pFile)
         ).rejects.toThrow(
             'package-validation-failed:invalid-language-file-json'
         );
@@ -141,9 +154,9 @@ describe('validating H5P files', () => {
         );
         const config = new H5PConfig(null);
         config.coreApiVersion.minor = 1;
-        await expect(validatePackage(config, h5pFile)).rejects.toThrow(
-            'package-validation-failed:api-version-unsupported'
-        );
+        await expect(
+            validatePackage(libraryManagerMock, config, h5pFile)
+        ).rejects.toThrow('package-validation-failed:api-version-unsupported');
     });
 
     it('detects errors in several libraries', async () => {
@@ -151,7 +164,9 @@ describe('validating H5P files', () => {
             'test/data/validator/2-invalid-libraries.h5p'
         );
         const config = new H5PConfig(null);
-        await expect(validatePackage(config, h5pFile)).rejects.toThrow(
+        await expect(
+            validatePackage(libraryManagerMock, config, h5pFile)
+        ).rejects.toThrow(
             'package-validation-failed:invalid-language-file,invalid-schema-library-json-file'
         );
     });

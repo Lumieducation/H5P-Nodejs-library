@@ -15,6 +15,7 @@ import {
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
 import { IH5PConfig } from './types';
+import LibraryManager from './LibraryManager';
 
 const log = new Logger('PackageValidator');
 
@@ -35,7 +36,10 @@ export default class PackageValidator {
     /**
      * @param configurationValues Object containing all required configuration parameters
      */
-    constructor(private config: IH5PConfig) {
+    constructor(
+        private config: IH5PConfig,
+        private libraryManager: LibraryManager
+    ) {
         log.debug(`initialize`);
         this.contentExtensionWhitelist = config.contentWhitelist.split(' ');
         this.libraryExtensionWhitelist = config.libraryWhitelist
@@ -143,7 +147,8 @@ export default class PackageValidator {
     public async validateExtractedPackage(
         packagePath: string,
         checkContent: boolean = true,
-        checkLibraries: boolean = true
+        checkLibraries: boolean = true,
+        skipInstalledLibraries: boolean = true
     ): Promise<any> {
         log.debug(`validating package in directory ${packagePath}`);
         await this.initializeJsonValidators();
@@ -211,7 +216,10 @@ export default class PackageValidator {
                 checkContent
             )
             .addRule(throwErrorsNowRule)
-            .addRuleWhen(this.librariesMustBeValid, checkLibraries)
+            .addRuleWhen(
+                this.librariesMustBeValid(skipInstalledLibraries),
+                checkLibraries
+            )
             .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
             .validate(files, packagePath);
@@ -595,7 +603,7 @@ export default class PackageValidator {
      * @param error The error object to use
      * @returns The unchanged zip entries
      */
-    private librariesMustBeValid = async (
+    private librariesMustBeValid = (skipInstalledLibraries: boolean) => async (
         filenames: string[],
         pathPrefix: string,
         error: AggregateH5pError
@@ -613,7 +621,8 @@ export default class PackageValidator {
                         filenames,
                         directory,
                         pathPrefix,
-                        error
+                        error,
+                        skipInstalledLibraries
                     )
                 )
         );
@@ -752,6 +761,21 @@ export default class PackageValidator {
         };
     }
 
+    private skipInstalledLibraries = (skipInstalledLibraries) => async (
+        { filenames, jsonData }: { jsonData: any; filenames: string[] },
+        pathPrefix: string,
+        error: AggregateH5pError
+    ): Promise<{ jsonData: any; filenames: string[] }> => {
+        if (
+            skipInstalledLibraries &&
+            this.libraryManager.libraryExists(jsonData) &&
+            !this.libraryManager.isPatchedLibrary(jsonData)
+        ) {
+            return undefined;
+        }
+        return { jsonData, filenames };
+    };
+
     /**
      * Checks if all JavaScript and CSS file references in the preloaded section of the library metadata are present in the package.
      * @param filenames zip entries in the package
@@ -850,41 +874,43 @@ export default class PackageValidator {
     /**
      * Checks whether the library conforms to the standard and returns its data.
      * @param filenames All (relevant) zip entries of the package.
-     * @param libraryName The name of the library to check
+     * @param ubername The name of the library to check
      * @param error the error object
      * @returns the object from library.json with additional data from semantics.json, the language files and the icon.
      */
     private async validateLibrary(
         filenames: string[],
-        libraryName: string,
+        ubername: string,
         pathPrefix: string,
-        error: AggregateH5pError
+        error: AggregateH5pError,
+        skipInstalledLibraries: boolean
     ): Promise<{ hasIcon: boolean; language: any; semantics: any } | boolean> {
         try {
-            log.debug(`validating library ${libraryName}`);
+            log.debug(`validating library ${ubername}`);
             return await new ValidatorBuilder()
-                .addRule(this.libraryDirectoryMustHaveValidName(libraryName))
+                .addRule(this.libraryDirectoryMustHaveValidName(ubername))
                 .addRule(
                     this.jsonMustBeParsable(
                         'semantics.json',
                         'invalid-semantics-json-file',
                         true,
                         false,
-                        { name: libraryName }
+                        { name: ubername }
                     )
                 )
                 .addRule(
                     this.jsonMustConformToSchema(
-                        `${libraryName}/library.json`,
+                        `${ubername}/library.json`,
                         this.libraryMetadataValidator,
                         'invalid-schema-library-json-file',
                         'invalid-library-json-file',
                         true,
-                        { name: libraryName }
+                        { name: ubername }
                     )
                 )
+                .addRule(this.skipInstalledLibraries(true))
                 .addRule(this.mustBeCompatibleToCoreVersion)
-                .addRule(this.libraryMustHaveMatchingDirectoryName(libraryName))
+                .addRule(this.libraryMustHaveMatchingDirectoryName(ubername))
                 .addRule(this.libraryPreloadedFilesMustExist)
                 .addRule(this.libraryLanguageFilesMustBeValid)
                 .validate(filenames, pathPrefix, error);
