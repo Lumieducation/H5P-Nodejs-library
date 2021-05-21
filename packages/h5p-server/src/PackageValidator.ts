@@ -16,6 +16,7 @@ import {
 } from './helpers/ValidatorBuilder';
 import { IH5PConfig } from './types';
 import LibraryManager from './LibraryManager';
+import LibraryName from './LibraryName';
 
 const log = new Logger('PackageValidator');
 
@@ -34,7 +35,8 @@ const log = new Logger('PackageValidator');
  */
 export default class PackageValidator {
     /**
-     * @param configurationValues Object containing all required configuration parameters
+     * @param configurationValues Object containing all required configuration
+     * parameters
      */
     constructor(
         private config: IH5PConfig,
@@ -107,7 +109,8 @@ export default class PackageValidator {
     ): Promise<yauzlPromise.ZipFile> {
         try {
             log.debug(`opening zip archive ${file}`);
-            // we await the promise here because we want to catch the error and return undefined
+            // we await the promise here because we want to catch the error and
+            // return undefined
             return await yauzlPromise.open(file, { lazyEntries: false });
         } catch (ignored) {
             log.error(`zip file ${file} could not be opened: ${ignored}`);
@@ -227,11 +230,15 @@ export default class PackageValidator {
     }
 
     /**
-     * Checks if the core API version required in the metadata can be satisfied by the running instance.
-     * @param {{coreApi: { majorVersion: number, minorVersion: number }}} metadata The object containing information about the required core version
+     * Checks if the core API version required in the metadata can be satisfied
+     * by the running instance.
+     * @param metadata The object containing information about the required core
+     * version
      * @param libraryName The name of the library that is being checked.
      * @param error The error object.
-     * @returns true if the core API required in the metadata can be satisfied by the running instance. Also true if the metadata doesn't require any core API version.
+     * @returns true if the core API required in the metadata can be satisfied
+     * by the running instance. Also true if the metadata doesn't require any
+     * core API version.
      */
     private checkCoreVersion(
         metadata: { coreApi: { majorVersion: number; minorVersion: number } },
@@ -272,11 +279,13 @@ export default class PackageValidator {
     }
 
     /**
-     * Factory for the file extension rule: Checks if the file extensions of the files in the array are
-     * in the whitelists.
-     * Does NOT throw errors but appends them to the error object.
-     * @param {(arg: string) => boolean} filter The filter function must return true if the filename passed to it should be checked
-     * @param whitelist The file extensions that are allowed for files that match the filter
+     * Factory for the file extension rule: Checks if the file extensions of the
+     * files in the array are in the whitelists. Does NOT throw errors but
+     * appends them to the error object.
+     * @param filter The filter function must return true if the filename passed
+     * to it should be checked
+     * @param whitelist The file extensions that are allowed for files that
+     * match the filter
      * @returns the rule
      */
     private fileExtensionMustBeAllowed(
@@ -323,12 +332,15 @@ export default class PackageValidator {
     }
 
     /**
-     * Factory for a rule that makes sure that a certain file must exist.
-     * Does NOT throw errors but appends them to the error object.
-     * @param filename The filename that must exist among the zip entries (path, not case-sensitive)
+     * Factory for a rule that makes sure that a certain file must exist. Does
+     * NOT throw errors but appends them to the error object.
+     * @param filename The filename that must exist among the zip entries (path,
+     * not case-sensitive)
      * @param errorId The error message that is used if the file does not exist
-     * @param throwOnError (optional) If true, the rule will throw an error if the file does not exist.
-     * @param errorReplacements (optional) The replacement variables to pass to the error.
+     * @param throwOnError (optional) If true, the rule will throw an error if
+     * the file does not exist.
+     * @param errorReplacements (optional) The replacement variables to pass to
+     * the error.
      * @returns the rule
      */
     private fileMustExist(
@@ -364,8 +376,8 @@ export default class PackageValidator {
     }
 
     /**
-     * Checks file sizes (single files and all files combined)
-     * Does NOT throw errors but appends them to the error object.
+     * Checks file sizes (single files and all files combined) Does NOT throw
+     * errors but appends them to the error object.
      * @param zipEntries The entries inside the h5p file
      * @param error The error object to use
      * @returns The unchanged zip entries
@@ -409,7 +421,8 @@ export default class PackageValidator {
 
     /**
      * Factory for a rule that filters out files from the validation.
-     * @param {(string) => boolean} filter The filter. Filenames matched by this filter will be filtered out.
+     * @param filter The filter. Filenames matched by this filter will be
+     * filtered out.
      * @returns the rule
      */
     private filterOutEntries(
@@ -424,8 +437,9 @@ export default class PackageValidator {
     }
 
     /**
-     * Initializes the JSON schema validators _h5pMetaDataValidator and _libraryMetadataValidator.
-     * Can be called multiple times, as it only creates new validators when it hasn't been called before.
+     * Initializes the JSON schema validators _h5pMetaDataValidator and
+     * _libraryMetadataValidator. Can be called multiple times, as it only
+     * creates new validators when it hasn't been called before.
      */
     private async initializeJsonValidators(): Promise<void> {
         if (this.h5pMetadataValidator && this.libraryMetadataValidator) {
@@ -630,7 +644,8 @@ export default class PackageValidator {
     };
 
     /**
-     * Factory for a rule that checks if library's directory conforms to naming standards
+     * Factory for a rule that checks if library's directory conforms to naming
+     * standards
      * @param libraryName The name of the library (directory)
      * @returns the rule
      */
@@ -659,7 +674,8 @@ export default class PackageValidator {
     }
 
     /**
-     * Checks if the language files in the library have the correct naming schema and are valid JSON.
+     * Checks if the language files in the library have the correct naming
+     * schema and are valid JSON.
      * @param filenames zip entries in the package
      * @param jsonData jsonData of the library.json file.
      * @param error The error object to use
@@ -708,10 +724,11 @@ export default class PackageValidator {
     };
 
     /**
-     * Factory for a check that makes sure that the directory name of the library matches the name in
-     * the library.json metadata.
-     * Does not throw a ValidationError.
-     * @param directoryName the name of the directory in the package this library is in
+     * Factory for a check that makes sure that the directory name of the
+     * library matches the name in the library.json metadata. Does not throw a
+     * ValidationError.
+     * @param directoryName the name of the directory in the package this
+     * library is in
      * @returns the rule
      */
     private libraryMustHaveMatchingDirectoryName(
@@ -738,8 +755,8 @@ export default class PackageValidator {
             // Library's directory name must be:
             // - <machineName>
             //     - or -
-            // - <machineName>-<majorVersion>.<minorVersion>
-            // where machineName, majorVersion and minorVersion is read from library.json
+            // - <machineName>-<majorVersion>.<minorVersion> where machineName,
+            //   majorVersion and minorVersion is read from library.json
             if (
                 directoryName !== jsonData.machineName &&
                 directoryName !==
@@ -766,22 +783,30 @@ export default class PackageValidator {
         pathPrefix: string,
         error: AggregateH5pError
     ): Promise<{ jsonData: any; filenames: string[] }> => {
+        log.debug(`Checking if library can be skipped`);
         if (
             skipInstalledLibraries &&
-            this.libraryManager.libraryExists(jsonData) &&
-            !this.libraryManager.isPatchedLibrary(jsonData)
+            (await this.libraryManager.libraryExists(jsonData)) &&
+            !(await this.libraryManager.isPatchedLibrary(jsonData))
         ) {
+            log.debug(
+                `Skipping already installed library ${LibraryName.toUberName(
+                    jsonData
+                )}`
+            );
             return undefined;
         }
         return { jsonData, filenames };
     };
 
     /**
-     * Checks if all JavaScript and CSS file references in the preloaded section of the library metadata are present in the package.
+     * Checks if all JavaScript and CSS file references in the preloaded section
+     * of the library metadata are present in the package.
      * @param filenames zip entries in the package
      * @param jsonData data of the library.json file.
      * @param error The error object to use
-     * @returns {Promise<{filenames: string[], jsonData: any}>} the unchanged data passed to the rule
+     * @returns {Promise<{filenames: string[], jsonData: any}>} the unchanged
+     * data passed to the rule
      */
     private libraryPreloadedFilesMustExist = async (
         { filenames, jsonData }: { jsonData: any; filenames: string[] },
@@ -792,7 +817,8 @@ export default class PackageValidator {
             `checking if all js and css file references in the preloaded section of the library metadata are present in package`
         );
         const uberName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
-        // check if all JavaScript files that must be preloaded are part of the package
+        // check if all JavaScript files that must be preloaded are part of the
+        // package
         if (jsonData.preloadedJs) {
             await Promise.all(
                 jsonData.preloadedJs.map((file) =>
@@ -823,8 +849,8 @@ export default class PackageValidator {
     };
 
     /**
-     * Checks if a library is compatible to the core version running.
-     * Does not throw a ValidationError.
+     * Checks if a library is compatible to the core version running. Does not
+     * throw a ValidationError.
      * @param filenames zip entries in the package
      * @param jsonData jsonData of the library.json file.
      * @param error The error object to use
@@ -854,8 +880,8 @@ export default class PackageValidator {
     }
 
     /**
-     * Tries to open the file in the ZIP archive in memory and parse it as JSON. Will throw errors
-     * if the file cannot be read or is no valid JSON.
+     * Tries to open the file in the ZIP archive in memory and parse it as JSON.
+     * Will throw errors if the file cannot be read or is no valid JSON.
      * @param filename The entry to read
      * @returns The read JSON as an object
      */
@@ -876,7 +902,8 @@ export default class PackageValidator {
      * @param filenames All (relevant) zip entries of the package.
      * @param ubername The name of the library to check
      * @param error the error object
-     * @returns the object from library.json with additional data from semantics.json, the language files and the icon.
+     * @returns the object from library.json with additional data from
+     * semantics.json, the language files and the icon.
      */
     private async validateLibrary(
         filenames: string[],
@@ -908,7 +935,7 @@ export default class PackageValidator {
                         { name: ubername }
                     )
                 )
-                .addRule(this.skipInstalledLibraries(true))
+                .addRule(this.skipInstalledLibraries(skipInstalledLibraries))
                 .addRule(this.mustBeCompatibleToCoreVersion)
                 .addRule(this.libraryMustHaveMatchingDirectoryName(ubername))
                 .addRule(this.libraryPreloadedFilesMustExist)
@@ -916,8 +943,10 @@ export default class PackageValidator {
                 .validate(filenames, pathPrefix, error);
         } catch (e) {
             if (e instanceof AggregateH5pError) {
-                // Don't rethrow a ValidationError (and thus abort validation) as other libraries can still be validated, too. This is fine as the
-                // error values are appended to the ValidationError and the error will be thrown at some point anyway.
+                // Don't rethrow a ValidationError (and thus abort validation)
+                // as other libraries can still be validated, too. This is fine
+                // as the error values are appended to the ValidationError and
+                // the error will be thrown at some point anyway.
                 return false;
             }
             throw e;

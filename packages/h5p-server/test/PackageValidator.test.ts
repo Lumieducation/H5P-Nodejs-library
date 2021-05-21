@@ -170,4 +170,21 @@ describe('validating H5P files', () => {
             'package-validation-failed:invalid-language-file,invalid-schema-library-json-file'
         );
     });
+
+    it('skips library validation when library is already installed', async () => {
+        const h5pFile = path.resolve(
+            'test/data/validator/missing-preloaded-js.h5p'
+        );
+        const config = new H5PConfig(null);
+        await expect(
+            validatePackage(
+                {
+                    isPatchedLibrary: () => Promise.resolve(false),
+                    libraryExists: () => Promise.resolve(true)
+                } as any,
+                config,
+                h5pFile
+            )
+        ).resolves.toBeDefined();
+    });
 });
