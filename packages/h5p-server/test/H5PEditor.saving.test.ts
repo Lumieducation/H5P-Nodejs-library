@@ -19,8 +19,8 @@ import {
 import User from './User';
 import { fsImplementations, H5PEditor } from '../src';
 import H5PConfig from '../src/implementation/H5PConfig';
-import PackageValidator from '../src/PackageValidator';
 import UrlGenerator from '../src/UrlGenerator';
+import { validatePackage } from './helpers/PackageValidatorHelper';
 
 describe('H5PEditor', () => {
     function createH5PEditor(
@@ -756,9 +756,14 @@ describe('H5PEditor', () => {
                         writeStream.close();
 
                         // check if saved H5P package is valid
-                        const validator = new PackageValidator(config);
                         await expect(
-                            validator.validatePackage(h5pFilePath, true, true)
+                            validatePackage(
+                                h5pEditor.libraryManager,
+                                config,
+                                h5pFilePath,
+                                true,
+                                true
+                            )
                         ).resolves.toEqual(true);
                     },
                     { keep: false, postfix: '.h5p' }

@@ -15,7 +15,7 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
-                Promise.all(
+                await Promise.all(
                     contentTypes.map(async (contentType) => {
                         const { h5pEditor } = createH5PEditor(tempDirPath);
 
@@ -37,7 +37,8 @@ describe('H5PEditor.saveH5P()', () => {
                             user
                         );
                     })
-                ).then(() => done());
+                );
+                done();
             },
             { keep: false, unsafeCleanup: true }
         );

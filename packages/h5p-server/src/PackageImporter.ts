@@ -16,7 +16,6 @@ import {
     ILibraryInstallResult,
     IUser
 } from './types';
-
 import Logger from './helpers/Logger';
 
 const log = new Logger('PackageImporter');
@@ -82,9 +81,10 @@ export default class PackageImporter {
     ): Promise<void> {
         log.info(`extracting package ${packagePath} to ${directoryPath}`);
         const zipFile = await yauzlPromise.open(packagePath);
-        await zipFile.walkEntries(async (entry: any) => {
+        await zipFile.walkEntries(async (entry: yauzlPromise.Entry) => {
             const basename = path.basename(entry.fileName);
             if (
+                !entry.fileName.endsWith('/') &&
                 !basename.startsWith('.') &&
                 !basename.startsWith('_') &&
                 ((includeContent && entry.fileName.startsWith('content/')) ||
@@ -95,7 +95,6 @@ export default class PackageImporter {
             ) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.fileName);
-
                 await fsExtra.mkdirp(path.dirname(writePath));
                 const writeStream = fsExtra.createWriteStream(writePath);
                 await promisepipe(readStream, writeStream);
@@ -221,14 +220,12 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`processing package ${packagePath}`);
-        const packageValidator = new PackageValidator(this.config);
-        // no need to check result as the validator throws an exception if there is an error
-        await packageValidator.validatePackage(
-            packagePath,
-            copyMode === ContentCopyModes.Install ||
-                copyMode === ContentCopyModes.Temporary,
-            true
+        const packageValidator = new PackageValidator(
+            this.config,
+            this.libraryManager
         );
+        // no need to check result as the validator throws an exception if there is an error
+        await packageValidator.validateFileSizes(packagePath);
         // we don't use withDir here, to have better error handling (catch & finally block below)
         const { path: tempDirPath } = await dir();
 
@@ -244,6 +241,13 @@ export default class PackageImporter {
                     copyMode === ContentCopyModes.Install ||
                     copyMode === ContentCopyModes.Temporary
             });
+
+            await packageValidator.validateExtractedPackage(
+                tempDirPath,
+                copyMode === ContentCopyModes.Install ||
+                    copyMode === ContentCopyModes.Temporary,
+                true
+            );
             const dirContent = await fsExtra.readdir(tempDirPath);
 
             // install all libraries

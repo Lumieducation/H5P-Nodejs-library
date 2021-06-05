@@ -2,7 +2,12 @@ import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 
 import H5PConfig from '../../src/implementation/H5PConfig';
-import PackageValidator from '../../src/PackageValidator';
+import { validatePackage } from '../helpers/PackageValidatorHelper';
+
+const libraryManagerMock = {
+    isPatchedLibrary: () => Promise.resolve(undefined),
+    libraryExists: () => Promise.resolve(false)
+} as any;
 
 describe('validate all H5P files from the Hub', () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
@@ -19,9 +24,12 @@ describe('validate all H5P files from the Hub', () => {
         it(`${file}`, async () => {
             const config = new H5PConfig(null);
             config.contentWhitelist += ' html';
-            const validator = new PackageValidator(config);
             await expect(
-                validator.validatePackage(`${directory}/${file}`)
+                validatePackage(
+                    libraryManagerMock,
+                    config,
+                    `${directory}/${file}`
+                )
             ).resolves.toBeDefined();
         });
     }
