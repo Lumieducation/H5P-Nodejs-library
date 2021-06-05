@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.0...v8.0.1) (2021-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.903.0 ([de4dd69](https://github.com/Lumieducation/H5P-Nodejs-library/commit/de4dd69ff450f7484bc9ebbec9762f8e33c1cd12))
+* **deps:** update dependency aws-sdk to v2.904.0 ([4d233db](https://github.com/Lumieducation/H5P-Nodejs-library/commit/4d233db073e90fe1db9777e77de4f76d965e259a))
+* **deps:** update dependency react-bootstrap to v1.6.0 ([5cbbb94](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5cbbb948f9da0fd8ec2b1de73379792002199abb))
+* **examples:** downgraded core ([bdcf41b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/bdcf41bbf17e59df751cb7926d146af6de30f16f))
+
+
+
+
+
 # [8.0.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v7.5.2...v8.0.0) (2021-05-07)
 
 
