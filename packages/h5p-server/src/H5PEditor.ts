@@ -456,7 +456,7 @@ export default class H5PEditor {
                             }
                             return {
                                 majorVersion: loadedLibrary.majorVersion,
-                                metadataSettings: null,
+                                metadataSettings: loadedLibrary.metadataSettings || null,
                                 minorVersion: loadedLibrary.minorVersion,
                                 name: loadedLibrary.machineName,
                                 restricted: false,
