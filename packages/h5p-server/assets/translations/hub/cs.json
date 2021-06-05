@@ -32,8 +32,11 @@
     "H5P_Collage": {
         "title": "Lepení (Collage)",
         "summary": "Vytvořte koláž z více obrázků",
-        "description": "Nástroj Koláž umožňuje uspořádat obrázky do uklidňující kompozice.",
-        "keywords": { "collage": "koláž", "image": "obraz" }
+        "description": "Nástroj Koláž umožňuje uspořádat obrázky do uklidňující kompozice. ",
+        "keywords": {
+            "collage": "koláž",
+            "image": "obraz"
+        }
     },
     "H5P_Column": {
         "title": "Sloupec (Column)",
@@ -59,85 +62,127 @@
         "title": "Dialogové karty (Dialog Cards)",
         "summary": "Vytvářejte textové otočné karty",
         "description": "Karty dialogu lze použít jako cvičení, které studentům pomůže zapamatovat si slova, výrazy nebo věty. Na přední straně karty je nápověda pro slovo nebo výraz. Otočením karty student odhalí odpovídající slovo nebo výraz. Karty dialogu lze použít při výuce jazyků, k prezentaci matematických problémů nebo k tomu, aby si studenti pamatovali fakta, jako jsou historické události, vzorce nebo jména.",
-        "keywords": { "dialog_cards": "dialogové karty" }
+        "keywords": {
+            "dialog_cards": "dialogové karty"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "Dokumentační nástroj (Documentation Tool)",
         "summary": "Vytvořte průvodce formulářem s exportem textu",
         "description": "Cílem dokumentačního nástroje je usnadnit vytváření hodnotících průvodců pro činnosti zaměřené na cíl. Lze jej také použít jako průvodce formulářem. Při úpravách může autor přidat do průvodce několik kroků. V každém kroku může autor definovat, který obsah jde do tohoto kroku. Obsahem může být prostý text, vstupní pole, definice cíle a hodnocení cíle. Po publikování bude koncový uživatel proveden kroky průvodce. V posledním kroku průvodce může uživatel vygenerovat dokument se všemi zadanými údaji. Tento dokument lze stáhnout. Dokumentační nástroj plně reaguje a funguje skvěle na menších obrazovkách i na ploše.",
-        "keywords": { "dialog_cards": "dialogové karty" }
+        "keywords": {
+            "dialog_cards": "dialogové karty"
+        }
     },
     "H5P_DragQuestion": {
         "title": "Přetažení (Drag and Drop)",
         "summary": "Vytvářejte úkoly přetahováním pomocí obrázků",
-        "description": "Drag and drop otázka umožňuje studentovi přidružit dva nebo více prvků a vytvořit logická spojení vizuálním způsobem. Vytvářejte otázky přetažením pomocí textu i obrázků jako alternativy, které lze přetáhnout. Otázky H5P drag and drop podporují vztahy mezi otázkami a odpověďmi mezi dvěma, mezi dvěma, mezi mnoha a mezi mnoha.",
-        "keywords": { "drag_and drop": "drag and drop" }
+        "description": "Drag and drop otázka umožňuje studentovi přidružit dva nebo více prvků a vytvořit logická spojení vizuálním způsobem. Vytvářejte otázky přetažením pomocí textu i obrázků jako alternativy, které lze přetáhnout. Otázky H5P drag and drop podporují vztahy mezi otázkami a odpověďmi mezi dvěma, mezi dvěma, mezi mnoha a mezi mnoha. ",
+        "keywords": {
+            "drag_and drop": "drag and drop"
+        }
     },
     "H5P_DragText": {
         "title": "Přetáhněte slova (Drag the Words)",
         "summary": "Vytvářejte textové úkoly typu drag and drop",
         "description": "Přetáhněte slova umožňuje návrhářům obsahu vytvářet textové výrazy s chybějícími částmi textu. Koncový uživatel přetáhne chybějící část textu na správné místo a vytvoří úplný výraz. Může být použito ke kontrole, zda si uživatel pamatuje text, který si přečetl, nebo zda něčemu rozumí. Pomáhá uživateli přemýšlet prostřednictvím textu. Vytvoření úkolu přetažení slov je super snadné. Editor pouze napíše text a uzavře slova, která se mají přetahovat, pomocí znaků hvězdičky, jako je * draggableWord *.",
-        "keywords": { "drag": "táhnout", "words": "slova" }
+        "keywords": {
+            "drag": "táhnout",
+            "words": "slova"
+        }
     },
     "H5P_Blanks": {
         "title": "Vyplňte prázdná místa (Fill in the Blanks)",
         "summary": "Vytvořte úkol s chybějícími slovy v textu",
         "description": "Studenti doplní chybějící slova v textu. Žákovi se zobrazí řešení po vyplnění všech chybějících slov nebo za každým slovem v závislosti na nastavení. Autoři zadávají text a označují slova, která mají být nahrazena hvězdičkou. Kromě výuky rodného a druhého jazyka lze pomocí funkce Vyplnit prázdná místa otestovat schopnost studenta reprodukovat fakta nebo vytvářet matematické závěry.",
-        "keywords": { "fill": "vyplnit", "blanks": "mezery", "text": "text" }
+        "keywords": {
+            "fill": "vyplnit",
+            "blanks": "mezery",
+            "text": "text"
+        }
     },
     "H5P_ImageHotspotQuestion": {
         "title": "Najít hotspot (Find the Hotspot)",
         "summary": "Vytvářejte hotspoty obrázků, které uživatelé mohou najít",
         "description": "Tento typ obsahu umožňuje koncovým uživatelům tisknout někde na obrázek a získat zpětnou vazbu, zda to bylo podle popisu úkolu správné nebo nesprávné. Autor nahraje obrázek a definuje různé aktivní body odpovídající podrobnostem nebo částem obrázku. Hotspoty lze definovat jako správné nebo nesprávné a autor v obou případech poskytuje odpovídající text zpětné vazby. Autor může také definovat zpětnou vazbu, pokud koncový uživatel stiskne někde, což není definováno jako správný ani nesprávný hotspot.",
-        "keywords": { "find": "nalézt", "hotspot": "hotspot", "image": "obraz" }
+        "keywords": {
+            "find": "nalézt",
+            "hotspot": "hotspot",
+            "image": "obraz"
+        }
     },
     "H5P_GuessTheAnswer": {
         "title": "Hádej odpověď (Guess the Answer)",
         "summary": "Vytvořte obrázek s otázkou a odpovědí",
         "description": "Tento typ obsahu umožňuje autorům nahrát obrázek a přidat vhodný popis. Koncoví uživatelé mohou odhadnout odpověď a stisknutím pruhu pod obrázkem odhalit správnou odpověď.",
-        "keywords": { "guess": "tipni si", "answer": "Odpovědět" }
+        "keywords": {
+            "guess": "tipni si",
+            "answer": "Odpovědět"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Vkládač iframe (Iframe Embedder)",
         "summary": "Vložit z adresy URL nebo sady souborů",
         "description": "Vkládač Iframe usnadňuje vytváření H5P již existujících aplikací JavaScriptu.",
-        "keywords": { "embed": "vložit", "iframe": "iframe" }
+        "keywords": {
+            "embed": "vložit",
+            "iframe": "iframe"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "Interaktivní video (Interactive Video)",
         "summary": "Vytvářejte videa obohacená o interakce",
         "description": "Přidejte svému videu interaktivitu s vysvětlením, extra obrázky, tabulkami, Vyplňte prázdná pole a otázkami s výběrem odpovědí. Kvízové otázky podporují adaptivitu, což znamená, že můžete přeskočit na jinou část videa na základě vstupu uživatele. Interaktivní souhrny lze přidat na konec videa. Interaktivní videa jsou vytvářena a upravována pomocí nástroje pro tvorbu H5P ve standardním webovém prohlížeči.",
-        "keywords": { "interactive": "interaktivní", "video": "video" }
+        "keywords": {
+            "interactive": "interaktivní",
+            "video": "video"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "Označte slova (Mark the Words)",
         "summary": "Vytvořte úkol, kde uživatelé zvýrazní slova",
         "description": "Označení slov umožňuje návrhářům obsahu vytvářet textové výrazy s definovanou sadou správných slov. Koncový uživatel zvýrazní slova podle popisu úkolu a dostane skóre. Pro editora je super snadné vytvořit výzvu kliknutím na slova. Editor zadá text a uzavře slova, na která má uživatel kliknout, správné odpovědi, hvězdičkou jako * correctWord *.",
-        "keywords": { "mark": "označit", "words": "slova" }
+        "keywords": {
+            "mark": "označit",
+            "words": "slova"
+        }
     },
     "H5P_MemoryGame": {
         "title": "Pexeso (Memory Game)",
         "summary": "Vytvořte klasickou hru pro párování obrázků",
         "description": "Vytvořte si vlastní paměťové hry a otestujte paměť uživatelů vašeho webu pomocí této jednoduché, ale krásné hry HTML5.",
-        "keywords": { "memory": "Paměť", "game": "hra", "cards": "karty" }
+        "keywords": {
+            "memory": "Paměť",
+            "game": "hra",
+            "cards": "karty"
+        }
     },
     "H5P_MultiChoice": {
         "title": "Vícenásobná volba (Multiple Choice)",
         "summary": "Vytvářejte flexibilní otázky s výběrem odpovědí",
         "description": "Otázky s výběrem z více možností mohou být účinným nástrojem pro hodnocení. Žák dostane okamžitou zpětnou vazbu o výkonu. Otázky H5P Multiple Choice mohou mít jednu nebo více správných možností na otázku.",
-        "keywords": { "multiple": "násobek", "choice": "výběr", "quiz": "kvíz" }
+        "keywords": {
+            "multiple": "násobek",
+            "choice": "výběr",
+            "quiz": "kvíz"
+        }
     },
     "H5P_PersonalityQuiz": {
         "title": "Kvíz osobnosti (Personality Quiz)",
         "summary": "Vytvořte osobnostní kvízy",
         "description": "V tomto typu obsahu autor definuje řadu otázek s alternativami, kde je každá alternativa porovnána s jednou nebo více osobnostmi. Na konci kvízu koncový uživatel uvidí, která osobnost odpovídá nejlépe. Existuje několik způsobů, jak tento kvíz vizuálně přitahovat, např. zastupování otázek, alternativ a osobností pomocí obrázků.",
-        "keywords": { "personality": "osobnost", "quiz": "kvíz" }
+        "keywords": {
+            "personality": "osobnost",
+            "quiz": "kvíz"
+        }
     },
     "H5P_Questionnaire": {
         "title": "Dotazník (Questionnaire)",
         "summary": "Vytvořte dotazník a získejte zpětnou vazbu",
         "description": "Získejte zpětnou vazbu a položte otevřené otázky v Interaktivních videích a dalších typech obsahu pomocí Dotazníku. Dotazník zpřístupňuje odpovědi uživatele prostřednictvím integrace xAPI. To znamená, že vlastníci webových stránek mohou ukládat odpovědi mnoha různými způsoby. Odpovědi mohou být uloženy v LRS, vlastní úložiště těchto webů nebo skript může načíst e-mailovou adresu a použít ji k odeslání e-mailu uživateli. Na webu H5P.org jsou odpovědi uloženy v Google Analytics.",
-        "keywords": { "questionnaire": "dotazník" }
+        "keywords": {
+            "questionnaire": "dotazník"
+        }
     },
     "H5P_QuestionSet": {
         "title": "Kvíz (Question Set) (Quiz (Question Set))",
@@ -163,25 +208,36 @@
         "title": "Shrnutí (Summary)",
         "summary": "Vytvářejte úkoly se seznamem výpisů",
         "description": "Souhrny pomáhají studentovi zapamatovat si klíčové informace v textu, videu nebo prezentaci tím, že aktivně vytvářejí shrnutí daného tématu. Když student dokončí shrnutí, zobrazí se kompletní seznam klíčových prohlášení k tématu.",
-        "keywords": { "summary": "souhrn" }
+        "keywords": {
+            "summary": "souhrn"
+        }
     },
     "H5P_Timeline": {
         "title": "Časová osa (Timeline)",
         "summary": "Vytvořte časovou osu událostí pomocí multimédií",
         "description": "Toto je Timeline.js vyvinutý společností Knight Lab, zabalený jako typ obsahu H5P, aby byly časové osy snadno upravitelné, sdílitelné a znovu použitelné. Typ obsahu Časová osa umožňuje umístit sled událostí v chronologickém pořadí. Ke každé události můžete přidat obrázky a texty. Můžete také zahrnout podklady ze služeb Twitter, YouTube, Flickr, Vimeo, Mapy Google a SoundCloud.",
-        "keywords": { "timeline": "Časová osa", "slider": "jezdec" }
+        "keywords": {
+            "timeline": "Časová osa",
+            "slider": "jezdec"
+        }
     },
     "H5P_TrueFalse": {
         "title": "True / False Question (True/False Question)",
         "summary": "Vytvářejte pravdivé / nepravdivé otázky",
         "description": "True / False Question je jednoduchý a přímý typ obsahu, který může fungovat samostatně nebo jej lze vložit do jiných typů obsahu, jako je Prezentace kurzu. Složitější otázku lze vytvořit přidáním obrázku nebo videa.",
-        "keywords": { "true": "skutečný", "false": "Nepravdivé" }
+        "keywords": {
+            "true": "skutečný",
+            "false": "Nepravdivé"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "Hotspoty obrázků (Image Hotspots)",
         "summary": "Vytvořte obrázek s více informačními hotspoty",
         "description": "Hotspoty obrázků umožňují vytvářet obrázky pomocí interaktivních hotspotů. Když uživatel stiskne hotspot, zobrazí se vyskakovací okno obsahující záhlaví a text nebo video. Pomocí editoru H5P můžete přidat libovolný počet hotspotů.",
-        "keywords": { "image": "obraz", "hotspot": "hotspot" }
+        "keywords": {
+            "image": "obraz",
+            "hotspot": "hotspot"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Najít více hotspotů (Find Multiple Hotspots)",
@@ -201,8 +257,11 @@
     "H5P_AudioRecorder": {
         "title": "Záznam zvuku (Audio Recorder)",
         "summary": "Vytvořte zvukový záznam",
-        "description": "Zvukový záznamník HTML5. Zaznamenejte svůj hlas a přehrajte nebo stáhněte soubor WAV své nahrávky. Pomocí pluginu H5P vytvořte zvukový záznamník H5P na svůj web Drupal, Wordpress nebo Moodle.",
-        "keywords": { "audio": "Zvuk", "recorder": "zapisovač" }
+        "description": "Zvukový záznamník HTML5. Zaznamenejte svůj hlas a přehrajte nebo stáhněte soubor WAV své nahrávky. Pomocí pluginu H5P vytvořte zvukový záznamník H5P na svůj web Drupal, Wordpress nebo Moodle. ",
+        "keywords": {
+            "audio": "Zvuk",
+            "recorder": "zapisovač"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "Mluvte slova (Speak the Words)",
@@ -231,7 +290,7 @@
     "H5P_ImageSequencing": {
         "title": "Sekvenování obrázků (Image Sequencing)",
         "summary": "Umístěte obrázky ve správném pořadí",
-        "description": "Bezplatný typ obsahu pro sekvenování obrázků založený na HTML5, který autorům umožňuje přidat do hry sekvenci vlastních obrázků (a volitelný popis obrázků) v určitém pořadí. Pořadí obrázků bude randomizováno a hráči je budou muset podle popisu úkolu přeskupit.",
+        "description": "Bezplatný typ obsahu pro posloupnost obrázků založený na HTML5, který autorům umožňuje přidat do hry sled vlastních obrázků (a volitelný popis obrázků) v určitém pořadí. Pořadí obrázků bude náhodné a hráči je budou muset podle popisu úkolu přeskupit. ",
         "keywords": {
             "image": "obraz",
             "sequence": "sekvence",
@@ -242,7 +301,10 @@
         "title": "Kartičky (Flashcards)",
         "summary": "Vytvářejte stylové a moderní kartičky",
         "description": "Tento typ obsahu umožňuje autorům vytvořit jednu kartu flash nebo sadu karet, kde každá karta obsahuje obrázky spárované s otázkami a odpověďmi. Studenti jsou povinni vyplnit textové pole a poté zkontrolovat správnost svého řešení.",
-        "keywords": { "cards": "karty", "animation": "animace" }
+        "keywords": {
+            "cards": "karty",
+            "animation": "animace"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Mluvte sadu slov (Speak the Words Set)",
@@ -274,19 +336,26 @@
         "title": "Esej (Essay)",
         "summary": "Vytvořte esej s okamžitou zpětnou vazbou",
         "description": "V tomto typu obsahu autor definuje sadu klíčových slov, která představují klíčové aspekty tématu. Tato klíčová slova jsou porovnána s textem, který studenti složili, a lze je použít k okamžitému poskytnutí zpětné vazby - buď navrhují revidovat podrobnosti určitého tématu, pokud klíčové slovo chybí, nebo potvrzují nápady studentů, pokud text obsahuje klíčové slovo.\r\n",
-        "keywords": { "Essay": "Esej" }
+        "keywords": {
+            "Essay": "Esej"
+        }
     },
     "H5P_ImagePair": {
         "title": "Párování obrázků (Image Pairing)",
         "summary": "Drag and drop obrázek odpovídající hru",
-        "description": "Párování obrázků je jednoduchá a účinná aktivita, která vyžaduje, aby se studenti spojili s dvojicemi obrázků. Protože není nutné, aby oba obrázky ve dvojici byly stejné, autoři jsou také schopni otestovat porozumění vztahu mezi dvěma různými obrázky.",
-        "keywords": { "image_images matching pair": "pár obrázků" }
+        "description": "Párování obrázků je jednoduchá a účinná aktivita, která vyžaduje, aby se studenti spojili s dvojice obrázků. Protože není nutné, aby oba obrázky ve dvojici byly stejné, autoři jsou také schopni otestovat porozumění vztahu mezi dvěma různými obrázky. ",
+        "keywords": {
+            "image_images matching pair": "pár obrázků"
+        }
     },
     "H5P_Dictation": {
         "title": "Diktát (Dictation)",
         "summary": "Vytvořte diktát s okamžitou zpětnou vazbou",
         "description": "Můžete přidat zvukové ukázky obsahující větu pro diktát a zadat správný přepis. Vaši studenti si mohou poslechnout ukázky a zadat, co slyšeli, do textového pole. Jejich odpovědi budou automaticky vyhodnoceny. Několik možností vám umožní ovládat obtížnost cvičení. Volitelně můžete přidat druhý zvukový vzorek pro větu, která by mohla obsahovat verzi mluvenou pomalu. Můžete také nastavit limit na to, jak často lze hrát sampl, definovat, zda by interpunkce měla být relevantní pro skórování, a rozhodnout, zda malé chyby, jako jsou chyby při psaní, se mají počítat jako žádná chyba, úplná chyba nebo jen poloviční chyba.",
-        "keywords": { "language": "Jazyk", "audio": "Zvuk" }
+        "keywords": {
+            "language": "Jazyk",
+            "audio": "Zvuk"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "Scénář větvení (beta) (Branching Scenario (beta))",
@@ -307,13 +376,18 @@
         "title": "Interaktivní kniha (Interactive Book)",
         "summary": "Vytvářejte malé kurzy, knihy a testy",
         "description": "Vytvářejte malé kurzy, knihy nebo testy. Interaktivní kniha umožňuje autorům kombinovat velké množství interaktivního obsahu, jako jsou interaktivní videa, otázky, prezentace kurzů a další, na více stránkách. Na konci je shrnutí shrnující skóre získané žákem v celé knize.",
-        "keywords": { "book": "rezervovat", "course": "chod" }
+        "keywords": {
+            "book": "rezervovat",
+            "course": "chod"
+        }
     },
     "H5P_KewArCode": {
         "title": "Kód KewAr (KewAr Code)",
         "summary": "Vytvářejte QR kódy pro různé účely",
         "description": "KewAr Code umožňuje návrhářům obsahu vytvářet známé QR kódy. Tyto QR kódy mohou kódovat adresy URL, ale také kontaktní informace, události, geografická umístění atd. Lidé je mohou skenovat pomocí čtečky QR kódů, aby spustili vybranou akci.",
-        "keywords": { "QR": "QR" }
+        "keywords": {
+            "QR": "QR"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "Adventní kalendář (beta) (Advent Calendar (beta))",
