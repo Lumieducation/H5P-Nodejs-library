@@ -41,6 +41,6 @@
         "@types/react": "17.0.13",
         "cross-env": "7.0.3",
         "puppeteer": "9.1.1",
-        "start-server-and-test": "1.12.5"
+        "start-server-and-test": "1.12.6"
     }
 }
