@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.0...v8.1.1) (2021-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cache-manager to v3.4.4 ([183db78](https://github.com/Lumieducation/H5P-Nodejs-library/commit/183db78d9a088451ff3775072833ec7cf46a3089))
+* **deps:** update dependency i18next to v20.3.2 ([1fdc1ba](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1fdc1ba16ce0f4982d68f882d813688121bd3364))
+* **deps:** update dependency i18next-http-middleware to v3.1.4 ([7a989c6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7a989c6251c951d72d0523848eb672bd09610b05))
+
+
+
+
+
 # [8.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.1...v8.1.0) (2021-06-05)
 
 
