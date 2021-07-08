@@ -478,7 +478,7 @@ export default class LibraryManager {
                     return installedLib;
                 })
             )
-        ).sort((lib1, lib2) => lib1.compare(lib2));
+        ).sort((lib1, lib2) => lib1.compareVersions(lib2));
 
         const returnObject = {};
         for (const library of libraries) {
