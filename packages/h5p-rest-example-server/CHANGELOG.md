@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.1...v8.1.0) (2021-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v20.2.3 ([0bdc4e1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0bdc4e16eee8fb6c690dbf255e9328b2292f28ec))
+* **deps:** update dependency i18next to v20.2.4 ([e04a9be](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e04a9be805cec4db5d0bf2da3e9d8255f0fade6f))
+* **deps:** update dependency i18next to v20.3.0 ([da4dd92](https://github.com/Lumieducation/H5P-Nodejs-library/commit/da4dd92d55aa03fbcc1d6bb08895738feb617df9))
+* **deps:** update dependency i18next to v20.3.1 ([ab7e1d0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ab7e1d08dbf3e498713b6c99ed9d085b4dfd8d04))
+* **deps:** update dependency i18next-http-middleware to v3.1.2 ([720b350](https://github.com/Lumieducation/H5P-Nodejs-library/commit/720b3504da4974263ad1a63ff40b9d5762920f36))
+* **deps:** update dependency i18next-http-middleware to v3.1.3 ([9fd54b5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9fd54b5e0985e8229c41565fc8625b11fb28f62f))
+
+
+
+
+
 ## [8.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.0...v8.0.1) (2021-05-11)
 
 

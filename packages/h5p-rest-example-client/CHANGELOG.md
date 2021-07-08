@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.1...v8.1.0) (2021-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency http-proxy-middleware to v2 ([#1386](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1386)) ([1ec0b18](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1ec0b185bd8c8b034701531b5ad58511c64511ab))
+* **deps:** update dependency react-bootstrap to v1.6.1 ([0fed5b2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0fed5b241ae509505f4cab6b434e3ca15e0a5c22))
+
+
+
+
+
 ## [8.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.0...v8.0.1) (2021-05-11)
 
 

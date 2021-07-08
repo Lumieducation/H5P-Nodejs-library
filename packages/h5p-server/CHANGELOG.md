@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.1...v8.1.0) (2021-06-05)
+
+
+### Bug Fixes
+
+* **h5p-server:** retrieve metadataSettings from library.json ([3de270e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3de270edc57c02256f0992b4f2f9c7c429333fc0))
+
+
+### Features
+
+* **h5p-server:** added forward proxy support ([#1414](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1414)) ([af18af1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/af18af1f9113aae4ecb1b84ceaa3693a7ebfa235))
+
+
+
+
+
 ## [8.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.0.0...v8.0.1) (2021-05-11)
 
 **Note:** Version bump only for package @lumieducation/h5p-server
