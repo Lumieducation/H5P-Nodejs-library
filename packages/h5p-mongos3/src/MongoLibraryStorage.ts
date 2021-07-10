@@ -474,9 +474,23 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         }
 
         if (!fileData) {
+            // The library.json file is in the MongoDB document as binary JSON,
+            // so we get it from there
+            if (file === 'library.json') {
+                const metadata = JSON.stringify(
+                    await this.getMetadata(library)
+                );
+                const readable = new ReadableStreamBuffer();
+                readable.put(metadata, 'utf-8');
+                readable.stop();
+                return readable;
+            }
             throw new H5pError(
                 'library-file-missing',
-                { ubername: LibraryName.toUberName(library), filename: file },
+                {
+                    ubername: LibraryName.toUberName(library),
+                    filename: file
+                },
                 404
             );
         } else {
@@ -613,7 +627,12 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             result = await this.mongodb.findOne(
                 { _id: LibraryName.toUberName(library) },
-                { projection: { metadata: 1, additionalMetadata: 1 } }
+                {
+                    projection: {
+                        metadata: 1,
+                        additionalMetadata: 1
+                    }
+                }
             );
         } catch (error) {
             throw new H5pError(
@@ -725,7 +744,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             );
         }
 
-        files = result.files.map((f) => f.filename);
+        files = result.files.map((f) => f.filename).concat(['library.json']);
         log.debug(`Found ${files.length} file(s) in MongoDB.`);
         return files;
     }
@@ -829,6 +848,52 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             ...libraryMetadata,
             ...(additionalMetadata ?? {})
         });
+    }
+
+    /**
+     * Gets the the metadata of a library. In contrast to getLibrary this is
+     * only the metadata.
+     * @param library the library
+     * @returns the metadata about the locally installed library
+     */
+    private async getMetadata(
+        library: ILibraryName
+    ): Promise<ILibraryMetadata> {
+        if (!library) {
+            throw new Error('You must pass in a library name to getLibrary.');
+        }
+        let result;
+
+        try {
+            result = await this.mongodb.findOne(
+                { _id: LibraryName.toUberName(library) },
+                {
+                    projection: {
+                        metadata: 1
+                    }
+                }
+            );
+        } catch (error) {
+            console.log(error);
+            throw new H5pError(
+                'mongo-library-storage:error-getting-library-metadata',
+                { ubername: LibraryName.toUberName(library) }
+            );
+        }
+        if (!result) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        if (!result.metadata) {
+            throw new H5pError(
+                'mongo-library-storage:error-getting-library-metadata',
+                { ubername: LibraryName.toUberName(library) }
+            );
+        }
+        return result.metadata;
     }
 
     private async readableToBuffer(readable: Readable): Promise<Buffer> {

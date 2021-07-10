@@ -421,7 +421,8 @@ describe('MongoS3LibraryStorage', () => {
         ).resolves.toMatchObject({ size: realStats.size });
         await expect(storage.listFiles(example1Name)).resolves.toMatchObject([
             'language/.en.json',
-            'semantics.json'
+            'semantics.json',
+            'library.json'
         ]);
     });
 
