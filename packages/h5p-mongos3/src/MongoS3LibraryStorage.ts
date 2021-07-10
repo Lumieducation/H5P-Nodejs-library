@@ -5,7 +5,7 @@ import AWS from 'aws-sdk';
 import { Readable } from 'stream';
 import * as path from 'path';
 import { PromiseResult } from 'aws-sdk/lib/request';
-
+import { ReadableStreamBuffer } from 'stream-buffers';
 import {
     IAdditionalLibraryMetadata,
     IFileStats,
@@ -159,7 +159,9 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 }
             );
         }
-        const filesToDelete = await this.listFiles(library);
+        const filesToDelete = await this.listFiles(library, {
+            withMetadata: false
+        });
         // S3 batch deletes only work with 1000 files at a time, so we
         // might have to do this in several requests.
         try {
@@ -459,6 +461,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     ): Promise<Readable> {
         validateFilename(file, this.options?.invalidCharactersRegexp);
 
+        // As the metadata is not S3, we need to get it from MongoDB.
+        if (file === 'library.json') {
+            const metadata = JSON.stringify(await this.getMetadata(library));
+            const readable = new ReadableStreamBuffer();
+            readable.put(metadata, 'utf-8');
+            readable.stop();
+            return readable;
+        }
+
         return this.s3
             .getObject({
                 Bucket: this.options.s3Bucket,
@@ -626,10 +637,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
 
     /**
      * Gets a list of all library files that exist for this library.
-     * @param library
+     * @param library the library name
+     * @param withMetadata true if the 'library.json' file should be included in
+     * the list
      * @returns all files that exist for the library
      */
-    public async listFiles(library: ILibraryName): Promise<string[]> {
+    public async listFiles(
+        library: ILibraryName,
+        options: { withMetadata?: boolean } = { withMetadata: true }
+    ): Promise<string[]> {
         const prefix = this.getS3Key(library, '');
         let files: string[] = [];
         try {
@@ -655,7 +671,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             return [];
         }
         log.debug(`Found ${files.length} file(s) in S3.`);
-        return files;
+        return options?.withMetadata ? files.concat('library.json') : files;
     }
 
     /**
@@ -756,6 +772,52 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             ...libraryMetadata,
             ...(additionalMetadata ?? {})
         });
+    }
+
+    /**
+     * Gets the the metadata of a library. In contrast to getLibrary this is
+     * only the metadata.
+     * @param library the library
+     * @returns the metadata about the locally installed library
+     */
+    private async getMetadata(
+        library: ILibraryName
+    ): Promise<ILibraryMetadata> {
+        if (!library) {
+            throw new Error('You must pass in a library name to getLibrary.');
+        }
+        let result;
+
+        try {
+            result = await this.mongodb.findOne(
+                { _id: LibraryName.toUberName(library) },
+                {
+                    projection: {
+                        metadata: 1
+                    }
+                }
+            );
+        } catch (error) {
+            console.log(error);
+            throw new H5pError(
+                'mongo-library-storage:error-getting-library-metadata',
+                { ubername: LibraryName.toUberName(library) }
+            );
+        }
+        if (!result) {
+            throw new H5pError(
+                'mongo-library-storage:library-not-found',
+                { ubername: LibraryName.toUberName(library) },
+                404
+            );
+        }
+        if (!result.metadata) {
+            throw new H5pError(
+                'mongo-library-storage:error-getting-library-metadata',
+                { ubername: LibraryName.toUberName(library) }
+            );
+        }
+        return result.metadata;
     }
 
     private getS3Key(library: ILibraryName, filename: string): string {

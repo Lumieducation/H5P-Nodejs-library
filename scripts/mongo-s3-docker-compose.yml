@@ -18,11 +18,12 @@ services:
         volumes:
             - minio_data:/data
         ports:
-            - '9000:9000'
-        command: ['server', '/data']
+            - 9000:9000
+            - 9001:9001
+        command: ['server', '--console-address', ':9001', '/data']
         environment:
-            MINIO_ACCESS_KEY: minioaccesskey
-            MINIO_SECRET_KEY: miniosecret
+            MINIO_ROOT_USER: minioaccesskey
+            MINIO_ROOT_PASSWORD: miniosecret
 
 volumes:
     mongodb_data:
