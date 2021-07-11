@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-server",
-    "version": "8.1.0",
+    "version": "8.1.1",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
