@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.1...v8.1.2) (2021-07-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.942.0 ([bb8c451](https://github.com/Lumieducation/H5P-Nodejs-library/commit/bb8c45111a7e8570092992095ea0888ca1da4cbe))
+* **deps:** update dependency aws-sdk to v2.943.0 ([826a2e5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/826a2e5dfc0c29530a9abbaee1e6344ae7cfe924))
+* **deps:** update dependency postcss-safe-parser to v6 ([#1505](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1505)) ([f2a596e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f2a596eb36789b3762aa657646d483d52d469d64))
+* **h5p-mongos3:** library storage includes library.json in exports ([#1575](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1575)) ([e6c4caa](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e6c4caab5e8226c6705e529a903e567f2c7ebbb9))
+
+
+
+
+
 ## [8.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.0...v8.1.1) (2021-07-08)
 
 
