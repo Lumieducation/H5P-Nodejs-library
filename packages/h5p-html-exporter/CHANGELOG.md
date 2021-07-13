@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.1...v8.1.2) (2021-07-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency postcss-safe-parser to v6 ([#1505](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1505)) ([f2a596e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f2a596eb36789b3762aa657646d483d52d469d64))
+
+
+
+
+
 ## [8.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.0...v8.1.1) (2021-07-08)
 
 **Note:** Version bump only for package @lumieducation/h5p-html-exporter
