@@ -728,6 +728,10 @@ export default class HtmlExporter {
         core: boolean,
         usedFiles: LibrariesFilesList
     ) => async (asset) => {
+        // If a url already is internalized we simply return it
+        if (asset.url.startsWith('data:') && asset.url.includes('base64')) {
+            return asset.url;
+        }
         const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
         if (library) {
