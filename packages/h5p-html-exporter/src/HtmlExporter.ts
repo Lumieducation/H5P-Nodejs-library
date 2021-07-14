@@ -20,6 +20,7 @@ import {
     LibraryManager,
     streamToString
 } from '@lumieducation/h5p-server';
+import upath from 'upath';
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
@@ -212,9 +213,9 @@ export default class HtmlExporter {
                 })
             )
         ).filter((ref) => this.isLocalPath(ref.filePath));
-        fileRefs.forEach(
-            (ref) => (ref.context.params.path = path.join(prefix, ref.filePath))
-        );
+        fileRefs.forEach((ref) => {
+            ref.context.params.path = upath.join(prefix, ref.filePath);
+        });
         model.integration.contents[
             `cid-${model.contentId}`
         ].jsonContent = JSON.stringify(params);
