@@ -20,6 +20,7 @@ import {
     LibraryManager,
     streamToString
 } from '@lumieducation/h5p-server';
+import upath from 'upath';
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
@@ -212,9 +213,9 @@ export default class HtmlExporter {
                 })
             )
         ).filter((ref) => this.isLocalPath(ref.filePath));
-        fileRefs.forEach(
-            (ref) => (ref.context.params.path = path.join(prefix, ref.filePath))
-        );
+        fileRefs.forEach((ref) => {
+            ref.context.params.path = upath.join(prefix, ref.filePath);
+        });
         model.integration.contents[
             `cid-${model.contentId}`
         ].jsonContent = JSON.stringify(params);
@@ -426,7 +427,7 @@ export default class HtmlExporter {
                             ? (f) => {
                                   usedFiles.addFile(
                                       library,
-                                      path.join(path.dirname(filename), f)
+                                      upath.join(path.dirname(filename), f)
                                   );
                               }
                             : undefined
@@ -735,7 +736,7 @@ export default class HtmlExporter {
         const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
         if (library) {
-            const p = path.join(path.dirname(filename), asset.relativePath);
+            const p = upath.join(path.dirname(filename), asset.relativePath);
             try {
                 usedFiles.addFile(library, p);
                 return `data:${mimetype};base64,${await streamToString(
