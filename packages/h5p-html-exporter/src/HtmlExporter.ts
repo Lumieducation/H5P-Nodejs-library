@@ -427,7 +427,7 @@ export default class HtmlExporter {
                             ? (f) => {
                                   usedFiles.addFile(
                                       library,
-                                      path.join(path.dirname(filename), f)
+                                      upath.join(path.dirname(filename), f)
                                   );
                               }
                             : undefined
@@ -736,7 +736,7 @@ export default class HtmlExporter {
         const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
         if (library) {
-            const p = path.join(path.dirname(filename), asset.relativePath);
+            const p = upath.join(path.dirname(filename), asset.relativePath);
             try {
                 usedFiles.addFile(library, p);
                 return `data:${mimetype};base64,${await streamToString(
