@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.2...v8.1.3) (2021-07-13)
+
+
+### Bug Fixes
+
+* **h5p-exporter:** already internalized URLs are kept as they are ([f9d7290](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f9d729012c9d6f2cb04aae4d86af86c5b188a150))
+
+
+
+
+
 ## [8.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.1...v8.1.2) (2021-07-11)
 
 
