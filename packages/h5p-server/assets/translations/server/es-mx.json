@@ -54,5 +54,8 @@
     "upload-package-failed-tmp": "No se pudo guardar el paquete cargado en un archivo temporal.",
     "upload-validation-error": "El archivo que ha subido no es válido.",
     "unsatisfiable-range": "El rango solicitado del archivo no está dentro del tamaño del archivo real.",
-    "multipart-ranges-unsupported": "Las solicitudes de rango de varias partes no son compatibles con este servidor."
+    "multipart-ranges-unsupported": "Las solicitudes de rango de varias partes no son compatibles con este servidor.",
+    "content-hub-download-error": "Hubo un error al conectarse al H5P Content Hub. Por favor, inténtelo de nuevo más tarde.",
+    "content-hub-download-error-with-message": "Hubo un error al conectarse al H5P Content Hub ( {{message}} ). Por favor, inténtelo de nuevo más tarde.",
+    "h5p-hub-connection-failed": "Hubo un error al conectarse al H5P Content Hub. Por favor, inténtelo de nuevo más tarde."
 }
