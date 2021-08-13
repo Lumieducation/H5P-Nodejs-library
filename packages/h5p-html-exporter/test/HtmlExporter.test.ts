@@ -231,7 +231,8 @@ describe('HtmlExporter template', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             config,
-            contentManager
+            contentManager,
+            new ContentStorer(contentManager, libraryManager, undefined)
         );
 
         const contentId = (
