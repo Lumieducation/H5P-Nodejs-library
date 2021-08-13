@@ -79,7 +79,7 @@
         "@types/tmp": "0.2.1",
         "@types/yauzl-promise": "2.1.0",
         "@types/yazl": "2.4.2",
-        "axios-mock-adapter": "1.19.0",
+        "axios-mock-adapter": "1.20.0",
         "mockdate": "3.0.5",
         "source-map-support": "0.5.19",
         "stream-mock": "2.0.5",
