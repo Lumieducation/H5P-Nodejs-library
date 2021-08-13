@@ -71,7 +71,7 @@
     "devDependencies": {
         "@types/escape-html": "1.0.1",
         "@types/fs-extra": "9.0.12",
-        "@types/jest": "27.0.0",
+        "@types/jest": "27.0.1",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.0",
         "@types/sanitize-html": "2.3.2",
