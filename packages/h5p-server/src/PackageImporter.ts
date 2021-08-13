@@ -14,9 +14,11 @@ import {
     IContentMetadata,
     IH5PConfig,
     ILibraryInstallResult,
+    ILibraryName,
     IUser
 } from './types';
 import Logger from './helpers/Logger';
+import LibraryName from './LibraryName';
 
 const log = new Logger('PackageImporter');
 
@@ -149,7 +151,7 @@ export default class PackageImporter {
             packagePath,
             {
                 copyMode: ContentCopyModes.Install,
-                installLibraries: user.canUpdateAndInstallLibraries
+                installLibraries: user?.canUpdateAndInstallLibraries === true
             },
             user,
             contentId
@@ -241,6 +243,7 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`processing package ${packagePath}`);
+
         const packageValidator = new PackageValidator(
             this.config,
             this.libraryManager
@@ -269,7 +272,7 @@ export default class PackageImporter {
                 tempDirPath,
                 copyMode === ContentCopyModes.Install ||
                     copyMode === ContentCopyModes.Temporary,
-                true
+                installLibraries
             );
             const dirContent = await fsExtra.readdir(tempDirPath);
 
@@ -297,6 +300,33 @@ export default class PackageImporter {
                 );
             }
 
+            let metadata: IContentMetadata;
+            if (
+                copyMode === ContentCopyModes.Install ||
+                copyMode === ContentCopyModes.Temporary
+            ) {
+                metadata = await fsExtra.readJSON(
+                    path.join(tempDirPath, 'h5p.json')
+                );
+
+                // Check if all libraries needed for the content are installed.
+                const requiredLibraries = this.getRequiredLibraries(metadata);
+                const missingLibraries = await this.libraryManager.getNotInstalledLibraries(
+                    requiredLibraries
+                );
+                if (missingLibraries.length > 0) {
+                    throw new H5pError(
+                        'install-missing-libraries',
+                        {
+                            libraries: missingLibraries
+                                .map((l) => LibraryName.toUberName(l))
+                                .join(', ')
+                        },
+                        400
+                    );
+                }
+            }
+
             // Copy content files to the repository
             if (copyMode === ContentCopyModes.Install) {
                 if (!this.contentManager) {
@@ -305,7 +335,8 @@ export default class PackageImporter {
                     );
                 }
                 return {
-                    ...(await this.contentManager.copyContentFromDirectory(
+                    ...(await this.contentStorer.copyFromDirectoryToStorage(
+                        metadata,
                         tempDirPath,
                         user,
                         contentId
@@ -323,6 +354,7 @@ export default class PackageImporter {
                 }
                 return {
                     ...(await this.contentStorer.copyFromDirectoryToTemporary(
+                        metadata,
                         tempDirPath,
                         user
                     )),
@@ -345,4 +377,16 @@ export default class PackageImporter {
             parameters: undefined
         };
     }
+
+    /**
+     * Gets all libraries referenced in the metadata
+     * @param metadata
+     * @returns the libraries
+     */
+    private getRequiredLibraries = (
+        metadata: IContentMetadata
+    ): ILibraryName[] =>
+        (metadata.editorDependencies ?? [])
+            .concat(metadata.dynamicDependencies ?? [])
+            .concat(metadata.preloadedDependencies);
 }

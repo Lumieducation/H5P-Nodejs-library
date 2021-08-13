@@ -235,6 +235,28 @@ export default class LibraryManager {
     }
 
     /**
+     * Checks which libraries in the list are not installed.
+     * @param libraries the list of libraries to check
+     * @returns the list of not installed libraries
+     */
+    public async getNotInstalledLibraries(
+        libraries: ILibraryName[]
+    ): Promise<ILibraryName[]> {
+        const allLibraries = await this.listInstalledLibraries();
+        const missingLibraries = [];
+        for (const lib of libraries) {
+            if (
+                !allLibraries[lib.machineName]?.find(
+                    (l) => l.compareVersions(lib) === 0
+                )
+            ) {
+                missingLibraries.push(lib);
+            }
+        }
+        return missingLibraries;
+    }
+
+    /**
      * Returns the content of semantics.json for the specified library.
      * @param library
      * @returns the content of semantics.json

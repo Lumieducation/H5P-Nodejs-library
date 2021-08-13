@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Förfrågningar om flera delar stöds inte på denna server.",
     "h5p-hub-connection-failed": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare.",
     "content-hub-download-error-with-message": "Det uppstod ett fel vid anslutning till H5P Content Hub ( {{message}} ). Vänligen försök igen senare.",
-    "content-hub-download-error": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare."
+    "content-hub-download-error": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare.",
+    "install-missing-libraries": "Det gick inte att ladda innehållet eftersom följande bibliotek inte är installerade på det här systemet: {{libraries}}"
 }

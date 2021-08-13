@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Zahteve za večdelni obseg niso podprte na tem strežniku.",
     "h5p-hub-connection-failed": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje.",
     "content-hub-download-error-with-message": "Napaka pri povezovanju s H5P Content Hub ( {{message}} ). Prosim poskusite kasneje.",
-    "content-hub-download-error": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje."
+    "content-hub-download-error": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje.",
+    "install-missing-libraries": "Vsebine ni bilo mogoče naložiti, ker v tem sistemu niso nameščene naslednje knjižnice: {{libraries}}"
 }

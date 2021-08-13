@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Les demandes de plage en plusieurs parties ne sont pas prises en charge sur ce serveur.",
     "h5p-hub-connection-failed": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard.",
     "content-hub-download-error-with-message": "Une erreur s'est produite lors de la connexion au H5P Content Hub ( {{message}} ). Veuillez réessayer plus tard.",
-    "content-hub-download-error": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard."
+    "content-hub-download-error": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard.",
+    "install-missing-libraries": "Impossible de charger le contenu car les bibliothèques suivantes ne sont pas installées sur ce système : {{libraries}}"
 }

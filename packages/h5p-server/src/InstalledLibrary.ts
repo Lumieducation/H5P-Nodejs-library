@@ -1,5 +1,4 @@
 import {
-    IFullLibraryName,
     IInstalledLibrary,
     ILibraryMetadata,
     ILibraryName,
@@ -70,7 +69,8 @@ export default class InstalledLibrary implements IInstalledLibrary {
     }
 
     /**
-     * Compares libraries by giving precedence to title, then major version, then minor version
+     * Compares libraries by giving precedence to title, then major version,
+     * then minor version
      * @param otherLibrary
      */
     public compare(otherLibrary: IInstalledLibrary): number {
@@ -82,11 +82,13 @@ export default class InstalledLibrary implements IInstalledLibrary {
     }
 
     /**
-     * Compares libraries by giving precedence to major version, then minor version, then if present patch version.
+     * Compares libraries by giving precedence to major version, then minor
+     * version, then if present patch version.
      * @param otherLibrary
-     * @returns a negative value: if this library is older than the other library
-     * a positive value: if this library is newer than the other library
-     * zero: if both libraries are the same (or if it can't be determined, because the patch version is missing in the other library)
+     * @returns a negative value: if this library is older than the other
+     * library a positive value: if this library is newer than the other library
+     * zero: if both libraries are the same (or if it can't be determined,
+     * because the patch version is missing in the other library)
      */
     public compareVersions(
         otherLibrary: ILibraryName & { patchVersion?: number }

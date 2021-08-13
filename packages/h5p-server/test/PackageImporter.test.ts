@@ -10,6 +10,7 @@ import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
+import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
 
@@ -78,7 +79,8 @@ describe('package importer', () => {
                 const packageImporter = new PackageImporter(
                     libraryManager,
                     new H5PConfig(null),
-                    contentManager
+                    contentManager,
+                    new ContentStorer(contentManager, libraryManager, undefined)
                 );
                 const contentId = (
                     await packageImporter.addPackageLibrariesAndContent(

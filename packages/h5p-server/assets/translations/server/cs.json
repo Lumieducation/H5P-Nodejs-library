@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Požadavky na vícedílný rozsah nejsou na tomto serveru podporovány.",
     "h5p-hub-connection-failed": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později.",
     "content-hub-download-error-with-message": "Při připojování k H5P Content Hub ( {{message}} ) došlo k chybě. Prosím zkuste to znovu později.",
-    "content-hub-download-error": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později."
+    "content-hub-download-error": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později.",
+    "install-missing-libraries": "Obsah nelze načíst, protože v tomto systému nejsou nainstalovány následující knihovny: {{libraries}}"
 }

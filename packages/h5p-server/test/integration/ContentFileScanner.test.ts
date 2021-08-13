@@ -11,6 +11,7 @@ import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../../src/LibraryManager';
 import PackageImporter from '../../src/PackageImporter';
 import { ContentId } from '../../src/types';
+import ContentStorer from '../../src/ContentStorer';
 
 import User from '../User';
 
@@ -60,7 +61,8 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             new H5PConfig(null),
-            contentManager
+            contentManager,
+            new ContentStorer(contentManager, libraryManager, undefined)
         );
 
         packageIdMap = new Map<string, ContentId>();
