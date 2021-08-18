@@ -156,8 +156,9 @@ export default class PackageValidator {
         log.debug(`validating package in directory ${packagePath}`);
         await this.initializeJsonValidators();
 
+        const packagePathLength = packagePath.length + 1;
         const files = (await getAllFiles.async.array(packagePath)).map((f) =>
-            upath.toUnix(path.relative(packagePath, f))
+            upath.toUnix(f.substr(packagePathLength))
         );
 
         const result = await new ValidatorBuilder()
