@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fortawesome/react-fontawesome to v0.1.15 ([e232d11](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e232d11140e6cdc252273a43b1bf78432e4d12f2))
+* **deps:** update dependency bootstrap to v5 ([#1381](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1381)) ([00483a6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/00483a622b221b696767ce98dd96784c65867cc1))
+* **deps:** update dependency bootstrap to v5.1.0 ([d028dac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d028daced8eea1439a12d6a6b86d0c208697bfc0))
+* **deps:** update font awesome ([ed8495e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ed8495ebc706f9cbf33a523283fb17e86df0255b))
+
+
+
+
+
 ## [8.1.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.3...v8.1.4) (2021-07-22)
 
 

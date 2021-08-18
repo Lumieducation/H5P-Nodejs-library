@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
+
+
+### Bug Fixes
+
+* **h5p-html-exporter:** YouTube links now work in exported files ([#1678](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1678)) ([a4d5f27](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a4d5f276697a7cf60aa20b7defd7b6d9fcdd71a8))
+
+
+
+
+
 ## [8.1.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.3...v8.1.4) (2021-07-22)
 
 
