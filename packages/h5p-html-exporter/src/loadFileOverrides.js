@@ -26,7 +26,15 @@
     // that don't use H5P.ContentType.getLibraryFilePath.
     var nativeSetScriptAttribute = HTMLScriptElement.prototype.setAttribute;
     HTMLScriptElement.prototype.setAttribute = function (name, value) {
-        if (name === 'src' && value instanceof String) {
+        if (name === 'src') {
+            if (!(value instanceof String)) {
+                if (value.toString) {
+                    value = value.toString();
+                } else {
+                    nativeSetScriptAttribute.call(this, name, value);
+                    return;
+                }
+            }
             var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
                 const file = match[1];
@@ -48,7 +56,15 @@
     // use H5P.ContentType.getLibraryFilePath.
     var nativeSetLinkAttribute = HTMLLinkElement.prototype.setAttribute;
     HTMLLinkElement.prototype.setAttribute = function (name, value) {
-        if (name === 'href' && value instanceof String) {
+        if (name === 'href') {
+            if (!(value instanceof String)) {
+                if (value.toString) {
+                    value = value.toString();
+                } else {
+                    nativeSetScriptAttribute.call(this, name, value);
+                    return;
+                }
+            }
             var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
                 const file = match[1];
