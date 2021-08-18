@@ -600,8 +600,8 @@ export default class LibraryManager {
     }
 
     /**
-     * Copies all library file s from a directory (excludes library.json) to the storage.
-     * Throws errors if something went wrong.
+     * Copies all library file s from a directory (excludes library.json) to the
+     * storage. Throws errors if something went wrong.
      * @param fromDirectory The directory to copy from
      * @param libraryInfo the library object
      * @returns
@@ -611,12 +611,12 @@ export default class LibraryManager {
         libraryInfo: ILibraryName
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
+        const fromDirectoryLength = fromDirectory.length + 1;
         const files: string[] = await getAllFiles.async.array(fromDirectory);
         await Promise.all(
             files.map((fileFullPath: string) => {
-                const fileLocalPath: string = path.relative(
-                    fromDirectory,
-                    fileFullPath
+                const fileLocalPath: string = fileFullPath.substr(
+                    fromDirectoryLength
                 );
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);

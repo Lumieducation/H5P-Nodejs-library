@@ -55,7 +55,8 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * @param contentPath The absolute path to the directory where the content should be stored
+     * @param contentPath The absolute path to the directory where the content
+     * should be stored
      */
     constructor(
         protected contentPath: string,
@@ -106,8 +107,10 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Creates a content object in the repository. Add files to it later with addContentFile(...).
-     * Throws an error if something went wrong. In this case no traces of the content are left in storage and all changes are reverted.
+     * Creates a content object in the repository. Add files to it later with
+     * addContentFile(...). Throws an error if something went wrong. In this
+     * case no traces of the content are left in storage and all changes are
+     * reverted.
      * @param metadata The metadata of the content (= h5p.json)
      * @param content the content object (= content/content.json)
      * @param user The user who owns this object.
@@ -147,7 +150,8 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
+     * Adds a content file to an existing content object. The content object has
+     * to be created with createContent(...) first.
      * @param id The id of the content to add the file to
      * @param filename The filename
      * @param stream A readable stream that contains the data
@@ -262,7 +266,8 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Returns information about a content file (e.g. image or video) inside a piece of content.
+     * Returns information about a content file (e.g. image or video) inside a
+     * piece of content.
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get information about
      * @param user the user who wants to retrieve the content file
@@ -286,12 +291,15 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * Returns a readable stream of a content file (e.g. image or video) inside
+     * a piece of content
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get
      * @param user the user who wants to retrieve the content file
-     * @param rangeStart (optional) the position in bytes at which the stream should start
-     * @param rangeEnd (optional) the position in bytes at which the stream should end
+     * @param rangeStart (optional) the position in bytes at which the stream
+     * should start
+     * @param rangeEnd (optional) the position in bytes at which the stream
+     * should end
      * @returns
      */
     public async getFileStream(
@@ -320,7 +328,8 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Returns the content metadata (=h5p.json) for a content id
      * @param contentId the content id for which to retrieve the metadata
-     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @param user (optional) the user who wants to access the metadata. If
+     * undefined, access must be granted.
      * @returns the metadata
      */
     public async getMetadata(
@@ -337,7 +346,8 @@ export default class FileContentStorage implements IContentStorage {
     /**
      * Returns the parameters (=content.json) for a content id
      * @param contentId the content id for which to retrieve the metadata
-     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @param user (optional) the user who wants to access the metadata. If
+     * undefined, access must be granted.
      * @returns the parameters
      */
     public async getParameters(
@@ -386,7 +396,8 @@ export default class FileContentStorage implements IContentStorage {
      * Returns an array of permissions that the user has on the piece of content
      * @param contentId the content id to check
      * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it, delete it etc.)
+     * @returns the permissions the user has for this content (e.g. download it,
+     * delete it etc.)
      */
     public async getUserPermissions(
         contentId: ContentId,
@@ -402,7 +413,8 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * Lists the content objects in the system (if no user is specified) or
+     * owned by the user.
      * @param user (optional) the user who owns the content
      * @returns a list of contentIds
      */
@@ -425,10 +437,12 @@ export default class FileContentStorage implements IContentStorage {
     }
 
     /**
-     * Gets the filenames of files added to the content with addContentFile(...) (e.g. images, videos or other files)
+     * Gets the filenames of files added to the content with addContentFile(...)
+     * (e.g. images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['image1.png', 'video2.mp4']
+     * @returns a list of files that are used in the piece of content, e.g.
+     * ['image1.png', 'video2.mp4']
      */
     public async listFiles(
         contentId: ContentId,
@@ -438,6 +452,7 @@ export default class FileContentStorage implements IContentStorage {
             this.getContentPath(),
             contentId.toString()
         );
+        const contentDirectoryPathLength = contentDirectoryPath.length + 1;
         const absolutePaths = await getAllFiles.async.array(
             path.join(contentDirectoryPath)
         );
@@ -445,7 +460,7 @@ export default class FileContentStorage implements IContentStorage {
         const h5pPath = path.join(contentDirectoryPath, 'h5p.json');
         return absolutePaths
             .filter((p) => p !== contentPath && p !== h5pPath)
-            .map((p) => path.relative(contentDirectoryPath, p));
+            .map((p) => p.substr(contentDirectoryPathLength));
     }
 
     /**
