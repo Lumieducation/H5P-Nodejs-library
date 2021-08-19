@@ -1,3 +1,4 @@
+import AwaitLock from 'await-lock';
 import type { IEditorModel, IContentMetadata } from '@lumieducation/h5p-server';
 
 import { mergeH5PIntegration } from './h5p-utils';
@@ -140,6 +141,12 @@ export class H5PEditorComponent extends HTMLElement {
         }
     >;
 
+    /**
+     * Makes sure that calls of save() wait until the component is fully
+     * initialized.
+     */
+    private initLock: AwaitLock = new AwaitLock();
+
     private resizeObserver: ResizeObserver;
 
     private root: HTMLElement;
@@ -245,66 +252,71 @@ export class H5PEditorComponent extends HTMLElement {
         contentId: string;
         metadata: IContentMetadata;
     }> => {
-        if (this.editorInstance === undefined) {
-            this.dispatchAndThrowError(
-                'save-error',
-                'editorInstance of h5p editor not defined.'
-            );
-        }
-        if (!this.saveContentCallback) {
-            this.dispatchAndThrowError(
-                'save-error',
-                'saveContentCallback of H5P Editor Web Component not defined.'
-            );
-        }
-
-        const params = this.editorInstance.getParams();
-        if (!params.params) {
-            this.dispatchAndThrowError(
-                'validation-error',
-                'The parameters entered by the user are invalid.'
-            );
-        }
-        // Validate mandatory main title. Prevent submitting if that's not set.
-        // Deliberately doing it after getParams(), so that any other validation
-        // problems are also revealed.
-        if (!this.editorInstance.isMainTitleSet()) {
-            this.dispatchAndThrowError(
-                'validation-error',
-                "The main title of the content hasn't been set."
-            );
-        }
-
-        let saveResponseObject: {
-            contentId: string;
-            metadata: IContentMetadata;
-        };
-        const requestBody = {
-            library: this.editorInstance.getLibrary(),
-            params
-        };
+        this.initLock.acquireAsync();
         try {
-            saveResponseObject = await this.saveContentCallback(
-                this.contentId === 'new' ? undefined : this.contentId,
-                requestBody
+            if (this.editorInstance === undefined) {
+                this.dispatchAndThrowError(
+                    'save-error',
+                    'editorInstance of h5p editor not defined.'
+                );
+            }
+            if (!this.saveContentCallback) {
+                this.dispatchAndThrowError(
+                    'save-error',
+                    'saveContentCallback of H5P Editor Web Component not defined.'
+                );
+            }
+
+            const params = this.editorInstance.getParams();
+            if (!params.params) {
+                this.dispatchAndThrowError(
+                    'validation-error',
+                    'The parameters entered by the user are invalid.'
+                );
+            }
+            // Validate mandatory main title. Prevent submitting if that's not
+            // set. Deliberately doing it after getParams(), so that any other
+            // validation problems are also revealed.
+            if (!this.editorInstance.isMainTitleSet()) {
+                this.dispatchAndThrowError(
+                    'validation-error',
+                    "The main title of the content hasn't been set."
+                );
+            }
+
+            let saveResponseObject: {
+                contentId: string;
+                metadata: IContentMetadata;
+            };
+            const requestBody = {
+                library: this.editorInstance.getLibrary(),
+                params
+            };
+            try {
+                saveResponseObject = await this.saveContentCallback(
+                    this.contentId === 'new' ? undefined : this.contentId,
+                    requestBody
+                );
+            } catch (error) {
+                this.dispatchAndThrowError('save-error', error.message);
+            }
+
+            if (this.contentId !== saveResponseObject.contentId) {
+                this.setAttribute('content-id', saveResponseObject.contentId);
+            }
+
+            this.dispatchEvent(
+                new CustomEvent('saved', {
+                    detail: {
+                        contentId: saveResponseObject.contentId,
+                        metadata: saveResponseObject.metadata
+                    }
+                })
             );
-        } catch (error) {
-            this.dispatchAndThrowError('save-error', error.message);
+            return saveResponseObject;
+        } finally {
+            this.initLock.release();
         }
-
-        if (this.contentId !== saveResponseObject.contentId) {
-            this.setAttribute('content-id', saveResponseObject.contentId);
-        }
-
-        this.dispatchEvent(
-            new CustomEvent('saved', {
-                detail: {
-                    contentId: saveResponseObject.contentId,
-                    metadata: saveResponseObject.metadata
-                }
-            })
-        );
-        return saveResponseObject;
     };
 
     /**
@@ -330,7 +342,7 @@ export class H5PEditorComponent extends HTMLElement {
     private onEditorLoaded = (event: { data: string }): void => {
         // We must manually check if our editor instance is initialized, as the
         // event is only sent globally.
-        if (this.editorInstance.selector.form) {
+        if (this.editorInstance?.selector?.form) {
             this.dispatchEvent(
                 new CustomEvent('editorloaded', {
                     detail: { contentId: this.contentId, ubername: event.data }
@@ -359,130 +371,138 @@ export class H5PEditorComponent extends HTMLElement {
             return;
         }
 
-        let editorModel: IEditorModel & {
-            library?: string;
-            metadata?: IContentMetadata;
-            params?: any;
-        };
+        // We want to make sure that save operations wait until we've
+        // initialized.
+        await this.initLock.acquireAsync();
         try {
-            editorModel = await this.loadContentCallback(
-                contentId === 'new' ? undefined : contentId
-            );
-        } catch (error) {
-            this.root.innerHTML = `<p>Error loading H5P content from server: ${error.message}`;
-            return;
-        }
-
-        // Reset DOM tree inside component.
-        this.root.innerHTML = '';
-
-        // We have to prevent H5P from initializing when the h5p.js file is
-        // loaded.
-        if (!window.H5P) {
-            window.H5P = {};
-        }
-        window.H5P.preventInit = true;
-
-        // We merge the H5P integration we received from the server with the one
-        // that already exists in the window globally to allow for several H5P
-        // content objects on a single page.
-        mergeH5PIntegration(
-            editorModel.integration,
-            contentId === 'new' ? undefined : contentId
-        );
-
-        // As the editor adds an iframe anyway and styles don't really matter, we
-        // only add the global editor scripts to the whole page, but not the styles
-        // (to avoid side effects).
-        await addScripts(
-            editorModel.scripts,
-            document.getElementsByTagName('head')[0]
-        );
-
-        // Create the necessary DOM tree.
-        const h5pCreateDiv = document.createElement('div');
-        h5pCreateDiv.className = 'h5p-create';
-        h5pCreateDiv.hidden = true;
-        this.root.appendChild(h5pCreateDiv);
-        const h5pEditorDiv = document.createElement('div');
-        h5pEditorDiv.className = 'h5p-editor';
-        h5pCreateDiv.appendChild(h5pEditorDiv);
-
-        // Set up the H5P core editor.
-        H5PEditor.getAjaxUrl = (
-            action: string,
-            parameters: { [x: string]: any }
-        ): string => {
-            let url = editorModel.integration.editor.ajaxPath + action;
-
-            if (parameters !== undefined) {
-                for (const property in parameters) {
-                    if (
-                        Object.prototype.hasOwnProperty.call(
-                            parameters,
-                            property
-                        )
-                    ) {
-                        url = `${url}&${property}=${parameters[property]}`;
-                    }
-                }
+            let editorModel: IEditorModel & {
+                library?: string;
+                metadata?: IContentMetadata;
+                params?: any;
+            };
+            try {
+                editorModel = await this.loadContentCallback(
+                    contentId === 'new' ? undefined : contentId
+                );
+            } catch (error) {
+                this.root.innerHTML = `<p>Error loading H5P content from server: ${error.message}`;
+                return;
             }
 
-            url += window.location.search.replace(/\\?/g, '&');
-            return url;
-        };
+            // Reset DOM tree inside component.
+            this.root.innerHTML = '';
 
-        window.H5P.preventInit = false;
-        // Only initialize H5P once to avoid resetting values.
-        if (!window.h5pIsInitialized) {
-            window.H5P.init(this.root);
-            window.h5pIsInitialized = true;
-        }
+            // We have to prevent H5P from initializing when the h5p.js file is
+            // loaded.
+            if (!window.H5P) {
+                window.H5P = {};
+            }
+            window.H5P.preventInit = true;
 
-        // Register our global editorloaded event handler.
-        window.H5P.externalDispatcher.on(
-            'editorloaded',
-            this.onEditorLoaded,
-            this
-        );
-
-        // Configure the H5P core editor.
-        H5PEditor.$ = window.H5P.jQuery;
-        H5PEditor.basePath = editorModel.integration.editor.libraryUrl;
-        H5PEditor.fileIcon = editorModel.integration.editor.fileIcon;
-        H5PEditor.ajaxPath = editorModel.integration.editor.ajaxPath;
-        H5PEditor.filesPath = editorModel.integration.editor.filesPath;
-        H5PEditor.apiVersion = editorModel.integration.editor.apiVersion;
-        H5PEditor.contentLanguage = editorModel.integration.editor.language;
-        H5PEditor.copyrightSemantics =
-            editorModel.integration.editor.copyrightSemantics;
-        H5PEditor.metadataSemantics =
-            editorModel.integration.editor.metadataSemantics;
-        H5PEditor.assets = editorModel.integration.editor.assets;
-        H5PEditor.baseUrl = '';
-        H5PEditor.contentId = contentId === 'new' ? undefined : contentId;
-        H5PEditor.enableContentHub =
-            editorModel.integration.editor.enableContentHub || false;
-
-        if (contentId === 'new') {
-            // Create an empty editor for new content
-            this.editorInstance = new ns.Editor(
-                undefined,
-                undefined,
-                h5pEditorDiv
+            // We merge the H5P integration we received from the server with the
+            // one that already exists in the window globally to allow for
+            // several H5P content objects on a single page.
+            mergeH5PIntegration(
+                editorModel.integration,
+                contentId === 'new' ? undefined : contentId
             );
-        } else {
-            // Load the editor with populated parameters for existing content
-            this.editorInstance = new ns.Editor(
-                editorModel.library,
-                JSON.stringify({
-                    metadata: editorModel.metadata,
-                    params: editorModel.params
-                }),
-                h5pEditorDiv
-            );
-        }
 
-        h5pCreateDiv.hidden = false;
+            // As the editor adds an iframe anyway and styles don't really
+            // matter, we only add the global editor scripts to the whole page,
+            // but not the styles (to avoid side effects).
+            await addScripts(
+                editorModel.scripts,
+                document.getElementsByTagName('head')[0]
+            );
+
+            // Create the necessary DOM tree.
+            const h5pCreateDiv = document.createElement('div');
+            h5pCreateDiv.className = 'h5p-create';
+            h5pCreateDiv.hidden = true;
+            this.root.appendChild(h5pCreateDiv);
+            const h5pEditorDiv = document.createElement('div');
+            h5pEditorDiv.className = 'h5p-editor';
+            h5pCreateDiv.appendChild(h5pEditorDiv);
+
+            // Set up the H5P core editor.
+            H5PEditor.getAjaxUrl = (
+                action: string,
+                parameters: { [x: string]: any }
+            ): string => {
+                let url = editorModel.integration.editor.ajaxPath + action;
+
+                if (parameters !== undefined) {
+                    for (const property in parameters) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                parameters,
+                                property
+                            )
+                        ) {
+                            url = `${url}&${property}=${parameters[property]}`;
+                        }
+                    }
+                }
+
+                url += window.location.search.replace(/\\?/g, '&');
+                return url;
+            };
+
+            window.H5P.preventInit = false;
+            // Only initialize H5P once to avoid resetting values.
+            if (!window.h5pIsInitialized) {
+                window.H5P.init(this.root);
+                window.h5pIsInitialized = true;
+            }
+
+            // Register our global editorloaded event handler.
+            window.H5P.externalDispatcher.on(
+                'editorloaded',
+                this.onEditorLoaded,
+                this
+            );
+
+            // Configure the H5P core editor.
+            H5PEditor.$ = window.H5P.jQuery;
+            H5PEditor.basePath = editorModel.integration.editor.libraryUrl;
+            H5PEditor.fileIcon = editorModel.integration.editor.fileIcon;
+            H5PEditor.ajaxPath = editorModel.integration.editor.ajaxPath;
+            H5PEditor.filesPath = editorModel.integration.editor.filesPath;
+            H5PEditor.apiVersion = editorModel.integration.editor.apiVersion;
+            H5PEditor.contentLanguage = editorModel.integration.editor.language;
+            H5PEditor.copyrightSemantics =
+                editorModel.integration.editor.copyrightSemantics;
+            H5PEditor.metadataSemantics =
+                editorModel.integration.editor.metadataSemantics;
+            H5PEditor.assets = editorModel.integration.editor.assets;
+            H5PEditor.baseUrl = '';
+            H5PEditor.contentId = contentId === 'new' ? undefined : contentId;
+            H5PEditor.enableContentHub =
+                editorModel.integration.editor.enableContentHub || false;
+
+            if (contentId === 'new') {
+                // Create an empty editor for new content
+                this.editorInstance = new ns.Editor(
+                    undefined,
+                    undefined,
+                    h5pEditorDiv
+                );
+            } else {
+                // Load the editor with populated parameters for existing
+                // content
+                this.editorInstance = new ns.Editor(
+                    editorModel.library,
+                    JSON.stringify({
+                        metadata: editorModel.metadata,
+                        params: editorModel.params
+                    }),
+                    h5pEditorDiv
+                );
+            }
+
+            h5pCreateDiv.hidden = false;
+        } finally {
+            this.initLock.release();
+        }
     }
 }
