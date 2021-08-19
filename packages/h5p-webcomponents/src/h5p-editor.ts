@@ -252,12 +252,14 @@ export class H5PEditorComponent extends HTMLElement {
         contentId: string;
         metadata: IContentMetadata;
     }> => {
-        this.initLock.acquireAsync();
+        // We don't want to allow saving until the editor is loaded, so we wait
+        // for the init lock.
+        await this.initLock.acquireAsync();
         try {
             if (this.editorInstance === undefined) {
                 this.dispatchAndThrowError(
                     'save-error',
-                    'editorInstance of h5p editor not defined.'
+                    'editorInstance of h5p editor not defined. Something went wrong during the initialization of the H5P editor.'
                 );
             }
             if (!this.saveContentCallback) {
