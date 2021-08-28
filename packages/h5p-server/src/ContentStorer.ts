@@ -164,6 +164,7 @@ export default class ContentStorer {
         contentId?: ContentId
     ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
         log.info(`copying content from directory ${packageDirectory}`);
+        const packageDirectoryLength = packageDirectory.length + 1;
         const parameters: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
@@ -173,7 +174,7 @@ export default class ContentStorer {
             )
         ).filter(
             (file: string) =>
-                path.relative(packageDirectory, file) !== 'content.json'
+                file.substr(packageDirectoryLength) !== 'content.json'
         );
 
         const newContentId: ContentId = await this.contentManager.contentStorage.addContent(
@@ -182,14 +183,13 @@ export default class ContentStorer {
             user,
             contentId
         );
+        const contentPath = path.join(packageDirectory, 'content');
+        const contentPathLength = contentPath.length + 1;
         try {
             await Promise.all(
                 otherContentFiles.map((file: string) => {
                     const readStream: Stream = fsExtra.createReadStream(file);
-                    const localPath: string = path.relative(
-                        path.join(packageDirectory, 'content'),
-                        file
-                    );
+                    const localPath: string = file.substr(contentPathLength);
                     log.debug(`adding ${file} to ${packageDirectory}`);
                     return this.contentManager.contentStorage.addFile(
                         newContentId,

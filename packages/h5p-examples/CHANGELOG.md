@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v20.3.5 ([2822614](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2822614fa104c0050b4885b253a641fb76d64ca8))
+* **deps:** update dependency i18next to v20.4.0 ([4cba988](https://github.com/Lumieducation/H5P-Nodejs-library/commit/4cba988dda3bc9f427c70ffe5474d9cdcb8642b6))
+
+
+
+
+
+## [8.1.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.3...v8.1.4) (2021-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.945.0 ([5708677](https://github.com/Lumieducation/H5P-Nodejs-library/commit/570867763538590c6102071115499634447d75cf))
+* **deps:** update dependency i18next to v20.3.3 ([e893fc2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e893fc27ace00b9641fc14bc2a4f54c9709caf72))
+* **deps:** update dependency i18next to v20.3.4 ([3de5db5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3de5db5ffae8ec8556760db82cff58fa73505393))
+
+
+
+
+
 ## [8.1.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.2...v8.1.3) (2021-07-13)
 
 **Note:** Version bump only for package @lumieducation/h5p-examples

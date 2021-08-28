@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.5](https://github.com/Lumieducation/h5p-webcomponents/compare/v8.1.4...v8.1.5) (2021-08-18)
+
+**Note:** Version bump only for package @lumieducation/h5p-webcomponents
+
+
+
+
+
+## [8.1.4](https://github.com/Lumieducation/h5p-webcomponents/compare/v8.1.3...v8.1.4) (2021-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.945.0 ([5708677](https://github.com/Lumieducation/h5p-webcomponents/commit/570867763538590c6102071115499634447d75cf))
+
+
+
+
+
 ## [8.1.3](https://github.com/Lumieducation/h5p-webcomponents/compare/v8.1.2...v8.1.3) (2021-07-13)
 
 **Note:** Version bump only for package @lumieducation/h5p-webcomponents

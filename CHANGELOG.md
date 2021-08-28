@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fortawesome/react-fontawesome to v0.1.15 ([e232d11](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e232d11140e6cdc252273a43b1bf78432e4d12f2))
+* **deps:** update dependency aws-sdk to v2.952.0 ([aae0d0e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aae0d0eb817c1060d19828008239548c0cdcc0e1))
+* **deps:** update dependency aws-sdk to v2.953.0 ([8878d1b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8878d1bbcc157816c062dfd25df10bf573f8e8b2))
+* **deps:** update dependency aws-sdk to v2.954.0 ([be64108](https://github.com/Lumieducation/H5P-Nodejs-library/commit/be641089d0dcf4f4579c112fa8f7bdcc54a302b1))
+* **deps:** update dependency aws-sdk to v2.955.0 ([2d17004](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2d170041efa4b9de5b070ee09e1635ce0cdf5386))
+* **deps:** update dependency aws-sdk to v2.956.0 ([a984c6e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a984c6ecdcdccef35482ec7631a31446c9564dda))
+* **deps:** update dependency aws-sdk to v2.957.0 ([db4237b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/db4237ba658ace2fbdb4b1f7a35133dd97adc89c))
+* **deps:** update dependency aws-sdk to v2.958.0 ([f0f24b5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f0f24b5953516f1a86d5199379f172057cd7fd33))
+* **deps:** update dependency aws-sdk to v2.959.0 ([c1825d6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c1825d664bbd1dd9097319113ac8f704dc2be4c3))
+* **deps:** update dependency aws-sdk to v2.960.0 ([6c106de](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6c106de5823b39e75c3d9a962d0ec2ebc32b49e9))
+* **deps:** update dependency aws-sdk to v2.961.0 ([6d5d36e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6d5d36efb1f213fd13fc9044fa06739d33956aab))
+* **deps:** update dependency aws-sdk to v2.962.0 ([41d048a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/41d048ae68ade812ec848300aeefd484dbc45996))
+* **deps:** update dependency aws-sdk to v2.963.0 ([2b7fb1b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2b7fb1bec7d19a58360c2e981806a537b949e8d1))
+* **deps:** update dependency aws-sdk to v2.964.0 ([b5901c0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b5901c08523c8dd69d25e3deb0ca004e6134e134))
+* **deps:** update dependency aws-sdk to v2.965.0 ([56e1884](https://github.com/Lumieducation/H5P-Nodejs-library/commit/56e1884eb3650e9f2aa7a8cbe2d6daef714bfaec))
+* **deps:** update dependency aws-sdk to v2.968.0 ([f9b1dd9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f9b1dd9c8d09fcedda3d28eb466f1478c7a2a469))
+* **deps:** update dependency aws-sdk to v2.969.0 ([92ed046](https://github.com/Lumieducation/H5P-Nodejs-library/commit/92ed046a95c2db5e200e6077c7070a64057cb7eb))
+* **deps:** update dependency aws-sdk to v2.970.0 ([11c2271](https://github.com/Lumieducation/H5P-Nodejs-library/commit/11c2271ae3708ddaab05de3514c2a6ff4bb6bcca))
+* **deps:** update dependency bootstrap to v5 ([#1381](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1381)) ([00483a6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/00483a622b221b696767ce98dd96784c65867cc1))
+* **deps:** update dependency bootstrap to v5.1.0 ([d028dac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d028daced8eea1439a12d6a6b86d0c208697bfc0))
+* **deps:** update dependency i18next to v20.3.5 ([2822614](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2822614fa104c0050b4885b253a641fb76d64ca8))
+* **deps:** update dependency i18next to v20.4.0 ([4cba988](https://github.com/Lumieducation/H5P-Nodejs-library/commit/4cba988dda3bc9f427c70ffe5474d9cdcb8642b6))
+* **deps:** update dependency mongodb to v3.6.11 ([764383d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/764383d54620376035713842970020c5aa7662b9))
+* **deps:** update font awesome ([ed8495e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ed8495ebc706f9cbf33a523283fb17e86df0255b))
+* **h5p-html-exporter:** YouTube links now work in exported files ([#1678](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1678)) ([a4d5f27](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a4d5f276697a7cf60aa20b7defd7b6d9fcdd71a8))
+
+
+
+
+
+## [8.1.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.3...v8.1.4) (2021-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.945.0 ([5708677](https://github.com/Lumieducation/H5P-Nodejs-library/commit/570867763538590c6102071115499634447d75cf))
+* **deps:** update dependency aws-sdk to v2.946.0 ([b2cc4b0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b2cc4b08a2b5490787f566241f5f7295ca7e8daa))
+* **deps:** update dependency aws-sdk to v2.947.0 ([2ecbcb3](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2ecbcb31364c3c8dce50632917bec0e2dacc6874))
+* **deps:** update dependency aws-sdk to v2.948.0 ([a667f78](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a667f787a51467c38eff8fbc19be77208951d868))
+* **deps:** update dependency aws-sdk to v2.949.0 ([5e278f6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5e278f61937266ef711a73fddefb6d1e72b323f0))
+* **deps:** update dependency aws-sdk to v2.950.0 ([77d58d7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/77d58d7eb674340cc3921224715389e96e7ea542))
+* **deps:** update dependency aws-sdk to v2.951.0 ([331601f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/331601f162f321e5a42809b942e5c8be19c35020))
+* **deps:** update dependency i18next to v20.3.3 ([e893fc2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e893fc27ace00b9641fc14bc2a4f54c9709caf72))
+* **deps:** update dependency i18next to v20.3.4 ([3de5db5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3de5db5ffae8ec8556760db82cff58fa73505393))
+* **h5p-html-exporter:** fix resource paths in Windows ([#1606](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1606)) ([e8fceeb](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e8fceeb73eff692b859569798b9e99f740aa59ce))
+
+
+
+
+
 ## [8.1.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.2...v8.1.3) (2021-07-13)
 
 

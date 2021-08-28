@@ -127,12 +127,12 @@ export default class DirectoryTemporaryFileStorage
         return (
             await Promise.all(
                 users.map(async (u) => {
-                    const filesOfUser = await getAllFiles.async.array(
-                        this.getAbsoluteUserDirectoryPath(u)
-                    );
+                    const basePath = this.getAbsoluteUserDirectoryPath(u);
+                    const basePathLength = basePath.length + 1;
+                    const filesOfUser = await getAllFiles.async.array(basePath);
                     return Promise.all(
                         filesOfUser
-                            .map((f) => path.basename(f))
+                            .map((f) => f.substr(basePathLength))
                             .filter((f) => !f.endsWith('.metadata'))
                             .map((f) => this.getTemporaryFileInfo(f, u))
                     );

@@ -27,7 +27,15 @@
     var nativeSetScriptAttribute = HTMLScriptElement.prototype.setAttribute;
     HTMLScriptElement.prototype.setAttribute = function (name, value) {
         if (name === 'src') {
-            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/)
+            if (!(value instanceof String)) {
+                if (value.toString) {
+                    value = value.toString();
+                } else {
+                    nativeSetScriptAttribute.call(this, name, value);
+                    return;
+                }
+            }
+            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
                 const file = match[1];
                 if (furtherH5PInlineResources[file]) {
@@ -49,7 +57,15 @@
     var nativeSetLinkAttribute = HTMLLinkElement.prototype.setAttribute;
     HTMLLinkElement.prototype.setAttribute = function (name, value) {
         if (name === 'href') {
-            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/)
+            if (!(value instanceof String)) {
+                if (value.toString) {
+                    value = value.toString();
+                } else {
+                    nativeSetScriptAttribute.call(this, name, value);
+                    return;
+                }
+            }
+            var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
                 const file = match[1];
                 if (furtherH5PInlineResources[file]) {
