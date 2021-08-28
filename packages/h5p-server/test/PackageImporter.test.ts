@@ -127,4 +127,38 @@ describe('package importer', () => {
             { keep: false, unsafeCleanup: true }
         );
     });
+
+    it('rejects content if libraries are missing', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                const contentDir = path.join(tmpDirPath, 'content');
+                const libraryDir = path.join(tmpDirPath, 'libraries');
+                await fsExtra.ensureDir(contentDir);
+                await fsExtra.ensureDir(libraryDir);
+
+                const user = new User();
+                user.canUpdateAndInstallLibraries = false;
+
+                const contentManager = new ContentManager(
+                    new FileContentStorage(contentDir)
+                );
+                const libraryManager = new LibraryManager(
+                    new FileLibraryStorage(libraryDir)
+                );
+                const packageImporter = new PackageImporter(
+                    libraryManager,
+                    new H5PConfig(null),
+                    contentManager,
+                    new ContentStorer(contentManager, libraryManager, undefined)
+                );
+                await expect(
+                    packageImporter.addPackageLibrariesAndContent(
+                        path.resolve('test/data/validator/valid2.h5p'),
+                        user
+                    )
+                ).rejects.toThrow('install-missing-libraries');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });
