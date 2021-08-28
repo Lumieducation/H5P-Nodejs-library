@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Dieser Server unterstützt keine Multipart Range Requests.",
     "h5p-hub-connection-failed": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.",
     "content-hub-download-error-with-message": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten ({{message}}). Bitte versuche es später noch einmal.",
-    "content-hub-download-error": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen es später noch einmal."
+    "content-hub-download-error": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen es später noch einmal.",
+    "install-missing-libraries": "Der Inhalt konnte nicht geladen werden, da die folgenden Bibliotheken auf diesem System nicht installiert sind: {{libraries}}"
 }

@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "此服务器不支持多部分范围请求。",
     "h5p-hub-connection-failed": "连接到H5P内容中心时出错。请稍后再试。",
     "content-hub-download-error-with-message": "连接到H5P内容中心（ {{message}} ）时出错。请稍后再试。",
-    "content-hub-download-error": "连接到H5P内容中心时出错。请稍后再试。"
+    "content-hub-download-error": "连接到H5P内容中心时出错。请稍后再试。",
+    "install-missing-libraries": "无法加载内容，因为此系统上未安装以下库： {{libraries}}"
 }

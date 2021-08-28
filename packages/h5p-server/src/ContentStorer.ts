@@ -1,5 +1,7 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
+import getAllFiles from 'get-all-files';
+import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
@@ -19,8 +21,8 @@ import SemanticsEnforcer from './SemanticsEnforcer';
 const log = new Logger('ContentStorer');
 
 /**
- * Contains logic to store content in permanent storage. Copies files from temporary storage and
- * deletes unused files.
+ * Contains logic to store content in permanent storage. Copies files from
+ * temporary storage and deletes unused files.
  */
 export default class ContentStorer {
     constructor(
@@ -36,8 +38,9 @@ export default class ContentStorer {
     private semanticsEnforcer: SemanticsEnforcer;
 
     /**
-     * Saves content in the persistence system. Also copies over files from temporary storage
-     * or from other content if the content was pasted from there.
+     * Saves content in the persistence system. Also copies over files from
+     * temporary storage or from other content if the content was pasted from
+     * there.
      * @param contentId the contentId (can be undefined if previously unsaved)
      * @param parameters the parameters of teh content (= content.json)
      * @param metadata = content of h5p.json
@@ -58,15 +61,17 @@ export default class ContentStorer {
             mainLibraryName
         );
 
-        // Get the list of files used in the old version of the content (if the content was saved before).
-        // This list will later be compared against the files referenced in the new params.
+        // Get the list of files used in the old version of the content (if the
+        // content was saved before). This list will later be compared against
+        // the files referenced in the new params.
         const filesInOldParams = isUpdate
             ? await this.getFilesInParams(contentId, user)
             : [];
 
-        // We check in the new params object for file references. From this we can determine which
-        // files must be copied from temporary storage into permanent storage and which files
-        // were deleted in the editor by the user.
+        // We check in the new params object for file references. From this we
+        // can determine which files must be copied from temporary storage into
+        // permanent storage and which files were deleted in the editor by the
+        // user.
         const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
             parameters,
             mainLibraryName
@@ -84,21 +89,25 @@ export default class ContentStorer {
             contentId
         );
 
-        // All files added to the piece of content during the editor session are only stored
-        // in temporary storage. We need to copy them over from there. In some
-        // edge cases this might involve changing the paths of the filenames
-        // in the parameters, so we set the dirty flag accordingly.
+        // All files added to the piece of content during the editor session are
+        // only stored in temporary storage. We need to copy them over from
+        // there. In some edge cases this might involve changing the paths of
+        // the filenames in the parameters, so we set the dirty flag
+        // accordingly.
         let dirty = await this.copyFilesFromTemporaryStorage(
             filesToCopyFromTemporaryStorage,
             user,
             newContentId,
-            isUpdate // We only delete the temporary file when this is an update. If new content is stored, the temporary
-            // files might still be needed, e.g. if the user accidentally presses save twice. They will be deleted through
-            // the regular expiration mechanism at some point.
+            isUpdate
+            // We only delete the temporary file when this is an update. If new
+            // content is stored, the temporary files might still be needed,
+            // e.g. if the user accidentally presses save twice. They will be
+            // deleted through the regular expiration mechanism at some point.
         );
 
-        // We copy over files that were pasted from another piece of content. This might requires changing the paths
-        // in the parameters, so we have to update them by setting the dirty flag.
+        // We copy over files that were pasted from another piece of content.
+        // This might requires changing the paths in the parameters, so we have
+        // to update them by setting the dirty flag.
         dirty =
             (await this.copyFilesFromPasteSource(
                 fileReferencesInNewParams,
@@ -107,8 +116,8 @@ export default class ContentStorer {
             )) || dirty;
 
         // If any paths to files were changed before (dirty === true), we have
-        // to save the content once more.
-        // TODO: In the future we might want to avoid updating content right after it was saved.
+        // to save the content once more. TODO: In the future we might want to
+        // avoid updating content right after it was saved.
         if (dirty) {
             await this.contentManager.createOrUpdateContent(
                 metadata,
@@ -118,10 +127,11 @@ export default class ContentStorer {
             );
         }
 
-        // If this is an content update, we might have to delete files from storage that
-        // were deleted by the user.
-        // (Files that were referenced in the old params but aren't referenced in the new params anymore
-        // were deleted by the user in the editor client and must be deleted from storage.)
+        // If this is an content update, we might have to delete files from
+        // storage that were deleted by the user. (Files that were referenced in
+        // the old params but aren't referenced in the new params anymore were
+        // deleted by the user in the editor client and must be deleted from
+        // storage.)
         if (contentId !== undefined) {
             // we compare against the old content id, as we can check that way
             // if the content was saved previously
@@ -136,19 +146,80 @@ export default class ContentStorer {
     }
 
     /**
-     * Scans through the parameters of the content and copies all referenced files into
-     * temporary storage.
+     * Adds content from a H5P package (in a temporary directory) to the system.
+     * It does not check whether the user has permissions to save content.
+     * @deprecated The method should not be used as it anymore, as there might
+     * be issues with invalid filenames!
+     * @param packageDirectory The absolute path containing the package (the
+     * directory containing h5p.json)
+     * @param user The user who is adding the package.
+     * @param contentId (optional) The content id to use for the package
+     * @returns The id of the content that was created (the one passed to the
+     * method or a new id if there was none).
+     */
+    public async copyFromDirectoryToStorage(
+        metadata: IContentMetadata,
+        packageDirectory: string,
+        user: IUser,
+        contentId?: ContentId
+    ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
+        log.info(`copying content from directory ${packageDirectory}`);
+        const packageDirectoryLength = packageDirectory.length + 1;
+        const parameters: ContentParameters = await fsExtra.readJSON(
+            path.join(packageDirectory, 'content', 'content.json')
+        );
+        const otherContentFiles: string[] = (
+            await getAllFiles.async.array(
+                path.join(packageDirectory, 'content')
+            )
+        ).filter(
+            (file: string) =>
+                file.substr(packageDirectoryLength) !== 'content.json'
+        );
+
+        const newContentId: ContentId = await this.contentManager.contentStorage.addContent(
+            metadata,
+            parameters,
+            user,
+            contentId
+        );
+        const contentPath = path.join(packageDirectory, 'content');
+        const contentPathLength = contentPath.length + 1;
+        try {
+            await Promise.all(
+                otherContentFiles.map((file: string) => {
+                    const readStream: Stream = fsExtra.createReadStream(file);
+                    const localPath: string = file.substr(contentPathLength);
+                    log.debug(`adding ${file} to ${packageDirectory}`);
+                    return this.contentManager.contentStorage.addFile(
+                        newContentId,
+                        localPath,
+                        readStream
+                    );
+                })
+            );
+        } catch (error) {
+            log.error(error);
+            await this.contentManager.contentStorage.deleteContent(
+                newContentId
+            );
+            throw error;
+        }
+        return { id: newContentId, metadata, parameters };
+    }
+
+    /**
+     * Scans through the parameters of the content and copies all referenced
+     * files into temporary storage.
      * @param packageDirectory
      * @param user
      * @returns the metadata and parameters of the content
      */
     public async copyFromDirectoryToTemporary(
+        metadata: IContentMetadata,
         packageDirectory: string,
         user: IUser
     ): Promise<{ metadata: IContentMetadata; parameters: any }> {
-        const metadata: IContentMetadata = await fsExtra.readJSON(
-            path.join(packageDirectory, 'h5p.json')
-        );
         const parameters: ContentParameters = await fsExtra.readJSON(
             path.join(packageDirectory, 'content', 'content.json')
         );
@@ -192,14 +263,15 @@ export default class ContentStorer {
     }
 
     /**
-     * Looks through the file references and check if any of them originate from a copy & paste
-     * operation. (Can be detected by checking if the path is relative.) If there are copy & pasted
-     * files, these files will be copied over to the new contentId and the references will be updated
-     * accordingly.
+     * Looks through the file references and check if any of them originate from
+     * a copy & paste operation. (Can be detected by checking if the path is
+     * relative.) If there are copy & pasted files, these files will be copied
+     * over to the new contentId and the references will be updated accordingly.
      * @param fileReferencesInParams The file references found in the parameters
      * @param user the user who wants to save the content
      * @param contentId the content the files will be attached to
-     * @returns true if file reference were changed and the changed parameters must be saved
+     * @returns true if file reference were changed and the changed parameters
+     * must be saved
      */
     private async copyFilesFromPasteSource(
         fileReferencesInParams: IFileReference[],
@@ -223,9 +295,11 @@ export default class ContentStorer {
                 `Copying pasted file ${sourceFilename} from ${sourceContentId}.`
             );
 
-            // If something goes wrong we simply remove the file from the reference.
+            // If something goes wrong we simply remove the file from the
+            // reference.
             try {
-                // We check for the unlikely case that the content file does not exist in the system anymore.
+                // We check for the unlikely case that the content file does not
+                // exist in the system anymore.
                 if (
                     !(await this.contentManager.contentFileExists(
                         sourceContentId,
@@ -244,7 +318,8 @@ export default class ContentStorer {
                     user
                 );
 
-                // the filename might already be in use in the piece of content, so we generate a new one.
+                // the filename might already be in use in the piece of content,
+                // so we generate a new one.
                 const pastedFilename = await this.getUniqueFilename(
                     contentId,
                     sourceFilename
@@ -257,7 +332,8 @@ export default class ContentStorer {
                     user
                 );
 
-                // We have to replace the relative path with the path of the just saved file
+                // We have to replace the relative path with the path of the
+                // just saved file
                 ref.context.params.path = pastedFilename;
                 changedSomething = true;
             } catch (error) {
@@ -280,7 +356,8 @@ export default class ContentStorer {
      * @param files the list of filenames to copy
      * @param user the user who is saving the content
      * @param contentId the content id of the object
-     * @param deleteTemporaryFiles true if temporary files should be deleted after copying
+     * @param deleteTemporaryFiles true if temporary files should be deleted
+     * after copying
      * @returns true if paths were updated in the parameters and the content
      * parameters must be saved again
      */
@@ -393,8 +470,8 @@ export default class ContentStorer {
     }
 
     /**
-     * Returns a list of files that must be copied to permanent storage and modifies the path
-     * of these files in the fileReferencesInNewParams object!
+     * Returns a list of files that must be copied to permanent storage and
+     * modifies the path of these files in the fileReferencesInNewParams object!
      * NOTE: Mind the side effect on fileReferencesInNewParams!
      * @param fileReferencesInNewParams
      * @returns the list of files to copy
@@ -406,10 +483,12 @@ export default class ContentStorer {
         const filesToCopyFromTemporaryStorage: IFileReference[] = [];
 
         for (const ref of fileReferencesInNewParams) {
-            // We mark the file to be copied over from temporary storage if the file has a temporary marker.
+            // We mark the file to be copied over from temporary storage if the
+            // file has a temporary marker.
             if (ref.temporary) {
-                // We only save temporary file for later copying, however, if the there isn't already a file
-                // with the exact name. This might be the case if the user presses "save" twice.
+                // We only save temporary file for later copying, however, if
+                // the there isn't already a file with the exact name. This
+                // might be the case if the user presses "save" twice.
                 if (!oldFiles.some((f) => f === ref.filePath)) {
                     filesToCopyFromTemporaryStorage.push(ref);
                 }

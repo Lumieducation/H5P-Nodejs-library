@@ -10,6 +10,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageExporter from '../src/PackageExporter';
 import PackageImporter from '../src/PackageImporter';
+import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
 
@@ -36,7 +37,8 @@ export function importAndExportPackage(
             const packageImporter = new PackageImporter(
                 libraryManager,
                 config,
-                contentManager
+                contentManager,
+                new ContentStorer(contentManager, libraryManager, undefined)
             );
 
             const packageExporter = new PackageExporter(

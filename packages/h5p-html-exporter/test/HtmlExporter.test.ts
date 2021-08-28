@@ -5,9 +5,10 @@ import { withDir, withFile } from 'tmp-promise';
 import promisePipe from 'promisepipe';
 
 import ContentManager from '../../h5p-server/src/ContentManager';
-import H5PConfig from '../../h5p-server/src/implementation/H5PConfig';
+import ContentStorer from '../../h5p-server/src/ContentStorer';
 import FileContentStorage from '../../h5p-server/src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../h5p-server/src/implementation/fs/FileLibraryStorage';
+import H5PConfig from '../../h5p-server/src/implementation/H5PConfig';
 import LibraryManager from '../../h5p-server/src/LibraryManager';
 import PackageImporter from '../../h5p-server/src/PackageImporter';
 
@@ -40,7 +41,8 @@ async function importAndExportHtml(
             const packageImporter = new PackageImporter(
                 libraryManager,
                 config,
-                contentManager
+                contentManager,
+                new ContentStorer(contentManager, libraryManager, undefined)
             );
 
             const htmlExporter = new HtmlExporter(
@@ -229,7 +231,8 @@ describe('HtmlExporter template', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             config,
-            contentManager
+            contentManager,
+            new ContentStorer(contentManager, libraryManager, undefined)
         );
 
         const contentId = (

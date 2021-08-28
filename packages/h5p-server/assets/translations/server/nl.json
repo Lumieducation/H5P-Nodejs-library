@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Meerdelige bereikverzoeken worden niet ondersteund op deze server.",
     "h5p-hub-connection-failed": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens.",
     "content-hub-download-error-with-message": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub ( {{message}} ). Probeer het later nog eens.",
-    "content-hub-download-error": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens."
+    "content-hub-download-error": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens.",
+    "install-missing-libraries": "Kon de inhoud niet laden omdat de volgende bibliotheken niet op dit systeem zijn geïnstalleerd: {{libraries}}"
 }

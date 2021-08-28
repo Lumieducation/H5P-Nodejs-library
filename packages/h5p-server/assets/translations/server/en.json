@@ -19,6 +19,7 @@
     "hub-install-no-content-type": "No content type was specified.",
     "illegal-filename": "The filename you used is not allowed.",
     "import-package-no-id-assigned": "Something went wrong when storing the package: no content id was assigned.",
+    "install-missing-libraries": "Could not load the content as the following libraries are not installed on this system: {{libraries}}",
     "installed-libraries_plural": "Added {{count}} new H5P libraries.",
     "installed-libraries": "Added {{count}} new H5P library.",
     "invalid-content-folder": "A valid content folder is missing",

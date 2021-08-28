@@ -10,6 +10,7 @@ import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
+import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
 
@@ -78,7 +79,8 @@ describe('package importer', () => {
                 const packageImporter = new PackageImporter(
                     libraryManager,
                     new H5PConfig(null),
-                    contentManager
+                    contentManager,
+                    new ContentStorer(contentManager, libraryManager, undefined)
                 );
                 const contentId = (
                     await packageImporter.addPackageLibrariesAndContent(
@@ -121,6 +123,40 @@ describe('package importer', () => {
                 mockWriteStream.on('finish', onFinish);
                 await promisepipe(fileStream, mockWriteStream);
                 expect(onFinish).toHaveBeenCalled();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects content if libraries are missing', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                const contentDir = path.join(tmpDirPath, 'content');
+                const libraryDir = path.join(tmpDirPath, 'libraries');
+                await fsExtra.ensureDir(contentDir);
+                await fsExtra.ensureDir(libraryDir);
+
+                const user = new User();
+                user.canUpdateAndInstallLibraries = false;
+
+                const contentManager = new ContentManager(
+                    new FileContentStorage(contentDir)
+                );
+                const libraryManager = new LibraryManager(
+                    new FileLibraryStorage(libraryDir)
+                );
+                const packageImporter = new PackageImporter(
+                    libraryManager,
+                    new H5PConfig(null),
+                    contentManager,
+                    new ContentStorer(contentManager, libraryManager, undefined)
+                );
+                await expect(
+                    packageImporter.addPackageLibrariesAndContent(
+                        path.resolve('test/data/validator/valid2.h5p'),
+                        user
+                    )
+                ).rejects.toThrow('install-missing-libraries');
             },
             { keep: false, unsafeCleanup: true }
         );

@@ -1,7 +1,4 @@
 import { Stream, Readable } from 'stream';
-import * as path from 'path';
-import fsExtra from 'fs-extra';
-import getAllFiles from 'get-all-files';
 
 import { ContentMetadata } from './ContentMetadata';
 import {
@@ -68,70 +65,6 @@ export default class ContentManager {
         contentId: ContentId,
         filename: string
     ): Promise<boolean> => this.contentStorage.fileExists(contentId, filename);
-
-    /**
-     * Adds content from a H5P package (in a temporary directory) to the
-     * installation. It does not check whether the user has permissions to save
-     * content.
-     * @deprecated The method should not be used as it anymore, as there might
-     * be issues with invalid filenames!
-     * @param packageDirectory The absolute path containing the package (the
-     * directory containing h5p.json)
-     * @param user The user who is adding the package.
-     * @param contentId (optional) The content id to use for the package
-     * @returns The id of the content that was created (the one passed to the
-     * method or a new id if there was none).
-     */
-    public async copyContentFromDirectory(
-        packageDirectory: string,
-        user: IUser,
-        contentId?: ContentId
-    ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
-        log.info(`copying content from directory ${packageDirectory}`);
-        const packageDirectoryLength = packageDirectory.length + 1;
-        const metadata: IContentMetadata = await fsExtra.readJSON(
-            path.join(packageDirectory, 'h5p.json')
-        );
-        const parameters: ContentParameters = await fsExtra.readJSON(
-            path.join(packageDirectory, 'content', 'content.json')
-        );
-        const otherContentFiles: string[] = (
-            await getAllFiles.async.array(
-                path.join(packageDirectory, 'content')
-            )
-        ).filter(
-            (file: string) =>
-                file.substr(packageDirectoryLength) !== 'content.json'
-        );
-
-        const newContentId: ContentId = await this.contentStorage.addContent(
-            metadata,
-            parameters,
-            user,
-            contentId
-        );
-        const contentPath = path.join(packageDirectory, 'content');
-        const contentPathLength = contentPath.length + 1;
-        try {
-            await Promise.all(
-                otherContentFiles.map((file: string) => {
-                    const readStream: Stream = fsExtra.createReadStream(file);
-                    const localPath: string = file.substr(contentPathLength);
-                    log.debug(`adding ${file} to ${packageDirectory}`);
-                    return this.contentStorage.addFile(
-                        newContentId,
-                        localPath,
-                        readStream
-                    );
-                })
-            );
-        } catch (error) {
-            log.error(error);
-            await this.contentStorage.deleteContent(newContentId);
-            throw error;
-        }
-        return { id: newContentId, metadata, parameters };
-    }
 
     /**
      * Creates a content object in the repository. Add files to it later with addContentFile(...).

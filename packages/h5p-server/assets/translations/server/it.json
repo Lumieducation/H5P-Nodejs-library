@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Le richieste di intervallo multiparte non sono supportate su questo server.",
     "h5p-hub-connection-failed": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
     "content-hub-download-error-with-message": "Si è verificato un errore durante la connessione a H5P Content Hub ( {{message}} ). Per favore riprova più tardi.",
-    "content-hub-download-error": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi."
+    "content-hub-download-error": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
+    "install-missing-libraries": "Impossibile caricare il contenuto poiché le seguenti librerie non sono installate su questo sistema: {{libraries}}"
 }

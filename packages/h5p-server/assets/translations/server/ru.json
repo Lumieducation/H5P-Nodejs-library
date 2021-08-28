@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Запросы с несколькими диапазонами не поддерживаются на этом сервере.",
     "h5p-hub-connection-failed": "При подключении к H5P Content Hub произошла ошибка. Пожалуйста, повторите попытку позже.",
     "content-hub-download-error-with-message": "Произошла ошибка при подключении к H5P Content Hub ( {{message}} ). Пожалуйста, повторите попытку позже.",
-    "content-hub-download-error": "При подключении к H5P Content Hub произошла ошибка. Пожалуйста, повторите попытку позже."
+    "content-hub-download-error": "При подключении к H5P Content Hub произошла ошибка. Пожалуйста, повторите попытку позже.",
+    "install-missing-libraries": "Не удалось загрузить контент, поскольку в этой системе не установлены следующие библиотеки: {{libraries}}"
 }

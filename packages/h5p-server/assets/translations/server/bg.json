@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Заявките за няколко части не се поддържат на този сървър.",
     "h5p-hub-connection-failed": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно.",
     "content-hub-download-error-with-message": "Възникна грешка при свързването към H5P Content Hub ( {{message}} ). Моля, опитайте отново по-късно.",
-    "content-hub-download-error": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно."
+    "content-hub-download-error": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно.",
+    "install-missing-libraries": "Не може да се зареди съдържанието, тъй като следните библиотеки не са инсталирани в тази система: {{libraries}}"
 }

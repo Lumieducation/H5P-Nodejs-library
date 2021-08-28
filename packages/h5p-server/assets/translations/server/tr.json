@@ -57,5 +57,6 @@
     "multipart-ranges-unsupported": "Bu sunucuda çok parçalı aralık istekleri desteklenmiyor.",
     "h5p-hub-connection-failed": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
     "content-hub-download-error-with-message": "H5P Content Hub'a ( {{message}} ) bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
-    "content-hub-download-error": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz."
+    "content-hub-download-error": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
+    "install-missing-libraries": "Bu sistemde aşağıdaki kitaplıklar kurulu olmadığı için içerik yüklenemedi: {{libraries}}"
 }
