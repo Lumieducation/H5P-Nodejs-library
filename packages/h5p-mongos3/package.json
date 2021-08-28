@@ -45,14 +45,14 @@
     "dependencies": {
         "@lumieducation/h5p-server": "^8.1.5",
         "aws-sdk": "2.978.0",
-        "mongodb": "3.6.11",
+        "mongodb": "4.1.1",
         "stream-buffers": "^3.0.2"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
         "@types/fs-extra": "9.0.12",
-        "@types/mongodb": "3.6.20",
+        "@types/mongodb": "4.0.6",
         "@types/stream-buffers": "3.0.4",
         "fs-extra": "9.1.0",
         "promisepipe": "3.0.0",
