@@ -99,8 +99,17 @@ describe('TemporaryFileManager', () => {
                         config
                     );
 
-                    // add file that will expire
-                    const expiringFilename = await tmpManager.addFile(
+                    // add files that will expire
+                    const expiringFilename1 = await tmpManager.addFile(
+                        'dir/expiring.json',
+                        fsExtra.createReadStream(
+                            path.resolve(
+                                'test/data/content-type-cache/real-content-types.json'
+                            )
+                        ),
+                        user
+                    );
+                    const expiringFilename2 = await tmpManager.addFile(
                         'expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
@@ -115,7 +124,7 @@ describe('TemporaryFileManager', () => {
 
                     // add second file that won't expire
                     const nonExpiringFilename = await tmpManager.addFile(
-                        'non-expiring.json',
+                        'dir/non-expiring.json',
                         fsExtra.createReadStream(
                             path.resolve(
                                 'test/data/content-type-cache/real-content-types.json'
@@ -134,7 +143,10 @@ describe('TemporaryFileManager', () => {
 
                     // check if only one file remains
                     await expect(
-                        tmpManager.getFileStream(expiringFilename, user)
+                        tmpManager.getFileStream(expiringFilename1, user)
+                    ).rejects.toThrow();
+                    await expect(
+                        tmpManager.getFileStream(expiringFilename2, user)
                     ).rejects.toThrow();
                     const stream = await tmpManager.getFileStream(
                         nonExpiringFilename,
