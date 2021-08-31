@@ -443,25 +443,43 @@ export default class HtmlExporter {
                     }),
                     postCssClean()
                 );
-
+                let oldCwd;
                 try {
-                    processedCss = (
-                        await pCss.process(licenseText + text, {
-                            from: filename
-                        })
-                    )?.css;
-                } catch (error) {
-                    // We retry with a more tolerant CSS parser if parsing has
-                    // failed with the regular one.
-                    if (error instanceof CssSyntaxError) {
+                    // This is a workaround for a bug in path.relative in
+                    // Windows. If the current working directory includes the
+                    // Turkish İ character, the resulting relative path is
+                    // broken. We work around this by temporarily changing the
+                    // working directory to the root. See
+                    // https://github.com/Lumieducation/H5P-Nodejs-library/issues/1679#issuecomment-909344236
+                    if (process.platform === 'win32') {
+                        oldCwd = process.cwd();
+                        process.chdir('c:');
+                    }
+
+                    try {
                         processedCss = (
                             await pCss.process(licenseText + text, {
-                                parser: postCssSafeParser,
                                 from: filename
                             })
                         )?.css;
-                    } else {
-                        throw error;
+                    } catch (error) {
+                        // We retry with a more tolerant CSS parser if parsing has
+                        // failed with the regular one.
+                        if (error instanceof CssSyntaxError) {
+                            processedCss = (
+                                await pCss.process(licenseText + text, {
+                                    parser: postCssSafeParser,
+                                    from: filename
+                                })
+                            )?.css;
+                        } else {
+                            throw error;
+                        }
+                    }
+                } finally {
+                    // Part of the workaround explained above.
+                    if (process.platform === 'win32' && oldCwd) {
+                        process.chdir(oldCwd);
                     }
                 }
                 styleTexts[style] = processedCss;
