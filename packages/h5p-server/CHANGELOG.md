@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
+
+
+### Bug Fixes
+
+* **h5p-server:** local dir paths with certain unicode characters work ([#1680](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1680)) ([5e07048](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5e070485a8433e0336f9f7e574ab7fb18a95cf2d))
+
+
+
+
+
 ## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
 
 **Note:** Version bump only for package @lumieducation/h5p-server

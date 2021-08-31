@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
+
+**Note:** Version bump only for package @lumieducation/h5p-express
+
+
+
+
+
 ## [8.1.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.4...v8.1.5) (2021-08-18)
 
 **Note:** Version bump only for package @lumieducation/h5p-express
