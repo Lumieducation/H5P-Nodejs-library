@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
+
+
+### Bug Fixes
+
+* **h5p-html-exporter:** turkish characters in current working dir work ([#1720](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1720)) ([9632877](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9632877022dd4075c5339c80a2acb669615fb525))
+* **h5p-server:** improved file upload error message ([#1667](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1667)) ([3434133](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3434133ddb862d301e93e2051debbb0a545617c8))
+
+
+
+
+
 ## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
 
 **Note:** Version bump only for package @lumieducation/h5p-html-exporter

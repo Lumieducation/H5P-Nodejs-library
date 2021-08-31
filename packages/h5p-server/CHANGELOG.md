@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
+
+
+### Bug Fixes
+
+* **h5p-server:** dir temporary storage works with sub-directories ([#1710](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1710)) ([9b7c0ae](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9b7c0ae99dfb6f23e864826cc56e52b4699da4ba))
+* **h5p-server:** improved file upload error message ([#1667](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1667)) ([3434133](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3434133ddb862d301e93e2051debbb0a545617c8))
+
+
+
+
+
 ## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
 
 
