@@ -4,24 +4,6 @@ import { mergeH5PIntegration } from './h5p-utils';
 import { addScripts } from './dom-utils';
 
 declare global {
-    interface Window {
-        /**
-         * The global H5P "class" of the H5P client core.
-         */
-        H5P: any;
-        /**
-         * Used by the H5P core to communicate settings between the server and
-         * the H5P core client.
-         */
-        H5PIntegration: any;
-        /**
-         * We keep track of whether h5p is initialized globally to avoid
-         * resetting settings when we load another editor component. As the H5P
-         * core works with globals and this state must be shared with the player
-         * component as well, we have to use a global here, too.
-         */
-        h5pIsInitialized: boolean;
-    }
     /**
      * The H5P core "class" for the editor.
      */
@@ -379,7 +361,7 @@ export class H5PEditorComponent extends HTMLElement {
         // We have to prevent H5P from initializing when the h5p.js file is
         // loaded.
         if (!window.H5P) {
-            window.H5P = {};
+            window.H5P = {} as any;
         }
         window.H5P.preventInit = true;
 

@@ -3,20 +3,6 @@ import type { IPlayerModel } from '@lumieducation/h5p-server';
 import { mergeH5PIntegration, removeUnusedContent } from './h5p-utils';
 import { addScripts, addStylesheets } from './dom-utils';
 
-declare global {
-    interface Window {
-        /**
-         * The global H5P "class" of the H5P client core.
-         */
-        H5P: any;
-        /**
-         * Used by the H5P core to communicate settings between the server and
-         * the H5P core client.
-         */
-        H5PIntegration: any;
-    }
-}
-
 export interface IxAPIEvent {
     data: {
         statement: any;
@@ -241,7 +227,7 @@ export class H5PPlayerComponent extends HTMLElement {
         // We have to prevent H5P from initializing when the h5p.js file is
         // loaded.
         if (!window.H5P) {
-            window.H5P = {};
+            window.H5P = {} as any;
         }
         window.H5P.preventInit = true;
 
