@@ -56,6 +56,12 @@ export default class H5PPlayerUI extends React.Component<{
     public componentWillUnmount(): void {
         this.unregisterEvents();
     }
+    /**
+     * Returns the copyright notice in HTML that you can insert somewhere to display it.
+     */
+    public getCopyrightHtml(): string {
+        return this.h5pPlayer.current?.getCopyrightHtml() ?? '';
+    }
 
     public getSnapshotBeforeUpdate(): void {
         // Should the old editor instance be destroyed, we unregister from it...
@@ -70,6 +76,13 @@ export default class H5PPlayerUI extends React.Component<{
                 content-id={this.props.contentId}
             ></h5p-player>
         );
+    }
+
+    /**
+     * Displays the copyright notice in the regular H5P way.
+     */
+    public showCopyright(): void {
+        this.h5pPlayer.current?.showCopyright();
     }
 
     private loadContentCallbackWrapper = (

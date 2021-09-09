@@ -113,6 +113,21 @@ export default class ContentListEntryComponent extends React.Component<{
                                 </Button>
                             </Col>
                         ) : undefined}
+                        {this.state.playing ? (
+                            <Col className="p-2" lg="auto">
+                                <Button
+                                    variant="light"
+                                    onClick={() => this.showCopyright()}
+                                    block
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faWindowClose}
+                                        className="mr-2"
+                                    />
+                                    Show copyright
+                                </Button>
+                            </Col>
+                        ) : undefined}
                         {this.state.editing ? (
                             <Col className="p-2" lg="auto">
                                 <Overlay
@@ -315,6 +330,10 @@ export default class ContentListEntryComponent extends React.Component<{
 
     protected close() {
         this.setState({ editing: false, playing: false });
+    }
+
+    protected showCopyright() {
+        this.h5pPlayer.current?.showCopyright();
     }
 
     private onPlayerInitialized = () => {
