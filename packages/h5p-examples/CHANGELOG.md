@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v20.5.0 ([d6918f2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d6918f2d4e0a009f12cd1e544a1db5bef320efea))
+
+
+
+
+
 ## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
 
 **Note:** Version bump only for package @lumieducation/h5p-examples

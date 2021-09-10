@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.971.0 ([db38dd1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/db38dd1fe34f8de4eb6b18376d80d849a02863da))
+* **deps:** update dependency aws-sdk to v2.972.0 ([3f8353b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3f8353b7b59a475d0e034ff69feeede759b63c91))
+* **deps:** update dependency aws-sdk to v2.973.0 ([f1b5cc1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/f1b5cc13be1892d5dfca8e006354232e4660fff7))
+* **deps:** update dependency aws-sdk to v2.974.0 ([cca531a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/cca531a7400a2a66f8001918579c181b1af8b007))
+* **deps:** update dependency aws-sdk to v2.975.0 ([2436a29](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2436a292f12922ff54f0248b4f62d238690459b8))
+* **deps:** update dependency aws-sdk to v2.976.0 ([6fb51e4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6fb51e430628b664c3128ba0295d28941a320a95))
+* **deps:** update dependency aws-sdk to v2.977.0 ([6698a8a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6698a8a1c786bf1ccdd731aa3c11b942df182ed4))
+* **deps:** update dependency aws-sdk to v2.978.0 ([3aab69b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3aab69b4618e583de1793a85d249ded08d7a24a2))
+* **deps:** update dependency aws-sdk to v2.979.0 ([7a2a028](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7a2a028f4138a68eec16d88b729395d8b9fa124c))
+* **deps:** update dependency i18next to v20.5.0 ([d6918f2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d6918f2d4e0a009f12cd1e544a1db5bef320efea))
+* **deps:** update dependency mongodb to v3.6.12 ([9544cb9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9544cb902cf08f0cf95988bdc004af959aac61df))
+* **h5p-html-exporter:** turkish characters in current working dir work ([#1720](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1720)) ([9632877](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9632877022dd4075c5339c80a2acb669615fb525))
+* **h5p-server:** dir temporary storage works with sub-directories ([#1710](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1710)) ([9b7c0ae](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9b7c0ae99dfb6f23e864826cc56e52b4699da4ba))
+* **h5p-server:** improved file upload error message ([#1667](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1667)) ([3434133](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3434133ddb862d301e93e2051debbb0a545617c8))
+
+
+
+
+
 ## [8.1.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.5...v8.1.6) (2021-08-18)
 
 
