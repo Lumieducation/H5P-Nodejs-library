@@ -62,7 +62,8 @@ describe('Rendering the HTML page', () => {
                        },                       
                         "scripts":[],
                         "styles":[],
-                        "url":"foo"
+                        "url":"foo",
+                        "exportUrl": "/h5p/download/foo"
                     }
                   },
                   "core":{
@@ -440,7 +441,8 @@ describe('Rendering the HTML page', () => {
                           },
                           "scripts":[],
                           "styles":[],
-                          "url":"foo"
+                          "url":"foo",
+                          "exportUrl": "/h5p/download/foo"
                         }
                       },
                       "core":{
