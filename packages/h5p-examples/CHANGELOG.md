@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.7...v8.2.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v20.6.0 ([571303d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/571303d1704e65c415657518c39d2d01693a0de1))
+* **deps:** update dependency i18next to v20.6.1 ([51c973c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/51c973c34af9058b97a76c9d967d8106015c03f2))
+
+
+### Features
+
+* **all:** improved handling of native H5P app bar ([#1743](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1743)) ([45c3de7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/45c3de7c6a89d4f0ae5a9d64581e70dbf57b8771))
+
+
+
+
+
 ## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
 
 
