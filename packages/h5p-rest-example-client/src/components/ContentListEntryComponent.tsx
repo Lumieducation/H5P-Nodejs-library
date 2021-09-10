@@ -113,7 +113,8 @@ export default class ContentListEntryComponent extends React.Component<{
                                 </Button>
                             </Col>
                         ) : undefined}
-                        {this.state.playing ? (
+                        {this.state.playing &&
+                        this.h5pPlayer.current?.hasCopyrightInformation() ? (
                             <Col className="p-2" lg="auto">
                                 <Button
                                     variant="light"

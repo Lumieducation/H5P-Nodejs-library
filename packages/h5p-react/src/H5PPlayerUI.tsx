@@ -4,7 +4,9 @@ import {
     defineElements,
     H5PPlayerComponent,
     IxAPIEvent,
-    IContext
+    IContext,
+    IH5PInstance,
+    IH5P
 } from '@lumieducation/h5p-webcomponents';
 import type { IPlayerModel } from '@lumieducation/h5p-server';
 
@@ -56,8 +58,35 @@ export default class H5PPlayerUI extends React.Component<{
     public componentWillUnmount(): void {
         this.unregisterEvents();
     }
+
     /**
-     * Returns the copyright notice in HTML that you can insert somewhere to display it.
+     * The internal H5P instance object of the H5P content.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
+    public get h5pInstance(): IH5PInstance | undefined {
+        return this.h5pPlayer.current?.h5pInstance;
+    }
+
+    /**
+     * The global H5P object / namespace (normally accessible through "H5P..."
+     * or "window.H5P") of the content type. Depending on the embed type this
+     * can be an object from the internal iframe, so you can use it to break the
+     * barrier of the iframe and execute JavaScript inside the iframe.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
+    public get h5pObject(): IH5P | undefined {
+        return this.h5pPlayer.current?.h5pObject;
+    }
+
+    /**
+     * Returns the copyright notice in HTML that you can insert somewhere to
+     * display it. Undefined if there is no copyright information.
      */
     public getCopyrightHtml(): string {
         return this.h5pPlayer.current?.getCopyrightHtml() ?? '';
@@ -69,12 +98,19 @@ export default class H5PPlayerUI extends React.Component<{
         return null;
     }
 
+    /**
+     * @returns true if there is copyright information to be displayed.
+     */
+    public hasCopyrightInformation(): boolean {
+        return this.h5pPlayer.current?.hasCopyrightInformation();
+    }
+
     public render(): React.ReactNode {
         return (
             <h5p-player
                 ref={this.h5pPlayer}
                 content-id={this.props.contentId}
-            ></h5p-player>
+            />
         );
     }
 
@@ -87,11 +123,11 @@ export default class H5PPlayerUI extends React.Component<{
 
     private loadContentCallbackWrapper = (
         contentId: string
-    ): Promise<IPlayerModel> => {
-        return this.props.loadContentCallback(contentId);
-    };
+    ): Promise<IPlayerModel> => this.props.loadContentCallback(contentId);
 
-    private onInitialized = (event: CustomEvent<{ contentId: string }>) => {
+    private onInitialized = (
+        event: CustomEvent<{ contentId: string }>
+    ): void => {
         if (this.props.onInitialized) {
             this.props.onInitialized(event.detail.contentId);
         }
@@ -103,7 +139,7 @@ export default class H5PPlayerUI extends React.Component<{
             event: IxAPIEvent;
             statement: any;
         }>
-    ) => {
+    ): void => {
         if (this.props.onxAPIStatement) {
             this.props.onxAPIStatement(
                 event.detail.statement,

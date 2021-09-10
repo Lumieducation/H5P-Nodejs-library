@@ -12,9 +12,9 @@ using
 [@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server))**
 that provides endpoints that do these things:
 
-- get the required data about content (one for playing, one for editing)
-- save content created in the editor
-- serve all AJAX endpoints required by the H5P core
+-   get the required data about content (one for playing, one for editing)
+-   save content created in the editor
+-   serve all AJAX endpoints required by the H5P core
 
 It is recommended to checkout the rest example that uses
 @lumieducation/h5p-server to see how the component can be used in an
@@ -54,19 +54,19 @@ $ npm install @lumieducation/h5p-react
 Then, import the component in your JavaScript / TypeScript code:
 
 ```js
- import { H5PPlayerUI, H5PEditorUI } from '@lumieducation/h5p-react'; 
+import { H5PPlayerUI, H5PEditorUI } from '@lumieducation/h5p-react';
 ```
 
 Then, you can insert the components into your JSX:
 
 ```jsx
-<H5PPlayerUI 
-    id='player' 
+<H5PPlayerUI
+    id='player'
     contentId='XXXX'
     loadContentCallback = { async (contentId) => { /** retrieve content model from server and return it as Promise **/ } }
     />
-<H5PEditorUI 
-    id='editor' 
+<H5PEditorUI
+    id='editor'
     contentId='XXXX'
     loadContentCallback = { async (contentId) => { /** retrieve content model from server and return it as Promise **/} }
     saveContentCallback = { async (contentId, requestBody) => { /** save content on server **/ } }/>
@@ -80,8 +80,8 @@ The components automatically (re-)load data from the server by calling
 The content is automatically loaded from the server after **both** of these
 conditions have been fulfilled (in any order):
 
-1) `loadContentCallback` is set or changed
-2) `contentId` is set
+1. `loadContentCallback` is set or changed
+2. `contentId` is set
 
 You can change the value of `contentId` and it will discard the old content and
 display the new one. You can also safely remove the component from the DOM.
@@ -137,7 +137,7 @@ using a renderer that simply returns the player model if you call
 `H5PPlayer.render(...)`:
 
 ```ts
-h5pPlayerOnServer.setRenderer(model => model);
+h5pPlayerOnServer.setRenderer((model) => model);
 const playerModel = await h5pPlayerOnServer.render(contentId, user);
 // send playerModel to client and return it in loadContentCallback
 ```
@@ -163,16 +163,16 @@ H5PEditor.render(...) and H5PEditor.getContent(...). The render must be set to
 simply return the editor model like this:
 
 ```js
-h5pEditorOnServer.setRenderer(model => model);
+h5pEditorOnServer.setRenderer((model) => model);
 ```
 
 Notes:
 
-- `contentId` can be `undefined` if the editor is used to create new content
-- The library, metadata and params property of the returned object must
-only be defined if `contentId` is defined.
-- The callback should throw an error with a message in the message property if
-something goes wrong.
+-   `contentId` can be `undefined` if the editor is used to create new content
+-   The library, metadata and params property of the returned object must
+    only be defined if `contentId` is defined.
+-   The callback should throw an error with a message in the message property if
+    something goes wrong.
 
 #### saveContentCallback
 
@@ -241,3 +241,59 @@ detailed message can be found in the `message` paramter.
 
 Note: You can also simply catch errors by wrapping the `save()` method in a `try
 {...} catch {...}` block instead of subscribing to this event.
+
+## Executing underlying H5P functionality
+
+The H5PPlayerComponent offers properties and methods that can be used to do
+things with the underlying "core" H5P data structures and objects:
+
+### h5pInstance
+
+This property is the object found in H5P.instances for the contentId of the
+object. Contains things like the parameters of the content, its metadata and
+structures created by the content type's JavaScript.
+
+**The object is only available after the `initialized` event was fired.
+Important: This object is only partially typed and there are more properties
+and methods on it!**
+
+### h5pObject
+
+H5P has a global "H5P" namespace that is often used like this:
+
+```ts
+H5P.init(); // initialize H5P
+H5P.externalDispatcher.on('xAPI', myCallback);
+const dialog = new H5P.Dialog(...);
+```
+
+The problem you'll face when you try to use this namespace is that you typically
+want to operate on the object inside the H5P iframe if a content type requires
+iframe embedding. The h5pObject property solves this problem: It contains the
+correct global H5P namespace regardless of whether there's an iframe or not.
+
+You can use it like this:
+
+```ts
+const H5Pns = myPlayerComponent.h5pObject;
+H5Pns.externalDispatcher.on('xAPI', myCallback);
+const dialog = new H5Pns.Dialog(...);
+```
+
+**The property is only available after the `initialized` event was fired.
+Important: This object is only partially typed and there are more properties and
+methods on it!**
+
+### getCopyrightHtml
+
+You can get the copyright notice of the content by calling this method. Returns
+undefined if there is not copyright information. Returns HTML code that you must
+display somewhere.
+
+### hasCopyrightInformation
+
+Returns true if there is copyright information to be displayed.
+
+### showCopyright
+
+Shows the copyright information in a window overlaying the H5P content.

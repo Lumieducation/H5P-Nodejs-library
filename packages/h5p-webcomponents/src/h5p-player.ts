@@ -26,11 +26,35 @@ export class H5PPlayerComponent extends HTMLElement {
         this.setAttribute('content-id', contentId);
     }
 
+    /**
+     * The internal H5P instance object of the H5P content.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
     get h5pInstance(): IH5PInstance {
-        return this.instance;
+        return this.h5pInstanceInternal;
     }
     private set h5pInstance(value: IH5PInstance) {
-        this.instance = value;
+        this.h5pInstanceInternal = value;
+    }
+
+    /**
+     * The global H5P object / namespace (normally accessible through "H5P..."
+     * or "window.H5P") of the content type. Depending on the embed type this
+     * can be an object from the internal iframe, so you can use it to break the
+     * barrier of the iframe and execute JavaScript inside the iframe.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
+    get h5pObject(): IH5P {
+        return this.h5pObjectInternal;
+    }
+    private set h5pObject(value: IH5P) {
+        this.h5pObjectInternal = value;
     }
 
     /**
@@ -78,8 +102,8 @@ export class H5PPlayerComponent extends HTMLElement {
     ) => Promise<IPlayerModel>;
     private resizeObserver: ResizeObserver;
     private root: HTMLElement;
-    private instance: IH5PInstance;
-    private h5pObject: IH5P;
+    private h5pInstanceInternal: IH5PInstance;
+    private h5pObjectInternal: IH5P;
 
     private static initTemplate(): void {
         // We create the static template only once
@@ -170,9 +194,10 @@ export class H5PPlayerComponent extends HTMLElement {
     }
 
     /**
-     * Returns the copyright notice in HTML that you can insert somewhere to display it.
+     * Returns the copyright notice in HTML that you can insert somewhere to
+     * display it. Undefined if there is no copyright information.
      */
-    public getCopyrightHtml(): string {
+    public getCopyrightHtml(): string | undefined {
         if (!this.h5pInstance) {
             console.error(
                 'Cannot show copyright as H5P instance is undefined. The H5P object might not be initialized yet.'
@@ -191,6 +216,13 @@ export class H5PPlayerComponent extends HTMLElement {
             this.playerModel.contentId,
             this.h5pInstance.contentData.metadata
         );
+    }
+
+    /**
+     * @returns true if there is copyright information to be displayed.
+     */
+    public hasCopyrightInformation(): boolean {
+        return !!this.getCopyrightHtml();
     }
 
     /**
