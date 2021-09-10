@@ -273,6 +273,62 @@ detailed message can be found in `event.detail.message`.
 Note: You can also simply catch errors by wrapping the `save()` method in a `try
 {...} catch {...}` block instead of subscribing to this event.
 
+## Executing underlying H5P functionality
+
+The H5PPlayerComponent offers properties and methods that can be used to do
+things with the underlying "core" H5P data structures and objects:
+
+### h5pInstance
+
+This property is the object found in H5P.instances for the contentId of the
+object. Contains things like the parameters of the content, its metadata and
+structures created by the content type's JavaScript.
+
+**The object is only available after the `initialized` event was fired.
+Important: This object is only partially typed and there are more properties
+and methods on it!**
+
+### h5pObject
+
+H5P has a global "H5P" namespace that is often used like this:
+
+```ts
+H5P.init(); // initialize H5P
+H5P.externalDispatcher.on('xAPI', myCallback);
+const dialog = new H5P.Dialog(...);
+```
+
+The problem you'll face when you try to use this namespace is that you typically
+want to operate on the object inside the H5P iframe if a content type requires
+iframe embedding. The h5pObject property solves this problem: It contains the
+correct global H5P namespace regardless of whether there's an iframe or not.
+
+You can use it like this:
+
+```ts
+const H5Pns = myPlayerComponent.h5pObject;
+H5Pns.externalDispatcher.on('xAPI', myCallback);
+const dialog = new H5Pns.Dialog(...);
+```
+
+**The property is only available after the `initialized` event was fired.
+Important: This object is only partially typed and there are more properties and
+methods on it!**
+
+### getCopyrightHtml
+
+You can get the copyright notice of the content by calling this method. Returns
+undefined if there is not copyright information. Returns HTML code that you must
+display somewhere.
+
+### hasCopyrightInformation
+
+Returns true if there is copyright information to be displayed.
+
+### showCopyright
+
+Shows the copyright information in a window overlaying the H5P content.
+
 ## Support
 
 This work obtained financial support for development from the German

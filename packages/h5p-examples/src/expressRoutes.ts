@@ -26,7 +26,14 @@ export default function (
             try {
                 const h5pPage = await h5pPlayer.render(
                     req.params.contentId,
-                    req.user
+                    req.user,
+                    {
+                        showCopyButton: true,
+                        showDownloadButton: true,
+                        showFrame: true,
+                        showH5PIcon: true,
+                        showLicenseButton: true
+                    }
                 );
                 res.send(h5pPage);
                 res.status(200).end();

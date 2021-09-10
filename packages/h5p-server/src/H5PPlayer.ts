@@ -105,6 +105,12 @@ export default class H5PPlayer {
             ignoreUserPermissions?: boolean;
             metadataOverride?: ContentMetadata;
             parametersOverride?: ContentParameters;
+            showCopyButton?: boolean;
+            showDownloadButton?: boolean;
+            showEmbedButton?: boolean;
+            showFrame?: boolean;
+            showH5PIcon?: boolean;
+            showLicenseButton?: boolean;
         }
     ): Promise<string | any> {
         log.info(`rendering page for ${contentId}`);
@@ -186,7 +192,15 @@ export default class H5PPlayer {
                 metadata,
                 assets,
                 mainLibrarySupportsFullscreen,
-                user
+                user,
+                {
+                    showCopyButton: options?.showCopyButton ?? false,
+                    showDownloadButton: options?.showDownloadButton ?? false,
+                    showEmbedButton: options?.showEmbedButton ?? false,
+                    showFrame: options?.showFrame ?? false,
+                    showH5PIcon: options?.showH5PIcon ?? false,
+                    showLicenseButton: options?.showLicenseButton ?? false
+                }
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
@@ -311,7 +325,15 @@ export default class H5PPlayer {
         metadata: IContentMetadata,
         assets: IAssets,
         supportsFullscreen: boolean,
-        user: IUser
+        user: IUser,
+        displayOptions: {
+            showCopyButton: boolean;
+            showDownloadButton: boolean;
+            showEmbedButton: boolean;
+            showFrame: boolean;
+            showH5PIcon: boolean;
+            showLicenseButton: boolean;
+        }
     ): IIntegration {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
@@ -324,12 +346,12 @@ export default class H5PPlayer {
             contents: {
                 [`cid-${contentId}`]: {
                     displayOptions: {
-                        copy: false,
-                        copyright: false,
-                        embed: false,
-                        export: false,
-                        frame: false,
-                        icon: false
+                        copy: displayOptions.showCopyButton,
+                        copyright: displayOptions.showLicenseButton,
+                        embed: displayOptions.showEmbedButton,
+                        export: displayOptions.showDownloadButton,
+                        frame: displayOptions.showFrame,
+                        icon: displayOptions.showH5PIcon
                     },
                     fullScreen: supportsFullscreen ? '1' : '0',
                     jsonContent: JSON.stringify(parameters),
@@ -342,7 +364,8 @@ export default class H5PPlayer {
                     },
                     scripts: assets.scripts,
                     styles: assets.styles,
-                    url: this.urlGenerator.uniqueContentUrl(contentId)
+                    url: this.urlGenerator.uniqueContentUrl(contentId),
+                    exportUrl: this.urlGenerator.downloadPackage(contentId)
                 }
             },
             core: {

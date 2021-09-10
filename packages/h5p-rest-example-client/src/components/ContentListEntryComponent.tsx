@@ -6,6 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Modal from 'react-bootstrap/Modal';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -17,7 +19,8 @@ import {
     faPlay,
     faPencilAlt,
     faFileDownload,
-    faTrashAlt
+    faTrashAlt,
+    faCopyright
 } from '@fortawesome/free-solid-svg-icons';
 
 import { H5PEditorUI, H5PPlayerUI } from '@lumieducation/h5p-react';
@@ -49,7 +52,8 @@ export default class ContentListEntryComponent extends React.Component<{
             saved: false,
             loading: true,
             saveErrorMessage: '',
-            saveError: false
+            saveError: false,
+            showingCustomCopyright: false
         };
         this.h5pEditor = React.createRef();
         this.saveButton = React.createRef();
@@ -64,6 +68,7 @@ export default class ContentListEntryComponent extends React.Component<{
         saving: boolean;
         saveError: boolean;
         saveErrorMessage: string;
+        showingCustomCopyright: boolean;
     };
 
     private h5pPlayer: React.RefObject<H5PPlayerUI>;
@@ -111,6 +116,38 @@ export default class ContentListEntryComponent extends React.Component<{
                                     />
                                     close player
                                 </Button>
+                            </Col>
+                        ) : undefined}
+                        {this.state.playing &&
+                        this.h5pPlayer.current?.hasCopyrightInformation() ? (
+                            <Col className="p-2" lg="auto">
+                                <Dropdown>
+                                    <Dropdown.Toggle variant="light">
+                                        <span>
+                                            <FontAwesomeIcon
+                                                icon={faCopyright}
+                                                className="mr-2"
+                                            />
+                                            Copyright
+                                        </span>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                this.showCopyrightCustom();
+                                            }}
+                                        >
+                                            Show in custom dialog
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            onClick={() => {
+                                                this.showCopyrightNative();
+                                            }}
+                                        >
+                                            Show in native H5P dialog
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </Col>
                         ) : undefined}
                         {this.state.editing ? (
@@ -301,6 +338,32 @@ export default class ContentListEntryComponent extends React.Component<{
                         ></div>
                     </div>
                 ) : undefined}
+                <Modal show={this.state.showingCustomCopyright}>
+                    <Modal.Header>
+                        <Modal.Title>Copyright information</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <div
+                            dangerouslySetInnerHTML={{
+                                __html:
+                                    this.h5pPlayer.current?.getCopyrightHtml() ??
+                                    'No copyright information'
+                            }}
+                        ></div>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                this.closeCopyrightCustom();
+                            }}
+                        >
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </ListGroupItem>
         );
     }
@@ -315,6 +378,18 @@ export default class ContentListEntryComponent extends React.Component<{
 
     protected close() {
         this.setState({ editing: false, playing: false });
+    }
+
+    protected showCopyrightCustom() {
+        this.setState({ showingCustomCopyright: true });
+    }
+
+    protected closeCopyrightCustom() {
+        this.setState({ showingCustomCopyright: false });
+    }
+
+    protected showCopyrightNative() {
+        this.h5pPlayer.current?.showCopyright();
     }
 
     private onPlayerInitialized = () => {

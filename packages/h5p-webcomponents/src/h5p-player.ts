@@ -2,20 +2,7 @@ import type { IPlayerModel } from '@lumieducation/h5p-server';
 
 import { mergeH5PIntegration, removeUnusedContent } from './h5p-utils';
 import { addScripts, addStylesheets } from './dom-utils';
-
-declare global {
-    interface Window {
-        /**
-         * The global H5P "class" of the H5P client core.
-         */
-        H5P: any;
-        /**
-         * Used by the H5P core to communicate settings between the server and
-         * the H5P core client.
-         */
-        H5PIntegration: any;
-    }
-}
+import { IH5P, IH5PInstance } from './h5p-types';
 
 export interface IxAPIEvent {
     data: {
@@ -37,6 +24,37 @@ export class H5PPlayerComponent extends HTMLElement {
 
     set contentId(contentId: string) {
         this.setAttribute('content-id', contentId);
+    }
+
+    /**
+     * The internal H5P instance object of the H5P content.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
+    get h5pInstance(): IH5PInstance {
+        return this.h5pInstanceInternal;
+    }
+    private set h5pInstance(value: IH5PInstance) {
+        this.h5pInstanceInternal = value;
+    }
+
+    /**
+     * The global H5P object / namespace (normally accessible through "H5P..."
+     * or "window.H5P") of the content type. Depending on the embed type this
+     * can be an object from the internal iframe, so you can use it to break the
+     * barrier of the iframe and execute JavaScript inside the iframe.
+     *
+     * Only available after the `initialized` event was fired. Important: This
+     * object is only partially typed and there are more properties and methods
+     * on it!
+     */
+    get h5pObject(): IH5P {
+        return this.h5pObjectInternal;
+    }
+    private set h5pObject(value: IH5P) {
+        this.h5pObjectInternal = value;
     }
 
     /**
@@ -84,6 +102,8 @@ export class H5PPlayerComponent extends HTMLElement {
     ) => Promise<IPlayerModel>;
     private resizeObserver: ResizeObserver;
     private root: HTMLElement;
+    private h5pInstanceInternal: IH5PInstance;
+    private h5pObjectInternal: IH5P;
 
     private static initTemplate(): void {
         // We create the static template only once
@@ -174,17 +194,67 @@ export class H5PPlayerComponent extends HTMLElement {
     }
 
     /**
+     * Returns the copyright notice in HTML that you can insert somewhere to
+     * display it. Undefined if there is no copyright information.
+     */
+    public getCopyrightHtml(): string | undefined {
+        if (!this.h5pInstance) {
+            console.error(
+                'Cannot show copyright as H5P instance is undefined. The H5P object might not be initialized yet.'
+            );
+            return '';
+        }
+        if (!this.h5pObject) {
+            console.error(
+                'H5P object undefined. This typically means H5P has not been initialized yet.'
+            );
+            return '';
+        }
+        return this.h5pObject.getCopyrights(
+            this.h5pInstance,
+            this.h5pInstance.params,
+            this.playerModel.contentId,
+            this.h5pInstance.contentData.metadata
+        );
+    }
+
+    /**
+     * @returns true if there is copyright information to be displayed.
+     */
+    public hasCopyrightInformation(): boolean {
+        return !!this.getCopyrightHtml();
+    }
+
+    /**
+     * Displays the copyright notice in the regular H5P way.
+     */
+    public showCopyright(): void {
+        const copyrightHtml = this.getCopyrightHtml();
+        const dialog = new this.h5pObject.Dialog(
+            'copyrights',
+            this.h5pObject.t('copyrightInformation'),
+            copyrightHtml,
+            this.h5pObject.jQuery('.h5p-container')
+        );
+        dialog.open(true);
+    }
+
+    /**
      * Called when any H5P content signals that it was initialized
      */
     private onContentInitialized = (): void => {
-        if (
-            this.playerModel.embedTypes.includes('div')
-                ? window.H5P.instances[0]
-                : (document.getElementById(
-                      `h5p-iframe-${this.playerModel.contentId}`
-                  ) as HTMLIFrameElement).contentWindow.H5P?.instances
-                      ?.length >= 1
-        ) {
+        const divMode = this.playerModel.embedTypes.includes('div');
+        this.h5pObject = divMode
+            ? window.H5P
+            : (document.getElementById(
+                  `h5p-iframe-${this.playerModel.contentId}`
+              ) as HTMLIFrameElement).contentWindow.H5P;
+        this.h5pInstance = this.h5pObject?.instances?.find(
+            // H5P converts our string contentId into number, so we don't use ===
+            // eslint-disable-next-line eqeqeq
+            (i) => i.contentId == this.contentId
+        );
+        if (this.h5pInstance) {
             this.dispatchEvent(
                 new CustomEvent('initialized', {
                     detail: { contentId: this.contentId }
@@ -241,7 +311,7 @@ export class H5PPlayerComponent extends HTMLElement {
         // We have to prevent H5P from initializing when the h5p.js file is
         // loaded.
         if (!window.H5P) {
-            window.H5P = {};
+            window.H5P = {} as any;
         }
         window.H5P.preventInit = true;
 
