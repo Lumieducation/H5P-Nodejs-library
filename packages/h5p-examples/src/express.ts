@@ -98,7 +98,10 @@ const start = async (): Promise<void> => {
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
-        config
+        config,
+        undefined,
+        undefined,
+        (key, language) => translationFunction(key, { lng: language })
     );
 
     // We now set up the Express server in the usual fashion.

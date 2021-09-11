@@ -27,6 +27,9 @@ export default function (
                 const h5pPage = await h5pPlayer.render(
                     req.params.contentId,
                     req.user,
+                    languageOverride === 'auto'
+                        ? req.language ?? 'en'
+                        : languageOverride,
                     {
                         showCopyButton: true,
                         showDownloadButton: true,

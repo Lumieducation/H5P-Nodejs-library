@@ -12,7 +12,7 @@ describe('Rendering the HTML page', () => {
         const h5pObject = {};
         const config = new H5PConfig(undefined);
         return new H5PPlayer(undefined, undefined, config)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -303,7 +303,7 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined)
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -329,6 +329,7 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
+            undefined,
             {
                 customization: {
                     global: {
@@ -339,7 +340,7 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(contentId, new User(), {
+        const model = await player.render(contentId, new User(), 'en', {
             parametersOverride: contentObject,
             metadataOverride: h5pObject as any
         });
@@ -357,7 +358,7 @@ describe('Rendering the HTML page', () => {
             integration: 'test'
         } as any)
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -380,6 +381,7 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
+            undefined,
             {
                 customization: {
                     global: {
@@ -389,7 +391,7 @@ describe('Rendering the HTML page', () => {
                 }
             }
         )
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -693,6 +695,7 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
+            undefined,
             {
                 customization: {
                     alterLibraryFiles: (lib, scripts, styles) => {
@@ -717,7 +720,7 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(contentId, new User(), {
+        const model = await player.render(contentId, new User(), 'en', {
             parametersOverride: contentObject,
             metadataOverride: h5pObject as any
         });
@@ -787,6 +790,7 @@ describe('Rendering the HTML page', () => {
             new H5PConfig(undefined),
             undefined,
             undefined,
+            undefined,
             {
                 customization: {
                     alterLibraryFiles: (lib, scripts, styles) => {
@@ -810,7 +814,7 @@ describe('Rendering the HTML page', () => {
             }
         );
         player.setRenderer((mod) => mod);
-        const model = await player.render(contentId, new User(), {
+        const model = await player.render(contentId, new User(), 'en', {
             parametersOverride: contentObject,
             metadataOverride: h5pObject as any
         });

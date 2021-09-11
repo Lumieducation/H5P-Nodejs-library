@@ -12,7 +12,7 @@ describe('H5P.render()', () => {
 
         new H5PPlayer(undefined, undefined, new H5PConfig(undefined))
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: metadata as any
             })
@@ -45,7 +45,7 @@ describe('H5P.render()', () => {
             })
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: metadata as any
             })
@@ -65,7 +65,7 @@ describe('H5P.render()', () => {
 
         const player = new H5PPlayer(undefined, undefined, config);
         player.setRenderer((m) => m);
-        const model = await player.render(contentId, new User(), {
+        const model = await player.render(contentId, new User(), 'en', {
             parametersOverride: contentObject,
             metadataOverride: metadata as any
         });
@@ -84,10 +84,15 @@ describe('H5P.render()', () => {
 
         const player = new H5PPlayer(undefined, undefined, config);
         player.setRenderer((model) => model);
-        const playerModel: IPlayerModel = await player.render(contentId, user, {
-            parametersOverride: contentObject,
-            metadataOverride: metadata as any
-        });
+        const playerModel: IPlayerModel = await player.render(
+            contentId,
+            user,
+            'en',
+            {
+                parametersOverride: contentObject,
+                metadataOverride: metadata as any
+            }
+        );
 
         expect(playerModel.integration.user.id).toEqual(user.id);
         expect(playerModel.integration.user.mail).toEqual(user.email);

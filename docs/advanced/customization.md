@@ -52,6 +52,7 @@ const player = new H5PPlayer(
     config,
     integrationObjectDefaults, // set to undefined if unneeded
     urlGenerator, // set to undefined if unneeded
+    translationFunction,
     {
         customization: {
             global: {
@@ -188,6 +189,7 @@ const player = new H5PPlayer(
     contentStorage,
     config,
     integrationObjectDefaults, // set to undefined if unneeded
+    translationFunction,
     urlGenerator, // set to undefined if unneeded
     {
         customization: {

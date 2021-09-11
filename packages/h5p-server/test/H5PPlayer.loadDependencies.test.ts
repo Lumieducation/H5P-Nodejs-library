@@ -59,7 +59,7 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -143,7 +143,7 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -238,7 +238,7 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -326,7 +326,7 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -418,7 +418,7 @@ describe('Loading dependencies', () => {
             undefined
         )
             .setRenderer((model) => model)
-            .render(contentId, new User(), {
+            .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: h5pObject as any
             })
@@ -506,16 +506,10 @@ describe('Loading dependencies', () => {
             coreUrl: '/coreUrl',
             librariesUrl: `/libraryUrl`
         });
-        const h5p = new H5PPlayer(
-            mockLibraryStorage,
-            undefined,
-            config,
-            undefined,
-            undefined
-        );
+        const h5p = new H5PPlayer(mockLibraryStorage, undefined, config);
 
         h5p.setRenderer((m) => m);
-        const model: any = await h5p.render(contentId, new User(), {
+        const model: any = await h5p.render(contentId, new User(), 'en', {
             parametersOverride: contentObject,
             metadataOverride: h5pObject as any
         });
