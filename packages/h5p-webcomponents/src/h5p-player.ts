@@ -202,13 +202,19 @@ export class H5PPlayerComponent extends HTMLElement {
             console.error(
                 'Cannot show copyright as H5P instance is undefined. The H5P object might not be initialized yet.'
             );
-            return '';
+            return undefined;
         }
         if (!this.h5pObject) {
             console.error(
                 'H5P object undefined. This typically means H5P has not been initialized yet.'
             );
-            return '';
+            return undefined;
+        }
+        if (
+            !this.h5pInstance.contentData ||
+            !this.h5pInstance.contentData.metadata
+        ) {
+            return undefined;
         }
         return this.h5pObject.getCopyrights(
             this.h5pInstance,
