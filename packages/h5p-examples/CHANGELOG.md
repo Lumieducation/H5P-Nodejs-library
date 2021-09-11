@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.0.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.2.0...v9.0.0) (2021-09-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.987.0 ([48788a3](https://github.com/Lumieducation/H5P-Nodejs-library/commit/48788a3080366ef05472710925b70c9dbfbece64))
+
+
+* feat(h5p-server)!: player strings now localized (#1747) ([3bf9841](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3bf9841d42c42905d9163dad743679ecef205e9d)), closes [#1747](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1747)
+
+
+### BREAKING CHANGES
+
+* The signature of H5PPlayer.render was changed as there now is a language parameter that you can set.
+
+
+
+
+
 # [8.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.7...v8.2.0) (2021-09-10)
 
 
