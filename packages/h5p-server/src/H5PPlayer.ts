@@ -14,17 +14,21 @@ import {
     IPlayerModel,
     IUrlGenerator,
     ILibraryMetadata,
-    IUser
+    IUser,
+    ITranslationFunction
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
 import { ContentMetadata } from './ContentMetadata';
 
-import defaultTranslation from '../assets/translations/client/en.json';
+import defaultClientStrings from '../assets/defaultClientStrings.json';
+import englishClientStrings from '../assets/translations/client/en.json';
 import playerAssetList from './playerAssetList.json';
 import player from './renderers/player';
 import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
+import SemanticsLocalizer from './SemanticsLocalizer';
+import SimpleTranslator from './helpers/SimpleTranslator';
 
 const log = new Logger('Player');
 
@@ -38,6 +42,10 @@ export default class H5PPlayer {
      * the integration object
      * @param urlGenerator creates url strings for files, can be used to
      * customize the paths in an implementation application
+     * @param translationCallback a function that is called to retrieve
+     * translations of keys in a certain language; the keys use the i18next
+     * format (e.g. namespace:key). See the ITranslationFunction documentation
+     * for more details.
      * @param options more options to customize the behavior of the player; see
      * IH5PPlayerOptions documentation for more details
      */
@@ -47,11 +55,15 @@ export default class H5PPlayer {
         private config: IH5PConfig,
         private integrationObjectDefaults?: IIntegration,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
+        translationCallback: ITranslationFunction = new SimpleTranslator({
+            // We use a simplistic translation function that is hard-wired to
+            // English if the implementation does not pass us a proper one.
+            client: englishClientStrings
+        }).t,
         private options?: IH5PPlayerOptions
     ) {
         log.info('initialize');
         this.renderer = player;
-        this.clientTranslation = defaultTranslation;
         this.libraryManager = new LibraryManager(
             libraryStorage,
             urlGenerator.libraryFile
@@ -72,8 +84,10 @@ export default class H5PPlayer {
                 this.config.customization.global.player.styles
             );
         }
+
+        this.semanticsLocalizer = new SemanticsLocalizer(translationCallback);
     }
-    private clientTranslation: any;
+    private semanticsLocalizer: SemanticsLocalizer;
     private globalCustomScripts: string[] = [];
     private globalCustomStyles: string[] = [];
     private libraryManager: LibraryManager;
@@ -101,6 +115,7 @@ export default class H5PPlayer {
     public async render(
         contentId: ContentId,
         user: IUser,
+        language: string = 'en',
         options?: {
             ignoreUserPermissions?: boolean;
             metadataOverride?: ContentMetadata;
@@ -193,6 +208,7 @@ export default class H5PPlayer {
                 assets,
                 mainLibrarySupportsFullscreen,
                 user,
+                language,
                 {
                     showCopyButton: options?.showCopyButton ?? false,
                     showDownloadButton: options?.showDownloadButton ?? false,
@@ -326,6 +342,7 @@ export default class H5PPlayer {
         assets: IAssets,
         supportsFullscreen: boolean,
         user: IUser,
+        language: string,
         displayOptions: {
             showCopyButton: boolean;
             showDownloadButton: boolean;
@@ -373,7 +390,11 @@ export default class H5PPlayer {
                 styles: this.listCoreStyles()
             },
             l10n: {
-                H5P: this.clientTranslation
+                H5P: this.semanticsLocalizer.localize(
+                    defaultClientStrings,
+                    language,
+                    true
+                )
             },
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,

@@ -48,6 +48,15 @@ export default class SemanticsLocalizer {
         } else {
             for (const field in semantics) {
                 if (
+                    typeof semantics[field] === 'object' &&
+                    typeof semantics[field] !== 'string'
+                ) {
+                    copy[field] = this.walkSemanticsRecursive(
+                        semantics[field],
+                        language,
+                        localizeAllFields
+                    );
+                } else if (
                     (this.localizableFields.includes(field) &&
                         typeof semantics[field] === 'string') ||
                     localizeAllFields
@@ -57,12 +66,6 @@ export default class SemanticsLocalizer {
                         `Replacing "${semantics[field]}" with "${translated}"`
                     );
                     copy[field] = translated;
-                } else if (typeof semantics[field] === 'object') {
-                    copy[field] = this.walkSemanticsRecursive(
-                        semantics[field],
-                        language,
-                        localizeAllFields
-                    );
                 } else {
                     copy[field] = semantics[field];
                 }

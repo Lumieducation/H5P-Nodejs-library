@@ -25,7 +25,10 @@ export default function (
         try {
             const content = await h5pPlayer.render(
                 req.params.contentId,
-                new User()
+                new User(),
+                languageOverride === 'auto'
+                    ? req.language ?? 'en'
+                    : languageOverride
             );
             res.send(content);
             res.status(200).end();
