@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.7...v8.2.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bootstrap to v5.1.1 ([839cd42](https://github.com/Lumieducation/H5P-Nodejs-library/commit/839cd421604e0d3c36df29c955cd4ca3e3923ead))
+* **deps:** update dependency react-bootstrap to v1.6.3 ([ca5a651](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ca5a6514b29f0b8dd79d981619268a9cce6407aa))
+
+
+### Features
+
+* **all:** improved handling of native H5P app bar ([#1743](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1743)) ([45c3de7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/45c3de7c6a89d4f0ae5a9d64581e70dbf57b8771))
+
+
+
+
+
 ## [8.1.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.1.6...v8.1.7) (2021-08-31)
 
 **Note:** Version bump only for package @lumieducation/h5p-rest-example-client
