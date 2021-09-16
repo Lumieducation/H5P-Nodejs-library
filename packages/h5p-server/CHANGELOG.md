@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.0...v9.0.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* **h5p-server:** license html now complete ([#1754](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1754)) ([539c3bd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/539c3bdb0ccf13ed4c04d536d34be156f2280cc8))
+
+
+
+
+
 # [9.0.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v8.2.0...v9.0.0) (2021-09-11)
 
 

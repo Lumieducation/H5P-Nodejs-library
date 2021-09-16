@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-html-exporter",
-    "version": "9.0.0",
+    "version": "9.0.1",
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -43,7 +43,7 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^9.0.0",
+        "@lumieducation/h5p-server": "^9.0.1",
         "fs-extra": "9.1.0",
         "mime-types": "^2.1.26",
         "postcss": "^8.1.10",
