@@ -377,7 +377,17 @@ export default class H5PPlayer {
                     metadata: {
                         license: metadata.license || 'U',
                         title: metadata.title || '',
-                        defaultLanguage: metadata.language || 'en'
+                        defaultLanguage: metadata.language || 'en',
+                        authors: metadata.authors,
+                        changes: metadata.changes,
+                        contentType: metadata.contentType,
+                        licenseExtras: metadata.licenseExtras,
+                        a11yTitle: metadata.a11yTitle,
+                        authorComments: metadata.authorComments,
+                        licenseVersion: metadata.licenseVersion,
+                        source: metadata.source,
+                        yearFrom: metadata.yearFrom,
+                        yearTo: metadata.yearTo
                     },
                     scripts: assets.scripts,
                     styles: assets.styles,

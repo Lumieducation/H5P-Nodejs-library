@@ -14,7 +14,9 @@ describe('FileContentStorage (repository that saves content objects to a local d
             language: '',
             mainLibrary: '',
             preloadedDependencies: [],
-            title: ''
+            title: '',
+            defaultLanguage: 'en',
+            license: 'U'
         };
     }
 

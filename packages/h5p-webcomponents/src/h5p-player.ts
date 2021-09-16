@@ -58,6 +58,18 @@ export class H5PPlayerComponent extends HTMLElement {
     }
 
     /**
+     * The window object in which the H5P object exists and is rendered in. This
+     * is the iframe's contentWindow or the parent's window, depending on the
+     * embed type.
+     */
+    get h5pWindow(): any {
+        return this.h5pWindowInternal;
+    }
+    private set h5pWindow(value: any) {
+        this.h5pWindowInternal = value;
+    }
+
+    /**
      * Called when the component needs to load data about content. The endpoint
      * called in here should call H5PPlayer.render() and send back the player
      * model.
@@ -104,6 +116,7 @@ export class H5PPlayerComponent extends HTMLElement {
     private root: HTMLElement;
     private h5pInstanceInternal: IH5PInstance;
     private h5pObjectInternal: IH5P;
+    private h5pWindowInternal: any;
 
     private static initTemplate(): void {
         // We create the static template only once
@@ -216,9 +229,31 @@ export class H5PPlayerComponent extends HTMLElement {
         ) {
             return undefined;
         }
+
+        let parameters: any;
+        // We need to call JSON.parse in the context of the window the H5P
+        // content exists in. The reason is that H5P.getCopyrights compares
+        // object prototypes when traversing the parameters and the object
+        // prototypes are not identical across windows.  (Cp.
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/instanceof#instanceof_and_multiple_context_e.g._frames_or_windows)
+        try {
+            parameters = this.h5pWindow.JSON.parse(
+                this.playerModel.integration.contents[
+                    `cid-${this.playerModel.contentId}`
+                ].jsonContent
+            );
+        } catch (error: any) {
+            console.error(
+                'Could not get parameters for content object with id ',
+                this.playerModel.contentId,
+                '. The copyright text might be incomplete. Details: ',
+                error
+            );
+        }
+
         return this.h5pObject.getCopyrights(
             this.h5pInstance,
-            this.h5pInstance.params,
+            parameters,
             this.playerModel.contentId,
             this.h5pInstance.contentData.metadata
         );
@@ -255,6 +290,11 @@ export class H5PPlayerComponent extends HTMLElement {
             : (document.getElementById(
                   `h5p-iframe-${this.playerModel.contentId}`
               ) as HTMLIFrameElement).contentWindow.H5P;
+        this.h5pWindow = divMode
+            ? window
+            : (document.getElementById(
+                  `h5p-iframe-${this.playerModel.contentId}`
+              ) as HTMLIFrameElement).contentWindow;
         this.h5pInstance = this.h5pObject?.instances?.find(
             // H5P converts our string contentId into number, so we don't use ===
             // eslint-disable-next-line eqeqeq
