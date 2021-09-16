@@ -91,7 +91,8 @@ describe('H5PEditor', () => {
                 minorVersion: 0
             }
         ],
-        title: 'Greeting card'
+        title: 'Greeting card',
+        defaultLanguage: 'en'
     };
 
     const mockupMainLibraryName = LibraryName.toUberName(
@@ -728,7 +729,9 @@ describe('H5PEditor', () => {
                                 minorVersion: 0
                             }
                         ],
-                        title: 'Greeting card'
+                        title: 'Greeting card',
+                        defaultLanguage: 'en',
+                        license: 'U'
                     },
                     'H5P.GreetingCard 1.0',
                     user

@@ -23,7 +23,8 @@ describe('ContentManager', () => {
                 minorVersion: 0
             }
         ],
-        title: 'Greeting card'
+        title: 'Greeting card',
+        defaultLanguage: 'en'
     };
 
     const mockupParameters = {

@@ -115,21 +115,12 @@ export interface IContentChange {
  * This is the structure of the object received by the editor client when saving content.
  * It is also used when creating h5p.json files for .h5p packages.
  */
-export interface IContentMetadata {
-    a11yTitle?: string;
-    author?: string;
-    authorComments?: string;
-    authors?: IContentAuthor[];
-    changes?: IContentChange[];
-    contentType?: string;
+export interface IContentMetadata extends ILicenseData {
     dynamicDependencies?: ILibraryName[];
     editorDependencies?: ILibraryName[];
     embedTypes: ('iframe' | 'div')[];
     h?: string;
     language: string;
-    license?: string;
-    licenseExtras?: string;
-    licenseVersion?: string;
     mainLibrary: string;
     metaDescription?: string;
     metaKeywords?: string;
@@ -139,11 +130,28 @@ export interface IContentMetadata {
      * that is created by looking up all dependencies of the main library.
      */
     preloadedDependencies: ILibraryName[];
+    w?: string;
+}
+
+/**
+ * The non-technical copyright and license metadata of a content object. H5P
+ * calls this "metadata" in the GUI (and in their code), but to avoid confusing
+ * from our use of metadata, we call it license data.
+ */
+export interface ILicenseData {
+    defaultLanguage: string;
+    a11yTitle?: string;
+    license: string;
+    licenseVersion?: string;
+    yearFrom?: string;
+    yearTo?: string;
     source?: string;
     title: string;
-    w?: string;
-    yearsFrom?: string;
-    yearsTo?: string;
+    authors?: IContentAuthor[];
+    licenseExtras?: string;
+    changes?: IContentChange[];
+    authorComments?: string;
+    contentType?: string;
 }
 
 /**
@@ -219,11 +227,7 @@ export interface IIntegration {
              */
             library: string;
             mainId?: string;
-            metadata?: {
-                defaultLanguage: string;
-                license: string;
-                title: string;
-            };
+            metadata?: ILicenseData;
             /**
              * The parameters.
              */

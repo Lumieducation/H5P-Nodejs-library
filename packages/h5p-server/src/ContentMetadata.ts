@@ -35,12 +35,13 @@ export class ContentMetadata implements IContentMetadata {
     public authors?: IContentAuthor[];
     public changes?: IContentChange[];
     public contentType?: string;
+    public defaultLanguage: string;
     public dynamicDependencies?: ILibraryName[];
     public editorDependencies?: ILibraryName[];
     public embedTypes: ('iframe' | 'div')[] = ['iframe'];
     public h?: string;
     public language: string = 'en';
-    public license?: string;
+    public license: string;
     public licenseExtras?: string;
     public licenseVersion?: string;
     public mainLibrary: string;
