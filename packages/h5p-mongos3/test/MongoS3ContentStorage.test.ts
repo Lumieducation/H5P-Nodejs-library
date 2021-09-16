@@ -27,7 +27,9 @@ describe('MongoS3ContentStorage', () => {
                 minorVersion: 0
             }
         ],
-        title: 'Title'
+        title: 'Title',
+        defaultLanguage: 'en',
+        license: 'U'
     };
     const stubParameters = {
         foo: 'bar',
