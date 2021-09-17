@@ -76,10 +76,8 @@ export default class ContentTypeInformationRepository {
         ) {
             cachedHubInfo = this.localizeHubInfo(cachedHubInfo, language);
         }
-        let hubInfoWithLocalInfo = await this.addUserAndInstallationSpecificInfo(
-            cachedHubInfo,
-            user
-        );
+        let hubInfoWithLocalInfo =
+            await this.addUserAndInstallationSpecificInfo(cachedHubInfo, user);
         hubInfoWithLocalInfo = await this.addLocalLibraries(
             hubInfoWithLocalInfo,
             user
@@ -156,9 +154,10 @@ export default class ContentTypeInformationRepository {
                     this.libraryManager,
                     this.config
                 );
-                installedLibraries = await packageImporter.installLibrariesFromPackage(
-                    tempPackagePath
-                );
+                installedLibraries =
+                    await packageImporter.installLibrariesFromPackage(
+                        tempPackagePath
+                    );
             },
             { postfix: '.h5p', keep: false }
         );
@@ -176,7 +175,8 @@ export default class ContentTypeInformationRepository {
         hubInfo: IHubContentTypeWithLocalInfo[],
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
-        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
+        const localLibsWrapped =
+            await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped)
             .map(
                 (machineName) =>
@@ -239,7 +239,8 @@ export default class ContentTypeInformationRepository {
         user: IUser
     ): Promise<IHubContentTypeWithLocalInfo[]> {
         log.info(`adding user and installation specific information`);
-        const localLibsWrapped = await this.libraryManager.listInstalledLibraries();
+        const localLibsWrapped =
+            await this.libraryManager.listInstalledLibraries();
         const localLibs = Object.keys(localLibsWrapped).map(
             (machineName) =>
                 localLibsWrapped[machineName][
@@ -274,9 +275,8 @@ export default class ContentTypeInformationRepository {
                     hubLib.canInstall =
                         !this.libraryIsRestricted(localLib) &&
                         this.canInstallLibrary(hubLib, user);
-                    hubLib.isUpToDate = !(await this.libraryManager.libraryHasUpgrade(
-                        hubLib
-                    ));
+                    hubLib.isUpToDate =
+                        !(await this.libraryManager.libraryHasUpgrade(hubLib));
                     hubLib.localMajorVersion = localLib.majorVersion;
                     hubLib.localMinorVersion = localLib.minorVersion;
                     hubLib.localPatchVersion = localLib.patchVersion;

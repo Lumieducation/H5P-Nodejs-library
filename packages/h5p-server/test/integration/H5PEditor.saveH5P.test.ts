@@ -19,15 +19,13 @@ describe('H5PEditor.saveH5P()', () => {
                     contentTypes.map(async (contentType) => {
                         const { h5pEditor } = createH5PEditor(tempDirPath);
 
-                        const {
-                            metadata,
-                            parameters
-                        } = await h5pEditor.uploadPackage(
-                            await fsExtra.readFile(
-                                path.join(contentPath, contentType)
-                            ),
-                            user
-                        );
+                        const { metadata, parameters } =
+                            await h5pEditor.uploadPackage(
+                                await fsExtra.readFile(
+                                    path.join(contentPath, contentType)
+                                ),
+                                user
+                            );
 
                         await h5pEditor.saveOrUpdateContent(
                             undefined,

@@ -22,10 +22,15 @@ export default class Logger {
     constructor(scope: string) {
         this.scope = scope;
 
+        const d = debug(`h5p:${this.scope}`);
+
         // eslint-disable-next-line no-multi-assign
-        this.DEBUG = this.ERROR = this.INFO = this.SILLY = this.VERBOSE = this.WARN = debug(
-            `h5p:${this.scope}`
-        );
+        this.DEBUG = d;
+        this.ERROR = d;
+        this.INFO = d;
+        this.SILLY = d;
+        this.VERBOSE = d;
+        this.WARN = d;
 
         this.logLevel = (process.env.LOG_LEVEL as LogLevel) || 'info';
     }

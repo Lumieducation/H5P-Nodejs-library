@@ -64,15 +64,12 @@ describe('ContentFileScanner', () => {
                 const user = new User();
                 user.canUpdateAndInstallLibraries = true;
 
-                const {
-                    contentScanner,
-                    contentId,
-                    contentManager
-                } = await createContentFileScanner(
-                    path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
-                    user,
-                    tmpDirPath
-                );
+                const { contentScanner, contentId, contentManager } =
+                    await createContentFileScanner(
+                        path.resolve('test/data/hub-content/H5P.Blanks.h5p'),
+                        user,
+                        tmpDirPath
+                    );
 
                 const { params, mainLibraryName } = await getContentDetails(
                     contentId,
@@ -110,15 +107,14 @@ describe('ContentFileScanner', () => {
                 const user = new User();
                 user.canUpdateAndInstallLibraries = true;
 
-                const {
-                    contentScanner,
-                    contentId,
-                    contentManager
-                } = await createContentFileScanner(
-                    path.resolve('test/data/hub-content/H5P.Questionnaire.h5p'),
-                    user,
-                    tmpDirPath
-                );
+                const { contentScanner, contentId, contentManager } =
+                    await createContentFileScanner(
+                        path.resolve(
+                            'test/data/hub-content/H5P.Questionnaire.h5p'
+                        ),
+                        user,
+                        tmpDirPath
+                    );
 
                 const { params, mainLibraryName } = await getContentDetails(
                     contentId,

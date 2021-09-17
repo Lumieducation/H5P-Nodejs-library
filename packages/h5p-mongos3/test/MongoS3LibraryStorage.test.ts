@@ -449,9 +449,9 @@ describe('MongoS3LibraryStorage', () => {
         );
 
         // Check
-        await expect(
-            storage.getLanguages(example1Name)
-        ).resolves.toMatchObject(['.en', 'de']);
+        await expect(storage.getLanguages(example1Name)).resolves.toMatchObject(
+            ['.en', 'de']
+        );
     });
 
     it('clears files', async () => {

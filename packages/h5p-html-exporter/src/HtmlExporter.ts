@@ -216,9 +216,8 @@ export default class HtmlExporter {
         fileRefs.forEach((ref) => {
             ref.context.params.path = upath.join(prefix, ref.filePath);
         });
-        model.integration.contents[
-            `cid-${model.contentId}`
-        ].jsonContent = JSON.stringify(params);
+        model.integration.contents[`cid-${model.contentId}`].jsonContent =
+            JSON.stringify(params);
 
         return fileRefs.map((ref) => ref.filePath);
     }
@@ -369,13 +368,8 @@ export default class HtmlExporter {
         const texts = {};
         await Promise.all(
             model.scripts.map(async (script) => {
-                const {
-                    text,
-                    filename,
-                    core,
-                    editor,
-                    library
-                } = await this.getFileAsText(script, usedFiles);
+                const { text, filename, core, editor, library } =
+                    await this.getFileAsText(script, usedFiles);
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
@@ -406,13 +400,8 @@ export default class HtmlExporter {
         const styleTexts = {};
         await Promise.all(
             model.styles.map(async (style) => {
-                const {
-                    text,
-                    filename,
-                    library,
-                    editor,
-                    core
-                } = await this.getFileAsText(style, usedFiles);
+                const { text, filename, library, editor, core } =
+                    await this.getFileAsText(style, usedFiles);
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
@@ -630,84 +619,88 @@ export default class HtmlExporter {
      * @param model the player model created by H5PPlayer
      * @returns a string with HTML markup
      */
-    private renderer = (
-        mode: {
-            contentResources: 'files' | 'inline';
-            core: 'files' | 'inline';
-            libraries: 'files' | 'inline';
-        },
-        options?: {
-            contentResourcesPrefix?: string;
-        }
-    ) => async (
-        model: IPlayerModel
-    ): Promise<{ contentFiles?: string[]; html: string }> => {
-        if (mode.core === 'files') {
-            throw new Error('Core mode "files" not supported yet.');
-        }
-        if (mode.libraries === 'files') {
-            throw new Error('Library mode "files" not supported yet.');
-        }
+    private renderer =
+        (
+            mode: {
+                contentResources: 'files' | 'inline';
+                core: 'files' | 'inline';
+                libraries: 'files' | 'inline';
+            },
+            options?: {
+                contentResourcesPrefix?: string;
+            }
+        ) =>
+        async (
+            model: IPlayerModel
+        ): Promise<{ contentFiles?: string[]; html: string }> => {
+            if (mode.core === 'files') {
+                throw new Error('Core mode "files" not supported yet.');
+            }
+            if (mode.libraries === 'files') {
+                throw new Error('Library mode "files" not supported yet.');
+            }
 
-        const usedFiles = new LibrariesFilesList();
-        // eslint-disable-next-line prefer-const
-        let [scriptsBundle, stylesBundle] = await Promise.all([
-            this.getScriptBundle(
-                model,
-                usedFiles,
-                this.defaultAdditionalScripts
-            ),
-            this.getStylesBundle(model, usedFiles),
-            mode?.contentResources === 'inline'
-                ? this.internalizeContentResources(model)
-                : undefined
-        ]);
+            const usedFiles = new LibrariesFilesList();
+            // eslint-disable-next-line prefer-const
+            let [scriptsBundle, stylesBundle] = await Promise.all([
+                this.getScriptBundle(
+                    model,
+                    usedFiles,
+                    this.defaultAdditionalScripts
+                ),
+                this.getStylesBundle(model, usedFiles),
+                mode?.contentResources === 'inline'
+                    ? this.internalizeContentResources(model)
+                    : undefined
+            ]);
 
-        // Look for files in the libraries which haven't been included in the
-        // bundle so far.
-        const unusedFiles = await this.getUnusedLibraryFiles(
-            model.dependencies,
-            usedFiles
-        );
-        // If there are files in the directory of a library that haven't been
-        // included in the bundle yet, we add those as base64 encoded variables
-        // and rewire H5P.ContentType.getLibraryFilePath to return these files
-        // as data urls. (needed for resource files of H5P.BranchingScenario)
-        if (Object.keys(unusedFiles).length) {
-            scriptsBundle = scriptsBundle.concat(
-                ` var furtherH5PInlineResources=${JSON.stringify(
-                    unusedFiles
-                )};`,
-                getLibraryFilePathOverrideScript
+            // Look for files in the libraries which haven't been included in the
+            // bundle so far.
+            const unusedFiles = await this.getUnusedLibraryFiles(
+                model.dependencies,
+                usedFiles
             );
-        }
+            // If there are files in the directory of a library that haven't been
+            // included in the bundle yet, we add those as base64 encoded variables
+            // and rewire H5P.ContentType.getLibraryFilePath to return these files
+            // as data urls. (needed for resource files of H5P.BranchingScenario)
+            if (Object.keys(unusedFiles).length) {
+                scriptsBundle = scriptsBundle.concat(
+                    ` var furtherH5PInlineResources=${JSON.stringify(
+                        unusedFiles
+                    )};`,
+                    getLibraryFilePathOverrideScript
+                );
+            }
 
-        // If the user wants to put content resources into files, we must get
-        // these files and
-        let contentFiles: string[];
-        if (mode.contentResources === 'files') {
-            contentFiles = await this.findAndPrefixContentResources(
-                model,
-                options?.contentResourcesPrefix
-            );
-            scriptsBundle = scriptsBundle.concat(getContentPathOverrideScript);
-        }
+            // If the user wants to put content resources into files, we must get
+            // these files and
+            let contentFiles: string[];
+            if (mode.contentResources === 'files') {
+                contentFiles = await this.findAndPrefixContentResources(
+                    model,
+                    options?.contentResourcesPrefix
+                );
+                scriptsBundle = scriptsBundle.concat(
+                    getContentPathOverrideScript
+                );
+            }
 
-        const html = this.template
-            ? this.template(
-                  JSON.stringify({
-                      ...model.integration,
-                      baseUrl: '.',
-                      url: '.',
-                      ajax: { setFinished: '', contentUserData: '' },
-                      saveFreq: false,
-                      libraryUrl: ''
-                  }),
-                  scriptsBundle,
-                  stylesBundle,
-                  model.contentId
-              )
-            : `<!doctype html>
+            const html = this.template
+                ? this.template(
+                      JSON.stringify({
+                          ...model.integration,
+                          baseUrl: '.',
+                          url: '.',
+                          ajax: { setFinished: '', contentUserData: '' },
+                          saveFreq: false,
+                          libraryUrl: ''
+                      }),
+                      scriptsBundle,
+                      stylesBundle,
+                      model.contentId
+                  )
+                : `<!doctype html>
             <html class="h5p-iframe">
             <head>
                 <meta charset="utf-8">                    
@@ -728,8 +721,8 @@ export default class HtmlExporter {
                 }"></div>                
             </body>
             </html>`;
-        return { html, contentFiles };
-    };
+            return { html, contentFiles };
+        };
 
     /**
      * A factory method that returns functions that can be passed to the url
@@ -740,44 +733,49 @@ export default class HtmlExporter {
      * @param core true if the css file is a core file
      * @param asset the object received from the postcss-url plugin call
      */
-    private urlInternalizer = (
-        filename: string,
-        library: ILibraryName,
-        editor: boolean,
-        core: boolean,
-        usedFiles: LibrariesFilesList
-    ) => async (asset) => {
-        // If a url already is internalized we simply return it
-        if (asset.url.startsWith('data:') && asset.url.includes('base64')) {
-            return asset.url;
-        }
-        const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
+    private urlInternalizer =
+        (
+            filename: string,
+            library: ILibraryName,
+            editor: boolean,
+            core: boolean,
+            usedFiles: LibrariesFilesList
+        ) =>
+        async (asset) => {
+            // If a url already is internalized we simply return it
+            if (asset.url.startsWith('data:') && asset.url.includes('base64')) {
+                return asset.url;
+            }
+            const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
-        if (library) {
-            const p = upath.join(path.dirname(filename), asset.relativePath);
-            try {
-                usedFiles.addFile(library, p);
-                return `data:${mimetype};base64,${await streamToString(
-                    await this.libraryStorage.getFileStream(library, p),
+            if (library) {
+                const p = upath.join(
+                    path.dirname(filename),
+                    asset.relativePath
+                );
+                try {
+                    usedFiles.addFile(library, p);
+                    return `data:${mimetype};base64,${await streamToString(
+                        await this.libraryStorage.getFileStream(library, p),
+                        'base64'
+                    )}`;
+                } catch {
+                    // There are edge cases in which there are non-existent files in
+                    // stylesheets as placeholders (H5P.BranchingScenario), so we
+                    // have to leave them in.
+                    return asset.relativePath;
+                }
+            }
+
+            if (editor || core) {
+                const basePath = editor
+                    ? path.join(this.editorFilePath, 'styles')
+                    : path.join(this.coreFilePath, 'styles');
+                return `data:${mimetype};base64,${await fsExtra.readFile(
+                    path.resolve(basePath, asset.relativePath),
                     'base64'
                 )}`;
-            } catch {
-                // There are edge cases in which there are non-existent files in
-                // stylesheets as placeholders (H5P.BranchingScenario), so we
-                // have to leave them in.
-                return asset.relativePath;
             }
-        }
-
-        if (editor || core) {
-            const basePath = editor
-                ? path.join(this.editorFilePath, 'styles')
-                : path.join(this.coreFilePath, 'styles');
-            return `data:${mimetype};base64,${await fsExtra.readFile(
-                path.resolve(basePath, asset.relativePath),
-                'base64'
-            )}`;
-        }
-        return undefined;
-    };
+            return undefined;
+        };
 }

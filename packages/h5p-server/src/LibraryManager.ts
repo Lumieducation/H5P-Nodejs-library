@@ -132,10 +132,11 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const languageFileAsString = await this.libraryStorage.getFileAsString(
-                library,
-                `language/${language}.json`
-            );
+            const languageFileAsString =
+                await this.libraryStorage.getFileAsString(
+                    library,
+                    `language/${language}.json`
+                );
             // If the implementation has specified one, we use a hook to alter
             // the language files to match the structure of the altered
             // semantics.
@@ -637,15 +638,13 @@ export default class LibraryManager {
         const files: string[] = await getAllFiles.async.array(fromDirectory);
         await Promise.all(
             files.map((fileFullPath: string) => {
-                const fileLocalPath: string = fileFullPath.substr(
-                    fromDirectoryLength
-                );
+                const fileLocalPath: string =
+                    fileFullPath.substr(fromDirectoryLength);
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);
                 }
-                const readStream: Readable = fsExtra.createReadStream(
-                    fileFullPath
-                );
+                const readStream: Readable =
+                    fsExtra.createReadStream(fileFullPath);
                 return this.libraryStorage.addFile(
                     libraryInfo,
                     fileLocalPath,

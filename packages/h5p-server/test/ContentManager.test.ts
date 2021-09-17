@@ -92,16 +92,12 @@ describe('ContentManager', () => {
                     contentManager.contentExists(contentId)
                 ).resolves.toEqual(true);
 
-                const returnedMetadata = await contentManager.getContentMetadata(
-                    contentId,
-                    user
-                );
+                const returnedMetadata =
+                    await contentManager.getContentMetadata(contentId, user);
                 expect(returnedMetadata).toEqual(mockupMetadata);
 
-                const returnedParameters = await contentManager.getContentParameters(
-                    contentId,
-                    user
-                );
+                const returnedParameters =
+                    await contentManager.getContentParameters(contentId, user);
                 expect(returnedParameters).toEqual(mockupParameters);
             },
             { keep: false, unsafeCleanup: true }

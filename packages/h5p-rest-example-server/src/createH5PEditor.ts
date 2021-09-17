@@ -117,9 +117,9 @@ export default async function createH5PEditor(
         h5pEditor.temporaryStorage instanceof
         dbImplementations.S3TemporaryFileStorage
     ) {
-        await (h5pEditor.temporaryStorage as any).setBucketLifecycleConfiguration(
-            h5pEditor.config
-        );
+        await (
+            h5pEditor.temporaryStorage as any
+        ).setBucketLifecycleConfiguration(h5pEditor.config);
     }
 
     return h5pEditor;

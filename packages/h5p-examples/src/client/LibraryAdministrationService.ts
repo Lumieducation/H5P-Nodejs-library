@@ -51,9 +51,7 @@ export class LibraryAdministrationService {
         );
     }
 
-    public async getLibrary(
-        library: ILibraryViewModel
-    ): Promise<
+    public async getLibrary(library: ILibraryViewModel): Promise<
         IInstalledLibrary & {
             dependentsCount: number;
             instancesAsDependencyCount: number;

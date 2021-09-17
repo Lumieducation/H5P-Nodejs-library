@@ -504,9 +504,9 @@ describe('MongoS3LibraryStorage', () => {
         );
 
         // Check
-        await expect(
-            storage.getLanguages(example1Name)
-        ).resolves.toMatchObject(['.en', 'de']);
+        await expect(storage.getLanguages(example1Name)).resolves.toMatchObject(
+            ['.en', 'de']
+        );
     });
 
     it('throws 404 when getting languages of non-existing library', async () => {

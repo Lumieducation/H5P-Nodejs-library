@@ -321,9 +321,8 @@ export default class PackageValidator {
                     error.addError(
                         new H5pError('not-in-whitelist', {
                             filename,
-                            'files-allowed': this.contentExtensionWhitelist.join(
-                                ' '
-                            )
+                            'files-allowed':
+                                this.contentExtensionWhitelist.join(' ')
                         })
                     );
                 }
@@ -618,31 +617,32 @@ export default class PackageValidator {
      * @param error The error object to use
      * @returns The unchanged zip entries
      */
-    private librariesMustBeValid = (skipInstalledLibraries: boolean) => async (
-        filenames: string[],
-        pathPrefix: string,
-        error: AggregateH5pError
-    ): Promise<string[]> => {
-        // TODO: continue here
-        log.debug(`validating libraries inside package`);
-        const topLevelDirectories = await PackageValidator.getTopLevelDirectories(
-            pathPrefix
-        );
-        await Promise.all(
-            topLevelDirectories
-                .filter((directory) => directory !== 'content')
-                .map((directory) =>
-                    this.validateLibrary(
-                        filenames,
-                        directory,
-                        pathPrefix,
-                        error,
-                        skipInstalledLibraries
+    private librariesMustBeValid =
+        (skipInstalledLibraries: boolean) =>
+        async (
+            filenames: string[],
+            pathPrefix: string,
+            error: AggregateH5pError
+        ): Promise<string[]> => {
+            // TODO: continue here
+            log.debug(`validating libraries inside package`);
+            const topLevelDirectories =
+                await PackageValidator.getTopLevelDirectories(pathPrefix);
+            await Promise.all(
+                topLevelDirectories
+                    .filter((directory) => directory !== 'content')
+                    .map((directory) =>
+                        this.validateLibrary(
+                            filenames,
+                            directory,
+                            pathPrefix,
+                            error,
+                            skipInstalledLibraries
+                        )
                     )
-                )
-        );
-        return filenames;
-    };
+            );
+            return filenames;
+        };
 
     /**
      * Factory for a rule that checks if library's directory conforms to naming
@@ -779,26 +779,28 @@ export default class PackageValidator {
         };
     }
 
-    private skipInstalledLibraries = (skipInstalledLibraries) => async (
-        { filenames, jsonData }: { jsonData: any; filenames: string[] },
-        pathPrefix: string,
-        error: AggregateH5pError
-    ): Promise<{ jsonData: any; filenames: string[] }> => {
-        log.debug(`Checking if library can be skipped`);
-        if (
-            skipInstalledLibraries &&
-            (await this.libraryManager.libraryExists(jsonData)) &&
-            !(await this.libraryManager.isPatchedLibrary(jsonData))
-        ) {
-            log.debug(
-                `Skipping already installed library ${LibraryName.toUberName(
-                    jsonData
-                )}`
-            );
-            return undefined;
-        }
-        return { jsonData, filenames };
-    };
+    private skipInstalledLibraries =
+        (skipInstalledLibraries) =>
+        async (
+            { filenames, jsonData }: { jsonData: any; filenames: string[] },
+            pathPrefix: string,
+            error: AggregateH5pError
+        ): Promise<{ jsonData: any; filenames: string[] }> => {
+            log.debug(`Checking if library can be skipped`);
+            if (
+                skipInstalledLibraries &&
+                (await this.libraryManager.libraryExists(jsonData)) &&
+                !(await this.libraryManager.isPatchedLibrary(jsonData))
+            ) {
+                log.debug(
+                    `Skipping already installed library ${LibraryName.toUberName(
+                        jsonData
+                    )}`
+                );
+                return undefined;
+            }
+            return { jsonData, filenames };
+        };
 
     /**
      * Checks if all JavaScript and CSS file references in the preloaded section

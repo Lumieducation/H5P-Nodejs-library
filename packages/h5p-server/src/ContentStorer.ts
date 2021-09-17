@@ -72,14 +72,16 @@ export default class ContentStorer {
         // can determine which files must be copied from temporary storage into
         // permanent storage and which files were deleted in the editor by the
         // user.
-        const fileReferencesInNewParams = await this.contentFileScanner.scanForFiles(
-            parameters,
-            mainLibraryName
-        );
-        const filesToCopyFromTemporaryStorage = await this.determineFilesToCopyFromTemporaryStorage(
-            fileReferencesInNewParams,
-            filesInOldParams
-        );
+        const fileReferencesInNewParams =
+            await this.contentFileScanner.scanForFiles(
+                parameters,
+                mainLibraryName
+            );
+        const filesToCopyFromTemporaryStorage =
+            await this.determineFilesToCopyFromTemporaryStorage(
+                fileReferencesInNewParams,
+                filesInOldParams
+            );
 
         // Store the content in persistent storage / update the content there.
         const newContentId = await this.contentManager.createOrUpdateContent(
@@ -177,12 +179,13 @@ export default class ContentStorer {
                 file.substr(packageDirectoryLength) !== 'content.json'
         );
 
-        const newContentId: ContentId = await this.contentManager.contentStorage.addContent(
-            metadata,
-            parameters,
-            user,
-            contentId
-        );
+        const newContentId: ContentId =
+            await this.contentManager.contentStorage.addContent(
+                metadata,
+                parameters,
+                user,
+                contentId
+            );
         const contentPath = path.join(packageDirectory, 'content');
         const contentPathLength = contentPath.length + 1;
         try {
@@ -224,12 +227,13 @@ export default class ContentStorer {
             path.join(packageDirectory, 'content', 'content.json')
         );
 
-        const fileReferencesInParams = await this.contentFileScanner.scanForFiles(
-            parameters,
-            metadata.preloadedDependencies.find(
-                (l) => l.machineName === metadata.mainLibrary
-            )
-        );
+        const fileReferencesInParams =
+            await this.contentFileScanner.scanForFiles(
+                parameters,
+                metadata.preloadedDependencies.find(
+                    (l) => l.machineName === metadata.mainLibrary
+                )
+            );
 
         for (const reference of fileReferencesInParams) {
             const filepath = path.join(
@@ -312,11 +316,12 @@ export default class ContentStorer {
                     throw new Error('pasted file not found');
                 }
 
-                const sourceFileStream = await this.contentManager.getContentFileStream(
-                    sourceContentId,
-                    sourceFilename,
-                    user
-                );
+                const sourceFileStream =
+                    await this.contentManager.getContentFileStream(
+                        sourceContentId,
+                        sourceFilename,
+                        user
+                    );
 
                 // the filename might already be in use in the piece of content,
                 // so we generate a new one.

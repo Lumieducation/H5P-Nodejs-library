@@ -63,21 +63,25 @@ export default async function createH5PEditor(
         await mongoLibraryStorage.createIndexes();
         libraryStorage = mongoLibraryStorage;
     } else if (process.env.LIBRARYSTORAGE === 'mongos3') {
-        const mongoS3LibraryStorage = new dbImplementations.MongoS3LibraryStorage(
-            dbImplementations.initS3({
-                s3ForcePathStyle: true,
-                signatureVersion: 'v4'
-            }),
-            (await dbImplementations.initMongo()).collection(
-                process.env.LIBRARY_MONGO_COLLECTION
-            ),
-            {
-                s3Bucket: process.env.LIBRARY_AWS_S3_BUCKET,
-                maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
-                    ? Number.parseInt(process.env.AWS_S3_MAX_FILE_LENGTH, 10)
-                    : undefined
-            }
-        );
+        const mongoS3LibraryStorage =
+            new dbImplementations.MongoS3LibraryStorage(
+                dbImplementations.initS3({
+                    s3ForcePathStyle: true,
+                    signatureVersion: 'v4'
+                }),
+                (await dbImplementations.initMongo()).collection(
+                    process.env.LIBRARY_MONGO_COLLECTION
+                ),
+                {
+                    s3Bucket: process.env.LIBRARY_AWS_S3_BUCKET,
+                    maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH
+                        ? Number.parseInt(
+                              process.env.AWS_S3_MAX_FILE_LENGTH,
+                              10
+                          )
+                        : undefined
+                }
+            );
         await mongoS3LibraryStorage.createIndexes();
         libraryStorage = mongoS3LibraryStorage;
     } else {
@@ -148,9 +152,9 @@ export default async function createH5PEditor(
         h5pEditor.temporaryStorage instanceof
         dbImplementations.S3TemporaryFileStorage
     ) {
-        await (h5pEditor.temporaryStorage as any).setBucketLifecycleConfiguration(
-            h5pEditor.config
-        );
+        await (
+            h5pEditor.temporaryStorage as any
+        ).setBucketLifecycleConfiguration(h5pEditor.config);
     }
 
     return h5pEditor;

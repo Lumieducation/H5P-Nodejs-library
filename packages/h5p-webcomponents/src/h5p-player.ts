@@ -287,14 +287,18 @@ export class H5PPlayerComponent extends HTMLElement {
         const divMode = this.playerModel.embedTypes.includes('div');
         this.h5pObject = divMode
             ? window.H5P
-            : (document.getElementById(
-                  `h5p-iframe-${this.playerModel.contentId}`
-              ) as HTMLIFrameElement).contentWindow.H5P;
+            : (
+                  document.getElementById(
+                      `h5p-iframe-${this.playerModel.contentId}`
+                  ) as HTMLIFrameElement
+              ).contentWindow.H5P;
         this.h5pWindow = divMode
             ? window
-            : (document.getElementById(
-                  `h5p-iframe-${this.playerModel.contentId}`
-              ) as HTMLIFrameElement).contentWindow;
+            : (
+                  document.getElementById(
+                      `h5p-iframe-${this.playerModel.contentId}`
+                  ) as HTMLIFrameElement
+              ).contentWindow;
         this.h5pInstance = this.h5pObject?.instances?.find(
             // H5P converts our string contentId into number, so we don't use ===
             // eslint-disable-next-line eqeqeq

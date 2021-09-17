@@ -28,9 +28,10 @@ describe('package importer', () => {
                     libraryManager,
                     new H5PConfig(null)
                 );
-                const installedLibraryNames = await packageImporter.installLibrariesFromPackage(
-                    path.resolve('test/data/validator/valid2.h5p')
-                );
+                const installedLibraryNames =
+                    await packageImporter.installLibrariesFromPackage(
+                        path.resolve('test/data/validator/valid2.h5p')
+                    );
 
                 expect(installedLibraryNames.length).toEqual(1);
                 expect(installedLibraryNames[0].type).toEqual('new');
@@ -43,7 +44,8 @@ describe('package importer', () => {
                 });
 
                 // Check if library was installed correctly
-                const installedLibraries = await libraryManager.listInstalledLibraries();
+                const installedLibraries =
+                    await libraryManager.listInstalledLibraries();
                 expect(installedLibraries['H5P.GreetingCard']).toBeDefined();
                 expect(installedLibraries['H5P.GreetingCard'].length).toEqual(
                     1
@@ -90,7 +92,8 @@ describe('package importer', () => {
                 ).id;
 
                 // Check if library was installed
-                const installedLibraries = await libraryManager.listInstalledLibraries();
+                const installedLibraries =
+                    await libraryManager.listInstalledLibraries();
                 expect(installedLibraries['H5P.GreetingCard']).toBeDefined();
 
                 // Check if metadata (h5p.json) was added correctly
@@ -105,10 +108,12 @@ describe('package importer', () => {
 
                 // Check if content (content/content.json) was added correctly
                 expect(
-                    ((await contentManager.getContentParameters(
-                        contentId,
-                        user
-                    )) as any).greeting
+                    (
+                        (await contentManager.getContentParameters(
+                            contentId,
+                            user
+                        )) as any
+                    ).greeting
                 ).toEqual('Hello world!');
                 const fileStream = await contentManager.getContentFileStream(
                     contentId,

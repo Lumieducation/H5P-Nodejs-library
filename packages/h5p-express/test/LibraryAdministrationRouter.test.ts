@@ -125,7 +125,8 @@ describe('Express Library Administration endpoint adapter', () => {
             expect(res.status).toBe(200);
             expect(res.body.length).toEqual(installedLibraries.length);
 
-            const libraryInformation = res.body as ILibraryAdministrationOverviewItem[];
+            const libraryInformation =
+                res.body as ILibraryAdministrationOverviewItem[];
             for (const lib of libraryInformation) {
                 expect(lib).toHaveProperty('title');
                 expect(lib).toHaveProperty('machineName');
@@ -169,7 +170,8 @@ describe('Express Library Administration endpoint adapter', () => {
 
             const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
             expect(res.status).toBe(204);
-            const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+            const stillInstalledLibraries =
+                await h5pEditor.libraryStorage.getInstalledLibraryNames();
             expect(stillInstalledLibraries.length).toEqual(0);
         });
 
@@ -188,11 +190,8 @@ describe('Express Library Administration endpoint adapter', () => {
             const fileBuffer = fsExtra.readFileSync(
                 path.resolve('test/data/validator/valid2.h5p')
             );
-            const {
-                installedLibraries,
-                metadata,
-                parameters
-            } = await h5pEditor.uploadPackage(fileBuffer, user);
+            const { installedLibraries, metadata, parameters } =
+                await h5pEditor.uploadPackage(fileBuffer, user);
 
             // Make sure all libraries were installed as expected.
             expect(installedLibraries.length).toEqual(1);
@@ -209,7 +208,8 @@ describe('Express Library Administration endpoint adapter', () => {
             // Try deleting a library that is used by content.
             const res = await supertest(app).delete('/H5P.GreetingCard-1.0');
             expect(res.status).toBe(423);
-            const stillInstalledLibraries = await h5pEditor.libraryStorage.getInstalledLibraryNames();
+            const stillInstalledLibraries =
+                await h5pEditor.libraryStorage.getInstalledLibraryNames();
             expect(stillInstalledLibraries.length).toEqual(1);
         });
     });

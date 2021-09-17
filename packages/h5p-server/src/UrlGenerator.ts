@@ -56,9 +56,10 @@ export default class UrlGenerator implements IUrlGenerator {
             protectAjax: boolean;
             protectContentUserData: boolean;
             protectSetFinished: boolean;
-            queryParamGenerator: (
-                user: IUser
-            ) => { name: string; value: string };
+            queryParamGenerator: (user: IUser) => {
+                name: string;
+                value: string;
+            };
         }
     ) {}
 

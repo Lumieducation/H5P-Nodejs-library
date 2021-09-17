@@ -14,9 +14,7 @@ import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../../src/implementation/InMemoryStorage';
 
-export function createH5PEditor(
-    tempPath: string
-): {
+export function createH5PEditor(tempPath: string): {
     config: IH5PConfig;
     contentStorage: IContentStorage;
     h5pEditor: H5PEditor;

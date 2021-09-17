@@ -24,44 +24,44 @@ describe('CachedLibraryStorage', () => {
      * @param functionParameters the parameters to pass to the function
      * @returns the number of times the un-cached function was called
      */
-    const checkIfFunctionCaches = (uncachedStorage, cachedStorage) => async <
-        M extends FunctionPropertyNames<Required<ILibraryStorage>>
-    >(
-        functionName: M,
-        expectedResult: any,
-        intermittentFunction?: () => Promise<any>,
-        ...functionParameters: any[]
-    ): Promise<number> => {
-        const spy = jest.spyOn(uncachedStorage, functionName);
-        const result1 = await cachedStorage[functionName].call(
-            cachedStorage,
-            ...functionParameters
-        );
-        if (expectedResult) {
-            if (typeof expectedResult === 'object') {
-                expect(result1).toMatchObject(expectedResult);
-            } else {
-                expect(result1).toEqual(expectedResult);
+    const checkIfFunctionCaches =
+        (uncachedStorage, cachedStorage) =>
+        async <M extends FunctionPropertyNames<Required<ILibraryStorage>>>(
+            functionName: M,
+            expectedResult: any,
+            intermittentFunction?: () => Promise<any>,
+            ...functionParameters: any[]
+        ): Promise<number> => {
+            const spy = jest.spyOn(uncachedStorage, functionName);
+            const result1 = await cachedStorage[functionName].call(
+                cachedStorage,
+                ...functionParameters
+            );
+            if (expectedResult) {
+                if (typeof expectedResult === 'object') {
+                    expect(result1).toMatchObject(expectedResult);
+                } else {
+                    expect(result1).toEqual(expectedResult);
+                }
             }
-        }
 
-        if (intermittentFunction) {
-            await intermittentFunction();
-        }
-
-        const result2 = await cachedStorage[functionName].call(
-            cachedStorage,
-            ...functionParameters
-        );
-        if (expectedResult) {
-            if (typeof expectedResult === 'object') {
-                expect(result1).toMatchObject(result2);
-            } else {
-                expect(result1).toEqual(result2);
+            if (intermittentFunction) {
+                await intermittentFunction();
             }
-        }
-        return spy.mock.calls.length;
-    };
+
+            const result2 = await cachedStorage[functionName].call(
+                cachedStorage,
+                ...functionParameters
+            );
+            if (expectedResult) {
+                if (typeof expectedResult === 'object') {
+                    expect(result1).toMatchObject(result2);
+                } else {
+                    expect(result1).toEqual(result2);
+                }
+            }
+            return spy.mock.calls.length;
+        };
 
     const initStorage = async (options?: {
         directory?: string;
@@ -331,14 +331,10 @@ describe('CachedLibraryStorage', () => {
         });
 
         it('clears the cache of installed library names (request for individual machineName) when updating library', async () => {
-            const {
-                cacheCheck,
-                cachedStorage,
-                tempDir,
-                uncachedStorage
-            } = await initStorage({
-                useTemporaryDirectory: true
-            });
+            const { cacheCheck, cachedStorage, tempDir, uncachedStorage } =
+                await initStorage({
+                    useTemporaryDirectory: true
+                });
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
@@ -394,14 +390,10 @@ describe('CachedLibraryStorage', () => {
         });
 
         it('clears the metadata cache when updating a library', async () => {
-            const {
-                cachedStorage,
-                cacheCheck,
-                tempDir,
-                uncachedStorage
-            } = await initStorage({
-                useTemporaryDirectory: true
-            });
+            const { cachedStorage, cacheCheck, tempDir, uncachedStorage } =
+                await initStorage({
+                    useTemporaryDirectory: true
+                });
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
@@ -440,14 +432,10 @@ describe('CachedLibraryStorage', () => {
         });
 
         it('clears the metadata cache when updating the additional metadata of a library', async () => {
-            const {
-                cachedStorage,
-                cacheCheck,
-                tempDir,
-                uncachedStorage
-            } = await initStorage({
-                useTemporaryDirectory: true
-            });
+            const { cachedStorage, cacheCheck, tempDir, uncachedStorage } =
+                await initStorage({
+                    useTemporaryDirectory: true
+                });
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(
@@ -520,14 +508,10 @@ describe('CachedLibraryStorage', () => {
         });
 
         it('clears the cache of isInstalled when deleting libraries', async () => {
-            const {
-                cachedStorage,
-                cacheCheck,
-                tempDir,
-                uncachedStorage
-            } = await initStorage({
-                useTemporaryDirectory: true
-            });
+            const { cachedStorage, cacheCheck, tempDir, uncachedStorage } =
+                await initStorage({
+                    useTemporaryDirectory: true
+                });
             try {
                 const libraryManager = new LibraryManager(uncachedStorage);
                 await libraryManager.installFromDirectory(

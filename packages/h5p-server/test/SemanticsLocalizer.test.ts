@@ -422,8 +422,7 @@ describe('SemanticsLocalizer', () => {
                             },
                             {
                                 value: 'CC BY-NC-SA',
-                                label:
-                                    'Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)',
+                                label: 'Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)',
                                 versions: [
                                     {
                                         value: '4.0',
@@ -449,8 +448,7 @@ describe('SemanticsLocalizer', () => {
                             },
                             {
                                 value: 'CC BY-NC-ND',
-                                label:
-                                    'Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)',
+                                label: 'Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)',
                                 versions: [
                                     {
                                         value: '4.0',

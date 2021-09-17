@@ -53,9 +53,8 @@ describe('H5PEditor', () => {
     it('adds files in uploaded package to temporary storage', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, temporaryStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, temporaryStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 const fileBuffer = fsExtra.readFileSync(

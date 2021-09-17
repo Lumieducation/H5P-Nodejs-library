@@ -44,9 +44,10 @@ describe('H5PEditor', () => {
             path.join(tempPath, 'content')
         );
         const libraryFileUrlResolver = (): string => '';
-        const temporaryStorage = new fsImplementations.DirectoryTemporaryFileStorage(
-            path.join(tempPath, 'tmp')
-        );
+        const temporaryStorage =
+            new fsImplementations.DirectoryTemporaryFileStorage(
+                path.join(tempPath, 'tmp')
+            );
 
         const h5pEditor = new H5PEditor(
             keyValueStorage,
@@ -246,9 +247,8 @@ describe('H5PEditor', () => {
     it('adds files to previously existing content and deletes them again', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, contentStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -336,9 +336,8 @@ describe('H5PEditor', () => {
     it('produces two identical copies with dependent files if the user presses "save" twice on unsaved content', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, contentStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -414,9 +413,8 @@ describe('H5PEditor', () => {
     it('gracefully changes temporary paths to regular paths if the user presses "save" twice on already saved content', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, contentStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -460,10 +458,11 @@ describe('H5PEditor', () => {
                     0,
                     savedFilePath.length - 4
                 );
-                const fileStream = await h5pEditor.temporaryFileManager.getFileStream(
-                    cleanFilePath,
-                    user
-                );
+                const fileStream =
+                    await h5pEditor.temporaryFileManager.getFileStream(
+                        cleanFilePath,
+                        user
+                    );
                 await expect(fileStream).toBeDefined();
                 if ((fileStream as any).close) {
                     (fileStream as any).close();
@@ -516,9 +515,8 @@ describe('H5PEditor', () => {
     it('copies pasted image from saved content', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, contentStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -621,9 +619,8 @@ describe('H5PEditor', () => {
         // paths it can't resolve.
         await withDir(
             async ({ path: tempDirPath }) => {
-                const { h5pEditor, contentStorage } = createH5PEditor(
-                    tempDirPath
-                );
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
                 const user = new User();
 
                 // install the test library so that we can work with the test content we want to upload
@@ -740,9 +737,8 @@ describe('H5PEditor', () => {
                 // export to H5P package in a temporary file
                 await withFile(
                     async ({ path: h5pFilePath }) => {
-                        const writeStream = fsExtra.createWriteStream(
-                            h5pFilePath
-                        );
+                        const writeStream =
+                            fsExtra.createWriteStream(h5pFilePath);
                         const packageFinishedPromise = new Promise<void>(
                             (resolve) => {
                                 writeStream.on('close', () => {

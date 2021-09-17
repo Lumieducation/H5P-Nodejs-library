@@ -111,9 +111,10 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     it('should return 200 for installed library files', async () => {
-        const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
-            path.resolve('test/data/validator/valid2.h5p')
-        );
+        const installResult =
+            await h5pEditor.packageImporter.installLibrariesFromPackage(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
         expect(installResult.length).toEqual(1);
         expect(installResult[0].newVersion.machineName).toEqual(
             'H5P.GreetingCard'
@@ -172,10 +173,11 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     it('should return 200 when downloading package', async () => {
-        const installResult = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
-            path.resolve('test/data/validator/valid2.h5p'),
-            user
-        );
+        const installResult =
+            await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+                path.resolve('test/data/validator/valid2.h5p'),
+                user
+            );
         const res = await supertest(app).get(`/download/${installResult.id}`);
         expect(res.status).toBe(200);
     });
@@ -226,10 +228,11 @@ describe('Express Ajax endpoint adapter', () => {
     // content file endpoints
 
     it('should return 200 for installed content files', async () => {
-        const installResult = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
-            path.resolve('test/data/validator/valid2.h5p'),
-            user
-        );
+        const installResult =
+            await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+                path.resolve('test/data/validator/valid2.h5p'),
+                user
+            );
         expect(installResult.installedLibraries.length).toEqual(1);
         expect(
             installResult.installedLibraries[0].newVersion.machineName
@@ -253,10 +256,11 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     it('should allow uploads for existing content', async () => {
-        const installResult = await h5pEditor.packageImporter.addPackageLibrariesAndContent(
-            path.resolve('test/data/validator/valid2.h5p'),
-            user
-        );
+        const installResult =
+            await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+                path.resolve('test/data/validator/valid2.h5p'),
+                user
+            );
 
         const mockApp = supertest(app);
         const res = await mockApp
@@ -413,9 +417,10 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     it('returns 200 on filter requests', async () => {
-        const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
-            path.resolve('test/data/validator/valid2.h5p')
-        );
+        const installResult =
+            await h5pEditor.packageImporter.installLibrariesFromPackage(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
 
         const imageResult = await supertest(app)
             .post(`/ajax?action=filter`)

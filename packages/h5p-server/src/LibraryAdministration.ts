@@ -36,9 +36,10 @@ export default class LibraryAdministration {
         const usage = await this.contentManager.contentStorage.getUsage(
             libraryName
         );
-        const dependentsCount = await this.libraryManager.libraryStorage.getDependentsCount(
-            libraryName
-        );
+        const dependentsCount =
+            await this.libraryManager.libraryStorage.getDependentsCount(
+                libraryName
+            );
         if (usage.asDependency + usage.asMainLibrary + dependentsCount > 0) {
             throw new H5pError('library-used', { library: ubername }, 423);
         }
@@ -52,7 +53,8 @@ export default class LibraryAdministration {
      */
     public async getLibraries(): Promise<ILibraryAdministrationOverviewItem[]> {
         log.debug('Getting all libraries');
-        const libraryNames = await this.libraryManager.libraryStorage.getInstalledLibraryNames();
+        const libraryNames =
+            await this.libraryManager.libraryStorage.getInstalledLibraryNames();
         const libraryMetadata = (
             await Promise.all(
                 libraryNames.map((lib) => this.libraryManager.getLibrary(lib))
@@ -60,7 +62,8 @@ export default class LibraryAdministration {
         ).sort((a, b) => a.compare(b));
 
         log.debug('Getting all dependents count');
-        const dependents = await this.libraryManager.libraryStorage.getAllDependentsCount();
+        const dependents =
+            await this.libraryManager.libraryStorage.getAllDependentsCount();
 
         return Promise.all(
             libraryMetadata.map(async (metadata) => {
@@ -108,9 +111,7 @@ export default class LibraryAdministration {
      * Returns detailed information about the library and its use.
      * @param ubername
      */
-    public async getLibrary(
-        ubername: string
-    ): Promise<
+    public async getLibrary(ubername: string): Promise<
         IInstalledLibrary & {
             /**
              * How many libraries depend on this library.

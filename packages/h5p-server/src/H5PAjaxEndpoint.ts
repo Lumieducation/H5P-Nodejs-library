@@ -107,8 +107,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                'You must specify a machineName, majorVersion and minorVersion.'
+                            error: 'You must specify a machineName, majorVersion and minorVersion.'
                         },
                         400
                     );
@@ -126,8 +125,7 @@ export default class H5PAjaxEndpoint {
                 throw new H5pError(
                     'malformed-request',
                     {
-                        error:
-                            "The only allowed actions at the GET Ajax endpoint are 'content-type-cache' and 'libraries'."
+                        error: "The only allowed actions at the GET Ajax endpoint are 'content-type-cache' and 'libraries'."
                     },
                     400
                 );
@@ -517,8 +515,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                'the body of the request must contain an array of strings'
+                            error: 'the body of the request must contain an array of strings'
                         },
                         400
                     );
@@ -534,8 +531,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                'the body of the request must contain an array of strings'
+                            error: 'the body of the request must contain an array of strings'
                         },
                         400
                     );
@@ -565,8 +561,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                "'field' property is malformed (must be in JSON)"
+                            error: "'field' property is malformed (must be in JSON)"
                         },
                         400
                     );
@@ -584,8 +579,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                'libraryParameters is missing in request body'
+                            error: 'libraryParameters is missing in request body'
                         },
                         400
                     );
@@ -601,8 +595,7 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                "'libraryParameters' property is malformed (must be in JSON)"
+                            error: "'libraryParameters' property is malformed (must be in JSON)"
                         },
                         400
                     );
@@ -643,18 +636,15 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError(
                         'malformed-request',
                         {
-                            error:
-                                'Request parameters incorrect: You need an id and a user.'
+                            error: 'Request parameters incorrect: You need an id and a user.'
                         },
                         400
                     );
                 }
                 // installLibraryFrom hub validates the id, so we don't do it
                 // here.
-                const installedLibs = await this.h5pEditor.installLibraryFromHub(
-                    id,
-                    user
-                );
+                const installedLibs =
+                    await this.h5pEditor.installLibraryFromHub(id, user);
                 updatedLibCount = installedLibs.filter(
                     (l) => l.type === 'patch'
                 ).length;
@@ -662,10 +652,8 @@ export default class H5PAjaxEndpoint {
                     (l) => l.type === 'new'
                 ).length;
 
-                const contentTypeCache = await this.h5pEditor.getContentTypeCache(
-                    user,
-                    language
-                );
+                const contentTypeCache =
+                    await this.h5pEditor.getContentTypeCache(user, language);
                 return new AjaxSuccessResponse(
                     contentTypeCache,
                     installedLibCount + updatedLibCount > 0
@@ -681,16 +669,13 @@ export default class H5PAjaxEndpoint {
                     throw new H5pError('missing-h5p-extension', {}, 400);
                 }
 
-                const {
-                    installedLibraries,
-                    metadata,
-                    parameters
-                } = await this.h5pEditor.uploadPackage(
-                    libraryUploadFile.data?.length > 0
-                        ? libraryUploadFile.data
-                        : libraryUploadFile.tempFilePath,
-                    user
-                );
+                const { installedLibraries, metadata, parameters } =
+                    await this.h5pEditor.uploadPackage(
+                        libraryUploadFile.data?.length > 0
+                            ? libraryUploadFile.data
+                            : libraryUploadFile.tempFilePath,
+                        user
+                    );
                 updatedLibCount = installedLibraries.filter(
                     (l) => l.type === 'patch'
                 ).length;
@@ -749,8 +734,7 @@ export default class H5PAjaxEndpoint {
                 throw new H5pError(
                     'malformed-request',
                     {
-                        error:
-                            'This action is not implemented in h5p-nodejs-library.'
+                        error: 'This action is not implemented in h5p-nodejs-library.'
                     },
                     500
                 );

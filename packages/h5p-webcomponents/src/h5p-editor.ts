@@ -46,9 +46,7 @@ export class H5PEditorComponent extends HTMLElement {
      * Should throw an error with a message in the message property if something
      * goes wrong.
      */
-    public get loadContentCallback(): (
-        contentId: string
-    ) => Promise<
+    public get loadContentCallback(): (contentId: string) => Promise<
         IEditorModel & {
             library?: string;
             metadata?: IContentMetadata;
@@ -59,9 +57,7 @@ export class H5PEditorComponent extends HTMLElement {
     }
 
     public set loadContentCallback(
-        callback: (
-            contentId: string
-        ) => Promise<
+        callback: (contentId: string) => Promise<
             IEditorModel & {
                 library?: string;
                 metadata?: IContentMetadata;
@@ -112,9 +108,7 @@ export class H5PEditorComponent extends HTMLElement {
      * Stores the H5P instance (H5P native object of the core).
      */
 
-    private privateLoadContentCallback: (
-        contentId: string
-    ) => Promise<
+    private privateLoadContentCallback: (contentId: string) => Promise<
         IEditorModel & {
             library?: string;
             metadata?: IContentMetadata;

@@ -113,9 +113,10 @@ describe('Configuration of the Express Ajax endpoint adapter', () => {
             )
         );
 
-        const installResult = await h5pEditor.packageImporter.installLibrariesFromPackage(
-            path.resolve('test/data/validator/valid2.h5p')
-        );
+        const installResult =
+            await h5pEditor.packageImporter.installLibrariesFromPackage(
+                path.resolve('test/data/validator/valid2.h5p')
+            );
         expect(installResult.length).toEqual(1);
         expect(installResult[0].newVersion.machineName).toEqual(
             'H5P.GreetingCard'

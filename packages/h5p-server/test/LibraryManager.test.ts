@@ -68,9 +68,8 @@ describe('basic file library manager functionality', () => {
                 ).rejects.toThrow('library-consistency-check-file-missing');
 
                 // check if library version 1.1.2 is NOT installed
-                const installedLibraries = await libManager.listInstalledLibraries(
-                    'H5P.Example1'
-                );
+                const installedLibraries =
+                    await libManager.listInstalledLibraries('H5P.Example1');
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
                 // make sure there is no trace of the library left
@@ -104,9 +103,8 @@ describe('basic file library manager functionality', () => {
                 ).resolves.toHaveProperty('type', 'none');
 
                 // check if library version 1.1.2 is still installed
-                const installedLibraries = await libManager.listInstalledLibraries(
-                    'H5P.Example1'
-                );
+                const installedLibraries =
+                    await libManager.listInstalledLibraries('H5P.Example1');
                 expect(installedLibraries['H5P.Example1'].length).toEqual(1);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
                     1
@@ -162,9 +160,8 @@ describe('basic file library manager functionality', () => {
                 });
 
                 // check if library version 1.1.2  and 1.2.0 are now installed
-                const installedLibraries = await libManager.listInstalledLibraries(
-                    'H5P.Example1'
-                );
+                const installedLibraries =
+                    await libManager.listInstalledLibraries('H5P.Example1');
                 expect(installedLibraries['H5P.Example1'].length).toEqual(2);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
                     1
@@ -227,9 +224,8 @@ describe('basic file library manager functionality', () => {
                 });
 
                 // check if library version 1.1.2 is now installed
-                const installedLibraries = await libManager.listInstalledLibraries(
-                    'H5P.Example1'
-                );
+                const installedLibraries =
+                    await libManager.listInstalledLibraries('H5P.Example1');
                 expect(installedLibraries['H5P.Example1'].length).toEqual(1);
                 expect(installedLibraries['H5P.Example1'][0].majorVersion).toBe(
                     1
@@ -271,9 +267,8 @@ describe('basic file library manager functionality', () => {
                 ).rejects.toThrow('library-consistency-check-file-missing');
 
                 // check that library version 1.1.3 is NOT installed
-                const installedLibraries = await libManager.listInstalledLibraries(
-                    'H5P.Example1'
-                );
+                const installedLibraries =
+                    await libManager.listInstalledLibraries('H5P.Example1');
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
                 // make sure there is no trace of the library left

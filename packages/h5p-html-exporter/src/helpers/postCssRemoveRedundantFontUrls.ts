@@ -61,7 +61,8 @@ export default function (
                 atRule.nodes
                     .filter((node) => (node as any).prop === 'src')
                     .forEach((node) => {
-                        const regex = /url\(["']?([^'")?#]+)\.(.*?)([?#].+?)?["']?\)( format\(["'](.*?)["']\))?[,$]?/g;
+                        const regex =
+                            /url\(["']?([^'")?#]+)\.(.*?)([?#].+?)?["']?\)( format\(["'](.*?)["']\))?[,$]?/g;
                         let matches: string[];
                         // eslint-disable-next-line no-cond-assign
                         while ((matches = regex.exec((node as any).value))) {

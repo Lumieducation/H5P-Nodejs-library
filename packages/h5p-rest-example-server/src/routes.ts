@@ -74,16 +74,14 @@ export default function (
             res.status(400).send('Malformed request').end();
             return;
         }
-        const {
-            id: contentId,
-            metadata
-        } = await h5pEditor.saveOrUpdateContentReturnMetaData(
-            undefined,
-            req.body.params.params,
-            req.body.params.metadata,
-            req.body.library,
-            req.user
-        );
+        const { id: contentId, metadata } =
+            await h5pEditor.saveOrUpdateContentReturnMetaData(
+                undefined,
+                req.body.params.params,
+                req.body.params.metadata,
+                req.body.library,
+                req.user
+            );
 
         res.send(JSON.stringify({ contentId, metadata }));
         res.status(200).end();
@@ -100,16 +98,14 @@ export default function (
             res.status(400).send('Malformed request').end();
             return;
         }
-        const {
-            id: contentId,
-            metadata
-        } = await h5pEditor.saveOrUpdateContentReturnMetaData(
-            req.params.contentId.toString(),
-            req.body.params.params,
-            req.body.params.metadata,
-            req.body.library,
-            req.user
-        );
+        const { id: contentId, metadata } =
+            await h5pEditor.saveOrUpdateContentReturnMetaData(
+                req.params.contentId.toString(),
+                req.body.params.params,
+                req.body.params.metadata,
+                req.body.library,
+                req.user
+            );
 
         res.send(JSON.stringify({ contentId, metadata }));
         res.status(200).end();

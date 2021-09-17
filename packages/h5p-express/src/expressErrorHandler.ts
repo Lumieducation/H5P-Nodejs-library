@@ -16,19 +16,21 @@ export function undefinedOrTrue(option: boolean): boolean {
  * @param fn The function to call
  * @param handleErrors whether to handle errors
  */
-export const catchAndPassOnErrors = (
-    fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>,
-    handleErrors: boolean
-) => async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    if (undefinedOrTrue(handleErrors)) {
-        try {
-            return await fn(req, res);
-        } catch (error) {
-            return next(error);
+export const catchAndPassOnErrors =
+    (
+        fn: (req: Request, res: Response, next?: NextFunction) => Promise<any>,
+        handleErrors: boolean
+    ) =>
+    async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+        if (undefinedOrTrue(handleErrors)) {
+            try {
+                return await fn(req, res);
+            } catch (error) {
+                return next(error);
+            }
         }
-    }
-    return fn(req, res);
-};
+        return fn(req, res);
+    };
 
 /**
  * An Express middleware that converts NodeJs error objects into error

@@ -184,11 +184,13 @@ export default class H5PEditor {
     private contentMetadataValidator: ValidateFunction;
 
     private contentStorer: ContentStorer;
-    private copyrightSemantics: ISemanticsEntry = defaultCopyrightSemantics as ISemanticsEntry;
+    private copyrightSemantics: ISemanticsEntry =
+        defaultCopyrightSemantics as ISemanticsEntry;
     private dependencyGetter: DependencyGetter;
     private globalCustomScripts: string[] = [];
     private globalCustomStyles: string[] = [];
-    private metadataSemantics: ISemanticsEntry[] = defaultMetadataSemantics as ISemanticsEntry[];
+    private metadataSemantics: ISemanticsEntry[] =
+        defaultMetadataSemantics as ISemanticsEntry[];
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
     private semanticsLocalizer: SemanticsLocalizer;
@@ -299,13 +301,14 @@ export default class H5PEditor {
         if (contentId) {
             try {
                 // we don't directly return the result of the getters as try - catch would not work then
-                const returnStream = await this.contentManager.getContentFileStream(
-                    contentId,
-                    filename,
-                    user,
-                    rangeStart,
-                    rangeEnd
-                );
+                const returnStream =
+                    await this.contentManager.getContentFileStream(
+                        contentId,
+                        filename,
+                        user,
+                        rangeStart,
+                        rangeEnd
+                    );
                 return returnStream;
             } catch (error) {
                 log.debug(
@@ -447,10 +450,11 @@ export default class H5PEditor {
                     .filter((lib) => lib !== undefined) // we filter out undefined values as Library.creatFromNames returns undefined for invalid names
                     .map(async (lib) => {
                         try {
-                            const loadedLibrary = await this.libraryManager.getLibrary(
-                                lib,
-                                language
-                            );
+                            const loadedLibrary =
+                                await this.libraryManager.getLibrary(
+                                    lib,
+                                    language
+                                );
                             if (!loadedLibrary) {
                                 return undefined;
                             }
@@ -899,15 +903,17 @@ export default class H5PEditor {
         try {
             if (options?.onlyInstallLibraries) {
                 returnValues = {
-                    installedLibraries: await this.packageImporter.installLibrariesFromPackage(
-                        filename
-                    )
+                    installedLibraries:
+                        await this.packageImporter.installLibrariesFromPackage(
+                            filename
+                        )
                 };
             } else {
-                returnValues = await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
-                    filename,
-                    user
-                );
+                returnValues =
+                    await this.packageImporter.addPackageLibrariesAndTemporaryFiles(
+                        filename,
+                        user
+                    );
             }
         } finally {
             if (tempFile) {
@@ -1157,9 +1163,10 @@ export default class H5PEditor {
         ];
 
         for (const addonMachineName of configRequestedAddons) {
-            const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                addonMachineName
-            );
+            const installedAddonVersions =
+                await this.libraryManager.listInstalledLibraries(
+                    addonMachineName
+                );
             if (
                 !neededAddons
                     .map((a) => a.machineName)

@@ -20,7 +20,8 @@ import { checkFilename, sanitizeFilename } from './filenameUtils';
  * file stored.
  */
 export default class DirectoryTemporaryFileStorage
-    implements ITemporaryFileStorage {
+    implements ITemporaryFileStorage
+{
     /**
      * @param directory the directory in which the temporary files are stored.
      * Must be read- and write accessible

@@ -142,20 +142,17 @@ export default class PackageImporter {
         parameters: any;
     }> {
         log.info(`adding content from ${packagePath} to system`);
-        const {
-            id,
-            metadata,
-            parameters,
-            installedLibraries
-        } = await this.processPackage(
-            packagePath,
-            {
-                copyMode: ContentCopyModes.Install,
-                installLibraries: user?.canUpdateAndInstallLibraries === true
-            },
-            user,
-            contentId
-        );
+        const { id, metadata, parameters, installedLibraries } =
+            await this.processPackage(
+                packagePath,
+                {
+                    copyMode: ContentCopyModes.Install,
+                    installLibraries:
+                        user?.canUpdateAndInstallLibraries === true
+                },
+                user,
+                contentId
+            );
         if (id === undefined) {
             throw new H5pError('import-package-no-id-assigned');
         }
@@ -311,9 +308,10 @@ export default class PackageImporter {
 
                 // Check if all libraries needed for the content are installed.
                 const requiredLibraries = this.getRequiredLibraries(metadata);
-                const missingLibraries = await this.libraryManager.getNotInstalledLibraries(
-                    requiredLibraries
-                );
+                const missingLibraries =
+                    await this.libraryManager.getNotInstalledLibraries(
+                        requiredLibraries
+                    );
                 if (missingLibraries.length > 0) {
                     throw new H5pError(
                         'install-missing-libraries',

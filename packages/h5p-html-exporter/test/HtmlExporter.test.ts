@@ -77,11 +77,12 @@ async function importAndExportHtml(
                     }
                 );
             } else if (mode === 'externalContentResources') {
-                const res = await htmlExporter.createBundleWithExternalContentResources(
-                    contentId,
-                    user,
-                    contentId.toString()
-                );
+                const res =
+                    await htmlExporter.createBundleWithExternalContentResources(
+                        contentId,
+                        user,
+                        contentId.toString()
+                    );
                 await withDir(
                     async (result) => {
                         await fsExtra.mkdirp(result.path);
@@ -99,14 +100,14 @@ async function importAndExportHtml(
                                 await fsExtra.mkdirp(
                                     path.dirname(tempFilePath)
                                 );
-                                const writer = fsExtra.createWriteStream(
-                                    tempFilePath
-                                );
-                                const readable = await contentStorage.getFileStream(
-                                    contentId,
-                                    f,
-                                    user
-                                );
+                                const writer =
+                                    fsExtra.createWriteStream(tempFilePath);
+                                const readable =
+                                    await contentStorage.getFileStream(
+                                        contentId,
+                                        f,
+                                        user
+                                    );
                                 await promisePipe(readable, writer);
                                 writer.close();
                             } catch {

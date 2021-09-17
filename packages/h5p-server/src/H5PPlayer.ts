@@ -281,11 +281,12 @@ export default class H5PPlayer {
                 // included for certain libraries.
                 if (this.options?.customization?.alterLibraryFiles) {
                     log.debug('Calling alterLibraryFiles hook');
-                    const alteredFiles = this.options.customization.alterLibraryFiles(
-                        lib,
-                        jsFiles,
-                        cssFiles
-                    );
+                    const alteredFiles =
+                        this.options.customization.alterLibraryFiles(
+                            lib,
+                            jsFiles,
+                            cssFiles
+                        );
                     jsFiles = alteredFiles?.scripts;
                     cssFiles = alteredFiles?.styles;
                 }
@@ -459,9 +460,10 @@ export default class H5PPlayer {
             ...(this.config.playerAddons?.['*'] ?? [])
         ];
         for (const addonMachineName of configRequestedAddons) {
-            const installedAddonVersions = await this.libraryManager.listInstalledLibraries(
-                addonMachineName
-            );
+            const installedAddonVersions =
+                await this.libraryManager.listInstalledLibraries(
+                    addonMachineName
+                );
             if (
                 !neededAddons
                     .map((a) => a.machineName)
@@ -534,9 +536,8 @@ export default class H5PPlayer {
                                 types.text.regex
                             } was found in the parameters.`
                         );
-                        addonsToAdd[
-                            installedAddon.machineName
-                        ] = installedAddon;
+                        addonsToAdd[installedAddon.machineName] =
+                            installedAddon;
                     }
                 }
             }

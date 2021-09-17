@@ -45,17 +45,13 @@ export default class H5PAjaxExpressController {
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const {
-            mimetype,
-            stream,
-            stats,
-            range
-        } = await this.ajaxEndpoint.getContentFile(
-            req.params.id,
-            req.params.file,
-            req.user,
-            this.getRange(req)
-        );
+        const { mimetype, stream, stats, range } =
+            await this.ajaxEndpoint.getContentFile(
+                req.params.id,
+                req.params.file,
+                req.user,
+                this.getRange(req)
+            );
         if (range) {
             this.pipeStreamToPartialResponse(
                 req.params.file,
@@ -110,14 +106,11 @@ export default class H5PAjaxExpressController {
         req: express.Request,
         res: express.Response
     ): Promise<void> => {
-        const {
-            mimetype,
-            stream,
-            stats
-        } = await this.ajaxEndpoint.getLibraryFile(
-            req.params.uberName,
-            req.params.file
-        );
+        const { mimetype, stream, stats } =
+            await this.ajaxEndpoint.getLibraryFile(
+                req.params.uberName,
+                req.params.file
+            );
 
         this.pipeStreamToResponse(mimetype, stream, res, stats.size, {
             'Cache-Control': 'public, max-age=31536000'
@@ -131,16 +124,12 @@ export default class H5PAjaxExpressController {
         req: IRequestWithUser,
         res: express.Response
     ): Promise<void> => {
-        const {
-            mimetype,
-            stream,
-            stats,
-            range
-        } = await this.ajaxEndpoint.getTemporaryFile(
-            req.params.file,
-            req.user,
-            this.getRange(req)
-        );
+        const { mimetype, stream, stats, range } =
+            await this.ajaxEndpoint.getTemporaryFile(
+                req.params.file,
+                req.user,
+                this.getRange(req)
+            );
         if (range) {
             this.pipeStreamToPartialResponse(
                 req.params.file,
@@ -184,25 +173,25 @@ export default class H5PAjaxExpressController {
      * Retrieves a range that was specified in the HTTP request headers. Returns
      * undefined if no range was specified.
      */
-    private getRange = (req: express.Request) => (
-        fileSize: number
-    ): { end: number; start: number } => {
-        const range = req.range(fileSize);
-        if (range) {
-            if (range === -2) {
-                throw new H5pError('malformed-request', {}, 400);
-            }
-            if (range === -1) {
-                throw new H5pError('unsatisfiable-range', {}, 416);
-            }
-            if (range.length > 1) {
-                throw new H5pError('multipart-ranges-unsupported', {}, 400);
-            }
+    private getRange =
+        (req: express.Request) =>
+        (fileSize: number): { end: number; start: number } => {
+            const range = req.range(fileSize);
+            if (range) {
+                if (range === -2) {
+                    throw new H5pError('malformed-request', {}, 400);
+                }
+                if (range === -1) {
+                    throw new H5pError('unsatisfiable-range', {}, 416);
+                }
+                if (range.length > 1) {
+                    throw new H5pError('multipart-ranges-unsupported', {}, 400);
+                }
 
-            return range[0];
-        }
-        return undefined;
-    };
+                return range[0];
+            }
+            return undefined;
+        };
 
     /**
      * Pipes the contents of the file to the request object and sets the
