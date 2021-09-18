@@ -81,8 +81,6 @@
     ],
     "devDependencies": {
         "@commitlint/config-conventional": "13.1.0",
-        "@semantic-release/git": "9.0.1",
-        "@semantic-release/github": "7.2.3",
         "@types/jest": "27.0.1",
         "@typescript-eslint/eslint-plugin": "4.31.1",
         "@typescript-eslint/parser": "4.31.1",
@@ -106,7 +104,6 @@
         "puppeteer": "10.2.0",
         "remark-cli": "10.0.0",
         "remark-validate-links": "11.0.1",
-        "semantic-release": "17.4.7",
         "ts-jest": "26.5.6",
         "ts-node": "10.2.1",
         "typescript": "4.4.3"
