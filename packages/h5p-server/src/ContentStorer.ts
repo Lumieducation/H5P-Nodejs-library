@@ -1,6 +1,6 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
-import getAllFiles from 'get-all-files';
+import { getAllFiles } from 'get-all-files';
 import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
@@ -171,9 +171,7 @@ export default class ContentStorer {
             path.join(packageDirectory, 'content', 'content.json')
         );
         const otherContentFiles: string[] = (
-            await getAllFiles.async.array(
-                path.join(packageDirectory, 'content')
-            )
+            await getAllFiles(path.join(packageDirectory, 'content')).toArray()
         ).filter(
             (file: string) =>
                 file.substr(packageDirectoryLength) !== 'content.json'

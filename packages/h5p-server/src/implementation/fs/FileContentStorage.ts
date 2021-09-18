@@ -1,7 +1,7 @@
 import { ReadStream } from 'fs';
 import { Stream } from 'stream';
 import fsExtra from 'fs-extra';
-import getAllFiles from 'get-all-files';
+import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
 
@@ -453,9 +453,9 @@ export default class FileContentStorage implements IContentStorage {
             contentId.toString()
         );
         const contentDirectoryPathLength = contentDirectoryPath.length + 1;
-        const absolutePaths = await getAllFiles.async.array(
+        const absolutePaths = await getAllFiles(
             path.join(contentDirectoryPath)
-        );
+        ).toArray();
         const contentPath = path.join(contentDirectoryPath, 'content.json');
         const h5pPath = path.join(contentDirectoryPath, 'h5p.json');
         return absolutePaths
