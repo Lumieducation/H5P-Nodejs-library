@@ -10,8 +10,7 @@ declare module 'puppeteer' {
     }
 }
 
-// eslint-disable-next-line vars-on-top, no-var
-declare var window;
+declare const window;
 
 let serverHost;
 let browser: puppeteer.Browser;
