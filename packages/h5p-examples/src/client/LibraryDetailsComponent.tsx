@@ -6,7 +6,8 @@ const yesNo = (value: boolean | 0 | 1) =>
         <span className="fa fa-check text-success"></span>
     ) : (
         <span className="fa fa-times text-danger"></span>
-    );export default (props: {
+    );
+export default (props: {
     details: IInstalledLibrary & {
         dependentsCount: number;
         instancesAsDependencyCount: number;
