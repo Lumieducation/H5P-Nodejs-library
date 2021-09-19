@@ -34,7 +34,8 @@ export default class ContentTypeCacheComponent extends React.Component {
     protected contentTypeCacheService: ContentTypeCacheService;
 
     public async componentDidMount(): Promise<void> {
-        const lastCacheUpdate = await this.contentTypeCacheService.getCacheUpdate();
+        const lastCacheUpdate =
+            await this.contentTypeCacheService.getCacheUpdate();
         this.setState({ lastCacheUpdate });
     }
 
@@ -80,7 +81,8 @@ export default class ContentTypeCacheComponent extends React.Component {
     protected async updateCache(): Promise<void> {
         this.setState({ updatingCache: true });
         try {
-            const lastUpdate = await this.contentTypeCacheService.postUpdateCache();
+            const lastUpdate =
+                await this.contentTypeCacheService.postUpdateCache();
             this.setState({
                 lastCacheUpdate: lastUpdate,
                 updatingCache: false
