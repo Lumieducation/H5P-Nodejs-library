@@ -24,9 +24,7 @@ declare global {
 
 export default class H5PEditorUI extends React.Component<{
     contentId: string;
-    loadContentCallback: (
-        contentId: string
-    ) => Promise<
+    loadContentCallback: (contentId: string) => Promise<
         IEditorModel & {
             library?: string;
             metadata?: IContentMetadata;
@@ -49,9 +47,7 @@ export default class H5PEditorUI extends React.Component<{
 }> {
     constructor(props: {
         contentId: string;
-        loadContentCallback: (
-            contentId: string
-        ) => Promise<
+        loadContentCallback: (contentId: string) => Promise<
             IEditorModel & {
                 library?: string;
                 metadata?: IContentMetadata;
@@ -195,8 +191,10 @@ export default class H5PEditorUI extends React.Component<{
 
     private setServiceCallbacks(): void {
         if (this.h5pEditor.current) {
-            this.h5pEditor.current.loadContentCallback = this.loadContentCallbackWrapper;
-            this.h5pEditor.current.saveContentCallback = this.saveContentCallbackWrapper;
+            this.h5pEditor.current.loadContentCallback =
+                this.loadContentCallbackWrapper;
+            this.h5pEditor.current.saveContentCallback =
+                this.saveContentCallbackWrapper;
         }
     }
 

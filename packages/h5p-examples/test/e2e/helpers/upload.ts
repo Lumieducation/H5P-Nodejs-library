@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+//eslint-disable-next-line import/no-extraneous-dependencies
 import puppeteer from 'puppeteer';
 
 // On 4th Oct 2020, the Puppeteer types didn't include waitForTimeout, so we

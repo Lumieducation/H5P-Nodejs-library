@@ -164,7 +164,8 @@ export default class H5PPlayerUI extends React.Component<{
 
     private setServiceCallbacks(): void {
         if (this.h5pPlayer.current) {
-            this.h5pPlayer.current.loadContentCallback = this.loadContentCallbackWrapper;
+            this.h5pPlayer.current.loadContentCallback =
+                this.loadContentCallbackWrapper;
         }
     }
 
