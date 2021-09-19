@@ -3,7 +3,7 @@
 // It requires a running MongoDB and S3 instance!
 
 import AWS from 'aws-sdk';
-import mongodb, { ObjectID } from 'mongodb';
+import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 
@@ -13,9 +13,9 @@ import initS3 from '../src/initS3';
 import { emptyAndDeleteBucket } from './s3-utils';
 
 describe('MongoS3LibraryStorage', () => {
-    let mongo: mongodb.Db;
-    let mongoClient: mongodb.MongoClient;
-    let mongoCollection: mongodb.Collection<any>;
+    let mongo: Db;
+    let mongoClient: MongoClient;
+    let mongoCollection: Collection<any>;
     let s3: AWS.S3;
     let bucketName: string;
     let collectionName: string;
@@ -40,7 +40,7 @@ describe('MongoS3LibraryStorage', () => {
     };
 
     beforeAll(async () => {
-        testId = new ObjectID().toHexString();
+        testId = new ObjectId().toHexString();
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
@@ -48,13 +48,12 @@ describe('MongoS3LibraryStorage', () => {
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
-        mongoClient = await mongodb.connect('mongodb://localhost:27017', {
+        mongoClient = await MongoClient.connect('mongodb://localhost:27017', {
             auth: {
-                user: 'root',
+                username: 'root',
                 password: 'h5pnodejs'
             },
-            ignoreUndefined: true,
-            useUnifiedTopology: true
+            ignoreUndefined: true
         });
         mongo = mongoClient.db('h5pintegrationtest');
     });

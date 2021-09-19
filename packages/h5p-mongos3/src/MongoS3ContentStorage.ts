@@ -159,7 +159,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 },
                 { upsert: true }
             );
-            if (replaceResult.result.ok) {
+            if (replaceResult.acknowledged) {
                 return contentId;
             }
             log.error(
@@ -301,6 +301,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                     log.debug(
                         `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
                     );
+                    // eslint-disable-next-line no-await-in-loop
                     const deleteFilesRes = await this.s3
                         .deleteObjects({
                             Bucket: this.options.s3Bucket,
@@ -764,6 +765,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
             let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
             do {
                 log.debug(`Requesting list from S3 storage.`);
+                // eslint-disable-next-line no-await-in-loop
                 ret = await this.s3
                     .listObjectsV2({
                         Bucket: this.options.s3Bucket,

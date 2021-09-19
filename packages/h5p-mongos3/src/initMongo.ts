@@ -1,4 +1,4 @@
-import { MongoClient, Db } from 'mongodb';
+import { MongoClient, Db, Auth } from 'mongodb';
 
 import { Logger } from '@lumieducation/h5p-server';
 
@@ -21,29 +21,29 @@ const log = new Logger('initMongo');
 export default async (
     url?: string,
     db?: string,
-    user?: string,
+    username?: string,
     password?: string
 ): Promise<Db> => {
     try {
-        const auth = process.env.MONGODB_USER
-            ? {
-                  password: process.env.MONGODB_PASSWORD,
-                  user: process.env.MONGODB_USER
-              }
-            : user
-            ? {
-                  user,
-                  password
-              }
-            : undefined;
+        let auth: Auth;
+        if (process.env.MONGODB_USER) {
+            auth = {
+                password: process.env.MONGODB_PASSWORD,
+                username: process.env.MONGODB_USER
+            };
+        } else if (username) {
+            auth = {
+                username,
+                password
+            };
+        }
 
         const client = await MongoClient.connect(
             process.env.MONGODB_URL ?? url,
             {
                 auth,
-                ignoreUndefined: true, // this is important as otherwise MongoDB
+                ignoreUndefined: true // this is important as otherwise MongoDB
                 // stores null for deliberately set undefined values!
-                useUnifiedTopology: true
             }
         );
 
