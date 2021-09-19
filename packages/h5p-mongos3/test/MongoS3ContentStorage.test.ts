@@ -3,7 +3,7 @@
 // It requires a running MongoDB and S3 instance!
 
 import AWS from 'aws-sdk';
-import mongodb, { ObjectID } from 'mongodb';
+import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
@@ -43,9 +43,9 @@ describe('MongoS3ContentStorage', () => {
         'test/data/sample-content/content/content.json'
     );
 
-    let mongo: mongodb.Db;
-    let mongoClient: mongodb.MongoClient;
-    let mongoCollection: mongodb.Collection<any>;
+    let mongo: Db;
+    let mongoClient: MongoClient;
+    let mongoCollection: Collection<any>;
     let s3: AWS.S3;
     let bucketName: string;
     let collectionName: string;
@@ -54,7 +54,7 @@ describe('MongoS3ContentStorage', () => {
     let storage: MongoS3ContentStorage;
 
     beforeAll(async () => {
-        testId = new ObjectID().toHexString();
+        testId = new ObjectId().toHexString();
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',
@@ -62,13 +62,12 @@ describe('MongoS3ContentStorage', () => {
             s3ForcePathStyle: true,
             signatureVersion: 'v4'
         });
-        mongoClient = await mongodb.connect('mongodb://localhost:27017', {
+        mongoClient = await MongoClient.connect('mongodb://localhost:27017', {
             auth: {
-                user: 'root',
+                username: 'root',
                 password: 'h5pnodejs'
             },
-            ignoreUndefined: true,
-            useUnifiedTopology: true
+            ignoreUndefined: true
         });
         mongo = mongoClient.db('h5pintegrationtest');
     });
@@ -111,19 +110,19 @@ describe('MongoS3ContentStorage', () => {
     it('initializes and returns empty values or throws exceptions', async () => {
         await expect(storage.listContent()).resolves.toEqual([]);
         await expect(
-            storage.contentExists(new ObjectID().toHexString())
+            storage.contentExists(new ObjectId().toHexString())
         ).resolves.toEqual(false);
         await expect(
-            storage.listFiles(new ObjectID().toHexString(), new User())
+            storage.listFiles(new ObjectId().toHexString(), new User())
         ).resolves.toEqual([]);
         await expect(
-            storage.fileExists(new ObjectID().toHexString(), 'test.jpg')
+            storage.fileExists(new ObjectId().toHexString(), 'test.jpg')
         ).resolves.toEqual(false);
         await expect(
-            storage.getParameters(new ObjectID().toHexString())
+            storage.getParameters(new ObjectId().toHexString())
         ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
         await expect(
-            storage.getMetadata(new ObjectID().toHexString())
+            storage.getMetadata(new ObjectId().toHexString())
         ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
     });
 

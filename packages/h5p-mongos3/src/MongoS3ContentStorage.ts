@@ -159,7 +159,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 },
                 { upsert: true }
             );
-            if (replaceResult.result.ok) {
+            if (replaceResult.acknowledged) {
                 return contentId;
             }
             log.error(

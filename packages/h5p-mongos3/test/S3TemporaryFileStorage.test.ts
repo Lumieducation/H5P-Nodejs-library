@@ -3,7 +3,7 @@
 // It requires a running S3 instance!
 
 import AWS from 'aws-sdk';
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
@@ -27,7 +27,7 @@ describe('S3TemporaryFileStorage', () => {
     let storage: S3TemporaryFileStorage;
 
     beforeAll(async () => {
-        testId = new ObjectID().toHexString();
+        testId = new ObjectId().toHexString();
         s3 = initS3({
             accessKeyId: 'minioaccesskey',
             secretAccessKey: 'miniosecret',

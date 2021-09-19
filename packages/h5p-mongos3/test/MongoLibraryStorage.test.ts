@@ -2,7 +2,7 @@
 // npm run test:db to run it!
 // It requires a running MongoDB and S3 instance!
 
-import mongodb, { ObjectID } from 'mongodb';
+import { Db, MongoClient, Collection, ObjectId } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 
@@ -10,9 +10,9 @@ import { ILibraryMetadata } from '@lumieducation/h5p-server';
 import MongoLibraryStorage from '../src/MongoLibraryStorage';
 
 describe('MongoS3LibraryStorage', () => {
-    let mongo: mongodb.Db;
-    let mongoClient: mongodb.MongoClient;
-    let mongoCollection: mongodb.Collection<any>;
+    let mongo: Db;
+    let mongoClient: MongoClient;
+    let mongoCollection: Collection<any>;
     let collectionName: string;
     let counter = 0;
     let testId: string;
@@ -35,14 +35,13 @@ describe('MongoS3LibraryStorage', () => {
     };
 
     beforeAll(async () => {
-        testId = new ObjectID().toHexString();
-        mongoClient = await mongodb.connect('mongodb://localhost:27017', {
+        testId = new ObjectId().toHexString();
+        mongoClient = await MongoClient.connect('mongodb://localhost:27017', {
             auth: {
-                user: 'root',
+                username: 'root',
                 password: 'h5pnodejs'
             },
-            ignoreUndefined: true,
-            useUnifiedTopology: true
+            ignoreUndefined: true
         });
         mongo = mongoClient.db('h5pintegrationtest');
     });
