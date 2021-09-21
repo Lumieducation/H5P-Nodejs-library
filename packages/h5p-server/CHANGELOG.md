@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.1...v9.0.2) (2021-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.990.0 ([8bbc194](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8bbc19445bb486c4408572a171b897b2494a5ae1))
+
+
+
+
+
 ## [9.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.0...v9.0.1) (2021-09-16)
 
 

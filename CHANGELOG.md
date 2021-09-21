@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.1...v9.0.2) (2021-09-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.990.0 ([8bbc194](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8bbc19445bb486c4408572a171b897b2494a5ae1))
+* **deps:** update dependency aws-sdk to v2.991.0 ([c84b6f9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c84b6f98416bc9554a405e2b5c7645cc439e304d))
+* **h5p-mongos3:** allow '@' character in the file name. ([7f42cd9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7f42cd9a1c596089d19ab22edfd22a5500b0a60c))
+* **h5p-webcomponents:** contents not deleted from integration on merge ([c381e2e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c381e2ecb5dca2d21b24c48e32e96c8f296bc1f6))
+
+
+
+
+
 ## [9.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.0...v9.0.1) (2021-09-16)
 
 
