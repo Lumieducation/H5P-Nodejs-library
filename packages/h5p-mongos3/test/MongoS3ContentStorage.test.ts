@@ -364,7 +364,6 @@ describe('MongoS3ContentStorage', () => {
         const illegalCharacters = [
             '&',
             '$',
-            '@',
             '=',
             ';',
             ':',

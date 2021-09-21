@@ -162,7 +162,6 @@ describe('S3TemporaryFileStorage', () => {
         const illegalCharacters = [
             '&',
             '$',
-            '@',
             '=',
             ';',
             ':',
