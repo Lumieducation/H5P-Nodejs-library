@@ -33,7 +33,10 @@
         "title": "(Collage)",
         "summary": "Luo kollaasi useista kuvista",
         "description": "Collage-työkalun avulla voit järjestää kuvat rauhoittavaksi koostumukseksi.",
-        "keywords": { "collage": "kollaasi", "image": "kuva" }
+        "keywords": {
+            "collage": "kollaasi",
+            "image": "kuva"
+        }
     },
     "H5P_Column": {
         "title": "Sarake (Column)",
@@ -59,67 +62,100 @@
         "title": "Dialogikortit (Dialog Cards)",
         "summary": "Luo tekstipohjaisia kääntökortteja",
         "description": "Dialogikortteja voidaan käyttää porana auttaakseen oppijoita muistamaan sanoja, ilmaisuja tai lauseita. Kortin etuosassa on vihje sanalle tai ilmaisulle. Kääntämällä korttia oppija paljastaa vastaavan sanan tai ilmauksen. Dialogikortteja voidaan käyttää kielen oppimisessa matematiikkaongelmien esittämiseen tai oppijoiden muistamiseen esimerkiksi historiallisista tapahtumista, kaavoista tai nimistä.",
-        "keywords": { "dialog_cards": "valintaikkunoita" }
+        "keywords": {
+            "dialog_cards": "valintaikkunoita"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "Dokumentointityökalu (Documentation Tool)",
         "summary": "Luo ohjattu lomake ohjatulla tekstin viennillä",
         "description": "Dokumentointityökalun tarkoituksena on helpottaa ohjattujen ohjattujen toimintojen luomista tavoitteelliseen toimintaan. Sitä voidaan käyttää myös ohjatun lomakkeen muodostamiseen. Muokatessasi kirjoittaja voi lisätä ohjattuun toimintoon useita vaiheita. Kirjailija voi kussakin vaiheessa määritellä, mikä sisältö menee kyseiseen vaiheeseen. Sisältö voi olla pelkkää tekstiä, syöttökenttiä, tavoitteen määrittelyä ja tavoitteiden arviointia. Kun käyttäjä on julkaistu, hänet ohjataan ohjatun toiminnon vaiheiden läpi. Ohjatun toiminnon viimeisessä vaiheessa käyttäjä voi luoda asiakirjan, jossa on kaikki syötetyt syötteet. Tämä asiakirja voidaan ladata. Dokumentaatiotyökalu on täysin reagoiva ja toimii hyvin pienemmissä näytöissä sekä työpöydälläsi.",
-        "keywords": { "dialog_cards": "valintaikkunoita" }
+        "keywords": {
+            "dialog_cards": "valintaikkunoita"
+        }
     },
     "H5P_DragQuestion": {
         "title": "Vedä ja pudota (Drag and Drop)",
         "summary": "Luo vedä ja pudota -tehtäviä kuvilla",
         "description": "Vedä ja pudota-kysymys antaa oppijalle mahdollisuuden liittää kaksi tai useampia elementtejä ja luoda loogisia yhteyksiä visuaalisesti. Luo Vedä ja pudota -kysymyksiä käyttämällä sekä tekstiä että kuvia vedettävinä vaihtoehdoina. H5P Vedä ja pudota -kysymykset tukevat kysymysten ja vastausten välisiä suhteita yksi kerrallaan, yksi moniin, monet yhteen ja monet moniin.",
-        "keywords": { "drag_and drop": "raahaa ja pudota" }
+        "keywords": {
+            "drag_and drop": "raahaa ja pudota"
+        }
     },
     "H5P_DragText": {
         "title": "Vedä sanat (Drag the Words)",
         "summary": "Luo tekstipohjaisia vedä ja pudota -tehtäviä",
         "description": "Vedä sanat -toiminnon avulla sisällön suunnittelijat voivat luoda tekstilausekkeita puuttuvista tekstikappaleista. Loppukäyttäjä vetää puuttuvan tekstin pala oikeaan paikkaan muodostaakseen täydellisen lausekkeen. Voidaan käyttää tarkistamaan, muistaako käyttäjä lukemansa tekstin vai ymmärtääkö hän jotain. Auttaa käyttäjää ajattelemaan tekstin läpi. On erittäin helppoa luoda vedä sanat-tehtävä. Editori vain kirjoittaa tekstin ja liittää vedettävät sanat tähtimerkkeihin, kuten * draggableWord *.",
-        "keywords": { "drag": "raahata", "words": "sanat" }
+        "keywords": {
+            "drag": "raahata",
+            "words": "sanat"
+        }
     },
     "H5P_Blanks": {
         "title": "Täytä tyhjät kohdat (Fill in the Blanks)",
         "summary": "Luo tehtävä, josta puuttuu sanoja tekstistä",
         "description": "Oppijat täyttävät puuttuvat sanat tekstistä. Oppijalle näytetään ratkaisu täytettyään kaikki puuttuvat sanat tai jokaisen sanan jälkeen asetuksista riippuen. Kirjailijat kirjoittavat tekstiä ja merkitsevät sanat korvattaviksi asteriksilla. Alkuperäisen ja toisen kielen oppimisen lisäksi Täytä tyhjät -kohdilla voidaan testata oppijan kykyä tuottaa tietoja tai tuottaa matemaattisia päätelmiä.",
-        "keywords": { "fill": "täyttää", "blanks": "aihiot", "text": "teksti" }
+        "keywords": {
+            "fill": "täyttää",
+            "blanks": "aihiot",
+            "text": "teksti"
+        }
     },
     "H5P_ImageHotspotQuestion": {
         "title": "Löydä hotspot (Find the Hotspot)",
         "summary": "Luo kuvakeskittymiä käyttäjien löytämiseksi",
         "description": "Tämän sisältötyypin avulla loppukäyttäjät voivat painaa jotakin kuvaa ja saada palautetta siitä, oliko se oikein vai väärin tehtävän kuvauksen mukaan. Kirjoittaja lataa kuvan ja määrittelee eri kuormittajat, jotka vastaavat kuvan yksityiskohtia tai osia. Hotspotit voidaan määritellä joko oikeiksi tai virheellisiksi, ja kirjoittaja antaa asianmukaisen palautetekstin molemmissa tapauksissa. Kirjoittaja voi myös määrittää palautteen, jos loppukäyttäjä painaa jonnekin, jota ei ole määritelty oikeaksi tai vääräksi hotspotiksi.",
-        "keywords": { "find": "löytö", "hotspot": "hotspot", "image": "kuva" }
+        "keywords": {
+            "find": "löytö",
+            "hotspot": "hotspot",
+            "image": "kuva"
+        }
     },
     "H5P_GuessTheAnswer": {
         "title": "Arvaa vastaus (Guess the Answer)",
         "summary": "Luo kuva kysymyksellä ja vastauksella",
         "description": "Tämän sisältötyypin avulla kirjoittajat voivat ladata kuvan ja lisätä sopivan kuvauksen. Loppukäyttäjät voivat arvata vastauksen ja paljastaa oikean vastauksen painamalla kuvan alla olevaa palkkia.",
-        "keywords": { "guess": "arvaus", "answer": "vastaus" }
+        "keywords": {
+            "guess": "arvaus",
+            "answer": "vastaus"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Iframe Embedder",
         "summary": "Upota URL-osoitteesta tai tiedostojoukosta",
         "description": "Iframe-upottaja helpottaa H5P: n tekemistä jo olemassa olevista JavaScript-sovelluksista.",
-        "keywords": { "embed": "upottaa", "iframe": "iframe" }
+        "keywords": {
+            "embed": "upottaa",
+            "iframe": "iframe"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "Interaktiivinen video (Interactive Video)",
         "summary": "Luo videoita, jotka on rikastettu vuorovaikutuksella",
         "description": "Lisää interaktiivisuutta videoosi selityksillä, ylimääräisillä kuvilla, taulukoilla, Täytä tyhjä ja monivalintakysymyksillä. Tietokilpailukysymykset tukevat mukautuvuutta, mikä tarkoittaa, että voit siirtyä toiseen osaan videota käyttäjän antaman tiedon perusteella. Interaktiiviset yhteenvedot voidaan lisätä videon loppuun. Interaktiivisia videoita luodaan ja muokataan H5P-kirjoitustyökalulla tavallisessa verkkoselaimessa.",
-        "keywords": { "interactive": "vuorovaikutteinen", "video": "video-" }
+        "keywords": {
+            "interactive": "vuorovaikutteinen",
+            "video": "video-"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "Merkitse sanat (Mark the Words)",
         "summary": "Luo tehtävä, jossa käyttäjät korostavat sanoja",
         "description": "Merkitse sanat antavat sisällön suunnittelijoille mahdollisuuden luoda tekstilausekkeita määritellyillä oikeilla sanoilla. Loppukäyttäjä korostaa sanoja tehtävän kuvauksen mukaan ja saa pisteet. Editorin kannalta on erittäin helppoa luoda napsautussanojen sanat haaste. Editori kirjoittaa tekstin ja liittää sanat, joita käyttäjän on tarkoitus napsauttaa, oikeat vastaukset, tähdellä kuten * correctWord *.",
-        "keywords": { "mark": "merkki", "words": "sanat" }
+        "keywords": {
+            "mark": "merkki",
+            "words": "sanat"
+        }
     },
     "H5P_MemoryGame": {
         "title": "Muistipeli (Memory Game)",
         "summary": "Luo klassinen kuvien yhdistämispeli",
         "description": "Luo omat muistipelejäsi ja testaa sivustosi käyttäjien muistia tällä yksinkertaisella mutta kauniilla HTML5-pelillä.",
-        "keywords": { "memory": "muisti", "game": "peli", "cards": "kortit" }
+        "keywords": {
+            "memory": "muisti",
+            "game": "peli",
+            "cards": "kortit"
+        }
     },
     "H5P_MultiChoice": {
         "title": "Monivalinta (Multiple Choice)",
@@ -144,7 +180,9 @@
         "title": "Kysely (Questionnaire)",
         "summary": "Luo kysely, jotta saat palautetta",
         "description": "Hanki palautetta ja kysy avoimia kysymyksiä Interaktiivisissa videoissa ja muissa kyselylomaketyypeissä. Kyselylomakkeen avulla käyttäjän vastaukset ovat saatavilla xAPI-integraation avulla. Tämä tarkoittaa, että verkkosivustojen omistajat voivat tallentaa vastaukset monin eri tavoin. Vastaukset voidaan tallentaa LRS: ään, sivustot omistavat mukautetun tallennustilan tai komentosarja voi noutaa sähköpostiosoitteen ja lähettää sen sähköpostitse käyttäjälle. H5P.org-sivustolla vastaukset tallennetaan Google Analyticsiin.",
-        "keywords": { "questionnaire": "kyselylomake" }
+        "keywords": {
+            "questionnaire": "kyselylomake"
+        }
     },
     "H5P_QuestionSet": {
         "title": "Tietokilpailu (Question Set) (Quiz (Question Set))",
@@ -170,25 +208,36 @@
         "title": "Yhteenveto (Summary)",
         "summary": "Luo tehtäviä lausekeluettelolla",
         "description": "Tiivistelmät auttavat oppijaa muistamaan tärkeimmät tiedot tekstissä, videossa tai esityksessä lähettämällä aktiivisesti yhteenvedon käsillä olevasta aiheesta. Kun oppija on laatinut yhteenvedon, näyttöön tulee täydellinen luettelo aihetta koskevista keskeisistä lausunnoista.",
-        "keywords": { "summary": "yhteenveto" }
+        "keywords": {
+            "summary": "yhteenveto"
+        }
     },
     "H5P_Timeline": {
         "title": "Aikajana (Timeline)",
         "summary": "Luo tapahtumien aikajana multimedialla",
         "description": "Tämä on Knight Labin kehittämä Timeline.js, joka on pakattu H5P-sisältötyypiksi, jotta aikataulut olisivat helposti muokattavissa, jaettavissa ja uudelleenkäytettävissä. Aikajanan sisältötyypin avulla voit sijoittaa tapahtumasarjan aikajärjestyksessä. Voit lisätä kutakin tapahtumaa varten kuvia ja tekstejä. Voit myös sisällyttää sisältöä Twitteristä, YouTubesta, Flickristä, Vimeosta, Google Mapsista ja SoundCloudista.",
-        "keywords": { "timeline": "aikajanalla", "slider": "liukusäädin" }
+        "keywords": {
+            "timeline": "aikajanalla",
+            "slider": "liukusäädin"
+        }
     },
     "H5P_TrueFalse": {
         "title": "Tosi / väärä kysymys (True/False Question)",
         "summary": "Luo tosi / väärät kysymykset",
         "description": "Tosi / väärä kysymys on yksinkertainen ja yksinkertainen sisältötyyppi, joka voi toimia itsestään tai lisätä muihin sisältötyyppeihin, kuten kurssin esittelyyn. Monimutkaisempi kysymys voidaan luoda lisäämällä kuva tai video.",
-        "keywords": { "true": "totta", "false": "väärä" }
+        "keywords": {
+            "true": "totta",
+            "false": "väärä"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "Kuva-alueet (Image Hotspots)",
         "summary": "Luo kuva, jossa on useita tietopisteitä",
         "description": "Kuvakeskittymät mahdollistavat kuvan luomisen interaktiivisilla kohdepisteillä. Kun käyttäjä painaa hotspotia, näkyviin tulee ponnahdusikkuna, joka sisältää otsikon ja tekstin tai videon. H5P-editorin avulla voit lisätä niin monta hotspotia kuin haluat.",
-        "keywords": { "image": "kuva", "hotspot": "hotspot" }
+        "keywords": {
+            "image": "kuva",
+            "hotspot": "hotspot"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Löydä useita kuormittajia (Find Multiple Hotspots)",
@@ -209,7 +258,10 @@
         "title": "Ääninauhuri (Audio Recorder)",
         "summary": "Luo äänitallenne",
         "description": "HTML5-ääninauhuri. Nauhoita äänesi ja toista tai lataa .wav-tiedosto äänityksestäsi. Luo H5P-ääninauhuri H5P-laajennuksen avulla Drupal-, Wordpress- tai Moodle-sivustoosi.",
-        "keywords": { "audio": "audio-", "recorder": "tallennin" }
+        "keywords": {
+            "audio": "audio-",
+            "recorder": "tallennin"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "Puhu sanat (Speak the Words)",
@@ -249,7 +301,10 @@
         "title": "Flashcards",
         "summary": "Luo tyylikkäitä ja moderneja muistikortteja",
         "description": "Tämän sisältötyypin avulla kirjoittajat voivat luoda yhden flash-kortin tai korttisarjan, jossa jokaisella kortilla on kuvia pariksi kysymysten ja vastausten kanssa. Oppijoiden on täytettävä tekstikenttä ja tarkistettava sitten ratkaisunsa oikeellisuus.",
-        "keywords": { "cards": "kortit", "animation": "animaatio" }
+        "keywords": {
+            "cards": "kortit",
+            "animation": "animaatio"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Puhu sanasarja (Speak the Words Set)",
@@ -281,7 +336,9 @@
         "title": "Essee (Essay)",
         "summary": "Luo essee välitöntä palautetta",
         "description": "Tässä sisältötyypissä kirjoittaja määrittelee joukon avainsanoja, jotka edustavat aiheen keskeisiä näkökohtia. Nämä avainsanat sovitetaan yhteen oppilaiden laatiman tekstin kanssa, ja niiden avulla voidaan antaa välittömästi palautetta - joko ehdottaa tiettyjen aihetietojen tarkistamista, jos avainsana puuttuu, tai vahvistaa opiskelijan ideoita, jos teksti sisältää avainsanan.\r\n",
-        "keywords": { "Essay": "Essee" }
+        "keywords": {
+            "Essay": "Essee"
+        }
     },
     "H5P_ImagePair": {
         "title": "Kuvien pariliitos (Image Pairing)",
@@ -295,7 +352,10 @@
         "title": "Sanelu (Dictation)",
         "summary": "Luo sanelu välittömällä palautteella",
         "description": "Voit lisätä ääninäytteitä, jotka sisältävät sanan sanelua varten, ja kirjoittaa oikean transkription. Oppilaasi voivat kuunnella näytteitä ja kirjoittaa kuullut tekstikenttään. Heidän vastauksensa arvioidaan automaattisesti. Useiden vaihtoehtojen avulla voit hallita harjoituksen vaikeuksia. Voit halutessasi lisätä toisen ääninäytteen lauseelle, johon mahtuu hitaasti puhuttu versio. Voit myös asettaa rajan sille, kuinka usein näytettä voidaan toistaa, määrittää, onko välimerkkien merkitys pisteytykselle, ja päättää, pitäisikö pienten virheiden, kuten kirjoitusvirheiden, laskea olevan virhe, täydellinen virhe vai vain puolivirhe.",
-        "keywords": { "language": "Kieli", "audio": "audio-" }
+        "keywords": {
+            "language": "Kieli",
+            "audio": "audio-"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "Haarautumisskenaario (beta) (Branching Scenario (beta))",
@@ -316,13 +376,18 @@
         "title": "Interaktiivinen kirja (Interactive Book)",
         "summary": "Luo pieniä kursseja, kirjoja ja testejä",
         "description": "Luo pieniä kursseja, kirjoja tai testejä. Interaktiivisen kirjan avulla kirjoittajat voivat yhdistää suuria määriä interaktiivista sisältöä, kuten vuorovaikutteisia videoita, kysymyksiä, kurssin esityksiä ja muuta usealla sivulla. Lopussa on yhteenveto, joka tiivistää oppijan koko kirjassa saamat pisteet.",
-        "keywords": { "book": "kirja", "course": "kurssi" }
+        "keywords": {
+            "book": "kirja",
+            "course": "kurssi"
+        }
     },
     "H5P_KewArCode": {
         "title": "KewAr-koodi (KewAr Code)",
         "summary": "Luo QR-koodeja eri tarkoituksiin",
         "description": "KewAr Code auttaa sisällön suunnittelijoita luomaan tunnettuja QR-koodeja. Nämä QR-koodit voivat koodata URL-osoitteita, mutta myös yhteystietoja, tapahtumia, maantieteellisiä sijainteja jne. Ihmiset voivat skannata ne QR-koodinlukijalla valitun toiminnon käynnistämiseksi.",
-        "keywords": { "QR": "QR" }
+        "keywords": {
+            "QR": "QR"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "Adventtikalenteri (beta) (Advent Calendar (beta))",

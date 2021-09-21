@@ -3,35 +3,37 @@
         "title": "Bild"
     },
     "H5P_ContinuousText": {
-        "title": "Fortlaufender Text"
+        "title": "Fließtext"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Freitexteingabe"
+        "title": "Freitextfrage"
     },
     "H5P_GoToScene": {
-        "title": "Gehe zu Szene"
+        "title": "Zur Szene gehen"
     },
     "H5P_GoToQuestion": {
-        "title": "Verzweigung"
+        "title": "Kreuzung"
     },
     "H5P_GoalsPage": {
-        "title": "Ziele-Seite"
+        "title": "Seite \"Ziele\""
     },
     "H5P_GoalsAssessmentPage": {
-        "title": "Zielbewertungs-Seite"
+        "title": "Seite zur Bewertung der Ziele"
     },
     "H5P_StandardPage": {
-        "title": "Standard-Seite"
+        "title": "Standardseite"
     },
     "H5P_DocumentExportPage": {
-        "title": "Dokumenten-Export-Seite"
+        "title": "Dokumentexportseite"
     },
     "H5P_Link": {
-        "title": "Link"
+        "title": "Verknüpfung"
     },
-    "H5P_Nil": { "title": "Beschriftung" },
+    "H5P_Nil": {
+        "title": "Etikett"
+    },
     "H5P_IVHotspot": {
-        "title": "Navigations-Button"
+        "title": "Navigations-Hotspot"
     },
     "H5P_OpenEndedQuestion": {
         "title": "Offene Frage"
@@ -43,7 +45,7 @@
         "title": "Zusammenfassung"
     },
     "H5P_Table": {
-        "title": "Tabelle"
+        "title": "Tisch"
     },
     "H5P_Text": {
         "title": "Text"
@@ -55,7 +57,7 @@
         "title": "Text"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Einfaches Multiple-Choice"
+        "title": "Einfache Mehrfachauswahl"
     },
     "H5P_BranchingQuestion": {
         "title": "Verzweigungsfrage"

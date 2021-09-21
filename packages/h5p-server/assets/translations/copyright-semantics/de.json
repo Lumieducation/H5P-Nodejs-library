@@ -11,7 +11,7 @@
     "license": "Lizenz",
     "undisclosed": "Unbestimmt",
     "attribution": "Namensnennung",
-    "4.0-international": "4.0 International",
+    "40-international": "4.0 International",
     "30-unported": "3.0 Unported",
     "25-generic": "2.5 Generic",
     "20-generic": "2.0 Generic",
@@ -27,9 +27,8 @@
     "gpl-version-1": "Version 1",
     "public-domain": "Public Domain",
     "pd-no-version": "-",
-    "CC0-1.0-universal": "CC0 1.0 Universal",
+    "CC0-1-0-universal": "CC0 1.0 Universal",
     "public-domain-mark": "Public Domain Mark",
     "copyright": "Copyright",
-    "license-version": "Lizenzversion",
-    "40-international": "4.0 International"
+    "license-version": "Lizenzversion"
 }

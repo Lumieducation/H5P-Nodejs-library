@@ -33,7 +33,10 @@
         "title": "Collage",
         "summary": "Créez un collage de plusieurs images",
         "description": "L'outil Collage vous permet d'organiser les images dans une composition apaisante.",
-        "keywords": { "collage": "collage", "image": "image" }
+        "keywords": {
+            "collage": "collage",
+            "image": "image"
+        }
     },
     "H5P_Column": {
         "title": "Colonne (Column)",
@@ -59,31 +62,44 @@
         "title": "Cartes de dialogue (Dialog Cards)",
         "summary": "Créez des cartes de tournage basées sur du texte",
         "description": "Les cartes de dialogue peuvent être utilisées comme un exercice pour aider les apprenants à mémoriser des mots, des expressions ou des phrases. Sur le devant de la carte, il y a un indice pour un mot ou une expression. En tournant la carte, l'apprenant révèle un mot ou une expression correspondant. Les cartes de dialogue peuvent être utilisées dans l'apprentissage des langues, pour présenter des problèmes de mathématiques ou pour aider les apprenants à se souvenir de faits tels que des événements historiques, des formules ou des noms.",
-        "keywords": { "dialog_cards": "cartes de dialogue" }
+        "keywords": {
+            "dialog_cards": "cartes de dialogue"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "Outil de documentation (Documentation Tool)",
         "summary": "Créer un assistant de formulaire avec exportation de texte",
         "description": "L'outil de documentation vise à faciliter la création d'assistants d'évaluation pour les activités axées sur les objectifs. Il peut également être utilisé comme assistant de formulaire. Lors de l'édition, l'auteur peut ajouter plusieurs étapes à l'assistant. À chaque étape, l'auteur peut définir le contenu qui entre dans cette étape. Le contenu peut être du texte brut, des champs de saisie, une définition d'objectif et une évaluation d'objectif. Une fois publié, l'utilisateur final suivra les étapes de l'assistant. À la dernière étape de l'assistant, l'utilisateur peut générer un document avec toutes les entrées qui ont été soumises. Ce document peut être téléchargé. L'outil de documentation est entièrement réactif et fonctionne très bien sur les petits écrans ainsi que sur votre bureau.",
-        "keywords": { "dialog_cards": "cartes de dialogue" }
+        "keywords": {
+            "dialog_cards": "cartes de dialogue"
+        }
     },
     "H5P_DragQuestion": {
         "title": "Glisser-déposer (Drag and Drop)",
         "summary": "Créez des tâches de glisser-déposer avec des images",
         "description": "La question par glisser-déposer permet à l'apprenant d'associer deux ou plusieurs éléments et d'établir des connexions logiques de manière visuelle. Créez des questions par glisser-déposer en utilisant à la fois du texte et des images comme alternatives pouvant être déplacées. Les questions par glisser-déposer H5P prennent en charge les relations un-à-un, un-à-plusieurs, plusieurs-à-un et plusieurs-à-plusieurs entre les questions et les réponses.",
-        "keywords": { "drag_and drop": "glisser déposer" }
+        "keywords": {
+            "drag_and drop": "glisser déposer"
+        }
     },
     "H5P_DragText": {
         "title": "Faites glisser les mots (Drag the Words)",
         "summary": "Créer des tâches de glisser-déposer basées sur du texte",
         "description": "Faites glisser les mots permet aux concepteurs de contenu de créer des expressions textuelles avec des morceaux de texte manquants. L'utilisateur final fait glisser un morceau de texte manquant à sa place correcte, pour former une expression complète. Peut être utilisé pour vérifier si l'utilisateur se souvient d'un texte qu'il a lu ou s'il comprend quelque chose. Aide l'utilisateur à réfléchir à un texte. Il est très facile de créer une tâche de glisser les mots. L'éditeur écrit simplement le texte et entoure les mots qui doivent être déplacés avec des astérisques tels que * draggableWord *.",
-        "keywords": { "drag": "glisser", "words": "mots" }
+        "keywords": {
+            "drag": "glisser",
+            "words": "mots"
+        }
     },
     "H5P_Blanks": {
         "title": "Remplissez les blancs (Fill in the Blanks)",
         "summary": "Créer une tâche avec des mots manquants dans un texte",
         "description": "Les apprenants remplissent les mots manquants dans un texte. Une solution est présentée à l'apprenant après avoir rempli tous les mots manquants, ou après chaque mot en fonction des paramètres. Les auteurs saisissent le texte et marquent les mots à remplacer par un astérisque. En plus de l'apprentissage de la langue maternelle et de la langue seconde, Remplissez les blancs peut être utilisé pour tester la capacité de l'apprenant à reproduire des faits ou à produire des inférences mathématiques.",
-        "keywords": { "fill": "remplir", "blanks": "blancs", "text": "texte" }
+        "keywords": {
+            "fill": "remplir",
+            "blanks": "blancs",
+            "text": "texte"
+        }
     },
     "H5P_ImageHotspotQuestion": {
         "title": "Trouvez le point d'accès (Find the Hotspot)",
@@ -99,31 +115,47 @@
         "title": "Devinez la réponse (Guess the Answer)",
         "summary": "Créez une image avec une question et une réponse",
         "description": "Ce type de contenu permet aux auteurs de télécharger une image et d'ajouter une description appropriée. Les utilisateurs finaux peuvent deviner la réponse et appuyer sur la barre sous l'image pour révéler la bonne réponse.",
-        "keywords": { "guess": "deviner", "answer": "répondre" }
+        "keywords": {
+            "guess": "deviner",
+            "answer": "répondre"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Incorporer Iframe (Iframe Embedder)",
         "summary": "Incorporer à partir d'une URL ou d'un ensemble de fichiers",
         "description": "L'embedder Iframe facilite la création d'un H5P d'applications JavaScript déjà existantes.",
-        "keywords": { "embed": "intégrer", "iframe": "iframe" }
+        "keywords": {
+            "embed": "intégrer",
+            "iframe": "iframe"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "Vidéo interactive (Interactive Video)",
         "summary": "Créez des vidéos enrichies d'interactions",
         "description": "Ajoutez de l'interactivité à votre vidéo avec des explications, des images supplémentaires, des tableaux, remplissez le vide et des questions à choix multiples. Les questions de quiz prennent en charge l'adaptabilité, ce qui signifie que vous pouvez passer à une autre partie de la vidéo en fonction de l'entrée de l'utilisateur. Des résumés interactifs peuvent être ajoutés à la fin de la vidéo. Les vidéos interactives sont créées et éditées à l'aide de l'outil de création H5P dans un navigateur Web standard.",
-        "keywords": { "interactive": "interactif", "video": "vidéo" }
+        "keywords": {
+            "interactive": "interactif",
+            "video": "vidéo"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "Marquez les mots (Mark the Words)",
         "summary": "Créer une tâche dans laquelle les utilisateurs mettent en évidence des mots",
         "description": "Marquer les mots permet aux concepteurs de contenu de créer des expressions textuelles avec un ensemble défini de mots corrects. L'utilisateur final met en évidence les mots en fonction de la description de la tâche et reçoit un score. Pour l'éditeur, il est super facile de créer un défi de clic sur les mots. L'éditeur tape le texte et enferme les mots sur lesquels l'utilisateur est censé cliquer, les bonnes réponses, dans un astérisque comme * correctWord *.",
-        "keywords": { "mark": "marque", "words": "mots" }
+        "keywords": {
+            "mark": "marque",
+            "words": "mots"
+        }
     },
     "H5P_MemoryGame": {
         "title": "Jeu de mémoire (Memory Game)",
         "summary": "Créez le jeu d'appariement d'images classique",
         "description": "Créez vos propres jeux de mémoire et testez la mémoire des utilisateurs de votre site avec ce jeu HTML5 simple mais beau.",
-        "keywords": { "memory": "Mémoire", "game": "Jeu", "cards": "cartes" }
+        "keywords": {
+            "memory": "Mémoire",
+            "game": "Jeu",
+            "cards": "cartes"
+        }
     },
     "H5P_MultiChoice": {
         "title": "Choix multiple (Multiple Choice)",
@@ -139,13 +171,18 @@
         "title": "Quiz de personnalité (Personality Quiz)",
         "summary": "Créez des quiz de personnalité",
         "description": "Dans ce type de contenu, l'auteur définit une série de questions avec des alternatives, où chaque alternative est comparée à une ou plusieurs personnalités. À la fin du quiz, l'utilisateur final verra quelle personnalité correspond le mieux. Il existe plusieurs façons de rendre ce quiz visuellement attrayant, par exemple. représenter des questions, des alternatives et des personnalités à l'aide d'images.",
-        "keywords": { "personality": "personnalité", "quiz": "quiz" }
+        "keywords": {
+            "personality": "personnalité",
+            "quiz": "quiz"
+        }
     },
     "H5P_Questionnaire": {
         "title": "Questionnaire",
         "summary": "Créez un questionnaire pour recevoir des commentaires",
         "description": "Obtenez des commentaires et posez des questions ouvertes dans les vidéos interactives et d'autres types de contenu avec Questionnaire. Questionnaire rend les réponses de l'utilisateur disponibles via une intégration xAPI. Cela signifie que les propriétaires de sites Web peuvent stocker les réponses de différentes manières. Les réponses peuvent être stockées dans un LRS, le stockage personnalisé du site ou un script peut récupérer l'adresse e-mail et l'utiliser pour envoyer un e-mail à l'utilisateur. Sur H5P.org, les réponses sont stockées dans Google Analytics.",
-        "keywords": { "questionnaire": "questionnaire" }
+        "keywords": {
+            "questionnaire": "questionnaire"
+        }
     },
     "H5P_QuestionSet": {
         "title": "Quiz (Question Set) (Quiz (Question Set))",
@@ -171,25 +208,36 @@
         "title": "Résumé (Summary)",
         "summary": "Créer des tâches avec une liste d'instructions",
         "description": "Les résumés aident l'apprenant à se souvenir des informations clés dans un texte, une vidéo ou une présentation, en construisant activement un résumé sur le sujet en question. Lorsque l'apprenant a terminé un résumé, une liste complète des déclarations clés sur le sujet s'affiche.",
-        "keywords": { "summary": "résumé" }
+        "keywords": {
+            "summary": "résumé"
+        }
     },
     "H5P_Timeline": {
         "title": "Chronologie (Timeline)",
         "summary": "Créez une chronologie des événements avec le multimédia",
         "description": "Il s'agit de Timeline.js développé par Knight Lab, présenté sous la forme d'un type de contenu H5P afin de rendre les chronologies facilement modifiables, partageables et réutilisables. Le type de contenu Chronologie vous permet de placer une séquence d'événements dans un ordre chronologique. Pour chaque événement, vous pouvez ajouter des images et des textes. Vous pouvez également inclure des éléments de Twitter, YouTube, Flickr, Vimeo, Google Maps et SoundCloud.",
-        "keywords": { "timeline": "chronologie", "slider": "glissière" }
+        "keywords": {
+            "timeline": "chronologie",
+            "slider": "glissière"
+        }
     },
     "H5P_TrueFalse": {
         "title": "Question Vrai / Faux (True/False Question)",
         "summary": "Créer des questions Vrai / Faux",
         "description": "True / False Question est un type de contenu simple et direct qui peut fonctionner par lui-même ou être inséré dans d'autres types de contenu tels que la présentation de cours. Une question plus complexe peut être créée en ajoutant une image ou une vidéo.",
-        "keywords": { "true": "vrai", "false": "faux" }
+        "keywords": {
+            "true": "vrai",
+            "false": "faux"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "Hotspots d'image (Image Hotspots)",
         "summary": "Créer une image avec plusieurs hotspots d'informations",
         "description": "Les hotspots d'image permettent de créer une image avec des hotspots interactifs. Lorsque l'utilisateur appuie sur un hotspot, une fenêtre contextuelle contenant un en-tête et du texte ou une vidéo s'affiche. En utilisant l'éditeur H5P, vous pouvez ajouter autant de hotspots que vous le souhaitez.",
-        "keywords": { "image": "image", "hotspot": "point chaud" }
+        "keywords": {
+            "image": "image",
+            "hotspot": "point chaud"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Rechercher plusieurs hotspots (Find Multiple Hotspots)",
@@ -210,7 +258,10 @@
         "title": "Enregistreur audio (Audio Recorder)",
         "summary": "Créer un enregistrement audio",
         "description": "Un enregistreur audio HTML5. Enregistrez votre voix et lisez ou téléchargez un fichier .wav de votre enregistrement. Utilisez le plugin H5P pour créer l'enregistreur audio H5P sur votre site Drupal, Wordpress ou Moodle.",
-        "keywords": { "audio": "l'audio", "recorder": "enregistreur" }
+        "keywords": {
+            "audio": "l'audio",
+            "recorder": "enregistreur"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "Prononcez les mots (Speak the Words)",
@@ -250,7 +301,10 @@
         "title": "Flashcards",
         "summary": "Créez des flashcards élégants et modernes",
         "description": "Ce type de contenu permet aux auteurs de créer une seule carte flash ou un ensemble de cartes mémoire, où chaque carte a des images associées à des questions et réponses. Les apprenants doivent remplir le champ de texte, puis vérifier l'exactitude de leur solution.",
-        "keywords": { "cards": "cartes", "animation": "animation" }
+        "keywords": {
+            "cards": "cartes",
+            "animation": "animation"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Prononcez l'ensemble de mots (Speak the Words Set)",
@@ -282,7 +336,9 @@
         "title": "Essai (Essay)",
         "summary": "Créez un essai avec un retour instantané",
         "description": "Dans ce type de contenu, l'auteur définit un ensemble de mots-clés qui représentent des aspects cruciaux d'un sujet. Ces mots-clés sont comparés à un texte que les élèves ont composé et peuvent être utilisés pour fournir immédiatement des commentaires - soit en suggérant de réviser certains détails du sujet si un mot-clé est manquant, soit en confirmant les idées de l'élève si le texte contient un mot-clé.\r\n",
-        "keywords": { "Essay": "Essai" }
+        "keywords": {
+            "Essay": "Essai"
+        }
     },
     "H5P_ImagePair": {
         "title": "Couplage d'images (Image Pairing)",
@@ -296,7 +352,10 @@
         "title": "Dictée (Dictation)",
         "summary": "Créez une dictée avec un retour instantané",
         "description": "Vous pouvez ajouter des échantillons audio contenant une phrase pour la dictée et saisir la transcription correcte. Vos élèves peuvent écouter les échantillons et saisir ce qu'ils ont entendu dans un champ de texte. Leurs réponses seront évaluées automatiquement. Plusieurs options vous permettront de contrôler la difficulté de l'exercice. Vous pouvez éventuellement ajouter un deuxième échantillon audio pour une phrase qui pourrait contenir une version prononcée lentement. Vous pouvez également définir une limite pour la fréquence à laquelle un échantillon peut être lu, définir si la ponctuation doit être pertinente pour la notation et décider si de petites erreurs telles que des erreurs de frappe doivent être comptées comme aucune erreur, une erreur complète ou juste une demi-erreur.",
-        "keywords": { "language": "Langue", "audio": "l'audio" }
+        "keywords": {
+            "language": "Langue",
+            "audio": "l'audio"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "Scénario de branchement (beta) (Branching Scenario (beta))",
@@ -317,13 +376,18 @@
         "title": "Livre interactif (Interactive Book)",
         "summary": "Créez de petits cours, des livres et des tests",
         "description": "Créez de petits cours, des livres ou des tests. Interactive Book permet aux auteurs de combiner de grandes quantités de contenu interactif comme des vidéos interactives, des questions, des présentations de cours, etc. sur plusieurs pages. Il y a un résumé à la fin résumant les scores obtenus par l'apprenant tout au long du livre.",
-        "keywords": { "book": "livre", "course": "cours" }
+        "keywords": {
+            "book": "livre",
+            "course": "cours"
+        }
     },
     "H5P_KewArCode": {
         "title": "Code KewAr (KewAr Code)",
         "summary": "Créez des codes QR à des fins différentes",
         "description": "KewAr Code permet aux concepteurs de contenu de créer des codes QR bien connus. Ces codes QR peuvent encoder des URL, mais aussi des informations de contact, des événements, des géolocalisations, etc. Les gens peuvent les scanner avec un lecteur de code QR afin de déclencher l'action choisie.",
-        "keywords": { "QR": "QR" }
+        "keywords": {
+            "QR": "QR"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "Calendrier de l'Avent (beta) (Advent Calendar (beta))",

@@ -33,7 +33,10 @@
         "title": "Encolat (Collage)",
         "summary": "Creeu un collage de diverses imatges",
         "description": "L’eina Collage us permet organitzar les imatges en una composició relaxant.",
-        "keywords": { "collage": "collage", "image": "imatge" }
+        "keywords": {
+            "collage": "collage",
+            "image": "imatge"
+        }
     },
     "H5P_Column": {
         "title": "Columna (Column)",
@@ -59,25 +62,34 @@
         "title": "Targetes de diàleg (Dialog Cards)",
         "summary": "Creeu targetes de canvi basades en text",
         "description": "Les targetes de diàleg es poden utilitzar com a simulacre per ajudar els aprenents a memoritzar paraules, expressions o frases. A la part frontal de la targeta, hi ha una pista per a una paraula o expressió. En girar la targeta, l’estudiant revela una paraula o expressió corresponent. Les targetes de diàleg es poden utilitzar en l'aprenentatge d'idiomes, per presentar problemes matemàtics o ajudar els aprenents a recordar fets com esdeveniments històrics, fórmules o noms.",
-        "keywords": { "dialog_cards": "targetes de diàleg" }
+        "keywords": {
+            "dialog_cards": "targetes de diàleg"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "Documentation Tool",
         "summary": "Creeu un assistent de formulari amb exportació de text",
         "description": "L'eina de documentació té com a objectiu facilitar la creació d'assistents d'avaluació per a activitats dirigides a objectius. També es pot utilitzar com a assistent de formularis. Mentre edita, l'autor pot afegir diversos passos a l'assistent. En cada pas, l'autor pot definir quin contingut entra en aquest pas. El contingut pot ser de text pla, camps d’entrada, definició d’objectius i avaluació d’objectius. Un cop publicat, l'usuari final passarà pels passos de l'assistent. En l’últim pas de l’assistent, l’usuari pot generar un document amb tota l’entrada que s’ha enviat. Aquest document es pot descarregar. L'eina de documentació és totalment sensible i funciona molt bé en pantalles més petites i a l'escriptori.",
-        "keywords": { "dialog_cards": "targetes de diàleg" }
+        "keywords": {
+            "dialog_cards": "targetes de diàleg"
+        }
     },
     "H5P_DragQuestion": {
         "title": "Arrossegar i deixar anar (Drag and Drop)",
         "summary": "Creeu tasques d'arrossegar i deixar anar amb imatges",
         "description": "La pregunta arrossegar i deixar anar permet a l’estudiant associar dos o més elements i establir connexions lògiques d’una manera visual. Creeu preguntes sobre arrossegar i deixar anar amb text i imatges com a alternatives que es poden arrossegar. Les preguntes sobre arrossegar i deixar anar H5P admeten relacions entre preguntes i respostes, una a una, una a moltes, moltes a una i moltes a moltes.",
-        "keywords": { "drag_and drop": "arrossegar i deixar anar" }
+        "keywords": {
+            "drag_and drop": "arrossegar i deixar anar"
+        }
     },
     "H5P_DragText": {
         "title": "Arrossega les paraules (Drag the Words)",
         "summary": "Creeu tasques d'arrossegar i deixar anar basades en text",
         "description": "Arrossega les paraules permet als dissenyadors de contingut crear expressions textuals amb trossos de text que falten. L'usuari final arrossega un tros de text que falta al lloc correcte per formar una expressió completa. Es pot utilitzar per comprovar si l'usuari recorda un text que ha llegit o si entén alguna cosa. Ajuda l’usuari a pensar un text. És molt fàcil crear una tasca d'arrossegar les paraules. L'editor només escriu el text i inclou les paraules que es poden arrossegar amb signes d'asterisc com ara * arrossegableParaula *.",
-        "keywords": { "drag": "arrossegar", "words": "paraules" }
+        "keywords": {
+            "drag": "arrossegar",
+            "words": "paraules"
+        }
     },
     "H5P_Blanks": {
         "title": "Emplena els espais en blanc (Fill in the Blanks)",
@@ -103,31 +115,47 @@
         "title": "Endevina la resposta (Guess the Answer)",
         "summary": "Crea una imatge amb una pregunta i resposta",
         "description": "Aquest tipus de contingut permet als autors penjar una imatge i afegir una descripció adequada. Els usuaris finals poden endevinar la resposta i prémer la barra de sota de la imatge per mostrar la resposta correcta.",
-        "keywords": { "guess": "endevinalla", "answer": "contesta" }
+        "keywords": {
+            "guess": "endevinalla",
+            "answer": "contesta"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Iframe Embedder",
         "summary": "Insereix des d’una URL o un conjunt de fitxers",
         "description": "La inserció Iframe facilita la creació d’un H5P d’aplicacions JavaScript ja existents.",
-        "keywords": { "embed": "incrustar", "iframe": "iframe" }
+        "keywords": {
+            "embed": "incrustar",
+            "iframe": "iframe"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "Vídeo interactiu (Interactive Video)",
         "summary": "Creeu vídeos enriquits amb interaccions",
         "description": "Afegiu interactivitat al vostre vídeo amb explicacions, imatges addicionals, taules, ompliu l'espai en blanc i preguntes d'elecció múltiple. Les preguntes sobre qüestionaris admeten l’adaptació, és a dir, podeu saltar a una altra part del vídeo en funció de l’entrada de l’usuari. Es poden afegir resums interactius al final del vídeo. Els vídeos interactius es creen i s’editen mitjançant l’eina de creació personalitzada H5P en un navegador web estàndard.",
-        "keywords": { "interactive": "interactiu", "video": "vídeo" }
+        "keywords": {
+            "interactive": "interactiu",
+            "video": "vídeo"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "Marca les paraules (Mark the Words)",
         "summary": "Creeu una tasca on els usuaris ressaltin paraules",
         "description": "Marca les paraules permet als dissenyadors de contingut crear expressions textuals amb un conjunt definit de paraules correctes. L'usuari final ressalta les paraules segons la descripció de la tasca i obté una puntuació. Per a l’editor és molt fàcil crear un clic a les paraules desafiament. L’editor escriu el text i inclou les paraules en què se suposa que ha de fer clic l’usuari, les respostes correctes, en asterix com * correctWord *.",
-        "keywords": { "mark": "senyal", "words": "paraules" }
+        "keywords": {
+            "mark": "senyal",
+            "words": "paraules"
+        }
     },
     "H5P_MemoryGame": {
         "title": "Joc de memòria (Memory Game)",
         "summary": "Creeu el clàssic joc de maridatge d’imatges",
         "description": "Creeu els vostres propis jocs de memòria i proveu la memòria dels usuaris del vostre lloc amb aquest senzill i bonic joc HTML5.",
-        "keywords": { "memory": "memòria", "game": "joc", "cards": "targetes" }
+        "keywords": {
+            "memory": "memòria",
+            "game": "joc",
+            "cards": "targetes"
+        }
     },
     "H5P_MultiChoice": {
         "title": "Multiple Choice",
@@ -143,13 +171,18 @@
         "title": "Personality Quiz",
         "summary": "Crea qüestionaris de personalitat",
         "description": "En aquest tipus de contingut, l’autor defineix una sèrie de preguntes amb alternatives, on cada alternativa es combina amb una o més personalitats. Al final del test, l'usuari final veurà quina personalitat coincideix millor. Hi ha diverses maneres de fer aquest qüestionari visualment atractiu, per exemple. representant preguntes, alternatives i personalitats mitjançant imatges.",
-        "keywords": { "personality": "personalitat", "quiz": "qüestionari" }
+        "keywords": {
+            "personality": "personalitat",
+            "quiz": "qüestionari"
+        }
     },
     "H5P_Questionnaire": {
         "title": "El qüestionari (Questionnaire)",
         "summary": "Creeu un qüestionari per rebre comentaris",
         "description": "Obteniu comentaris i feu preguntes obertes a Vídeos interactius i altres tipus de contingut amb el qüestionari. El qüestionari fa que les respostes de l’usuari estiguin disponibles mitjançant una integració xAPI. Això significa que els propietaris de llocs web poden emmagatzemar les respostes de moltes maneres diferents. Les respostes es poden emmagatzemar en un LRS, els llocs tenen un emmagatzematge personalitzat o un script pot obtenir l'adreça de correu electrònic i utilitzar-la per enviar un missatge de correu electrònic a l'usuari. A H5P.org, les respostes s’emmagatzemen a Google Analytics.",
-        "keywords": { "questionnaire": "qüestionari" }
+        "keywords": {
+            "questionnaire": "qüestionari"
+        }
     },
     "H5P_QuestionSet": {
         "title": "Quiz (Question Set) (Quiz (Question Set))",
@@ -175,25 +208,36 @@
         "title": "Resum (Summary)",
         "summary": "Creeu tasques amb una llista d’afirmacions",
         "description": "Els resums ajuden l’alumne a recordar la informació clau d’un text, un vídeo o una presentació mitjançant la difusió activa d’un resum sobre el tema que ens ocupa. Quan l’aprenent ha completat un resum, es mostra una llista completa d’afirmacions clau sobre el tema.",
-        "keywords": { "summary": "resum" }
+        "keywords": {
+            "summary": "resum"
+        }
     },
     "H5P_Timeline": {
         "title": "Cronologia (Timeline)",
         "summary": "Creeu una cronologia d'esdeveniments amb multimèdia",
         "description": "Es tracta de Timeline.js desenvolupat per Knight Lab, empaquetat com a tipus de contingut H5P per tal de fer les línies de temps fàcilment editables, compartibles i reutilitzables. El tipus de contingut de la cronologia us permet situar una seqüència d’esdeveniments en un ordre cronològic. Per a cada esdeveniment podeu afegir imatges i textos. També podeu incloure recursos de Twitter, YouTube, Flickr, Vimeo, Google Maps i SoundCloud.",
-        "keywords": { "timeline": "cronologia", "slider": "control lliscant" }
+        "keywords": {
+            "timeline": "cronologia",
+            "slider": "control lliscant"
+        }
     },
     "H5P_TrueFalse": {
         "title": "Pregunta vertader / fals (True/False Question)",
         "summary": "Creeu preguntes vertaderes / falses",
         "description": "La pregunta vertader / fals és un tipus de contingut senzill i senzill que pot funcionar per si mateix o inserir-se en altres tipus de contingut, com ara la presentació del curs. Es pot crear una pregunta més complexa afegint una imatge o un vídeo.",
-        "keywords": { "true": "cert", "false": "fals" }
+        "keywords": {
+            "true": "cert",
+            "false": "fals"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "Hotspots de la imatge (Image Hotspots)",
         "summary": "Creeu una imatge amb diversos punts d'accés d'informació",
         "description": "Els punts d'accés d'imatges permeten crear una imatge amb punts d'interès interactius. Quan l'usuari prem un punt d'accés, es mostra una finestra emergent que conté una capçalera i text o vídeo. Amb l'editor H5P, podeu afegir tants punts d'accés com vulgueu.",
-        "keywords": { "image": "imatge", "hotspot": "punt d’accés" }
+        "keywords": {
+            "image": "imatge",
+            "hotspot": "punt d’accés"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Cerca diversos punts d'accés (Find Multiple Hotspots)",
@@ -214,7 +258,10 @@
         "title": "Gravadora d'àudio (Audio Recorder)",
         "summary": "Crea una gravació d'àudio",
         "description": "Una gravadora d'àudio HTML5. Enregistreu la vostra veu i reproduïu-la o descarregueu-ne un fitxer .wav. Utilitzeu el connector H5P per crear l’enregistrador d’àudio H5P al vostre lloc de Drupal, Wordpress o Moodle.",
-        "keywords": { "audio": "àudio", "recorder": "gravadora" }
+        "keywords": {
+            "audio": "àudio",
+            "recorder": "gravadora"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "Speak the Words",
@@ -254,7 +301,10 @@
         "title": "Flashcards",
         "summary": "Creeu targetes flash modernes i elegants",
         "description": "Aquest tipus de contingut permet als autors crear una sola targeta flash o un conjunt de targetes flash, on cada targeta té imatges aparellades amb preguntes i respostes. Els estudiants han d’emplenar el camp de text i després comprovar si la solució és correcta.",
-        "keywords": { "cards": "targetes", "animation": "animació" }
+        "keywords": {
+            "cards": "targetes",
+            "animation": "animació"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Parla el conjunt de paraules (Speak the Words Set)",
@@ -286,7 +336,9 @@
         "title": "Assaig (Essay)",
         "summary": "Creeu assaig amb comentaris instantanis",
         "description": "En aquest tipus de contingut, l'autor defineix un conjunt de paraules clau que representen aspectes crucials d'un tema. Aquestes paraules clau es combinen amb un text que els estudiants han compost i es poden utilitzar per proporcionar comentaris immediatament, ja sigui suggerint revisar determinats detalls del tema si falta una paraula clau, o bé confirmant les idees de l'estudiant si el text conté una paraula clau.\r\n",
-        "keywords": { "Essay": "Assaig" }
+        "keywords": {
+            "Essay": "Assaig"
+        }
     },
     "H5P_ImagePair": {
         "title": "Emparellament d'imatges (Image Pairing)",
@@ -300,7 +352,10 @@
         "title": "Dictat (Dictation)",
         "summary": "Creeu un dictat amb comentaris instantanis",
         "description": "Podeu afegir mostres d'àudio que continguin una frase per dictar i introduir la transcripció correcta. Els vostres estudiants poden escoltar les mostres i introduir allò que han escoltat en un camp de text. Les seves respostes s’avaluaran automàticament. Diverses opcions us permetran controlar la dificultat de l’exercici. Opcionalment, podeu afegir un segon exemple d'àudio per a una frase que pugui contenir una versió parlada lentament. També podeu establir un límit de freqüència amb què es pot reproduir una mostra, definir si la puntuació ha de ser rellevant per puntuar i decidir si els petits errors, com ara els errors d’escriptura, s’han de comptar com un error, un error complet o només un error mig.",
-        "keywords": { "language": "llenguatge", "audio": "àudio" }
+        "keywords": {
+            "language": "llenguatge",
+            "audio": "àudio"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "Escenari de ramificació (beta) (Branching Scenario (beta))",
@@ -321,13 +376,18 @@
         "title": "Llibre interactiu (Interactive Book)",
         "summary": "Creeu petits cursos, llibres i proves",
         "description": "Creeu petits cursos, llibres o proves. El llibre interactiu permet als autors combinar una gran quantitat de contingut interactiu, com ara vídeos interactius, preguntes, presentacions de cursos i molt més en diverses pàgines. Al final hi ha un resum que resumeix les puntuacions obtingudes per l’estudiant al llarg del llibre.",
-        "keywords": { "book": "llibre", "course": "per descomptat" }
+        "keywords": {
+            "book": "llibre",
+            "course": "per descomptat"
+        }
     },
     "H5P_KewArCode": {
         "title": "Codi KewAr (KewAr Code)",
         "summary": "Creeu codis QR per a diferents propòsits",
         "description": "KewAr Code permet als dissenyadors de contingut crear codis QR coneguts. Aquests codis QR poden codificar URL, però també informació de contacte, esdeveniments, ubicacions geogràfiques, etc. La gent els pot escanejar amb un lector de codis QR per activar l'acció escollida.",
-        "keywords": { "QR": "QR" }
+        "keywords": {
+            "QR": "QR"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "Calendari d’advent (beta) (Advent Calendar (beta))",
