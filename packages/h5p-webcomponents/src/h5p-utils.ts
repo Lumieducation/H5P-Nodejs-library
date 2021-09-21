@@ -31,7 +31,7 @@ export function mergeH5PIntegration(
     const newIntegrationDup = { ...newIntegration };
     // We don't merge content object information, as there might be issues with
     // this.
-    delete newIntegration.contents;
+    delete newIntegrationDup.contents;
 
     window.H5PIntegration = merge(window.H5PIntegration, newIntegrationDup);
 }
