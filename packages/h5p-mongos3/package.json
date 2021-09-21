@@ -51,7 +51,7 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "@types/fs-extra": "9.0.12",
+        "@types/fs-extra": "9.0.13",
         "@types/stream-buffers": "3.0.4",
         "fs-extra": "10.0.0",
         "promisepipe": "3.0.0",
