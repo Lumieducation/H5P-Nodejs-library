@@ -121,6 +121,16 @@ export default class H5PPlayerUI extends React.Component<{
         this.h5pPlayer.current?.showCopyright();
     }
 
+    /**
+     * Asks the H5P content to resize itself inside the dimensions of the
+     * container.
+     *
+     * Has no effect until the H5P object has fully initialized.
+     */
+    public resize(): void {
+        this.h5pPlayer.current?.resize();
+    }
+
     private loadContentCallbackWrapper = (
         contentId: string
     ): Promise<IPlayerModel> => this.props.loadContentCallback(contentId);
