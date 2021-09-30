@@ -1,6 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 
-import MongoDB, { Binary } from 'mongodb';
+import MongoDB, {
+    Binary,
+    DeleteResult,
+    InsertOneResult,
+    UpdateResult
+} from 'mongodb';
 import { Readable } from 'stream';
 import * as path from 'path';
 import {
@@ -46,7 +51,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         this.validateFilename(filename);
         const buffer = await this.readableToBuffer(readable);
 
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 {
@@ -103,10 +108,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         restricted: boolean
     ): Promise<IInstalledLibrary> {
         const ubername = LibraryName.toUberName(libraryData);
-        let result: MongoDB.InsertOneWriteOpResult<any>;
+        let result: InsertOneResult<any>;
         try {
             result = await this.mongodb.insertOne({
-                _id: ubername,
+                _id: ubername as any,
                 metadata: libraryData,
                 additionalMetadata: { restricted },
                 files: []
@@ -117,7 +122,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 details: error.message
             });
         }
-        if (!result.result.ok) {
+        if (!result.acknowledged) {
             log.error(`Error adding library to MongoDB: Insert failed.`);
             throw new Error('mongo-library-storage:error-adding-metadata');
         }
@@ -129,7 +134,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @param library the library whose files should be deleted
      */
     public async clearFiles(library: ILibraryName): Promise<void> {
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 {
@@ -194,7 +199,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @param library The library to remove.
      */
     public async deleteLibrary(library: ILibraryName): Promise<void> {
-        let result: MongoDB.DeleteWriteOpResultObject;
+        let result: DeleteResult;
         try {
             result = await this.mongodb.deleteOne({
                 _id: LibraryName.toUberName(library)
@@ -771,7 +776,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 'You must specify a library name when calling updateAdditionalMetadata.'
             );
         }
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 { _id: LibraryName.toUberName(library) },
@@ -809,7 +814,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         libraryMetadata: ILibraryMetadata
     ): Promise<IInstalledLibrary> {
         const ubername = LibraryName.toUberName(libraryMetadata);
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 { _id: ubername },
@@ -835,10 +840,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         }
         let additionalMetadata: IAdditionalLibraryMetadata;
         try {
-            additionalMetadata = await this.mongodb.findOne(
+            additionalMetadata = (await this.mongodb.findOne(
                 { _id: ubername },
                 { projection: { additionalMetadata: 1 } }
-            );
+            )) as any;
         } catch (error) {
             log.warn(
                 `Could not get additional metadata for library ${ubername}`

@@ -84,7 +84,7 @@ The [example Express application](/packages/h5p-examples/src/express.ts) can be
 configured to use the MongoDB library storage by setting the environment variables
 from above and these additional variables:
 
-* LIBRARY_STORAGE=mongos3
+* LIBRARYSTORAGE=mongos3
 * LIBRARY_MONGO_COLLECTION
 * LIBRARY_MONGO_COLLECTION
 * LIBRARY_AWS_S3_BUCKET
@@ -92,7 +92,7 @@ from above and these additional variables:
 An example call would be:
 
 ```bash
-MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs LIBRARY_STORAGE=mongos3 LIBRARY_MONGO_COLLECTION=h5p LIBRARY_AWS_S3_BUCKET=h5plibrarybucket npm start
+MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs LIBRARYSTORAGE=mongos3 LIBRARY_MONGO_COLLECTION=h5p LIBRARY_AWS_S3_BUCKET=h5plibrarybucket npm start
 ```
 
 ## Developing and testing

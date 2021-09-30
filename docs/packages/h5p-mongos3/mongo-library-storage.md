@@ -53,7 +53,7 @@ await storage.createIndexes();
 You can safely call `createIndexes()` every time you start you application, as
 MongoDB checks if indexes already exist before it creates new ones.
 
-### Notes:
+### Notes
 
 * The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
 * You can pass credentials and other configuration values to `initMongo` through the function parameters. Alternatively you can use these environment variables instead of using the function parameters:
@@ -70,13 +70,13 @@ The [example Express application](/packages/h5p-examples/src/express.ts) can be
 configured to use the MongoDB library storage by setting the environment variables
 from above and these additional variables:
 
-* LIBRARY_STORAGE=mongo
+* LIBRARYSTORAGE=mongo
 * LIBRARY_MONGO_COLLECTION
 
 An example call would be:
 
 ```bash
-MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs LIBRARY_STORAGE=mongo LIBRARY_MONGO_COLLECTION=h5p npm start
+MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs LIBRARYSTORAGE=mongo LIBRARY_MONGO_COLLECTION=h5p npm start
 ```
 
 ## Developing and testing

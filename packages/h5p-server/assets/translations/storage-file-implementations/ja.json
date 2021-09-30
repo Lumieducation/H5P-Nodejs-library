@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "{{id}}コンテンツに{{filename}}を追加できません：のコンテンツは存在しません。",
+    "add-library-file-not-installed": "ライブラリがインストールされていないため、ライブラリ{{libraryName}} {{filename}}を追加できません。",
+    "clear-library-not-found": "ライブラリがインストールされていないため、 {{libraryName}}クリアできません。",
+    "delete-content-file-not-found": "{{filename}}削除できません：存在しません。",
+    "delete-content-not-found": "コンテンツを削除できません：存在しません。",
+    "error-creating-content": "コンテンツを作成できませんでした。",
+    "error-generating-content-id": "新しいコンテンツのIDを生成できませんでした。",
+    "error-generating-unique-temporary-filename": "{{name}}一意のファイル名を判別できません",
+    "error-updating-metadata": "{{library}}の追加のメタデータは更新できません。エラー： {{error}}",
+    "get-library-metadata-not-installed": "ライブラリがインストールされていないため、ライブラリ{{libraryName}}メタデータを取得できません。",
+    "illegal-absolute-filename": "ファイル名の絶対パスは許可されていません： {{filename}}は不正です",
+    "illegal-relative-filename": "ファイル名の相対パスは許可されていません： {{filename}}は不正です",
+    "install-library-already-installed": "ライブラリ{{libraryName}}はすでにインストールされています。",
+    "remove-library-library-missing": "ライブラリ{{libraryName}}がシステムにインストールされていません。",
+    "temporary-file-not-found": "ファイル{{filename}}は、ユーザー{{userId}}アクセスできないか、存在しません。",
+    "update-library-library-missing": "ライブラリ{{libraryName}}はまだインストールされていないため、更新できません。"
+}

@@ -15,7 +15,7 @@ module.exports = {
         project: 'tsconfig.json',
         sourceType: 'module'
     },
-    plugins: ['prettier', '@typescript-eslint'],
+    plugins: ['prettier', '@typescript-eslint', 'import', 'react'],
     rules: {
         'no-script-url': 0,
         'no-restricted-syntax': 0,
@@ -77,5 +77,10 @@ module.exports = {
             }
         ],
         'class-methods-use-this': 0
+    },
+    settings: {
+        react: {
+            version: '17.0'
+        }
     }
 };

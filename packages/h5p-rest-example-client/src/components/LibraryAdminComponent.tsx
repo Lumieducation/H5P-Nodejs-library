@@ -93,10 +93,8 @@ export default class LibraryAdmin extends React.Component<
         }
         try {
             this.setState({ isUploading: true });
-            const {
-                installed,
-                updated
-            } = await this.librariesService.postPackage(files[0]);
+            const { installed, updated } =
+                await this.librariesService.postPackage(files[0]);
             if (installed + updated === 0) {
                 this.displayMessage(
                     'Upload successful, but no libraries were installed or updated. The content type is probably already installed on the system.'

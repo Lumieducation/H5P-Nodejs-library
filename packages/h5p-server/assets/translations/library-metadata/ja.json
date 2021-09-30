@@ -1,0 +1,65 @@
+{
+    "H5P_Image": {
+        "title": "画像"
+    },
+    "H5P_ContinuousText": {
+        "title": "連続テキスト"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "フリーテキストの質問"
+    },
+    "H5P_GoToScene": {
+        "title": "シーンに移動"
+    },
+    "H5P_GoToQuestion": {
+        "title": "交差点"
+    },
+    "H5P_GoalsPage": {
+        "title": "目標ページ"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "目標評価ページ"
+    },
+    "H5P_StandardPage": {
+        "title": "標準ページ"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "ドキュメントエクスポートページ"
+    },
+    "H5P_Link": {
+        "title": "リンク"
+    },
+    "H5P_Nil": {
+        "title": "ラベル"
+    },
+    "H5P_IVHotspot": {
+        "title": "ナビゲーションホットスポット"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "自由形式の質問"
+    },
+    "H5P_Shape": {
+        "title": "形"
+    },
+    "H5P_Summary": {
+        "title": "概要"
+    },
+    "H5P_Table": {
+        "title": "テーブル"
+    },
+    "H5P_Text": {
+        "title": "文章"
+    },
+    "H5P_Video": {
+        "title": "ビデオ"
+    },
+    "H5P_AdvancedText": {
+        "title": "文章"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "シンプルなマルチチョイス"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "分岐の質問"
+    }
+}

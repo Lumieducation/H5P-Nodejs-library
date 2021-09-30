@@ -3,7 +3,7 @@
         "title": "Imagen"
     },
     "H5P_ContinuousText": {
-        "title": "Texto Continuo"
+        "title": "Texto continuo"
     },
     "H5P_FreeTextQuestion": {
         "title": "Pregunta de texto libre"
@@ -57,9 +57,9 @@
         "title": "Texto"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Opción Múltiple Simple"
+        "title": "Elección múltiple simple"
     },
     "H5P_BranchingQuestion": {
-        "title": "Pregunta de Ramificación"
+        "title": "Pregunta de ramificación"
     }
 }

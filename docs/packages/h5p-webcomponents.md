@@ -325,6 +325,15 @@ display somewhere.
 
 Returns true if there is copyright information to be displayed.
 
+### resize
+
+Signals the H5P content inside the component to resize itself according to the
+dimensions of the container. Can be called if you have changed the size of the
+container in an unusual fashion (e.g. by scaling it with CSS transform) and you
+need to resize the content manually. The component already automatically calls
+the resize function when its own size is changed, so this will rarely be the
+case.
+
 ### showCopyright
 
 Shows the copyright information in a window overlaying the H5P content.

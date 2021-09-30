@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-import MongoDB from 'mongodb';
+import MongoDB, { DeleteResult, InsertOneResult, UpdateResult } from 'mongodb';
 import AWS from 'aws-sdk';
 import { Readable } from 'stream';
 import * as path from 'path';
@@ -127,10 +127,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         restricted: boolean
     ): Promise<IInstalledLibrary> {
         const ubername = LibraryName.toUberName(libraryData);
-        let result: MongoDB.InsertOneWriteOpResult<any>;
+        let result: InsertOneResult<any>;
         try {
             result = await this.mongodb.insertOne({
-                _id: ubername,
+                _id: ubername as any,
                 metadata: libraryData,
                 additionalMetadata: { restricted }
             });
@@ -140,7 +140,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 { details: error.message }
             );
         }
-        if (!result.result.ok) {
+        if (!result.acknowledged) {
             throw new Error('mongo-s3-library-storage:error-adding-metadata');
         }
         return InstalledLibrary.fromMetadata({ ...libraryData, restricted });
@@ -228,7 +228,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         }
         await this.clearFiles(library);
 
-        let result: MongoDB.DeleteWriteOpResultObject;
+        let result: DeleteResult;
         try {
             result = await this.mongodb.deleteOne({
                 _id: LibraryName.toUberName(library)
@@ -696,7 +696,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 'You must specify a library name when calling updateAdditionalMetadata.'
             );
         }
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 { _id: LibraryName.toUberName(library) },
@@ -733,7 +733,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         libraryMetadata: ILibraryMetadata
     ): Promise<IInstalledLibrary> {
         const ubername = LibraryName.toUberName(libraryMetadata);
-        let result: MongoDB.UpdateWriteOpResult;
+        let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
                 { _id: ubername },
@@ -759,10 +759,11 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         }
         let additionalMetadata: IAdditionalLibraryMetadata;
         try {
-            additionalMetadata = await this.mongodb.findOne(
-                { _id: ubername },
-                { projection: { additionalMetadata: 1 } }
-            );
+            additionalMetadata =
+                await this.mongodb.findOne<IAdditionalLibraryMetadata>(
+                    { _id: ubername },
+                    { projection: { additionalMetadata: 1 } }
+                );
         } catch (error) {
             log.warn(
                 `Could not get additional metadata for library ${ubername}`

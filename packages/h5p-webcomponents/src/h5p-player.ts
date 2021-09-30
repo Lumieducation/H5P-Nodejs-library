@@ -267,6 +267,19 @@ export class H5PPlayerComponent extends HTMLElement {
     }
 
     /**
+     * Asks the H5P content to resize itself inside the dimensions of the
+     * container.
+     *
+     * Has no effect until the H5P object has fully initialized.
+     */
+    public resize(): void {
+        if (!this.h5pInstance || !this.h5pInstance.trigger) {
+            return;
+        }
+        this.h5pInstance.trigger('resize');
+    }
+
+    /**
      * Displays the copyright notice in the regular H5P way.
      */
     public showCopyright(): void {

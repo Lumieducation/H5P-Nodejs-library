@@ -14,7 +14,9 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -57,7 +59,9 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -91,13 +95,15 @@ describe('aggregating data from library folders for the editor', () => {
 
     it('includes assets of preloaded and editor dependencies', () => {
         const h5pEditor = new H5PEditor(
-            null, // eslint-disable-next-line prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            null,
+            new H5PConfig(null, { baseUrl: '/h5p' }),
             null,
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -185,13 +191,14 @@ describe('aggregating data from library folders for the editor', () => {
     it('includes dependencies of dependencies in the javascript field', () => {
         const h5pEditor = new H5PEditor(
             null,
-            // eslint-disable-next-line prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            new H5PConfig(null, { baseUrl: '/h5p' }),
             null,
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -294,7 +301,9 @@ describe('aggregating data from library folders for the editor', () => {
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -367,13 +376,14 @@ describe('aggregating data from library folders for the editor', () => {
 
         const h5pEditor = new H5PEditor(
             null,
-            // eslint-disable-next-line prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            new H5PConfig(null, { baseUrl: '/h5p' }),
             null,
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),
@@ -440,13 +450,14 @@ describe('aggregating data from library folders for the editor', () => {
     it('lists dependencies in correct order', () => {
         const h5pEditor = new H5PEditor(
             null,
-            // eslint-disable-next-line prefer-object-spread
-            Object.assign({}, new H5PConfig(null), { baseUrl: '/h5p' }),
+            new H5PConfig(null, { baseUrl: '/h5p' }),
             null,
             null,
             null
         );
-        const libraryManager = new LibraryManager(new FileLibraryStorage(''));
+        const libraryManager = new LibraryManager(
+            new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
+        );
 
         Object.assign(libraryManager, {
             listAddons: () => Promise.resolve([]),

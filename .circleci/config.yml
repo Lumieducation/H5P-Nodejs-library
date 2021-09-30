@@ -1,6 +1,6 @@
 version: 2.1
-orbs:
-    coveralls: coveralls/coveralls@1.0.6
+# orbs:
+#    coveralls: coveralls/coveralls@1.0.6
 
 jobs:
     install-build:
@@ -87,9 +87,9 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: Unit tests
+            # - coveralls/upload:
+            #      parallel: true
+            #      flag_name: Unit tests
 
     integration-tests:
         docker:
@@ -99,9 +99,9 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test:integration -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: Integration tests
+            # - coveralls/upload:
+            #      parallel: true
+            #      flag_name: Integration tests
 
     html-exporter-tests:
         docker:
@@ -111,10 +111,10 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test:html-exporter -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
-                  flag_name: HTML Exporter Tests
+            # - coveralls/upload:
+            #      parallel: true
+            #      path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
+            #      flag_name: HTML Exporter Tests
 
     e2e-tests:
         docker:
@@ -142,9 +142,9 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test:db -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: DB tests
+            # - coveralls/upload:
+            #      parallel: true
+            #      flag_name: DB tests
 
     release:
         docker:
@@ -154,8 +154,8 @@ jobs:
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - attach_workspace:
                   at: .
-            - coveralls/upload:
-                  parallel_finished: true
+            # - coveralls/upload:
+            #      parallel_finished: true
             - run:
                   name: config git
                   command: git config --global user.email "c@Lumi.education" && git config --global user.name "Lumi"

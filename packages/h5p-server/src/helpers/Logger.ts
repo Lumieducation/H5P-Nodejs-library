@@ -1,11 +1,10 @@
-import debug from 'debug';
+import debugModule from 'debug';
 
 enum LogLevelNumber {
     error,
     warn,
     info,
     verbose,
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     debug,
     silly
 }
@@ -22,9 +21,8 @@ export default class Logger {
     constructor(scope: string) {
         this.scope = scope;
 
-        const d = debug(`h5p:${this.scope}`);
+        const d = debugModule(`h5p:${this.scope}`);
 
-        // eslint-disable-next-line no-multi-assign
         this.DEBUG = d;
         this.ERROR = d;
         this.INFO = d;

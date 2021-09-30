@@ -33,7 +33,10 @@
         "title": "Limning (Collage)",
         "summary": "Skapa ett collage med flera bilder",
         "description": "Med Collage-verktyget kan du organisera bilder i en lugnande komposition.",
-        "keywords": { "collage": "collage", "image": "bild" }
+        "keywords": {
+            "collage": "collage",
+            "image": "bild"
+        }
     },
     "H5P_Column": {
         "title": "Kolumn (Column)",
@@ -59,67 +62,100 @@
         "title": "Dialogkort (Dialog Cards)",
         "summary": "Skapa textbaserade vändkort",
         "description": "Dialogkort kan användas som en övning för att hjälpa eleverna att memorera ord, uttryck eller meningar. På kortets framsida finns en ledtråd för ett ord eller uttryck. Genom att vrida kortet avslöjar eleven ett motsvarande ord eller uttryck. Dialogkort kan användas vid språkinlärning, för att presentera matematiska problem eller hjälpa elever att komma ihåg fakta som historiska händelser, formler eller namn.",
-        "keywords": { "dialog_cards": "dialogkort" }
+        "keywords": {
+            "dialog_cards": "dialogkort"
+        }
     },
     "H5P_DocumentationTool": {
         "title": "Dokumentationsverktyg (Documentation Tool)",
         "summary": "Skapa en formulärguide med textexport",
         "description": "Dokumentationsverktyget syftar till att göra det enkelt att skapa utvärderingsguider för målstyrda aktiviteter. Det kan också användas som en formulärguide. Under redigering kan författaren lägga till flera steg i guiden. I varje steg kan författaren definiera vilket innehåll som går in i det steget. Innehållet kan vara ren text, inmatningsfält, måldefinition och målbedömning. När den väl publicerats kommer slutanvändaren att ta sig genom guiden. I det sista steget i guiden kan användaren generera ett dokument med all inmatning som har skickats. Detta dokument kan laddas ner. Dokumentationsverktyget är fullt responsivt och fungerar bra på mindre skärmar såväl som på skrivbordet.",
-        "keywords": { "dialog_cards": "dialogkort" }
+        "keywords": {
+            "dialog_cards": "dialogkort"
+        }
     },
     "H5P_DragQuestion": {
         "title": "Dra och släpp (Drag and Drop)",
         "summary": "Skapa dra och släpp-uppgifter med bilder",
         "description": "Dra och släpp frågan gör det möjligt för eleven att associera två eller flera element och skapa logiska kopplingar på ett visuellt sätt. Skapa dra och släpp-frågor med både text och bilder som dragbara alternativ. H5P Dra och släpp-frågor stöder en-till-en, en-till-många, många-till-en och många-till-många förhållanden mellan frågor och svar.",
-        "keywords": { "drag_and drop": "dra och släpp" }
+        "keywords": {
+            "drag_and drop": "dra och släpp"
+        }
     },
     "H5P_DragText": {
         "title": "Dra orden (Drag the Words)",
         "summary": "Skapa textbaserade dra och släpp-uppgifter",
         "description": "Drag the Words tillåter innehållsdesigners att skapa textuttryck med textstycken som saknas. Slutanvändaren drar en saknad textbit till sin rätta plats för att bilda ett fullständigt uttryck. Kan användas för att kontrollera om användaren kommer ihåg en text hon har läst, eller om hon förstår något. Hjälper användaren att tänka igenom en text. Det är super lätt att skapa en drag-orden-uppgift. Redaktören skriver bara texten och bifogar orden som ska dras med asterisktecken som * draggableWord *.",
-        "keywords": { "drag": "drag", "words": "ord" }
+        "keywords": {
+            "drag": "drag",
+            "words": "ord"
+        }
     },
     "H5P_Blanks": {
         "title": "Fyll i tomrummen (Fill in the Blanks)",
         "summary": "Skapa en uppgift med saknade ord i en text",
         "description": "Eleverna fyller i de saknade orden i en text. Läraren visas en lösning efter att ha fyllt i alla ord som saknas eller efter varje ord beroende på inställningar. Författare skriver in text och markerar ord som ska ersättas med en asterix. Förutom inlärning på modersmål och andraspråk kan Fyll i tomma ämnen användas för att testa elevens förmåga att återge fakta eller producera matematiska slutsatser.",
-        "keywords": { "fill": "fylla", "blanks": "ämnen", "text": "text" }
+        "keywords": {
+            "fill": "fylla",
+            "blanks": "ämnen",
+            "text": "text"
+        }
     },
     "H5P_ImageHotspotQuestion": {
         "title": "Hitta hotspot (Find the Hotspot)",
         "summary": "Skapa bild-hotspots som användare kan hitta",
         "description": "Denna innehållstyp gör det möjligt för slutanvändare att trycka någonstans på en bild och få feedback om det var korrekt eller felaktigt enligt uppgiftsbeskrivningen. Författaren laddar upp en bild och definierar olika hotspots som motsvarar detaljer eller delar av bilden. Hotspots kan antingen definieras som korrekta eller felaktiga, och författaren ger lämplig feedbackstext i båda fallen. Författaren kan också definiera en feedback om slutanvändaren trycker någonstans som varken definieras som en korrekt eller felaktig hotspot.",
-        "keywords": { "find": "hitta", "hotspot": "hotspot", "image": "bild" }
+        "keywords": {
+            "find": "hitta",
+            "hotspot": "hotspot",
+            "image": "bild"
+        }
     },
     "H5P_GuessTheAnswer": {
         "title": "Gissa svaret (Guess the Answer)",
         "summary": "Skapa en bild med en fråga och svar",
         "description": "Denna innehållstyp tillåter författare att ladda upp en bild och lägga till en lämplig beskrivning. Slutanvändare kan gissa svaret och trycka på fältet under bilden för att avslöja rätt svar.",
-        "keywords": { "guess": "gissa", "answer": "svar" }
+        "keywords": {
+            "guess": "gissa",
+            "answer": "svar"
+        }
     },
     "H5P_IFrameEmbed": {
         "title": "Iframe Embedder",
         "summary": "Bädda in från en webbadress eller en uppsättning filer",
         "description": "Iframe-bädden gör det enkelt att skapa en H5P av redan existerande JavaScript-applikationer.",
-        "keywords": { "embed": "bädda in", "iframe": "iframe" }
+        "keywords": {
+            "embed": "bädda in",
+            "iframe": "iframe"
+        }
     },
     "H5P_InteractiveVideo": {
         "title": "Interaktiv video (Interactive Video)",
         "summary": "Skapa videor berikade med interaktioner",
         "description": "Lägg till interaktivitet i din video med förklaringar, extra bilder, tabeller, Fyll i tomt och flervalsfrågor. Frågesportfrågor stöder anpassningsförmåga, vilket innebär att du kan hoppa till en annan del av videon baserat på användarens inmatning. Interaktiva sammanfattningar kan läggas till i slutet av videon. Interaktiva videor skapas och redigeras med hjälp av H5P-redigeringsverktyget i en vanlig webbläsare.",
-        "keywords": { "interactive": "interaktiv", "video": "video-" }
+        "keywords": {
+            "interactive": "interaktiv",
+            "video": "video-"
+        }
     },
     "H5P_MarkTheWords": {
         "title": "Mark the Words",
         "summary": "Skapa en uppgift där användare markerar ord",
         "description": "Markera orden tillåter innehållsdesigners att skapa textuttryck med en definierad uppsättning korrekta ord. Slutanvändaren lyfter fram ord enligt uppgiftsbeskrivningen och får poäng. För redaktören är det super enkelt att skapa ett klick på ordutmaningen. Redaktören skriver in texten och bifogar de ord som användaren ska klicka på, rätt svar, i asterix som * correctWord *.",
-        "keywords": { "mark": "märke", "words": "ord" }
+        "keywords": {
+            "mark": "märke",
+            "words": "ord"
+        }
     },
     "H5P_MemoryGame": {
         "title": "Memory Game",
         "summary": "Skapa det klassiska bildparningsspelet",
         "description": "Skapa dina egna minnesspel och testa minnet för webbplatsens användare med det här enkla men vackra HTML5-spelet.",
-        "keywords": { "memory": "minne", "game": "spel", "cards": "kort" }
+        "keywords": {
+            "memory": "minne",
+            "game": "spel",
+            "cards": "kort"
+        }
     },
     "H5P_MultiChoice": {
         "title": "Multiple Choice",
@@ -135,13 +171,18 @@
         "title": "Personlighet Quiz (Personality Quiz)",
         "summary": "Skapa personlighetsfrågor",
         "description": "I den här innehållstypen definierar författaren en serie frågor med alternativ, där varje alternativ matchas mot en eller flera personligheter. I slutet av frågesporten kommer slutanvändaren att se vilken personlighet som passar bäst. Det finns flera sätt att göra denna frågesport visuellt tilltalande, t.ex. representerar frågor, alternativ och personligheter med hjälp av bilder.",
-        "keywords": { "personality": "personlighet", "quiz": "frågesport" }
+        "keywords": {
+            "personality": "personlighet",
+            "quiz": "frågesport"
+        }
     },
     "H5P_Questionnaire": {
         "title": "Frågeformuläret (Questionnaire)",
         "summary": "Skapa ett frågeformulär för att få feedback",
         "description": "Få feedback och ställ öppna frågor i interaktiva videor och andra innehållstyper med frågeformuläret. Frågeformuläret gör användarens svar tillgängliga via en xAPI-integration. Detta innebär att webbplatsägare kan lagra svaren på många olika sätt. Svaren kan lagras i en LRS, webbplatserna har egen lagring eller ett skript kan hämta e-postadressen och använda den för att skicka användaren ett e-postmeddelande. På H5P.org sparas svar i Google Analytics.",
-        "keywords": { "questionnaire": "frågeformulär" }
+        "keywords": {
+            "questionnaire": "frågeformulär"
+        }
     },
     "H5P_QuestionSet": {
         "title": "Quiz (Question Set) (Quiz (Question Set))",
@@ -167,25 +208,36 @@
         "title": "Sammanfattning (Summary)",
         "summary": "Skapa uppgifter med en lista med uttalanden",
         "description": "Sammanfattningar hjälper eleven att komma ihåg nyckelinformation i en text, video eller presentation genom att aktivt lägga en sammanfattning om ämnet till hands. När eleven har slutfört en sammanfattning visas en fullständig lista med viktiga uttalanden om ämnet.",
-        "keywords": { "summary": "sammanfattning" }
+        "keywords": {
+            "summary": "sammanfattning"
+        }
     },
     "H5P_Timeline": {
         "title": "Tidslinje (Timeline)",
         "summary": "Skapa en tidslinje över händelser med multimedia",
         "description": "Detta är Timeline.js utvecklat av Knight Lab, förpackat som en H5P-innehållstyp för att göra tidslinjer enkelt redigerbara, delbara och återanvändbara. Med tidslinjens innehållstyp kan du placera en sekvens av händelser i kronologisk ordning. För varje evenemang kan du lägga till bilder och texter. Du kan också inkludera tillgångar från Twitter, YouTube, Flickr, Vimeo, Google Maps och SoundCloud.",
-        "keywords": { "timeline": "tidslinje", "slider": "skjutreglage" }
+        "keywords": {
+            "timeline": "tidslinje",
+            "slider": "skjutreglage"
+        }
     },
     "H5P_TrueFalse": {
         "title": "True / False Question (True/False Question)",
         "summary": "Skapa sanna / falska frågor",
         "description": "True / False Question är en enkel och okomplicerad innehållstyp som kan fungera av sig själv eller infogas i andra innehållstyper som till exempel kurspresentation. En mer komplex fråga kan skapas genom att lägga till en bild eller en video.",
-        "keywords": { "true": "Sann", "false": "falsk" }
+        "keywords": {
+            "true": "Sann",
+            "false": "falsk"
+        }
     },
     "H5P_ImageHotspots": {
         "title": "Bildhotspots (Image Hotspots)",
         "summary": "Skapa en bild med flera informationshotspots",
         "description": "Bildhotspots gör det möjligt att skapa en bild med interaktiva hotspots. När användaren trycker på en hotspot visas en popup som innehåller en rubrik och text eller video. Med hjälp av H5P-redigeraren kan du lägga till så många hotspots som du vill.",
-        "keywords": { "image": "bild", "hotspot": "hotspot" }
+        "keywords": {
+            "image": "bild",
+            "hotspot": "hotspot"
+        }
     },
     "H5P_ImageMultipleHotspotQuestion": {
         "title": "Hitta flera hotspots (Find Multiple Hotspots)",
@@ -206,7 +258,10 @@
         "title": "Ljudinspelare (Audio Recorder)",
         "summary": "Skapa en ljudinspelning",
         "description": "En HTML5-ljudinspelare. Spela in din röst och spela upp eller ladda ner en .wav-fil från din inspelning. Använd H5P-plugin för att skapa H5P Audio Recorder till din Drupal-, Wordpress- eller Moodle-webbplats.",
-        "keywords": { "audio": "audio", "recorder": "inspelare" }
+        "keywords": {
+            "audio": "audio",
+            "recorder": "inspelare"
+        }
     },
     "H5P_SpeakTheWords": {
         "title": "Speak the Words",
@@ -246,7 +301,10 @@
         "title": "Flashcards",
         "summary": "Skapa snygga och moderna flashcards",
         "description": "Denna innehållstyp gör det möjligt för författare att skapa ett enda flashkort eller en uppsättning flashkort där varje kort har bilder ihopkopplade med frågor och svar. Eleverna måste fylla i textfältet och sedan kontrollera att deras lösning är korrekt.",
-        "keywords": { "cards": "kort", "animation": "animation" }
+        "keywords": {
+            "cards": "kort",
+            "animation": "animation"
+        }
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Speak the Words Set",
@@ -278,19 +336,26 @@
         "title": "Uppsats (Essay)",
         "summary": "Skapa uppsats med omedelbar feedback",
         "description": "I denna innehållstyp definierar författaren en uppsättning nyckelord som representerar viktiga aspekter av ett ämne. Dessa nyckelord matchas mot en text som eleverna har komponerat och kan användas för att omedelbart ge feedback - antingen föreslår att vissa ämnesdetaljer revideras om ett nyckelord saknas eller bekräftar studentens idéer om texten innehåller ett nyckelord.\r\n",
-        "keywords": { "Essay": "Uppsats" }
+        "keywords": {
+            "Essay": "Uppsats"
+        }
     },
     "H5P_ImagePair": {
         "title": "Bildparning (Image Pairing)",
         "summary": "Dra och släpp bildmatchningsspel",
         "description": "Bildparning är en enkel och effektiv aktivitet som kräver att eleverna matchar bildpar. Eftersom det inte krävs att båda bilderna i ett par ska vara desamma, kan författare också testa förståelsen av ett förhållande mellan två olika bilder.",
-        "keywords": { "image_images matching pair": "bildbilder matchande par" }
+        "keywords": {
+            "image_images matching pair": "bildbilder matchande par"
+        }
     },
     "H5P_Dictation": {
         "title": "Diktat (Dictation)",
         "summary": "Skapa en diktat med omedelbar feedback",
         "description": "Du kan lägga till ljudprover som innehåller en mening för diktering och ange rätt transkription. Dina elever kan lyssna på proverna och skriva in det de har hört i ett textfält. Deras svar utvärderas automatiskt. Flera alternativ gör att du kan kontrollera övningens svårighet. Du kan valfritt lägga till ett andra ljudprov för en mening som kan innehålla en version som talas långsamt. Du kan också ställa in en gräns för hur ofta ett prov kan spelas, definiera om interpunktion ska vara relevant för poäng och bestämma om små misstag som skrivfel ska räknas som inget misstag, ett helt fel eller bara ett halvt misstag.",
-        "keywords": { "language": "språk", "audio": "audio" }
+        "keywords": {
+            "language": "språk",
+            "audio": "audio"
+        }
     },
     "H5P_BranchingScenario": {
         "title": "Greningsscenario (beta) (Branching Scenario (beta))",
@@ -311,13 +376,18 @@
         "title": "Interactive Book",
         "summary": "Skapa små kurser, böcker och test",
         "description": "Skapa små kurser, böcker eller test. Interactive Book tillåter författare att kombinera stora mängder interaktivt innehåll som interaktiva videor, frågor, kurspresentationer och mer på flera sidor. Det finns en sammanfattning i slutet som sammanfattar poängen som eleven fått genom hela boken.",
-        "keywords": { "book": "bok", "course": "kurs" }
+        "keywords": {
+            "book": "bok",
+            "course": "kurs"
+        }
     },
     "H5P_KewArCode": {
         "title": "KewAr-kod (KewAr Code)",
         "summary": "Skapa QR-koder för olika ändamål",
         "description": "KewAr Code gör det möjligt för innehållsdesigners att skapa välkända QR-koder. Dessa QR-koder kan koda URL: er, men också kontaktinformation, händelser, geografiska platser etc. Människor kan skanna dem med en QR-kodläsare för att utlösa den valda åtgärden.",
-        "keywords": { "QR": "QR" }
+        "keywords": {
+            "QR": "QR"
+        }
     },
     "H5P_AdventCalendar": {
         "title": "Adventskalender (beta) (Advent Calendar (beta))",
