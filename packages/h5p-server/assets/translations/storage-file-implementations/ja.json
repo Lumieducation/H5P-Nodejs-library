@@ -1,8 +1,8 @@
 {
     "add-file-content-not-found": "{{id}}コンテンツに{{filename}}を追加できません：のコンテンツは存在しません。",
     "add-library-file-not-installed": "ライブラリがインストールされていないため、ライブラリ{{libraryName}} {{filename}}を追加できません。",
-    "clear-library-not-found": "ライブラリがインストールされていないため、 {{libraryName}}クリアできません。",
-    "delete-content-file-not-found": "{{filename}}削除できません：存在しません。",
+    "clear-library-not-found": "ライブラリがインストールされていないため、 {{libraryName}}をクリアできません。",
+    "delete-content-file-not-found": "{{filename}}を削除できません：存在しません。",
     "delete-content-not-found": "コンテンツを削除できません：存在しません。",
     "error-creating-content": "コンテンツを作成できませんでした。",
     "error-generating-content-id": "新しいコンテンツのIDを生成できませんでした。",

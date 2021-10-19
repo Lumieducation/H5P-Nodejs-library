@@ -35,7 +35,7 @@
     "invalid-ubername-pattern": "'{{name}}' geçerli bir H5P kütüphanesi adı (\"ubername\") değil. Şu kalıbı izlemelisiniz: '{{example}}'",
     "library-consistency-check-file-missing": "{{name}} kütüphanesindeki eksik dosyalar: {{files}}",
     "library-consistency-check-library-json-unreadable": "{{name}} kütüphanesinde hata: library.json okunamıyor: {{message}}",
-    "library-consistency-check-not-installed": "Kütüphane kurulu olmadığından kütüphane tutarlılığı {{name}}",
+    "library-consistency-check-not-installed": "Kütüphane kurulu olmadığından {{name}} için kütüphane tutarlılığı kontrol edilemiyor.",
     "library-directory-name-mismatch": "Kütüphane dizin adı, machineName veya machineName-majorVersion.minorVersion (library.json'dan) ile eşleşmelidir. (Directory: {{directoryName}} , machineName: {{machineName}} , majorVersion: {{majorVersion}} , minorVersion: {{minorVersion}} )",
     "library-file-missing": "{{library}} kütüphanesinin {{filename}} kütüphane dosyası mevcut değil.",
     "library-missing": "{{library}} kütüphanesi bu sistemde kurulu değil.",
