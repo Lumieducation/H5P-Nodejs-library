@@ -1,6 +1,6 @@
 {
     "H5P_Image": {
-        "title": "resim"
+        "title": "Görsel"
     },
     "H5P_ContinuousText": {
         "title": "Sürekli Metin"
@@ -12,7 +12,7 @@
         "title": "Sahneye Git"
     },
     "H5P_GoToQuestion": {
-        "title": "kavşak"
+        "title": "Çapraz Yollar"
     },
     "H5P_GoalsPage": {
         "title": "Hedefler sayfası"
@@ -33,13 +33,13 @@
         "title": "Etiket"
     },
     "H5P_IVHotspot": {
-        "title": "Navigasyon Bağlantı Noktası"
+        "title": "Navigasyon Etkin Noktası"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Açık uçlu soru"
+        "title": "Açık Uçlu Soru"
     },
     "H5P_Shape": {
-        "title": "şekiller"
+        "title": "Şekiller"
     },
     "H5P_Summary": {
         "title": "Özet"
