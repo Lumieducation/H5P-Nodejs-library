@@ -58,6 +58,6 @@
     "devDependencies": {
         "promisepipe": "3.0.0",
         "puppeteer": "10.4.0",
-        "tmp-promise": "3.0.2"
+        "tmp-promise": "3.0.3"
     }
 }
