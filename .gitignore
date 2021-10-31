@@ -10,7 +10,6 @@ h5p
 coverage
 
 # vscode
-.vscode
 .DS_Store
 microsoft.gpg
 .env 
