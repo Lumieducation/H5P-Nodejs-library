@@ -5,7 +5,6 @@
     "module": "./build/es2015/index.js",
     "types": "./build/es2015/index.d.ts",
     "scripts": {
-        "build:watch": "npx tsc --watch",
         "build": "npx tsc --build tsconfig.es2015.json && npx tsc --build tsconfig.umd.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules"
     },

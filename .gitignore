@@ -26,3 +26,5 @@ packages/h5p-html-exporter/test/data/content/*
 
 google_translate.json
 .json-autotranslate-cache
+
+.dccache
