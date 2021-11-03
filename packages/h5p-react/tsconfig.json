@@ -1,16 +1,9 @@
 {
+    "extends": "./tsconfig.build.json",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "baseUrl": "./",
-        "declaration": true,
-        "jsx": "react",
-        "lib": ["DOM", "ES2017", "ES2016.Array.Include"],
-        "moduleResolution": "node",
-        "noImplicitAny": false,
-        "removeComments": false,
-        "sourceMap": true,
-        "target": "ES2017",
-    },
-    "exclude": ["node_modules"],
-    "include": ["src/**/*.ts", "src/**/*.tsx"]
+        "paths": {
+            "@lumieducation/h5p-server": ["../h5p-server/src"],
+            "@lumieducation/h5p-webcomponents": ["../h5p-webcomponents/src"]
+        }
+    }
 }

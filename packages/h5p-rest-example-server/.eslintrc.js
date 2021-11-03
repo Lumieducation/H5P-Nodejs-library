@@ -1,7 +1,7 @@
 module.exports = {
     extends: ['../../.eslintrc.js'],
     parserOptions: {
-        project: 'tsconfig.json',
+        project: 'tsconfig.build.json',
         sourceType: 'module'
     },
     rules: {
