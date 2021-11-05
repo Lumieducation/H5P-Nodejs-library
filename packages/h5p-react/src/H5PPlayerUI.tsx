@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import { Component, createRef, ReactNode, RefObject } from 'react';
 
 import {
     defineElements,
@@ -23,27 +24,20 @@ declare global {
     }
 }
 
-export default class H5PPlayerUI extends React.Component<{
+interface IH5PPlayerUIProps {
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
     onxAPIStatement?: (statement: any, context: any, event: IxAPIEvent) => void;
-}> {
-    constructor(props: {
-        contentId: string;
-        loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
-        onInitialized?: (contentId: string) => void;
-        onxAPIStatement?: (
-            statement: any,
-            context: any,
-            event: IxAPIEvent
-        ) => void;
-    }) {
+}
+
+export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
+    constructor(props: IH5PPlayerUIProps) {
         super(props);
-        this.h5pPlayer = React.createRef();
+        this.h5pPlayer = createRef();
     }
 
-    private h5pPlayer: React.RefObject<H5PPlayerComponent>;
+    private h5pPlayer: RefObject<H5PPlayerComponent>;
 
     public componentDidMount(): void {
         this.registerEvents();
@@ -105,7 +99,7 @@ export default class H5PPlayerUI extends React.Component<{
         return this.h5pPlayer.current?.hasCopyrightInformation();
     }
 
-    public render(): React.ReactNode {
+    public render(): ReactNode {
         return (
             <h5p-player
                 ref={this.h5pPlayer}

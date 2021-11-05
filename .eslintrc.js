@@ -33,11 +33,6 @@ module.exports = {
         'no-continue': 0,
         'no-case-declarations': 0,
         'prettier/prettier': 'error',
-        'react/destructuring-assignment': [
-            'error',
-            'always',
-            { ignoreClassFields: true }
-        ],
         '@typescript-eslint/typedef': [
             'error',
             {
