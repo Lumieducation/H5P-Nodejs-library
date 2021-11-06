@@ -1,10 +1,13 @@
+/* eslint-disable no-await-in-loop */
+
 import fsExtra from 'fs-extra';
 import path from 'path';
-import { withDir } from 'tmp-promise';
+import { withDir, file, FileResult } from 'tmp-promise';
 
 import User from './User';
-
 import { createH5PEditor } from './helpers/H5PEditor';
+
+import { ContentMetadata } from '../src/ContentMetadata';
 
 describe('H5PEditor', () => {
     it('returns metadata and parameters of package uploads', async () => {
@@ -74,6 +77,61 @@ describe('H5PEditor', () => {
                         user
                     )
                 ).resolves.toEqual(true);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('keeps filenames short in multiple uploads', async () => {
+        // Regression check for a bug in which content filenames became very
+        // long when users exported and uploaded h5ps repeatedly. (#1852)
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+                let currentFilename = path.resolve(
+                    'test/data/validator/valid2.h5p'
+                );
+                let tempFile: FileResult;
+
+                for (let x = 0; x < 10; x++) {
+                    // Upload h5p
+                    let fileBuffer = await fsExtra.readFile(currentFilename);
+                    const { metadata, parameters } =
+                        await h5pEditor.uploadPackage(fileBuffer, user);
+
+                    // Delete old h5p file on disk if it exists
+                    await tempFile?.cleanup();
+
+                    const contentId = await h5pEditor.saveOrUpdateContent(
+                        undefined,
+                        parameters,
+                        metadata,
+                        ContentMetadata.toUbername(metadata),
+                        user
+                    );
+
+                    // Download h5p
+                    tempFile = await file({ keep: false, postfix: '.h5p' });
+                    currentFilename = tempFile.path;
+                    const writeStream =
+                        fsExtra.createWriteStream(currentFilename);
+                    const packageFinishedPromise = new Promise<void>(
+                        (resolve) => {
+                            writeStream.on('close', () => {
+                                resolve();
+                            });
+                        }
+                    );
+                    await h5pEditor.exportContent(contentId, writeStream, user);
+                    await packageFinishedPromise;
+                    writeStream.close();
+
+                    // CHeck if filename remains short
+                    expect(
+                        /^earth-[0-9a-z]+\.jpg$/i.test(parameters?.image?.path)
+                    ).toBe(true);
+                }
             },
             { keep: false, unsafeCleanup: true }
         );
