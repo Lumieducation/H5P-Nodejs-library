@@ -1,6 +1,6 @@
 import { ReadStream } from 'fs';
 import fsExtra from 'fs-extra';
-import getAllFiles from 'get-all-files';
+import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
 
@@ -130,7 +130,7 @@ export default class DirectoryTemporaryFileStorage
                 users.map(async (u) => {
                     const basePath = this.getAbsoluteUserDirectoryPath(u);
                     const basePathLength = basePath.length + 1;
-                    const filesOfUser = await getAllFiles.async.array(basePath);
+                    const filesOfUser = await getAllFiles(basePath).toArray();
                     return Promise.all(
                         filesOfUser
                             .map((f) => f.substr(basePathLength))

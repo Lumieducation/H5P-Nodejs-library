@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as yauzlPromise from 'yauzl-promise';
 import fsExtra from 'fs-extra';
 import upath from 'upath';
-import getAllFiles from 'get-all-files';
+import { getAllFiles } from 'get-all-files';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import H5pError from './helpers/H5pError';
@@ -157,7 +157,7 @@ export default class PackageValidator {
         await this.initializeJsonValidators();
 
         const packagePathLength = packagePath.length + 1;
-        const files = (await getAllFiles.async.array(packagePath)).map((f) =>
+        const files = (await getAllFiles(packagePath).toArray()).map((f) =>
             upath.toUnix(f.substr(packagePathLength))
         );
 

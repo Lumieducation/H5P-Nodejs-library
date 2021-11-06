@@ -1,7 +1,6 @@
 import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
-import getAllFiles from 'get-all-files';
-import path from 'path';
+import { getAllFiles } from 'get-all-files';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -635,7 +634,7 @@ export default class LibraryManager {
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
         const fromDirectoryLength = fromDirectory.length + 1;
-        const files: string[] = await getAllFiles.async.array(fromDirectory);
+        const files = await getAllFiles(fromDirectory).toArray();
         await Promise.all(
             files.map((fileFullPath: string) => {
                 const fileLocalPath: string =
