@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "declaration": true,
+        "jsx": "react",
+        "lib": ["DOM", "ES2017", "ES2016.Array.Include"],
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "removeComments": false,
+        "sourceMap": true,
+        "target": "ES2017"
+    },
+    "exclude": ["node_modules"],
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

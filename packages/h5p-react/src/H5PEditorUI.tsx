@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import { Component, createRef, ReactNode, RefObject } from 'react';
+
 import {
     defineElements,
     H5PEditorComponent as H5PEditorWebComponent
@@ -22,7 +24,7 @@ declare global {
     }
 }
 
-export default class H5PEditorUI extends React.Component<{
+interface IH5PEditorUIProps {
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<
         IEditorModel & {
@@ -44,35 +46,15 @@ export default class H5PEditorUI extends React.Component<{
         contentId: string;
         metadata: IContentMetadata;
     }>;
-}> {
-    constructor(props: {
-        contentId: string;
-        loadContentCallback: (contentId: string) => Promise<
-            IEditorModel & {
-                library?: string;
-                metadata?: IContentMetadata;
-                params?: any;
-            }
-        >;
-        onLoaded?: (contentId: string, ubername: string) => void;
-        onSaved?: (contentId: string, metadata: IContentMetadata) => void;
-        onSaveError?: (errorMessage: string) => void;
-        saveContentCallback: (
-            contentId: string,
-            requestBody: {
-                library: string;
-                params: any;
-            }
-        ) => Promise<{
-            contentId: string;
-            metadata: IContentMetadata;
-        }>;
-    }) {
+}
+
+export default class H5PEditorUI extends Component<IH5PEditorUIProps> {
+    constructor(props: IH5PEditorUIProps) {
         super(props);
-        this.h5pEditor = React.createRef();
+        this.h5pEditor = createRef();
     }
 
-    private h5pEditor: React.RefObject<H5PEditorWebComponent>;
+    private h5pEditor: RefObject<H5PEditorWebComponent>;
 
     public componentDidMount(): void {
         this.registerEvents();
@@ -95,7 +77,7 @@ export default class H5PEditorUI extends React.Component<{
         return null;
     }
 
-    public render(): React.ReactNode {
+    public render(): ReactNode {
         return (
             <h5p-editor
                 ref={this.h5pEditor}
@@ -140,7 +122,7 @@ export default class H5PEditorUI extends React.Component<{
 
     private onEditorLoaded = (
         event: CustomEvent<{ contentId: string; ubername: string }>
-    ) => {
+    ): void => {
         if (this.props.onLoaded) {
             this.props.onLoaded(event.detail.contentId, event.detail.ubername);
         }
@@ -148,13 +130,15 @@ export default class H5PEditorUI extends React.Component<{
 
     private onSaved = (
         event: CustomEvent<{ contentId: string; metadata: IContentMetadata }>
-    ) => {
+    ): void => {
         if (this.props.onSaved) {
             this.props.onSaved(event.detail.contentId, event.detail.metadata);
         }
     };
 
-    private onSaveError = async (event: CustomEvent<{ message: string }>) => {
+    private onSaveError = async (
+        event: CustomEvent<{ message: string }>
+    ): Promise<void> => {
         if (this.props.onSaveError) {
             this.props.onSaveError(event.detail.message);
         }

@@ -5,11 +5,11 @@
     "description": "",
     "main": "src/index.ts",
     "scripts": {
-        "build": "npx tsc",
+        "build": "npx tsc -P ./tsconfig.build.json",
         "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "prepare": "sh download-core.sh affaa83b51828be13e175c8ba1a7085ba9692d1d 7bc192798f8f6e1dee34891b56f3bf60ab320f3d",
         "start:watch": "npx ts-node-dev --deps --respawn src/index.ts",
-        "start": "npx ts-node src/index.ts"
+        "start": "npx ts-node -P ./tsconfig.build.json src/index.ts"
     },
     "author": "S. Rettig",
     "license": "MIT",
@@ -26,12 +26,12 @@
         "i18next": "20.6.1",
         "i18next-fs-backend": "1.1.1",
         "i18next-http-middleware": "3.1.4",
-        "tmp-promise": "3.0.2"
+        "tmp-promise": "3.0.3"
     },
     "devDependencies": {
         "@types/express": "4.17.13",
-        "ts-node": "10.2.1",
+        "ts-node": "10.4.0",
         "ts-node-dev": "1.1.8",
-        "typescript": "4.4.3"
+        "typescript": "4.4.4"
     }
 }

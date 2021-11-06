@@ -38,7 +38,9 @@ export default async (
     actualFilename = sanitize(actualFilename);
     const dirname = upath.dirname(actualFilename);
     do {
-        filenameAttempt = `${dirname ? `${dirname}/` : ''}${upath.basename(
+        filenameAttempt = `${
+            dirname && dirname !== '.' ? `${dirname}/` : ''
+        }${upath.basename(
             actualFilename,
             upath.extname(actualFilename)
         )}-${nanoid()}${upath.extname(actualFilename)}`;

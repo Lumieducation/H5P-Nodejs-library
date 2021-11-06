@@ -471,11 +471,11 @@ export default class FileContentStorage implements IContentStorage {
      * (e.g. "images/image1.png")
      * @returns the clean filename
      */
-    public sanitizeFilename(filename: string): string {
+    public sanitizeFilename = (filename: string): string => {
         return sanitizeFilename(
             filename,
             this.maxFileLength,
             this.options?.invalidCharactersRegexp
         );
-    }
+    };
 }

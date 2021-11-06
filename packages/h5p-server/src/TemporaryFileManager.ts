@@ -1,11 +1,9 @@
 import { ReadStream } from 'fs';
-import path from 'path';
-import { nanoid } from 'nanoid';
 import { Readable } from 'stream';
 
-import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import { IH5PConfig, ITemporaryFileStorage, IUser } from './types';
+import FilenameGenerator from './helpers/FilenameGenerator';
 
 const log = new Logger('TemporaryFileManager');
 
@@ -135,29 +133,12 @@ export default class TemporaryFileManager {
         filename: string,
         user: IUser
     ): Promise<string> {
-        let attempts = 0;
-        let filenameAttempt = '';
-        let exists = false;
-        const cleanedFilename = this.storage.sanitizeFilename
-            ? this.storage.sanitizeFilename(filename)
-            : filename;
-        const dirname = path.dirname(cleanedFilename);
-        do {
-            filenameAttempt = `${
-                dirname && dirname !== '.' ? `${dirname}/` : ''
-            }${path.basename(
-                cleanedFilename,
-                path.extname(cleanedFilename)
-            )}-${nanoid(8)}${path.extname(cleanedFilename)}`;
-            exists = await this.storage.fileExists(filenameAttempt, user);
-            attempts += 1;
-        } while (attempts < 5 && exists); // only try 5 times
-        if (exists) {
-            log.error(`Cannot determine a unique filename for ${filename}`);
-            throw new H5pError('error-generating-unique-temporary-filename', {
-                name: filename
-            });
-        }
-        return filenameAttempt;
+        return FilenameGenerator(
+            filename,
+            this.storage.sanitizeFilename
+                ? (f) => this.storage.sanitizeFilename(f)
+                : (f) => f,
+            (f) => this.storage.fileExists(f, user)
+        );
     }
 }

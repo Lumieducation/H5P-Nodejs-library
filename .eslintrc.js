@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
     env: {
         browser: true,
@@ -12,7 +14,7 @@ module.exports = {
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        project: 'tsconfig.json',
+        project: path.join(__dirname, 'tsconfig.json'),
         sourceType: 'module'
     },
     plugins: ['prettier', '@typescript-eslint', 'import', 'react'],
@@ -31,11 +33,6 @@ module.exports = {
         'no-continue': 0,
         'no-case-declarations': 0,
         'prettier/prettier': 'error',
-        'react/destructuring-assignment': [
-            'error',
-            'always',
-            { ignoreClassFields: true }
-        ],
         '@typescript-eslint/typedef': [
             'error',
             {

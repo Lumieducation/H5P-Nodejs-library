@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
-        "build": "npx tsc",
+        "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
@@ -52,12 +52,12 @@
         "@types/express": "4.17.13",
         "@types/express-serve-static-core": "4.17.24",
         "@types/supertest": "2.0.11",
-        "axios": "0.21.4",
+        "axios": "0.24.0",
         "axios-mock-adapter": "1.20.0",
         "body-parser": "1.19.0",
         "express-fileupload": "1.2.1",
         "fs-extra": "10.0.0",
         "supertest": "6.1.6",
-        "tmp-promise": "3.0.2"
+        "tmp-promise": "3.0.3"
     }
 }

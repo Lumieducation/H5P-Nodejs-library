@@ -1,5 +1,5 @@
 {
-    "extends": "./tsconfig.json",
+    "extends": "./tsconfig.build.json",
     "compilerOptions": {
         "module": "ES2015",
         "outDir": "./build/es2015",

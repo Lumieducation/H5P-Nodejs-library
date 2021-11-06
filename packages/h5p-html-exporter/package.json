@@ -9,7 +9,7 @@
     },
     "scripts": {
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
-        "build": "npx tsc && cp src/*.js build",
+        "build": "npx tsc -p ./tsconfig.build.json && cp src/*.js build",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
@@ -58,6 +58,6 @@
     "devDependencies": {
         "promisepipe": "3.0.0",
         "puppeteer": "10.4.0",
-        "tmp-promise": "3.0.2"
+        "tmp-promise": "3.0.3"
     }
 }

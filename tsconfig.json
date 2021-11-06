@@ -33,6 +33,17 @@
         "sourceMap": true,
         "baseUrl": "./",
         "resolveJsonModule": true,
-        "declaration": true
+        "declaration": true,
+        "paths": {
+            "@lumieducation/h5p-examples": ["packages/h5p-examples/src"],
+            "@lumieducation/h5p-express": ["packages/h5p-express/src"],
+            "@lumieducation/h5p-html-exporter": ["packages/h5p-html-exporter/src"],
+            "@lumieducation/h5p-mongos3": ["packages/h5p-mongos3/src"],
+            "@lumieducation/h5p-react": ["packages/h5p-react/src"],
+            "@lumieducation/h5p-rest-example-client": ["packages/h5p-rest-example-client/src"],
+            "@lumieducation/h5p-rest-example-server": ["packages/h5p-rest-example-server/src"],
+            "@lumieducation/h5p-webcomponents": ["packages/h5p-webcomponents/src"],
+            "@lumieducation/h5p-server": ["packages/h5p-server/src"],
+        }
     }
 }

@@ -36,7 +36,7 @@
     "invalid-ubername-pattern": "' {{name}} 'は有効なH5Pライブラリ名（ \"ubername\"）ではありません。次のパターンに従う必要があります： {{example}} '",
     "library-consistency-check-file-missing": "{{name}} ： {{files}}ファイルがありません",
     "library-consistency-check-library-json-unreadable": "ライブラリ{{name}}エラー：library.jsonが読み取れません： {{message}}",
-    "library-consistency-check-not-installed": "ライブラリがインストールされていないため、ライブラリの整合性を{{name}}",
+    "library-consistency-check-not-installed": "ライブラリがインストールされていないため、{{name}}ライブラリの整合性を確認できません.",
     "library-directory-name-mismatch": "ライブラリディレクトリ名は、machineNameまたはmachineName-majorVersion.minorVersion（library.jsonから）と一致する必要があります。 （ディレクトリ： {{directoryName}} 、 {{machineName}} 、majorVersion： {{majorVersion}} 、minorVersion： {{minorVersion}} ）",
     "library-file-missing": "ライブラリ{{library}}のライブラリファイル{{filename}}が存在しません。",
     "library-missing": "ライブラリ{{library}}はこのシステムにインストールされていません。",

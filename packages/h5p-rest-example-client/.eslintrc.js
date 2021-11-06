@@ -6,7 +6,7 @@ module.exports = {
     extends: ['react-app', 'prettier'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        project: 'tsconfig.json',
+        project: 'tsconfig.build.json',
         sourceType: 'module'
     },
     plugins: ['prettier', '@typescript-eslint']
