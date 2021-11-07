@@ -58,5 +58,7 @@
     "multipart-ranges-unsupported": "Multipart range requests are not supported on this server.",
     "h5p-hub-connection-failed": "There was an error connecting to the H5P Content Hub. Please try again later.",
     "content-hub-download-error-with-message": "There was an error connecting to the H5P Content Hub ({{message}}). Please try again later.",
-    "content-hub-download-error": "There was an error connecting to the H5P Content Hub. Please try again later."
+    "content-hub-download-error": "There was an error connecting to the H5P Content Hub. Please try again later.",
+    "install-library-lock-timeout": "The library {{ubername}} could not be installed, because the same libraries is being installed from another place (waited {{limit}} ms for lock on the library).",
+    "install-library-lock-max-time-exceeded": "The library {{ubername}} could not be installed, because it took longer than the allowed {{limit}} ms."
 }

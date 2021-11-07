@@ -16,11 +16,13 @@ import {
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
+    ILockProvider,
     IPath,
     ISemanticsEntry,
     ITranslationFunction
 } from './types';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
 
 const log = new Logger('LibraryManager');
 
@@ -47,6 +49,11 @@ export default class LibraryManager {
      * @param translationFunction (optional) The translation function to use if
      * you want to localize library metadata (titles). If undefined, no
      * localization will be performed.
+     * @param lock (optional) an implementation of a locking mechanism that
+     * prevents race conditions. If this is left undefined a simple
+     * single-process lock mechanism will be used. If the library is used within
+     * a multi-process or cluster setup, it is necessary to pass in a
+     * distributed locking implementation.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
@@ -63,7 +70,12 @@ export default class LibraryManager {
             languageFile: ILanguageFileEntry[],
             language: string
         ) => ILanguageFileEntry[],
-        translationFunction?: ITranslationFunction
+        translationFunction?: ITranslationFunction,
+        lockProvider?: ILockProvider,
+        private config?: {
+            installLibraryLockMaxOccupationTime: number;
+            installLibraryLockTimeout: number;
+        }
     ) {
         log.info('initialize');
         if (translationFunction) {
@@ -72,9 +84,22 @@ export default class LibraryManager {
                 'library-metadata'
             ]);
         }
+        if (!lockProvider) {
+            this.lock = new SimpleLockProvider();
+        } else {
+            this.lock = lockProvider;
+        }
+
+        if (!this.config) {
+            this.config = {
+                installLibraryLockMaxOccupationTime: 1000,
+                installLibraryLockTimeout: 3000
+            };
+        }
     }
 
     private translator: TranslatorWithFallback;
+    private lock: ILockProvider;
 
     /**
      * Returns a readable stream of a library file's contents.
@@ -334,32 +359,82 @@ export default class LibraryManager {
             patchVersion: newLibraryMetadata.patchVersion
         };
 
-        if (await this.libraryExists(newLibraryMetadata)) {
-            // Check if library is already installed.
-            let oldVersion: IFullLibraryName;
-            if (
-                // eslint-disable-next-line no-cond-assign
-                (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
-            ) {
-                // Update the library if it is only a patch of an existing library
-                await this.updateLibrary(newLibraryMetadata, directory);
-                return {
-                    newVersion,
-                    oldVersion,
-                    type: 'patch'
-                };
+        try {
+            return await this.lock.acquire(
+                `install-from-directory:${LibraryName.toUberName(newVersion)}`,
+                async () => {
+                    if (await this.libraryExists(newLibraryMetadata)) {
+                        // Check if library is already installed.
+                        let oldVersion: IFullLibraryName;
+                        if (
+                            // eslint-disable-next-line no-cond-assign
+                            (oldVersion = await this.isPatchedLibrary(
+                                newLibraryMetadata
+                            ))
+                        ) {
+                            // Update the library if it is only a patch of an existing library
+                            await this.updateLibrary(
+                                newLibraryMetadata,
+                                directory
+                            );
+                            return {
+                                newVersion,
+                                oldVersion,
+                                type: 'patch'
+                            };
+                        }
+                        // Skip installation of library if it has already been installed and
+                        // the library is no patch for it.
+                        return { type: 'none' };
+                    }
+                    // Install the library if it hasn't been installed before (treat
+                    // different major/minor versions the same as a new library)
+                    await this.installLibrary(
+                        directory,
+                        newLibraryMetadata,
+                        restricted
+                    );
+                    return {
+                        newVersion,
+                        type: 'new'
+                    };
+                },
+                {
+                    timeout: this.config.installLibraryLockTimeout,
+                    maxOccupationTime:
+                        this.config.installLibraryLockMaxOccupationTime
+                }
+            );
+        } catch (error) {
+            const ubername = LibraryName.toUberName(newLibraryMetadata);
+            if (error.message == 'occupation-time-exceeded') {
+                log.error(
+                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-max-time-exceeded',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
             }
-            // Skip installation of library if it has already been installed and
-            // the library is no patch for it.
-            return { type: 'none' };
+            if (error.message == 'timeout') {
+                log.error(
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-timeout',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
+            throw error;
         }
-        // Install the library if it hasn't been installed before (treat
-        // different major/minor versions the same as a new library)
-        await this.installLibrary(directory, newLibraryMetadata, restricted);
-        return {
-            newVersion,
-            type: 'new'
-        };
     }
 
     /**
@@ -688,29 +763,76 @@ export default class LibraryManager {
                 libraryMetadata
             )} from ${fromDirectory}`
         );
-        const newLibraryInfo = await this.libraryStorage.addLibrary(
-            libraryMetadata,
-            restricted
-        );
+
+        const ubername = LibraryName.toUberName(libraryMetadata);
 
         try {
-            await this.copyLibraryFiles(fromDirectory, newLibraryInfo);
-            await this.checkConsistency(libraryMetadata);
-        } catch (error) {
-            log.error(
-                `There was a consistency error when installing library ${LibraryName.toUberName(
-                    libraryMetadata
-                )}. Reverting installation.`
+            return await this.lock.acquire(
+                `install-library:${ubername}`,
+                async () => {
+                    const newLibraryInfo = await this.libraryStorage.addLibrary(
+                        libraryMetadata,
+                        restricted
+                    );
+
+                    try {
+                        await this.copyLibraryFiles(
+                            fromDirectory,
+                            newLibraryInfo
+                        );
+                        await this.checkConsistency(libraryMetadata);
+                    } catch (error) {
+                        log.error(
+                            `There was a consistency error when installing library ${ubername}. Reverting installation.`
+                        );
+                        await this.libraryStorage.deleteLibrary(
+                            libraryMetadata
+                        );
+                        throw error;
+                    }
+                    log.debug(
+                        `library ${LibraryName.toUberName(
+                            libraryMetadata
+                        )} successfully installed.`
+                    );
+                    return newLibraryInfo;
+                },
+                {
+                    timeout: this.config.installLibraryLockTimeout,
+                    maxOccupationTime:
+                        this.config.installLibraryLockMaxOccupationTime
+                }
             );
-            await this.libraryStorage.deleteLibrary(libraryMetadata);
+        } catch (error) {
+            if (error.message == 'occupation-time-exceeded') {
+                log.error(
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting the library.`
+                );
+                await this.libraryStorage.deleteLibrary(libraryMetadata);
+                throw new H5pError(
+                    'server:install-library-lock-max-time-exceeded',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
+            if (error.message == 'timeout') {
+                log.error(
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-timeout',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
             throw error;
         }
-        log.debug(
-            `library ${LibraryName.toUberName(
-                libraryMetadata
-            )} successfully installed.`
-        );
-        return newLibraryInfo;
     }
 
     /**

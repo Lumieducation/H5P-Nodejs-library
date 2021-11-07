@@ -1315,8 +1315,8 @@ export interface IH5PConfig {
      */
     baseUrl: string;
     /**
-     * Base path for content files (e.g. images). Used in the player and in
-     * the editor.
+     * Base path for content files (e.g. images). Used in the player and in the
+     * editor.
      */
     contentFilesUrl: string;
     /**
@@ -1325,8 +1325,7 @@ export interface IH5PConfig {
      * be accessible. This means it must include the contentId of the object!
      * You can insert the contentId using the placeholder {{contentId}}.
      *
-     * Example:
-     * http://127.0.0.1:9000/s3bucket/{{contentId}}`
+     * Example: http://127.0.0.1:9000/s3bucket/{{contentId}}`
      *
      * You can use this URL to load content files from a different server, e.g.
      * S3 storage. Note that this only work for the player and not the editor.
@@ -1361,14 +1360,14 @@ export interface IH5PConfig {
      */
     contentUserDataUrl: string;
     /**
-     * A list of file extensions allowed for content files.
-     * Contains file extensions (without .) separated by whitespaces.
+     * A list of file extensions allowed for content files. Contains file
+     * extensions (without .) separated by whitespaces.
      */
     contentWhitelist: string;
     /**
-     * This is the version of the H5P Core (JS + CSS) that is used by this implementation.
-     * It is sent to the H5P Hub when registering there.
-     * Not user-configurable and should not be changed by custom implementations.
+     * This is the version of the H5P Core (JS + CSS) that is used by this
+     * implementation. It is sent to the H5P Hub when registering there. Not
+     * user-configurable and should not be changed by custom implementations.
      */
     coreApiVersion: {
         major: number;
@@ -1385,8 +1384,8 @@ export interface IH5PConfig {
     customization: {
         /**
          * Lists of JavaScript and CSS files that are added to the editor or
-         * player. The URLs in the lists are directly appended to the list of core
-         * scripts or styles without any modifications.
+         * player. The URLs in the lists are directly appended to the list of
+         * core scripts or styles without any modifications.
          */
         global: {
             editor?: {
@@ -1412,9 +1411,9 @@ export interface IH5PConfig {
      */
     editorAddons?: {
         /**
-         * The property name is the machine mame to which to add addons.
-         * The string array contains the machine names of addons that should
-         * be added.
+         * The property name is the machine mame to which to add addons. The
+         * string array contains the machine names of addons that should be
+         * added.
          */
         [machineName: string]: string[];
     };
@@ -1423,8 +1422,8 @@ export interface IH5PConfig {
      */
     editorLibraryUrl: string;
     /**
-     * If set to true, the content types that require a Learning Record Store to make sense are
-     * offered as a choice when the user creates new content.
+     * If set to true, the content types that require a Learning Record Store to
+     * make sense are offered as a choice when the user creates new content.
      * User-configurable.
      */
     enableLrsContentTypes: boolean;
@@ -1434,20 +1433,20 @@ export interface IH5PConfig {
      */
     exportMaxContentPathLength: number;
     /**
-     * Unclear. Taken over from PHP implementation and sent to the H5P Hub when registering the site.
-     * User-configurable.
+     * Unclear. Taken over from PHP implementation and sent to the H5P Hub when
+     * registering the site. User-configurable.
      */
     fetchingDisabled: 0 | 1;
     /**
-     * This is the version of the PHP implementation that the NodeJS implementation imitates.
-     * Can be anything like 1.22.1
-     * It is sent to the H5P Hub when registering there.
-     * Not user-configurable and should not be changed by custom implementations.
+     * This is the version of the PHP implementation that the NodeJS
+     * implementation imitates. Can be anything like 1.22.1 It is sent to the
+     * H5P Hub when registering there. Not user-configurable and should not be
+     * changed by custom implementations.
      */
     h5pVersion: string;
     /**
-     * The URL called to fetch information about the content types available at the H5P Hub.
-     * User-configurable.
+     * The URL called to fetch information about the content types available at
+     * the H5P Hub. User-configurable.
      */
     hubContentTypesEndpoint: string;
     /**
@@ -1460,21 +1459,21 @@ export interface IH5PConfig {
      */
     librariesUrl: string;
     /**
-     * (optional) You can set server-wide custom settings for some libraries
-     * by setting the values here. As far as we know, this is currently only
-     * supported by H5P.MathDisplay. See https://h5p.org/mathematical-expressions
-     * for more information.
+     * (optional) You can set server-wide custom settings for some libraries by
+     * setting the values here. As far as we know, this is currently only
+     * supported by H5P.MathDisplay. See
+     * https://h5p.org/mathematical-expressions for more information.
      */
     libraryConfig?: { [machineName: string]: any };
     /**
-     * A list of file extensions allowed for library files. (File extensions without . and
-     * separated by whitespaces.)
-     * (All extensions allowed for content files are also automatically allowed for libraries).
+     * A list of file extensions allowed for library files. (File extensions
+     * without . and separated by whitespaces.) (All extensions allowed for
+     * content files are also automatically allowed for libraries).
      */
     libraryWhitelist: string;
     /**
-     * The list of content types that are enabled when enableLrsContentTypes is set to true.
-     * Not user-configurable.
+     * The list of content types that are enabled when enableLrsContentTypes is
+     * set to true. Not user-configurable.
      */
     lrsContentTypes: string[];
     /**
@@ -1482,7 +1481,8 @@ export interface IH5PConfig {
      */
     maxFileSize: number;
     /**
-     * The maximum allowed file size of all content and library files in an uploaded h5p package (in bytes).
+     * The maximum allowed file size of all content and library files in an
+     * uploaded h5p package (in bytes).
      */
     maxTotalSize: number;
     /**
@@ -1490,23 +1490,26 @@ export interface IH5PConfig {
      */
     paramsUrl: string;
     /**
-     * This is the name of the H5P implementation sent to the H5P for statistical reasons.
-     * Not user-configurable but should be overridden by custom custom implementations.
+     * This is the name of the H5P implementation sent to the H5P for
+     * statistical reasons. Not user-configurable but should be overridden by
+     * custom custom implementations.
      */
     platformName: string;
     /**
-     * This is the version of the H5P implementation sent to the H5P when registering the site.
-     * Not user-configurable but should be overridden by custom custom implementations.
+     * This is the version of the H5P implementation sent to the H5P when
+     * registering the site. Not user-configurable but should be overridden by
+     * custom custom implementations.
      */
     platformVersion: string;
     /**
-     * You can specify which addons should be added to which library in the player here.
+     * You can specify which addons should be added to which library in the
+     * player here.
      */
     playerAddons?: {
         /**
-         * The property name is the machine mame to which to add addons.
-         * The string array contains the machine names of addons that should
-         * be added.
+         * The property name is the machine mame to which to add addons. The
+         * string array contains the machine names of addons that should be
+         * added.
          */
         [machineName: string]: string[];
     };
@@ -1521,7 +1524,8 @@ export interface IH5PConfig {
      */
     proxy?: {
         /**
-         * The hostname of the proxy without any protocol prefix (e.g. only 10.1.2.3)
+         * The hostname of the proxy without any protocol prefix (e.g. only
+         * 10.1.2.3)
          */
         host: string;
         /**
@@ -1529,7 +1533,8 @@ export interface IH5PConfig {
          */
         port: number;
         /**
-         * The protocol to use to access the proxy. Can be left undefined if http is used.
+         * The protocol to use to access the proxy. Can be left undefined if
+         * http is used.
          */
         protocol?: 'http' | 'https';
     };
@@ -1544,9 +1549,10 @@ export interface IH5PConfig {
      */
     setFinishedUrl: string;
     /**
-     * Indicates on what kind of network the site is running. Can be "local", "network" or "internet".
-     * TODO: This value should not be user-configurable, but has to be determined by the system on startup.
-     * (If possible.)
+     * Indicates on what kind of network the site is running. Can be "local",
+     * "network" or "internet". TODO: This value should not be
+     * user-configurable, but has to be determined by the system on startup. (If
+     * possible.)
      */
     siteType: 'local' | 'network' | 'internet';
     /*
@@ -1554,21 +1560,36 @@ export interface IH5PConfig {
      */
     temporaryFileLifetime: number;
     /**
-     * The URL path of temporary file storage (used for image, video etc. uploads of
-     * unsaved content).
+     * The URL path of temporary file storage (used for image, video etc.
+     * uploads of unsaved content).
      */
     temporaryFilesUrl: string;
 
     uuid: string;
 
     /**
-     * Loads all changeable settings from storage. (Should be called when the system initializes.)
+     * Loads all changeable settings from storage. (Should be called when the
+     * system initializes.)
      */
     load(): Promise<any>;
     /**
-     * Saves all changeable settings to storage. (Should be called when a setting was changed.)
+     * Saves all changeable settings to storage. (Should be called when a
+     * setting was changed.)
      */
     save(): Promise<void>;
+
+    /**
+     * The number of milliseconds that code has until a single library is
+     * installed. If this time is exceeded the lock will be freed and the
+     * library installation has failed.
+     */
+    installLibraryLockMaxOccupationTime: number;
+
+    /**
+     * How long to wait until a lock is acquired when installing a single
+     * library.
+     */
+    installLibraryLockTimeout: number;
 }
 
 /**
@@ -1913,6 +1934,13 @@ export interface IH5PEditorOptions {
      * words whitespaces are replaced by _.
      */
     enableLibraryNameLocalization?: boolean;
+
+    /**
+     * A lock provider to use. By default, the library uses a single-process
+     * lock. You must pass in a distributed lock implementation if the library
+     * is used in a multi-process or cluster environment.
+     */
+    lockProvider?: ILockProvider;
 }
 
 /**
@@ -1948,6 +1976,13 @@ export interface IH5PPlayerOptions {
             styles?: string[];
         };
     };
+
+    /**
+     * A lock provider to use. By default, the library uses a single-process
+     * lock. You must pass in a distributed lock implementation if the library
+     * is used in a multi-process or cluster environment.
+     */
+    lockProvider?: ILockProvider;
 }
 
 /**
@@ -2033,4 +2068,24 @@ export interface IPostContentUserData {
 
 export interface IGetContentUserData extends IAjaxResponse {
     data: any;
+}
+
+/**
+ * Offers locking a mechanism to prevent race conditions.
+ */
+export interface ILockProvider {
+    /**
+     *
+     * @param key the key of the resource to lock
+     * @param callback the code which should run once the lock was acquired
+     * @param timeout how long to wait until the lock is acquired
+     * @param maxOccupationTime how long to wait until the code in callback is
+     * finished
+     * @throws 'timeout' or 'occupation-time-exceed' errors
+     */
+    acquire<T>(
+        key: string,
+        callback: () => Promise<T>,
+        options: { timeout: number; maxOccupationTime: number }
+    ): Promise<T>;
 }

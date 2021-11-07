@@ -66,7 +66,12 @@ export default class H5PPlayer {
         this.renderer = player;
         this.libraryManager = new LibraryManager(
             libraryStorage,
-            urlGenerator.libraryFile
+            urlGenerator.libraryFile,
+            undefined,
+            undefined,
+            undefined,
+            this.options?.lockProvider,
+            this.config
         );
 
         this.globalCustomScripts =
