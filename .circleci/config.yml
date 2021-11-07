@@ -119,7 +119,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
+            - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
                   path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
