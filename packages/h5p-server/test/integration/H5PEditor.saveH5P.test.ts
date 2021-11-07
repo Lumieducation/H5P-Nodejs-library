@@ -16,10 +16,7 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
-                const { h5pEditor } = createH5PEditor(tempDirPath, {
-                    installLibraryLockMaxOccupationTime: 4000,
-                    installLibraryLockTimeout: 5000
-                });
+                const { h5pEditor } = createH5PEditor(tempDirPath);
 
                 await Throttle.all(
                     contentTypes.map((contentType) => async () => {
