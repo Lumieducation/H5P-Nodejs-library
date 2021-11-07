@@ -24,15 +24,15 @@ jobs:
             - save_cache:
                   key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./packages/h5p-examples/h5p
+                      - /mnt/ramdisk/packages/h5p-examples/h5p
             - save_cache:
                   key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./packages/h5p-rest-example-server/h5p
+                      - /mnt/ramdisk/packages/h5p-rest-example-server/h5p
             - save_cache:
-                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-typesjson" }}
                   paths:
-                      - ./test/data/hub-content
+                      - /mnt/ramdisk/test/data/hub-content
             - persist_to_workspace:
                   root: .
                   paths:
@@ -90,6 +90,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
+            - run: echo "TMPDIR is $TMPDIR"
             - run: npm run test -- --collect-coverage
             - coveralls/upload:
                   parallel: true
