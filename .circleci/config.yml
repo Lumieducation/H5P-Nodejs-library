@@ -30,7 +30,7 @@ jobs:
                   paths:
                       - /mnt/ramdisk/packages/h5p-rest-example-server/h5p
             - save_cache:
-                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-typesjson" }}
+                  key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
                       - /mnt/ramdisk/test/data/hub-content
             - persist_to_workspace:
