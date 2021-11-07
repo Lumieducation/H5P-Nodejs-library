@@ -14,7 +14,10 @@ import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../../src/implementation/InMemoryStorage';
 
-export function createH5PEditor(tempPath: string): {
+export function createH5PEditor(
+    tempPath: string,
+    configOverrides?: Partial<IH5PConfig>
+): {
     config: IH5PConfig;
     contentStorage: IContentStorage;
     h5pEditor: H5PEditor;
@@ -24,6 +27,11 @@ export function createH5PEditor(tempPath: string): {
 } {
     const keyValueStorage = new InMemoryStorage();
     const config = new H5PConfig(keyValueStorage);
+    if (configOverrides) {
+        for (const key of Object.keys(configOverrides)) {
+            config[key] = configOverrides[key];
+        }
+    }
     const libraryStorage = new FileLibraryStorage(
         path.join(tempPath, 'libraries')
     );

@@ -1,6 +1,7 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
+import * as Throttle from 'promise-parallel-throttle';
 
 import { createH5PEditor } from '../helpers/H5PEditor';
 
@@ -15,29 +16,34 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
-                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const { h5pEditor } = createH5PEditor(tempDirPath, {
+                    installLibraryLockMaxOccupationTime: 4000,
+                    installLibraryLockTimeout: 5000
+                });
 
-                await expect(
-                    Promise.all(
-                        contentTypes.map(async (contentType) => {
-                            const { metadata, parameters } =
-                                await h5pEditor.uploadPackage(
-                                    await fsExtra.readFile(
-                                        path.join(contentPath, contentType)
-                                    ),
-                                    user
-                                );
-
-                            await h5pEditor.saveOrUpdateContent(
-                                undefined,
-                                parameters,
-                                metadata,
-                                ContentMetadata.toUbername(metadata),
+                await Throttle.all(
+                    contentTypes.map((contentType) => async () => {
+                        const { metadata, parameters } =
+                            await h5pEditor.uploadPackage(
+                                await fsExtra.readFile(
+                                    path.join(contentPath, contentType)
+                                ),
                                 user
                             );
-                        })
-                    )
-                ).resolves.toBeDefined();
+
+                        await h5pEditor.saveOrUpdateContent(
+                            undefined,
+                            parameters,
+                            metadata,
+                            ContentMetadata.toUbername(metadata),
+                            user
+                        );
+                    }),
+                    {
+                        maxInProgress: 5
+                    }
+                );
+                done();
             },
             { keep: false, unsafeCleanup: true }
         );
