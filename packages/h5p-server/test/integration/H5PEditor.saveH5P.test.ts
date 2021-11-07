@@ -15,30 +15,31 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
-                await Promise.all(
-                    contentTypes.map(async (contentType) => {
-                        const { h5pEditor } = createH5PEditor(tempDirPath);
+                const { h5pEditor } = createH5PEditor(tempDirPath);
 
-                        const { metadata, parameters } =
-                            await h5pEditor.uploadPackage(
-                                await fsExtra.readFile(
-                                    path.join(contentPath, contentType)
-                                ),
+                await expect(
+                    Promise.all(
+                        contentTypes.map(async (contentType) => {
+                            const { metadata, parameters } =
+                                await h5pEditor.uploadPackage(
+                                    await fsExtra.readFile(
+                                        path.join(contentPath, contentType)
+                                    ),
+                                    user
+                                );
+
+                            await h5pEditor.saveOrUpdateContent(
+                                undefined,
+                                parameters,
+                                metadata,
+                                ContentMetadata.toUbername(metadata),
                                 user
                             );
-
-                        await h5pEditor.saveOrUpdateContent(
-                            undefined,
-                            parameters,
-                            metadata,
-                            ContentMetadata.toUbername(metadata),
-                            user
-                        );
-                    })
-                );
-                done();
+                        })
+                    )
+                ).resolves.toBeDefined();
             },
             { keep: false, unsafeCleanup: true }
         );
-    }, 120000);
+    }, 240000);
 });
