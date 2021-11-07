@@ -47,5 +47,5 @@ describe('H5PEditor.saveH5P()', () => {
             },
             { keep: false, unsafeCleanup: true }
         );
-    }, 240000);
+    }, 120000);
 });

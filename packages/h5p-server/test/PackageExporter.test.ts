@@ -31,7 +31,18 @@ export function importAndExportPackage(
             const contentStorage = new FileContentStorage(contentDir);
             const contentManager = new ContentManager(contentStorage);
             const libraryStorage = new FileLibraryStorage(libraryDir);
-            const libraryManager = new LibraryManager(libraryStorage);
+            const libraryManager = new LibraryManager(
+                libraryStorage,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                {
+                    installLibraryLockMaxOccupationTime: 3000,
+                    installLibraryLockTimeout: 4000
+                }
+            );
             const config = new H5PConfig(null);
 
             const packageImporter = new PackageImporter(
