@@ -93,7 +93,7 @@ export default class LibraryManager {
         if (!this.config) {
             this.config = {
                 installLibraryLockMaxOccupationTime: 10000,
-                installLibraryLockTimeout: 10000
+                installLibraryLockTimeout: 20000
             };
         }
     }

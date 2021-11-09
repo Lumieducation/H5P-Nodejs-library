@@ -90,8 +90,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: echo "TMPDIR is $TMPDIR"
-            - run: npm run test -- --collect-coverage
+            - run: npx jest --runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: Unit tests
