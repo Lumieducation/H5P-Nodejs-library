@@ -18,7 +18,7 @@
         "@lumieducation/h5p-mongos3": "^9.0.2",
         "@lumieducation/h5p-server": "^9.0.2",
         "body-parser": "1.19.0",
-        "cache-manager": "3.4.4",
+        "cache-manager": "3.5.0",
         "cache-manager-redis-store": "2.0.0",
         "express": "4.17.1",
         "express-fileupload": "1.2.1",
