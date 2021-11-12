@@ -47,7 +47,7 @@
         "test:upload": "npm run test:upload --prefix packages/h5p-server",
         "test:watch:h5p-express": "npm run test:watch --prefix packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --prefix packages/h5p-mongos3",
-        "test:watch": "npm run test:watch --prefix packages/h5p-server",
+        "test:watch": "jest --watch --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "localize": "./localize.sh"
     },
