@@ -36,6 +36,7 @@
         "semantic-release": "semantic-release",
         "start:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml up -d",
         "start": "npm run start --prefix packages/h5p-examples",
+        "start:rest": "npm run start --prefix packages/h5p-rest-example-server",
         "stop:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml down",
         "test:db": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} --logHeapUsage",
         "test:e2e:tests": "npm run test:e2e:tests --prefix packages/h5p-examples",
