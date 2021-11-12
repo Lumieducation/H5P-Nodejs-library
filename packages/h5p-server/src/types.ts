@@ -1533,6 +1533,13 @@ export interface IH5PConfig {
          */
         protocol?: 'http' | 'https';
     };
+    /*
+     * How often the user state of content is saved (in seconds). Set to false
+     * to disable saving user state. Note that the user state is only saved if
+     * the user object is passed into the render method of the player. You also
+     * must set ajax.contentUserData for state saving to work.
+     */
+    saveFreq: number | boolean;
     /**
      * If true, the instance will send usage statistics to the H5P Hub whenever
      * it looks for new content types or updates. User-configurable.

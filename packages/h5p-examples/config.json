@@ -11,6 +11,7 @@
     "contentTypeCacheRefreshInterval": 86400000,
     "enableLrsContentTypes": true,
     "maxFileSize": 1048576000,
+    "saveFreq": 30,
     "maxTotalSize": 1048576000,
     "editorAddons": {
         "H5P.CoursePresentation": ["H5P.MathDisplay"],

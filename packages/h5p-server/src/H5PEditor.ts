@@ -1110,7 +1110,7 @@ export default class H5PEditor {
             },
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
-            saveFreq: false,
+            saveFreq: this.config.saveFreq,
             libraryUrl: this.urlGenerator.coreFiles(),
             pluginCacheBuster: this.cacheBusterGenerator(),
             url: this.urlGenerator.baseUrl(),
