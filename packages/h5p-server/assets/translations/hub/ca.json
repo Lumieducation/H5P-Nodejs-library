@@ -245,7 +245,7 @@
         "description": "Un tipus de pregunta gratuït basat en HTML5 que permet als creatius crear una prova basada en imatges on l'aprenent trobi els punts correctes en una imatge. Utilitzeu aquest tipus de contingut amb el connector H5P per a WordPress, Moodle o Drupal per desafiar els vostres usuaris."
     },
     "H5P_ImageJuxtaposition": {
-        "title": "Imatge juxtaposició (Image Juxtaposition)",
+        "title": "Juxtaposició d'imatges (Image Juxtaposition)",
         "summary": "Crea imatges interactives",
         "description": "Un tipus de contingut d'imatge gratuït basat en HTML5 que permet als usuaris comparar dues imatges de manera interactiva. Expliqueu les vostres històries d’imatges amb H5P i Juxtaposició d’imatges a WordPress, Moodle o Drupal."
     },
