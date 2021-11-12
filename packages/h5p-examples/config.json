@@ -7,6 +7,7 @@
     "contentHubEnabled": true,
     "hubRegistrationEndpoint": "https://api.h5p.org/v1/sites",
     "hubContentTypesEndpoint": "https://api.h5p.org/v1/content-types/",
+    "contentUserDataUrl": "/contentUserData/:contentId/:dataType/:subContentId",
     "contentTypeCacheRefreshInterval": 86400000,
     "enableLrsContentTypes": true,
     "maxFileSize": 1048576000,

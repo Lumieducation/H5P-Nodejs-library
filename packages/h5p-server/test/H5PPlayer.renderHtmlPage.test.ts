@@ -39,7 +39,7 @@ describe('Rendering the HTML page', () => {
                     <script>
                         window.H5PIntegration = {
                   "ajax":{
-                     "contentUserData":"/h5p/contentUserData",
+                     "contentUserData":"/h5p/contentUserData/:contentId/:dataType/:subContentId",
                      "setFinished":"/h5p/setFinished"
                   },
                   "ajaxPath":"/h5p/ajax?action=",
@@ -420,7 +420,7 @@ describe('Rendering the HTML page', () => {
                         <script>
                             window.H5PIntegration = {
                       "ajax":{
-                         "contentUserData":"/h5p/contentUserData",
+                         "contentUserData":"/h5p/contentUserData/:contentId/:dataType/:subContentId",
                          "setFinished":"/h5p/setFinished"
                        },
                       "ajaxPath":"/h5p/ajax?action=",
