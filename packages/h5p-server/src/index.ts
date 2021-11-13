@@ -27,6 +27,7 @@ import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage'
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
 import UrlGenerator from './UrlGenerator';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
 
 // Interfaces
 import {
@@ -48,6 +49,7 @@ import {
     ILibraryName,
     ILibraryStorage,
     ILicenseData,
+    ILockProvider,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -111,6 +113,7 @@ export {
     ILibraryName,
     ILibraryStorage,
     ILicenseData,
+    ILockProvider,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -126,5 +129,6 @@ export {
     utils,
     fsImplementations,
     cacheImplementations,
-    UrlGenerator
+    UrlGenerator,
+    SimpleLockProvider
 };

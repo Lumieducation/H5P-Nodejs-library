@@ -1,12 +1,17 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
+import ioredis from 'ioredis';
+import debug from 'debug';
+
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
+import RedisLockProvider from '@lumieducation/h5p-redis-lock';
+import { ILockProvider } from '@lumieducation/h5p-server';
 
 /**
  * Create a H5PEditor object.
  * Which storage classes are used depends on the configuration values set in
- * the environment variables. If you set no environment variables, the local
+ * the environment variables.re If you set no environment variables, the local
  * filesystem storage classes will be used.
  *
  * CONTENTSTORAGE=mongos3 Uses MongoDB/S3 backend for content storage
@@ -33,12 +38,18 @@ export default async function createH5PEditor(
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
     if (process.env.CACHE === 'in-memory') {
+        debug('h5p-example')(
+            `Using in memory cache for caching library storage.`
+        );
         cache = caching({
             store: 'memory',
             ttl: 60 * 60 * 24,
             max: 2 ** 10
         });
     } else if (process.env.CACHE === 'redis') {
+        debug('h5p-example')(
+            `Using Redis for caching library storage (${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, db: ${process.env.REDIS_DB})`
+        );
         cache = caching({
             store: redisStore,
             host: process.env.REDIS_HOST,
@@ -48,13 +59,35 @@ export default async function createH5PEditor(
             ttl: 60 * 60 * 24
         });
     } else {
+        debug('h5p-example')('Not using any cache for library storage');
         // using no cache
     }
+
+    let lock: ILockProvider;
+    if (process.env.LOCK === 'redis') {
+        debug('h5p-example')(
+            `Using Redis as lock provider (host: ${process.env.LOCK_REDIS_HOST}:${process.env.LOCK_REDIS_PORT}, db: ${process.env.LOCK_REDIS_DB}).`
+        );
+        lock = new RedisLockProvider(
+            new ioredis(
+                Number.parseInt(process.env.LOCK_REDIS_PORT),
+                process.env.LOCK_REDIS_HOST,
+                {
+                    db: Number.parseInt(process.env.LOCK_REDIS_DB)
+                }
+            )
+        );
+    } else {
+        debug('h5p-example')(`Using simple in-memory lock provider.`);
+        lock = new H5P.SimpleLockProvider();
+    }
+
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
 
     let libraryStorage: H5P.ILibraryStorage;
     if (process.env.LIBRARYSTORAGE === 'mongo') {
+        debug('h5p-example')('Using pure MongoDB for library storage.');
         const mongoLibraryStorage = new dbImplementations.MongoLibraryStorage(
             (await dbImplementations.initMongo()).collection(
                 process.env.LIBRARY_MONGO_COLLECTION
@@ -63,6 +96,7 @@ export default async function createH5PEditor(
         await mongoLibraryStorage.createIndexes();
         libraryStorage = mongoLibraryStorage;
     } else if (process.env.LIBRARYSTORAGE === 'mongos3') {
+        debug('h5p-example')('Using MongoDB / S3 for library storage');
         const mongoS3LibraryStorage =
             new dbImplementations.MongoS3LibraryStorage(
                 dbImplementations.initS3({
@@ -142,7 +176,8 @@ export default async function createH5PEditor(
         undefined,
         {
             enableHubLocalization: true,
-            enableLibraryNameLocalization: true
+            enableLibraryNameLocalization: true,
+            lockProvider: lock
         }
     );
 

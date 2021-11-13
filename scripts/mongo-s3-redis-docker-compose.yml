@@ -1,0 +1,48 @@
+version: '3.6'
+
+services:
+    mongo:
+        image: mongo:latest
+        restart: always
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=h5pnodejs
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongodb_data:/data/db
+    minio:
+        image: minio/minio:latest
+        volumes:
+            - minio_data:/data
+        ports:
+            - '9000:9000'
+        command: ['server', '/data']
+        environment:
+            - MINIO_ACCESS_KEY=minioaccesskey
+            - MINIO_SECRET_KEY=miniosecret
+    redis:
+        image: 'redis:alpine'
+        command: 'redis-server --appendonly yes'
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis_data:/data
+    # Creates buckets for S3
+    minio_init:
+        image: minio/mc
+        depends_on:
+            - minio
+        entrypoint: >
+            /bin/sh -c "
+            /usr/bin/mc config host add h5pminio http://minio:9000 minioaccesskey miniosecret --api S3v4;
+            /usr/bin/mc mb h5pminio/testbucket1;
+            /usr/bin/mc mb h5pminio/tempbucket1;
+            /usr/bin/mc mb h5pminio/libbucket1;
+            exit 0;
+            "
+
+volumes:
+    mongodb_data:
+    minio_data:
+    redis_data:
