@@ -808,7 +808,6 @@ export default class LibraryManager {
                 log.error(
                     `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting the library.`
                 );
-                await this.libraryStorage.deleteLibrary(libraryMetadata);
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {

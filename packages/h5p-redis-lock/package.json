@@ -12,7 +12,7 @@
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
-        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test": "jest --runInBand --forceExit"
     },
     "release": {
         "branch": "master"

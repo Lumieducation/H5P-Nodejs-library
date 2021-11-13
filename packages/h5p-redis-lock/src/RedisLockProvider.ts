@@ -18,7 +18,7 @@ export default class RedisLockProvider implements ILockProvider {
         callback: () => Promise<T>,
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T> {
-        let unlock: { (): any; (): Promise<void> };
+        let unlock: { (): Promise<void> };
         try {
             log.debug(`Attempting to acquire lock for key ${key}.`);
             unlock = await lock(this.redis, key, {
@@ -35,15 +35,13 @@ export default class RedisLockProvider implements ILockProvider {
                 throw new Error('timeout');
             }
         }
+
         try {
             let timeout: NodeJS.Timeout;
-            let cancel;
+            let cancelPromise: { (): void; (reason?: any): void };
             const timeoutPromise = new Promise((res, rej) => {
+                cancelPromise = rej;
                 timeout = setTimeout(() => {
-                    cancel = rej;
-                    log.debug(
-                        `The operation holding the lock for key ${key} took longer than allowed. Lock was released by Redis.`
-                    );
                     res('occupation-time-exceeded');
                 }, options.maxOccupationTime);
             });
@@ -53,17 +51,20 @@ export default class RedisLockProvider implements ILockProvider {
                 typeof result === 'string' &&
                 result === 'occupation-time-exceeded'
             ) {
+                log.debug(
+                    `The operation holding the lock for key ${key} took longer than allowed. Lock was released by Redis.`
+                );
                 throw new Error('occupation-time-exceeded');
             }
             log.debug(`Operation for lock key ${key} has finished.`);
             clearTimeout(timeout);
-            if (cancel) {
-                cancel();
-            }
+            cancelPromise();
             return result as any;
         } finally {
             log.debug(`Releasing lock for key ${key}`);
-            await unlock();
+            if (unlock) {
+                await unlock();
+            }
         }
     }
 }
