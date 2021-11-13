@@ -31,6 +31,7 @@
     "main": "./build/RedisLockProvider.js",
     "types": "./build/RedisLockProvider.d.ts",
     "devDependencies": {
-        "@types/ioredis": "^4.28.1"
+        "@types/ioredis": "^4.28.1",
+        "tmp-promise": "^3.0.3"
     }
 }

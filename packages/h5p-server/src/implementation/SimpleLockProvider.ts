@@ -38,7 +38,6 @@ export default class SimpleLockProvider implements ILockProvider {
                 log.debug(
                     `There was a timeout when acquiring lock for key ${key}.`
                 );
-
                 throw new Error('timeout');
             }
             if (error.message == 'Maximum occupation time is exceeded') {

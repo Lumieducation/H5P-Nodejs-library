@@ -13,6 +13,7 @@
         "packages/h5p-react/src/**/*",
         "packages/h5p-react/test/**/*",
         "packages/h5p-redis-lock/src/**/*",
+        "packages/h5p-redis-lock/test/**/*",
         "packages/h5p-rest-example-client/src/**/*",
         "packages/h5p-rest-example-server/src/**/*",
         "packages/h5p-server/src/**/*",

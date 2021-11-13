@@ -8,6 +8,7 @@
         "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
     },
     "scripts": {
+        "build:h5p-server": "npm run build --prefix packages/h5p-server",
         "build:h5p-examples": "npm run build --prefix packages/h5p-examples",
         "build:h5p-express": "npm run build --prefix packages/h5p-express",
         "build:h5p-html-exporter": "npm run build --prefix packages/h5p-html-exporter",

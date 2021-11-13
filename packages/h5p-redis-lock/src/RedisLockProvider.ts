@@ -24,10 +24,11 @@ export default class RedisLockProvider implements ILockProvider {
             unlock = await lock(this.redis, key, {
                 timeoutMillis: options.maxOccupationTime, // confusingly the names are reversed
                 failAfterMillis: options.timeout, // confusingly the names are reversed
-                retryTimeMillis: this.options?.retryTime ?? 100
+                retryTimeMillis: this.options?.retryTime ?? 5
             });
         } catch (error) {
             if (error.message.startsWith('Lock could not be acquire for')) {
+                // the spelling mistake was made in the library...
                 log.debug(
                     `There was a timeout when trying to acquire key for ${key}`
                 );
@@ -35,17 +36,31 @@ export default class RedisLockProvider implements ILockProvider {
             }
         }
         try {
-            const timeout = setTimeout(() => {
-                log.debug(
-                    `The operation holding the lock for key ${key} took longer than allowed. Lock was released by Redis.`
-                );
-                throw new Error('occupation-time-exceeded');
-            }, options.maxOccupationTime);
+            let timeout: NodeJS.Timeout;
+            let cancel;
+            const timeoutPromise = new Promise((res, rej) => {
+                timeout = setTimeout(() => {
+                    cancel = rej;
+                    log.debug(
+                        `The operation holding the lock for key ${key} took longer than allowed. Lock was released by Redis.`
+                    );
+                    res('occupation-time-exceeded');
+                }, options.maxOccupationTime);
+            });
             log.debug(`Acquired lock for key ${key}. Calling operation.`);
-            const result = await callback();
+            const result = await Promise.race([timeoutPromise, callback()]);
+            if (
+                typeof result === 'string' &&
+                result === 'occupation-time-exceeded'
+            ) {
+                throw new Error('occupation-time-exceeded');
+            }
             log.debug(`Operation for lock key ${key} has finished.`);
             clearTimeout(timeout);
-            return result;
+            if (cancel) {
+                cancel();
+            }
+            return result as any;
         } finally {
             log.debug(`Releasing lock for key ${key}`);
             await unlock();
