@@ -5,6 +5,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IContentUserDataStorage,
     IH5PConfig,
     IH5PPlayerOptions,
     IInstalledLibrary,
@@ -29,6 +30,7 @@ import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
+import ContentUserDataManager from './ContentUserDataManager';
 
 const log = new Logger('Player');
 
@@ -60,13 +62,18 @@ export default class H5PPlayer {
             // English if the implementation does not pass us a proper one.
             client: englishClientStrings
         }).t,
-        private options?: IH5PPlayerOptions
+        private options?: IH5PPlayerOptions,
+        contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
         this.renderer = player;
         this.libraryManager = new LibraryManager(
             libraryStorage,
             urlGenerator.libraryFile
+        );
+
+        this.contentUserDataManager = new ContentUserDataManager(
+            contentUserDataStorage
         );
 
         this.globalCustomScripts =
@@ -91,6 +98,7 @@ export default class H5PPlayer {
     private globalCustomScripts: string[] = [];
     private globalCustomStyles: string[] = [];
     private libraryManager: LibraryManager;
+    private contentUserDataManager: ContentUserDataManager;
     private renderer: (model: IPlayerModel) => string | any;
 
     /**
@@ -201,7 +209,7 @@ export default class H5PPlayer {
             contentId,
             dependencies,
             downloadPath: this.getDownloadPath(contentId),
-            integration: this.generateIntegration(
+            integration: await this.generateIntegration(
                 contentId,
                 parameters,
                 metadata,
@@ -336,7 +344,7 @@ export default class H5PPlayer {
         return false;
     }
 
-    private generateIntegration(
+    private async generateIntegration(
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
@@ -352,7 +360,7 @@ export default class H5PPlayer {
             showH5PIcon: boolean;
             showLicenseButton: boolean;
         }
-    ): IIntegration {
+    ): Promise<IIntegration> {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
         return {
@@ -375,6 +383,11 @@ export default class H5PPlayer {
                     jsonContent: JSON.stringify(parameters),
                     library: ContentMetadata.toUbername(metadata),
                     contentUrl: this.urlGenerator.contentFilesUrl(contentId),
+                    contentUserData:
+                        await this.contentUserDataManager.generateContentUserDataIntegration(
+                            contentId,
+                            user
+                        ),
                     metadata: {
                         license: metadata.license || 'U',
                         title: metadata.title || '',

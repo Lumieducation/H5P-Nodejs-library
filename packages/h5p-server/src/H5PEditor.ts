@@ -18,6 +18,8 @@ import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 import supportedLanguageList from '../assets/editorLanguages.json';
 
+import ContentUserDataManager from './ContentUserDataManager';
+
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
@@ -36,6 +38,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IContentUserDataStorage,
     IEditorModel,
     IH5PConfig,
     IH5PEditorOptions,
@@ -97,7 +100,8 @@ export default class H5PEditor {
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private options?: IH5PEditorOptions
+        private options?: IH5PEditorOptions,
+        public contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
 
@@ -125,6 +129,9 @@ export default class H5PEditor {
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
+        );
+        this.contentUserDataManager = new ContentUserDataManager(
+            contentUserDataStorage
         );
         this.contentStorer = new ContentStorer(
             this.contentManager,
@@ -178,6 +185,7 @@ export default class H5PEditor {
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public contentTypeRepository: ContentTypeInformationRepository;
+    public contentUserDataManager: ContentUserDataManager;
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
