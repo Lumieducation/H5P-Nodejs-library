@@ -12,7 +12,7 @@
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
         "test:watch": "jest --watch",
-        "test": "jest --runInBand --forceExit"
+        "test": "jest --runInBand"
     },
     "release": {
         "branch": "master"
@@ -31,7 +31,8 @@
     "main": "./build/RedisLockProvider.js",
     "types": "./build/RedisLockProvider.d.ts",
     "devDependencies": {
-        "@types/ioredis": "^4.28.1",
+        "@types/ioredis-mock": "^5.6.0",
+        "ioredis-mock": "^5.7.0",
         "tmp-promise": "^3.0.3"
     }
 }

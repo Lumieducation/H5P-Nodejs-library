@@ -1,4 +1,4 @@
-import ioredis from 'ioredis';
+import ioredis from 'ioredis-mock';
 import { withDir } from 'tmp-promise';
 
 import {
