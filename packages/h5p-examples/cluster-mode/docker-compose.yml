@@ -42,7 +42,7 @@ services:
             exit 0;
             "
     h5p:
-        build: .
+        build: ../
         # ports:
         #     - '8080:8080'
         depends_on:

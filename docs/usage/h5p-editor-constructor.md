@@ -113,4 +113,4 @@ for an implementation sample using the urlGenerator.
 ## options (optional)
 
 Allows you to customize styles and scripts of the client. Also allows passing in
-a lock implementation. (needed for multi-process or clustered setups)
+a lock implementation (needed for multi-process or clustered setups).
