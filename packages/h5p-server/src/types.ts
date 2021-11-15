@@ -1582,7 +1582,7 @@ export interface IH5PConfig {
      * the user object is passed into the render method of the player. You also
      * must set ajax.contentUserData for state saving to work.
      */
-    saveFreq: number | boolean;
+    contentUserStateSaveInterval: number | boolean;
     /**
      * If true, the instance will send usage statistics to the H5P Hub whenever
      * it looks for new content types or updates. User-configurable.
