@@ -575,6 +575,14 @@ export interface IContentUserDataStorage {
     ): Promise<void>;
 
     /**
+     * Deletes a contentUserData object.
+     * Throws errors if something goes wrong.
+     * @param contentId The content id to delete.
+     * @param user The user who wants to delete the content (not the user the contentUserData belongs to)
+     */
+    deleteContentUserData(contentId: ContentId, user: IUser): Promise<void>;
+
+    /**
      * Loads the contentUserData for given contentId and builds an array of IContentUserData which is used in the integtration object of the rendered H5P by the H5PPlayer.
      * @param contentId The id of the content to load user data from
      * @param user The user who owns this object

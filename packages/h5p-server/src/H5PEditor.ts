@@ -119,7 +119,10 @@ export default class H5PEditor {
                 ? translationCallback
                 : undefined
         );
-        this.contentManager = new ContentManager(contentStorage);
+        this.contentManager = new ContentManager(
+            contentStorage,
+            contentUserDataStorage
+        );
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
