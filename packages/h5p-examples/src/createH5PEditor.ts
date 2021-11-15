@@ -2,7 +2,7 @@ import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
-
+import ContentUserDataStorage from './contentUserDataStorage';
 /**
  * Create a H5PEditor object.
  * Which storage classes are used depends on the configuration values set in
@@ -143,7 +143,8 @@ export default async function createH5PEditor(
         {
             enableHubLocalization: true,
             enableLibraryNameLocalization: true
-        }
+        },
+        new ContentUserDataStorage()
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make

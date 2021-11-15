@@ -22,6 +22,8 @@ import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
+import ContentUserDataStorage from './contentUserDataStorage';
+
 let tmpDir: DirectoryResult;
 
 const start = async (): Promise<void> => {
@@ -101,7 +103,9 @@ const start = async (): Promise<void> => {
         config,
         undefined,
         undefined,
-        (key, language) => translationFunction(key, { lng: language })
+        (key, language) => translationFunction(key, { lng: language }),
+        undefined,
+        new ContentUserDataStorage()
     );
 
     // We now set up the Express server in the usual fashion.
@@ -226,7 +230,7 @@ const start = async (): Promise<void> => {
     // it to the URL generator.
     server.post(
         '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
+        async (
             req: express.Request<
                 { contentId: string; dataType: string; subContentId: string },
                 {},
@@ -234,7 +238,18 @@ const start = async (): Promise<void> => {
             >,
             res
         ) => {
-            res.status(200).send();
+            const { contentId, dataType, subContentId } = req.params;
+            const { user, body } = req as any;
+            const response =
+                await h5pEditor.contentUserDataManager.saveContentUserData(
+                    contentId,
+                    dataType,
+                    subContentId,
+                    body,
+                    user
+                );
+
+            res.status(200).end();
         }
     );
 
@@ -243,7 +258,7 @@ const start = async (): Promise<void> => {
     // it to the URL generator.
     server.get(
         '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
+        async (
             req: express.Request<{
                 contentId: string;
                 dataType: string;
@@ -251,7 +266,16 @@ const start = async (): Promise<void> => {
             }>,
             res: express.Response<H5P.IGetContentUserData | {}>
         ) => {
-            res.status(200).json({});
+            const { contentId, dataType, subContentId } = req.params;
+            const { user } = req as any;
+            const response =
+                await h5pEditor.contentUserDataManager.loadContentUserData(
+                    contentId,
+                    dataType,
+                    subContentId,
+                    user
+                );
+            res.status(200).json(response);
         }
     );
 

@@ -383,11 +383,11 @@ export default class H5PPlayer {
                     jsonContent: JSON.stringify(parameters),
                     library: ContentMetadata.toUbername(metadata),
                     contentUrl: this.urlGenerator.contentFilesUrl(contentId),
-                    contentUserData:
-                        await this.contentUserDataManager.generateContentUserDataIntegration(
-                            contentId,
-                            user
-                        ),
+                    // contentUserData:
+                    //     await this.contentUserDataManager.generateContentUserDataIntegration(
+                    //         contentId,
+                    //         user
+                    //     ),
                     metadata: {
                         license: metadata.license || 'U',
                         title: metadata.title || '',
