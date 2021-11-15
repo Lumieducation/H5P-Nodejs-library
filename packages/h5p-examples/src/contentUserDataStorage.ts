@@ -3,8 +3,7 @@ import {
     IUser,
     IContentUserDataStorage,
     IContentUserData,
-    IPostContentUserData,
-    IGetContentUserData
+    IPostContentUserData
 } from '@lumieducation/h5p-server';
 
 let state: string = '';
@@ -15,16 +14,17 @@ export default class ContentUserDataStorage implements IContentUserDataStorage {
         dataType: string,
         subContentId: string,
         user: IUser
-    ): Promise<IGetContentUserData> {
-        try {
-            return {
-                data: state,
-                success: true
-            };
-        } catch (error) {
-            return { data: {}, success: false };
-        }
+    ): Promise<string> {
+        return '';
     }
+
+    public async deleteContentUserData(
+        contentId: ContentId,
+        user: IUser
+    ): Promise<void> {
+        return;
+    }
+
     public async saveContentUserData(
         contentId: ContentId,
         dataType: string,

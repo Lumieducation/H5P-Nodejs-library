@@ -268,14 +268,14 @@ const start = async (): Promise<void> => {
         ) => {
             const { contentId, dataType, subContentId } = req.params;
             const { user } = req as any;
-            const response =
+            const data =
                 await h5pEditor.contentUserDataManager.loadContentUserData(
                     contentId,
                     dataType,
                     subContentId,
                     user
                 );
-            res.status(200).json(response);
+            res.status(200).json({ data, success: true });
         }
     );
 

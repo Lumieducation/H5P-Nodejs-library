@@ -557,14 +557,14 @@ export interface IContentUserDataStorage {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who owns this object
-     * @returns
+     * @returns the saved state as string
      */
     loadContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
         user: IUser
-    ): Promise<any>;
+    ): Promise<string>;
 
     saveContentUserData(
         contentId: ContentId,
