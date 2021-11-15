@@ -4,7 +4,7 @@ import H5PConfig from '../src/implementation/H5PConfig';
 import User from './User';
 import { IPlayerModel } from '../src/types';
 
-import ContentUserDataStorage from './implementation/ContentUserDataStorage';
+import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 
 describe('H5P.render()', () => {
     it('should work with a callback', () => {
@@ -109,6 +109,11 @@ describe('H5P.render()', () => {
         const config = new H5PConfig(undefined);
         const user = new User();
 
+        const mockContentUserDataStorage = MockContentUserDataStorage(
+            contentId,
+            user
+        );
+
         const player = new H5PPlayer(
             undefined,
             undefined,
@@ -117,7 +122,7 @@ describe('H5P.render()', () => {
             undefined,
             undefined,
             undefined,
-            new ContentUserDataStorage()
+            mockContentUserDataStorage
         );
         player.setRenderer((model) => model);
         const playerModel: IPlayerModel = await player.render(
