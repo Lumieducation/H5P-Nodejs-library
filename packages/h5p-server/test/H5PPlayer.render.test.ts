@@ -101,39 +101,39 @@ describe('H5P.render()', () => {
         expect(playerModel.integration.user.name).toEqual(user.name);
     });
 
-    // it('adds contentUserData to integration if a contentUserDataStorage is present', async () => {
-    //     const contentId = 'foo';
-    //     const contentObject = {};
-    //     const metadata: any = {};
+    it('adds contentUserData to integration if a contentUserDataStorage is present', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const metadata: any = {};
 
-    //     const config = new H5PConfig(undefined);
-    //     const user = new User();
+        const config = new H5PConfig(undefined);
+        const user = new User();
 
-    //     const player = new H5PPlayer(
-    //         undefined,
-    //         undefined,
-    //         config,
-    //         undefined,
-    //         undefined,
-    //         undefined,
-    //         undefined,
-    //         new ContentUserDataStorage()
-    //     );
-    //     player.setRenderer((model) => model);
-    //     const playerModel: IPlayerModel = await player.render(
-    //         contentId,
-    //         user,
-    //         'en',
-    //         {
-    //             parametersOverride: contentObject,
-    //             metadataOverride: metadata as any
-    //         }
-    //     );
+        const player = new H5PPlayer(
+            undefined,
+            undefined,
+            config,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            new ContentUserDataStorage()
+        );
+        player.setRenderer((model) => model);
+        const playerModel: IPlayerModel = await player.render(
+            contentId,
+            user,
+            'en',
+            {
+                parametersOverride: contentObject,
+                metadataOverride: metadata as any
+            }
+        );
 
-    //     expect(
-    //         playerModel.integration.contents[`cid-${contentId}`].contentUserData
-    //     ).toEqual([{ state: `${contentId}-${user.id}` }]);
-    // });
+        expect(
+            playerModel.integration.contents[`cid-${contentId}`].contentUserData
+        ).toEqual([{ state: `${contentId}-${user.id}` }]);
+    });
 
     it('sets contentUserData to undefinded if contentUserDataStorage is not present', async () => {
         const contentId = 'foo';
