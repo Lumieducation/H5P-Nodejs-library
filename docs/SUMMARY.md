@@ -5,7 +5,7 @@
   * [Integrating the core library](usage/integrating.md)
   * [H5P Ajax Endpoints](usage/ajax-endpoints.md)
   * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
-
+  * [REST Example](examples/rest/README.md)
 - Advanced usage
   * [Localization](advanced/localization.md)
   * [Cluster](advanced/cluster.md)
@@ -21,10 +21,10 @@
     * [Mongo Library Storage](packages/h5p-mongos3/mongo-library-storage.md)
     * [Mongo/S3 Library Storage](packages/h5p-mongos3/mongo-s3-library-storage.md)
   - [h5p-webcomponents](packages/h5p-webcomponents.md)
-  - [h5p-react](packages/h5p-react.md)  
+  - [h5p-react](packages/h5p-react.md)
+  - [h5p-redis-lock](packages/h5p-redis-lock.md)
 - Development
   * [Getting started](development/getting-started.md)
-  * [REST Example](examples/rest/README.md)
   * [Testing & code quality](development/testing-quality.md)
   * [Core updates](development/core-updates.md)
   * [Project Status](development/status.md)

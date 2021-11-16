@@ -283,6 +283,7 @@ export default class PackageImporter {
                                     dirEntry !== 'h5p.json' &&
                                     dirEntry !== 'content'
                             )
+                            .sort() // prevents deadlocks when installing libraries
                             .map((dirEntry: string) =>
                                 this.libraryManager.installFromDirectory(
                                     path.join(tempDirPath, dirEntry),

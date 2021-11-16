@@ -2,8 +2,16 @@
 
 There are two ways of creating a H5PEditor object:
 
-* You can use the convenience function [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses basic file system implementations for all data storage services. You can use the function if you're just getting started. Later on, you'll want to construct the editor with custom implementations of the data storage services. Check out the JSDoc of the function for details how to use it.
-* You can construct it manually by calling `new H5P.H5PEditor(...)`. The constructor arguments are used to provide data storage services and settings. You can find the interfaces referenced in [`src/types.ts`](/packages/h5p-server/src/types.ts).
+* You can use the convenience function
+  [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses
+  basic file system implementations for all data storage services. You can use
+  the function if you're just getting started. Later on, you'll want to
+  construct the editor with custom implementations of the data storage services.
+  Check out the JSDoc of the function for details how to use it.
+* You can construct it manually by calling `new H5P.H5PEditor(...)`. The
+  constructor arguments are used to provide data storage services and settings.
+  You can find the interfaces referenced in
+  [`src/types.ts`](/packages/h5p-server/src/types.ts).
 
 Explanation of the arguments of the constructor:
 
@@ -101,3 +109,8 @@ tokens to POST URLs.
 
 See the third-party [H5PServer](https://github.com/BoBiene/H5PServer) project
 for an implementation sample using the urlGenerator.
+
+## options (optional)
+
+Allows you to customize styles and scripts of the client. Also allows passing in
+a lock implementation (needed for multi-process or clustered setups).

@@ -16,11 +16,13 @@ import {
     ILibraryMetadata,
     ILibraryName,
     ILibraryStorage,
+    ILockProvider,
     IPath,
     ISemanticsEntry,
     ITranslationFunction
 } from './types';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
 
 const log = new Logger('LibraryManager');
 
@@ -47,6 +49,11 @@ export default class LibraryManager {
      * @param translationFunction (optional) The translation function to use if
      * you want to localize library metadata (titles). If undefined, no
      * localization will be performed.
+     * @param lock (optional) an implementation of a locking mechanism that
+     * prevents race conditions. If this is left undefined a simple
+     * single-process lock mechanism will be used. If the library is used within
+     * a multi-process or cluster setup, it is necessary to pass in a
+     * distributed locking implementation.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
@@ -63,7 +70,12 @@ export default class LibraryManager {
             languageFile: ILanguageFileEntry[],
             language: string
         ) => ILanguageFileEntry[],
-        translationFunction?: ITranslationFunction
+        translationFunction?: ITranslationFunction,
+        lockProvider?: ILockProvider,
+        private config?: {
+            installLibraryLockMaxOccupationTime: number;
+            installLibraryLockTimeout: number;
+        }
     ) {
         log.info('initialize');
         if (translationFunction) {
@@ -72,9 +84,22 @@ export default class LibraryManager {
                 'library-metadata'
             ]);
         }
+        if (!lockProvider) {
+            this.lock = new SimpleLockProvider();
+        } else {
+            this.lock = lockProvider;
+        }
+
+        if (!this.config) {
+            this.config = {
+                installLibraryLockMaxOccupationTime: 10000,
+                installLibraryLockTimeout: 20000
+            };
+        }
     }
 
     private translator: TranslatorWithFallback;
+    private lock: ILockProvider;
 
     /**
      * Returns a readable stream of a library file's contents.
@@ -219,8 +244,8 @@ export default class LibraryManager {
 
     /**
      * Returns a (relative) URL for a library file that can be used to hard-code
-     * URLs of specific files if necessary. Avoid using this method when possible!
-     * This method does NOT check if the file exists!
+     * URLs of specific files if necessary. Avoid using this method when
+     * possible! This method does NOT check if the file exists!
      * @param library the library for which the URL should be retrieved
      * @param file the filename inside the library (path)
      * @returns the URL of the file
@@ -308,12 +333,16 @@ export default class LibraryManager {
     }
 
     /**
-     * Installs or updates a library from a temporary directory.
-     * It does not delete the library files in the temporary directory.
-     * The method does NOT validate the library! It must be validated before calling this method!
-     * Throws an error if something went wrong and deletes the files already installed.
-     * @param directory The path to the temporary directory that contains the library files (the root directory that includes library.json)
-     * @returns a structure telling if a library was newly installed, updated or nothing happened (e.g. because there already is a newer patch version installed).
+     * Installs or updates a library from a temporary directory. It does not
+     * delete the library files in the temporary directory. The method does NOT
+     * validate the library! It must be validated before calling this method!
+     * Throws an error if something went wrong and deletes the files already
+     * installed.
+     * @param directory The path to the temporary directory that contains the
+     * library files (the root directory that includes library.json)
+     * @returns a structure telling if a library was newly installed, updated or
+     * nothing happened (e.g. because there already is a newer patch version
+     * installed).
      */
     public async installFromDirectory(
         directory: string,
@@ -330,36 +359,89 @@ export default class LibraryManager {
             patchVersion: newLibraryMetadata.patchVersion
         };
 
-        if (await this.libraryExists(newLibraryMetadata)) {
-            // Check if library is already installed.
-            let oldVersion: IFullLibraryName;
-            if (
-                // eslint-disable-next-line no-cond-assign
-                (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
-            ) {
-                // Update the library if it is only a patch of an existing library
-                await this.updateLibrary(newLibraryMetadata, directory);
-                return {
-                    newVersion,
-                    oldVersion,
-                    type: 'patch'
-                };
+        try {
+            return await this.lock.acquire(
+                `install-from-directory:${LibraryName.toUberName(newVersion)}`,
+                async () => {
+                    if (await this.libraryExists(newLibraryMetadata)) {
+                        // Check if library is already installed.
+                        let oldVersion: IFullLibraryName;
+                        if (
+                            // eslint-disable-next-line no-cond-assign
+                            (oldVersion = await this.isPatchedLibrary(
+                                newLibraryMetadata
+                            ))
+                        ) {
+                            // Update the library if it is only a patch of an existing library
+                            await this.updateLibrary(
+                                newLibraryMetadata,
+                                directory
+                            );
+                            return {
+                                newVersion,
+                                oldVersion,
+                                type: 'patch'
+                            };
+                        }
+                        // Skip installation of library if it has already been installed and
+                        // the library is no patch for it.
+                        return { type: 'none' };
+                    }
+                    // Install the library if it hasn't been installed before (treat
+                    // different major/minor versions the same as a new library)
+                    await this.installLibrary(
+                        directory,
+                        newLibraryMetadata,
+                        restricted
+                    );
+                    return {
+                        newVersion,
+                        type: 'new'
+                    };
+                },
+                {
+                    timeout: this.config.installLibraryLockTimeout,
+                    maxOccupationTime:
+                        this.config.installLibraryLockMaxOccupationTime
+                }
+            );
+        } catch (error) {
+            const ubername = LibraryName.toUberName(newLibraryMetadata);
+            if (error.message == 'occupation-time-exceeded') {
+                log.error(
+                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-max-time-exceeded',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
             }
-            // Skip installation of library if it has already been installed and the library is no patch for it.
-            return { type: 'none' };
+            if (error.message == 'timeout') {
+                log.error(
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-timeout',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
+            throw error;
         }
-        // Install the library if it hasn't been installed before (treat different major/minor versions the same as a new library)
-        await this.installLibrary(directory, newLibraryMetadata, restricted);
-        return {
-            newVersion,
-            type: 'new'
-        };
     }
 
     /**
      * Is the library a patched version of an existing library?
      * @param library The library the check
-     * @returns the full library name of the already installed version if there is a patched version of an existing library, undefined otherwise
+     * @returns the full library name of the already installed version if there
+     * is a patched version of an existing library, undefined otherwise
      */
     public async isPatchedLibrary(
         library: IFullLibraryName
@@ -407,7 +489,8 @@ export default class LibraryManager {
      * Check if the library contains a file
      * @param library The library to check
      * @param filename
-     * @return {Promise<boolean>} true if file exists in library, false otherwise
+     * @return {Promise<boolean>} true if file exists in library, false
+     * otherwise
      */
     public async libraryFileExists(
         library: ILibraryName,
@@ -422,9 +505,12 @@ export default class LibraryManager {
     }
 
     /**
-     * Checks if the given library has a higher version than the highest installed version.
-     * @param library Library to compare against the highest locally installed version.
-     * @returns true if the passed library contains a version that is higher than the highest installed version, false otherwise
+     * Checks if the given library has a higher version than the highest
+     * installed version.
+     * @param library Library to compare against the highest locally installed
+     * version.
+     * @returns true if the passed library contains a version that is higher
+     * than the highest installed version, false otherwise
      */
     public async libraryHasUpgrade(
         library: IFullLibraryName
@@ -543,7 +629,8 @@ export default class LibraryManager {
     }
 
     /**
-     * Checks (as far as possible) if all necessary files are present for the library to run properly.
+     * Checks (as far as possible) if all necessary files are present for the
+     * library to run properly.
      * @param library The library to check
      * @returns true if the library is ok. Throws errors if not.
      */
@@ -590,8 +677,10 @@ export default class LibraryManager {
     /**
      * Checks if all files in the list are present in the library.
      * @param library The library to check
-     * @param requiredFiles The files (relative paths in the library) that must be present
-     * @returns true if all dependencies are present. Throws an error if any are missing.
+     * @param requiredFiles The files (relative paths in the library) that must
+     * be present
+     * @returns true if all dependencies are present. Throws an error if any are
+     * missing.
      */
     private async checkFiles(
         library: ILibraryName,
@@ -654,13 +743,15 @@ export default class LibraryManager {
     }
 
     /**
-     * Installs a library and rolls back changes if the library installation failed.
-     * Throws errors if something went wrong.
+     * Installs a library and rolls back changes if the library installation
+     * failed. Throws errors if something went wrong.
      * @param fromDirectory the local directory to install from
      * @param libraryInfo the library object
      * @param libraryMetadata the library metadata
-     * @param restricted true if the library can only be installed with a special permission
-     * @returns the library object (containing - among others - the id of the newly installed library)
+     * @param restricted true if the library can only be installed with a
+     * special permission
+     * @returns the library object (containing - among others - the id of the
+     * newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,
@@ -672,35 +763,82 @@ export default class LibraryManager {
                 libraryMetadata
             )} from ${fromDirectory}`
         );
-        const newLibraryInfo = await this.libraryStorage.addLibrary(
-            libraryMetadata,
-            restricted
-        );
+
+        const ubername = LibraryName.toUberName(libraryMetadata);
 
         try {
-            await this.copyLibraryFiles(fromDirectory, newLibraryInfo);
-            await this.checkConsistency(libraryMetadata);
-        } catch (error) {
-            log.error(
-                `There was a consistency error when installing library ${LibraryName.toUberName(
-                    libraryMetadata
-                )}. Reverting installation.`
+            return await this.lock.acquire(
+                `install-library:${ubername}`,
+                async () => {
+                    const newLibraryInfo = await this.libraryStorage.addLibrary(
+                        libraryMetadata,
+                        restricted
+                    );
+
+                    try {
+                        await this.copyLibraryFiles(
+                            fromDirectory,
+                            newLibraryInfo
+                        );
+                        await this.checkConsistency(libraryMetadata);
+                    } catch (error) {
+                        log.error(
+                            `There was a consistency error when installing library ${ubername}. Reverting installation.`
+                        );
+                        await this.libraryStorage.deleteLibrary(
+                            libraryMetadata
+                        );
+                        throw error;
+                    }
+                    log.debug(
+                        `library ${LibraryName.toUberName(
+                            libraryMetadata
+                        )} successfully installed.`
+                    );
+                    return newLibraryInfo;
+                },
+                {
+                    timeout: this.config.installLibraryLockTimeout,
+                    maxOccupationTime:
+                        this.config.installLibraryLockMaxOccupationTime
+                }
             );
-            await this.libraryStorage.deleteLibrary(libraryMetadata);
+        } catch (error) {
+            if (error.message == 'occupation-time-exceeded') {
+                log.error(
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting the library.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-max-time-exceeded',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
+            if (error.message == 'timeout') {
+                log.error(
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
+                );
+                throw new H5pError(
+                    'server:install-library-lock-timeout',
+                    {
+                        ubername,
+                        limit: this.config.installLibraryLockTimeout.toString()
+                    },
+                    500
+                );
+            }
             throw error;
         }
-        log.debug(
-            `library ${LibraryName.toUberName(
-                libraryMetadata
-            )} successfully installed.`
-        );
-        return newLibraryInfo;
     }
 
     /**
-     * Updates the library to a new version.
-     * REMOVES THE LIBRARY IF THERE IS AN ERROR!!!
-     * @param filesDirectory the path of the directory containing the library files to update to
+     * Updates the library to a new version. REMOVES THE LIBRARY IF THERE IS AN
+     * ERROR!!!
+     * @param filesDirectory the path of the directory containing the library
+     * files to update to
      * @param library the library object
      * @param newLibraryMetadata the library metadata (library.json)
      */

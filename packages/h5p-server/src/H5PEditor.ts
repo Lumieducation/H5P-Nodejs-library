@@ -117,7 +117,9 @@ export default class H5PEditor {
             this.options?.customization?.alterLibraryLanguageFile,
             this.options?.enableLibraryNameLocalization
                 ? translationCallback
-                : undefined
+                : undefined,
+            this.options?.lockProvider,
+            this.config
         );
         this.contentManager = new ContentManager(
             contentStorage,
