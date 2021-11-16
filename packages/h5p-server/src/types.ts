@@ -570,6 +570,8 @@ export interface IContentUserDataStorage {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param userState The userState as string
+     * @param invalidate Indicates that data should be invalidated when content changes.
+     * @param preload Indicates that data should be loaded when content is loaded.
      * @param user The user who owns this object
      * @returns the saved state as string
      */
@@ -578,6 +580,8 @@ export interface IContentUserDataStorage {
         dataType: string,
         subContentId: string,
         userState: string,
+        invalidate: 0 | 1,
+        preload: 0 | 1,
         user: IUser
     ): Promise<void>;
 

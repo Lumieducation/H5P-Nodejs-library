@@ -26,6 +26,7 @@ import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
+import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 
@@ -87,6 +88,7 @@ export {
     streamToString,
     ContentFileScanner,
     ContentTypeCache,
+    ContentUserDataManager,
     H5PAjaxEndpoint,
     H5PEditor,
     H5pError,
