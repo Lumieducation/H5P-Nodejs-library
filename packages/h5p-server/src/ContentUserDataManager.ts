@@ -24,11 +24,18 @@ export default class ContentUserDataManager {
 
     private contentUserDataStorage: IContentUserDataStorage;
 
+    /**
+     * Deletes a contentUserData object.
+     * Throws errors if something goes wrong.
+     * @param contentId The content id to delete.
+     * @param user The user who wants to delete the content (not the user the contentUserData belongs to)
+     */
     public async deleteContentUserData(
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
         if (this.contentUserDataStorage) {
+            log.info(`deleting contentUserData for ContentId ${contentId}`);
             return this.contentUserDataStorage.deleteContentUserData(
                 contentId,
                 user
@@ -38,14 +45,12 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Loads the contentUserData for given contentId, dataType and subContentId - called via GET from https://github.com/h5p/h5p-php-library/blob/master/js/h5p.js#L2416
-     * At the moment it does not seem to work: https://github.com/Lumieducation/H5P-Nodejs-library/issues/1014#issuecomment-968139480
-     * instead the generateContentUserDataIntegration(...) method should be used for integrating the contentUserData object
+     * Loads the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who owns this object
-     * @returns
+     * @returns the saved state as string
      */
     public async loadContentUserData(
         contentId: ContentId,
@@ -77,7 +82,7 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Loads the contentUserData for given contentId and user. The returned data should be an array of IContentUserData where the position in the array corresponds with the subContentId or undefined if there is no contentUserData.
+     * Loads the contentUserData for given contentId and user. The returned data is an array of IContentUserData where the position in the array corresponds with the subContentId or undefined if there is no contentUserData.
      *
      * @param contentId The id of the content to load user data from
      * @param user The user who owns this object
@@ -95,38 +100,51 @@ export default class ContentUserDataManager {
             return undefined;
         }
 
-        return this.contentUserDataStorage.generateContentUserDataIntegration(
+        const states = await this.contentUserDataStorage.listByContent(
             contentId,
-            user
+            user.id
         );
+
+        const sortedStates = states.sort(
+            (a, b) => Number(a.subContentId) - Number(b.subContentId)
+        );
+
+        const mappedStates = sortedStates.map((state) => ({
+            [state.dataType]: state.userState
+        }));
+
+        return mappedStates;
     }
 
     /**
-     * Loads the contentUserData for given contentId, dataType and subContentId - called via GET from https://github.com/h5p/h5p-php-library/blob/master/js/h5p.js#L2416
-     * At the moment it does not seem to work: https://github.com/Lumieducation/H5P-Nodejs-library/issues/1014#issuecomment-968139480
-     * instead the generateContentUserDataIntegration(...) method should be used for integrating the contentUserData object
-     * @param contentId The id of the content to save user data from
+     * Saves the contentUserData for given contentId, dataType and subContentId
+     * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
-     * @param user The user who does the content
-     * @returns
+     * @param userState The userState as string
+     * @param user The user who owns this object
+     * @returns the saved state as string
      */
     public async saveContentUserData(
         contentId: string,
         dataType: string,
         subcontentId: string,
-        data: any,
+        userState: string,
         user: IUser
     ): Promise<void> {
         log.info(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
-        return this.contentUserDataStorage.saveContentUserData(
-            contentId,
-            dataType,
-            subcontentId,
-            data,
-            user
-        );
+        if (this.contentUserDataStorage) {
+            return this.contentUserDataStorage.saveContentUserData(
+                contentId,
+                dataType,
+                subcontentId,
+                userState,
+                user
+            );
+        }
+
+        return undefined;
     }
 }
