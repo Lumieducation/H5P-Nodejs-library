@@ -158,7 +158,7 @@ export interface IContentUserData {
     /**
      * The state as a serialized JSON object.
      */
-    state: string;
+    [dataType: string]: string;
 }
 /**
  * The integration object is used to pass information to the H5P JavaScript
@@ -550,9 +550,7 @@ export interface IUser {
  */
 export interface IContentUserDataStorage {
     /**
-     * Loads the contentUserData for given contentId, dataType and subContentId - called via GET from https://github.com/h5p/h5p-php-library/blob/master/js/h5p.js#L2416
-     * At the moment it does not seem to work: https://github.com/Lumieducation/H5P-Nodejs-library/issues/1014#issuecomment-968139480
-     * instead the generateContentUserDataIntegration(...) method should be used for integrating the contentUserData object
+     * Loads the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
@@ -566,11 +564,20 @@ export interface IContentUserDataStorage {
         user: IUser
     ): Promise<string>;
 
+    /**
+     * Saves the contentUserData for given contentId, dataType and subContentId
+     * @param contentId The id of the content to load user data from
+     * @param dataType Used by the h5p.js client
+     * @param subContentId The id provided by the h5p.js client call
+     * @param userState The userState as string
+     * @param user The user who owns this object
+     * @returns the saved state as string
+     */
     saveContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        data: any,
+        userState: string,
         user: IUser
     ): Promise<void>;
 
@@ -583,15 +590,23 @@ export interface IContentUserDataStorage {
     deleteContentUserData(contentId: ContentId, user: IUser): Promise<void>;
 
     /**
-     * Loads the contentUserData for given contentId and builds an array of IContentUserData which is used in the integtration object of the rendered H5P by the H5PPlayer.
+     * Lists all associated contentUserData for a given contentId and userId.
      * @param contentId The id of the content to load user data from
-     * @param user The user who owns this object
-     * @returns IContentUserData[]
+     * @param userId The id of the user to load user data from
+     * @returns An array of objects containing the dataType, subContentId and the contentUserState as string in the data field.
      */
-    generateContentUserDataIntegration(
+    listByContent(
         contentId: ContentId,
-        user: IUser
-    ): Promise<IContentUserData[]>;
+        userId: string
+    ): Promise<
+        {
+            contentId?: string;
+            dataType: string;
+            subContentId: string;
+            userState: string; // the contentUserState/contentUserData as string
+            userId?: string;
+        }[]
+    >;
 }
 
 /**

@@ -179,7 +179,7 @@ export default async function createH5PEditor(
             enableLibraryNameLocalization: true,
             lockProvider: lock
         },
-      new ContentUserDataStorage()
+        new ContentUserDataStorage()
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
