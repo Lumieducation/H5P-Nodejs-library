@@ -41,7 +41,7 @@
     },
     "devDependencies": {
         "@types/express": "4.17.13",
-        "@types/ioredis": "^4.28.1",
+        "@types/ioredis": "4.28.1",
         "@types/puppeteer": "5.4.4",
         "@types/react": "17.0.34",
         "cross-env": "7.0.3",
