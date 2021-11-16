@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.3](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.2...v9.0.3) (2021-09-24)
+
+
+### Bug Fixes
+
+* **ui components:** added resize method ([#1788](https://github.com/Lumieducation/h5p-webcomponents/issues/1788)) ([46915ad](https://github.com/Lumieducation/h5p-webcomponents/commit/46915ad0e8a16b8e7f6b71373b9043d1918448a5))
+
+
+
+
+
 ## [9.0.2](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.1...v9.0.2) (2021-09-21)
 
 
