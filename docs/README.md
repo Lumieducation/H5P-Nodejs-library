@@ -37,6 +37,7 @@ be installed through NPM. The packages are meant to be combined
 | **@lumieducation/h5p-webcomponents**  | native web components to display the H5P player and editor in the browser | frontend |
 | **@lumieducation/h5p-react**          | React components with the same functionality as the native web components | frontend |
 | **@lumieducation/h5p-mongos3**        | storage classes for MongoDB and S3                                        | backend  |
+| **@lumieducation/h5p-redis-lock**     | storage class for locks with Redis                                        | backend  |
 | **@lumieducation/h5p-html-exporter**  | an optional component that can create bundled HTML files for exporting    | backend  |
 
 ## Examples

@@ -1,6 +1,7 @@
 import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
+import * as Throttle from 'promise-parallel-throttle';
 
 import { createH5PEditor } from '../helpers/H5PEditor';
 
@@ -15,10 +16,10 @@ describe('H5PEditor.saveH5P()', () => {
                 const contentPath = path.resolve(`test/data/hub-content`);
                 const contentTypes = await fsExtra.readdir(contentPath);
 
-                await Promise.all(
-                    contentTypes.map(async (contentType) => {
-                        const { h5pEditor } = createH5PEditor(tempDirPath);
+                const { h5pEditor } = createH5PEditor(tempDirPath);
 
+                await Throttle.all(
+                    contentTypes.map((contentType) => async () => {
                         const { metadata, parameters } =
                             await h5pEditor.uploadPackage(
                                 await fsExtra.readFile(
@@ -34,7 +35,10 @@ describe('H5PEditor.saveH5P()', () => {
                             ContentMetadata.toUbername(metadata),
                             user
                         );
-                    })
+                    }),
+                    {
+                        maxInProgress: 5
+                    }
                 );
                 done();
             },

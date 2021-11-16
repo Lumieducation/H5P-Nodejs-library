@@ -18,6 +18,7 @@ You can access the application by calling
 ## Commands
 
 Change directories to the directory that contains the `docker-compose.yml` file.
+(`packages/h5p-examples/cluster-mode`)
 
 ### Startup (fires up 4 instances of h5p)
 
@@ -53,6 +54,9 @@ services that make @lumieducation/h5p-server work in cluster mode:
 
 - Minio (provides S3 storage backend for content, temporary and library files)
 - MongoDB (provides database backend for content and library metadata)
-- Redis (provides a key-value cache; used for caching the content type cache and caching library metadata)
-- a named Docker volume (added as a volume to all h5p containers to keep library data consistent across instances)
-- NGINX (load balancer that distributes incoming request between the H5P containers)
+- Redis (provides a key-value cache; used for caching the content type cache and
+  caching library metadata; used as a locking mechanism across containers)
+- a named Docker volume (added as a volume to all h5p containers to keep library
+  data consistent across instances)
+- NGINX (load balancer that distributes incoming request between the H5P
+  containers)

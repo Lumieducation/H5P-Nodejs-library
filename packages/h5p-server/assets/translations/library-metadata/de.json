@@ -30,7 +30,7 @@
         "title": "Verknüpfung"
     },
     "H5P_Nil": {
-        "title": "Etikett"
+        "title": "Beschriftung"
     },
     "H5P_IVHotspot": {
         "title": "Navigations-Hotspot"
@@ -45,7 +45,7 @@
         "title": "Zusammenfassung"
     },
     "H5P_Table": {
-        "title": "Tisch"
+        "title": "Tabelle"
     },
     "H5P_Text": {
         "title": "Text"

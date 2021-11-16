@@ -1,11 +1,11 @@
 import fsExtra from 'fs-extra';
-import path from 'path';
 import { withDir } from 'tmp-promise';
 
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InstalledLibrary from '../src/InstalledLibrary';
 import LibraryManager from '../src/LibraryManager';
 import LibraryName from '../src/LibraryName';
+import { ILibraryInstallResult } from '../src/types';
 
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
@@ -328,7 +328,96 @@ describe('basic file library manager functionality', () => {
             ]
         });
     });
+
+    it("doesn't cause race conditions when installing the same library in parallel", async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const libManager = new LibraryManager(
+                    new FileLibraryStorage(tempDirPath)
+                );
+
+                const promises: Promise<ILibraryInstallResult>[] = [];
+                for (let i = 0; i < 100; i++) {
+                    promises.push(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    );
+                }
+                await expect(Promise.all(promises)).resolves.toBeDefined();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('aborts library installation that takes too long', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const libManager = new LibraryManager(
+                    new FileLibraryStorage(tempDirPath),
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 1,
+                        installLibraryLockTimeout: 50
+                    }
+                );
+
+                const promises: Promise<ILibraryInstallResult>[] = [];
+                for (let i = 0; i < 100; i++) {
+                    promises.push(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    );
+                }
+                await expect(Promise.all(promises)).rejects.toThrowError(
+                    'server:install-library-lock-max-time-exceeded'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('reports lock timeouts when installing libraries', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const libManager = new LibraryManager(
+                    new FileLibraryStorage(tempDirPath),
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 50,
+                        installLibraryLockTimeout: 1
+                    }
+                );
+
+                const promises: Promise<ILibraryInstallResult>[] = [];
+                for (let i = 0; i < 100; i++) {
+                    promises.push(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    );
+                }
+                await expect(Promise.all(promises)).rejects.toThrowError(
+                    'server:install-library-lock-timeout'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
 });
+
 describe('listLanguages()', () => {
     it('returns an empty array if the language folder does not exist', async () => {
         const libManager = new LibraryManager(

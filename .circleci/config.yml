@@ -1,13 +1,14 @@
 version: 2.1
-# orbs:
-#    coveralls: coveralls/coveralls@1.0.6
+orbs:
+    coveralls: coveralls/coveralls@1.0.6
 
 jobs:
     install-build:
         docker:
             - image: circleci/node:16
+        working_directory: /mnt/ramdisk
         steps:
-            - checkout         
+            - checkout
             - restore_cache:
                   key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
             - restore_cache:
@@ -16,22 +17,22 @@ jobs:
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: |
-                npm run build --prefix packages/h5p-rest-example-client
-                npm run build --prefix packages/h5p-rest-example-server
-                npm run download:content
-            
+                  npm run build --prefix packages/h5p-rest-example-client
+                  npm run build --prefix packages/h5p-rest-example-server
+                  npm run download:content
+
             - save_cache:
                   key: h5p-core-cache1-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./packages/h5p-examples/h5p
+                      - /mnt/ramdisk/packages/h5p-examples/h5p
             - save_cache:
                   key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
                   paths:
-                      - ./packages/h5p-rest-example-server/h5p
+                      - /mnt/ramdisk/packages/h5p-rest-example-server/h5p
             - save_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
                   paths:
-                      - ./test/data/hub-content
+                      - /mnt/ramdisk/test/data/hub-content
             - persist_to_workspace:
                   root: .
                   paths:
@@ -62,6 +63,7 @@ jobs:
     lint:
         docker:
             - image: circleci/node:16
+        working_directory: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
@@ -71,6 +73,7 @@ jobs:
     format:
         docker:
             - image: circleci/node:16
+        working_directory: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
@@ -82,43 +85,50 @@ jobs:
             - image: circleci/node:16-browsers
               environment:
                   NODE_ENV: development
+                  TMPDIR: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test -- --collect-coverage
-            # - coveralls/upload:
-            #      parallel: true
-            #      flag_name: Unit tests
+            - run: npx jest --runInBand --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: Unit tests
 
     integration-tests:
         docker:
             - image: circleci/node:16-browsers
+              environment:
+                  TMPDIR: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:integration -- --collect-coverage
-            # - coveralls/upload:
-            #      parallel: true
-            #      flag_name: Integration tests
+            - run: npx jest --config jest.integration.config.js --runInBand --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: Integration tests
 
     html-exporter-tests:
         docker:
             - image: circleci/node:16-browsers
+              environment:
+                  TMPDIR: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:html-exporter -- --collect-coverage
-            # - coveralls/upload:
-            #      parallel: true
-            #      path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
-            #      flag_name: HTML Exporter Tests
+            - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
+            - coveralls/upload:
+                  parallel: true
+                  path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
+                  flag_name: HTML Exporter Tests
 
     e2e-tests:
         docker:
             - image: circleci/node:16-browsers
+              environment:
+                  TMPDIR: /mnt/ramdisk
         steps:
             - checkout
             - attach_workspace:
@@ -142,20 +152,21 @@ jobs:
             - attach_workspace:
                   at: .
             - run: npm run test:db -- --collect-coverage
-            # - coveralls/upload:
-            #      parallel: true
-            #      flag_name: DB tests
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: DB tests
 
     release:
         docker:
             - image: 'circleci/node:16'
+        working_directory: /mnt/ramdisk
         steps:
             - checkout
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - attach_workspace:
                   at: .
-            # - coveralls/upload:
-            #      parallel_finished: true
+            - coveralls/upload:
+                  parallel_finished: true
             - run:
                   name: config git
                   command: git config --global user.email "c@Lumi.education" && git config --global user.name "Lumi"
