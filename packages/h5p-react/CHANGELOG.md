@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **h5p-react:** corrected React imports for Jest ([#1868](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1868)) ([ba02a8c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ba02a8c3df7faab64ab97d2751d4120eb42093b4))
+
+
+
+
+
 ## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
 
 
