@@ -1,0 +1,15 @@
+{
+    "content-not-found": "El contenido al que intentas acceder no existe.",
+    "deleting-content-error": "Se produjo un error al eliminar el objeto de contenido.",
+    "deleting-file-error": "Se produjo un error al eliminar el archivo {{filename}} del objeto de contenido.",
+    "filename-too-long": "El nombre del archivo es demasiado largo: {{filename}}",
+    "illegal-filename": "El nombre de archivo {{filename}} no está permitido.",
+    "listing-content-error": "Se produjo un error al obtener la lista de objetos de contenido",
+    "missing-delete-permission": "No tiene permiso para eliminar este objeto de contenido.",
+    "missing-list-content-permission": "No tiene permiso para mostrar objetos de contenido.",
+    "missing-view-permission": "No tiene permiso para ver este objeto de contenido.",
+    "missing-write-permission": "No tiene permiso para cambiar este objeto de contenido.",
+    "mongo-add-update-error": "Hubo un error al agregar o actualizar contenido en la base de datos.",
+    "mongo-replace-error": "Hubo un error al actualizar el contenido en la base de datos.",
+    "s3-upload-error": "Hubo un error al cargar el archivo {{filename}} a S3."
+}
