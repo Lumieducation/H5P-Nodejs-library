@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "No se puede agregar el archivo {{filename}} al contenido con id {{id}} : el contenido no existe.",
+    "add-library-file-not-installed": "No se puede agregar {{filename}} a la librería {{libraryName}} porque la librería no se ha instalado.",
+    "clear-library-not-found": "No se puede borrar la librería {{libraryName}} porque la librería no se ha instalado.",
+    "delete-content-file-not-found": "No se puede eliminar el archivo {{filename}} : no existe.",
+    "delete-content-not-found": "No se puede eliminar contenido: no existe.",
+    "error-creating-content": "No se pudo crear contenido.",
+    "error-generating-content-id": "No se pudo generar la identificación para el contenido nuevo.",
+    "error-generating-unique-temporary-filename": "No se puede determinar un nombre de archivo único para {{name}}",
+    "error-updating-metadata": "Los metadatos adicionales de la biblioteca {{library}} no se pueden actualizar. Error: {{error}}",
+    "get-library-metadata-not-installed": "No se pueden obtener metadatos para la biblioteca {{libraryName}} porque la biblioteca no se ha instalado.",
+    "illegal-absolute-filename": "No se permiten rutas absolutas en los nombres de archivo: {{filename}} es ilegal",
+    "illegal-relative-filename": "No se permiten rutas absolutas en los nombres de archivo: {{filename}} es ilegal",
+    "install-library-already-installed": "La librería {{libraryName}} ya se ha instalado.",
+    "remove-library-library-missing": "La librería {{libraryName}} no está instalada en el sistema.",
+    "temporary-file-not-found": "El archivo {{filename}} no es accesible para el usuario {{userId}} o no existe.",
+    "update-library-library-missing": "La librería {{libraryName}} no se puede actualizar porque aún no se ha instalado."
+}
