@@ -5,7 +5,7 @@
         "description": "Bu duyarlı akordiyonu kullanarak okuyuculara sunulan metin miktarını azaltın. Okuyucular, başlığı genişleterek hangi başlıklara daha yakından bakacaklarına karar verirler. İsteğe bağlı ayrıntılı açıklamalarla genel bir bakış sağlamak için mükemmeldir.",
         "keywords": {
             "accordion": "akordiyon",
-            "collapsible_text": "daraltılabilir metin"
+            "collapsible_text": "toplanabilir metin"
         }
     },
     "H5P_ArithmeticQuiz": {
@@ -44,7 +44,7 @@
         "description": "H5P Sütunu ile içerik türünüzü bir sütun düzeninde düzenleyin. Benzer materyalleri ele alan veya ortak bir temayı paylaşan içerik türleri, artık tutarlı bir öğrenme deneyimi oluşturmak için birlikte gruplanabilir. Ek olarak, yazarlar neredeyse tüm mevcut H5P içerik türlerini birleştirerek yaratıcı olmakta özgürdürler.",
         "keywords": {
             "column": "sütun",
-            "layout": "düzen",
+            "layout": "görünüm",
             "compound": "bileşik"
         }
     },
