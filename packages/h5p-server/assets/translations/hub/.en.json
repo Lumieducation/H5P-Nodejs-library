@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Branching Scenario (beta) (Branching Scenario (beta))",
+        "title": "Branching Scenario (Branching Scenario)",
         "summary": "Create dilemmas and self paced learning",
         "description": "Branching Scenario allow authors to present the learners with a variety of rich interactive content and choices. The choices the learners make will determine the next content they see. May be used to create dilemmas, serious games, and self-paced learning."
     },
@@ -398,6 +398,35 @@
             "advent": "advent",
             "holidays": "holidays",
             "calendar": "calendar"
+        }
+    },
+    "H5P_Crossword": {
+        "title": "Crossword (Crossword)",
+        "summary": "Create a crossword puzzle",
+        "description": "Build and customize a beautiful crossword to engage your audience. The crossword is highly customizable allowing you to configure all colors, upload a background image, decide how scoring should work and even randomize the words in it so that your audience gets a new crossword each time if you want.",
+        "keywords": {
+            "crossword": "crossword",
+            "games": "games"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Sort the Paragraphs <span class='notranslate'>(Sort the Paragraphs)",
+        "summary": "Create a set of paragraphs to be sorted",
+        "description": "Type or paste in a list of paragraphs that will be randomized. You may for instance let each paragraph be a part of a song, a block of code or steps in a recipe. Learners are to sort the paragraphs into the correct order. By default learners will get one point for each paragraph that follows the paragraph it is supposed to follow, but you may decide to award a point for each paragraph that is in the correct place instead.",
+        "keywords": {
+            "sorting": "sorting",
+            "games": "games",
+            "tasks": "tasks"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Image Choice (Image Choice)",
+        "summary": "Create a task where the alternatives are images",
+        "description": "Build beautiful multiple or single choice questions where the alternatives are images. You may customize the layout for the alternatives and choose between fixed aspect ratios or just use the aspect ratios the images already have.",
+        "keywords": {
+            "sorting": "sorting",
+            "games": "games",
+            "tasks": "tasks"
         }
     }
 }
