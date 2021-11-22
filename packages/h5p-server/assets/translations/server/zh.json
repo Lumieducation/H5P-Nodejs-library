@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "连接到H5P内容中心时出错。请稍后再试。",
     "content-hub-download-error-with-message": "连接到H5P内容中心（ {{message}} ）时出错。请稍后再试。",
     "content-hub-download-error": "连接到H5P内容中心时出错。请稍后再试。",
-    "install-missing-libraries": "无法加载内容，因为此系统上未安装以下库： {{libraries}}"
+    "install-missing-libraries": "无法加载内容，因为此系统上未安装以下库： {{libraries}}",
+    "install-library-lock-timeout": "无法安装库{{ubername}} ，因为正在从另一个地方安装相同的库（等待{{limit}}毫秒以锁定库）。",
+    "install-library-lock-max-time-exceeded": "无法安装库{{ubername}} ，因为它花费的时间超过了允许的{{limit}}毫秒。"
 }

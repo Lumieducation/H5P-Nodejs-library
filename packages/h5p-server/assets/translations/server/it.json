@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
     "content-hub-download-error-with-message": "Si è verificato un errore durante la connessione a H5P Content Hub ( {{message}} ). Per favore riprova più tardi.",
     "content-hub-download-error": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
-    "install-missing-libraries": "Impossibile caricare il contenuto poiché le seguenti librerie non sono installate su questo sistema: {{libraries}}"
+    "install-missing-libraries": "Impossibile caricare il contenuto poiché le seguenti librerie non sono installate su questo sistema: {{libraries}}",
+    "install-library-lock-timeout": "Non è stato possibile installare la libreria {{ubername}} , perché le stesse librerie vengono installate da un'altra posizione (ha atteso {{limit}} ms per il blocco della libreria).",
+    "install-library-lock-max-time-exceeded": "Non è stato possibile installare la libreria {{ubername}} {{limit}} ms consentito."
 }

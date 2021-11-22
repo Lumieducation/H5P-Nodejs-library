@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "S'ha produït un error en connectar-se al centre de contingut H5P. Siusplau, intenta-ho més tard.",
     "content-hub-download-error-with-message": "S'ha produït un error en connectar-se al centre de contingut H5P ( {{message}} ). Siusplau, intenta-ho més tard.",
     "content-hub-download-error": "S'ha produït un error en connectar-se al centre de contingut H5P. Siusplau, intenta-ho més tard.",
-    "install-missing-libraries": "No s'ha pogut carregar el contingut ja que les biblioteques següents no estan instal·lades en aquest sistema: {{libraries}}"
+    "install-missing-libraries": "No s'ha pogut carregar el contingut ja que les biblioteques següents no estan instal·lades en aquest sistema: {{libraries}}",
+    "install-library-lock-timeout": "No s'ha pogut instal·lar la biblioteca {{ubername}} , perquè s'està instal·lant les mateixes biblioteques des d'un altre lloc (s'ha esperat {{limit}} ms per bloquejar la biblioteca).",
+    "install-library-lock-max-time-exceeded": "La biblioteca {{ubername}} no s'ha pogut instal·lar perquè ha trigat més que els {{limit}} ms permès."
 }

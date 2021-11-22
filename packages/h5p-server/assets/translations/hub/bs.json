@@ -399,5 +399,34 @@
             "holidays": "praznici",
             "calendar": "kalendar"
         }
+    },
+    "H5P_Crossword": {
+        "title": "ukrštenica (Crossword)",
+        "summary": "Napravite ukrštenicu",
+        "description": "Napravite i prilagodite prekrasnu križaljku kako biste privukli svoju publiku. Križaljka je vrlo prilagodljiva što vam omogućava da konfigurirate sve boje, otpremite pozadinsku sliku, odlučite kako bi bodovanje trebalo funkcionirati, pa čak i nasumično rasporedite riječi u njoj tako da vaša publika svaki put dobije novu križaljku ako želite.",
+        "keywords": {
+            "crossword": "ukrštenica",
+            "games": "igrice"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Sortiraj paragrafe (Sort the Paragraphs)",
+        "summary": "Kreirajte skup pasusa za sortiranje",
+        "description": "Otkucajte ili zalijepite na listu paragrafa koji će biti nasumično raspoređeni. Možete, na primjer, dopustiti da svaki pasus bude dio pjesme, blok koda ili koraci u receptu. Učenici treba da sortiraju pasuse u ispravan redoslijed. Podrazumevano, učenici će dobiti jedan poen za svaki pasus koji slijedi nakon pasusa koji bi trebao slijediti, ali umjesto toga možete odlučiti da dodijelite poen za svaki pasus koji je na pravom mjestu.",
+        "keywords": {
+            "sorting": "sortiranje",
+            "games": "igrice",
+            "tasks": "zadataka"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Izbor (Image Choice)",
+        "summary": "Kreirajte zadatak gdje su alternative slike",
+        "description": "Napravite prekrasna pitanja sa višestrukim ili jednim izborom, a alternative su slike. Možete prilagoditi izgled za alternative i birati između fiksnih omjera ili jednostavno koristiti omjere slike koje već imaju.",
+        "keywords": {
+            "sorting": "sortiranje",
+            "games": "igrice",
+            "tasks": "zadataka"
+        }
     }
 }

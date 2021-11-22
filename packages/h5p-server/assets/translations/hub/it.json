@@ -399,5 +399,34 @@
             "holidays": "vacanze",
             "calendar": "calendario"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Cruciverba (Crossword)",
+        "summary": "Crea un cruciverba",
+        "description": "Crea e personalizza un bellissimo cruciverba per coinvolgere il tuo pubblico. Il cruciverba è altamente personalizzabile e ti consente di configurare tutti i colori, caricare un'immagine di sfondo, decidere come dovrebbe funzionare il punteggio e persino randomizzare le parole in esso contenute in modo che il tuo pubblico riceva un nuovo cruciverba ogni volta, se lo desideri.",
+        "keywords": {
+            "crossword": "cruciverba",
+            "games": "Giochi"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Ordina i paragrafi (Sort the Paragraphs)",
+        "summary": "Crea una serie di paragrafi da ordinare",
+        "description": "Digita o incolla un elenco di paragrafi che verranno randomizzati. Ad esempio, puoi lasciare che ogni paragrafo sia una parte di una canzone, un blocco di codice o passaggi in una ricetta. Gli studenti devono ordinare i paragrafi nell'ordine corretto. Per impostazione predefinita, gli studenti riceveranno un punto per ogni paragrafo che segue il paragrafo che dovrebbe seguire, ma puoi decidere di assegnare un punto per ogni paragrafo che si trova nella posizione corretta.",
+        "keywords": {
+            "sorting": "ordinamento",
+            "games": "Giochi",
+            "tasks": "compiti"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Scelta dell'immagine (Image Choice)",
+        "summary": "Crea un'attività in cui le alternative sono le immagini",
+        "description": "Costruisci bellissime domande a scelta multipla o singola dove le alternative sono le immagini. Puoi personalizzare il layout per le alternative e scegliere tra proporzioni fisse o semplicemente utilizzare le proporzioni che le immagini hanno già.",
+        "keywords": {
+            "sorting": "ordinamento",
+            "games": "Giochi",
+            "tasks": "compiti"
+        }
     }
 }

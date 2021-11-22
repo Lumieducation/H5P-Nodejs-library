@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "Errore bat gertatu da H5P Eduki Zentrora konektatzean. Saiatu berriro geroago.",
     "content-hub-download-error-with-message": "Errore bat gertatu da H5P Eduki Zentrora konektatzean ( {{message}} ). Saiatu berriro geroago.",
     "content-hub-download-error": "Errore bat gertatu da H5P Eduki Zentrora konektatzean. Saiatu berriro geroago.",
-    "install-missing-libraries": "Ezin izan da edukia kargatu liburutegi hauek ez daudelako instalatuta sistema honetan: {{libraries}}"
+    "install-missing-libraries": "Ezin izan da edukia kargatu liburutegi hauek ez daudelako instalatuta sistema honetan: {{libraries}}",
+    "install-library-lock-timeout": "Ezin {{ubername}} liburutegia instalatu, liburutegi berdinak beste leku batetik instalatzen ari direlako ( {{limit}} ms itxaron liburutegian blokeatzeko).",
+    "install-library-lock-max-time-exceeded": "Ezin {{ubername}} {{limit}} ms baino gehiago behar izan duelako."
 }

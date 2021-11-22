@@ -399,5 +399,34 @@
             "holidays": "oporrak",
             "calendar": "egutegia"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Gurutzegrama (Crossword)",
+        "summary": "Sortu gurutzegrama bat",
+        "description": "Eraiki eta pertsonalizatu gurutzegrama eder bat zure publikoa erakartzeko. Gurutzegrama oso pertsonalizagarria da, kolore guztiak konfiguratzeko, atzeko planoko irudi bat kargatzeko, puntuazioak nola funtzionatu behar duen erabakitzeko eta baita bertan dauden hitzak ausaz banatzeko, ikusleek nahi izanez gero gurutzegrama berri bat jaso dezaten.",
+        "keywords": {
+            "crossword": "gurutzegrama",
+            "games": "jolasak"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Ordenatu paragrafoak (Sort the Paragraphs)",
+        "summary": "Sortu ordenatu beharreko paragrafo multzo bat",
+        "description": "Idatzi edo itsatsi ausaz banatuko diren paragrafoen zerrenda. Adibidez, paragrafo bakoitza abesti baten zati bat, kode bloke bat edo errezeta bateko urratsak izan daitezke. Ikasleek paragrafoak ordena egokian ordenatu behar dituzte. Lehenespenez, ikasleek puntu bat lortuko dute jarraitu behar duen paragrafoaren ondoko paragrafo bakoitzeko, baina leku egokian dagoen paragrafo bakoitzeko puntu bat ematea erabaki dezakezu.",
+        "keywords": {
+            "sorting": "ordenatzea",
+            "games": "jolasak",
+            "tasks": "zereginak"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Irudiaren aukeraketa (Image Choice)",
+        "summary": "Sortu zeregin bat non alternatibak irudiak diren",
+        "description": "Eraiki aukera anitzeko edo bakarreko galdera ederrak alternatibak irudiak badira. Alternatiben diseinua pertsonaliza dezakezu eta aspektu-erlazio finkoen artean aukeratu edo irudiek lehendik dituzten aspektu-erlazioak erabil ditzakezu.",
+        "keywords": {
+            "sorting": "ordenatzea",
+            "games": "jolasak",
+            "tasks": "zereginak"
+        }
     }
 }

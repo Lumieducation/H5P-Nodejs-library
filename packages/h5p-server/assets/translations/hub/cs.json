@@ -399,5 +399,34 @@
             "holidays": "dovolená",
             "calendar": "kalendář"
         }
+    },
+    "H5P_Crossword": {
+        "title": "křížovka (Crossword)",
+        "summary": "Vytvořte křížovku",
+        "description": "Vytvořte a upravte krásnou křížovku, abyste zaujali své publikum. Křížovka je vysoce přizpůsobitelná, což vám umožňuje nakonfigurovat všechny barvy, nahrát obrázek na pozadí, rozhodnout, jak by mělo fungovat bodování, a dokonce náhodně namíchat slova v ní, aby vaše publikum dostalo pokaždé novou křížovku, pokud chcete.",
+        "keywords": {
+            "crossword": "křížovka",
+            "games": "hry"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Seřadit odstavce (Sort the Paragraphs)",
+        "summary": "Vytvořte sadu odstavců, které chcete seřadit",
+        "description": "Zadejte nebo vložte seznam odstavců, které budou náhodné. Můžete například nechat každý odstavec součástí písně, bloku kódu nebo kroků v receptu. Studenti mají seřadit odstavce do správného pořadí. Ve výchozím nastavení dostanou studenti jeden bod za každý odstavec, který následuje po odstavci, který má následovat, ale můžete se rozhodnout udělit bod za každý odstavec, který je na správném místě.",
+        "keywords": {
+            "sorting": "třídění",
+            "games": "hry",
+            "tasks": "úkoly"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Image Choice (Image Choice)",
+        "summary": "Vytvořte úkol, kde alternativou jsou obrázky",
+        "description": "Sestavte krásné otázky s více nebo jedním výběrem, kde alternativou jsou obrázky. Můžete upravit rozvržení pro alternativy a vybrat si mezi pevnými poměry stran nebo jen použít poměry stran, které obrázky již mají.",
+        "keywords": {
+            "sorting": "třídění",
+            "games": "hry",
+            "tasks": "úkoly"
+        }
     }
 }

@@ -399,5 +399,34 @@
             "holidays": "tatiller",
             "calendar": "takvim"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Bulmaca (Crossword)",
+        "summary": "Bir bulmaca oluşturun",
+        "description": "Kitlenizin ilgisini çekmek için güzel bir bulmaca oluşturun ve özelleştirin. Bulmaca son derece özelleştirilebilir olup, tüm renkleri yapılandırmanıza, bir arka plan resmi yüklemenize, puanlamanın nasıl çalışması gerektiğine karar vermenize ve hatta içindeki kelimeleri rastgele seçmenize olanak tanır, böylece kitleniz her seferinde yeni bir bulmaca alır.",
+        "keywords": {
+            "crossword": "bulmaca",
+            "games": "oyunlar"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Paragrafları Sırala (Paragrafları (Sort the Paragraphs)",
+        "summary": "Sıralanacak bir dizi paragraf oluşturun",
+        "description": "Rastgele olacak bir paragraf listesi yazın veya yapıştırın. Örneğin her paragrafın bir şarkının parçası, bir kod bloğu veya bir tarifteki adımlar olmasına izin verebilirsiniz. Öğrenciler paragrafları doğru sıraya göre sıralamalıdır. Varsayılan olarak öğrenciler, takip etmesi gereken paragrafı takip eden her paragraf için bir puan alacaktır, ancak bunun yerine doğru yerde olan her paragraf için bir puan vermeye karar verebilirsiniz.",
+        "keywords": {
+            "sorting": "sıralama",
+            "games": "oyunlar",
+            "tasks": "görevler"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Görüntü Seçimi (Image Choice)",
+        "summary": "Alternatiflerin resim olduğu bir görev oluşturun",
+        "description": "Güzel çoktan seçmeli veya tek seçenekli sorular oluşturun, alternatifler resimlerdi. Alternatifler için düzeni özelleştirebilir ve sabit en boy oranları arasında seçim yapabilir veya sadece görüntülerin sahip olduğu en boy oranlarını kullanabilirsiniz.",
+        "keywords": {
+            "sorting": "sıralama",
+            "games": "oyunlar",
+            "tasks": "görevler"
+        }
     }
 }

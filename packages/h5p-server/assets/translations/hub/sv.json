@@ -399,5 +399,34 @@
             "holidays": "högtider",
             "calendar": "kalender"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Korsord (Crossword)",
+        "summary": "Skapa ett korsord",
+        "description": "Bygg och anpassa ett vackert korsord för att engagera din publik. Korsordet är mycket anpassningsbart så att du kan konfigurera alla färger, ladda upp en bakgrundsbild, bestämma hur poängsättning ska fungera och till och med slumpa in orden i det så att din publik får ett nytt korsord varje gång om du vill.",
+        "keywords": {
+            "crossword": "korsord",
+            "games": "spel"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Sortera styckena (Sort the Paragraphs)",
+        "summary": "Skapa en uppsättning stycken som ska sorteras",
+        "description": "Skriv eller klistra in en lista med stycken som kommer att randomiseras. Du kan till exempel låta varje stycke vara en del av en låt, ett kodblock eller steg i ett recept. Eleverna ska sortera styckena i rätt ordning. Som standard får eleverna en poäng för varje stycke som följer efter stycket det är tänkt att följa, men du kan välja att ge en poäng för varje stycke som är på rätt plats istället.",
+        "keywords": {
+            "sorting": "sortering",
+            "games": "spel",
+            "tasks": "uppgifter"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Bildval (Image Choice)",
+        "summary": "Skapa en uppgift där alternativen är bilder",
+        "description": "Skapa vackra fler- eller envalsfrågor där alternativen är bilder. Du kan anpassa layouten för alternativen och välja mellan fasta bildförhållanden eller bara använda de bildförhållanden som bilderna redan har.",
+        "keywords": {
+            "sorting": "sortering",
+            "games": "spel",
+            "tasks": "uppgifter"
+        }
     }
 }

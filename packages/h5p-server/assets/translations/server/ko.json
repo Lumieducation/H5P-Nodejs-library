@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "H5P 콘텐츠 허브에 연결하는 중에 오류가 발생했습니다. 나중에 다시 시도 해주십시오.",
     "content-hub-download-error-with-message": "{{message}} )에 연결하는 동안 오류가 발생했습니다. 나중에 다시 시도 해주십시오.",
     "content-hub-download-error": "H5P 콘텐츠 허브에 연결하는 중에 오류가 발생했습니다. 나중에 다시 시도 해주십시오.",
-    "install-missing-libraries": "이 시스템에 다음 라이브러리가 설치되어 있지 않으므로 콘텐츠를 로드할 수 없습니다. {{libraries}}"
+    "install-missing-libraries": "이 시스템에 다음 라이브러리가 설치되어 있지 않으므로 콘텐츠를 로드할 수 없습니다. {{libraries}}",
+    "install-library-lock-timeout": "도서관 {{ubername}} 같은 라이브러리가 다른 장소에서 설치되고 있기 때문에, 설치할 수 없습니다 (기다렸다 {{limit}} 라이브러리에 잠금 밀리 초).",
+    "install-library-lock-max-time-exceeded": "라이브러리 {{ubername}} 는이 허용 된 것보다 더 오래 걸렸다 때문에, 설치할 수없는 {{limit}} 밀리."
 }

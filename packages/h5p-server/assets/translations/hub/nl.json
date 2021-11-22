@@ -399,5 +399,34 @@
             "holidays": "vakantie",
             "calendar": "kalender"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Kruiswoordraadsel (Crossword)",
+        "summary": "Maak een kruiswoordpuzzel",
+        "description": "Bouw en pas een prachtig kruiswoordraadsel aan om uw publiek te betrekken. Het kruiswoordraadsel is in hoge mate aanpasbaar, zodat u alle kleuren kunt configureren, een achtergrondafbeelding kunt uploaden, kunt beslissen hoe scoren moet werken en zelfs de woorden erin willekeurig kunt verdelen, zodat uw publiek elke keer een nieuw kruiswoordraadsel krijgt als u dat wilt.",
+        "keywords": {
+            "crossword": "kruiswoordraadsel",
+            "games": "spellen"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Sorteer de alinea's (Sort the Paragraphs)",
+        "summary": "Maak een set alinea's om te sorteren",
+        "description": "Typ of plak een lijst met alinea's die willekeurig worden verdeeld. Je kunt bijvoorbeeld elke alinea een onderdeel van een liedje, een codeblok of stappen in een recept laten zijn. De leerlingen moeten de alinea's in de juiste volgorde sorteren. Standaard krijgen leerlingen één punt voor elke alinea die volgt op de alinea die ze geacht worden te volgen, maar u kunt in plaats daarvan besluiten om een punt toe te kennen aan elke alinea die op de juiste plaats staat.",
+        "keywords": {
+            "sorting": "sorteren",
+            "games": "spellen",
+            "tasks": "taken"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Beeldkeuze (Image Choice)",
+        "summary": "Maak een taak waarbij de alternatieven afbeeldingen zijn",
+        "description": "Maak prachtige meer- of enkelkeuzevragen waarbij de alternatieven afbeeldingen zijn. U kunt de lay-out aanpassen voor de alternatieven en kiezen tussen vaste beeldverhoudingen of gewoon de beeldverhoudingen gebruiken die de afbeeldingen al hebben.",
+        "keywords": {
+            "sorting": "sorteren",
+            "games": "spellen",
+            "tasks": "taken"
+        }
     }
 }

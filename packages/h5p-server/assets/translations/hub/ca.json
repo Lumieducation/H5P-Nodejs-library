@@ -399,5 +399,34 @@
             "holidays": "vacances",
             "calendar": "calendari"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Mots encreuats (Crossword)",
+        "summary": "Crea un trencaclosques de mots encreuats",
+        "description": "Creeu i personalitzeu un bonic mot encreuat per atraure el vostre públic. Els mots encreuats són altament personalitzables i us permeten configurar tots els colors, carregar una imatge de fons, decidir com ha de funcionar la puntuació i fins i tot aleatoritzar les paraules que hi conten perquè el vostre públic obtingui un nou mot encreuat cada vegada si ho voleu.",
+        "keywords": {
+            "crossword": "mots encreuats",
+            "games": "jocs"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Ordena els paràgrafs (Sort the Paragraphs)",
+        "summary": "Creeu un conjunt de paràgrafs per ordenar",
+        "description": "Escriviu o enganxeu una llista de paràgrafs que seran aleatoris. Per exemple, podeu deixar que cada paràgraf sigui part d'una cançó, un bloc de codi o passos d'una recepta. Els alumnes han d'ordenar els paràgrafs en l'ordre correcte. De manera predeterminada, els estudiants obtindran un punt per cada paràgraf que segueix el paràgraf que se suposa que ha de seguir, però podeu decidir atorgar un punt per cada paràgraf que estigui al lloc correcte.",
+        "keywords": {
+            "sorting": "classificació",
+            "games": "jocs",
+            "tasks": "tasques"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Selecció d'imatge (Image Choice)",
+        "summary": "Crea una tasca on les alternatives siguin imatges",
+        "description": "Creeu bones preguntes d'opció múltiple o única on les alternatives siguin imatges. Podeu personalitzar el disseny de les alternatives i triar entre relacions d'aspecte fixes o simplement utilitzar les proporcions d'aspecte que ja tenen les imatges.",
+        "keywords": {
+            "sorting": "classificació",
+            "games": "jocs",
+            "tasks": "tasques"
+        }
     }
 }

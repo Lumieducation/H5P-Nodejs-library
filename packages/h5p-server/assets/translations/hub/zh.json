@@ -399,5 +399,34 @@
             "holidays": "假期",
             "calendar": "日历"
         }
+    },
+    "H5P_Crossword": {
+        "title": "填字游戏(Crossword)",
+        "summary": "创建一个填字游戏",
+        "description": "构建和自定义一个漂亮的填字游戏以吸引您的观众。填字游戏是高度可定制的，允许您配置所有颜色、上传背景图像、决定评分的工作方式，甚至随机化其中的单词，以便您的观众每次都能获得新的填字游戏。",
+        "keywords": {
+            "crossword": "填字游戏",
+            "games": "游戏"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "段落(Sort the Paragraphs)",
+        "summary": "创建一组要排序的段落",
+        "description": "键入或粘贴将随机化的段落列表。例如，您可以让每个段落成为歌曲、代码块或食谱中的步骤的一部分。学习者将段落排序为正确的顺序。默认情况下，学习者将在应该跟随的段落之后的每个段落获得一分，但您可以决定为每个位于正确位置的段落奖励一分。",
+        "keywords": {
+            "sorting": "排序",
+            "games": "游戏",
+            "tasks": "任务"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "图像选择(Image Choice)",
+        "summary": "创建一个任务，其中替代品是图像",
+        "description": "如果替代方案是图像，则构建漂亮的多项或单选题。您可以为备选方案自定义布局并在固定纵横比之间进行选择或仅使用图像已有的纵横比。",
+        "keywords": {
+            "sorting": "排序",
+            "games": "游戏",
+            "tasks": "任务"
+        }
     }
 }

@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "H5P sisukeskusega ühenduse loomisel ilmnes viga. Palun proovi hiljem uuesti.",
     "content-hub-download-error-with-message": "{{message}} ) ühenduse loomisel ilmnes viga. Palun proovi hiljem uuesti.",
     "content-hub-download-error": "H5P sisukeskusega ühenduse loomisel ilmnes viga. Palun proovi hiljem uuesti.",
-    "install-missing-libraries": "Sisu ei saanud laadida, kuna sellesse süsteemi pole installitud järgmisi teeke: {{libraries}}"
+    "install-missing-libraries": "Sisu ei saanud laadida, kuna sellesse süsteemi pole installitud järgmisi teeke: {{libraries}}",
+    "install-library-lock-timeout": "Teeki {{ubername}} ei saanud installida, kuna samu teeke installitakse teisest kohast (ootas {{limit}} ms teegi lukustamist).",
+    "install-library-lock-max-time-exceeded": "Teeki {{ubername}} ei saanud installida, kuna see võttis kauem aega kui lubatud {{limit}} ms."
 }

@@ -399,5 +399,34 @@
             "holidays": "prazniki",
             "calendar": "koledar"
         }
+    },
+    "H5P_Crossword": {
+        "title": "križanka (Crossword)",
+        "summary": "Ustvari križanko",
+        "description": "Zgradite in prilagodite čudovito križanko, da pritegnete svoje občinstvo. Križanka je zelo prilagodljiva, kar vam omogoča, da konfigurirate vse barve, naložite sliko ozadja, se odločite, kako naj deluje točkovanje, in celo naključno razporedite besede v njej, tako da vaše občinstvo vsakič, če želite, dobi novo križanko.",
+        "keywords": {
+            "crossword": "Križanka",
+            "games": "igre"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Razvrsti odstavke (Sort the Paragraphs)",
+        "summary": "Ustvarite nabor odstavkov, ki jih želite razvrstiti",
+        "description": "Vnesite ali prilepite na seznam odstavkov, ki bodo naključno razvrščeni. Vsak odstavek lahko na primer pustite kot del pesmi, blok kode ali korake v receptu. Učenci morajo razvrstiti odstavke v pravilnem vrstnem redu. Učenci bodo privzeto prejeli eno točko za vsak odstavek, ki sledi odstavku, ki naj bi mu sledil, vendar se lahko odločite, da namesto tega dodelite točko za vsak odstavek, ki je na pravem mestu.",
+        "keywords": {
+            "sorting": "razvrščanje",
+            "games": "igre",
+            "tasks": "naloge"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Izbira slike (Image Choice)",
+        "summary": "Ustvarite nalogo, kjer so alternative slike",
+        "description": "Sestavite čudovita vprašanja z več ali enojno izbiro, če so alternative slike. Lahko prilagodite postavitev za alternative in izbirate med fiksnimi razmerji stranic ali preprosto uporabite razmerja stranic, ki jih slike že imajo.",
+        "keywords": {
+            "sorting": "razvrščanje",
+            "games": "igre",
+            "tasks": "naloge"
+        }
     }
 }
