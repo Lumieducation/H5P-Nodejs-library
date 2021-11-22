@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-react",
-    "version": "9.0.4",
+    "version": "9.0.5",
     "main": "./build/umd/index.js",
     "module": "./build/es2015/index.js",
     "types": "./build/es2015/index.d.ts",
@@ -18,11 +18,11 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-webcomponents": "^9.0.4",
+        "@lumieducation/h5p-webcomponents": "^9.0.5",
         "react": "17.0.2"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^9.0.4",
+        "@lumieducation/h5p-server": "^9.0.5",
         "@types/react": "17.0.36"
     }
 }

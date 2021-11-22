@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-webcomponents",
-    "version": "9.0.4",
+    "version": "9.0.5",
     "description": "A Web Component wrapper around the H5P Editor and Player",
     "author": "Sebastian Rettig",
     "license": "GPL-3.0-or-later",
@@ -30,7 +30,7 @@
         "deepmerge": "^4.2.2"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^9.0.4",
+        "@lumieducation/h5p-server": "^9.0.5",
         "@types/resize-observer-browser": "0.1.6"
     }
 }

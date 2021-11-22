@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.4...v9.0.5) (2021-11-22)
+
+
+### Bug Fixes
+
+* **h5p-server:** correct sanitization of table attributes anad styles ([#1924](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1924)) ([8833c30](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8833c30f35c6ef2878a9daf45009750c8220c8f2))
+
+
+
+
+
 ## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
 
 
