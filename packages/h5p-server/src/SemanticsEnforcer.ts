@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/dot-notation */
+
 import sanitizeHtml from 'sanitize-html';
 
 import { ContentScanner } from './ContentScanner';
@@ -160,7 +162,8 @@ export default class SemanticsEnforcer {
                     'colgroup',
                     'thead',
                     'tbody',
-                    'tfoot'
+                    'tfoot',
+                    'caption'
                 ];
             }
             if (allowedTags.includes('strong')) {
@@ -190,7 +193,7 @@ export default class SemanticsEnforcer {
 
             // Text alignment is always allowed.
             const allowedStyles = {
-                'text-align': [/^(center|left|right)$/i]
+                'text-align': [/^(center|left|right|justify)$/i]
             };
             // We only allow the styles set in the semantics.
             if (semantics.font) {
@@ -220,6 +223,24 @@ export default class SemanticsEnforcer {
                 }
             }
 
+            const tableCellStyle = allowedTags.includes('table')
+                ? {
+                      'white-space': [/^(nowrap)|(normal)|(pre)$/i],
+                      'text-align': [/^(center|left|right|justify)$/i],
+                      'vertical-align': [
+                          /^(baseline)|(text-top)|(text-bottom)|(sub)|(super)$/i
+                      ],
+                      height: [/^[0-9.]+(em|px|%)$/i],
+                      width: [/^[0-9.]+(em|px|%)$/i],
+                      'background-color': [
+                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                      ],
+                      'border-color': [
+                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                      ]
+                  }
+                : undefined;
+
             log.debug('Filtering out disallowed HTML tags');
 
             newText = sanitizeHtml(newText, {
@@ -230,9 +251,25 @@ export default class SemanticsEnforcer {
                     td: ['colspan', 'rowspan', 'headers'],
                     th: ['colspan', 'rowspan', 'headers', 'scope'],
                     ol: ['start', 'reversed'],
-                    table: ['summary']
+                    table: [
+                        'summary',
+                        'cellspacing',
+                        'cellpadding',
+                        'border',
+                        'align'
+                    ]
                 },
-                allowedStyles: { '*': allowedStyles }
+                allowedStyles: {
+                    '*': allowedStyles,
+                    table: allowedTags.includes('table')
+                        ? {
+                              height: [/^[0-9.]+(em|px|%)$/i],
+                              width: [/^[0-9.]+(em|px|%)$/i]
+                          }
+                        : undefined,
+                    td: tableCellStyle,
+                    th: tableCellStyle
+                }
             });
         }
 
