@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cache-manager to v3.5.0 ([4c92a0a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/4c92a0afe2002446e73eaf27503c68f88b1cc71b))
+* **deps:** update dependency cache-manager to v3.6.0 ([d44c32e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d44c32edac7f06aa2cc247530615200675965141))
+* **deps:** update dependency i18next-fs-backend to v1.1.3 ([c433522](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c433522fe0e3d6f3663b6b156e68297c0456d267))
+* **deps:** update dependency i18next-fs-backend to v1.1.4 ([4414b06](https://github.com/Lumieducation/H5P-Nodejs-library/commit/4414b065a7fd630fcf407b2d2316a22d32e7bc90))
+* **deps:** update dependency tmp-promise to v3.0.3 ([acb33f1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/acb33f1f20a17eba8c92715806dbf386930613db))
+* **h5p-server:** fix library install race conditions ([#1871](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1871)) ([9286cc6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9286cc67990851b9cc404960680247302aaecd0d))
+
+
+
+
+
 ## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
 
 **Note:** Version bump only for package @lumieducation/h5p-examples

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.24.0 ([dbcfddb](https://github.com/Lumieducation/H5P-Nodejs-library/commit/dbcfddbccea2da236fa07f35eb412feb39029ff4))
+* **deps:** update dependency react-bootstrap to v1.6.4 ([89e8ed0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/89e8ed0cf74848d9a4856e35444027866c20c305))
+* **deps:** update dependency tmp-promise to v3.0.3 ([acb33f1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/acb33f1f20a17eba8c92715806dbf386930613db))
+
+
+
+
+
 ## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
 
 **Note:** Version bump only for package @lumieducation/h5p-express

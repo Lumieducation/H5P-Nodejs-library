@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency tmp-promise to v3.0.3 ([acb33f1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/acb33f1f20a17eba8c92715806dbf386930613db))
+
+
+
+
+
 ## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
 
 **Note:** Version bump only for package @lumieducation/h5p-html-exporter

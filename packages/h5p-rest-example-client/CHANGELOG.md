@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fortawesome/react-fontawesome to v0.1.16 ([611fc48](https://github.com/Lumieducation/H5P-Nodejs-library/commit/611fc48c3ca6150e58e3bef0ce964afcab581cc6))
+* **deps:** update dependency bootstrap to v5.1.2 ([57e9002](https://github.com/Lumieducation/H5P-Nodejs-library/commit/57e9002461cd91a005d369a639704501e48834dc))
+* **deps:** update dependency bootstrap to v5.1.3 ([ee1155b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ee1155bfee4a044ed386d7ecf340d77579cd7510))
+* **deps:** update dependency react-bootstrap to v1.6.4 ([89e8ed0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/89e8ed0cf74848d9a4856e35444027866c20c305))
+
+
+
+
+
 ## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
 
 **Note:** Version bump only for package @lumieducation/h5p-rest-example-client
