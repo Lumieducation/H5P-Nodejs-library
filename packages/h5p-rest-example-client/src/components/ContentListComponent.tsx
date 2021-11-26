@@ -41,7 +41,7 @@ export default class ContentList extends React.Component<{
                     onClick={() => this.new()}
                     className="my-2"
                 >
-                    <FontAwesomeIcon icon={faPlusCircle} className="mr-2" />
+                    <FontAwesomeIcon icon={faPlusCircle} className="me-2" />
                     Create new content
                 </Button>
                 <ListGroup>
