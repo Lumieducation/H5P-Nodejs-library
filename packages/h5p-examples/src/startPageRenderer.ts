@@ -19,9 +19,9 @@ export default function render(
         <html>
         <head>
             <meta charset="utf-8">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" crossorigin="anonymous"></script>
-            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" crossorigin="anonymous">
+            <script src="/node_modules/requirejs/require.js"></script>
+            <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+            <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
             <title>H5P NodeJs Demo</title>
         </head>
         <body>
@@ -40,16 +40,16 @@ export default function render(
                         (content) =>
                             `<div class="list-group-item">
                                 <div class="d-flex w-10">
-                                    <div class="mr-auto p-2 align-self-center">
+                                    <div class="me-auto p-2 align-self-center">
                                         <a href="${editor.config.baseUrl}${editor.config.playUrl}/${content.id}">
                                             <h5>${content.content.title}</h5>
                                         </a>
                                         <div class="small d-flex">                                            
-                                            <div class="mr-2">
+                                            <div class="me-2">
                                                 <span class="fa fa-book-open"></span>
                                                 ${content.content.mainLibrary}
                                             </div>
-                                            <div class="mr-2">
+                                            <div class="me-2">
                                                 <span class="fa fa-fingerprint"></span>
                                                 ${content.id}
                                             </div>
@@ -94,8 +94,8 @@ export default function render(
                 requirejs.config({
                     baseUrl: "assets/js",
                     paths: {
-                        react: 'https://unpkg.com/react@16/umd/react.development',
-                        "react-dom": 'https://unpkg.com/react-dom@16/umd/react-dom.development'
+                        react: '/node_modules/react/umd/react.development',
+                        "react-dom": '/node_modules/react-dom/umd/react-dom.development'
                     }
                 });
                 requirejs([

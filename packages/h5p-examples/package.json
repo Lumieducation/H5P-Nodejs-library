@@ -19,12 +19,14 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.15.4",
         "@lumieducation/h5p-express": "^9.0.5",
         "@lumieducation/h5p-html-exporter": "^9.0.5",
         "@lumieducation/h5p-mongos3": "^9.0.5",
         "@lumieducation/h5p-redis-lock": "^9.0.5",
         "@lumieducation/h5p-server": "^9.0.5",
         "body-parser": "1.19.0",
+        "bootstrap": "^5.1.3",
         "cache-manager": "3.6.0",
         "cache-manager-redis-store": "2.0.0",
         "debug": "^4.3.2",
@@ -37,6 +39,8 @@
         "i18next-http-middleware": "3.1.4",
         "ioredis": "^4.28.0",
         "react": "17.0.2",
+        "react-dom": "^17.0.2",
+        "requirejs": "^2.3.6",
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
