@@ -245,7 +245,7 @@ export default class LibraryAdmin extends React.Component<
                 {this.state.libraries === null ? (
                     <div>
                         <div
-                            className="spinner-grow spinner-grow-sm text-primary align-middle mr-2"
+                            className="spinner-grow spinner-grow-sm text-primary align-middle me-2"
                             role="status"
                         >
                             <span className="sr-only" />
