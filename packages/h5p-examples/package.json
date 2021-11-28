@@ -48,7 +48,6 @@
         "@types/ioredis": "4.28.1",
         "@types/puppeteer": "5.4.4",
         "@types/react": "17.0.37",
-        "cross-env": "7.0.3",
         "puppeteer": "11.0.0",
         "start-server-and-test": "1.14.0"
     }

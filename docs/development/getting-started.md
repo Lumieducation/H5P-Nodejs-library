@@ -3,7 +3,7 @@
 ## Prerequisites
 
 Make sure you have [`git`](https://git-scm.com/), [`node`](https://nodejs.org/)
-&gt;= 10.16, and [`npm`](https://www.npmjs.com/get-npm) installed. There might
+&gt;= 16, and [`npm`](https://www.npmjs.com/get-npm) installed. There might
 be problems if you use `yarn` as it doesn't use the `package-lock.json` file and
 you might get incorrect and untested dependencies.
 
