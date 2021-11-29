@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Escenario Ramificado (beta) (Branching Scenario (beta))",
+        "title": "Escenario Ramificado (Branching Scenario)",
         "summary": "Crear dilemas y aprendizaje a su propio ritmo",
         "description": "El Escenario Ramificado le permite a los autores presentar a los alumnos una variedad de opciones y contenido interactivo enriquecido. Las elecciones que hagan los alumnos determinarán el próximo contenido que vean. Puede usarse para crear dilemas, juegos serios y aprendizaje a su propio ritmo."
     },
@@ -399,5 +399,34 @@
             "holidays": "vacaciones",
             "calendar": "calendario"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Crucigrama (Crossword)",
+        "summary": "Crea un crucigrama",
+        "keywords": {
+            "crossword": "crucigrama",
+            "games": "juegos"
+        },
+        "description": "Cree y personalice un hermoso crucigrama para atraer a su audiencia. El crucigrama es altamente personalizable, lo que le permite configurar todos los colores, cargar una imagen de fondo, decidir cómo debe funcionar la puntuación e incluso aleatorizar las palabras para que su audiencia obtenga un nuevo crucigrama cada vez que lo desee."
+    },
+    "H5P_SortParagraphs": {
+        "summary": "Crea un conjunto de párrafos para ordenar",
+        "keywords": {
+            "sorting": "clasificación",
+            "games": "juegos",
+            "tasks": "tareas"
+        },
+        "title": "Ordenar los párrafos <span class='notranslate'>(Sort the Paragraphs)",
+        "description": "Escriba o pegue una lista de párrafos que serán aleatorios. Por ejemplo, puede dejar que cada párrafo sea parte de una canción, un bloque de código o pasos en una receta. Los alumnos deben ordenar los párrafos en el orden correcto. De forma predeterminada, los alumnos obtendrán un punto por cada párrafo que sigue al párrafo que se supone que debe seguir, pero puede decidir otorgar un punto por cada párrafo que esté en el lugar correcto."
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Elección de imagen (Image Choice)",
+        "summary": "Crea una tarea donde las alternativas son imágenes",
+        "keywords": {
+            "sorting": "clasificación",
+            "games": "juegos",
+            "tasks": "tareas"
+        },
+        "description": "Construya hermosas preguntas de opción múltiple o única donde las alternativas sean imágenes. Puede personalizar el diseño para las alternativas y elegir entre relaciones de aspecto fijas o simplemente usar las relaciones de aspecto que ya tienen las imágenes."
     }
 }
