@@ -17,12 +17,9 @@ export default class ContentUserDataManager {
     /**
      * @param contentUserDataStorage The storage object
      */
-    constructor(contentUserDataStorage: IContentUserDataStorage) {
+    constructor(private contentUserDataStorage: IContentUserDataStorage) {
         log.info('initialize');
-        this.contentUserDataStorage = contentUserDataStorage;
     }
-
-    private contentUserDataStorage: IContentUserDataStorage;
 
     /**
      * Deletes a contentUserData object.
@@ -50,7 +47,7 @@ export default class ContentUserDataManager {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who owns this object
-     * @returns the saved state as string
+     * @returns the saved state as string or undefined when not found
      */
     public async loadContentUserData(
         contentId: ContentId,
@@ -59,13 +56,6 @@ export default class ContentUserDataManager {
         user: IUser
     ): Promise<string> {
         if (!this.contentUserDataStorage) {
-            return undefined;
-        }
-
-        if (!this.contentUserDataStorage.loadContentUserData) {
-            log.warn(
-                `the loadContentUserData method is not implemented in the provided contentUserDataStorage.`
-            );
             return undefined;
         }
 
