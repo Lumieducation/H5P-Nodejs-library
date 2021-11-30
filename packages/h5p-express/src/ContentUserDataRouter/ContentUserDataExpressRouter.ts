@@ -20,7 +20,6 @@ import ContentUserDataController from './ContentUserDataController';
  * detected language.
  */
 export default function (
-    baseUrl: string,
     contentUserDataManager: ContentUserDataManager,
     options: { handleErrors: boolean } = { handleErrors: true },
     languageOverride: string | 'auto' = 'auto'
@@ -32,7 +31,7 @@ export default function (
     );
 
     router.get(
-        `${baseUrl}/contentUserData/:contentId/:dataType/:subContentId`,
+        `/:contentId/:dataType/:subContentId`,
         catchAndPassOnErrors(
             contentUserDataController.getContentUserData,
             undefinedOrTrue(options?.handleErrors)
@@ -40,7 +39,7 @@ export default function (
     );
 
     router.post(
-        `${baseUrl}/contentUserData/:contentId/:dataType/:subContentId`,
+        `/:contentId/:dataType/:subContentId`,
         catchAndPassOnErrors(
             contentUserDataController.postContentUserData,
             undefinedOrTrue(options?.handleErrors)

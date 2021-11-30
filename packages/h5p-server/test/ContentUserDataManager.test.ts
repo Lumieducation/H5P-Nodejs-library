@@ -5,21 +5,58 @@ import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 import User from './User';
 
 describe('ContentUserDataManager', () => {
-    describe('deleteContentUserData', () => {
+    describe('deleteContentUserDataByUserId', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
 
             expect(
-                await contentUserDataManager.deleteContentUserData(
+                await contentUserDataManager.deleteContentUserDataByUserId(
+                    'contentId',
+                    'userId',
+                    new User()
+                )
+            ).toBeUndefined();
+        });
+
+        it('calls the deleteContentUserDataByUserId-method of the contentUserDateStorage', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+            const userId = 'userId';
+            const user = new User();
+
+            await contentUserDataManager.deleteContentUserDataByUserId(
+                contentId,
+                userId,
+                user
+            );
+
+            expect(
+                mockContentUserDataStorage.deleteContentUserDataByUserId
+            ).toHaveBeenCalledWith(contentId, userId, user);
+        });
+    });
+
+    describe('deleteAllContentUserDataByContentId', () => {
+        it('returns undefined if contentUserDataStorage is undefined', async () => {
+            const contentUserDataManager = new ContentUserDataManager(
+                undefined
+            );
+
+            expect(
+                await contentUserDataManager.deleteAllContentUserDataByContentId(
                     'contentId',
                     new User()
                 )
             ).toBeUndefined();
         });
 
-        it('calls the deleteContentUserData-method of the contentUserDateStorage', async () => {
+        it('calls the deleteAllContentUserDataByContentId-method of the contentUserDateStorage', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -28,10 +65,13 @@ describe('ContentUserDataManager', () => {
             const contentId = 'contentId';
             const user = new User();
 
-            await contentUserDataManager.deleteContentUserData(contentId, user);
+            await contentUserDataManager.deleteAllContentUserDataByContentId(
+                contentId,
+                user
+            );
 
             expect(
-                mockContentUserDataStorage.deleteContentUserData
+                mockContentUserDataStorage.deleteAllContentUserDataByContentId
             ).toHaveBeenCalledWith(contentId, user);
         });
     });

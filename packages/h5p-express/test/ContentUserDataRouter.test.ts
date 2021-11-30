@@ -64,7 +64,10 @@ describe('ContentUserData endpoint adapter', () => {
             req.t = (id, replacements) => id;
             next();
         });
-        app.use(ContentUserDataExpressRouter('', mockContentUserDataManager));
+        app.use(
+            `/contentUserData`,
+            ContentUserDataExpressRouter(mockContentUserDataManager)
+        );
     });
 
     afterEach(async () => {

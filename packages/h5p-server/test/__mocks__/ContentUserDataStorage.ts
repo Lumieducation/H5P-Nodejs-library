@@ -3,9 +3,14 @@ import { ContentId } from '../../src/types';
 let mockData;
 const mock = jest.fn().mockImplementation(() => {
     return {
-        deleteContentUserData: jest.fn().mockImplementation(() => {
+        deleteContentUserDataByUserId: jest.fn().mockImplementation(() => {
             return;
         }),
+        deleteAllContentUserDataByContentId: jest
+            .fn()
+            .mockImplementation(() => {
+                return;
+            }),
         loadContentUserData: jest.fn().mockImplementation(() => {
             return 'this is some data';
         }),

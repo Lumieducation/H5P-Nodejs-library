@@ -589,9 +589,26 @@ export interface IContentUserDataStorage {
      * Deletes a contentUserData object.
      * Throws errors if something goes wrong.
      * @param contentId The content id to delete.
-     * @param user The user who wants to delete the content (not the user the contentUserData belongs to)
+     * @param userId the userId of the contentUserData that should be deleted
+     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
      */
-    deleteContentUserData(contentId: ContentId, user: IUser): Promise<void>;
+    deleteContentUserDataByUserId(
+        contentId: ContentId,
+        userId: string,
+        requestingUser: IUser
+    ): Promise<void>;
+
+    /**
+     * Deletes all userContentData objects for a given contentId. (Used when deleting content)
+     * Throws errors if something goes wrong.
+     * @param contentId The content id to delete.
+     * @param userId the userId for which the contentUserData object should be deleted
+     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
+     */
+    deleteAllContentUserDataByContentId(
+        contentId: ContentId,
+        requestingUser: IUser
+    ): Promise<void>;
 
     /**
      * Lists all associated contentUserData for a given contentId and userId.

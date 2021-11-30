@@ -106,7 +106,7 @@ export default class ContentManager {
 
         if (this.contentUserDataStorage) {
             try {
-                await this.contentUserDataStorage.deleteContentUserData(
+                await this.contentUserDataStorage.deleteAllContentUserDataByContentId(
                     contentId,
                     user
                 );

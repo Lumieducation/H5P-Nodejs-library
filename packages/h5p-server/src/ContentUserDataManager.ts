@@ -22,20 +22,39 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Deletes a contentUserData object.
+     * Deletes a contentUserData object for given contentId and userId
      * Throws errors if something goes wrong.
      * @param contentId The content id to delete.
-     * @param user The user who wants to delete the content (not the user the contentUserData belongs to)
+     * @param userId the userId for which the contentUserData object should be deleted
+     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
      */
-    public async deleteContentUserData(
+    public async deleteContentUserDataByUserId(
         contentId: ContentId,
-        user: IUser
+        userId: string,
+        requestingUser: IUser
     ): Promise<void> {
         if (this.contentUserDataStorage) {
-            log.info(`deleting contentUserData for ContentId ${contentId}`);
-            return this.contentUserDataStorage.deleteContentUserData(
+            log.info(
+                `deleting contentUserData for ContentId ${contentId} and userId ${userId}`
+            );
+            return this.contentUserDataStorage.deleteContentUserDataByUserId(
                 contentId,
-                user
+                userId,
+                requestingUser
+            );
+        }
+        return;
+    }
+
+    public async deleteAllContentUserDataByContentId(
+        contentId: ContentId,
+        requestingUser: IUser
+    ): Promise<void> {
+        if (this.contentUserDataStorage) {
+            log.info(`deleting all contentUserData for ContentId ${contentId}`);
+            return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
+                contentId,
+                requestingUser
             );
         }
         return;
