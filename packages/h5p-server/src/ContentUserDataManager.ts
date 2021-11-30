@@ -4,7 +4,7 @@ import {
     IUser,
     IContentUserDataStorage
 } from './types';
-
+import sanitizeHtml from 'sanitize-html';
 import Logger from './helpers/Logger';
 
 const log = new Logger('ContentUserDataManager');
@@ -127,12 +127,20 @@ export default class ContentUserDataManager {
         log.info(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
+
+        const sanitizedUserState = sanitizeHtml(userState);
+
+        if (!sanitizedUserState || sanitizedUserState === '') {
+            log.error(`no userState provided for ${contentId}`);
+            throw new Error('no-userState');
+        }
+
         if (this.contentUserDataStorage) {
             return this.contentUserDataStorage.saveContentUserData(
                 contentId,
                 dataType,
                 subcontentId,
-                userState,
+                sanitizedUserState,
                 invalidate,
                 preload,
                 user

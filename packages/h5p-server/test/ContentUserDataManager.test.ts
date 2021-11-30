@@ -95,6 +95,24 @@ describe('ContentUserDataManager', () => {
             ).toBeUndefined();
         });
 
+        it('sanitizes the userState', async () => {
+            const contentUserDataManager = new ContentUserDataManager(
+                undefined
+            );
+
+            await expect(
+                contentUserDataManager.saveContentUserData(
+                    'contentId',
+                    'state',
+                    '0',
+                    '<script>alert("hello world")</script>',
+                    false,
+                    false,
+                    new User()
+                )
+            ).rejects.toEqual(new Error('no-userState'));
+        });
+
         it('calls the saveontentUserData-method of the contentUserDateStorage with the correct arguments', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
