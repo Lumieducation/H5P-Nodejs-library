@@ -399,5 +399,34 @@
             "holidays": "feriados",
             "calendar": "calendário"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Palavras cruzadas (Crossword)",
+        "summary": "Crie palavras cruzadas",
+        "description": "Crie e personalize uma bela palavra cruzada para envolver seu público. As palavras cruzadas são altamente personalizáveis, permitindo que você configure todas as cores, faça upload de uma imagem de fundo, decida como a pontuação deve funcionar e até mesmo randomize as palavras para que seu público receba uma nova palavra-cruzada a cada vez, se desejar.",
+        "keywords": {
+            "crossword": "palavras cruzadas",
+            "games": "jogos"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Classifique os Parágrafos (Sort the Paragraphs)",
+        "summary": "Crie um conjunto de parágrafos a serem classificados",
+        "description": "Digite ou cole em uma lista de parágrafos que serão randomizados. Você pode, por exemplo, permitir que cada parágrafo seja parte de uma música, um bloco de código ou etapas de uma receita. Os alunos devem classificar os parágrafos na ordem correta. Por padrão, os alunos receberão um ponto para cada parágrafo que segue o parágrafo que deveria seguir, mas você pode decidir atribuir um ponto para cada parágrafo que está no lugar correto.",
+        "keywords": {
+            "sorting": "Ordenação",
+            "games": "jogos",
+            "tasks": "tarefas"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Escolha da imagem (Image Choice)",
+        "summary": "Crie uma tarefa onde as alternativas são imagens",
+        "description": "Construa lindas questões de múltipla ou única escolha onde as alternativas são imagens. Você pode personalizar o layout para as alternativas e escolher entre proporções fixas ou apenas usar as proporções que as imagens já possuem.",
+        "keywords": {
+            "sorting": "Ordenação",
+            "games": "jogos",
+            "tasks": "tarefas"
+        }
     }
 }

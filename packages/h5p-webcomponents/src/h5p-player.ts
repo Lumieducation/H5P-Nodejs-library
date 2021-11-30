@@ -223,11 +223,16 @@ export class H5PPlayerComponent extends HTMLElement {
             );
             return undefined;
         }
-        if (
-            !this.h5pInstance.contentData ||
-            !this.h5pInstance.contentData.metadata
-        ) {
-            return undefined;
+
+        let metadata = this.h5pInstance.contentData?.metadata;
+        if (!metadata) {
+            metadata =
+                this.playerModel.integration.contents[
+                    `cid-${this.playerModel.contentId}`
+                ].metadata;
+            if (!metadata) {
+                return undefined;
+            }
         }
 
         let parameters: any;
@@ -255,7 +260,7 @@ export class H5PPlayerComponent extends HTMLElement {
             this.h5pInstance,
             parameters,
             this.playerModel.contentId,
-            this.h5pInstance.contentData.metadata
+            metadata
         );
     }
 

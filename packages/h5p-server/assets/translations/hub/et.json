@@ -399,5 +399,34 @@
             "holidays": "pühad",
             "calendar": "kalender"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Ristsõna (Crossword)",
+        "summary": "Loo ristsõna",
+        "description": "Koostage ja kohandage oma vaatajaskonna kaasamiseks kaunist ristsõna. Ristsõna on väga kohandatav, võimaldades teil konfigureerida kõiki värve, laadida üles taustapildi, otsustada, kuidas hindamine peaks toimima ja isegi selles olevaid sõnu juhuslikult järjestada, et teie publik saaks soovi korral iga kord uue ristsõna.",
+        "keywords": {
+            "crossword": "ristsõna",
+            "games": "mängud"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Sorteeri lõigud (Sort the Paragraphs)",
+        "summary": "Looge sorteeritavate lõikude komplekt",
+        "description": "Tippige või kleepige juhuslikult muudetavate lõikude loend. Näiteks võite lasta igal lõigul olla osa laulust, koodiplokist või retsepti sammudest. Õppijad peavad lõigud õigesse järjekorda sorteerima. Vaikimisi saavad õppijad ühe punkti iga lõigu eest, mis järgneb sellele lõigule, mida see peaks järgima, kuid võite otsustada anda punkti iga õiges kohas oleva lõigu eest.",
+        "keywords": {
+            "sorting": "sorteerimine",
+            "games": "mängud",
+            "tasks": "ülesandeid"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Pildi valik (Image Choice)",
+        "summary": "Loo ülesanne, kus alternatiiviks on pildid",
+        "description": "Ehitage ilusaid valik- või ühe valikuga küsimusi, kui alternatiivid on pildid. Saate kohandada alternatiivide paigutust ja valida fikseeritud kuvasuhte vahel või lihtsalt kasutada piltidel juba olemasolevaid kuvasuhteid.",
+        "keywords": {
+            "sorting": "sorteerimine",
+            "games": "mängud",
+            "tasks": "ülesandeid"
+        }
     }
 }

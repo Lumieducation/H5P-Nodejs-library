@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
     "content-hub-download-error-with-message": "H5P İçerik Merkezine bağlanırken bir hata oluştu ({{message}}). Lütfen daha sonra tekrar deneyiniz.",
     "content-hub-download-error": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
-    "install-missing-libraries": "Bu sistemde aşağıdaki kütüphaneler kurulu olmadığı için içerik yüklenemedi: {{libraries}}"
+    "install-missing-libraries": "Bu sistemde aşağıdaki kütüphaneler kurulu olmadığı için içerik yüklenemedi: {{libraries}}",
+    "install-library-lock-timeout": "{{ubername}} kütüphanesi yüklenemedi, çünkü aynı kütüphaneler başka bir yerden yükleniyor ( {{limit}} ms beklendi).",
+    "install-library-lock-max-time-exceeded": "{{limit}} ms'den daha uzun sürdüğü için {{ubername}} kitaplığı yüklenemedi."
 }

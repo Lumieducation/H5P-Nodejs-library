@@ -87,17 +87,17 @@ export default class ContentListEntryComponent extends React.Component<{
                         <Col className="p-2">
                             <h5>{this.props.data.title}</h5>
                             <Row className="small">
-                                <Col className="mr-2" lg="auto">
+                                <Col className="me-2" lg="auto">
                                     <FontAwesomeIcon
                                         icon={faBookOpen}
-                                        className="mr-1"
+                                        className="me-1"
                                     />
                                     {this.props.data.mainLibrary}
                                 </Col>
-                                <Col className="mr-2" lg="auto">
+                                <Col className="me-2" lg="auto">
                                     <FontAwesomeIcon
                                         icon={faFingerprint}
-                                        className="mr-1"
+                                        className="me-1"
                                     />
                                     {this.props.data.contentId}
                                 </Col>
@@ -108,11 +108,10 @@ export default class ContentListEntryComponent extends React.Component<{
                                 <Button
                                     variant="light"
                                     onClick={() => this.close()}
-                                    block
                                 >
                                     <FontAwesomeIcon
                                         icon={faWindowClose}
-                                        className="mr-2"
+                                        className="me-2"
                                     />
                                     close player
                                 </Button>
@@ -126,7 +125,7 @@ export default class ContentListEntryComponent extends React.Component<{
                                         <span>
                                             <FontAwesomeIcon
                                                 icon={faCopyright}
-                                                className="mr-2"
+                                                className="me-2"
                                             />
                                             Copyright
                                         </span>
@@ -173,7 +172,6 @@ export default class ContentListEntryComponent extends React.Component<{
                                         this.state.saving || this.state.loading
                                     }
                                     onClick={() => this.save()}
-                                    block
                                 >
                                     {this.state.saving ? (
                                         <div
@@ -183,14 +181,14 @@ export default class ContentListEntryComponent extends React.Component<{
                                     ) : (
                                         <FontAwesomeIcon
                                             icon={faSave}
-                                            className="mr-2"
+                                            className="me-2"
                                         />
                                     )}{' '}
                                     save{' '}
                                     {this.state.saved ? (
                                         <FontAwesomeIcon
                                             icon={faCheck}
-                                            className="mr-2"
+                                            className="me-2"
                                         />
                                     ) : undefined}
                                 </Button>
@@ -200,12 +198,11 @@ export default class ContentListEntryComponent extends React.Component<{
                             <Col className="p-2" lg="auto">
                                 <Button
                                     variant="light"
-                                    block
                                     onClick={() => this.close()}
                                 >
                                     <FontAwesomeIcon
                                         icon={faWindowClose}
-                                        className="mr-2"
+                                        className="me-2"
                                     />
                                     close editor
                                 </Button>
@@ -215,14 +212,13 @@ export default class ContentListEntryComponent extends React.Component<{
                             <Col className="p-2" lg="auto">
                                 <Button
                                     variant="light"
-                                    block
                                     onClick={() =>
                                         this.props.onDiscard(this.props.data)
                                     }
                                 >
                                     <FontAwesomeIcon
                                         icon={faWindowClose}
-                                        className="mr-2"
+                                        className="me-2"
                                     />
                                     discard
                                 </Button>
@@ -233,12 +229,11 @@ export default class ContentListEntryComponent extends React.Component<{
                                 <Col className="p-2" lg="auto">
                                     <Button
                                         variant="success"
-                                        block
                                         onClick={() => this.play()}
                                     >
                                         <FontAwesomeIcon
                                             icon={faPlay}
-                                            className="mr-2"
+                                            className="me-2"
                                         />
                                         play
                                     </Button>
@@ -246,12 +241,11 @@ export default class ContentListEntryComponent extends React.Component<{
                                 <Col className="p-2" lg="auto">
                                     <Button
                                         variant="secondary"
-                                        block
                                         onClick={() => this.edit()}
                                     >
                                         <FontAwesomeIcon
                                             icon={faPencilAlt}
-                                            className="mr-2"
+                                            className="me-2"
                                         />
                                         edit
                                     </Button>
@@ -262,10 +256,10 @@ export default class ContentListEntryComponent extends React.Component<{
                                             this.props.data.contentId
                                         )}
                                     >
-                                        <Button variant="info" block>
+                                        <Button variant="info">
                                             <FontAwesomeIcon
                                                 icon={faFileDownload}
-                                                className="mr-2"
+                                                className="me-2"
                                             />
                                             download
                                         </Button>
@@ -274,14 +268,13 @@ export default class ContentListEntryComponent extends React.Component<{
                                 <Col className="p-2" lg="auto">
                                     <Button
                                         variant="danger"
-                                        block
                                         onClick={() =>
                                             this.props.onDelete(this.props.data)
                                         }
                                     >
                                         <FontAwesomeIcon
                                             icon={faTrashAlt}
-                                            className="mr-2"
+                                            className="me-2"
                                         />
                                         delete
                                     </Button>

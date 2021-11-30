@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později.",
     "content-hub-download-error-with-message": "Při připojování k H5P Content Hub ( {{message}} ) došlo k chybě. Prosím zkuste to znovu později.",
     "content-hub-download-error": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později.",
-    "install-missing-libraries": "Obsah nelze načíst, protože v tomto systému nejsou nainstalovány následující knihovny: {{libraries}}"
+    "install-missing-libraries": "Obsah nelze načíst, protože v tomto systému nejsou nainstalovány následující knihovny: {{libraries}}",
+    "install-library-lock-timeout": "Knihovnu {{ubername}} nelze nainstalovat, protože se stejné knihovny instalují z jiného místa (čekalo se {{limit}} ms na uzamčení knihovny).",
+    "install-library-lock-max-time-exceeded": "Knihovnu {{ubername}} nebylo možné nainstalovat, protože to trvalo déle než povolenou {{limit}} ms."
 }

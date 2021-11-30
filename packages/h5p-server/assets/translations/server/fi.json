@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "H5P-sisältökeskukseen yhdistämisessä tapahtui virhe. Yritä uudelleen myöhemmin.",
     "content-hub-download-error-with-message": "Yhdistettäessä H5P Content Hubiin ( {{message}} ) tapahtui virhe. Yritä uudelleen myöhemmin.",
     "content-hub-download-error": "H5P-sisältökeskukseen yhdistämisessä tapahtui virhe. Yritä uudelleen myöhemmin.",
-    "install-missing-libraries": "Sisällön lataaminen epäonnistui, koska seuraavia kirjastoja ei ole asennettu tähän järjestelmään: {{libraries}}"
+    "install-missing-libraries": "Sisällön lataaminen epäonnistui, koska seuraavia kirjastoja ei ole asennettu tähän järjestelmään: {{libraries}}",
+    "install-library-lock-timeout": "Kirjastoa {{ubername}} ei voitu asentaa, koska samoja kirjastoja asennetaan toisesta paikasta (odotti {{limit}} ms lukitusta kirjastoon).",
+    "install-library-lock-max-time-exceeded": "Kirjastoa {{ubername}} ei voitu asentaa, koska se kesti kauemmin kuin sallittu {{limit}} ms."
 }

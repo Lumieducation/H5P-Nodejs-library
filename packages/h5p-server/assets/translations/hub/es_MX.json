@@ -1,0 +1,432 @@
+{
+    "H5P_Accordion": {
+        "title": "Acordeón (Accordion)",
+        "summary": "Cree elementos expandibles apilados verticalmente",
+        "description": "Reducir la cantidad de texto presentado a los lectores al usar este acordeón responsivo. Los lectores deciden cuales encabezados ver con más detalle al expandir el título. Excelente para proporcionar una vista general con explicaciones a profundidad opcionales.",
+        "keywords": {
+            "accordion": "acordeón",
+            "collapsible_text": "texto colapsable"
+        }
+    },
+    "H5P_ArithmeticQuiz": {
+        "title": "Examen Aritmético (Arithmetic Quiz)",
+        "summary": "Crear exámenes aritméticos basados en tiempo",
+        "description": "Crear exámenes aritméticos consistentes de preguntas de opción múltiple. Como autor, todo lo que debe hacer es decidir el tipo y largo del examen. Los usuarios llevan registro de su puntaje y tiempo empleado para resolver el examen.",
+        "keywords": {
+            "math": "matemáticas",
+            "arithmetic_quiz": "examen aritmético",
+            "countdown": "cronómetro descendiente"
+        }
+    },
+    "H5P_Chart": {
+        "title": "Gráfica (Chart)",
+        "summary": "Generar rápidamente gráficos de barra y pastel",
+        "description": "¿Necesita presentar gráficamente datos estadísticos simples sin crear manualmente las ilustraciones? Gráfica es su respuesta.",
+        "keywords": {
+            "chart": "gráfica",
+            "bar_chart": "gráfico de barras",
+            "pie_chart": "gráfico de pastel",
+            "graph": "gráfico"
+        }
+    },
+    "H5P_Collage": {
+        "title": "Collage (Collage)",
+        "summary": "Crear un collage de varias imágenes",
+        "description": "La herramienta Collage le permite organizar imágenes dentro de una composición relajante. ",
+        "keywords": {
+            "collage": "collage",
+            "image": "collage"
+        }
+    },
+    "H5P_Column": {
+        "title": "Columna (Column)",
+        "summary": "Organizar contenido H5P dentro de un diseño de columna",
+        "description": "Organizar su tipo de contenido dentro de un diseño de columna con H5P Columna. Los tipos de contenido que tienen material similar o que comparten un tema común ahora pueden ser agrupados juntos para crear una experiencia coherente de aprendizaje. Además, los autores son libres de ser creativos al combinar casi todos los tipos de contenido H5P existentes.",
+        "keywords": {
+            "column": "columna",
+            "layout": "diseño",
+            "compound": "compuesto"
+        }
+    },
+    "H5P_CoursePresentation": {
+        "title": "Presentación de Curso (Course Presentation)",
+        "summary": "Crear una presentación con páginas interactivas",
+        "description": "Las presentaciones de curso consisten de páginas con multimedios, texto y muchos tipos diferentes de interacciones como por ejemplo resúmenes interactivos, preguntas de opción múltiple y videos interactivos. Los estudiantes pueden experimentar nuevo material de aprendizaje interactivo y el tipo de actividad de Presentación de Curso (Course Presentation) incluye una herramienta de autoría WYSIWYG arrastrar y pegar. Un uso típico de la actividad de Presentación de Curso es usar unas cuantas páginas para introducir un asunto y seguirlas con unas cuantas páginas más en las cuales se prueba el conocimiento del usuario. Sin embargo, la Presentación de Curso puede ser usada en muchas formas diferentes, incluyendo el usarla como una herramienta de presentación para el salón de clase, o como un juego donde la navegación usual está remplazada con botones de navegación en la parte superior de las páginas para permitirle al usuario hacer selecciones y ver la consecuencia de sus selecciones.",
+        "keywords": {
+            "course_presentation": "presentación de curso",
+            "slides": "páginas",
+            "powerpoint": "PowerPoint"
+        }
+    },
+    "H5P_Dialogcards": {
+        "title": "Tarjetas de Diálogo (Dialog Cards)",
+        "summary": "Crear tarjetas volteables basadas en texto",
+        "description": "Las tarjetas de diálogo pueden ser usadas como un ejercicio para ayudarle a los estudiantes a memorizar palabras, expresiones u oraciones. En el frente de la tarjeta hay una pista para una palabra o expresión. Al voltear la tarjeta el estudiante revela una palabra o expresión correspondiente. Las tarjetas de diálogo pueden ser usadas en aprendizaje de idiomas,para presentar problemas matemáticos o para ayudarle a los estudiantes a recordar hechos como por ejemplo eventos históricos, fórmulas o nombres.",
+        "keywords": {
+            "dialog_cards": "tarjetas de diálogo"
+        }
+    },
+    "H5P_DocumentationTool": {
+        "title": "Herramienta de Documentación (Documentation Tool)",
+        "summary": "Crear un asistente de formato con exportación de texto",
+        "description": "La herramienta de documentación intenta hacer fácil el crear asistentes de evaluación para actividades encaminadas a metas. También puede ser usada como un asistente de formatos. Mientras se edita, el autor puede añadir múltiples pasos al asistente. En cada paso, el autor puede definir cual contenido va a ese paso. El contenido puede ser texto simple, campos para escribir, definición y valoración de meta. Una vez publicado, el usuario final será llevado a cada paso del asistente. En el último paso del asistente, el usuario puede generar un documento con todo lo escrito que haya sido enviado. Este documento puede ser descargado. La herramienta de documentación es completamente responsiva y funciona muy bien en pantallas pequeñas y en su PC de escritorio.",
+        "keywords": {
+            "dialog_cards": "tarjetas de diálogo"
+        }
+    },
+    "H5P_DragQuestion": {
+        "title": "Arrastrar y Soltar (Drag and Drop)",
+        "summary": "Crear trabajos de arrastrar y soltar con imágenes",
+        "description": "La pregunta de arrastrar y soltar le permite al estudiante asociar dos o más elementos y hacer conexiones lógicas en una forma visual. Cree preguntas de Arrastrar y Soltar usando tanto texto como imágenes como alternativas arrastrables. Las preguntas H5P de Arrastrar y Soltar soportan relaciones uno-a-uno, uno-a-muchos. muchos-a-uno y muchos-a-muchos entre preguntas y respuestas. ",
+        "keywords": {
+            "drag_and drop": "arrastrar y soltar"
+        }
+    },
+    "H5P_DragText": {
+        "title": "Arrastrar las Palabras (Drag the Words)",
+        "summary": "Crear trabajos de arrastrar y soltar basados en texto",
+        "description": "Arrastrar las palabras le permite a los diseñadores de contenidos el crear expresiones textuales con piezas faltantes de texto. El usuario final arrastra una pieza faltante a su lugar correcto, para formar una expresión completa. Puede ser usado para comprobar si el usuario recuerda un texto que ha leído, o si entiende algo. Le ayuda al usuario a pensar en un texto. Es súper fácil crear un trabajo de arrastrar las palabras. El editor solamente escribe el texto y rodea las palabras que serán arrastrables con signos de asterisco como por ejemplo *palabraArrastrable*.",
+        "keywords": {
+            "drag": "arrastrar",
+            "words": "palabras"
+        }
+    },
+    "H5P_Blanks": {
+        "title": "Llenar los Huecos (Fill in the Blanks)",
+        "summary": "Crear un trabajo con palabras faltantes en un texto",
+        "description": "Los estudiantes escriben las palabras faltantes en un texto. Al estudiante se le muestra una solución después de llenar todas las palabras faltante, o después de cada palabra dependiendo de las configuraciones. Los autores escriben el texto y marcan las palabras a ser remplazadas con un asterisco. Además de usarse para aprendizaje de idioma nativo y segundo idioma, Llenar las Palabras puede ser usado para probar la habilidad del estudiante para reproducir hechos o producir inferencias matemáticas.",
+        "keywords": {
+            "fill": "llenar",
+            "blanks": "huecos",
+            "text": "texto"
+        }
+    },
+    "H5P_ImageHotspotQuestion": {
+        "title": "Encontrar el Hotspot (Find the Hotspot)",
+        "summary": "Crear puntos calientes (hotspots) de imagen para que los encuentre el usuario",
+        "description": "Este tipo de contenido le permite a los usuarios finales el oprimir en algún lugar en la imagen y obtener retroalimentación acerca de si estaba correcto o incorrecto de acuerdo a la descripción del trabajo. El autor sube una imagen y define varios puntos calientes (hotspots) que corresponden a detalles o secciones de la imagen. Los hotspots pueden ser definidos como correctos o incorrectos, y el autor proporciona texto de retroalimentación apropiada en ambos casos.El autor también puede definir una retroalimentación si el usuario final presiona en algún lugar que no estuviera definido como hotspot correcto ni como hotspot incorrecto.",
+        "keywords": {
+            "find": "encontrar",
+            "hotspot": "punto caliente (hotspot)",
+            "image": "imagen"
+        }
+    },
+    "H5P_GuessTheAnswer": {
+        "title": "Adivina la Respuesta (Guess the Answer)",
+        "summary": "Crear una imagen con una pregunta y respuesta",
+        "description": "Este tipo de contenido le permite a los autores subir una imagen y añadir una descripción apropiada. Los usuarios finales pueden adivinar la respuesta y presionar la barra debajo de la imagen para revelar la respuesta correcta.",
+        "keywords": {
+            "guess": "adivinar",
+            "answer": "respuesta"
+        }
+    },
+    "H5P_IFrameEmbed": {
+        "title": "incrustador de iframe (iframe Embedder)",
+        "summary": "Incrustar desde una URL o desde un conjunto de archivos",
+        "description": "El incrustador de iframe hace fácil el hacer un H5P de aplicaciones JavaScript ya existentes.",
+        "keywords": {
+            "embed": "incrustar",
+            "iframe": "iframe"
+        }
+    },
+    "H5P_InteractiveVideo": {
+        "title": "Video Interactivo (Interactive Video)",
+        "summary": "Crear videos enriquecidos con interacciones",
+        "description": "Añadir interactividad a su video con explicaciones, imágenes extra, tablas, Llenar los Huecos y preguntas de opción múltiple. Las preguntas de examen soportan adaptabilidad, lo que significa que Usted puede brincar a otra parte del video basado en la entrada del usuario. Resúmenes interactivos pueden ser añadidos al final del video. Los videos interactivos son creados y editados usando la herramienta de autoría H5P en un navegador web estándar.",
+        "keywords": {
+            "interactive": "interactivo",
+            "video": "vídeo"
+        }
+    },
+    "H5P_MarkTheWords": {
+        "title": "Marcar las Palabras (Mark the Words)",
+        "summary": "Crear un trabajo donde los usuarios resaltan palabras",
+        "description": "Marcar las palabras le permite a los diseñadores de contenido crear expresiones textuales con un conjunto definido de palabras.El usuario final resalta palabras de acuerdo a la descripción del trabajo y recibe un puntaje. Para el editor, es súper fácil el crear un reto de hacer clic en las palabras. El editor escribe el texto y rodea con asteriscos las palabras donde el usuario debe hacer clic, las respuestas correctas, como *palabraCorrecta*.",
+        "keywords": {
+            "mark": "marca",
+            "words": "palabras"
+        }
+    },
+    "H5P_MemoryGame": {
+        "title": "Juego de Memoria (Memory Game)",
+        "summary": "Crear el juego clásico de aparear imágenes",
+        "description": "Cree sus propios juegos de memoria y pruebe la memoria de los usuarios de sus sitio con este juego HTML5 simple pero hermoso.",
+        "keywords": {
+            "memory": "memoria",
+            "game": "juego",
+            "cards": "tarjetas"
+        }
+    },
+    "H5P_MultiChoice": {
+        "title": "Opción Múltiple (Multiple Choice)",
+        "summary": "Crear preguntas flexibles de opción múltiple",
+        "description": "Las preguntas de Opción Múltiple pueden ser una herramienta efectiva de evaluación. Al estudiante se le da retroalimentación inmediata sobre su desempeño. Las preguntas H5P de Opción Múltiple pueden tener una o varias opciones correctas por pregunta.",
+        "keywords": {
+            "multiple": "múltiple",
+            "choice": "opción",
+            "quiz": "examen"
+        }
+    },
+    "H5P_PersonalityQuiz": {
+        "title": "Examen de Personalidad (Personality Quiz)",
+        "summary": "Crear exámenes de personalidad",
+        "description": "En este tipo de contexto, el autor define una serie de preguntas con alternativas, donde cada alternativa es concordada contra una o más personalidades. Al final del examen, el usuario verá cual personalidad coincide mejor. Hay varias formas de hacer este examen visualmente atractivo; por ejemplo al representar preguntas, alternativas y personalidades usando imágenes.",
+        "keywords": {
+            "personality": "personalidad",
+            "quiz": "examen"
+        }
+    },
+    "H5P_Questionnaire": {
+        "title": "Cuestionario (Questionnaire)",
+        "summary": "Crear un cuestionario para recibir retroalimentación",
+        "description": "Gane retroalimentación y haga preguntas abiertas en Videos Interactivos y otros tipos de contenidos con Cuestionario (Questionnaire). Cuestionario hace las respuestas del usuario disponibles vía una integración cAPI. Esto significa que los propietarios de sitios web pueden almacenar las respuestas en muchas formas diferentes. Las respuestas pueden ser almacenadas en un LRS (Learning Record Store= Almacenamiento de Registros de Aprendizaje), el almacenamiento personalizado propio del sitio, o un script puede buscar la dirección Email y usarla para enviarle un Email al usuario. En H5P.org las respuestas son almacenadas en Google Analytics.",
+        "keywords": {
+            "questionnaire": "cuestionario"
+        }
+    },
+    "H5P_QuestionSet": {
+        "title": "Examen (Conjunto de Preguntas) (Quiz (Question Set))",
+        "summary": "Crear una secuencia de varios tipos de preguntas",
+        "description": "Conjunto de Preguntas es su típico tipo de contenido de examen. Le permite al estudiante resolver una secuencia de varios tipos d preguntas como Opción Múltiple, Arrastrar y soltar y Llenar los huecos en un Conjunto de Preguntas. Como autor, hay muchas configuraciones que puede usar para hacer que se comporte exactamente como Usted quiere. Usted puede, por ejemplo, personalizar el Conjunto de Preguntas con imágenes de fondo y definir un porcentaje aprobatorio para el estudiante. El Conjunto de Preguntas le permite añadir videos que son reproducidos al final. Un video para éxito, otro si el estudiante reprueba el examen. Esto podría motivar a los estudiantes a que intenten nuevamente si reprueban para que tengan oportunidad de ver el video de éxito.",
+        "keywords": {
+            "question_set": "conjunto de preguntas",
+            "collection": "colección",
+            "quiz": "examen"
+        }
+    },
+    "H5P_SingleChoiceSet": {
+        "title": "Conjunto de Opción Única (Single Choice Set)",
+        "summary": "Crear preguntas con una respuesta correcta",
+        "description": "El Conjunto de Opción Única le permite a los diseñadores de contenido crear conjuntos de preguntas con una respuesta correcta por pregunta. El usuario final obtiene retroalimentación inmediata después de enviar cada respuesta.",
+        "keywords": {
+            "collection": "colección",
+            "quiz": "examen",
+            "choice": "opción"
+        }
+    },
+    "H5P_Summary": {
+        "title": "Resumen (Summary)",
+        "summary": "Crear trabajos con una lista de oraciones",
+        "description": "Los Resúmenes le ayudan al estudiante a recordar información clave en un texto, un video o una presentación, al construir activamente un resumen acerca del tópico visto. Cuando el estudiante ha completado un resumen, una lista completa de las frases clave acerca del tópico es mostrada.",
+        "keywords": {
+            "summary": "resumen"
+        }
+    },
+    "H5P_Timeline": {
+        "title": "Línea de Tiempo (Timeline)",
+        "summary": "Crear una línea de tiempo de eventos con multimedios",
+        "description": "Esta es Timeline.js desarrollada por Knight Lab, empacada como un tipo de contenido H5P para hacer líneas de tiempo fácilmente editables, que se puedan compartir y reutilizables. El tipo de contenido Línea de Tiempo le permite colocar una secuencia d eventos en un orden cronológico. Para cada evento Usted puede añadir imágenes y texto. Usted puede incluir también recursos de Twitter, YouTube, Flickr, Vimeo, Google Maps y SoundCloud.",
+        "keywords": {
+            "timeline": "cronología",
+            "slider": "deslizador"
+        }
+    },
+    "H5P_TrueFalse": {
+        "title": "Pregunta Falso/Verdadero (True/False Question)",
+        "summary": "Crear preguntas Falso/Verdadero",
+        "description": "Pregunta Falso/Verdadero es un tipo de contenido simple y sencillo que puede funcionar por sí mismo o ser insertado dentro de otro tipo de contenido como una Presentación de Curso. Se puede crear una pregunta más compleja al añadir una imagen o un video.",
+        "keywords": {
+            "true": "verdadero",
+            "false": "falso"
+        }
+    },
+    "H5P_ImageHotspots": {
+        "title": "Hotspots de Imagen (Image Hotspots)",
+        "summary": "Crear una imagen con varios puntos calientes (hotspots) de información",
+        "description": "Los puntos de acceeso (hotspots) de imagen hace posible el crear una imagen con hotspots (puntos calientes) interactivos. Cuando un usuario oprime un hotspot, se muestra una ventana emergente que contiene un encabezado y texto o video. Usando el editor de H5P, Usted puede añadir cuantos hotspots quiera.",
+        "keywords": {
+            "image": "imagen",
+            "hotspot": "punto caliente (hotspot)"
+        }
+    },
+    "H5P_ImageMultipleHotspotQuestion": {
+        "title": "Encontrar Múltiples Hotspots (Find Multiple Hotspots)",
+        "summary": "Crear muchos puntos calientes (hotspots) para que los usuarios los encuentren",
+        "description": "Un tipo de pregunta gratuita HTML5 que les permite a los creativos el crear un test basado en una imagen, donde el estudiante debe encontrar los puntos correctos en una imagen. Use este tipo de contenido con el pluginH5P para WordPress, Moodle o Drupal para retar a sus usuarios."
+    },
+    "H5P_ImageJuxtaposition": {
+        "title": "Yuxtaposición de Imagen (Image Juxtaposition)",
+        "summary": "Crear imágenes interactivas",
+        "description": "Un tipo gratuito de contenido de imagen basada en HTML-5 que le permite a los usuarios comparar interactivamente dos imágenes. Narre las historias de sus imágenes con H5P y Yuxtaposición de Imagen en WordPress, Moodle o Drupal."
+    },
+    "H5P_Audio": {
+        "title": "Audio (Audio)",
+        "summary": "Subir una grabación de audio",
+        "description": "Subir una grabación de audio en .mp3, .wav, .ogg, o proporcionar el enlace para una grabación de audio."
+    },
+    "H5P_AudioRecorder": {
+        "title": "Grabadora de Audio (Audio Recorder)",
+        "summary": "Crear una grabación de audio",
+        "description": "Una grabadora de audio HTML5. Grabe su voz y reproduzca o descargue un archivo .wav de su grabación. Utilice el complemento H5P para crear la grabadora de audio H5P en su sitio Drupal, Wordpress o Moodle. ",
+        "keywords": {
+            "audio": "audio",
+            "recorder": "grabadora"
+        }
+    },
+    "H5P_SpeakTheWords": {
+        "title": "Diga las Palabras (Speak the Words)",
+        "summary": "Conteste una pregunta usando su voz (solamente Chrome)",
+        "description": "Diga las Palabras solamente está soportado en navegadores que implementan la Web Speech API (navegadores Chrome, excepto en iOS). Usted necesita un micrófono para contestar la pregunta. Hágales una pregunta a los usuarios y haga que contesten usando su voz. Usted puede elegir varias respuestas correctas. El usuario podrá ver como fueron interpretadas sus palabras, y que tan cercano estuvo de las respuestas correctas.",
+        "keywords": {
+            "language": "idioma",
+            "translation": "traducción",
+            "voice": "voz",
+            "recognition": "reconocimiento",
+            "speech": "habla",
+            "mic": "mic",
+            "microphone": "micrófono"
+        }
+    },
+    "H5P_Agamotto": {
+        "title": "Agamotto (Mezcladora de Imagen) (Agamotto Image Blender)",
+        "summary": "Presentar una secuencia de imágenes y explicaciones",
+        "description": "Presentar una secuencia de imágenes a las cuales la gente se supone que debe verlas una tras otra; como por ejemplo, fotos de un artículo que cambia con el tiempo, diagramas o mapas, que están organizados en diferentes capas o imágenes que revelan más y más detalles.",
+        "keywords": {
+            "image": "imagen",
+            "images": "imágenes",
+            "transition": "transición"
+        }
+    },
+    "H5P_ImageSequencing": {
+        "title": "Secuenciado de Imágenes (Image Sequencing)",
+        "summary": "Coloca las imágenes en el orden correcto",
+        "description": "Un tipo gratuito de contenido HTML5 de secuenciado de imágenes que le permite a los autores el añadirle una secuencia a sus propias imágenes ( y una descripción opcional de imagen) al juego en un orden particular. El orden de las imágenes será aleatorizado y los jugadores tendrán que re-ordenarlas basadas en la descripción del trabajo. ",
+        "keywords": {
+            "image": "imagen",
+            "sequence": "secuencia",
+            "order": "orden"
+        }
+    },
+    "H5P_Flashcards": {
+        "title": "Tarjetas didácticas (Flashcards)",
+        "summary": "Crea tarjetas didácticas (flashcards) modernas y con estilo",
+        "description": "Este tipo de contenido le permite a los autores el crear una sola tarjeta flash o un conjunto de tarjetas didácticas (flashcards), donde cada tarjeta tiene imágenes apareadas con preguntas y respuestas. A los estudiantes se les pide que llenen el campo de texto y después revisen la exactitud de su solución.",
+        "keywords": {
+            "cards": "tarjetas",
+            "animation": "animación"
+        }
+    },
+    "H5P_SpeakTheWordsSet": {
+        "title": "Conjunto de Pronunciar las Palabras (Speak the Words Set)",
+        "summary": "Crear una serie de preguntas que se contestan con voz (Chrome solamente)",
+        "description": "Conjunto Pronunciar las Palabras solamente está soportado en navegadores que implementan la Web Speech API (navegadores Chrome, excepto en iOS). Usted necesita un micrófono para contestar la pregunta. Cree un conjunto de preguntas que los estudiantes pueden contestar usando su voz. Usted puede elegir múltiples respuestas correctas. El usuario podrá ver como fueron interpretadas sus palabras, y que tan cerca estuvo de las respuestas correctas.",
+        "keywords": {
+            "language": "idioma",
+            "translation": "traducción",
+            "voice": "voz",
+            "quiz": "examen",
+            "set": "conjunto",
+            "recognition": "reconocimiento",
+            "mic": "mic",
+            "microphone": "micrófono"
+        }
+    },
+    "H5P_ImageSlider": {
+        "title": "Control deslizante de imagen (Image Slider)",
+        "summary": "Crea fácilmente un control deslizante de imagen",
+        "description": "Presente sus imágenes de una forma atractiva con facilidad. Los autores solamente tienen que subir imágenes y proporcionar textos alternativos para las imágenes. \n\nLas dos imágenes siguientes siempre están pre-cargadas, por lo que alternar entre imágenes usualmente será rápido y sin demoras para cargar la imagen siguiente.\n\nLas imágenes pueden ser experimentadas como parte de la página o en modo de pantalla completa. Cuando se usan como parte de la página, el sistema elegirá una proporción de aspecto fija dependiendo de la imagen siendo usada.Los autores pueden decidir manejar las proporciones de aspecto de forma diferente.",
+        "keywords": {
+            "image": "imagen",
+            "images": "imágenes",
+            "slider": "deslizador",
+            "carousel": "carrusel"
+        }
+    },
+    "H5P_Essay": {
+        "title": "Ensayo (Essay)",
+        "summary": "Crear Ensayo con retroalimentación instantánea",
+        "description": "En este tipo de contenido, el autor define un conjunto de palabras clave que representan aspectos cruciales de un tema. Estas palabras clave son comparadas contra un texto que los estudiantes han compuesto y pueden ser usadas para proporcionar retroalimentación inmediata - ya sea sugiriendo revisar ciertos detalles del tema si falta una palabra clave, o confirmar las ideas del estudiante si el texto contiene una palabra clave.\n",
+        "keywords": {
+            "Essay": "Ensayo"
+        }
+    },
+    "H5P_ImagePair": {
+        "title": "Apareado de Imágenes (Image Pairing)",
+        "summary": "Apareado de Imágenes (Image Pairing)",
+        "description": "Apareado de imagen es una actividad simple y efectiva que requiere que los estudiantes hagan coincidir parejas de imágenes. Dado que no es necesario que ambas imágenes en un par sean las mismas, los autores también pueden probar la comprensión de una relación entre dos diferentes imágenes. ",
+        "keywords": {
+            "image_images matching pair": "par de imágenes coincidentes"
+        }
+    },
+    "H5P_Dictation": {
+        "title": "Dictado (Dictation)",
+        "summary": "Crear un dictado con retroalimentación instantánea",
+        "description": "Usted puede añadir muestras de audio que contienen una oración para dictado y escribir la transcripción correcta. Sus estudiantes pueden escuchar las muestras y escribir lo que ha oído en un campo de texto. Sus respuestas serán evaluadas automáticamente. Varias opciones le permitirán controlar la dificultad del ejercicio. Opcionalmente Usted puede añadir una segunda muestra de audio para una oración que podría contener una versión hablada más despacio. Usted también puede configurar un límite para cuantas veces se puede reproducir una muestra, definir si la puntuación debería ser relevante para el puntaje, y decidir si los pequeños errores como los errores tipográficos deberían ser contados como sin error, un error completo, o solamente medio error.",
+        "keywords": {
+            "language": "idioma",
+            "audio": "audio"
+        }
+    },
+    "H5P_BranchingScenario": {
+        "title": "Escenario Ramificado (Branching Scenario )",
+        "summary": "Crear dilemas y aprendizaje a su propio ritmo",
+        "description": "El Escenario Ramificado le permite a los autores presentar a los alumnos una variedad de opciones y contenido interactivo enriquecido. Las elecciones que hagan los alumnos determinarán el próximo contenido que vean. Puede usarse para crear dilemas, juegos serios y aprendizaje a su propio ritmo."
+    },
+    "H5P_ThreeImage": {
+        "title": "Visita virtual (360) (Virtual Tour (360))",
+        "summary": "Crea entornos 360 con interacciones",
+        "description": "Las imágenes 360 (equirrectangulares) y normales pueden enriquecerse con interactividades como explicaciones, videos, sonidos y preguntas interactivas. Las imágenes crean escenas que también pueden vincularse entre sí para dar al usuario la impresión de moverse entre entornos o entre diferentes puntos de vista dentro del mismo entorno."
+    },
+    "H5P_FindTheWords": {
+        "title": "Encuentra las palabras (Find the words)",
+        "summary": "Juego de búsqueda de palabras en cuadrícula",
+        "description": "Una actividad gratuita de búsqueda de palabras basada en HTML5 que permite a los autores crear una lista de palabras que se dibujarán en una cuadrícula. La tarea del alumno es encontrar y seleccionar las palabras en la cuadrícula."
+    },
+    "H5P_InteractiveBook": {
+        "title": "Libro Interactivo (Interactive Book)",
+        "summary": "Crear pequeños cursos, libros y exámenes",
+        "description": "Cree pequeños cursos, libros o exámenes. Libro interactivo permite a los autores combinar grandes cantidades de contenido interactivo como videos interactivos, preguntas, presentaciones de cursos y más en varias páginas. Hay un resumen al final que resume las puntuaciones obtenidas por el alumno a lo largo del libro.",
+        "keywords": {
+            "book": "libro",
+            "course": "curso"
+        }
+    },
+    "H5P_KewArCode": {
+        "title": "Código KewAr (KewAr Code)",
+        "summary": "Crea códigos QR para diferentes propósitos",
+        "description": "KewAr Code permite a los diseñadores de contenido crear códigos QR conocidos. Esos códigos QR pueden codificar URL, pero también información de contacto, eventos, ubicaciones geográficas, etc. Las personas pueden escanearlos con un lector de códigos QR para activar la acción elegida.",
+        "keywords": {
+            "QR": "QR"
+        }
+    },
+    "H5P_AdventCalendar": {
+        "title": "Calendario de Adviento (beta) (Advent Calendar (beta))",
+        "summary": "Crea sorpresas que se develarán a diario",
+        "description": "Crea y personaliza un hermoso calendario de adviento. Puede agregar una imagen de fondo a todo el calendario, en cada puerta y como fondo en el contenido dentro de cada puerta. También puede agregar efectos de nieve y música. Dentro de cada puerta, puede agregar un sonido, video, texto, imagen o enlace.\n\nTenga en cuenta que es fácil para los usuarios expertos en informática revelar el contenido de todas las puertas de inmediato. Si planea revelar grandes secretos en días futuros, debe esperar hasta ese día antes de agregar sus grandes secretos al calendario.",
+        "keywords": {
+            "christmas": "Navidad",
+            "advent": "adviento",
+            "holidays": "vacaciones",
+            "calendar": "calendario"
+        }
+    },
+    "H5P_Crossword": {
+        "title": "Crucigrama (Crossword)",
+        "summary": "Crea un crucigrama",
+        "keywords": {
+            "crossword": "crucigrama",
+            "games": "juegos"
+        },
+        "description": "Cree y personalice un hermoso crucigrama para atraer a su audiencia. El crucigrama es altamente personalizable, lo que le permite configurar todos los colores, cargar una imagen de fondo, decidir cómo debe funcionar la puntuación e incluso aleatorizar las palabras para que su audiencia obtenga un nuevo crucigrama cada vez que lo desee."
+    },
+    "H5P_SortParagraphs": {
+        "title": "Ordenar los párrafos <span class='notranslate'>(Sort the Paragraphs)",
+        "keywords": {
+            "sorting": "clasificación",
+            "games": "juegos",
+            "tasks": "tareas"
+        },
+        "summary": "Crea un conjunto de párrafos para ordenar",
+        "description": "Escriba o pegue una lista de párrafos que serán aleatorios. Por ejemplo, puede dejar que cada párrafo sea parte de una canción, un bloque de código o pasos en una receta. Los alumnos deben ordenar los párrafos en el orden correcto. De forma predeterminada, los alumnos obtendrán un punto por cada párrafo que sigue al párrafo que se supone que debe seguir, pero puede decidir otorgar un punto por cada párrafo que esté en el lugar correcto."
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Elección de imagen (Image Choice)",
+        "keywords": {
+            "sorting": "clasificación",
+            "games": "juegos",
+            "tasks": "tareas"
+        },
+        "summary": "Crea una tarea donde las alternativas son imágenes",
+        "description": "Construya hermosas preguntas de opción múltiple o única donde las alternativas sean imágenes. Puede personalizar el diseño para las alternativas y elegir entre relaciones de aspecto fijas o simplemente usar las relaciones de aspecto que ya tienen las imágenes."
+    }
+}

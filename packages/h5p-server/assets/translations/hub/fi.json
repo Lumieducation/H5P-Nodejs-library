@@ -399,5 +399,34 @@
             "holidays": "vapaapäivät",
             "calendar": "kalenteri"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Ristisanatehtävä (Crossword)",
+        "summary": "Luo ristisanatehtävä",
+        "description": "Rakenna ja muokkaa kaunis ristisanatehtävä yleisösi houkuttelemiseksi. Ristisanatehtävä on erittäin muokattavissa, joten voit määrittää kaikki värit, ladata taustakuvan, päättää, miten pisteytyksen tulisi toimia ja jopa satunnaistaa siinä olevat sanat, jotta yleisösi saa halutessaan uuden ristisanan joka kerta.",
+        "keywords": {
+            "crossword": "ristisanatehtävä",
+            "games": "pelejä"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Lajittele kappaleet (Sort the Paragraphs)",
+        "summary": "Luo joukko kappaleita lajiteltavaksi",
+        "description": "Kirjoita tai liitä luettelo kappaleista, jotka satunnaistetaan. Voit esimerkiksi antaa jokaisen kappaleen olla osa kappaletta, koodilohko tai vaiheet reseptissä. Oppilaiden tulee järjestää kappaleet oikeaan järjestykseen. Oletusarvoisesti oppijat saavat yhden pisteen jokaisesta kappaleesta, joka seuraa sitä kappaletta, jonka sen pitäisi seurata, mutta voit päättää antaa pisteen jokaisesta kappaleesta, joka on oikeassa paikassa.",
+        "keywords": {
+            "sorting": "lajittelu",
+            "games": "pelejä",
+            "tasks": "tehtäviä"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Kuvan valinta (Image Choice)",
+        "summary": "Luo tehtävä, jossa vaihtoehdot ovat kuvia",
+        "description": "Rakenna kauniita moni- tai yksivalintakysymyksiä, jos vaihtoehdot ovat kuvia. Voit mukauttaa asettelua vaihtoehtoja varten ja valita kiinteiden kuvasuhteiden välillä tai vain käyttää kuvissa jo olevia kuvasuhteita.",
+        "keywords": {
+            "sorting": "lajittelu",
+            "games": "pelejä",
+            "tasks": "tehtäviä"
+        }
     }
 }

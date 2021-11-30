@@ -399,5 +399,34 @@
             "holidays": "vacances",
             "calendar": "calendrier"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Mots croisés (Crossword)",
+        "summary": "Créer une grille de mots croisés",
+        "description": "Créez et personnalisez de beaux mots croisés pour engager votre public. Les mots croisés sont hautement personnalisables, ce qui vous permet de configurer toutes les couleurs, de télécharger une image d'arrière-plan, de décider comment la notation doit fonctionner et même de randomiser les mots qu'il contient afin que votre public reçoive un nouveau mot croisé à chaque fois si vous le souhaitez.",
+        "keywords": {
+            "crossword": "mots croisés",
+            "games": "Jeux"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Trier les paragraphes (Sort the Paragraphs)",
+        "summary": "Créer un ensemble de paragraphes à trier",
+        "description": "Tapez ou collez une liste de paragraphes qui seront randomisés. Vous pouvez par exemple faire en sorte que chaque paragraphe soit une partie d'une chanson, un bloc de code ou les étapes d'une recette. Les apprenants doivent trier les paragraphes dans le bon ordre. Par défaut, les apprenants obtiendront un point pour chaque paragraphe qui suit le paragraphe qu'il est censé suivre, mais vous pouvez décider d'attribuer un point pour chaque paragraphe qui est au bon endroit à la place.",
+        "keywords": {
+            "sorting": "tri",
+            "games": "Jeux",
+            "tasks": "Tâches"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Choix de l'image (Image Choice)",
+        "summary": "Créer une tâche où les alternatives sont des images",
+        "description": "Construisez de belles questions à choix multiples ou uniques où les alternatives sont des images. Vous pouvez personnaliser la mise en page des alternatives et choisir entre des proportions fixes ou simplement utiliser les proportions que les images ont déjà.",
+        "keywords": {
+            "sorting": "tri",
+            "games": "Jeux",
+            "tasks": "Tâches"
+        }
     }
 }

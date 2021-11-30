@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.",
     "content-hub-download-error-with-message": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten ({{message}}). Bitte versuche es später noch einmal.",
     "content-hub-download-error": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen es später noch einmal.",
-    "install-missing-libraries": "Der Inhalt konnte nicht geladen werden, da die folgenden Bibliotheken auf diesem System nicht installiert sind: {{libraries}}"
+    "install-missing-libraries": "Der Inhalt konnte nicht geladen werden, da die folgenden Bibliotheken auf diesem System nicht installiert sind: {{libraries}}",
+    "install-library-lock-timeout": "Die Bibliothek {{ubername}} konnte nicht installiert werden, da die gleichen Bibliotheken von einem anderen Ort installiert werden ( {{limit}} ms auf Sperre der Bibliothek gewartet).",
+    "install-library-lock-max-time-exceeded": "Die Bibliothek {{ubername}} konnte nicht installiert werden, da es länger als die erlaubten {{limit}} ms gedauert hat."
 }

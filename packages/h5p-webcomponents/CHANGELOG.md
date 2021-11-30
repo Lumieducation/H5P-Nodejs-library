@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.5](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.4...v9.0.5) (2021-11-22)
+
+**Note:** Version bump only for package @lumieducation/h5p-webcomponents
+
+
+
+
+
+## [9.0.4](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-bootstrap to v1.6.4 ([89e8ed0](https://github.com/Lumieducation/h5p-webcomponents/commit/89e8ed0cf74848d9a4856e35444027866c20c305))
+* **h5p-webcomponents:** fallback for right metadata ([#1898](https://github.com/Lumieducation/h5p-webcomponents/issues/1898)) ([c46a4bc](https://github.com/Lumieducation/h5p-webcomponents/commit/c46a4bc62f00b7177773cf615cade7faffd9835c))
+
+
+
+
+
+## [9.0.3](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.2...v9.0.3) (2021-09-24)
+
+
+### Bug Fixes
+
+* **ui components:** added resize method ([#1788](https://github.com/Lumieducation/h5p-webcomponents/issues/1788)) ([46915ad](https://github.com/Lumieducation/h5p-webcomponents/commit/46915ad0e8a16b8e7f6b71373b9043d1918448a5))
+
+
+
+
+
 ## [9.0.2](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.1...v9.0.2) (2021-09-21)
 
 

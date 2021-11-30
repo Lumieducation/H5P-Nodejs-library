@@ -58,5 +58,7 @@
     "h5p-hub-connection-failed": "Došlo je do greške prilikom povezivanja sa H5P Content Hubom. Pokušajte ponovo kasnije.",
     "content-hub-download-error-with-message": "Došlo je do greške pri povezivanju sa H5P Content Hub ( {{message}} ). Pokušajte ponovo kasnije.",
     "content-hub-download-error": "Došlo je do greške prilikom povezivanja sa H5P Content Hubom. Pokušajte ponovo kasnije.",
-    "install-missing-libraries": "Nije moguće učitati sadržaj jer sljedeće biblioteke nisu instalirane na ovom sistemu: {{libraries}}"
+    "install-missing-libraries": "Nije moguće učitati sadržaj jer sljedeće biblioteke nisu instalirane na ovom sistemu: {{libraries}}",
+    "install-library-lock-timeout": "Biblioteka {{ubername}} se nije mogla instalirati, jer se iste biblioteke instaliraju sa drugog mjesta (čekalo se {{limit}} ms za zaključavanje biblioteke).",
+    "install-library-lock-max-time-exceeded": "Biblioteku {{ubername}} nije bilo moguće instalirati, jer je trebalo duže od dozvoljenog {{limit}} ms."
 }

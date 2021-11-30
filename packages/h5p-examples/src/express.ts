@@ -224,6 +224,13 @@ const start = async (): Promise<void> => {
 
     server.use('/client', express.static(path.join(__dirname, 'client')));
 
+    // We only include the whole node_modules directory for convenience. Don't
+    // do this in a production app.
+    server.use(
+        '/node_modules',
+        express.static(path.join(__dirname, '../node_modules'))
+    );
+
     // STUB, not implemented yet. You have to get the user id through a session
     // cookie as h5P does not add it to the request. Alternatively you could add
     // it to the URL generator.

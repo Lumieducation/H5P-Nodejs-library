@@ -1,0 +1,65 @@
+{
+    "H5P_Image": {
+        "title": "Imagen"
+    },
+    "H5P_ContinuousText": {
+        "title": "Texto Continuo"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "Pregunta de Texto Libre"
+    },
+    "H5P_GoToScene": {
+        "title": "Ir A Escena"
+    },
+    "H5P_GoToQuestion": {
+        "title": "Cruce"
+    },
+    "H5P_GoalsPage": {
+        "title": "Página de objetivos"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Página de evaluación de objetivos"
+    },
+    "H5P_StandardPage": {
+        "title": "Página estándar"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "Página de Exportación de Documentos"
+    },
+    "H5P_Link": {
+        "title": "Enlace"
+    },
+    "H5P_Nil": {
+        "title": "Etiqueta"
+    },
+    "H5P_IVHotspot": {
+        "title": "Punto de acceso de navegación"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "Pregunta Abierta"
+    },
+    "H5P_Shape": {
+        "title": "Formas"
+    },
+    "H5P_Summary": {
+        "title": "Resumen"
+    },
+    "H5P_Table": {
+        "title": "Mesa"
+    },
+    "H5P_Text": {
+        "title": "Texto"
+    },
+    "H5P_Video": {
+        "title": "Video"
+    },
+    "H5P_AdvancedText": {
+        "title": "Texto"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "Opción Múltiple Simple"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "Pregunta de Ramificación"
+    }
+}

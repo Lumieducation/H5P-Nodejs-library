@@ -399,5 +399,34 @@
             "holidays": "Feiertage",
             "calendar": "Kalender"
         }
+    },
+    "H5P_Crossword": {
+        "title": "Kreuzworträtsel (Crossword)",
+        "summary": "Lasse ein Kreuzworträtsel ausfüllen",
+        "description": "Erstelle ein Kreuzworträtsel, das umfangreich anpassbar ist. So sind z.B. alle Farben konfigurierbar, es kann ein Hintergrundbild hochladen werden und du kannst entscheiden, wie die Bewertung funktionieren soll. Es ist sogar möglich, die  Wörter randomisieren, damit dein Publikum jedes Mal ein neues Kreuzworträtsel erhält.",
+        "keywords": {
+            "crossword": "Kreuzworträtsel",
+            "games": "Spiel"
+        }
+    },
+    "H5P_SortParagraphs": {
+        "title": "Absätze sortieren (Sort the Paragraphs)",
+        "summary": "Lasse die Lernenden Textabsätze in die richtige Reihenfolge bringen",
+        "description": "Gebe eine Liste von Absätzen ein, die zufällig verteilt werden. Du kannst beispielsweise Teile eines Liedes, eines Codeblocks oder Schritte in einem Rezept verwenden. Die Lernenden sollen die Absätze in die richtige Reihenfolge bringen. Standardmäßig erhalten die Lernenden einen Punkt für jeden Absatz, der auf den Absatz folgt, auf den er folgen soll. Du kannst alternativ einen Punkt für jeden Absatz vergeben, der sich an der richtigen Stelle befindet.",
+        "keywords": {
+            "sorting": "Sortierung",
+            "games": "Spiel",
+            "tasks": "Aufgaben"
+        }
+    },
+    "H5P_MultiMediaChoice": {
+        "title": "Bildauswahl (Image Choice)",
+        "summary": "Die Lernenden wählen aus einer Auswahl die richtigen Bilder aus",
+        "description": "Erstellen Multiple- oder Single-Choice-Fragen, bei denen Bilder als Auswahlmöglichkeit angeboten werden. Du kannst das Layout für die Auswahlmöglichkeiten anpassen und zwischen festen Seitenverhältnissen wählen oder einfach die Seitenverhältnisse verwenden, die die Bilder bereits haben.",
+        "keywords": {
+            "sorting": "Sortierung",
+            "games": "Spiel",
+            "tasks": "Aufgaben"
+        }
     }
 }

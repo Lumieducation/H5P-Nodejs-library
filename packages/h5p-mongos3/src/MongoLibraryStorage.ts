@@ -533,7 +533,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             return list
                 .map((e) => {
                     try {
-                        return LibraryName.fromUberName(e._id);
+                        return LibraryName.fromUberName(e._id as any);
                     } catch {
                         log.error(
                             `invalid ubername pattern in library storage id: ${e._id}. Ignoring...`

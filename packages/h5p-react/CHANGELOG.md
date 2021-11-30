@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.4...v9.0.5) (2021-11-22)
+
+**Note:** Version bump only for package @lumieducation/h5p-react
+
+
+
+
+
+## [9.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.3...v9.0.4) (2021-11-17)
+
+
+### Bug Fixes
+
+* **h5p-react:** corrected React imports for Jest ([#1868](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1868)) ([ba02a8c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ba02a8c3df7faab64ab97d2751d4120eb42093b4))
+
+
+
+
+
+## [9.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.2...v9.0.3) (2021-09-24)
+
+
+### Bug Fixes
+
+* **ui components:** added resize method ([#1788](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1788)) ([46915ad](https://github.com/Lumieducation/H5P-Nodejs-library/commit/46915ad0e8a16b8e7f6b71373b9043d1918448a5))
+
+
+
+
+
 ## [9.0.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.1...v9.0.2) (2021-09-21)
 
 
