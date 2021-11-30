@@ -29,8 +29,6 @@ export default class ContentManager {
         public contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
-        this.contentStorage = contentStorage;
-        this.contentUserDataStorage = contentUserDataStorage;
     }
 
     /**
