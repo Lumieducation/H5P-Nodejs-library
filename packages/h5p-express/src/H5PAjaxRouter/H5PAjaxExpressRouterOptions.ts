@@ -12,4 +12,5 @@ export default class H5PAjaxExpressRouterOptions {
     public routeGetParameters?: boolean = true;
     public routeGetTemporaryContentFile?: boolean = true;
     public routePostAjax?: boolean = true;
+    public routeContentUserData?: boolean = true;
 }

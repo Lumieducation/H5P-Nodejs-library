@@ -49,8 +49,8 @@ export default class ContentUserDataController {
             dataType,
             subContentId,
             body.data,
-            body.invalidate,
-            body.preload,
+            body.invalidate === 1 || body.invalidate === '1',
+            body.preload === 1 || body.preload === '1',
             user
         );
 
