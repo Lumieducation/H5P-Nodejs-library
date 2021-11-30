@@ -120,8 +120,8 @@ export default class ContentUserDataManager {
         dataType: string,
         subcontentId: string,
         userState: string,
-        invalidate: 0 | 1,
-        preload: 0 | 1,
+        invalidate: boolean,
+        preload: boolean,
         user: IUser
     ): Promise<void> {
         log.info(

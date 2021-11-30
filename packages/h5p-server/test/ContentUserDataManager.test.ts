@@ -88,8 +88,8 @@ describe('ContentUserDataManager', () => {
                     'state',
                     '0',
                     'data',
-                    0,
-                    0,
+                    false,
+                    false,
                     new User()
                 )
             ).toBeUndefined();
@@ -112,8 +112,8 @@ describe('ContentUserDataManager', () => {
                 dataType,
                 subContentId,
                 userState,
-                0,
-                0,
+                false,
+                false,
                 user
             );
 
@@ -124,8 +124,8 @@ describe('ContentUserDataManager', () => {
                 dataType,
                 subContentId,
                 userState,
-                0,
-                0,
+                false,
+                false,
                 user
             );
         });
