@@ -580,8 +580,8 @@ export interface IContentUserDataStorage {
         dataType: string,
         subContentId: string,
         userState: string,
-        invalidate: 0 | 1,
-        preload: 0 | 1,
+        invalidate: boolean,
+        preload: boolean,
         user: IUser
     ): Promise<void>;
 
