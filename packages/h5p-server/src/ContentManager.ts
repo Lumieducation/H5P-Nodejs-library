@@ -104,6 +104,8 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
+        await this.contentStorage.deleteContent(contentId, user);
+
         if (this.contentUserDataStorage) {
             try {
                 await this.contentUserDataStorage.deleteContentUserData(
@@ -117,7 +119,8 @@ export default class ContentManager {
                 log.error(error);
             }
         }
-        return this.contentStorage.deleteContent(contentId, user);
+
+        return;
     }
 
     /**
