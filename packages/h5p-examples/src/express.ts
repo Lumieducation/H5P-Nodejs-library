@@ -13,6 +13,7 @@ import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter,
+    contentUserDataExpressRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
 import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
@@ -23,6 +24,8 @@ import expressRoutes from './expressRoutes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
+
+import contentUserDataStorage from './contentUserDataStorage';
 
 let tmpDir: DirectoryResult;
 
@@ -104,7 +107,8 @@ const start = async (): Promise<void> => {
         undefined,
         undefined,
         (key, language) => translationFunction(key, { lng: language }),
-        undefined
+        undefined,
+        contentUserDataStorage
     );
 
     // We now set up the Express server in the usual fashion.
@@ -198,6 +202,11 @@ const start = async (): Promise<void> => {
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
+    server.use(
+        `${h5pEditor.config.baseUrl}/contentUserData`,
+        contentUserDataExpressRouter(h5pEditor.contentUserDataManager)
+    );
+
     const htmlExporter = new H5PHtmlExporter(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
@@ -229,60 +238,6 @@ const start = async (): Promise<void> => {
     server.use(
         '/node_modules',
         express.static(path.join(__dirname, '../node_modules'))
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        async (
-            req: express.Request<
-                { contentId: string; dataType: string; subContentId: string },
-                {},
-                H5P.IPostContentUserData
-            >,
-            res
-        ) => {
-            const { contentId, dataType, subContentId } = req.params;
-            const { user, body } = req as any;
-            const response =
-                await h5pEditor.contentUserDataManager.saveContentUserData(
-                    contentId,
-                    dataType,
-                    subContentId,
-                    body,
-                    user
-                );
-
-            res.status(200).end();
-        }
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.get(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        async (
-            req: express.Request<{
-                contentId: string;
-                dataType: string;
-                subContentId: string;
-            }>,
-            res: express.Response<H5P.IGetContentUserData | {}>
-        ) => {
-            const { contentId, dataType, subContentId } = req.params;
-            const { user } = req as any;
-            const data =
-                await h5pEditor.contentUserDataManager.loadContentUserData(
-                    contentId,
-                    dataType,
-                    subContentId,
-                    user
-                );
-            res.status(200).json({ data, success: true });
-        }
     );
 
     // STUB, not implemented yet. You have to get the user id through a session

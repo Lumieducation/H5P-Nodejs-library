@@ -7,6 +7,8 @@ import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
+
+import contentUserDaraStorage from './contentUserDataStorage';
 /**
  * Create a H5PEditor object.
  * Which storage classes are used depends on the configuration values set in
@@ -177,7 +179,8 @@ export default async function createH5PEditor(
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
             lockProvider: lock
-        }
+        },
+        contentUserDaraStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
