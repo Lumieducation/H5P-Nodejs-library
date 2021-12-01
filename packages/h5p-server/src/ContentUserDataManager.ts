@@ -126,6 +126,46 @@ export default class ContentUserDataManager {
     }
 
     /**
+     * Saves data when a user completes content. T
+     * @param contentId The content id to delete.
+     * @param score the score the user reached as an integer
+     * @param maxScore the maximal score of the content
+     * @param openend the time the user opened the content as UNIX time
+     * @param finished the time the user finished the content as UNIX time
+     * @param time the time the user needed to complete the content (as integer)
+     * @param user The user who triggers this method via /setFinished
+     */
+    public async setFinished(
+        contentId: ContentId,
+        score: number,
+        maxScore: number,
+        opened: number,
+        finished: number,
+        time: number,
+        user: IUser
+    ): Promise<void> {
+        log.info(
+            `saving finished data for ${user.id} and contentId ${contentId}`
+        );
+
+        if (!this.contentUserDataStorage) {
+            return undefined;
+        }
+
+        await this.contentUserDataStorage.saveFinishedDataForUser(
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        );
+
+        return;
+    }
+
+    /**
      * Saves the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client

@@ -42,6 +42,70 @@ describe('ContentUserDataManager', () => {
         });
     });
 
+    describe('setFinished', () => {
+        it('returns undefined if contentUserDataStorage is undefined', async () => {
+            const contentUserDataManager = new ContentUserDataManager(
+                undefined
+            );
+
+            const contentId = 'contentId';
+            const score = 1;
+            const maxScore = 10;
+            const opened = 1291348;
+            const finished = 239882384;
+            const time = 123;
+
+            expect(
+                await contentUserDataManager.setFinished(
+                    contentId,
+                    score,
+                    maxScore,
+                    opened,
+                    finished,
+                    time,
+                    new User()
+                )
+            ).toBeUndefined();
+        });
+
+        it('calls the saveSetFinishedDataForUser-method of the contentUserDateStorage', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+
+            const contentId = 'contentId';
+            const score = 1;
+            const maxScore = 10;
+            const opened = 1291348;
+            const finished = 239882384;
+            const time = 123;
+            const user = new User();
+            await contentUserDataManager.setFinished(
+                contentId,
+                score,
+                maxScore,
+                opened,
+                finished,
+                time,
+                user
+            );
+
+            expect(
+                mockContentUserDataStorage.saveFinishedDataForUser
+            ).toHaveBeenCalledWith(
+                contentId,
+                score,
+                maxScore,
+                opened,
+                finished,
+                time,
+                user
+            );
+        });
+    });
+
     describe('deleteAllContentUserDataByContentId', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(

@@ -46,6 +46,14 @@ export default function (
         )
     );
 
+    router.post(
+        `/setFinished`,
+        catchAndPassOnErrors(
+            contentUserDataController.postSetFinished,
+            undefinedOrTrue(options?.handleErrors)
+        )
+    );
+
     if (undefinedOrTrue(options?.handleErrors)) {
         router.use(errorHandler(languageOverride));
     }

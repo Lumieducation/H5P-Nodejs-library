@@ -18,6 +18,9 @@ const MockContentUserDataManager = jest.fn().mockImplementation(() => {
         }),
         saveContentUserData: jest.fn().mockImplementation(() => {
             return '';
+        }),
+        setFinished: jest.fn().mockImplementation(() => {
+            return '';
         })
     };
 });
@@ -115,5 +118,37 @@ describe('ContentUserData endpoint adapter', () => {
         ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
         expect(res.status).toBe(200);
         expect(res.body).toEqual({ data: mockReturnData, success: true });
+    });
+
+    it('calls setFinished on POST to /setFinished', async () => {
+        const contentId = 'contentId';
+        const score = 1;
+        const maxScore = 10;
+        const opened = 1291348;
+        const finished = 239882384;
+        const time = 123;
+
+        const res = await supertest(app)
+            .post(`/contentUserData/setFinished`)
+            .send({
+                contentId,
+                score,
+                maxScore,
+                opened,
+                finished,
+                time,
+                user
+            });
+
+        expect(mockContentUserDataManager.setFinished).toHaveBeenCalledWith(
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        );
+        expect(res.status).toBe(200);
     });
 });

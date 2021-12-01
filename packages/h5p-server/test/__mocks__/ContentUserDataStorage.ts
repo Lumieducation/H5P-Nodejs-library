@@ -17,6 +17,9 @@ const mock = jest.fn().mockImplementation(() => {
         saveContentUserData: jest.fn().mockImplementation(() => {
             return;
         }),
+        saveFinishedDataForUser: jest.fn().mockImplementation(() => {
+            return;
+        }),
         setMockData: (m) => (mockData = m),
         listByContent: jest
             .fn()

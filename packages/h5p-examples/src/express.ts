@@ -240,16 +240,6 @@ const start = async (): Promise<void> => {
         express.static(path.join(__dirname, '../node_modules'))
     );
 
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/setFinished',
-        (req: express.Request<{}, {}, H5P.IPostContentUserData>, res) => {
-            res.status(200).send();
-        }
-    );
-
     // Remove temporary directory on shutdown
     if (useTempUploads) {
         [

@@ -40,7 +40,7 @@ describe('Rendering the HTML page', () => {
                         window.H5PIntegration = {
                   "ajax":{
                      "contentUserData":"/h5p/contentUserData/:contentId/:dataType/:subContentId",
-                     "setFinished":"/h5p/setFinished"
+                     "setFinished":"/h5p/contentUserData/setFinished"
                   },
                   "ajaxPath":"/h5p/ajax?action=",
                   "contents": {
@@ -421,7 +421,7 @@ describe('Rendering the HTML page', () => {
                             window.H5PIntegration = {
                       "ajax":{
                          "contentUserData":"/h5p/contentUserData/:contentId/:dataType/:subContentId",
-                         "setFinished":"/h5p/setFinished"
+                         "setFinished":"/h5p/contentUserData/setFinished"
                        },
                       "ajaxPath":"/h5p/ajax?action=",
                       "contents": {

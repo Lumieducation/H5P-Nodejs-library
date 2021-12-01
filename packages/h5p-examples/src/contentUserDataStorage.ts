@@ -12,6 +12,16 @@ let userData: {
     userId?: string;
 }[] = [];
 
+let userFinishedData: {
+    contentId: ContentId;
+    score: number;
+    maxScore: number;
+    opened: Date;
+    finished: Date;
+    time: number;
+    user: IUser;
+}[] = [];
+
 export class ContentUserDataStorage implements IContentUserDataStorage {
     public loadContentUserData(
         contentId: ContentId,
@@ -59,6 +69,28 @@ export class ContentUserDataStorage implements IContentUserDataStorage {
         });
 
         return;
+    }
+
+    public setFinished(
+        contentId: ContentId,
+        score: number,
+        maxScore: number,
+        opened: Date,
+        finished: Date,
+        time: number,
+        user: IUser
+    ): Promise<void> {
+        userFinishedData.push({
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        });
+
+        return Promise.resolve();
     }
 
     public deleteContentUserDataByUserId(

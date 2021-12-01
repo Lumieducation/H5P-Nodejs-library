@@ -30,7 +30,12 @@ export default class ContentUserDataController {
             subContentId,
             req.user
         );
-        res.status(200).json({ data: userState, success: true });
+
+        if (!userState) {
+            res.status(404).json({ data: undefined, success: false });
+        } else {
+            res.status(200).json({ data: userState, success: true });
+        }
     };
 
     /**
@@ -51,6 +56,31 @@ export default class ContentUserDataController {
             body.data,
             body.invalidate === 1 || body.invalidate === '1',
             body.preload === 1 || body.preload === '1',
+            user
+        );
+
+        res.status(200).end();
+    };
+
+    /**
+     * Saving the setFinished state for a given user
+     *
+     */
+    public postSetFinished = async (
+        req: IPostContentUserDataRequest,
+        res: express.Response
+    ): Promise<void> => {
+        const { user, body } = req;
+
+        const { contentId, score, maxScore, opened, finished, time } = body;
+
+        await this.contentUserDataManager.setFinished(
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
             user
         );
 

@@ -611,6 +611,26 @@ export interface IContentUserDataStorage {
     ): Promise<void>;
 
     /**
+     * Saves data when a user completes content. T
+     * @param contentId The content id to delete.
+     * @param score the score the user reached as an integer
+     * @param maxScore the maximal score of the content
+     * @param openend the time the user opened the content as UNIX time
+     * @param finished the time the user finished the content as UNIX time
+     * @param time the time the user needed to complete the content (as integer)
+     * @param user The user who triggers this method via /setFinished
+     */
+    saveFinishedDataForUser(
+        contentId: ContentId,
+        score: number,
+        maxScore: number,
+        openend: number,
+        finished: number,
+        time: number,
+        user: IUser
+    ): Promise<void>;
+
+    /**
      * Lists all associated contentUserData for a given contentId and userId.
      * @param contentId The id of the content to load user data from
      * @param userId The id of the user to load user data from
