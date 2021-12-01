@@ -2,16 +2,16 @@
 
 There are two ways of creating a H5PEditor object:
 
-* You can use the convenience function
-  [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses
-  basic file system implementations for all data storage services. You can use
-  the function if you're just getting started. Later on, you'll want to
-  construct the editor with custom implementations of the data storage services.
-  Check out the JSDoc of the function for details how to use it.
-* You can construct it manually by calling `new H5P.H5PEditor(...)`. The
-  constructor arguments are used to provide data storage services and settings.
-  You can find the interfaces referenced in
-  [`src/types.ts`](/packages/h5p-server/src/types.ts).
+-   You can use the convenience function
+    [`H5P.fs(...)`](/packages/h5p-server/src/implementation/fs/index.ts) that uses
+    basic file system implementations for all data storage services. You can use
+    the function if you're just getting started. Later on, you'll want to
+    construct the editor with custom implementations of the data storage services.
+    Check out the JSDoc of the function for details how to use it.
+-   You can construct it manually by calling `new H5P.H5PEditor(...)`. The
+    constructor arguments are used to provide data storage services and settings.
+    You can find the interfaces referenced in
+    [`src/types.ts`](/packages/h5p-server/src/types.ts).
 
 Explanation of the arguments of the constructor:
 
@@ -114,3 +114,13 @@ for an implementation sample using the urlGenerator.
 
 Allows you to customize styles and scripts of the client. Also allows passing in
 a lock implementation (needed for multi-process or clustered setups).
+
+## contentUserDataStorage (optional)
+
+The `contentUserDataStorage` handles saving and loading user states, so users can continue where they left off when they reload the page or come back later. It must implement the `IContentUserDataStorage` interface. You can find a reference implementation in [`/packages/h5p-examples/src/contentUserDataStorage.ts`](/packages/h5p-examples/src/contentUserDataStorage.ts):
+nder `./h5p/content` you can use the sample
+implementation in
+
+```javascript
+const contentUserDataStorage = new ContentUserDataStorage();
+```
