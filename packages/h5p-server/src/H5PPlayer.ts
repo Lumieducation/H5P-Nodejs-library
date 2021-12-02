@@ -82,8 +82,10 @@ export default class H5PPlayer {
             );
         }
 
-        this.globalCustomStyles =
-            this.options?.customization?.global?.styles || [];
+        this.globalCustomStyles = this.options?.customization?.global
+            ?.styles || [
+            this.config.theme && `${this.config.baseUrl}/theme.css`
+        ];
         if (this.config.customization?.global?.player?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
                 this.config.customization.global.player.styles

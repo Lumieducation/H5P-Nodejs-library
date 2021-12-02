@@ -1590,6 +1590,8 @@ export interface IH5PConfig {
      * library.
      */
     installLibraryLockTimeout: number;
+
+    theme?: ITheme;
 }
 
 /**
@@ -1770,6 +1772,7 @@ export interface IEditorModel {
     integration: IIntegration;
     scripts: string[];
     styles: string[];
+    theme?: ITheme;
     urlGenerator: IUrlGenerator;
 }
 
@@ -2088,4 +2091,17 @@ export interface ILockProvider {
         callback: () => Promise<T>,
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T>;
+}
+
+export interface ITheme {
+    themeUrl: string;
+    fontColor: string;
+    disabledFontColor: string;
+    backgroundColor: string;
+    paperBackgroundColor: string;
+    primaryColor: string;
+    primaryContrastColor: string;
+    secondaryColor: string;
+    secondaryContrastColor: string;
+    dividerColor: string;
 }

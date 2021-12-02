@@ -15,5 +15,16 @@
         "H5P.CoursePresentation": ["H5P.MathDisplay"],
         "H5P.InteractiveVideo": ["H5P.MathDisplay"],
         "H5P.DragQuestion": ["H5P.MathDisplay"]
+    },
+    "theme": {
+        "backgroundColor": "#222b37",
+        "paperBackgroundColor": "#333d49",
+        "fontColor": "#ffffff",
+        "disabledFontColor": "#a0a0a1",
+        "primaryColor": "#7636dc",
+        "primaryContrastColor": "#ffffff",
+        "secondaryColor": "#3d66ff",
+        "secondaryContrastColor": "#ffffff",
+        "dividerColor": "#45505d"
     }
 }

@@ -13,6 +13,7 @@ import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter,
+    themeRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
 import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
@@ -147,6 +148,8 @@ const start = async (): Promise<void> => {
     // object. This function must be there for the Express adapter
     // (H5P.adapters.express) to function properly.
     server.use(i18nextHttpMiddleware.handle(i18next));
+
+    server.use(h5pEditor.config.baseUrl, themeRouter(h5pEditor));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure

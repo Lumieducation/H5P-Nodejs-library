@@ -16,6 +16,7 @@ import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyri
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
+import renderTheme from './renderers/theme';
 import supportedLanguageList from '../assets/editorLanguages.json';
 
 import ContentManager from './ContentManager';
@@ -51,6 +52,7 @@ import {
     ILumiEditorIntegration,
     ISemanticsEntry,
     ITemporaryFileStorage,
+    ITheme,
     ITranslationFunction,
     IUrlGenerator,
     IUser
@@ -155,8 +157,10 @@ export default class H5PEditor {
             );
         }
 
-        this.globalCustomStyles =
-            this.options?.customization?.global?.styles || [];
+        this.globalCustomStyles = this.options?.customization?.global
+            ?.styles || [
+            this.config.theme && `${this.config.baseUrl}/theme.css`
+        ];
         if (this.config.customization?.global?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
                 this.config.customization.global?.editor.styles
@@ -558,10 +562,15 @@ export default class H5PEditor {
             integration: this.generateIntegration(contentId, language, user),
             scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
+            theme: this.config.theme,
             urlGenerator: this.urlGenerator
         };
 
         return Promise.resolve(this.renderer(model));
+    }
+
+    public renderTheme(theme?: ITheme): string {
+        return renderTheme(theme || this.config.theme);
     }
 
     /**

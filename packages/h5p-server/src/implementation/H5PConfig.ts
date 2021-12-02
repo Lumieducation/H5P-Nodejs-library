@@ -1,4 +1,4 @@
-import { IH5PConfig, IKeyValueStorage } from '../types';
+import { IH5PConfig, IKeyValueStorage, ITheme } from '../types';
 
 /**
  * Stores configuration options and literals that are used throughout the system.
@@ -104,6 +104,8 @@ export default class H5PConfig implements IH5PConfig {
     public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = '';
 
+    public theme?: ITheme;
+
     private storage: IKeyValueStorage;
 
     /**
@@ -132,6 +134,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
+        await this.loadSettingFromStorage('theme');
         return this;
     }
 
@@ -160,6 +163,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
+        await this.saveSettingToStorage('theme');
     }
 
     /**
