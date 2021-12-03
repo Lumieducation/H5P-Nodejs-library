@@ -638,5 +638,135 @@ button.h5p-core-button {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.h5peditor .ui-dialog .h5p-joubelui-button, .h5peditor .h5p-joubelui-button, .h5p-joubelui-button {
+    font-size: 1em;
+    line-height: 1.2;
+    margin: 0 0.5em 1em;
+    padding: 0.5em 1.25em;
+    border-radius: 2em;
+    background: ${theme.primaryColor};
+    color: ${theme.primaryContrastColor};
+    cursor: pointer;
+    border: none;
+    box-shadow: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    display: inline-block;
+    text-align: center;
+    text-shadow: none;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+
+.h5p-content {
+    color: ${theme.fontColor};
+    position: relative;
+    background: ${theme.backgroundColor};
+    border: 1px solid ${theme.dividerColor};
+    border-bottom: none;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.h5p-question {
+    background: ${theme.backgroundColor};
+    color: ${theme.fontColor};
+    position: relative;
+}
+
+.h5p-multichoice .h5p-alternative-container {
+    position: relative;
+    text-align: left;
+    display: block;
+    padding: 0.25em 0.75em 0.25em 2.1em;
+    color: ${theme.fontColor};
+    border-radius: 0.3em;
+    border: 0.1em solid transparent;
+    font-weight: normal;
+    background: ${theme.paperBackgroundColor};
+    -webkit-box-shadow: 0 0.1em 0 rgb(0 0 0 / 30%);
+    -moz-box-shadow: 0 0.1em 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0.1em 0 rgb(0 0 0 / 30%);
+    line-height: 1.5em;
+    text-indent: -2em;
+}
+
+.h5p-joubelui-score-bar {
+    display: inline-flex;
+    display: -webkit-inline-flexbox;
+    display: -ms-inline-flexbox;
+    display: -webkit-inline-flex;
+    width: 15em;
+    max-width: 100%;
+    color: ${theme.fontColor};
+    background: ${theme.paperBackgroundColor};
+    border-radius: 1.5em;
+    padding: 0.625em;
+    border: 1px solid ${theme.dividerColor};
+    box-sizing: border-box;
+    position: relative;
+}
+
+.h5p-joubelui-score-number {
+    color: ${theme.fontColor};
+}
+
+.h5p-drag-text [aria-dropeffect] {
+    position: relative;
+    top: -0.1em;
+    width: 10em;
+    height: 1.25em;
+    background-color: ${theme.paperBackgroundColor};
+    border-radius: 0.25em;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    padding: 0.1em 1.65em 0.1em 0;
+}
+
+.h5p-drag-text [aria-grabbed] {
+    line-height: 1.25;
+    cursor: pointer;
+    border-radius: 0.25em;
+    padding: 0.1em 0.6em;
+    margin: 0.3em;
+    vertical-align: top;
+    text-align: center;
+    display: inline-block;
+    border: 0.1em solid ${theme.dividerColor};
+    overflow: hidden;
+    background: ${theme.paperBackgroundColor};
+    box-shadow: 0 0 0.3em rgb(0 0 0 / 20%);
+    z-index: 3;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    z-index: 1;
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: ${theme.backgroundColor};
+}
+
+.h5p-course-presentation .h5p-progressbar .h5p-progressbar-part-show {
+    background: ${theme.primaryColor};
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    z-index: 1;
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: ${theme.backgroundColor};
+}
+
 `;
 };

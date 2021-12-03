@@ -82,10 +82,8 @@ export default class H5PPlayer {
             );
         }
 
-        this.globalCustomStyles = this.options?.customization?.global
-            ?.styles || [
-            this.config.theme && `${this.config.baseUrl}/theme.css`
-        ];
+        this.globalCustomStyles =
+            this.options?.customization?.global?.styles || [];
         if (this.config.customization?.global?.player?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
                 this.config.customization.global.player.styles
@@ -227,6 +225,7 @@ export default class H5PPlayer {
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
+            theme: this.config.theme,
             translations: {},
             embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
             user

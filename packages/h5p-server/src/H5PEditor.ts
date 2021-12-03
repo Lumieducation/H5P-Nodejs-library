@@ -562,7 +562,6 @@ export default class H5PEditor {
             integration: this.generateIntegration(contentId, language, user),
             scripts: this.listCoreScripts(language),
             styles: this.listCoreStyles(),
-            theme: this.config.theme,
             urlGenerator: this.urlGenerator
         };
 

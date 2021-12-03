@@ -35,7 +35,7 @@ describe('Rendering the HTML page', () => {
                     <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=${config.h5pVersion}"></script>
                     <script src="/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}"></script>
                     <script src="/h5p/core/js/request-queue.js?version=${config.h5pVersion}"></script>
-                
+                    <style></style>
                     <script>
                         window.H5PIntegration = {
                   "ajax":{
@@ -416,7 +416,7 @@ describe('Rendering the HTML page', () => {
                         <script src="/h5p/core/js/h5p-action-bar.js?version=${config.h5pVersion}"></script>
                         <script src="/h5p/core/js/request-queue.js?version=${config.h5pVersion}"></script>
                         <script src="/test.js"></script>
-                    
+                        <style></style>
                         <script>
                             window.H5PIntegration = {
                       "ajax":{

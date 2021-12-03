@@ -1765,6 +1765,7 @@ export interface IPlayerModel {
     scripts: string[];
     styles: string[];
     translations: any;
+    theme?: ITheme;
     user: IUser;
 }
 
@@ -1772,7 +1773,6 @@ export interface IEditorModel {
     integration: IIntegration;
     scripts: string[];
     styles: string[];
-    theme?: ITheme;
     urlGenerator: IUrlGenerator;
 }
 

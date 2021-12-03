@@ -1,4 +1,5 @@
 import { IPlayerModel } from '../types';
+import generateThemeCSS from './theme';
 
 export default (model: IPlayerModel): string => `<!doctype html>
 <html class="h5p-iframe">
@@ -11,7 +12,7 @@ export default (model: IPlayerModel): string => `<!doctype html>
     ${model.scripts
         .map((script) => `<script src="${script}"></script>`)
         .join('\n    ')}
-
+    <style>${generateThemeCSS(model.theme)}</style>
     <script>
         window.H5PIntegration = ${JSON.stringify(model.integration, null, 2)};
     </script>
