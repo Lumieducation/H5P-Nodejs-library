@@ -208,7 +208,11 @@ const start = async (): Promise<void> => {
     server.get('/h5p/html/:contentId', async (req, res) => {
         const html = await htmlExporter.createSingleBundle(
             req.params.contentId,
-            (req as any).user
+            (req as any).user,
+            {
+                language: req.language ?? 'en',
+                showLicenseButton: true
+            }
         );
         res.setHeader(
             'Content-disposition',

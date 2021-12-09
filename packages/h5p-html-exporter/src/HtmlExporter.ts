@@ -18,12 +18,15 @@ import {
     H5PPlayer,
     ContentFileScanner,
     LibraryManager,
-    streamToString
+    streamToString,
+    IIntegration
 } from '@lumieducation/h5p-server';
 import upath from 'upath';
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
+import framedTemplate from './framedTemplate';
+import minimalTemplate from './minimalTemplate';
 
 /**
  * This script is used to change the default behavior of H5P when it gets
@@ -43,6 +46,13 @@ const getContentPathOverrideScript = uglifyJs.minify(
     };
     `
 ).code;
+
+export type IExporterTemplate = (
+    integration: IIntegration,
+    scriptsBundle: string,
+    stylesBundle: string,
+    contentId: string
+) => string;
 
 /**
  * Creates standalone HTML packages that can be used to display H5P in a browser
@@ -85,12 +95,7 @@ export default class HtmlExporter {
         protected config: IH5PConfig,
         protected coreFilePath: string,
         protected editorFilePath: string,
-        protected template?: (
-            integration: string,
-            scriptsBundle: string,
-            stylesBundle: string,
-            contentId: string
-        ) => string
+        protected template?: IExporterTemplate
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
@@ -138,6 +143,8 @@ export default class HtmlExporter {
      * contentResourcesPrefix = '123'; filename = 'images/image.jpg' => filename
      * in parameters: '123/images/image.jpg' (the directory separated is added
      * automatically)
+     * @param options (optional) allows settings display options, e.g. if there
+     * should be a embed button
      * @throws H5PError if there are access violations, missing files etc.
      * @returns a HTML string that can be written into a file and a list of
      * content files used by the content; you can use the filenames in
@@ -148,7 +155,13 @@ export default class HtmlExporter {
     public async createBundleWithExternalContentResources(
         contentId: ContentId,
         user: IUser,
-        contentResourcesPrefix: string = ''
+        contentResourcesPrefix: string = '',
+        options?: {
+            language?: string;
+            showEmbedButton?: boolean;
+            showFrame?: boolean;
+            showLicenseButton?: boolean;
+        }
     ): Promise<{ contentFiles: string[]; html: string }> {
         this.player.setRenderer(
             this.renderer(
@@ -162,7 +175,14 @@ export default class HtmlExporter {
                 }
             )
         );
-        return this.player.render(contentId, user);
+        return this.player.render(contentId, user, options?.language ?? 'en', {
+            showEmbedButton: options?.showEmbedButton,
+            showFrame:
+                options?.showEmbedButton || options?.showLicenseButton
+                    ? true
+                    : options?.showFrame,
+            showLicenseButton: options?.showLicenseButton
+        });
     }
 
     /**
@@ -172,12 +192,20 @@ export default class HtmlExporter {
      * @param contentId a content id that can be found in the content repository
      * passed into the constructor
      * @param user the user who wants to create the bundle
+     * @param options (optional) allows settings display options, e.g. if there
+     * should be a embed button
      * @throws H5PError if there are access violations, missing files etc.
      * @returns a HTML string that can be written into a file
      */
     public async createSingleBundle(
         contentId: ContentId,
-        user: IUser
+        user: IUser,
+        options?: {
+            language?: string;
+            showEmbedButton?: boolean;
+            showFrame?: boolean;
+            showLicenseButton?: boolean;
+        }
     ): Promise<string> {
         this.player.setRenderer(
             this.renderer({
@@ -186,7 +214,21 @@ export default class HtmlExporter {
                 libraries: 'inline'
             })
         );
-        return (await this.player.render(contentId, user)).html;
+        return (
+            await this.player.render(
+                contentId,
+                user,
+                options?.language ?? 'en',
+                {
+                    showEmbedButton: options?.showEmbedButton,
+                    showFrame:
+                        options?.showEmbedButton || options?.showLicenseButton
+                            ? true
+                            : options?.showFrame,
+                    showLicenseButton: options?.showLicenseButton
+                }
+            )
+        ).html;
     }
 
     /**
@@ -686,41 +728,37 @@ export default class HtmlExporter {
                 );
             }
 
-            const html = this.template
-                ? this.template(
-                      JSON.stringify({
-                          ...model.integration,
-                          baseUrl: '.',
-                          url: '.',
-                          ajax: { setFinished: '', contentUserData: '' },
-                          saveFreq: false,
-                          libraryUrl: ''
-                      }),
-                      scriptsBundle,
-                      stylesBundle,
-                      model.contentId
-                  )
-                : `<!doctype html>
-            <html class="h5p-iframe">
-            <head>
-                <meta charset="utf-8">                    
-                <script>H5PIntegration = ${JSON.stringify({
+            let template: IExporterTemplate;
+
+            if (this.template) {
+                // Caller has overriden the template
+                template = this.template;
+            } else {
+                if (
+                    model.integration.contents[`cid-${model.contentId}`]
+                        ?.displayOptions?.frame === true
+                ) {
+                    // display the standard H5P frame around the content
+                    template = framedTemplate;
+                } else {
+                    // nothing around the content
+                    template = minimalTemplate;
+                }
+            }
+
+            const html = template(
+                {
                     ...model.integration,
                     baseUrl: '.',
                     url: '.',
                     ajax: { setFinished: '', contentUserData: '' },
                     saveFreq: false,
                     libraryUrl: ''
-                })};
-                ${scriptsBundle}</script>
-                <style>${stylesBundle}</style>
-            </head>
-            <body>
-                <div class="h5p-content lag" data-content-id="${
-                    model.contentId
-                }"></div>                
-            </body>
-            </html>`;
+                },
+                scriptsBundle,
+                stylesBundle,
+                model.contentId
+            );
             return { html, contentFiles };
         };
 
