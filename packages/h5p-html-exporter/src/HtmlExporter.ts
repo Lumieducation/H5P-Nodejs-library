@@ -19,7 +19,8 @@ import {
     ContentFileScanner,
     LibraryManager,
     streamToString,
-    IIntegration
+    IIntegration,
+    ITranslationFunction
 } from '@lumieducation/h5p-server';
 import upath from 'upath';
 
@@ -95,12 +96,16 @@ export default class HtmlExporter {
         protected config: IH5PConfig,
         protected coreFilePath: string,
         protected editorFilePath: string,
-        protected template?: IExporterTemplate
+        protected template?: IExporterTemplate,
+        translationFunction?: ITranslationFunction
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
             this.contentStorage,
-            this.config
+            this.config,
+            undefined,
+            undefined,
+            translationFunction
         );
         this.coreSuffix = `${this.config.baseUrl + this.config.coreUrl}/`;
         this.editorSuffix = `${

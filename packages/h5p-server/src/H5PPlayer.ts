@@ -133,7 +133,7 @@ export default class H5PPlayer {
             showLicenseButton?: boolean;
         }
     ): Promise<string | any> {
-        log.info(`rendering page for ${contentId}`);
+        log.debug(`rendering page for ${contentId} in language ${language}`);
 
         let parameters: ContentParameters;
         if (!options?.parametersOverride) {
