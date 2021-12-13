@@ -197,7 +197,7 @@ export class H5PPlayerComponent extends HTMLElement {
             this.resizeObserver.disconnect();
             this.resizeObserver = null;
         }
-        if (window.H5P.externalDispatcher) {
+        if (window.H5P?.externalDispatcher) {
             window.H5P.externalDispatcher.off(
                 'initialized',
                 this.onContentInitialized
@@ -328,7 +328,7 @@ export class H5PPlayerComponent extends HTMLElement {
                     detail: { contentId: this.contentId }
                 })
             );
-            if (window.H5P.externalDispatcher) {
+            if (window.H5P?.externalDispatcher) {
                 window.H5P.externalDispatcher.off(
                     'initialized',
                     this.onContentInitialized
@@ -402,19 +402,23 @@ export class H5PPlayerComponent extends HTMLElement {
 
         // Initialize H5P with the component as root
         window.H5P.preventInit = false;
-        window.H5P.externalDispatcher.on(
-            'initialized',
-            this.onContentInitialized,
-            this
-        );
+        if (window.H5P.externalDispatcher) {
+            window.H5P.externalDispatcher.on(
+                'initialized',
+                this.onContentInitialized,
+                this
+            );
+        }
         window.H5P.preventInit = false;
 
-        // detach xAPI listener first to avoid having multiple listeners on the
-        // same content (can safely be done even if it hasn't been attached
-        // before)
-        window.H5P.externalDispatcher.off('xAPI', this.onxAPI);
-        // attach xAPI listener
-        window.H5P.externalDispatcher.on('xAPI', this.onxAPI);
+        if (window.H5P.externalDispatcher) {
+            // detach xAPI listener first to avoid having multiple listeners on the
+            // same content (can safely be done even if it hasn't been attached
+            // before)
+            window.H5P.externalDispatcher.off('xAPI', this.onxAPI);
+            // attach xAPI listener
+            window.H5P.externalDispatcher.on('xAPI', this.onxAPI);
+        }
 
         window.H5P.init(this.root);
     }
