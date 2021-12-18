@@ -44,7 +44,6 @@ export default class ContentUserDataManager {
                 requestingUser
             );
         }
-        return;
     }
 
     public async deleteAllContentUserDataByContentId(
@@ -162,8 +161,6 @@ export default class ContentUserDataManager {
             time,
             user
         );
-
-        return;
     }
 
     /**
@@ -206,7 +203,5 @@ export default class ContentUserDataManager {
                 user
             );
         }
-
-        return undefined;
     }
 }

@@ -117,8 +117,6 @@ export default class ContentManager {
                 log.error(error);
             }
         }
-
-        return;
     }
 
     /**
