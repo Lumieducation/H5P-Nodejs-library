@@ -624,7 +624,7 @@ export interface IContentUserDataStorage {
         contentId: ContentId,
         score: number,
         maxScore: number,
-        openend: number,
+        opened: number,
         finished: number,
         time: number,
         user: IUser

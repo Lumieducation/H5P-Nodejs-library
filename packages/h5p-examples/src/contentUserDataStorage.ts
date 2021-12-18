@@ -16,8 +16,8 @@ let userFinishedData: {
     contentId: ContentId;
     score: number;
     maxScore: number;
-    opened: Date;
-    finished: Date;
+    opened: number;
+    finished: number;
     time: number;
     user: IUser;
 }[] = [];
@@ -67,12 +67,12 @@ export default class ContentUserDataStorage implements IContentUserDataStorage {
         });
     }
 
-    public async setFinished(
+    public async saveFinishedDataForUser(
         contentId: ContentId,
         score: number,
         maxScore: number,
-        opened: Date,
-        finished: Date,
+        opened: number,
+        finished: number,
         time: number,
         user: IUser
     ): Promise<void> {
