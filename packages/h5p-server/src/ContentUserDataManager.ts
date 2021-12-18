@@ -1,10 +1,11 @@
+import sanitizeHtml from 'sanitize-html';
+
 import {
     ContentId,
     IContentUserData,
     IUser,
     IContentUserDataStorage
 } from './types';
-import sanitizeHtml from 'sanitize-html';
 import Logger from './helpers/Logger';
 import H5pError from './helpers/H5pError';
 
