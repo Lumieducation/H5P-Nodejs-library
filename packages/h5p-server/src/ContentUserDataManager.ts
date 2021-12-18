@@ -36,7 +36,7 @@ export default class ContentUserDataManager {
         requestingUser: IUser
     ): Promise<void> {
         if (this.contentUserDataStorage) {
-            log.info(
+            log.debug(
                 `deleting contentUserData for ContentId ${contentId} and userId ${userId}`
             );
             return this.contentUserDataStorage.deleteContentUserDataByUserId(
@@ -52,13 +52,14 @@ export default class ContentUserDataManager {
         requestingUser: IUser
     ): Promise<void> {
         if (this.contentUserDataStorage) {
-            log.info(`deleting all contentUserData for ContentId ${contentId}`);
+            log.debug(
+                `deleting all contentUserData for ContentId ${contentId}`
+            );
             return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
                 contentId,
                 requestingUser
             );
         }
-        return;
     }
 
     /**
@@ -79,7 +80,7 @@ export default class ContentUserDataManager {
             return undefined;
         }
 
-        log.info(
+        log.debug(
             `loading contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
 
@@ -102,7 +103,7 @@ export default class ContentUserDataManager {
         contentId: ContentId,
         user: IUser
     ): Promise<IContentUserData[]> {
-        log.info(
+        log.debug(
             `generating contentUserDataIntegration for user with id ${user.id} and contentId ${contentId}`
         );
 
@@ -127,10 +128,10 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Saves data when a user completes content. T
+     * Saves data when a user completes content.
      * @param contentId The content id to delete.
      * @param score the score the user reached as an integer
-     * @param maxScore the maximal score of the content
+     * @param maxScore the maximum score of the content
      * @param openend the time the user opened the content as UNIX time
      * @param finished the time the user finished the content as UNIX time
      * @param time the time the user needed to complete the content (as integer)
@@ -145,7 +146,7 @@ export default class ContentUserDataManager {
         time: number,
         user: IUser
     ): Promise<void> {
-        log.info(
+        log.debug(
             `saving finished data for ${user.id} and contentId ${contentId}`
         );
 
@@ -182,7 +183,7 @@ export default class ContentUserDataManager {
         preload: boolean,
         user: IUser
     ): Promise<void> {
-        log.info(
+        log.debug(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
 
