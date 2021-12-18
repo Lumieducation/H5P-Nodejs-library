@@ -25,8 +25,6 @@ import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
-import contentUserDataStorage from './contentUserDataStorage';
-
 let tmpDir: DirectoryResult;
 
 const start = async (): Promise<void> => {
@@ -108,7 +106,7 @@ const start = async (): Promise<void> => {
         undefined,
         (key, language) => translationFunction(key, { lng: language }),
         undefined,
-        contentUserDataStorage
+        h5pEditor.contentUserDataStorage
     );
 
     // We now set up the Express server in the usual fashion.

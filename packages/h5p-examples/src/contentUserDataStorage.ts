@@ -22,25 +22,23 @@ let userFinishedData: {
     user: IUser;
 }[] = [];
 
-export class ContentUserDataStorage implements IContentUserDataStorage {
-    public loadContentUserData(
+export default class ContentUserDataStorage implements IContentUserDataStorage {
+    public async loadContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
         user: IUser
     ): Promise<string> {
-        return Promise.resolve(
-            userData.filter(
-                (data) =>
-                    data.contentId === contentId &&
-                    data.dataType === dataType &&
-                    data.subContentId === subContentId &&
-                    data.userId === user.id
-            )[0]?.userState
-        );
+        return userData.filter(
+            (data) =>
+                data.contentId === contentId &&
+                data.dataType === dataType &&
+                data.subContentId === subContentId &&
+                data.userId === user.id
+        )[0]?.userState;
     }
 
-    public saveContentUserData(
+    public async saveContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
@@ -67,11 +65,9 @@ export class ContentUserDataStorage implements IContentUserDataStorage {
             // preload,
             userId: user.id
         });
-
-        return;
     }
 
-    public setFinished(
+    public async setFinished(
         contentId: ContentId,
         score: number,
         maxScore: number,
@@ -89,11 +85,9 @@ export class ContentUserDataStorage implements IContentUserDataStorage {
             time,
             user
         });
-
-        return Promise.resolve();
     }
 
-    public deleteContentUserDataByUserId(
+    public async deleteContentUserDataByUserId(
         contentId: ContentId,
         userId: string,
         requestingUser: IUser
@@ -101,18 +95,16 @@ export class ContentUserDataStorage implements IContentUserDataStorage {
         userData = userData.filter(
             (data) => data.contentId !== contentId && data.userId !== userId
         );
-        return;
     }
 
-    public deleteAllContentUserDataByContentId(
+    public async deleteAllContentUserDataByContentId(
         contentId: ContentId,
         requestingUser: IUser
     ): Promise<void> {
         userData = userData.filter((data) => data.contentId !== contentId);
-        return;
     }
 
-    public listByContent(
+    public async listByContent(
         contentId: ContentId,
         userId: string
     ): Promise<
@@ -131,5 +123,3 @@ export class ContentUserDataStorage implements IContentUserDataStorage {
         );
     }
 }
-
-export default new ContentUserDataStorage();
