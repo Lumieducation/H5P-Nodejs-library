@@ -214,7 +214,7 @@ describe('ContentUserDataManager', () => {
                     false,
                     new User()
                 )
-            ).rejects.toEqual(new Error('no-userState'));
+            ).rejects.toEqual(new Error('no-user-state'));
         });
 
         it('calls the saveontentUserData-method of the contentUserDateStorage with the correct arguments', async () => {
