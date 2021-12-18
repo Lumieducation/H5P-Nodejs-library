@@ -1,12 +1,11 @@
 import { Router } from 'express';
-
 import { ContentUserDataManager } from '@lumieducation/h5p-server';
+
 import {
     errorHandler,
     undefinedOrTrue,
     catchAndPassOnErrors
 } from '../expressErrorHandler';
-
 import ContentUserDataController from './ContentUserDataController';
 /**
  * This router implements necessary routes for the contentUserData (userState) to work.

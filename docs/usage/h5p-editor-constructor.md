@@ -117,9 +117,7 @@ a lock implementation (needed for multi-process or clustered setups).
 
 ## contentUserDataStorage (optional)
 
-The `contentUserDataStorage` handles saving and loading user states, so users can continue where they left off when they reload the page or come back later. It must implement the `IContentUserDataStorage` interface. You can find a reference implementation in [`/packages/h5p-examples/src/contentUserDataStorage.ts`](/packages/h5p-examples/src/contentUserDataStorage.ts):
-nder `./h5p/content` you can use the sample
-implementation in
+The `contentUserDataStorage` handles saving and loading user states, so users can continue where they left off when they reload the page or come back later. It must implement the `IContentUserDataStorage` interface. You can find a reference implementation in [`/packages/h5p-examples/src/contentUserDataStorage.ts`](/packages/h5p-examples/src/contentUserDataStorage.ts)
 
 ```javascript
 const contentUserDataStorage = new ContentUserDataStorage();

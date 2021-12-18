@@ -64,7 +64,7 @@ describe('ContentUserData endpoint adapter', () => {
             req.user = user;
             req.language = 'en';
             req.languages = ['en'];
-            req.t = (id, replacements) => id;
+            req.t = (id) => id;
             next();
         });
         app.use(
@@ -101,7 +101,6 @@ describe('ContentUserData endpoint adapter', () => {
             user
         );
         expect(res.status).toBe(200);
-        // expect(res.body).toBe({ data: mockReturnData, success: true });
     });
 
     it('calls loadContentUserData on GET', async () => {

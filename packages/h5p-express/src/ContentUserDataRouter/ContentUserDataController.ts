@@ -1,9 +1,9 @@
 import * as express from 'express';
-
 import {
     ContentUserDataManager,
     IPostContentUserData
 } from '@lumieducation/h5p-server';
+
 import { IRequestWithUser } from '../expressTypes';
 
 interface IPostContentUserDataRequest
@@ -39,7 +39,7 @@ export default class ContentUserDataController {
     };
 
     /**
-     * Saving a userState for given contentId, datType and subContentId
+     * Saving a userState for given contentId, dataType and subContentId
      *
      */
     public postContentUserData = async (
