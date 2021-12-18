@@ -183,7 +183,7 @@ export class H5PEditorComponent extends HTMLElement {
         }
 
         // Unregister our event listener from the global H5P dispatcher.
-        if (window.H5P.externalDispatcher) {
+        if (window.H5P?.externalDispatcher) {
             window.H5P.externalDispatcher.off(
                 'editorloaded',
                 this.onEditorLoaded
@@ -314,10 +314,12 @@ export class H5PEditorComponent extends HTMLElement {
             );
             // After our editor has been initialized, it will never fire the
             // global event again, so we can unsubscribe from it.
-            window.H5P.externalDispatcher.off(
-                'editorloaded',
-                this.onEditorLoaded
-            );
+            if (window.H5P?.externalDispatcher) {
+                window.H5P.externalDispatcher.off(
+                    'editorloaded',
+                    this.onEditorLoaded
+                );
+            }
         }
     };
 
@@ -416,11 +418,13 @@ export class H5PEditorComponent extends HTMLElement {
         }
 
         // Register our global editorloaded event handler.
-        window.H5P.externalDispatcher.on(
-            'editorloaded',
-            this.onEditorLoaded,
-            this
-        );
+        if (window.H5P.externalDispatcher) {
+            window.H5P.externalDispatcher.on(
+                'editorloaded',
+                this.onEditorLoaded,
+                this
+            );
+        }
 
         // Configure the H5P core editor.
         H5PEditor.$ = window.H5P.jQuery;
