@@ -6,6 +6,7 @@ import {
 } from './types';
 import sanitizeHtml from 'sanitize-html';
 import Logger from './helpers/Logger';
+import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentUserDataManager');
 
@@ -191,7 +192,7 @@ export default class ContentUserDataManager {
 
         if (!sanitizedUserState || sanitizedUserState === '') {
             log.error(`no userState provided for ${contentId}`);
-            throw new Error('no-userState');
+            throw new H5pError('no-user-state');
         }
 
         if (this.contentUserDataStorage) {
