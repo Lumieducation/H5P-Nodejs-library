@@ -65,15 +65,15 @@ body {
 }
 
 .h5p-hub .h5p-hub-tab-panel [role='tablist'] {
-    background-color: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
 }
 
 .h5p-hub-search-wrapper {
-    background-color: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
 }
 
 .h5p-hub .h5p-hub-navbar {
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
 }
 
 .h5p-hub .h5p-hub-content-type-list ol {
@@ -100,11 +100,11 @@ button.h5p-core-button {
 }
 
 .h5p-hub-media .h5p-hub-highlight {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-list .h5p-hub-media[tabindex='0'] {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-list .h5p-hub-media:not(:last-child) {
@@ -126,7 +126,7 @@ button.h5p-core-button {
 }
 
 .h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-navbar {
@@ -156,7 +156,7 @@ button.h5p-core-button {
 .group.importance-low > .title,
 .h5p-li > .list-item-title-bar.importance-low,
 .common > .h5peditor-label {
-    background: ${theme.paperBackgroundColor}; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor}; /* secondaryBackgroundColor */
     border: 1px solid ${theme.dividerColor}; /* dividerColor */
     color: ${theme.fontColor} !important; /* fontColor */
 }
@@ -180,7 +180,7 @@ button.h5p-core-button {
 
 .h5peditor fieldset.common-fields-library-wrapper > legend {
     color: ${theme.fontColor} !important; /* fontColor */
-    background-color: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border: 1px solid ${theme.dividerColor} !important; /* dividerColor*/
 }
 
@@ -190,7 +190,7 @@ button.h5p-core-button {
 
 .h5peditor .h5peditor-language-switcher select {
     color: ${theme.fontColor} !important; /* fontColor */
-    background-color: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border: solid 1px ${theme.dividerColor} !important; /* dividerColor */
 }
 
@@ -238,33 +238,33 @@ button.h5p-core-button {
 
 .h5p-hub-accordion-heading {
     border-bottom: 1px solid ${theme.dividerColor} !important;
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5peditor-form-manager-head {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
     color: ${theme.fontColor} !important;
     border-bottom: 1px solid ${theme.dividerColor} !important; /* dividerColor */
     border-bottom: 1px solid ${theme.dividerColor} !important; /* dividerColor */
 }
 
 .field.wizard .h5peditor-tab-a {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
     color: ${theme.fontColor} !important;
 }
 
 .h5p-hub-search-wrapper .h5p-hub-border-wrap {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub-search-bar {
     border: 1px solid ${theme.dividerColor};
     color: ${theme.fontColor};
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-editor-table-list tbody td {
-    background: ${theme.paperBackgroundColor};
+    background: ${theme.secondaryBackgroundColor};
     border-top: 1px solid ${theme.dividerColor};
     border-bottom: 1px solid ${theme.dividerColor};
 }
@@ -274,12 +274,12 @@ button.h5p-core-button {
 }
 
 .field.wizard .h5peditor-tab-a.h5peditor-active {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
     color: ${theme.fontColor} !important;
 }
 
 .field.wizard .h5peditor-wizard-navigation-buttons {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .form-manager-form {
@@ -301,7 +301,7 @@ button.h5p-core-button {
 .h5peditor h5peditor-select,
 .h5peditor .field > select {
     border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
 }
 
 .h5peditor .file .add {
@@ -316,19 +316,19 @@ button.h5p-core-button {
 
 .group > .title,
 .h5p-li > .list-item-title-bar {
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
     color: ${theme.fontColor} !important; /* fontColor */
 }
 
 .h5peditor-button-textual.importance-low {
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border-color: ${theme.dividerColor} !important; /* dividerColor */
     color: ${theme.fontColor} !important; /* fontColor */
 }
 
 .h5peditor-button-textual.importance-high {
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border-color: ${theme.dividerColor} !important; /* dividerColor */
     color: ${theme.fontColor} !important; /* fontColor */
 }
@@ -343,7 +343,7 @@ button.h5p-core-button {
 }
 
 .h5peditor-button-textual {
-    background: ${theme.paperBackgroundColor} !important; /* paperBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
     border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
     color: ${theme.fontColor} !important; /* fontColor */
 }
@@ -366,12 +366,12 @@ button.h5p-core-button {
 
 .h5p-multichoice .h5p-alternative-container {
     color: ${theme.fontColor};
-    background: ${theme.paperBackgroundColor};
+    background: ${theme.secondaryBackgroundColor};
 }
 
 .h5p-joubelui-score-bar {
     color: ${theme.fontColor};
-    background: ${theme.paperBackgroundColor};
+    background: ${theme.secondaryBackgroundColor};
     border: 1px solid ${theme.dividerColor};
 
 }
@@ -381,12 +381,12 @@ button.h5p-core-button {
 }
 
 .h5p-drag-text [aria-dropeffect] {
-    background-color: ${theme.paperBackgroundColor};
+    background-color: ${theme.secondaryBackgroundColor};
 }
 
 .h5p-drag-text [aria-grabbed] {
     border: 0.1em solid ${theme.dividerColor};
-    background: ${theme.paperBackgroundColor};
+    background: ${theme.secondaryBackgroundColor};
 
 }
 
@@ -407,7 +407,7 @@ button.h5p-core-button {
 }
 
 .h5p-editor-table-list tbody td {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
     border-top: 1px solid ${theme.dividerColor} !important;
     border-bottom: 1px solid ${theme.dividerColor} !important;
 }
@@ -437,12 +437,12 @@ button.h5p-core-button {
 .h5peditor-widget-option {
     border: 1px solid ${theme.dividerColor};
     color: ${theme.fontColor};
-    background: ${theme.paperBackgroundColor};
+    background: ${theme.secondaryBackgroundColor};
 }
 
 .h5p-vtab-a {
     border: 1px solid ${theme.dividerColor} !important;
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
     color: ${theme.fontColor} !important;
 }
 
@@ -473,18 +473,18 @@ button.h5p-core-button {
 }
 
 .h5peditor .h5p-add-dialog {
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
     border: 1px solid ${theme.dividerColor} !important;
 }
 
 .h5peditor .h5p-add-dialog .h5p-buttons {
     padding: 0.5em;
     border-top: 1px solid ${theme.dividerColor} !important;
-    background: ${theme.paperBackgroundColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5peditor .h5p-add-dialog .h5p-add-dialog-table .h5p-file-drop-upload {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
     border: 1px solid ${theme.dividerColor} !important;
 }
 
@@ -493,14 +493,14 @@ button.h5p-core-button {
 }
 
 .h5p-collage-wrapper {
-    background-color: ${theme.paperBackgroundColor};
+    background-color: ${theme.secondaryBackgroundColor};
 }
 
 .h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 .h5p-collage-wrapper {
-    background-color: ${theme.paperBackgroundColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 `;
 };

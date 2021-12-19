@@ -18,7 +18,7 @@
     },
     "theme": {
         "backgroundColor": "#222b37",
-        "paperBackgroundColor": "#333d49",
+        "secondaryBackgroundColor": "#333d49",
         "fontColor": "#ffffff",
         "disabledFontColor": "#a0a0a1",
         "primaryColor": "#7636dc",

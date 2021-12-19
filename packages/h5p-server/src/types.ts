@@ -2098,7 +2098,7 @@ export interface ITheme {
     fontColor: string;
     disabledFontColor: string;
     backgroundColor: string;
-    paperBackgroundColor: string;
+    secondaryBackgroundColor: string;
     primaryColor: string;
     primaryContrastColor: string;
     secondaryColor: string;
