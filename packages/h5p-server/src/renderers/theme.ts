@@ -351,6 +351,20 @@ button.h5p-core-button {
 .h5peditor .ui-dialog .h5p-joubelui-button, .h5peditor .h5p-joubelui-button, .h5p-joubelui-button {
     background: ${theme.primaryColor};
     color: ${theme.primaryContrastColor};
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
+}
+
+.h5p-joubelui-button:hover, .h5p-joubelui-button:focus {
+    background: ${theme.primaryColor};
+    color: ${theme.primaryContrastColor};
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
+}
+
+.h5p-multichoice .h5p-answer:not([aria-disabled="true"]):hover .h5p-alternative-container {
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .h5p-content {
@@ -502,5 +516,60 @@ button.h5p-core-button {
 .h5p-collage-wrapper {
     background-color: ${theme.secondaryBackgroundColor} !important;
 }
+
+.h5p-interactive-book-status {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+}
+.h5p-interactive-book-status-chapter .title {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-interactive-book-status-progressbar-front {
+    background-color: ${theme.primaryColor} !important;;
+}
+
+.h5p-interactive-book-status-menu.h5p-interactive-book-status-menu-active {
+    background-color: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5p-interactive-book-status-progress-number {
+    color: ${theme.primaryColor} !important;
+    font-family: ${theme.fontFamily};
+}
+.h5p-interactive-book-status-arrow .navigation-button {
+    color: ${theme.primaryColor};
+}
+.h5p-interactive-book-status-fullscreen.h5p-interactive-book-enter-fullscreen::before {
+    color: ${theme.primaryColor} !important;
+}
+
+.h5p-interactive-book-navigation-maintitle {
+    background-color: ${theme.primaryColor} !important;
+}
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-interactive-book-navigation-chapter-button {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border-bottom: solid 1px ${theme.dividerColor};
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+.h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    font-family: ${theme.fontFamily} !important;
+    color: ${theme.primaryColor} !important;
+}
+
 `;
 };
