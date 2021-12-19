@@ -9,6 +9,11 @@ export default (theme?: ITheme): string => {
     background-color: ${theme.backgroundColor} !important; /* backgroundColor */
 }
 
+body {
+    font-family: ${theme.fontFamily} !important;
+    color: ${theme.fontColor} !important;
+}
+
 .h5p-hub-client-drop-down {
     color: ${theme.fontColor} !important;
     background-color: ${theme.backgroundColor} !important; /* backgroundColor */
@@ -38,6 +43,15 @@ export default (theme?: ITheme): string => {
 
 .h5p-hub {
     color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-hub .link, .h5p-hub a {
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    font-family: $${theme.fontFamily} !important;
 }
 
 .form-manager-head {
@@ -74,6 +88,8 @@ export default (theme?: ITheme): string => {
 }
 
 button.h5p-core-button {
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
     background: ${theme.primaryColor} !important; /* primaryColor */
     color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
 }
@@ -99,12 +115,14 @@ button.h5p-core-button {
 .h5p-hub .h5p-hub-button.h5p-hub-button-primary {
     background-color: ${theme.primaryColor} !important;
     border-color: ${theme.primaryColor} !important;
+    font-family: ${theme.fontFamily} !important;
 }
 
 .h5p-hub .h5p-hub-button.h5p-hub-button-inverse-primary {
     background-color: ${theme.secondaryColor} !important;
     color: ${theme.secondaryContrastColor} !important;
     border-color: ${theme.secondaryColor} !important;
+    font-family: ${theme.fontFamily} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover {
@@ -192,6 +210,7 @@ button.h5p-core-button {
 }
 
 .h5p-hub .h5p-hub-button {
+    border-radius: ${theme.buttonBorderRadius} !important;
     background-color: ${theme.primaryColor} !important;
     color: ${theme.primaryContrastColor} !important;
 }
@@ -383,5 +402,105 @@ button.h5p-core-button {
     background: ${theme.backgroundColor};
 }
 
+.h5p-li > .list-item-title-bar.importance-high .order-group {
+    background: ${theme.primaryColor};
+}
+
+.h5p-editor-table-list tbody td {
+    background: ${theme.paperBackgroundColor} !important;
+    border-top: 1px solid ${theme.dividerColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+}
+.h5p-metadata-button-tip {
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+.h5p-metadata-toggler {
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+.h5p-metadata-wrapper {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.group.importance-low > .title, .h5p-li > .list-item-title-bar.importance-low > .h5peditor-label, .h5p-li > .list-item-title-bar.importance-low > .title, .common > .h5peditor-label {
+    color: ${theme.fontColor};
+}
+
+.field.wizard .h5peditor-wizard-navigation-buttons > div {
+    color: ${theme.primaryContrastColor} !important;
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5peditor-widget-option {
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.fontColor};
+    background: ${theme.paperBackgroundColor};
+}
+
+.h5p-vtab-a {
+    border: 1px solid ${theme.dividerColor} !important;
+    background-color: ${theme.paperBackgroundColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.important-description-show {
+    background: ${theme.warningColor} !important;
+    color: ${theme.warningContrastColor} !important;
+}
+
+.h5peditor-field-important-description {
+    border: 1px solid ${theme.dividerColor} !important;
+    background-color: ${theme.warningColor} !important;
+    color: ${theme.warningContrastColor} !important;
+}
+.h5p-new-scene-button {
+    color: ${theme.fontColor} !important;
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.primaryColor} !important;
+}
+
+.h5p-editing-dialog {
+    background: ${theme.backgroundColor} !important;
+}
+
+.h5p-editing-dialog-header .done-button {
+    color: ${theme.fontColor} !important;
+    background: ${theme.primaryColor} !important;
+    border-color: ${theme.primaryColor} !important;
+}
+
+.h5peditor .h5p-add-dialog {
+    background: ${theme.paperBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-buttons {
+    padding: 0.5em;
+    border-top: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.paperBackgroundColor} !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-add-dialog-table .h5p-file-drop-upload {
+    background-color: ${theme.paperBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-collage-wrapper {
+    background-color: ${theme.paperBackgroundColor};
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: ${theme.paperBackgroundColor} !important;
+}
+.h5p-collage-wrapper {
+    background-color: ${theme.paperBackgroundColor} !important;
+}
 `;
 };

@@ -2104,4 +2104,12 @@ export interface ITheme {
     secondaryColor: string;
     secondaryContrastColor: string;
     dividerColor: string;
+    warningColor: string;
+    warningContrastColor: string;
+    successColor: string;
+    successContrastColor: string;
+    errorColor: string;
+    errorContrastColor: string;
+    fontFamily: string;
+    buttonBorderRadius: string;
 }

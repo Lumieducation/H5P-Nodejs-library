@@ -25,6 +25,14 @@
         "primaryContrastColor": "#ffffff",
         "secondaryColor": "#3d66ff",
         "secondaryContrastColor": "#ffffff",
-        "dividerColor": "#45505d"
+        "dividerColor": "#45505d",
+        "warningColor": "#e67e22",
+        "warningContrastColor": "#000000",
+        "successColor": "#27ae60",
+        "successContrastColor": "#FFFFFF",
+        "errorColor": "#c0392b",
+        "errorContrastColor": "#FFFFFF",
+        "fontFamily": "'Imperial Script', cursive",
+        "buttonBorderRadius": "0.5em"
     }
 }
