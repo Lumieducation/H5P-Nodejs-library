@@ -13,9 +13,9 @@ export default class H5PConfig implements IH5PConfig {
         this.storage = storage;
         if (defaults) {
             for (const key in defaults) {
-                if (this[key] !== undefined) {
-                    this[key] = defaults[key];
-                }
+                // if (this[key] !== undefined) {
+                this[key] = defaults[key];
+                // }
             }
         }
     }
