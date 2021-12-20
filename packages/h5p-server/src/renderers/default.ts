@@ -105,8 +105,13 @@ var ns = H5PEditor;
                 .change();
         }
 
+        var formIsUpdated = false;
         $('#h5p-content-form').submit(function(event) {
-            if (h5peditor !== undefined) {
+            if ($type.length && $type.filter(':checked').val() === 'upload') {
+              return; // Old file upload
+            }
+
+            if (h5peditor !== undefined && !formIsUpdated) {
                 var params = h5peditor.getParams();
 
                 if (params.params !== undefined) {
@@ -117,26 +122,33 @@ var ns = H5PEditor;
 
                     // }
 
-                    // Set main library
-                    $library.val(h5peditor.getLibrary());
+                    // Get content from editor
+                    h5peditor.getContent(function (content) {
 
-                    // Set params
-                    $params.val(JSON.stringify(params));
+                      // Set main library
+                      $library.val(content.library);
 
-                    $.ajax({
-                        data: JSON.stringify({
-                            library: h5peditor.getLibrary(),
-                            params
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        type: 'POST'
-                    }).then((result) => {
-                        const parsedResult = JSON.parse(result)
-                        if(parsedResult.contentId) {
-                            window.location.href = '${model.urlGenerator.play()}/' + parsedResult.contentId;
-                        }
+                      // Set params
+                      $params.val(content.params);
+
+                      // Submit form data
+                      formIsUpdated = true;
+
+                      $.ajax({
+                          data: JSON.stringify({
+                              library: content.library,
+                              params
+                          }),
+                          headers: {
+                              'Content-Type': 'application/json'
+                          },
+                          type: 'POST'
+                      }).then((result) => {
+                          const parsedResult = JSON.parse(result)
+                          if(parsedResult.contentId) {
+                              window.location.href = '${model.urlGenerator.play()}/' + parsedResult.contentId;
+                          }
+                      });
                     });
 
                     return event.preventDefault();
