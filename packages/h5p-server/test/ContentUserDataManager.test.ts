@@ -199,7 +199,7 @@ describe('ContentUserDataManager', () => {
             ).toBeUndefined();
         });
 
-        it('sanitizes the userState', async () => {
+        it('throws an error if invalid arguments are passed', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
@@ -209,12 +209,12 @@ describe('ContentUserDataManager', () => {
                     'contentId',
                     'state',
                     '0',
-                    '<script>alert("hello world")</script>',
-                    false,
+                    'data',
+                    0 as any,
                     false,
                     new User()
                 )
-            ).rejects.toEqual(new Error('no-user-state'));
+            ).rejects.toEqual(new Error('invalid-arguments'));
         });
 
         it('calls the saveontentUserData-method of the contentUserDateStorage with the correct arguments', async () => {

@@ -1,5 +1,3 @@
-import sanitizeHtml from 'sanitize-html';
-
 import {
     ContentId,
     IContentUserData,
@@ -175,7 +173,7 @@ export default class ContentUserDataManager {
      * @returns the saved state as string
      */
     public async saveContentUserData(
-        contentId: string,
+        contentId: ContentId,
         dataType: string,
         subcontentId: string,
         userState: string,
@@ -187,11 +185,9 @@ export default class ContentUserDataManager {
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
 
-        const sanitizedUserState = sanitizeHtml(userState);
-
-        if (!sanitizedUserState || sanitizedUserState === '') {
-            log.error(`no userState provided for ${contentId}`);
-            throw new H5pError('no-user-state');
+        if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
+            log.error(`invalid arguments passed for contentId ${contentId}`);
+            throw new H5pError('invalid-arguments');
         }
 
         if (this.contentUserDataStorage) {
@@ -199,7 +195,7 @@ export default class ContentUserDataManager {
                 contentId,
                 dataType,
                 subcontentId,
-                sanitizedUserState,
+                userState,
                 invalidate,
                 preload,
                 user
