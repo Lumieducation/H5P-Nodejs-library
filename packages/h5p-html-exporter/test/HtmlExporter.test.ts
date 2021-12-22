@@ -11,9 +11,10 @@ import FileLibraryStorage from '../../h5p-server/src/implementation/fs/FileLibra
 import H5PConfig from '../../h5p-server/src/implementation/H5PConfig';
 import LibraryManager from '../../h5p-server/src/LibraryManager';
 import PackageImporter from '../../h5p-server/src/PackageImporter';
+import HtmlExporter from '../src/HtmlExporter';
+import { IIntegration } from '../../h5p-server/src/types';
 
 import User from './User';
-import HtmlExporter from '../src/HtmlExporter';
 
 let browser: puppeteer.Browser;
 let page: puppeteer.Page;
@@ -252,7 +253,7 @@ describe('HtmlExporter template', () => {
             path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
             path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`),
             (
-                integration: string,
+                integration: IIntegration,
                 scriptsBundle: string,
                 stylesBundle: string,
                 contentId2: string
