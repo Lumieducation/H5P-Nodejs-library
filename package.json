@@ -91,7 +91,7 @@
         "commitlint": "15.0.0",
         "concurrently": "6.5.1",
         "eslint": "7.32.0",
-        "eslint-config-airbnb": "19.0.3",
+        "eslint-config-airbnb": "19.0.4",
         "eslint-config-airbnb-typescript": "14.0.2",
         "eslint-config-prettier": "8.3.0",
         "eslint-plugin-import": "2.25.3",
