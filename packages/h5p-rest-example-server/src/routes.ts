@@ -5,8 +5,6 @@ import {
     IRequestWithLanguage
 } from '@lumieducation/h5p-express';
 
-import User from './User';
-
 /**
  * @param h5pEditor
  * @param h5pPlayer
@@ -21,11 +19,11 @@ export default function (
 ): express.Router {
     const router = express.Router();
 
-    router.get(`/:contentId/play`, async (req, res) => {
+    router.get(`/:contentId/play`, async (req: IRequestWithUser, res) => {
         try {
             const content = await h5pPlayer.render(
                 req.params.contentId,
-                new User(),
+                req.user,
                 languageOverride === 'auto'
                     ? req.language ?? 'en'
                     : languageOverride
@@ -37,31 +35,36 @@ export default function (
         }
     });
 
-    router.get('/:contentId/edit', async (req: IRequestWithLanguage, res) => {
-        // This route merges the render and the /ajax/params routes to avoid a
-        // second request.
-        const editorModel = (await h5pEditor.render(
-            req.params.contentId === 'undefined'
-                ? undefined
-                : req.params.contentId,
-            languageOverride === 'auto'
-                ? req.language ?? 'en'
-                : languageOverride,
-            new User()
-        )) as H5P.IEditorModel;
-        if (!req.params.contentId || req.params.contentId === 'undefined') {
-            res.send(editorModel);
-        } else {
-            const content = await h5pEditor.getContent(req.params.contentId);
-            res.send({
-                ...editorModel,
-                library: content.library,
-                metadata: content.params.metadata,
-                params: content.params.params
-            });
+    router.get(
+        '/:contentId/edit',
+        async (req: IRequestWithLanguage & { user: H5P.IUser }, res) => {
+            // This route merges the render and the /ajax/params routes to avoid a
+            // second request.
+            const editorModel = (await h5pEditor.render(
+                req.params.contentId === 'undefined'
+                    ? undefined
+                    : req.params.contentId,
+                languageOverride === 'auto'
+                    ? req.language ?? 'en'
+                    : languageOverride,
+                req.user
+            )) as H5P.IEditorModel;
+            if (!req.params.contentId || req.params.contentId === 'undefined') {
+                res.send(editorModel);
+            } else {
+                const content = await h5pEditor.getContent(
+                    req.params.contentId
+                );
+                res.send({
+                    ...editorModel,
+                    library: content.library,
+                    metadata: content.params.metadata,
+                    params: content.params.params
+                });
+            }
+            res.status(200).end();
         }
-        res.status(200).end();
-    });
+    );
 
     router.post('/', async (req: IRequestWithUser, res) => {
         if (

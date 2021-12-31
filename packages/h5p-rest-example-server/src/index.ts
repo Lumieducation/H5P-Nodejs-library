@@ -6,12 +6,14 @@ import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import session from 'express-session';
 
 import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
-    contentTypeCacheExpressRouter,
-    IRequestWithUser
+    contentTypeCacheExpressRouter
 } from '@lumieducation/h5p-express';
 
 import * as H5P from '@lumieducation/h5p-server';
@@ -21,6 +23,55 @@ import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
 let tmpDir: DirectoryResult;
+
+const userTable = {
+    teacher1: {
+        username: 'teacher1',
+        name: 'Teacher 1',
+        email: 'teacher1@example.com',
+        type: 'teacher'
+    },
+    teacher2: {
+        username: 'teacher2',
+        name: 'Teacher 2',
+        email: 'teacher2@example.com',
+        type: 'teacher'
+    },
+    student1: {
+        username: 'student1',
+        name: 'Student 1',
+        email: 'student1@example.com',
+        type: 'student'
+    },
+    student2: {
+        username: 'student2',
+        name: 'Student 2',
+        email: 'student2@example.com',
+        type: 'student'
+    }
+};
+
+const initPassport = (): void => {
+    passport.use(
+        new LocalStrategy((username, password, callback) => {
+            // We don't check the password. In a real application you'll perform
+            // DB access here.
+            const user = userTable[username];
+            if (!user) {
+                callback('User not found in user table');
+            } else {
+                callback(null, user);
+            }
+        })
+    );
+    passport.serializeUser((user, done): void => {
+        done(null, user);
+    });
+
+    passport.deserializeUser((user, done): void => {
+        done(null, user);
+    });
+};
 
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS === 'true';
@@ -128,15 +179,42 @@ const start = async (): Promise<void> => {
         });
     }
 
+    // Initialize session with cookie storage
+    server.use(
+        session({ secret: 'mysecret', resave: false, saveUninitialized: false })
+    );
+
+    // Initialize passport for login
+    initPassport();
+    server.use(passport.initialize());
+    server.use(passport.session());
+
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    // In your real implementation you would create the object using sessions,
-    // JSON webtokens or some other means.
-    server.use((req: IRequestWithUser, res, next) => {
-        req.user = new User();
-        next();
-    });
+    server.use(
+        (
+            req: express.Request & { user: H5P.IUser } & {
+                user: { username?: string; name?: string; email?: string };
+            },
+            res,
+            next
+        ) => {
+            // Maps the user received from passport to the one expected by
+            // h5p-express and h5p-server
+            if (req.user) {
+                req.user = new User(
+                    req.user.username,
+                    req.user.name,
+                    req.user.email,
+                    req.user.type === 'teacher' ? 'teacher' : 'anonymous'
+                );
+            } else {
+                req.user = new User('0', 'Anonymous', '', 'anonymous');
+            }
+            next();
+        }
+    );
 
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
@@ -191,6 +269,32 @@ const start = async (): Promise<void> => {
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
+
+    // Simple login endpoint that returns HTTP 200 on auth and sets the user in
+    // the session
+    server.post(
+        '/login',
+        passport.authenticate('local', {
+            failWithError: true
+        }),
+        function (
+            req: express.Request & {
+                user: { username: string; email: string; name: string };
+            },
+            res: express.Response
+        ): void {
+            res.status(200).json({
+                username: req.user.username,
+                email: req.user.email,
+                name: req.user.name
+            });
+        }
+    );
+
+    server.post('/logout', (req, res) => {
+        req.logout();
+        res.status(200).send();
+    });
 
     const port = process.env.PORT || '8080';
 
