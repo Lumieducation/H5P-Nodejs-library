@@ -1173,6 +1173,9 @@ export interface ILibraryMetadata extends IFullLibraryName {
     runnable: boolean | 0 | 1;
     title: string;
     w?: number;
+    requiredExtensions?: {
+        sharedState: number;
+    };
 }
 
 /**
