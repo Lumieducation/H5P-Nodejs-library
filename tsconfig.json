@@ -55,7 +55,10 @@
                 "packages/h5p-webcomponents/src"
             ],
             "@lumieducation/h5p-server": ["packages/h5p-server/src"],
-            "@lumieducation/h5p-redis-lock": ["packages/h5p-redis-lock/src"]
+            "@lumieducation/h5p-redis-lock": ["packages/h5p-redis-lock/src"],
+            "@lumieducation/h5p-shared-state-server": [
+                "packages/h5p-shared-state-server/src"
+            ]
         }
     }
 }

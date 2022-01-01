@@ -1,5 +1,4 @@
 import Ajv from 'ajv/dist/2020';
-import express from 'express';
 import fsExtra from 'fs-extra';
 import http from 'http';
 import path from 'path';
@@ -9,10 +8,12 @@ import WebSocketJSONStream from '@teamwork/websocket-json-stream';
 
 const ajv = new Ajv();
 
-const opSchema = fsExtra.readJSONSync(path.resolve('opSchema.json'));
+const opSchema = fsExtra.readJSONSync(path.join(__dirname, '../opSchema.json'));
 const opSchemaValidator = ajv.compile(opSchema);
 
-const stateSchema = fsExtra.readJSONSync(path.resolve('stateSchema.json'));
+const stateSchema = fsExtra.readJSONSync(
+    path.join(__dirname, '../stateSchema.json')
+);
 const stateSchemaValidator = ajv.compile(stateSchema);
 
 const backend = new ShareDB();
@@ -53,13 +54,12 @@ const getSession = (req: { headers: any }): void => {
     console.log(headers.cookie);
 };
 
-function startServer(): void {
-    // Create a web server to serve files and listen to WebSocket connections
-    const app = express();
-    const server = http.createServer(app);
-
+export function setupShareDB(httpServer: http.Server): void {
     // Connect any incoming WebSocket connection to ShareDB
-    const wss = new WebSocket.Server({ server: server });
+    const wss = new WebSocket.Server({
+        server: httpServer,
+        path: '/shared-state'
+    });
     wss.on('connection', (ws, request) => {
         console.log('Websocket connected');
 
@@ -71,9 +71,4 @@ function startServer(): void {
             console.log('Websocket disconnected');
         });
     });
-
-    server.listen(5001);
-    console.log('Listening on http://localhost:5001');
 }
-
-startServer();

@@ -15,7 +15,7 @@
     },
     "libraryConfig": {
         "H5P.ShareDBTest": {
-            "serverUrl": "ws://localhost:5001"
+            "serverUrl": "ws://localhost:8080/shared-state"
         }
     }
 }

@@ -9,6 +9,7 @@ import path from 'path';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
+import http from 'http';
 
 import {
     h5pAjaxExpressRouter,
@@ -17,6 +18,7 @@ import {
 } from '@lumieducation/h5p-express';
 
 import * as H5P from '@lumieducation/h5p-server';
+import { setupShareDB } from '@lumieducation/h5p-shared-state-server';
 import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
@@ -153,17 +155,17 @@ const start = async (): Promise<void> => {
     h5pPlayer.setRenderer((model) => model);
 
     // We now set up the Express server in the usual fashion.
-    const server = express();
+    const app = express();
 
-    server.use(bodyParser.json({ limit: '500mb' }));
-    server.use(
+    app.use(bodyParser.json({ limit: '500mb' }));
+    app.use(
         bodyParser.urlencoded({
             extended: true
         })
     );
 
     // Configure file uploads
-    server.use(
+    app.use(
         fileUpload({
             limits: { fileSize: h5pEditor.config.maxTotalSize },
             useTempFiles: useTempUploads,
@@ -173,26 +175,26 @@ const start = async (): Promise<void> => {
 
     // delete temporary files left over from uploads
     if (useTempUploads) {
-        server.use((req: express.Request & { files: any }, res, next) => {
+        app.use((req: express.Request & { files: any }, res, next) => {
             res.on('finish', async () => clearTempFiles(req));
             next();
         });
     }
 
     // Initialize session with cookie storage
-    server.use(
+    app.use(
         session({ secret: 'mysecret', resave: false, saveUninitialized: false })
     );
 
     // Initialize passport for login
     initPassport();
-    server.use(passport.initialize());
-    server.use(passport.session());
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    server.use(
+    app.use(
         (
             req: express.Request & { user: H5P.IUser } & {
                 user: { username?: string; name?: string; email?: string };
@@ -219,13 +221,13 @@ const start = async (): Promise<void> => {
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
     // (H5P.adapters.express) to function properly.
-    server.use(i18nextHttpMiddleware.handle(i18next));
+    app.use(i18nextHttpMiddleware.handle(i18next));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure
     // which endpoints you want to use. In this case we don't pass an options
     // object, which means we get all of them.
-    server.use(
+    app.use(
         h5pEditor.config.baseUrl,
         h5pAjaxExpressRouter(
             h5pEditor,
@@ -245,7 +247,7 @@ const start = async (): Promise<void> => {
     // - Editing content
     // - Saving content
     // - Deleting content
-    server.use(
+    app.use(
         h5pEditor.config.baseUrl,
         restExpressRoutes(
             h5pEditor,
@@ -258,21 +260,21 @@ const start = async (): Promise<void> => {
 
     // The LibraryAdministrationExpress routes are REST endpoints that offer
     // library management functionality.
-    server.use(
+    app.use(
         `${h5pEditor.config.baseUrl}/libraries`,
         libraryAdministrationExpressRouter(h5pEditor)
     );
 
     // The ContentTypeCacheExpress routes are REST endpoints that allow updating
     // the content type cache manually.
-    server.use(
+    app.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in
     // the session
-    server.post(
+    app.post(
         '/login',
         passport.authenticate('local', {
             failWithError: true
@@ -291,7 +293,7 @@ const start = async (): Promise<void> => {
         }
     );
 
-    server.post('/logout', (req, res) => {
+    app.post('/logout', (req, res) => {
         req.logout();
         res.status(200).send();
     });
@@ -301,6 +303,10 @@ const start = async (): Promise<void> => {
     // For developer convenience we display a list of IPs, the server is running
     // on. You can then simply click on it in the terminal.
     displayIps(port);
+
+    const server = http.createServer(app);
+
+    setupShareDB(server);
 
     server.listen(port);
 };
