@@ -1,24 +1,24 @@
 import { dir, DirectoryResult } from 'tmp-promise';
+import { Strategy as LocalStrategy } from 'passport-local';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import http from 'http';
 import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
-import path from 'path';
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
+import path from 'path';
 import session from 'express-session';
-import http from 'http';
 
 import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter
 } from '@lumieducation/h5p-express';
-
 import * as H5P from '@lumieducation/h5p-server';
 import { setupShareDB } from '@lumieducation/h5p-shared-state-server';
+
 import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
@@ -304,8 +304,11 @@ const start = async (): Promise<void> => {
     // on. You can then simply click on it in the terminal.
     displayIps(port);
 
+    // We need to create our own http server to pass it to the shared state
+    // package.
     const server = http.createServer(app);
 
+    // Add shared state websocket and ShareDB to the server
     setupShareDB(server);
 
     server.listen(port);
