@@ -17,7 +17,7 @@ import {
     contentTypeCacheExpressRouter
 } from '@lumieducation/h5p-express';
 import * as H5P from '@lumieducation/h5p-server';
-import { setupShareDB } from '@lumieducation/h5p-shared-state-server';
+import SharedStateServer from '@lumieducation/h5p-shared-state-server';
 
 import restExpressRoutes from './routes';
 import User from './User';
@@ -309,7 +309,7 @@ const start = async (): Promise<void> => {
     const server = http.createServer(app);
 
     // Add shared state websocket and ShareDB to the server
-    setupShareDB(server);
+    const sharedStateServer = new SharedStateServer(server);
 
     server.listen(port);
 };
