@@ -19,7 +19,8 @@
         "packages/h5p-server/src/**/*",
         "packages/h5p-server/test/**/*",
         "packages/h5p-webcomponents/src/**/*",
-        "packages/h5p-webcomponents/test/**/*"
+        "packages/h5p-webcomponents/test/**/*",
+        "packages/h5p-shared-state-server/src/**/*"
     ],
     "compilerOptions": {
         "outDir": "./build-ide",

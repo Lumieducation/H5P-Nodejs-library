@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test op schema",
+  "type": "array",
+  "items": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "p": {
+            "type": "array",
+            "prefixItems": [
+              { "enum": ["votesUp", "votesDown"] },
+              { "enum": [0] }
+            ],
+            "maxItems": 2,
+            "minItems": 2
+          },
+          "li": {
+            "type": "string"
+          }
+        }
+      }
+    ]
+  }
+}
