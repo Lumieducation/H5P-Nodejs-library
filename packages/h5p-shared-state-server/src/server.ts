@@ -17,7 +17,11 @@ export default class SharedStateServer {
         httpServer: http.Server,
         private libraryManager: LibraryManager,
         private contentManager: ContentManager,
-        private requestToUserCallback: (req: any) => Promise<IUser>
+        private requestToUserCallback: (req: any) => Promise<IUser>,
+        private getPermissionForUser: (
+            user: IUser,
+            contentId: string
+        ) => Promise<'privileged' | 'user' | undefined>
     ) {
         this.setupShareDBBackend();
 
@@ -57,24 +61,47 @@ export default class SharedStateServer {
 
         this.backend = new ShareDB();
 
-        this.backend.use('connect', async (request, next) => {
-            console.log('connected', request);
-            if (request.req) {
-                request.agent.custom = {
-                    user: request.req.user,
+        this.backend.use('connect', async (context, next) => {
+            console.log('connected');
+            if (context.req) {
+                context.agent.custom = {
+                    user: context.req.user,
                     fromServer: false
                     // indicates if this a real user request from the client or
                     // an internal request created by the server itself
                 };
             } else {
-                request.agent.custom = { fromServer: true };
+                context.agent.custom = { fromServer: true };
             }
             next();
         });
 
         this.backend.use('submit', async (context, next) => {
             const contentId = context.id;
-            const user = context.agent.custom.user;
+            const user = context.agent.custom.user as IUser;
+            const permission = await this.getPermissionForUser(user, contentId);
+
+            if (!permission) {
+                console.log(
+                    'User tried to access content without proper permission.'
+                );
+                return next(
+                    'You do not have permission to access this content.'
+                );
+            }
+            context.agent.custom.permission = permission;
+
+            console.log(
+                'User',
+                user.id,
+                '(',
+                user.name,
+                ')',
+                'is accessing',
+                contentId,
+                'with access level',
+                permission
+            );
 
             if (contentId) {
                 const contentMetadata =

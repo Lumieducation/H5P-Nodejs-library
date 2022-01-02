@@ -28,7 +28,14 @@ import { IUser } from '@lumieducation/h5p-server';
 
 let tmpDir: DirectoryResult;
 
-const userTable = {
+const userTable: {
+    [username: string]: {
+        username: string;
+        name: string;
+        email: string;
+        type: 'teacher' | 'student';
+    };
+} = {
     teacher1: {
         username: 'teacher1',
         name: 'Teacher 1',
@@ -349,6 +356,13 @@ const start = async (): Promise<void> => {
             await passportInitializePromise(req, {} as any);
             await passportSessionPromise(req, {});
             return expressUserToH5PUser(req.user as any);
+        },
+        async (user, contentId) => {
+            const userInTable = userTable[user.id];
+            if (!userInTable) {
+                return undefined;
+            }
+            return userInTable.type === 'teacher' ? 'privileged' : 'user';
         }
     );
 
