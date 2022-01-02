@@ -5,9 +5,20 @@ import path from 'path';
 import ShareDB from 'sharedb';
 import WebSocket from 'ws';
 import WebSocketJSONStream from '@teamwork/websocket-json-stream';
+import {
+    LibraryManager,
+    ContentManager,
+    LibraryName,
+    IUser
+} from '@lumieducation/h5p-server';
 
 export default class SharedStateServer {
-    constructor(httpServer: http.Server) {
+    constructor(
+        httpServer: http.Server,
+        private libraryManager: LibraryManager,
+        private contentManager: ContentManager,
+        private requestToUserCallback: (req: any) => Promise<IUser>
+    ) {
         this.setupShareDBBackend();
 
         // Connect any incoming WebSocket connection to ShareDB
@@ -15,13 +26,14 @@ export default class SharedStateServer {
             server: httpServer,
             path: '/shared-state'
         });
-        wss.on('connection', (ws, request) => {
+        wss.on('connection', async (ws, request) => {
             console.log('Websocket connected');
 
-            this.getSession(request);
+            const user = await this.requestToUserCallback(request);
+            (request as any).user = user;
 
             const stream = new WebSocketJSONStream(ws);
-            this.backend.listen(stream);
+            this.backend.listen(stream, request);
             ws.on('close', () => {
                 console.log('Websocket disconnected');
             });
@@ -44,7 +56,57 @@ export default class SharedStateServer {
         const stateSchemaValidator = ajv.compile(stateSchema);
 
         this.backend = new ShareDB();
-        this.backend.use('submit', (context, next) => {
+
+        this.backend.use('connect', async (request, next) => {
+            console.log('connected', request);
+            if (request.req) {
+                request.agent.custom = {
+                    user: request.req.user,
+                    fromServer: false
+                    // indicates if this a real user request from the client or
+                    // an internal request created by the server itself
+                };
+            } else {
+                request.agent.custom = { fromServer: true };
+            }
+            next();
+        });
+
+        this.backend.use('submit', async (context, next) => {
+            const contentId = context.id;
+            const user = context.agent.custom.user;
+
+            if (contentId) {
+                const contentMetadata =
+                    await this.contentManager.getContentMetadata(
+                        contentId,
+                        user
+                    );
+                const libraryMetadata = await this.libraryManager.getLibrary(
+                    contentMetadata.preloadedDependencies.find(
+                        (d) => d.machineName === contentMetadata.mainLibrary
+                    )
+                );
+                if (libraryMetadata.requiredExtensions?.sharedState !== 1) {
+                    console.log(
+                        `Library ${LibraryName.toUberName(
+                            libraryMetadata
+                        )} uses unsupported shared state extension: The library requires v${
+                            libraryMetadata.requiredExtensions?.sharedState
+                        } but this application only supports v1.`
+                    );
+                    // Unknown extension version ... Aborting.
+                    next(
+                        `Library ${LibraryName.toUberName(
+                            libraryMetadata
+                        )} uses unsupported shared state extension: The library requires v${
+                            libraryMetadata.requiredExtensions?.sharedState
+                        } but this application only supports v1.`
+                    );
+                    return;
+                }
+            }
+
             console.log('submit', JSON.stringify(context.op));
             console.log(context.op.op);
             if (!context.op?.op || opSchemaValidator(context.op.op)) {
@@ -67,18 +129,4 @@ export default class SharedStateServer {
             }
         });
     }
-
-    // Gets the current session from a WebSocket connection.
-    // Draws from http://stackoverflow.com/questions/36842159/node-js-ws-and-express-session-how-to-get-session-object-from-ws-upgradereq
-    private getSession = (req: { headers: any }): void => {
-        const headers = req.headers;
-
-        // If there's no cookie, there's no session, so do nothing.
-        if (!headers.cookie) {
-            return;
-        }
-
-        // If there's a cookie, get the session id from it.
-        console.log(headers.cookie);
-    };
 }

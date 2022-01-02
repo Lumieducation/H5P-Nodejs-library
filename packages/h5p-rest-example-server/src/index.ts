@@ -10,6 +10,7 @@ import i18nextHttpMiddleware from 'i18next-http-middleware';
 import passport from 'passport';
 import path from 'path';
 import session from 'express-session';
+import { promisify } from 'util';
 
 import {
     h5pAjaxExpressRouter,
@@ -23,6 +24,7 @@ import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
+import { IUser } from '@lumieducation/h5p-server';
 
 let tmpDir: DirectoryResult;
 
@@ -73,6 +75,28 @@ const initPassport = (): void => {
     passport.deserializeUser((user, done): void => {
         done(null, user);
     });
+};
+
+/**
+ * Maps the user received from passport to the one expected by
+ * h5p-express and h5p-server
+ **/
+const expressUserToH5PUser = (user?: {
+    username: string;
+    name: string;
+    email: string;
+    type: 'teacher' | 'student';
+}): IUser => {
+    if (user) {
+        return new User(
+            user.username,
+            user.name,
+            user.email,
+            user.type === 'teacher' ? 'teacher' : 'anonymous'
+        );
+    } else {
+        return new User('0', 'Anonymous', '', 'anonymous');
+    }
 };
 
 const start = async (): Promise<void> => {
@@ -182,38 +206,41 @@ const start = async (): Promise<void> => {
     }
 
     // Initialize session with cookie storage
-    app.use(
-        session({ secret: 'mysecret', resave: false, saveUninitialized: false })
-    );
+    const sessionParser = session({
+        secret: 'mysecret',
+        resave: false,
+        saveUninitialized: false
+    });
+    app.use(sessionParser);
+    const sessionParserPromise = promisify(sessionParser);
 
     // Initialize passport for login
     initPassport();
-    app.use(passport.initialize());
-    app.use(passport.session());
+    const passportInitialize = passport.initialize();
+    app.use(passportInitialize);
+    const passportInitializePromise = promisify(passportInitialize);
+
+    const passportSession = passport.session();
+    app.use(passportSession);
+    const passportSessionPromise = promisify(passportSession);
 
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
     app.use(
         (
-            req: express.Request & { user: H5P.IUser } & {
-                user: { username?: string; name?: string; email?: string };
+            req: express.Request & {
+                user?: {
+                    username: string;
+                    name: string;
+                    email: string;
+                    type: 'teacher' | 'student';
+                };
             },
             res,
             next
         ) => {
-            // Maps the user received from passport to the one expected by
-            // h5p-express and h5p-server
-            if (req.user) {
-                req.user = new User(
-                    req.user.username,
-                    req.user.name,
-                    req.user.email,
-                    req.user.type === 'teacher' ? 'teacher' : 'anonymous'
-                );
-            } else {
-                req.user = new User('0', 'Anonymous', '', 'anonymous');
-            }
+            req.user = expressUserToH5PUser(req.user) as any;
             next();
         }
     );
@@ -309,7 +336,21 @@ const start = async (): Promise<void> => {
     const server = http.createServer(app);
 
     // Add shared state websocket and ShareDB to the server
-    const sharedStateServer = new SharedStateServer(server);
+    const sharedStateServer = new SharedStateServer(
+        server,
+        h5pEditor.libraryManager,
+        h5pEditor.contentManager,
+        async (req: express.Request) => {
+            // We get the raw request that was upgraded to the websocket from
+            // SharedStateServer and have to get the user for it from the
+            // session. As the request hasn't passed through the express
+            // middleware, we have to call the required middleware ourselves.
+            await sessionParserPromise(req, {} as any);
+            await passportInitializePromise(req, {} as any);
+            await passportSessionPromise(req, {});
+            return expressUserToH5PUser(req.user as any);
+        }
+    );
 
     server.listen(port);
 };

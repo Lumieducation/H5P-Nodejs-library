@@ -11,6 +11,7 @@
     "author": "S. Rettig",
     "license": "GPL-3.0",
     "dependencies": {
+        "@lumieducation/h5p-server": "^9.0.6",
         "@teamwork/websocket-json-stream": "^2.0.0",
         "ajv": "^8.8.2",
         "express": "^4.17.2",
