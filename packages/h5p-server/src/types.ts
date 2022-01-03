@@ -1176,6 +1176,10 @@ export interface ILibraryMetadata extends IFullLibraryName {
     requiredExtensions?: {
         sharedState: number;
     };
+    state: {
+        snapshotSchema: boolean;
+        opSchema: boolean;
+    };
 }
 
 /**

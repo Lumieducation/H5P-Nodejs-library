@@ -1,4 +1,4 @@
-import Ajv from 'ajv/dist/2020';
+import Ajv, { ValidateFunction } from 'ajv/dist/2020';
 import fsExtra from 'fs-extra';
 import http from 'http';
 import path from 'path';
@@ -9,7 +9,8 @@ import {
     LibraryManager,
     ContentManager,
     LibraryName,
-    IUser
+    IUser,
+    ILibraryName
 } from '@lumieducation/h5p-server';
 
 export default class SharedStateServer {
@@ -45,20 +46,68 @@ export default class SharedStateServer {
     }
 
     private backend: ShareDB;
+    private ajv: Ajv = new Ajv();
+
+    private validatorCache: {
+        [ubername: string]: {
+            op?: ValidateFunction | null;
+            snapshot?: ValidateFunction | null;
+        };
+    } = {};
+
+    private async getOpValidator(
+        libraryName: ILibraryName
+    ): Promise<ValidateFunction> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.op !== undefined) {
+            return this.validatorCache[ubername].op;
+        }
+        let validator: ValidateFunction<unknown>;
+        try {
+            const schemaJson =
+                await this.libraryManager.libraryStorage.getFileAsJson(
+                    libraryName,
+                    'opSchema.json'
+                );
+            validator = this.ajv.compile(schemaJson);
+        } catch {
+            this.validatorCache[ubername].op = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].op = validator;
+        return validator;
+    }
+
+    private async getSnapshotValidator(
+        libraryName: ILibraryName
+    ): Promise<ValidateFunction> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.snapshot !== undefined) {
+            return this.validatorCache[ubername].snapshot;
+        }
+        let validator: ValidateFunction<unknown>;
+        try {
+            const schemaJson =
+                await this.libraryManager.libraryStorage.getFileAsJson(
+                    libraryName,
+                    'snapshotSchema.json'
+                );
+            validator = this.ajv.compile(schemaJson);
+        } catch {
+            this.validatorCache[ubername].snapshot = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].snapshot = validator;
+        return validator;
+    }
 
     private setupShareDBBackend(): void {
-        const ajv = new Ajv();
-
-        const opSchema = fsExtra.readJSONSync(
-            path.join(__dirname, '../opSchema.json')
-        );
-        const opSchemaValidator = ajv.compile(opSchema);
-
-        const stateSchema = fsExtra.readJSONSync(
-            path.join(__dirname, '../stateSchema.json')
-        );
-        const stateSchemaValidator = ajv.compile(stateSchema);
-
         this.backend = new ShareDB();
 
         this.backend.use('connect', async (context, next) => {
@@ -132,27 +181,55 @@ export default class SharedStateServer {
                     );
                     return;
                 }
+                context.agent.custom.ubername =
+                    LibraryName.toUberName(libraryMetadata);
+                context.agent.custom.libraryMetadata = libraryMetadata;
             }
 
             console.log('submit', JSON.stringify(context.op));
             console.log(context.op.op);
-            if (!context.op?.op || opSchemaValidator(context.op.op)) {
+            if (
+                !context.op?.op ||
+                (context.agent.custom.libraryMetadata &&
+                    !context.agent.custom.libraryMetadata.state?.opSchema)
+            ) {
                 next();
+                return;
             } else {
-                console.log("rejecting change as op doesn't conform to schema");
-                next("Op doesn't conform to schema");
+                const opSchemaValidator = await this.getOpValidator(
+                    context.agent.custom.libraryMetadata
+                );
+                if (opSchemaValidator(context.op.op)) {
+                    next();
+                } else {
+                    console.log(
+                        "rejecting change as op doesn't conform to schema"
+                    );
+                    next("Op doesn't conform to schema");
+                }
             }
         });
 
-        this.backend.use('commit', (context, next) => {
+        this.backend.use('commit', async (context, next) => {
             console.log('commit', JSON.stringify(context.snapshot));
-            if (stateSchemaValidator(context.snapshot.data)) {
+            if (
+                context.agent.custom.libraryMetadata &&
+                !context.agent.custom.libraryMetadata.state?.snapshotSchema
+            ) {
                 next();
+                return;
             } else {
-                console.log(
-                    "rejecting change as resulting state doesn't conform to schema"
+                const snapshotSchemaValidator = await this.getSnapshotValidator(
+                    context.agent.custom.libraryMetadata
                 );
-                next("Resulting state doesn't conform to schema");
+                if (snapshotSchemaValidator(context.snapshot.data)) {
+                    next();
+                } else {
+                    console.log(
+                        "rejecting change as resulting state doesn't conform to schema"
+                    );
+                    next("Resulting state doesn't conform to schema");
+                }
             }
         });
     }

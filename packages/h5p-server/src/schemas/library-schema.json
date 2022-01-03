@@ -177,6 +177,13 @@
         "requiredExtensions": {
             "type": "object",
             "properties": { "sharedState": { "type": "number", "minimum": 1 } }
+        },
+        "state": {
+            "type": "object",
+            "properties": {
+                "snapshotSchema": { "type": "boolean" },
+                "opSchema": { "type": "boolean" }
+            }
         }
     },
     "required": [
