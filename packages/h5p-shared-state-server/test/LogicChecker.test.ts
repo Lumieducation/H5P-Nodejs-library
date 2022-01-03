@@ -9,9 +9,9 @@ describe('logic checker', () => {
     const logicChecker = new LogicChecker();
 
     beforeEach(() => {
-        params = fsExtra.readJSONSync(path.join(__dirname, 'data/params.jon'));
+        params = fsExtra.readJSONSync(path.join(__dirname, 'data/params.json'));
         snapshot = fsExtra.readJSONSync(
-            path.join(__dirname, 'data/snapshot.jon')
+            path.join(__dirname, 'data/snapshot.json')
         );
     });
 
@@ -21,11 +21,27 @@ describe('logic checker', () => {
                 {
                     '$.params.options[*].id': {
                         $eq: {
-                            $query: '$.snapshot.votes[*]~'
+                            $query: '$.data.votes[*]~'
                         }
                     }
                 }
             ])
         ).toEqual(true);
+    });
+    it('evaluates implicit equality', () => {
+        expect(
+            logicChecker.check(params, snapshot, [
+                {
+                    '$.params.options[0].id': 'opt1'
+                }
+            ])
+        ).toEqual(true);
+        expect(
+            logicChecker.check(params, snapshot, [
+                {
+                    '$.params.options[0].id': 'opt2'
+                }
+            ])
+        ).toEqual(false);
     });
 });

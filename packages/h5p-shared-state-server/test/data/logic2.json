@@ -1,7 +1,0 @@
-[
-    {
-        "$.params.options[1].id": {
-            "$eq": "opt1"
-        }
-    }
-]
