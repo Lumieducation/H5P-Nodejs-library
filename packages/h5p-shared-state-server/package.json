@@ -6,7 +6,8 @@
     "types": "build/server.d.ts",
     "scripts": {
         "build": "tsc -p ./tsconfig.build.json",
-        "start": "node build/server.js"
+        "start": "node build/server.js",
+        "test": "jest"
     },
     "author": "S. Rettig",
     "license": "GPL-3.0",
@@ -16,6 +17,7 @@
         "ajv": "^8.8.2",
         "express": "^4.17.2",
         "fs-extra": "^10.0.0",
+        "jsonpath-plus": "^6.0.1",
         "reconnecting-websocket": "^4.4.0",
         "sharedb": "^2.2.1",
         "ws": "^8.4.0"

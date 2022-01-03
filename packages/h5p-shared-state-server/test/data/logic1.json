@@ -1,0 +1,9 @@
+[
+    {
+        "$.params.options[*].id": {
+            "$eq": {
+                "$query": "$.snapshot.votes[*]~"
+            }
+        }
+    }
+]
