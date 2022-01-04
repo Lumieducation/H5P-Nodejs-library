@@ -160,7 +160,9 @@ export default class SharedStateServer {
                     'User tried to access content without proper permission.'
                 );
                 return next(
-                    'You do not have permission to access this content.'
+                    new Error(
+                        'You do not have permission to access this content.'
+                    )
                 );
             }
             context.agent.custom.permission = permission;
@@ -197,14 +199,15 @@ export default class SharedStateServer {
                         } but this application only supports v1.`
                     );
                     // Unknown extension version ... Aborting.
-                    next(
-                        `Library ${LibraryName.toUberName(
-                            libraryMetadata
-                        )} uses unsupported shared state extension: The library requires v${
-                            libraryMetadata.requiredExtensions?.sharedState
-                        } but this application only supports v1.`
+                    return next(
+                        new Error(
+                            `Library ${LibraryName.toUberName(
+                                libraryMetadata
+                            )} uses unsupported shared state extension: The library requires v${
+                                libraryMetadata.requiredExtensions?.sharedState
+                            } but this application only supports v1.`
+                        )
                     );
-                    return;
                 }
                 const params = await this.contentManager.getContentParameters(
                     contentId,
@@ -224,9 +227,7 @@ export default class SharedStateServer {
                     const opSchemaValidator = await this.getOpValidator(
                         context.agent.custom.libraryMetadata
                     );
-                    if (opSchemaValidator(context.op.op)) {
-                        return next();
-                    } else {
+                    if (!opSchemaValidator(context.op.op)) {
                         console.log(
                             "rejecting change as op doesn't conform to schema"
                         );
@@ -238,7 +239,7 @@ export default class SharedStateServer {
                         context.agent.custom.libraryMetadata
                     );
                     if (
-                        checkLogic(
+                        !checkLogic(
                             {
                                 op: context.op.op,
                                 params: context.agent.custom.params,
@@ -250,8 +251,6 @@ export default class SharedStateServer {
                             opLogicCheck
                         )
                     ) {
-                        return next();
-                    } else {
                         console.log(
                             "rejecting change as op doesn't conform to logic checks"
                         );
@@ -260,10 +259,8 @@ export default class SharedStateServer {
                         );
                     }
                 }
-            } else {
-                console.log('Op is ok');
-                next();
             }
+            next();
         });
 
         this.backend.use('commit', async (context, next) => {
