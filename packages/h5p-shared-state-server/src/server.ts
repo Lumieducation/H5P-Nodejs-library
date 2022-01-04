@@ -12,6 +12,7 @@ import {
     IUser,
     ILibraryName
 } from '@lumieducation/h5p-server';
+import { checkLogic } from './LogicChecker';
 
 export default class SharedStateServer {
     constructor(
@@ -52,6 +53,8 @@ export default class SharedStateServer {
         [ubername: string]: {
             op?: ValidateFunction | null;
             snapshot?: ValidateFunction | null;
+            opLogicCheck?: any | null;
+            snapshotLogicCheck?: any | null;
         };
     } = {};
 
@@ -105,6 +108,28 @@ export default class SharedStateServer {
         }
         this.validatorCache[ubername].snapshot = validator;
         return validator;
+    }
+
+    private async getOpLogicCheck(libraryName: ILibraryName): Promise<any> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.opLogicCheck !== undefined) {
+            return this.validatorCache[ubername].opLogicCheck;
+        }
+        let logicCheck: any;
+        try {
+            logicCheck = await this.libraryManager.libraryStorage.getFileAsJson(
+                libraryName,
+                'opLogicCheck.json'
+            );
+        } catch {
+            this.validatorCache[ubername].opLogicCheck = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].opLogicCheck = logicCheck;
+        return logicCheck;
     }
 
     private setupShareDBBackend(): void {
@@ -181,6 +206,12 @@ export default class SharedStateServer {
                     );
                     return;
                 }
+                const params = await this.contentManager.getContentParameters(
+                    contentId,
+                    user
+                );
+                context.agent.custom.params = params;
+
                 context.agent.custom.ubername =
                     LibraryName.toUberName(libraryMetadata);
                 context.agent.custom.libraryMetadata = libraryMetadata;
@@ -188,25 +219,50 @@ export default class SharedStateServer {
 
             console.log('submit', JSON.stringify(context.op));
             console.log(context.op.op);
-            if (
-                !context.op?.op ||
-                (context.agent.custom.libraryMetadata &&
-                    !context.agent.custom.libraryMetadata.state?.opSchema)
-            ) {
-                next();
-                return;
-            } else {
-                const opSchemaValidator = await this.getOpValidator(
-                    context.agent.custom.libraryMetadata
-                );
-                if (opSchemaValidator(context.op.op)) {
-                    next();
-                } else {
-                    console.log(
-                        "rejecting change as op doesn't conform to schema"
+            if (context.op?.op) {
+                if (context.agent.custom.libraryMetadata.state?.opSchema) {
+                    const opSchemaValidator = await this.getOpValidator(
+                        context.agent.custom.libraryMetadata
                     );
-                    next("Op doesn't conform to schema");
+                    if (opSchemaValidator(context.op.op)) {
+                        return next();
+                    } else {
+                        console.log(
+                            "rejecting change as op doesn't conform to schema"
+                        );
+                        return next(new Error("Op doesn't conform to schema"));
+                    }
                 }
+                if (context.agent.custom.libraryMetadata.state?.opLogicTests) {
+                    const opLogicCheck = await this.getOpLogicCheck(
+                        context.agent.custom.libraryMetadata
+                    );
+                    if (
+                        checkLogic(
+                            {
+                                op: context.op.op,
+                                params: context.agent.custom.params,
+                                context: {
+                                    user: context.agent.custom.user,
+                                    permission: context.agent.custom.permission
+                                }
+                            },
+                            opLogicCheck
+                        )
+                    ) {
+                        return next();
+                    } else {
+                        console.log(
+                            "rejecting change as op doesn't conform to logic checks"
+                        );
+                        return next(
+                            new Error("Op doesn't conform to logic checks")
+                        );
+                    }
+                }
+            } else {
+                console.log('Op is ok');
+                next();
             }
         });
 

@@ -32,3 +32,5 @@ export interface ILogicalOperator {
     ];
     $or?: (ILogicCheck | IComparisonOperator | ILogicalOperator)[];
 }
+
+export type ILogicCheckSchema = (ILogicCheck | ILogicalOperator)[];

@@ -387,3 +387,37 @@ describe('logic checker', () => {
         ).toEqual(true);
     });
 });
+
+describe('ops checker', () => {
+    it('basic ops checker', () => {
+        expect(
+            checkLogic(
+                {
+                    op: [{ p: ['votesUp', 0], li: 'teacher1' }],
+                    context: { user: { id: 'teacher1' } }
+                },
+                [
+                    {
+                        $or: [
+                            {
+                                $and: [
+                                    {
+                                        $or: [
+                                            { '$.op[0].p': ['votesUp', 0] },
+                                            { '$.op[0].p': ['votesDown', 0] }
+                                        ]
+                                    },
+                                    {
+                                        '$.op[0].li': {
+                                            $query: '$.context.user.id'
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            )
+        ).toEqual(true);
+    });
+});

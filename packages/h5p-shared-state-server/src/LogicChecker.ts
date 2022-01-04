@@ -84,7 +84,18 @@ const evaluateLogicCheckRec = (
 
             const secondExpressionValue = Object.values(secondExpression)[0];
             let evaluatedSecondExpression;
-            if (
+            if (Object.keys(secondExpression)[0] === '$query') {
+                evaluatedSecondExpression = JSONPath({
+                    path: secondExpressionValue as string,
+                    json: obj,
+                    preventEval: true,
+                    wrap: false
+                });
+                return compareEquality(
+                    evaluatedPath,
+                    evaluatedSecondExpression
+                );
+            } else if (
                 typeof secondExpressionValue === 'boolean' ||
                 typeof secondExpressionValue === 'string' ||
                 typeof secondExpressionValue === 'number' ||
