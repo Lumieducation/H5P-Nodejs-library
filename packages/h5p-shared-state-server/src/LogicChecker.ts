@@ -1,5 +1,5 @@
 import { JSONPath } from 'jsonpath-plus';
-import { ILogicCheck } from './types';
+import { ILogicalOperator, ILogicCheck } from './types';
 
 /**
  * Compares two entities for equality using == and also checking arrays.
@@ -23,7 +23,10 @@ const compareEquality = (a: any | any[], b: any | any[]): boolean => {
 /**
  * Recursively goes through checks and evaluates the object against them.
  */
-const evaluateLogicCheckRec = (check: ILogicCheck, obj: any): boolean => {
+const evaluateLogicCheckRec = (
+    check: ILogicCheck | ILogicalOperator,
+    obj: any
+): boolean => {
     return Object.keys(check).every((property) => {
         if (!property.startsWith('$')) {
             throw new Error(
@@ -47,7 +50,7 @@ const evaluateLogicCheckRec = (check: ILogicCheck, obj: any): boolean => {
             );
         }
         if (property === '$not') {
-            return evaluateLogicCheckRec(check[property], obj);
+            return !evaluateLogicCheckRec(check[property], obj);
         }
         if (property === '$nor') {
             if (
@@ -56,7 +59,7 @@ const evaluateLogicCheckRec = (check: ILogicCheck, obj: any): boolean => {
                 throw new Error('$nor requires an array with two entry');
             }
             return (
-                evaluateLogicCheckRec(check[property][0], obj) &&
+                !evaluateLogicCheckRec(check[property][0], obj) &&
                 !evaluateLogicCheckRec(check[property][1], obj)
             );
         }
@@ -141,6 +144,9 @@ const evaluateLogicCheckRec = (check: ILogicCheck, obj: any): boolean => {
 /**
  * Check if all the checks apply to the object.
  */
-export function checkLogic(obj: any, checks: ILogicCheck[]): boolean {
+export function checkLogic(
+    obj: any,
+    checks: (ILogicCheck | ILogicalOperator)[]
+): boolean {
     return checks.every((c) => evaluateLogicCheckRec(c, obj));
 }

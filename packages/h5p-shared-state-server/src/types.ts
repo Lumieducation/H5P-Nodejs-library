@@ -24,11 +24,11 @@ export interface IQuery {
 }
 
 export interface ILogicalOperator {
-    $and?: (ILogicCheck | IComparisonOperator)[];
-    $not?: ILogicCheck | IComparisonOperator;
+    $and?: (ILogicCheck | IComparisonOperator | ILogicalOperator)[];
+    $not?: ILogicCheck | IComparisonOperator | ILogicalOperator;
     $nor?: [
-        ILogicCheck | IComparisonOperator,
-        ILogicCheck | IComparisonOperator
+        ILogicCheck | IComparisonOperator | ILogicalOperator,
+        ILogicCheck | IComparisonOperator | ILogicalOperator
     ];
-    $or?: (ILogicCheck | IComparisonOperator)[];
+    $or?: (ILogicCheck | IComparisonOperator | ILogicalOperator)[];
 }

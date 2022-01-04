@@ -74,6 +74,27 @@ describe('logic checker', () => {
         ).toEqual(true);
     });
 
+    it('evaluates $ne', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[0].id': {
+                        $ne: 'opt2'
+                    }
+                }
+            ])
+        ).toEqual(true);
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[*].id': {
+                        $ne: ['opt1', 'opt2', 'opt3', 'opt4']
+                    }
+                }
+            ])
+        ).toEqual(true);
+    });
+
     it('evaluates $neq', () => {
         expect(
             checkLogic(obj, [
@@ -176,5 +197,193 @@ describe('logic checker', () => {
                 }
             ])
         ).toEqual(false);
+    });
+
+    it('evaluates $nin', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[0].id': {
+                        $nin: ['opt2', 'opt3']
+                    }
+                }
+            ])
+        ).toEqual(true);
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[0].id': {
+                        $nin: ['opt1', 'opt2', 'opt3']
+                    }
+                }
+            ])
+        ).toEqual(false);
+    });
+
+    it('evaluates $lt', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options.length': {
+                        $lt: 10
+                    }
+                }
+            ])
+        ).toEqual(true);
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options.length': {
+                        $lt: 1
+                    }
+                }
+            ])
+        ).toEqual(false);
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.data.votes.opt2': {
+                        $lt: 10
+                    }
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates $lte', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options.length': {
+                        $lte: 10
+                    }
+                }
+            ])
+        ).toEqual(true);
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options.length': {
+                        $lte: 3
+                    }
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates $and', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $and: [
+                        {
+                            '$.params.options[0].id': { $eq: 'opt1' }
+                        },
+                        {
+                            '$.params.options[1].id': { $eq: 'opt2' }
+                        },
+                        {
+                            '$.params.options[2].id': { $ne: 'opt1' }
+                        }
+                    ]
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates $or', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $or: [
+                        {
+                            '$.params.options[0].id': { $eq: 'opt2' }
+                        },
+                        {
+                            '$.params.options[0].id': { $eq: 'opt1' }
+                        }
+                    ]
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates $nor', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $nor: [
+                        {
+                            '$.params.options[0].id': { $eq: 'opt2' }
+                        },
+                        {
+                            '$.params.options[0].id': { $eq: 'opt3' }
+                        }
+                    ]
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates $not', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $not: {
+                        '$.params.options[0].id': { $eq: 'opt2' }
+                    }
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates logical operator combinations 1', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $not: {
+                        $and: [
+                            {
+                                '$.params.options[0].id': { $eq: 'opt2' }
+                            },
+                            {
+                                '$.params.options[0].id': { $eq: 'opt3' }
+                            }
+                        ]
+                    }
+                }
+            ])
+        ).toEqual(true);
+    });
+
+    it('evaluates logical operator combinations 2', () => {
+        expect(
+            checkLogic(obj, [
+                {
+                    $and: [
+                        {
+                            $or: [
+                                {
+                                    '$.params.options[0].id': { $eq: 'opt1' }
+                                },
+                                {
+                                    '$.params.options[0].id': { $eq: 'opt0' }
+                                }
+                            ]
+                        },
+                        {
+                            $or: [
+                                {
+                                    '$.params.options[1].id': { $eq: 'opt0' }
+                                },
+                                {
+                                    '$.params.options[1].id': { $eq: 'opt2' }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ])
+        ).toEqual(true);
     });
 });
