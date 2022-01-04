@@ -11,19 +11,53 @@ export default class LogicChecker {
         return Object.keys(check).every((property) => {
             if (!property.startsWith('$')) {
                 throw new Error(
-                    `Expression ${property} is not a JSON path. It must start with $.`
+                    `Expression ${property} is not a JSON path or a query. It must start with $.`
+                );
+            }
+            if (property === '$and') {
+                if (!Array.isArray(check[property])) {
+                    throw new Error('$and requires an array');
+                }
+                return (check[property] as ILogicCheck[]).every((c) =>
+                    this.evaluateLogicCheck(c, obj)
+                );
+            }
+            if (property === '$or') {
+                if (!Array.isArray(check[property])) {
+                    throw new Error('$or requires an array');
+                }
+                return (check[property] as ILogicCheck[]).some((c) =>
+                    this.evaluateLogicCheck(c, obj)
+                );
+            }
+            if (property === '$not') {
+                return this.evaluateLogicCheck(check[property], obj);
+            }
+            if (property === '$nor') {
+                if (
+                    !Array.isArray(
+                        check[property] || check[property].length !== 2
+                    )
+                ) {
+                    throw new Error('$nor requires an array with two entry');
+                }
+                return (
+                    this.evaluateLogicCheck(check[property][0], obj) &&
+                    !this.evaluateLogicCheck(check[property][1], obj)
                 );
             }
             const evaluatedPath = JSONPath({
                 path: property,
                 json: obj,
-                preventEval: true
+                preventEval: true,
+                wrap: false
             });
             const secondExpression = check[property];
             if (
                 typeof secondExpression === 'boolean' ||
                 typeof secondExpression === 'string' ||
-                typeof secondExpression === 'number'
+                typeof secondExpression === 'number' ||
+                Array.isArray(secondExpression)
             ) {
                 return this.compareEquality(evaluatedPath, secondExpression);
             } else if (typeof secondExpression === 'object') {
@@ -37,12 +71,16 @@ export default class LogicChecker {
                 if (
                     typeof secondExpressionValue === 'boolean' ||
                     typeof secondExpressionValue === 'string' ||
-                    typeof secondExpressionValue === 'number'
+                    typeof secondExpressionValue === 'number' ||
+                    Array.isArray(secondExpressionValue)
                 ) {
+                    evaluatedSecondExpression = secondExpressionValue;
                 } else if (typeof secondExpressionValue === 'object') {
                     evaluatedSecondExpression = JSONPath({
                         path: (secondExpressionValue as any).$query,
-                        json: obj
+                        json: obj,
+                        preventEval: true,
+                        wrap: false
                     });
                 } else {
                     throw new Error('Unknown type in query');

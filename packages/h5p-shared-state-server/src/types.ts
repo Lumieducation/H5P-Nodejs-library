@@ -4,6 +4,7 @@ export interface ILogicCheck {
         | number
         | string
         | boolean
+        | any[]
         | IQuery;
 }
 
