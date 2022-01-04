@@ -1,36 +1,35 @@
-import LogicChecker from '../src/LogicChecker';
+import { checkLogic } from '../src/LogicChecker';
 
 describe('logic checker', () => {
-    const params = {
-        options: [
-            {
-                id: 'opt1',
-                text: 'Option 1'
-            },
-            {
-                id: 'opt2',
-                text: 'Option 2'
-            },
-            {
-                id: 'opt3',
-                text: 'Option 3'
+    const obj = {
+        params: {
+            options: [
+                {
+                    id: 'opt1',
+                    text: 'Option 1'
+                },
+                {
+                    id: 'opt2',
+                    text: 'Option 2'
+                },
+                {
+                    id: 'opt3',
+                    text: 'Option 3'
+                }
+            ]
+        },
+        data: {
+            votes: {
+                opt1: 1,
+                opt2: 2,
+                opt3: 3
             }
-        ]
-    };
-
-    const snapshot = {
-        votes: {
-            opt1: 1,
-            opt2: 2,
-            opt3: 3
         }
     };
 
-    const logicChecker = new LogicChecker();
-
     it('evaluates $eq', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[*].id': {
                         $eq: {
@@ -41,7 +40,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[*].id': {
                         $eq: ['opt1', 'opt2', 'opt3']
@@ -53,21 +52,21 @@ describe('logic checker', () => {
 
     it('evaluates implicit equality', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': 'opt1'
                 }
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': 'opt2'
                 }
             ])
         ).toEqual(false);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[*].id': ['opt1', 'opt2', 'opt3']
                 }
@@ -77,7 +76,7 @@ describe('logic checker', () => {
 
     it('evaluates $neq', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[*].text': {
                         $ne: {
@@ -88,7 +87,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': {
                         $ne: 'opt2'
@@ -100,7 +99,7 @@ describe('logic checker', () => {
 
     it('evaluates $gt', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options.length': {
                         $gt: 1
@@ -109,7 +108,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options.length': {
                         $gt: 5
@@ -118,7 +117,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(false);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.data.votes.opt2': {
                         $gt: 1
@@ -130,7 +129,7 @@ describe('logic checker', () => {
 
     it('evaluates $gte', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options.length': {
                         $gte: 3
@@ -139,7 +138,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options.length': {
                         $gte: 4
@@ -151,7 +150,7 @@ describe('logic checker', () => {
 
     it('evaluates $in', () => {
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': {
                         $in: { $query: '$.data.votes[*]~' }
@@ -160,7 +159,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': {
                         $in: ['opt1', 'opt2', 'opt3']
@@ -169,7 +168,7 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
         expect(
-            logicChecker.check(params, snapshot, [
+            checkLogic(obj, [
                 {
                     '$.params.options[0].id': {
                         $in: ['opt2', 'opt3']
