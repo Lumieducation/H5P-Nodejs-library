@@ -132,6 +132,30 @@ export default class SharedStateServer {
         return logicCheck;
     }
 
+    private async getSnapshotLogicCheck(
+        libraryName: ILibraryName
+    ): Promise<any> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.snapshotLogicCheck !== undefined) {
+            return this.validatorCache[ubername].snapshotLogicCheck;
+        }
+        let logicCheck: any;
+        try {
+            logicCheck = await this.libraryManager.libraryStorage.getFileAsJson(
+                libraryName,
+                'snapshotLogicCheck.json'
+            );
+        } catch {
+            this.validatorCache[ubername].snapshotLogicCheck = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].snapshotLogicCheck = logicCheck;
+        return logicCheck;
+    }
+
     private setupShareDBBackend(): void {
         this.backend = new ShareDB();
 
@@ -265,25 +289,45 @@ export default class SharedStateServer {
 
         this.backend.use('commit', async (context, next) => {
             console.log('commit', JSON.stringify(context.snapshot));
-            if (
-                context.agent.custom.libraryMetadata &&
-                !context.agent.custom.libraryMetadata.state?.snapshotSchema
-            ) {
-                next();
-                return;
-            } else {
+            if (context.agent.custom.libraryMetadata.state?.snapshotSchema) {
                 const snapshotSchemaValidator = await this.getSnapshotValidator(
                     context.agent.custom.libraryMetadata
                 );
-                if (snapshotSchemaValidator(context.snapshot.data)) {
-                    next();
-                } else {
+                if (!snapshotSchemaValidator(context.snapshot.data)) {
                     console.log(
                         "rejecting change as resulting state doesn't conform to schema"
                     );
-                    next("Resulting state doesn't conform to schema");
+                    return next("Resulting state doesn't conform to schema");
                 }
             }
+
+            if (context.agent.custom.libraryMetadata.state?.snapshotLogicTest) {
+                const snapshotLogicCheck = await this.getSnapshotLogicCheck(
+                    context.agent.custom.libraryMetadata
+                );
+                if (
+                    !checkLogic(
+                        {
+                            snapshot: context.snapshot.data,
+                            params: context.agent.custom.params,
+                            context: {
+                                user: context.agent.custom.user,
+                                permission: context.agent.custom.permission
+                            }
+                        },
+                        snapshotLogicCheck
+                    )
+                ) {
+                    console.log(
+                        "rejecting change as snapshot doesn't conform to logic checks"
+                    );
+                    return next(
+                        new Error("Snapshot doesn't conform to logic checks")
+                    );
+                }
+            }
+
+            next();
         });
     }
 }
