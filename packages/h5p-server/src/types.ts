@@ -188,6 +188,7 @@ export interface IIntegration {
      */
     contents?: {
         [key: string]: {
+            accessLevel?: 'privileged' | 'user';
             /**
              * Can be used to override the URL used for getting content files.
              * It must be a URL to which the actual filenames can be appended.
@@ -1992,6 +1993,11 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
+
+    getPermissions?: (
+        contentId: ContentId,
+        user: IUser
+    ) => Promise<Permission[]>;
 }
 
 /**

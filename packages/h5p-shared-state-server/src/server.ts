@@ -1,7 +1,5 @@
 import Ajv, { ValidateFunction } from 'ajv/dist/2020';
-import fsExtra from 'fs-extra';
 import http from 'http';
-import path from 'path';
 import ShareDB from 'sharedb';
 import WebSocket from 'ws';
 import WebSocketJSONStream from '@teamwork/websocket-json-stream';

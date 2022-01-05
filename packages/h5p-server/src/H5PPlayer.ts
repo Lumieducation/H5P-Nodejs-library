@@ -15,7 +15,8 @@ import {
     IUrlGenerator,
     ILibraryMetadata,
     IUser,
-    ITranslationFunction
+    ITranslationFunction,
+    Permission
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -206,7 +207,7 @@ export default class H5PPlayer {
             contentId,
             dependencies,
             downloadPath: this.getDownloadPath(contentId),
-            integration: this.generateIntegration(
+            integration: await this.generateIntegration(
                 contentId,
                 parameters,
                 metadata,
@@ -341,7 +342,7 @@ export default class H5PPlayer {
         return false;
     }
 
-    private generateIntegration(
+    private async generateIntegration(
         contentId: ContentId,
         parameters: ContentParameters,
         metadata: IContentMetadata,
@@ -357,9 +358,25 @@ export default class H5PPlayer {
             showH5PIcon: boolean;
             showLicenseButton: boolean;
         }
-    ): IIntegration {
+    ): Promise<IIntegration> {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
+
+        let accessLevel: 'privileged' | 'user' | undefined = undefined;
+        if (this.options?.getPermissions) {
+            const permissions = await this.options?.getPermissions(
+                contentId,
+                user
+            );
+            if (permissions.length === 0) {
+                accessLevel = undefined;
+            } else if (permissions.includes(Permission.Edit)) {
+                accessLevel = 'privileged';
+            } else {
+                accessLevel = 'user';
+            }
+        }
+
         return {
             ajax: {
                 contentUserData: this.urlGenerator.contentUserData(user),
@@ -398,7 +415,8 @@ export default class H5PPlayer {
                     scripts: assets.scripts,
                     styles: assets.styles,
                     url: this.urlGenerator.uniqueContentUrl(contentId),
-                    exportUrl: this.urlGenerator.downloadPackage(contentId)
+                    exportUrl: this.urlGenerator.downloadPackage(contentId),
+                    accessLevel
                 }
             },
             core: {

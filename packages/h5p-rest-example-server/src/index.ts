@@ -24,7 +24,7 @@ import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
-import { IUser } from '@lumieducation/h5p-server';
+import { IUser, Permission } from '@lumieducation/h5p-server';
 
 let tmpDir: DirectoryResult;
 
@@ -180,7 +180,29 @@ const start = async (): Promise<void> => {
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
-        config
+        config,
+        undefined,
+        undefined,
+        undefined,
+        {
+            getPermissions: async (contentId, user) => {
+                const foundUser = userTable[user.id];
+                if (!foundUser) {
+                    return [];
+                }
+                if (foundUser.type === 'teacher') {
+                    return [
+                        Permission.Delete,
+                        Permission.Download,
+                        Permission.Edit,
+                        Permission.Embed,
+                        Permission.List,
+                        Permission.View
+                    ];
+                }
+                return [Permission.Embed, Permission.View];
+            }
+        }
     );
 
     h5pPlayer.setRenderer((model) => model);
