@@ -31,6 +31,7 @@ export interface ILogicalOperator {
         ILogicCheck | IComparisonOperator | ILogicalOperator
     ];
     $or?: (ILogicCheck | IComparisonOperator | ILogicalOperator)[];
+    $defined?: IQuery;
 }
 
 export type ILogicCheckSchema = (ILogicCheck | ILogicalOperator)[];

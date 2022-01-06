@@ -52,6 +52,19 @@ const evaluateLogicCheckRec = (
         if (property === '$not') {
             return !evaluateLogicCheckRec(check[property], obj);
         }
+        if (property === '$defined') {
+            if (!Object.keys((check as ILogicalOperator).$defined.$query)) {
+                throw new Error('$defined must have a $query inside it');
+            }
+            return (
+                JSONPath({
+                    path: (check as ILogicalOperator).$defined.$query,
+                    json: obj,
+                    preventEval: true,
+                    wrap: false
+                }) !== undefined
+            );
+        }
         if (property === '$nor') {
             if (
                 !Array.isArray(check[property] || check[property].length !== 2)

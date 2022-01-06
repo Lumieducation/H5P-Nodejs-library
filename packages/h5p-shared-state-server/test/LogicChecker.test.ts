@@ -386,6 +386,15 @@ describe('logic checker', () => {
             ])
         ).toEqual(true);
     });
+
+    it('evaluates $defined', () => {
+        expect(checkLogic(obj, [{ $defined: { $query: '$.params' } }])).toEqual(
+            true
+        );
+        expect(
+            checkLogic(obj, [{ $defined: { $query: '$.nonexistant' } }])
+        ).toEqual(false);
+    });
 });
 
 describe('ops checker', () => {

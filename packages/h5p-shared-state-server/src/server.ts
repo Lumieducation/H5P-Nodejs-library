@@ -269,12 +269,17 @@ export default class SharedStateServer {
 
             console.log('submit', JSON.stringify(context.op));
             console.log(context.op.op);
-            if (context.op?.op) {
+            if (context.op) {
                 if (context.agent.custom.libraryMetadata.state?.opSchema) {
                     const opSchemaValidator = await this.getOpValidator(
                         context.agent.custom.libraryMetadata
                     );
-                    if (!opSchemaValidator(context.op.op)) {
+                    if (
+                        !opSchemaValidator({
+                            op: context.op.op,
+                            create: context.op.create
+                        })
+                    ) {
                         console.log(
                             "rejecting change as op doesn't conform to schema"
                         );
@@ -289,6 +294,7 @@ export default class SharedStateServer {
                         !checkLogic(
                             {
                                 op: context.op.op,
+                                create: context.op.create,
                                 params: context.agent.custom.params,
                                 context: {
                                     user: context.agent.custom.user,
