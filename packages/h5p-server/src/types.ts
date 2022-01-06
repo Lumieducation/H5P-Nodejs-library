@@ -1951,6 +1951,25 @@ export interface IH5PEditorOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
+
+    /**
+     * Hooks allow you to react to things happening in the library.
+     */
+    hooks?: {
+        contentWasDeleted: (contentId: string, user: IUser) => Promise<void>;
+        contentWasUpdated: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+        contentWasCreated: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+    };
 }
 
 /**
