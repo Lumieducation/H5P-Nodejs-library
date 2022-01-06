@@ -1956,14 +1956,14 @@ export interface IH5PEditorOptions {
      * Hooks allow you to react to things happening in the library.
      */
     hooks?: {
-        contentWasDeleted: (contentId: string, user: IUser) => Promise<void>;
-        contentWasUpdated: (
+        contentWasDeleted?: (contentId: string, user: IUser) => Promise<void>;
+        contentWasUpdated?: (
             contentId: string,
             metadata: IContentMetadata,
             parameters: any,
             user: IUser
         ) => Promise<void>;
-        contentWasCreated: (
+        contentWasCreated?: (
             contentId: string,
             metadata: IContentMetadata,
             parameters: any,

@@ -10,6 +10,8 @@ import {
     IUser,
     ILibraryName
 } from '@lumieducation/h5p-server';
+import { promisify } from 'util';
+
 import { checkLogic } from './LogicChecker';
 
 export default class SharedStateServer {
@@ -55,6 +57,20 @@ export default class SharedStateServer {
             snapshotLogicCheck?: any | null;
         };
     } = {};
+
+    public deleteState = async (contentId: string): Promise<void> => {
+        console.log('deleting shared user state for contentId', contentId);
+        const connection = this.backend.connect();
+        const doc = connection.get('h5p', contentId);
+        await promisify(doc.fetch).bind(doc)();
+        try {
+            await promisify(doc.del).bind(doc)({});
+        } catch (error) {
+            console.error(error);
+        }
+
+        // TODO: delete state in DB storage once implemented
+    };
 
     private async getOpValidator(
         libraryName: ILibraryName
@@ -175,6 +191,15 @@ export default class SharedStateServer {
         this.backend.use('submit', async (context, next) => {
             const contentId = context.id;
             const user = context.agent.custom.user as IUser;
+
+            if (context.agent.custom.fromServer) {
+                return next();
+            }
+
+            if (!user && !context.agent.custom.fromServer) {
+                return next(new Error('No user data in submit request'));
+            }
+
             const permission = await this.getPermissionForUser(user, contentId);
 
             if (!permission) {
@@ -287,6 +312,16 @@ export default class SharedStateServer {
 
         this.backend.use('commit', async (context, next) => {
             console.log('commit', JSON.stringify(context.snapshot));
+            const user = context.agent.custom.user as IUser;
+
+            if (context.agent.custom.fromServer) {
+                return next();
+            }
+
+            if (!user && !context.agent.custom.fromServer) {
+                return next(new Error('No user data in submit request'));
+            }
+
             if (context.agent.custom.libraryMetadata.state?.snapshotSchema) {
                 const snapshotSchemaValidator = await this.getSnapshotValidator(
                     context.agent.custom.libraryMetadata

@@ -41,8 +41,11 @@ export default class ContentStorer {
      * Saves content in the persistence system. Also copies over files from
      * temporary storage or from other content if the content was pasted from
      * there.
+     *
+     * Note: This method has side-effects on the parameters argument, meaning it
+     * mutates the object!
      * @param contentId the contentId (can be undefined if previously unsaved)
-     * @param parameters the parameters of teh content (= content.json)
+     * @param parameters the parameters of the content (= content.json)
      * @param metadata = content of h5p.json
      * @param mainLibraryName the library name
      * @param user the user who wants to save the file

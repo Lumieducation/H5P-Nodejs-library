@@ -27,6 +27,7 @@ import { displayIps, clearTempFiles } from './utils';
 import { IUser, Permission } from '@lumieducation/h5p-server';
 
 let tmpDir: DirectoryResult;
+let sharedStateServer: SharedStateServer;
 
 const userTable: {
     [username: string]: {
@@ -171,7 +172,15 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
-        (key, language) => translationFunction(key, { lng: language })
+        (key, language) => translationFunction(key, { lng: language }),
+        {
+            contentWasDeleted: (contentId) => {
+                return sharedStateServer.deleteState(contentId);
+            },
+            contentWasUpdated: (contentId) => {
+                return sharedStateServer.deleteState(contentId);
+            }
+        }
     );
 
     h5pEditor.setRenderer((model) => model);
@@ -365,7 +374,7 @@ const start = async (): Promise<void> => {
     const server = http.createServer(app);
 
     // Add shared state websocket and ShareDB to the server
-    const sharedStateServer = new SharedStateServer(
+    sharedStateServer = new SharedStateServer(
         server,
         h5pEditor.libraryManager,
         h5pEditor.contentManager,
