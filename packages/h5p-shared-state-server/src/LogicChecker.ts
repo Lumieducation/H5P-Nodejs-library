@@ -139,9 +139,16 @@ const evaluateLogicCheckRec = (
                     if (!Array.isArray(evaluatedSecondExpression)) {
                         return false;
                     }
-                    return (evaluatedSecondExpression as any[]).includes(
-                        evaluatedPath
-                    );
+
+                    if (!Array.isArray(evaluatedPath)) {
+                        return (evaluatedSecondExpression as any[]).includes(
+                            evaluatedPath
+                        );
+                    } else {
+                        return evaluatedPath.every((p) =>
+                            (evaluatedSecondExpression as any[]).includes(p)
+                        );
+                    }
                 case '$lt':
                     return evaluatedPath < evaluatedSecondExpression;
                 case '$lte':
@@ -155,9 +162,18 @@ const evaluateLogicCheckRec = (
                     if (!Array.isArray(evaluatedSecondExpression)) {
                         return false;
                     }
-                    return !(evaluatedSecondExpression as any[]).includes(
-                        evaluatedPath
-                    );
+                    if (!Array.isArray(evaluatedPath)) {
+                        return !(evaluatedSecondExpression as any[]).includes(
+                            evaluatedPath
+                        );
+                    } else {
+                        return evaluatedPath.every(
+                            (p) =>
+                                !(evaluatedSecondExpression as any[]).includes(
+                                    p
+                                )
+                        );
+                    }
             }
         } else {
             throw new Error('Unknown type in query');

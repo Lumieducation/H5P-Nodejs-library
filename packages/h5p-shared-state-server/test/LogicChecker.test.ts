@@ -197,6 +197,26 @@ describe('logic checker', () => {
                 }
             ])
         ).toEqual(false);
+
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[*].id': {
+                        $in: ['opt1', 'opt2', 'opt3', 'opt4']
+                    }
+                }
+            ])
+        ).toEqual(true);
+
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[*].id': {
+                        $in: ['opt1', 'opt3', 'opt4']
+                    }
+                }
+            ])
+        ).toEqual(false);
     });
 
     it('evaluates $nin', () => {
@@ -214,6 +234,46 @@ describe('logic checker', () => {
                 {
                     '$.params.options[0].id': {
                         $nin: ['opt1', 'opt2', 'opt3']
+                    }
+                }
+            ])
+        ).toEqual(false);
+
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[*].id': {
+                        $nin: ['opt4', 'opt5', 'opt6']
+                    }
+                }
+            ])
+        ).toEqual(true);
+
+        expect(
+            checkLogic(obj, [
+                {
+                    '$.params.options[*].id': {
+                        $nin: ['opt1', 'opt5', 'opt6']
+                    }
+                }
+            ])
+        ).toEqual(false);
+
+        expect(
+            checkLogic({ array1: ['entry'], array2: ['entry'] }, [
+                {
+                    '$.array1': {
+                        $nin: { $query: 'array2' }
+                    }
+                }
+            ])
+        ).toEqual(false);
+
+        expect(
+            checkLogic({ votesUp: ['teacher1'], votesDown: ['teacher1'] }, [
+                {
+                    '$.snapshot.votesUp': {
+                        $nin: { $query: '$.snapshot.votesDown' }
                     }
                 }
             ])

@@ -286,7 +286,7 @@ export default class SharedStateServer {
                         return next(new Error("Op doesn't conform to schema"));
                     }
                 }
-                if (context.agent.custom.libraryMetadata.state?.opLogicTests) {
+                if (context.agent.custom.libraryMetadata.state?.opLogicCHecks) {
                     const opLogicCheck = await this.getOpLogicCheck(
                         context.agent.custom.libraryMetadata
                     );
@@ -340,7 +340,9 @@ export default class SharedStateServer {
                 }
             }
 
-            if (context.agent.custom.libraryMetadata.state?.snapshotLogicTest) {
+            if (
+                context.agent.custom.libraryMetadata.state?.snapshotLogicChecks
+            ) {
                 const snapshotLogicCheck = await this.getSnapshotLogicCheck(
                     context.agent.custom.libraryMetadata
                 );

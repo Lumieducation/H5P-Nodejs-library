@@ -1181,7 +1181,7 @@ export interface ILibraryMetadata extends IFullLibraryName {
         snapshotSchema: boolean;
         opSchema: boolean;
         snapshotLogicChecks: boolean;
-        opLogicTests: boolean;
+        opLogicChecks: boolean;
     };
 }
 
