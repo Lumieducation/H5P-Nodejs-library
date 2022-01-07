@@ -2,17 +2,23 @@ import http from 'http';
 import ShareDB from 'sharedb';
 import WebSocket from 'ws';
 import WebSocketJSONStream from '@teamwork/websocket-json-stream';
-import {
-    ContentManager,
-    LibraryName,
-    IUser,
-    ILibraryMetadata,
-    ILibraryName
-} from '@lumieducation/h5p-server';
 import { promisify } from 'util';
 
-import { checkLogic } from './LogicChecker';
 import ValidatorRepository from './ValidatorRepository';
+import injectUser from './middleware/injectUser';
+import {
+    GetContentMetadataFunction,
+    GetContentParametersFunction,
+    GetLibraryFileAsJsonFunction,
+    GetLibraryMetadataFunction,
+    GetPermissionForUserFunction,
+    RequestToUserFunction
+} from './types';
+import checkPermissionsAndInjectContentContext from './middleware/checkPermissionsAndInjectContentContext';
+import validateOpSchema from './middleware/validateOpSchema';
+import performOpLogicChecks from './middleware/performOpLogicChecks';
+import validateCommitSchema from './middleware/validateCommitSchema';
+import performCommitLogicChecks from './middleware/performCommitLogicChecks';
 
 /**
  * This class opens a Websocket on the server to which clients can connect to
@@ -23,20 +29,12 @@ import ValidatorRepository from './ValidatorRepository';
 export default class SharedStateServer {
     constructor(
         httpServer: http.Server,
-        private getLibraryMetadata: (
-            library: ILibraryName,
-            language?: string
-        ) => Promise<ILibraryMetadata>,
-        private getLibraryFileAsJson: (
-            libraryName: ILibraryName,
-            filename: string
-        ) => Promise<any>,
-        private contentManager: ContentManager,
-        private requestToUserCallback: (req: any) => Promise<IUser>,
-        private getPermissionForUser: (
-            user: IUser,
-            contentId: string
-        ) => Promise<'privileged' | 'user' | undefined>
+        private getLibraryMetadata: GetLibraryMetadataFunction,
+        getLibraryFileAsJson: GetLibraryFileAsJsonFunction,
+        private requestToUserCallback: RequestToUserFunction,
+        private getPermissionForUser: GetPermissionForUserFunction,
+        private getContentMetadata: GetContentMetadataFunction,
+        private getContentParameters: GetContentParametersFunction
     ) {
         this.validatorRepository = new ValidatorRepository(
             getLibraryFileAsJson
@@ -81,201 +79,34 @@ export default class SharedStateServer {
 
     private setupShareDBBackend(): void {
         this.backend = new ShareDB();
+        this.backend.use('connect', injectUser);
 
-        this.backend.use('connect', async (context, next) => {
-            console.log('connected');
-            if (context.req) {
-                context.agent.custom = {
-                    user: context.req.user,
-                    fromServer: false
-                    // indicates if this a real user request from the client or
-                    // an internal request created by the server itself
-                };
-            } else {
-                context.agent.custom = { fromServer: true };
-            }
-            next();
-        });
+        // "Submit" is the earliest point at which we can check individual
+        // messages by the client.
+        this.backend.use(
+            'submit',
+            checkPermissionsAndInjectContentContext(
+                this.getPermissionForUser,
+                this.getLibraryMetadata,
+                this.getContentMetadata,
+                this.getContentParameters
+            )
+        );
+        this.backend.use('submit', validateOpSchema(this.validatorRepository));
+        this.backend.use(
+            'submit',
+            performOpLogicChecks(this.validatorRepository)
+        );
 
-        this.backend.use('submit', async (context, next) => {
-            const contentId = context.id;
-            const user = context.agent.custom.user as IUser;
-
-            if (context.agent.custom.fromServer) {
-                return next();
-            }
-
-            if (!user && !context.agent.custom.fromServer) {
-                return next(new Error('No user data in submit request'));
-            }
-
-            const permission = await this.getPermissionForUser(user, contentId);
-
-            if (!permission) {
-                console.log(
-                    'User tried to access content without proper permission.'
-                );
-                return next(
-                    'You do not have permission to access this content.'
-                );
-            }
-            context.agent.custom.permission = permission;
-
-            console.log(
-                'User',
-                user.id,
-                '(',
-                user.name,
-                ')',
-                'is accessing',
-                contentId,
-                'with access level',
-                permission
-            );
-
-            if (contentId) {
-                const contentMetadata =
-                    await this.contentManager.getContentMetadata(
-                        contentId,
-                        user
-                    );
-                const libraryMetadata = await this.getLibraryMetadata(
-                    contentMetadata.preloadedDependencies.find(
-                        (d) => d.machineName === contentMetadata.mainLibrary
-                    )
-                );
-                if (libraryMetadata.requiredExtensions?.sharedState !== 1) {
-                    console.log(
-                        `Library ${LibraryName.toUberName(
-                            libraryMetadata
-                        )} uses unsupported shared state extension: The library requires v${
-                            libraryMetadata.requiredExtensions?.sharedState
-                        } but this application only supports v1.`
-                    );
-                    // Unknown extension version ... Aborting.
-                    return next(
-                        new Error(
-                            `Library ${LibraryName.toUberName(
-                                libraryMetadata
-                            )} uses unsupported shared state extension: The library requires v${
-                                libraryMetadata.requiredExtensions?.sharedState
-                            } but this application only supports v1.`
-                        )
-                    );
-                }
-                const params = await this.contentManager.getContentParameters(
-                    contentId,
-                    user
-                );
-                context.agent.custom.params = params;
-
-                context.agent.custom.ubername =
-                    LibraryName.toUberName(libraryMetadata);
-                context.agent.custom.libraryMetadata = libraryMetadata;
-            }
-
-            console.log('submit', JSON.stringify(context.op));
-            console.log(context.op.op);
-            if (context.op) {
-                if (context.agent.custom.libraryMetadata.state?.opSchema) {
-                    const opSchemaValidator =
-                        await this.validatorRepository.getOpSchemaValidator(
-                            context.agent.custom.libraryMetadata
-                        );
-                    if (
-                        !opSchemaValidator({
-                            op: context.op.op,
-                            create: context.op.create
-                        })
-                    ) {
-                        console.log(
-                            "rejecting change as op doesn't conform to schema"
-                        );
-                        return next("Op doesn't conform to schema");
-                    }
-                }
-                if (context.agent.custom.libraryMetadata.state?.opLogicCHecks) {
-                    const opLogicCheck =
-                        await this.validatorRepository.getOpLogicCheck(
-                            context.agent.custom.libraryMetadata
-                        );
-                    if (
-                        !checkLogic(
-                            {
-                                op: context.op.op,
-                                create: context.op.create,
-                                params: context.agent.custom.params,
-                                context: {
-                                    user: context.agent.custom.user,
-                                    permission: context.agent.custom.permission
-                                }
-                            },
-                            opLogicCheck
-                        )
-                    ) {
-                        console.log(
-                            "rejecting change as op doesn't conform to logic checks"
-                        );
-                        return next("Op doesn't conform to logic checks");
-                    }
-                }
-            }
-            next();
-        });
-
-        this.backend.use('commit', async (context, next) => {
-            console.log('commit', JSON.stringify(context.snapshot));
-            const user = context.agent.custom.user as IUser;
-
-            if (context.agent.custom.fromServer) {
-                return next();
-            }
-
-            if (!user && !context.agent.custom.fromServer) {
-                return next(new Error('No user data in submit request'));
-            }
-
-            if (context.agent.custom.libraryMetadata.state?.snapshotSchema) {
-                const snapshotSchemaValidator =
-                    await this.validatorRepository.getSnapshotSchemaValidator(
-                        context.agent.custom.libraryMetadata
-                    );
-                if (!snapshotSchemaValidator(context.snapshot.data)) {
-                    console.log(
-                        "rejecting change as resulting state doesn't conform to schema"
-                    );
-                    return next("Resulting state doesn't conform to schema");
-                }
-            }
-
-            if (
-                context.agent.custom.libraryMetadata.state?.snapshotLogicChecks
-            ) {
-                const snapshotLogicCheck =
-                    await this.validatorRepository.getSnapshotLogicCheck(
-                        context.agent.custom.libraryMetadata
-                    );
-                if (
-                    !checkLogic(
-                        {
-                            snapshot: context.snapshot.data,
-                            params: context.agent.custom.params,
-                            context: {
-                                user: context.agent.custom.user,
-                                permission: context.agent.custom.permission
-                            }
-                        },
-                        snapshotLogicCheck
-                    )
-                ) {
-                    console.log(
-                        "rejecting change as snapshot doesn't conform to logic checks"
-                    );
-                    return next("Snapshot doesn't conform to logic checks");
-                }
-            }
-
-            next();
-        });
+        // "Commit" means the changes of the ops were applied to the old
+        // snapshot and there is a new one that we can check.
+        this.backend.use(
+            'commit',
+            validateCommitSchema(this.validatorRepository)
+        );
+        this.backend.use(
+            'commit',
+            performCommitLogicChecks(this.validatorRepository)
+        );
     }
 }

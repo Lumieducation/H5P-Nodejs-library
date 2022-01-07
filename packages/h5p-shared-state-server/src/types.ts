@@ -1,3 +1,12 @@
+import type {
+    ContentId,
+    ContentParameters,
+    IContentMetadata,
+    ILibraryMetadata,
+    ILibraryName,
+    IUser
+} from '@lumieducation/h5p-server';
+
 export interface ILogicCheck {
     [query: `$.${string}`]:
         | IComparisonOperator
@@ -35,3 +44,34 @@ export interface ILogicalOperator {
 }
 
 export type ILogicCheckSchema = (ILogicCheck | ILogicalOperator)[];
+
+export type GetLibraryMetadataFunction = (
+    library: ILibraryName,
+    language?: string
+) => Promise<ILibraryMetadata>;
+export type GetLibraryFileAsJsonFunction = (
+    libraryName: ILibraryName,
+    filename: string
+) => Promise<any>;
+export type RequestToUserFunction = (req: any) => Promise<IUser>;
+export type GetPermissionForUserFunction = (
+    user: IUser,
+    contentId: string
+) => Promise<'privileged' | 'user' | undefined>;
+export type GetContentMetadataFunction = (
+    contentId: ContentId,
+    user: IUser
+) => Promise<IContentMetadata>;
+export type GetContentParametersFunction = (
+    contentId: ContentId,
+    user: IUser
+) => Promise<ContentParameters>;
+
+export interface ISharedStateAgent {
+    user: IUser;
+    fromServer: boolean;
+    permission: 'privileged' | 'user';
+    params: any;
+    ubername: string;
+    libraryMetadata: ILibraryMetadata;
+}
