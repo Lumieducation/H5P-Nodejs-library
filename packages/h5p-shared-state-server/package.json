@@ -1,12 +1,12 @@
 {
     "name": "@lumieducation/h5p-shared-state-server",
     "version": "0.1.0",
-    "description": "",
-    "main": "build/server.js",
-    "types": "build/server.d.ts",
+    "description": "A component providing server-side support for shared states with ShareDB",
+    "main": "build/index.js",
+    "types": "build/index.d.ts",
     "scripts": {
+        "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "tsc -p ./tsconfig.build.json",
-        "start": "node build/server.js",
         "test": "jest"
     },
     "author": "S. Rettig",
@@ -15,16 +15,12 @@
         "@lumieducation/h5p-server": "^9.0.6",
         "@teamwork/websocket-json-stream": "^2.0.0",
         "ajv": "^8.8.2",
-        "express": "^4.17.2",
-        "fs-extra": "^10.0.0",
         "jsonpath-plus": "^6.0.1",
         "reconnecting-websocket": "^4.4.0",
         "sharedb": "^2.2.1",
         "ws": "^8.4.0"
     },
     "devDependencies": {
-        "@types/express": "^4.17.13",
-        "@types/fs-extra": "^9.0.13",
         "@types/sharedb": "^2.2.0",
         "@types/ws": "^8.2.2"
     }
