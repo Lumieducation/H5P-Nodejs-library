@@ -43,7 +43,8 @@ export default class ValidatorRepository {
                 'opSchema.json'
             );
             validator = this.ajv.compile(schemaJson);
-        } catch {
+        } catch (error) {
+            console.error('Error while getting op schema:', error);
             this.validatorCache[ubername].op = null;
             return null;
         }
@@ -73,7 +74,8 @@ export default class ValidatorRepository {
                 'snapshotSchema.json'
             );
             validator = this.ajv.compile(schemaJson);
-        } catch {
+        } catch (error) {
+            console.error('Error while getting op schema:', error);
             this.validatorCache[ubername].snapshot = null;
             return null;
         }
@@ -104,7 +106,8 @@ export default class ValidatorRepository {
                 libraryName,
                 'opLogicCheck.json'
             );
-        } catch {
+        } catch (error) {
+            console.error('Error while getting op schema:', error);
             this.validatorCache[ubername].opLogicCheck = null;
             return null;
         }
@@ -135,7 +138,8 @@ export default class ValidatorRepository {
                 libraryName,
                 'snapshotLogicCheck.json'
             );
-        } catch {
+        } catch (error) {
+            console.error('Error while getting op schema:', error);
             this.validatorCache[ubername].snapshotLogicCheck = null;
             return null;
         }

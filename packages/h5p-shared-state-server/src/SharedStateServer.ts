@@ -25,7 +25,9 @@ export default class SharedStateServer {
         ) => Promise<'privileged' | 'user' | undefined>
     ) {
         this.validatorRepository = new ValidatorRepository(
-            libraryManager.libraryStorage.getFileAsJson
+            libraryManager.libraryStorage.getFileAsJson.bind(
+                libraryManager.libraryStorage
+            )
         );
         this.setupShareDBBackend();
 
@@ -102,9 +104,7 @@ export default class SharedStateServer {
                     'User tried to access content without proper permission.'
                 );
                 return next(
-                    new Error(
-                        'You do not have permission to access this content.'
-                    )
+                    'You do not have permission to access this content.'
                 );
             }
             context.agent.custom.permission = permission;
@@ -179,7 +179,7 @@ export default class SharedStateServer {
                         console.log(
                             "rejecting change as op doesn't conform to schema"
                         );
-                        return next(new Error("Op doesn't conform to schema"));
+                        return next("Op doesn't conform to schema");
                     }
                 }
                 if (context.agent.custom.libraryMetadata.state?.opLogicCHecks) {
@@ -204,9 +204,7 @@ export default class SharedStateServer {
                         console.log(
                             "rejecting change as op doesn't conform to logic checks"
                         );
-                        return next(
-                            new Error("Op doesn't conform to logic checks")
-                        );
+                        return next("Op doesn't conform to logic checks");
                     }
                 }
             }
@@ -261,9 +259,7 @@ export default class SharedStateServer {
                     console.log(
                         "rejecting change as snapshot doesn't conform to logic checks"
                     );
-                    return next(
-                        new Error("Snapshot doesn't conform to logic checks")
-                    );
+                    return next("Snapshot doesn't conform to logic checks");
                 }
             }
 
