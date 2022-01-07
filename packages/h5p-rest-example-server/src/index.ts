@@ -376,7 +376,12 @@ const start = async (): Promise<void> => {
     // Add shared state websocket and ShareDB to the server
     sharedStateServer = new SharedStateServer(
         server,
-        h5pEditor.libraryManager,
+        h5pEditor.libraryManager.libraryStorage.getLibrary.bind(
+            h5pEditor.libraryManager.libraryStorage
+        ),
+        h5pEditor.libraryManager.libraryStorage.getFileAsJson.bind(
+            h5pEditor.libraryManager.libraryStorage
+        ),
         h5pEditor.contentManager,
         async (req: express.Request) => {
             // We get the raw request that was upgraded to the websocket from

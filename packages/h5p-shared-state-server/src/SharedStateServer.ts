@@ -3,20 +3,34 @@ import ShareDB from 'sharedb';
 import WebSocket from 'ws';
 import WebSocketJSONStream from '@teamwork/websocket-json-stream';
 import {
-    LibraryManager,
     ContentManager,
     LibraryName,
-    IUser
+    IUser,
+    ILibraryMetadata,
+    ILibraryName
 } from '@lumieducation/h5p-server';
 import { promisify } from 'util';
 
 import { checkLogic } from './LogicChecker';
 import ValidatorRepository from './ValidatorRepository';
 
+/**
+ * This class opens a Websocket on the server to which clients can connect to
+ * and send ops via ShareDB to modify the shared state. The shared state
+ * validates the changes against the library schema, propagates them to the
+ * other connected clients and persists the state.
+ */
 export default class SharedStateServer {
     constructor(
         httpServer: http.Server,
-        private libraryManager: LibraryManager,
+        private getLibraryMetadata: (
+            library: ILibraryName,
+            language?: string
+        ) => Promise<ILibraryMetadata>,
+        private getLibraryFileAsJson: (
+            libraryName: ILibraryName,
+            filename: string
+        ) => Promise<any>,
         private contentManager: ContentManager,
         private requestToUserCallback: (req: any) => Promise<IUser>,
         private getPermissionForUser: (
@@ -25,9 +39,7 @@ export default class SharedStateServer {
         ) => Promise<'privileged' | 'user' | undefined>
     ) {
         this.validatorRepository = new ValidatorRepository(
-            libraryManager.libraryStorage.getFileAsJson.bind(
-                libraryManager.libraryStorage
-            )
+            getLibraryFileAsJson
         );
         this.setupShareDBBackend();
 
@@ -127,7 +139,7 @@ export default class SharedStateServer {
                         contentId,
                         user
                     );
-                const libraryMetadata = await this.libraryManager.getLibrary(
+                const libraryMetadata = await this.getLibraryMetadata(
                     contentMetadata.preloadedDependencies.find(
                         (d) => d.machineName === contentMetadata.mainLibrary
                     )
