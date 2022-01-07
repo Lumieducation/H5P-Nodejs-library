@@ -1,4 +1,3 @@
-import Ajv, { ValidateFunction } from 'ajv/dist/2020';
 import http from 'http';
 import ShareDB from 'sharedb';
 import WebSocket from 'ws';
@@ -7,12 +6,12 @@ import {
     LibraryManager,
     ContentManager,
     LibraryName,
-    IUser,
-    ILibraryName
+    IUser
 } from '@lumieducation/h5p-server';
 import { promisify } from 'util';
 
 import { checkLogic } from './LogicChecker';
+import ValidatorRepository from './ValidatorRepository';
 
 export default class SharedStateServer {
     constructor(
@@ -25,6 +24,9 @@ export default class SharedStateServer {
             contentId: string
         ) => Promise<'privileged' | 'user' | undefined>
     ) {
+        this.validatorRepository = new ValidatorRepository(
+            libraryManager.libraryStorage.getFileAsJson
+        );
         this.setupShareDBBackend();
 
         // Connect any incoming WebSocket connection to ShareDB
@@ -47,16 +49,7 @@ export default class SharedStateServer {
     }
 
     private backend: ShareDB;
-    private ajv: Ajv = new Ajv();
-
-    private validatorCache: {
-        [ubername: string]: {
-            op?: ValidateFunction | null;
-            snapshot?: ValidateFunction | null;
-            opLogicCheck?: any | null;
-            snapshotLogicCheck?: any | null;
-        };
-    } = {};
+    private validatorRepository: ValidatorRepository;
 
     public deleteState = async (contentId: string): Promise<void> => {
         console.log('deleting shared user state for contentId', contentId);
@@ -71,104 +64,6 @@ export default class SharedStateServer {
 
         // TODO: delete state in DB storage once implemented
     };
-
-    private async getOpValidator(
-        libraryName: ILibraryName
-    ): Promise<ValidateFunction> {
-        const ubername = LibraryName.toUberName(libraryName);
-        if (this.validatorCache[ubername]?.op !== undefined) {
-            return this.validatorCache[ubername].op;
-        }
-        let validator: ValidateFunction<unknown>;
-        try {
-            const schemaJson =
-                await this.libraryManager.libraryStorage.getFileAsJson(
-                    libraryName,
-                    'opSchema.json'
-                );
-            validator = this.ajv.compile(schemaJson);
-        } catch {
-            this.validatorCache[ubername].op = null;
-            return null;
-        }
-        if (!this.validatorCache[ubername]) {
-            this.validatorCache[ubername] = {};
-        }
-        this.validatorCache[ubername].op = validator;
-        return validator;
-    }
-
-    private async getSnapshotValidator(
-        libraryName: ILibraryName
-    ): Promise<ValidateFunction> {
-        const ubername = LibraryName.toUberName(libraryName);
-        if (this.validatorCache[ubername]?.snapshot !== undefined) {
-            return this.validatorCache[ubername].snapshot;
-        }
-        let validator: ValidateFunction<unknown>;
-        try {
-            const schemaJson =
-                await this.libraryManager.libraryStorage.getFileAsJson(
-                    libraryName,
-                    'snapshotSchema.json'
-                );
-            validator = this.ajv.compile(schemaJson);
-        } catch {
-            this.validatorCache[ubername].snapshot = null;
-            return null;
-        }
-        if (!this.validatorCache[ubername]) {
-            this.validatorCache[ubername] = {};
-        }
-        this.validatorCache[ubername].snapshot = validator;
-        return validator;
-    }
-
-    private async getOpLogicCheck(libraryName: ILibraryName): Promise<any> {
-        const ubername = LibraryName.toUberName(libraryName);
-        if (this.validatorCache[ubername]?.opLogicCheck !== undefined) {
-            return this.validatorCache[ubername].opLogicCheck;
-        }
-        let logicCheck: any;
-        try {
-            logicCheck = await this.libraryManager.libraryStorage.getFileAsJson(
-                libraryName,
-                'opLogicCheck.json'
-            );
-        } catch {
-            this.validatorCache[ubername].opLogicCheck = null;
-            return null;
-        }
-        if (!this.validatorCache[ubername]) {
-            this.validatorCache[ubername] = {};
-        }
-        this.validatorCache[ubername].opLogicCheck = logicCheck;
-        return logicCheck;
-    }
-
-    private async getSnapshotLogicCheck(
-        libraryName: ILibraryName
-    ): Promise<any> {
-        const ubername = LibraryName.toUberName(libraryName);
-        if (this.validatorCache[ubername]?.snapshotLogicCheck !== undefined) {
-            return this.validatorCache[ubername].snapshotLogicCheck;
-        }
-        let logicCheck: any;
-        try {
-            logicCheck = await this.libraryManager.libraryStorage.getFileAsJson(
-                libraryName,
-                'snapshotLogicCheck.json'
-            );
-        } catch {
-            this.validatorCache[ubername].snapshotLogicCheck = null;
-            return null;
-        }
-        if (!this.validatorCache[ubername]) {
-            this.validatorCache[ubername] = {};
-        }
-        this.validatorCache[ubername].snapshotLogicCheck = logicCheck;
-        return logicCheck;
-    }
 
     private setupShareDBBackend(): void {
         this.backend = new ShareDB();
@@ -271,9 +166,10 @@ export default class SharedStateServer {
             console.log(context.op.op);
             if (context.op) {
                 if (context.agent.custom.libraryMetadata.state?.opSchema) {
-                    const opSchemaValidator = await this.getOpValidator(
-                        context.agent.custom.libraryMetadata
-                    );
+                    const opSchemaValidator =
+                        await this.validatorRepository.getOpSchemaValidator(
+                            context.agent.custom.libraryMetadata
+                        );
                     if (
                         !opSchemaValidator({
                             op: context.op.op,
@@ -287,9 +183,10 @@ export default class SharedStateServer {
                     }
                 }
                 if (context.agent.custom.libraryMetadata.state?.opLogicCHecks) {
-                    const opLogicCheck = await this.getOpLogicCheck(
-                        context.agent.custom.libraryMetadata
-                    );
+                    const opLogicCheck =
+                        await this.validatorRepository.getOpLogicCheck(
+                            context.agent.custom.libraryMetadata
+                        );
                     if (
                         !checkLogic(
                             {
@@ -329,9 +226,10 @@ export default class SharedStateServer {
             }
 
             if (context.agent.custom.libraryMetadata.state?.snapshotSchema) {
-                const snapshotSchemaValidator = await this.getSnapshotValidator(
-                    context.agent.custom.libraryMetadata
-                );
+                const snapshotSchemaValidator =
+                    await this.validatorRepository.getSnapshotSchemaValidator(
+                        context.agent.custom.libraryMetadata
+                    );
                 if (!snapshotSchemaValidator(context.snapshot.data)) {
                     console.log(
                         "rejecting change as resulting state doesn't conform to schema"
@@ -343,9 +241,10 @@ export default class SharedStateServer {
             if (
                 context.agent.custom.libraryMetadata.state?.snapshotLogicChecks
             ) {
-                const snapshotLogicCheck = await this.getSnapshotLogicCheck(
-                    context.agent.custom.libraryMetadata
-                );
+                const snapshotLogicCheck =
+                    await this.validatorRepository.getSnapshotLogicCheck(
+                        context.agent.custom.libraryMetadata
+                    );
                 if (
                     !checkLogic(
                         {

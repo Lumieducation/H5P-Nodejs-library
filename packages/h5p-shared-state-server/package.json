@@ -2,8 +2,8 @@
     "name": "@lumieducation/h5p-shared-state-server",
     "version": "0.1.0",
     "description": "A component providing server-side support for shared states with ShareDB",
-    "main": "build/index.js",
-    "types": "build/index.d.ts",
+    "main": "build/SharedStateServer.js",
+    "types": "build/SharedStateServer.d.ts",
     "scripts": {
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "tsc -p ./tsconfig.build.json",
