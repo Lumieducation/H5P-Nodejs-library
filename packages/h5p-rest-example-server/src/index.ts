@@ -382,7 +382,6 @@ const start = async (): Promise<void> => {
         h5pEditor.libraryManager.libraryStorage.getFileAsJson.bind(
             h5pEditor.libraryManager.libraryStorage
         ),
-        h5pEditor.contentManager,
         async (req: express.Request) => {
             // We get the raw request that was upgraded to the websocket from
             // SharedStateServer and have to get the user for it from the
@@ -399,7 +398,13 @@ const start = async (): Promise<void> => {
                 return undefined;
             }
             return userInTable.type === 'teacher' ? 'privileged' : 'user';
-        }
+        },
+        h5pEditor.contentManager.getContentMetadata.bind(
+            h5pEditor.contentManager
+        ),
+        h5pEditor.contentManager.getContentParameters.bind(
+            h5pEditor.contentManager
+        )
     );
 
     server.listen(port);

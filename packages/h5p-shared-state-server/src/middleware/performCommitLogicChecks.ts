@@ -1,6 +1,6 @@
 import { IUser } from '@lumieducation/h5p-server';
 import ShareDB from 'sharedb';
-import { checkLogic } from 'src/LogicChecker';
+import { checkLogic } from '../LogicChecker';
 import { ISharedStateAgent } from '../types';
 import ValidatorRepository from '../ValidatorRepository';
 
