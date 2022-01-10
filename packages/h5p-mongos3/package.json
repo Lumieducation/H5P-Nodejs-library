@@ -44,7 +44,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^9.0.6",
-        "aws-sdk": "2.1053.0",
+        "aws-sdk": "2.1054.0",
         "mongodb": "4.3.0",
         "stream-buffers": "^3.0.2"
     },
