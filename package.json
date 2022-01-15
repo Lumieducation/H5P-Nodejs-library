@@ -105,7 +105,7 @@
         "json-autotranslate": "1.9.3",
         "lerna": "4.0.0",
         "prettier": "2.5.1",
-        "puppeteer": "11.0.0",
+        "puppeteer": "13.0.1",
         "remark-cli": "10.0.1",
         "remark-validate-links": "11.0.2",
         "ts-jest": "26.5.6",
