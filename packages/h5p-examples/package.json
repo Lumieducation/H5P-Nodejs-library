@@ -49,7 +49,7 @@
         "@types/puppeteer": "5.4.4",
         "@types/react": "17.0.38",
         "cross-env": "7.0.3",
-        "puppeteer": "13.0.1",
+        "puppeteer": "13.1.0",
         "start-server-and-test": "1.14.0"
     }
 }
