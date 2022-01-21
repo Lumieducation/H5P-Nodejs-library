@@ -7,6 +7,7 @@ import {
     catchAndPassOnErrors
 } from '../expressErrorHandler';
 import ContentUserDataController from './ContentUserDataController';
+
 /**
  * This router implements necessary routes for the contentUserData (userState) to work.
  * If you only want certain routes, you can specify this in the options parameter.
