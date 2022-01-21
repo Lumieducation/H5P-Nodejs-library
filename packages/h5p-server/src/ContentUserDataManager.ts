@@ -1,6 +1,6 @@
 import {
     ContentId,
-    IContentUserData,
+    ISerializedContentUserData,
     IUser,
     IContentUserDataStorage
 } from './types';
@@ -100,7 +100,7 @@ export default class ContentUserDataManager {
     public async generateContentUserDataIntegration(
         contentId: ContentId,
         user: IUser
-    ): Promise<IContentUserData[]> {
+    ): Promise<ISerializedContentUserData[]> {
         log.debug(
             `generating contentUserDataIntegration for user with id ${user.id} and contentId ${contentId}`
         );

@@ -154,7 +154,7 @@ export interface ILicenseData {
     contentType?: string;
 }
 
-export interface IContentUserData {
+export interface ISerializedContentUserData {
     /**
      * The state as a serialized JSON object.
      */
@@ -203,7 +203,7 @@ export interface IIntegration {
              * If it is an absolute URL it will be used directly.
              */
             contentUrl?: string;
-            contentUserData?: IContentUserData[];
+            contentUserData?: ISerializedContentUserData[];
             displayOptions: {
                 copy: boolean;
                 copyright: boolean;
@@ -544,6 +544,14 @@ export interface IUser {
     type: 'local' | string;
 }
 
+export interface IContentUserData {
+    contentId?: ContentId;
+    dataType: string;
+    subContentId: string;
+    userState: string; // the contentUserState/contentUserData as string
+    userId?: string;
+}
+
 /**
  * Implementations can implement the IContentUserDataStorage interface and pass it to the constructor of
  * H5PEditor or H5PPlayer if they wish to keep the user state and allows users to continue where they left off.
@@ -599,6 +607,12 @@ export interface IContentUserDataStorage {
     ): Promise<void>;
 
     /**
+     * Retrieves all contentUserData for a gien userId
+     * @param userId the userId for which the contentUserData should be retrieved.
+     */
+    listContentUserDataByUserId(userId: string): Promise<IContentUserData[]>;
+
+    /**
      * Deletes all userContentData objects for a given contentId. (Used when deleting content)
      * Throws errors if something goes wrong.
      * @param contentId The content id to delete.
@@ -639,15 +653,7 @@ export interface IContentUserDataStorage {
     listByContent(
         contentId: ContentId,
         userId: string
-    ): Promise<
-        {
-            contentId?: string;
-            dataType: string;
-            subContentId: string;
-            userState: string; // the contentUserState/contentUserData as string
-            userId?: string;
-        }[]
-    >;
+    ): Promise<IContentUserData[]>;
 }
 
 /**

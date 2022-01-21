@@ -1,5 +1,6 @@
 import {
     ContentId,
+    IContentUserData,
     IContentUserDataStorage,
     IUser
 } from '@lumieducation/h5p-server';
@@ -36,6 +37,12 @@ export default class ContentUserDataStorage implements IContentUserDataStorage {
                 data.subContentId === subContentId &&
                 data.userId === user.id
         )[0]?.userState;
+    }
+
+    public async listContentUserDataByUserId(
+        userId: string
+    ): Promise<IContentUserData[]> {
+        return userData.filter((data) => data.userId === userId);
     }
 
     public async saveContentUserData(
