@@ -11,6 +11,7 @@ import passport from 'passport';
 import path from 'path';
 import session from 'express-session';
 import { promisify } from 'util';
+import cors from 'cors';
 
 import {
     h5pAjaxExpressRouter,
@@ -362,6 +363,31 @@ const start = async (): Promise<void> => {
         req.logout();
         res.status(200).send();
     });
+
+    /**
+     * The route returns information about the user. It is used by the client to
+     * find out who the user is and what privilege level he/she has.
+     */
+    app.get(
+        '/auth-data/:contentId',
+        cors({ credentials: true, origin: 'http://localhost:3000' }),
+        (req: express.Request<{ contentId: string }>, res) => {
+            if (!req.user) {
+                res.status(200).json({ level: 'anonymous' });
+            } else {
+                let level: string;
+                if (userTable[(req.user as any)?.id]?.type === 'teacher') {
+                    level = 'privileged';
+                } else {
+                    level = 'user';
+                }
+                res.status(200).json({
+                    level,
+                    userId: (req.user as any).id?.toString()
+                });
+            }
+        }
+    );
 
     const port = process.env.PORT || '8080';
 
