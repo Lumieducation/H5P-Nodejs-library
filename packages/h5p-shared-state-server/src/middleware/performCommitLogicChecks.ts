@@ -43,6 +43,6 @@ export default (validatorRepository: ValidatorRepository) =>
                 return next("Snapshot doesn't conform to logic checks");
             }
         }
-
+        console.log('commit logic checks passed');
         next();
     };

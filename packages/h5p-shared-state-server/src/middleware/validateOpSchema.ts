@@ -8,7 +8,7 @@ export default (validatorRepository: ValidatorRepository) =>
         next: (err?: any) => void
     ): Promise<void> => {
         console.log('submit', JSON.stringify(context.op));
-        console.log(context.op.op);
+        console.log('op', context.op.op);
         if (
             context.op &&
             context.agent.custom.libraryMetadata.state?.opSchema
@@ -24,8 +24,12 @@ export default (validatorRepository: ValidatorRepository) =>
                 })
             ) {
                 console.log("rejecting change as op doesn't conform to schema");
+                console.log('error log', opSchemaValidator.errors);
                 return next("Op doesn't conform to schema");
             }
         }
+
+        console.log('op schema validation passed');
+
         next();
     };

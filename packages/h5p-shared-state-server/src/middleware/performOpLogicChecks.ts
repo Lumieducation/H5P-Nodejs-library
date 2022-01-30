@@ -36,5 +36,6 @@ export default (validatorRepository: ValidatorRepository) =>
             }
         }
 
+        console.log('op logic checks passed');
         next();
     };

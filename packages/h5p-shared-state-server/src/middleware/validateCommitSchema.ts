@@ -30,6 +30,6 @@ export default (validatorRepository: ValidatorRepository) =>
                 return next("Resulting state doesn't conform to schema");
             }
         }
-
+        console.log('commit schema validation passed');
         next();
     };
