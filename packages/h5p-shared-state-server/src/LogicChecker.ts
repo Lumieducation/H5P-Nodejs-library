@@ -27,6 +27,14 @@ const evaluateLogicCheckRec = (
     check: ILogicCheck | ILogicalOperator,
     obj: any
 ): boolean => {
+    const printErrorAndReturn = (result: boolean): boolean => {
+        if (!result) {
+            console.log('Failed check:', check);
+            console.log('Data object', obj);
+        }
+        return result;
+    };
+
     return Object.keys(check).every((property) => {
         if (!property.startsWith('$')) {
             throw new Error(
@@ -37,26 +45,32 @@ const evaluateLogicCheckRec = (
             if (!Array.isArray(check[property])) {
                 throw new Error('$and requires an array');
             }
-            return (check[property] as ILogicCheck[]).every((c) =>
-                evaluateLogicCheckRec(c, obj)
+            return printErrorAndReturn(
+                (check[property] as ILogicCheck[]).every((c) =>
+                    evaluateLogicCheckRec(c, obj)
+                )
             );
         }
         if (property === '$or') {
             if (!Array.isArray(check[property])) {
                 throw new Error('$or requires an array');
             }
-            return (check[property] as ILogicCheck[]).some((c) =>
-                evaluateLogicCheckRec(c, obj)
+            return printErrorAndReturn(
+                (check[property] as ILogicCheck[]).some((c) =>
+                    evaluateLogicCheckRec(c, obj)
+                )
             );
         }
         if (property === '$not') {
-            return !evaluateLogicCheckRec(check[property], obj);
+            return printErrorAndReturn(
+                !evaluateLogicCheckRec(check[property], obj)
+            );
         }
         if (property === '$defined') {
             if (!Object.keys((check as ILogicalOperator).$defined.$query)) {
                 throw new Error('$defined must have a $query inside it');
             }
-            return (
+            return printErrorAndReturn(
                 JSONPath({
                     path: (check as ILogicalOperator).$defined.$query,
                     json: obj,
@@ -71,9 +85,9 @@ const evaluateLogicCheckRec = (
             ) {
                 throw new Error('$nor requires an array with two entry');
             }
-            return (
+            return printErrorAndReturn(
                 !evaluateLogicCheckRec(check[property][0], obj) &&
-                !evaluateLogicCheckRec(check[property][1], obj)
+                    !evaluateLogicCheckRec(check[property][1], obj)
             );
         }
         const evaluatedPath = JSONPath({
@@ -89,7 +103,9 @@ const evaluateLogicCheckRec = (
             typeof secondExpression === 'number' ||
             Array.isArray(secondExpression)
         ) {
-            return compareEquality(evaluatedPath, secondExpression);
+            return printErrorAndReturn(
+                compareEquality(evaluatedPath, secondExpression)
+            );
         } else if (typeof secondExpression === 'object') {
             if (Object.keys(secondExpression).length !== 1) {
                 throw new Error('Error in query: empty object');
@@ -104,9 +120,8 @@ const evaluateLogicCheckRec = (
                     preventEval: true,
                     wrap: false
                 });
-                return compareEquality(
-                    evaluatedPath,
-                    evaluatedSecondExpression
+                return printErrorAndReturn(
+                    compareEquality(evaluatedPath, evaluatedSecondExpression)
                 );
             } else if (
                 typeof secondExpressionValue === 'boolean' ||
@@ -127,51 +142,79 @@ const evaluateLogicCheckRec = (
             }
             switch (Object.keys(secondExpression)[0]) {
                 case '$eq':
-                    return compareEquality(
-                        evaluatedPath,
-                        evaluatedSecondExpression
+                    return printErrorAndReturn(
+                        compareEquality(
+                            evaluatedPath,
+                            evaluatedSecondExpression
+                        )
                     );
                 case '$gt':
-                    return evaluatedPath > evaluatedSecondExpression;
+                    return printErrorAndReturn(
+                        evaluatedPath > evaluatedSecondExpression
+                    );
                 case '$gte':
-                    return evaluatedPath >= evaluatedSecondExpression;
+                    return printErrorAndReturn(
+                        evaluatedPath >= evaluatedSecondExpression
+                    );
                 case '$in':
+                    if (evaluatedPath === undefined) {
+                        return true;
+                    }
                     if (!Array.isArray(evaluatedSecondExpression)) {
-                        return false;
+                        if (!Array.isArray(evaluatedPath)) {
+                            return printErrorAndReturn(
+                                evaluatedPath == evaluatedSecondExpression
+                            );
+                        }
+                        return printErrorAndReturn(false);
                     }
 
                     if (!Array.isArray(evaluatedPath)) {
-                        return (evaluatedSecondExpression as any[]).includes(
-                            evaluatedPath
+                        return printErrorAndReturn(
+                            (evaluatedSecondExpression as any[]).includes(
+                                evaluatedPath
+                            )
                         );
                     } else {
-                        return evaluatedPath.every((p) =>
-                            (evaluatedSecondExpression as any[]).includes(p)
+                        return printErrorAndReturn(
+                            evaluatedPath.every((p) =>
+                                (evaluatedSecondExpression as any[]).includes(p)
+                            )
                         );
                     }
                 case '$lt':
-                    return evaluatedPath < evaluatedSecondExpression;
+                    return printErrorAndReturn(
+                        evaluatedPath < evaluatedSecondExpression
+                    );
                 case '$lte':
-                    return evaluatedPath <= evaluatedSecondExpression;
+                    return printErrorAndReturn(
+                        evaluatedPath <= evaluatedSecondExpression
+                    );
                 case '$ne':
-                    return !compareEquality(
-                        evaluatedPath,
-                        evaluatedSecondExpression
+                    return printErrorAndReturn(
+                        !compareEquality(
+                            evaluatedPath,
+                            evaluatedSecondExpression
+                        )
                     );
                 case '$nin':
                     if (!Array.isArray(evaluatedSecondExpression)) {
-                        return false;
+                        return printErrorAndReturn(false);
                     }
                     if (!Array.isArray(evaluatedPath)) {
-                        return !(evaluatedSecondExpression as any[]).includes(
-                            evaluatedPath
+                        return printErrorAndReturn(
+                            !(evaluatedSecondExpression as any[]).includes(
+                                evaluatedPath
+                            )
                         );
                     } else {
-                        return evaluatedPath.every(
-                            (p) =>
-                                !(evaluatedSecondExpression as any[]).includes(
-                                    p
-                                )
+                        return printErrorAndReturn(
+                            evaluatedPath.every(
+                                (p) =>
+                                    !(
+                                        evaluatedSecondExpression as any[]
+                                    ).includes(p)
+                            )
                         );
                     }
             }

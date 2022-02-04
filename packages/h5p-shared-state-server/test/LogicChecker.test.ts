@@ -489,4 +489,31 @@ describe('ops checker', () => {
             )
         ).toEqual(true);
     });
+
+    it('snapshot check 1', () => {
+        expect(
+            checkLogic(
+                {
+                    snapshot: {
+                        answers: [],
+                        scores: {},
+                        users: { user1: 'User 1' },
+                        phase: 'preparing',
+                        currentQuestionNumber: 0,
+                        currentQuestionStart: 0,
+                        currentQuestionOrder: []
+                    }
+                },
+                [
+                    {
+                        '$.snapshot.scores.*~': {
+                            $in: {
+                                $query: '$.snapshot.users.*~'
+                            }
+                        }
+                    }
+                ]
+            )
+        ).toEqual(true);
+    });
 });
