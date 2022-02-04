@@ -24,7 +24,8 @@ export default (validatorRepository: ValidatorRepository) =>
                         context: {
                             user: context.agent.custom.user,
                             permission: context.agent.custom.permission
-                        }
+                        },
+                        snapshot: context.snapshot?.data
                     },
                     opLogicCheck
                 )

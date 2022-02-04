@@ -94,7 +94,7 @@ export default class SharedStateServer {
         );
         this.backend.use('submit', validateOpSchema(this.validatorRepository));
         this.backend.use(
-            'submit',
+            'apply',
             performOpLogicChecks(this.validatorRepository)
         );
 
