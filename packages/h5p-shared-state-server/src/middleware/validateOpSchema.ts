@@ -9,6 +9,11 @@ export default (validatorRepository: ValidatorRepository) =>
     ): Promise<void> => {
         console.log('submit', JSON.stringify(context.op));
         console.log('op', context.op.op);
+        if (context.agent.custom.fromServer) {
+            console.log('letting op from server pass through');
+            return next();
+        }
+
         if (
             context.op &&
             context.agent.custom.libraryMetadata.state?.opSchema

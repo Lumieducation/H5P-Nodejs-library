@@ -11,6 +11,7 @@ export default (validatorRepository: ValidatorRepository) =>
         const user = context.agent.custom.user as IUser;
 
         if (context.agent.custom.fromServer) {
+            console.log('letting op from server pass through');
             return next();
         }
 
