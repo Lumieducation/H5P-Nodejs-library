@@ -1,10 +1,16 @@
 import ShareDB from 'sharedb';
+import debug from 'debug';
 
+const log = debug('h5p:SharedStateServer:injectUser');
+
+/**
+ * Injects the user information from the request into the sharedb context
+ */
 export default async (
     context: ShareDB.middleware.ConnectContext,
     next: (err?: any) => void
 ): Promise<void> => {
-    console.log('connected');
+    log('Connected client');
     if (context.req) {
         context.agent.custom = {
             user: context.req.user,
@@ -13,6 +19,7 @@ export default async (
             // an internal request created by the server itself
         };
     } else {
+        log('Client resides on the server');
         context.agent.custom = { fromServer: true };
     }
     next();

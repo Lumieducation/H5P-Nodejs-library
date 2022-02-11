@@ -26,7 +26,6 @@ export default class ValidatorRepository {
     /**
      * Gets the validator function for the op schema.
      * @param libraryName
-     * @returns
      */
     public async getOpSchemaValidator(
         libraryName: ILibraryName
@@ -57,7 +56,6 @@ export default class ValidatorRepository {
     /**
      * Gets the validator function for snapshots.
      * @param libraryName
-     * @returns
      */
     public async getSnapshotSchemaValidator(
         libraryName: ILibraryName

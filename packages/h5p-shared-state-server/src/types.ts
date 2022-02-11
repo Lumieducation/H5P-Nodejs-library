@@ -7,6 +7,7 @@ import type {
     IUser
 } from '@lumieducation/h5p-server';
 
+// The logic check typing
 export interface ILogicCheck {
     [query: `$.${string}`]:
         | IComparisonOperator
@@ -45,6 +46,8 @@ export interface ILogicalOperator {
 
 export type ILogicCheckSchema = (ILogicCheck | ILogicalOperator)[];
 
+// Callback functions
+
 export type GetLibraryMetadataFunction = (
     library: ILibraryName,
     language?: string
@@ -67,6 +70,9 @@ export type GetContentParametersFunction = (
     user: IUser
 ) => Promise<ContentParameters>;
 
+/**
+ * Internal data passed through the sharedb middleware
+ */
 export interface ISharedStateAgent {
     user: IUser;
     fromServer: boolean;

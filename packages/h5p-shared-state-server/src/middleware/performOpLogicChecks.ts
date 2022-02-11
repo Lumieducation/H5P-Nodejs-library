@@ -1,7 +1,11 @@
 import ShareDB from 'sharedb';
+import debug from 'debug';
+
 import { checkLogic } from '../LogicChecker';
 import { ISharedStateAgent } from '../types';
 import ValidatorRepository from '../ValidatorRepository';
+
+const log = debug('h5p:SharedStateServer:performOpLogicChecks');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
@@ -9,7 +13,7 @@ export default (validatorRepository: ValidatorRepository) =>
         next: (err?: any) => void
     ): Promise<void> => {
         if (context.agent.custom.fromServer) {
-            console.log('letting op from server pass through');
+            log('Letting op from server pass through');
             return next();
         }
 
@@ -35,13 +39,11 @@ export default (validatorRepository: ValidatorRepository) =>
                     opLogicCheck
                 )
             ) {
-                console.log(
-                    "rejecting change as op doesn't conform to logic checks"
-                );
+                log("Rejecting change as op doesn't conform to logic checks");
                 return next("Op doesn't conform to logic checks");
             }
         }
 
-        console.log('op logic checks passed');
+        log('Op logic checks passed');
         next();
     };

@@ -1,7 +1,11 @@
 import { IUser } from '@lumieducation/h5p-server';
 import ShareDB from 'sharedb';
+import debug from 'debug';
+
 import { ISharedStateAgent } from '../types';
 import ValidatorRepository from '../ValidatorRepository';
+
+const log = debug('h5p:SharedStateServer:validateCommitSchema');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
@@ -11,7 +15,7 @@ export default (validatorRepository: ValidatorRepository) =>
         const user = context.agent.custom.user as IUser;
 
         if (context.agent.custom.fromServer) {
-            console.log('letting op from server pass through');
+            log('letting op from server pass through');
             return next();
         }
 
@@ -25,12 +29,12 @@ export default (validatorRepository: ValidatorRepository) =>
                     context.agent.custom.libraryMetadata
                 );
             if (!snapshotSchemaValidator(context.snapshot.data)) {
-                console.log(
+                log(
                     "rejecting change as resulting state doesn't conform to schema"
                 );
                 return next("Resulting state doesn't conform to schema");
             }
         }
-        console.log('commit schema validation passed');
+        log('commit schema validation passed');
         next();
     };

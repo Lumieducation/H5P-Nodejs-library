@@ -1,16 +1,19 @@
 import ShareDB from 'sharedb';
+import debug from 'debug';
+
 import { ISharedStateAgent } from '../types';
 import ValidatorRepository from '../ValidatorRepository';
+
+const log = debug('h5p:SharedStateServer:validateOpSchema');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
         context: ShareDB.middleware.SubmitContext<ISharedStateAgent>,
         next: (err?: any) => void
     ): Promise<void> => {
-        console.log('submit', JSON.stringify(context.op));
-        console.log('op', context.op.op);
+        log('submit %O', context.op);
         if (context.agent.custom.fromServer) {
-            console.log('letting op from server pass through');
+            log('Letting op from server pass through');
             return next();
         }
 
@@ -28,13 +31,13 @@ export default (validatorRepository: ValidatorRepository) =>
                     create: context.op.create
                 })
             ) {
-                console.log("rejecting change as op doesn't conform to schema");
-                console.log('error log', opSchemaValidator.errors);
+                log("Rejecting change as op doesn't conform to schema");
+                log('Error log: %O', opSchemaValidator.errors);
                 return next("Op doesn't conform to schema");
             }
         }
 
-        console.log('op schema validation passed');
+        log('Op schema validation passed');
 
         next();
     };

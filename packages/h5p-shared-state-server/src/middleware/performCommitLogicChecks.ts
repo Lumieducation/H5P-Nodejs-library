@@ -1,8 +1,12 @@
 import { IUser } from '@lumieducation/h5p-server';
 import ShareDB from 'sharedb';
+import debug from 'debug';
+
 import { checkLogic } from '../LogicChecker';
 import { ISharedStateAgent } from '../types';
 import ValidatorRepository from '../ValidatorRepository';
+
+const log = debug('h5p:SharedStateServer:performCommitLogicChecks');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
@@ -12,7 +16,7 @@ export default (validatorRepository: ValidatorRepository) =>
         const user = context.agent.custom.user as IUser;
 
         if (context.agent.custom.fromServer) {
-            console.log('letting op from server pass through');
+            log('letting op from server pass through');
             return next();
         }
 
@@ -38,12 +42,12 @@ export default (validatorRepository: ValidatorRepository) =>
                     snapshotLogicCheck
                 )
             ) {
-                console.log(
+                log(
                     "rejecting change as snapshot doesn't conform to logic checks"
                 );
                 return next("Snapshot doesn't conform to logic checks");
             }
         }
-        console.log('commit logic checks passed');
+        log('commit logic checks passed');
         next();
     };

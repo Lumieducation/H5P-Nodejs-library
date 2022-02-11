@@ -1,5 +1,7 @@
 import { IUser, LibraryName } from '@lumieducation/h5p-server';
 import ShareDB from 'sharedb';
+import debug from 'debug';
+
 import {
     GetLibraryMetadataFunction,
     GetPermissionForUserFunction,
@@ -8,6 +10,14 @@ import {
     ISharedStateAgent
 } from '../types';
 
+const log = debug(
+    'h5p:SharedStateServer:checkPermissionsAndInjectContentContext'
+);
+
+/**
+ * Checks the permissions and injects information about the content object into
+ * the context.
+ */
 export default (
         getPermissionForUser: GetPermissionForUserFunction,
         getLibraryMetadata: GetLibraryMetadataFunction,
@@ -21,6 +31,7 @@ export default (
         const contentId = context.id;
         const user = context.agent.custom.user as IUser;
 
+        // Allow all operations by the server
         if (context.agent.custom.fromServer) {
             return next();
         }
@@ -32,22 +43,19 @@ export default (
         const permission = await getPermissionForUser(user, contentId);
 
         if (!permission) {
-            console.log(
-                'User tried to access content without proper permission.'
+            log(
+                'User %s tried to access content without proper permission.',
+                user.id
             );
             return next('You do not have permission to access this content.');
         }
         context.agent.custom.permission = permission;
 
-        console.log(
-            'User',
+        log(
+            'User %s (%s) is accessing %s with access level %s',
             user.id,
-            '(',
             user.name,
-            ')',
-            'is accessing',
             contentId,
-            'with access level',
             permission
         );
 
@@ -59,12 +67,10 @@ export default (
                 )
             );
             if (libraryMetadata.requiredExtensions?.sharedState !== 1) {
-                console.log(
-                    `Library ${LibraryName.toUberName(
-                        libraryMetadata
-                    )} uses unsupported shared state extension: The library requires v${
-                        libraryMetadata.requiredExtensions?.sharedState
-                    } but this application only supports v1.`
+                log(
+                    'Library %s uses unsupported shared state extension: The library requires v%s but this application only supports v1.',
+                    LibraryName.toUberName(libraryMetadata),
+                    libraryMetadata.requiredExtensions?.sharedState
                 );
                 // Unknown extension version ... Aborting.
                 return next(
