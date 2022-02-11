@@ -1,17 +1,16 @@
 import { ILibraryName, LibraryName } from '@lumieducation/h5p-server';
 import Ajv, { ValidateFunction } from 'ajv/dist/2020';
-import { ILogicalOperator, ILogicCheck } from './types';
+import {
+    GetLibraryFileAsJsonFunction,
+    ILogicalOperator,
+    ILogicCheck
+} from './types';
 
 /**
  * Keeps track of validation functions and structures and caches them in memory.
  */
 export default class ValidatorRepository {
-    constructor(
-        private getLibraryFileAsJson: (
-            libraryName: ILibraryName,
-            filename: string
-        ) => Promise<any>
-    ) {}
+    constructor(private getLibraryFileAsJson: GetLibraryFileAsJsonFunction) {}
 
     private validatorCache: {
         [ubername: string]: {

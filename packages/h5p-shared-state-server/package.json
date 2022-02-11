@@ -15,6 +15,7 @@
         "@lumieducation/h5p-server": "^9.0.6",
         "@teamwork/websocket-json-stream": "^2.0.0",
         "ajv": "^8.8.2",
+        "debug": "^4.3.3",
         "jsonpath-plus": "^6.0.1",
         "reconnecting-websocket": "^4.4.0",
         "sharedb": "^2.2.1",

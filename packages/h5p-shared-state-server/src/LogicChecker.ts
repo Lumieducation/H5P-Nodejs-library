@@ -1,5 +1,9 @@
 import { JSONPath } from 'jsonpath-plus';
+import debug from 'debug';
+
 import { ILogicalOperator, ILogicCheck } from './types';
+
+const log = debug('h5p:SharedStateServer:LogicChecker');
 
 /**
  * Compares two entities for equality using == and also checking arrays.
@@ -22,30 +26,36 @@ const compareEquality = (a: any | any[], b: any | any[]): boolean => {
 
 /**
  * Recursively goes through checks and evaluates the object against them.
+ * @param check the logic check or a logical expression containing logic checks
+ * @param the data object to check
+ * @throws an error if there are malformed checks
  */
 const evaluateLogicCheckRec = (
     check: ILogicCheck | ILogicalOperator,
     obj: any
 ): boolean => {
-    const printErrorAndReturn = (result: boolean): boolean => {
+    const logErrorAndReturn = (result: boolean): boolean => {
         if (!result) {
-            console.log('Failed check:', check);
-            console.log('Data object', obj);
+            log('Failed check: %O', check);
+            log('Data object: %O', obj);
         }
         return result;
     };
 
     return Object.keys(check).every((property) => {
+        // Check for syntax errors
         if (!property.startsWith('$')) {
             throw new Error(
-                `Expression ${property} is not a JSON path or a query. It must start with $.`
+                `Expression "${property}" is not a JSON path or a query. It must start with $.`
             );
         }
+
+        // Logic operators
         if (property === '$and') {
             if (!Array.isArray(check[property])) {
-                throw new Error('$and requires an array');
+                throw new Error('$and requires an array as argument');
             }
-            return printErrorAndReturn(
+            return logErrorAndReturn(
                 (check[property] as ILogicCheck[]).every((c) =>
                     evaluateLogicCheckRec(c, obj)
                 )
@@ -53,24 +63,26 @@ const evaluateLogicCheckRec = (
         }
         if (property === '$or') {
             if (!Array.isArray(check[property])) {
-                throw new Error('$or requires an array');
+                throw new Error('$or requires an array as argument');
             }
-            return printErrorAndReturn(
+            return logErrorAndReturn(
                 (check[property] as ILogicCheck[]).some((c) =>
                     evaluateLogicCheckRec(c, obj)
                 )
             );
         }
         if (property === '$not') {
-            return printErrorAndReturn(
+            return logErrorAndReturn(
                 !evaluateLogicCheckRec(check[property], obj)
             );
         }
         if (property === '$defined') {
             if (!Object.keys((check as ILogicalOperator).$defined.$query)) {
-                throw new Error('$defined must have a $query inside it');
+                throw new Error(
+                    '$defined must have a $query object as argument'
+                );
             }
-            return printErrorAndReturn(
+            return logErrorAndReturn(
                 JSONPath({
                     path: (check as ILogicalOperator).$defined.$query,
                     json: obj,
@@ -83,56 +95,71 @@ const evaluateLogicCheckRec = (
             if (
                 !Array.isArray(check[property] || check[property].length !== 2)
             ) {
-                throw new Error('$nor requires an array with two entry');
+                throw new Error(
+                    '$nor requires an array with two entries as argument'
+                );
             }
-            return printErrorAndReturn(
+            return logErrorAndReturn(
                 !evaluateLogicCheckRec(check[property][0], obj) &&
                     !evaluateLogicCheckRec(check[property][1], obj)
             );
         }
+
+        // If we are here, the expression in the property must be a JSON path
+        // that we have to query
         const evaluatedPath = JSONPath({
             path: property,
             json: obj,
             preventEval: true,
             wrap: false
         });
-        const secondExpression = check[property];
+
+        // Evaluate the argument
+        const argument = check[property];
+
+        // If the argument is a literal, we compare equality
         if (
-            typeof secondExpression === 'boolean' ||
-            typeof secondExpression === 'string' ||
-            typeof secondExpression === 'number' ||
-            Array.isArray(secondExpression)
+            typeof argument === 'boolean' ||
+            typeof argument === 'string' ||
+            typeof argument === 'number' ||
+            Array.isArray(argument)
         ) {
-            return printErrorAndReturn(
-                compareEquality(evaluatedPath, secondExpression)
-            );
-        } else if (typeof secondExpression === 'object') {
-            if (Object.keys(secondExpression).length !== 1) {
+            return logErrorAndReturn(compareEquality(evaluatedPath, argument));
+        }
+        // If the argument is an object, we have to evaluate it as it is a
+        // query
+        else if (typeof argument === 'object') {
+            if (Object.keys(argument).length !== 1) {
                 throw new Error('Error in query: empty object');
             }
+            const argumentValue = Object.values(argument)[0];
 
-            const secondExpressionValue = Object.values(secondExpression)[0];
-            let evaluatedSecondExpression;
-            if (Object.keys(secondExpression)[0] === '$query') {
-                evaluatedSecondExpression = JSONPath({
-                    path: secondExpressionValue as string,
+            // We evaluated the value of the argument depending on what it is:
+            // - $query arguments are always JSON path, so we can evaluate the
+            //   JSON path
+            // - literals can stay as they are
+            // - objects are nested queries
+            let evaluatedArgument: string | number | boolean | any[];
+            if (Object.keys(argument)[0] === '$query') {
+                evaluatedArgument = JSONPath({
+                    path: argumentValue as string,
                     json: obj,
                     preventEval: true,
                     wrap: false
                 });
-                return printErrorAndReturn(
-                    compareEquality(evaluatedPath, evaluatedSecondExpression)
+                return logErrorAndReturn(
+                    compareEquality(evaluatedPath, evaluatedArgument)
                 );
             } else if (
-                typeof secondExpressionValue === 'boolean' ||
-                typeof secondExpressionValue === 'string' ||
-                typeof secondExpressionValue === 'number' ||
-                Array.isArray(secondExpressionValue)
+                typeof argumentValue === 'boolean' ||
+                typeof argumentValue === 'string' ||
+                typeof argumentValue === 'number' ||
+                Array.isArray(argumentValue)
             ) {
-                evaluatedSecondExpression = secondExpressionValue;
-            } else if (typeof secondExpressionValue === 'object') {
-                evaluatedSecondExpression = JSONPath({
-                    path: (secondExpressionValue as any).$query,
+                evaluatedArgument = argumentValue;
+            } else if (typeof argumentValue === 'object') {
+                evaluatedArgument = JSONPath({
+                    path: (argumentValue as any).$query,
                     json: obj,
                     preventEval: true,
                     wrap: false
@@ -140,80 +167,70 @@ const evaluateLogicCheckRec = (
             } else {
                 throw new Error('Unknown type in query');
             }
-            switch (Object.keys(secondExpression)[0]) {
+
+            // Equality operators
+            switch (Object.keys(argument)[0]) {
                 case '$eq':
-                    return printErrorAndReturn(
-                        compareEquality(
-                            evaluatedPath,
-                            evaluatedSecondExpression
-                        )
+                    return logErrorAndReturn(
+                        compareEquality(evaluatedPath, evaluatedArgument)
                     );
                 case '$gt':
-                    return printErrorAndReturn(
-                        evaluatedPath > evaluatedSecondExpression
-                    );
+                    return logErrorAndReturn(evaluatedPath > evaluatedArgument);
                 case '$gte':
-                    return printErrorAndReturn(
-                        evaluatedPath >= evaluatedSecondExpression
+                    return logErrorAndReturn(
+                        evaluatedPath >= evaluatedArgument
                     );
                 case '$in':
+                    // In also functions as the equality $eq if both values are
+                    // literals. The reason is that we unwrap JSON queries into
+                    // literals.
                     if (evaluatedPath === undefined) {
                         return true;
                     }
-                    if (!Array.isArray(evaluatedSecondExpression)) {
+                    if (!Array.isArray(evaluatedArgument)) {
                         if (!Array.isArray(evaluatedPath)) {
-                            return printErrorAndReturn(
-                                evaluatedPath == evaluatedSecondExpression
+                            return logErrorAndReturn(
+                                evaluatedPath == evaluatedArgument
                             );
                         }
-                        return printErrorAndReturn(false);
+                        return logErrorAndReturn(false);
                     }
 
                     if (!Array.isArray(evaluatedPath)) {
-                        return printErrorAndReturn(
-                            (evaluatedSecondExpression as any[]).includes(
-                                evaluatedPath
-                            )
+                        return logErrorAndReturn(
+                            (evaluatedArgument as any[]).includes(evaluatedPath)
                         );
                     } else {
-                        return printErrorAndReturn(
+                        return logErrorAndReturn(
                             evaluatedPath.every((p) =>
-                                (evaluatedSecondExpression as any[]).includes(p)
+                                (evaluatedArgument as any[]).includes(p)
                             )
                         );
                     }
                 case '$lt':
-                    return printErrorAndReturn(
-                        evaluatedPath < evaluatedSecondExpression
-                    );
+                    return logErrorAndReturn(evaluatedPath < evaluatedArgument);
                 case '$lte':
-                    return printErrorAndReturn(
-                        evaluatedPath <= evaluatedSecondExpression
+                    return logErrorAndReturn(
+                        evaluatedPath <= evaluatedArgument
                     );
                 case '$ne':
-                    return printErrorAndReturn(
-                        !compareEquality(
-                            evaluatedPath,
-                            evaluatedSecondExpression
-                        )
+                    return logErrorAndReturn(
+                        !compareEquality(evaluatedPath, evaluatedArgument)
                     );
                 case '$nin':
-                    if (!Array.isArray(evaluatedSecondExpression)) {
-                        return printErrorAndReturn(false);
+                    if (!Array.isArray(evaluatedArgument)) {
+                        return logErrorAndReturn(false);
                     }
                     if (!Array.isArray(evaluatedPath)) {
-                        return printErrorAndReturn(
-                            !(evaluatedSecondExpression as any[]).includes(
+                        return logErrorAndReturn(
+                            !(evaluatedArgument as any[]).includes(
                                 evaluatedPath
                             )
                         );
                     } else {
-                        return printErrorAndReturn(
+                        return logErrorAndReturn(
                             evaluatedPath.every(
-                                (p) =>
-                                    !(
-                                        evaluatedSecondExpression as any[]
-                                    ).includes(p)
+                                (p) => !(evaluatedArgument as any[]).includes(p)
                             )
                         );
                     }
