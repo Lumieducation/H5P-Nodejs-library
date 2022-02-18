@@ -88,7 +88,7 @@
         "promise-parallel-throttle": "3.3.0",
         "source-map-support": "0.5.21",
         "stream-mock": "2.0.5",
-        "ts-node": "10.4.0"
+        "ts-node": "10.5.0"
     },
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts"
