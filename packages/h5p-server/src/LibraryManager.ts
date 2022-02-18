@@ -23,6 +23,7 @@ import {
 } from './types';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
+import variantEquivalents from '../assets/variantEquivalents.json';
 
 const log = new Logger('LibraryManager');
 
@@ -150,51 +151,85 @@ export default class LibraryManager {
         library: ILibraryName,
         language: string
     ): Promise<string> {
+        const cleanLanguage = language.toLocaleLowerCase();
         try {
-            log.debug(
-                `loading language ${language} for library ${LibraryName.toUberName(
-                    library
-                )}`
+            // Try full language code first
+            return await this.getLanguageWithoutFallback(
+                library,
+                cleanLanguage
             );
-            const languageFileAsString =
-                await this.libraryStorage.getFileAsString(
-                    library,
-                    `language/${language}.json`
-                );
-            // If the implementation has specified one, we use a hook to alter
-            // the language files to match the structure of the altered
-            // semantics.
-            if (this.alterLibraryLanguageFile) {
-                log.debug('Calling hook to alter language file of library.');
-                return JSON.stringify({
-                    semantics: this.alterLibraryLanguageFile(
-                        library,
-                        JSON.parse(languageFileAsString).semantics,
-                        language
-                    )
-                });
-            }
-            return languageFileAsString;
         } catch (ignored) {
+            // The language file didn't exist
             log.debug(
-                `language '${language}' not found for ${LibraryName.toUberName(
+                `language '${cleanLanguage}' not found for ${LibraryName.toUberName(
                     library
                 )}`
             );
+
+            // Try known variant equivalents (e.g. zh-hans, zh-cn, zh)
+            const variantList = variantEquivalents
+                .find((l) => l.includes(cleanLanguage))
+                ?.filter((v) => v !== cleanLanguage);
+            if (variantList) {
+                for (const variant of variantList) {
+                    try {
+                        log.debug(`Trying variant equivalent ${variant}`);
+                        // eslint-disable-next-line no-await-in-loop
+                        return await this.getLanguageWithoutFallback(
+                            library,
+                            variant
+                        );
+                    } catch {
+                        log.debug(
+                            `Variant equivalent ${variant} not found. Continuing...`
+                        );
+                    }
+                }
+            }
+
+            // Try fallback to language without variant
             const languageCodeMatch = /^([a-zA-Z]+)-([a-zA-Z]+)$/.exec(
-                language
+                cleanLanguage
             );
             if (languageCodeMatch && languageCodeMatch.length === 3) {
                 log.debug(
-                    `Language code ${language} seems to contain country code. Trying without it.`
+                    `Language code ${cleanLanguage} seems to contain country code. Trying without it.`
                 );
-                return this.getLanguage(library, languageCodeMatch[1]);
+                try {
+                    return await this.getLanguageWithoutFallback(
+                        library,
+                        languageCodeMatch[1]
+                    );
+                } catch {
+                    log.debug(`Language ${languageCodeMatch[1]} not found`);
+                }
             }
-            if (language !== 'en' && language !== '.en') {
-                return this.getLanguage(library, 'en');
+
+            // Fallback to English
+            if (cleanLanguage !== 'en' && cleanLanguage !== '.en') {
+                try {
+                    return await this.getLanguageWithoutFallback(library, 'en');
+                } catch {
+                    log.debug('Language en not found');
+                }
+                try {
+                    return await this.getLanguageWithoutFallback(
+                        library,
+                        '.en'
+                    );
+                } catch {
+                    log.debug('Language .en not found');
+                }
             }
-            if (language === 'en') {
-                return this.getLanguage(library, '.en');
+            if (cleanLanguage === 'en') {
+                try {
+                    return await this.getLanguageWithoutFallback(
+                        library,
+                        '.en'
+                    );
+                } catch {
+                    log.debug('Language .en not found');
+                }
             }
             return null;
         }
@@ -869,5 +904,34 @@ export default class LibraryManager {
             await this.libraryStorage.deleteLibrary(newLibraryMetadata);
             throw error;
         }
+    }
+
+    private async getLanguageWithoutFallback(
+        library: ILibraryName,
+        language: string
+    ): Promise<string> {
+        log.debug(
+            `loading language ${language} for library ${LibraryName.toUberName(
+                library
+            )}`
+        );
+        const languageFileAsString = await this.libraryStorage.getFileAsString(
+            library,
+            `language/${language}.json`
+        );
+        // If the implementation has specified one, we use a hook to alter
+        // the language files to match the structure of the altered
+        // semantics.
+        if (this.alterLibraryLanguageFile) {
+            log.debug('Calling hook to alter language file of library.');
+            return JSON.stringify({
+                semantics: this.alterLibraryLanguageFile(
+                    library,
+                    JSON.parse(languageFileAsString).semantics,
+                    language
+                )
+            });
+        }
+        return languageFileAsString;
     }
 }

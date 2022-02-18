@@ -303,6 +303,46 @@ describe('basic file library manager functionality', () => {
         });
     });
 
+    it('returns the zh language file for language zh-CN', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        storage.getFileAsString = async (library, file): Promise<string> => {
+            if (file === 'language/zh.json') {
+                return '{}';
+            } else {
+                throw new Error('language file not there');
+            }
+        };
+        const libManager = new LibraryManager(storage);
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'zh-CN'
+        );
+        expect(JSON.parse(language)).toMatchObject({});
+    });
+
+    it('returns the zh-cn language file for language zh', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        storage.getFileAsString = async (library, file): Promise<string> => {
+            if (file === 'language/zh-cn.json') {
+                return '{}';
+            } else {
+                throw new Error('language file not there');
+            }
+        };
+        const libManager = new LibraryManager(storage);
+
+        const language = await libManager.getLanguage(
+            { machineName: 'H5P.Example1', majorVersion: 1, minorVersion: 1 },
+            'zh-CN'
+        );
+        expect(JSON.parse(language)).toMatchObject({});
+    });
+
     it('returns the de language file for de-DE', async () => {
         const libManager = new LibraryManager(
             new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
