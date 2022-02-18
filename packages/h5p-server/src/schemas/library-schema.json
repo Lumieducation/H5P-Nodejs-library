@@ -182,7 +182,9 @@
             "type": "object",
             "properties": {
                 "snapshotSchema": { "type": "boolean" },
-                "opSchema": { "type": "boolean" }
+                "opSchema": { "type": "boolean" },
+                "opLogicChecks": { "type": "boolean" },
+                "snapshotLogicChecks": { "type": "boolean" }
             }
         }
     },
