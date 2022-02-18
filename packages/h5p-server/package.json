@@ -61,6 +61,7 @@
         "merge": "^2.1.1",
         "mime-types": "^2.1.32",
         "nanoid": "^3.1.25",
+        "node-machine-id": "^1.1.12",
         "promisepipe": "^3.0.0",
         "qs": "^6.10.1",
         "sanitize-html": "^2.5.1",

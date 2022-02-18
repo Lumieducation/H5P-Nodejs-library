@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { crc32 } from 'crc';
 import * as merge from 'merge';
 import * as qs from 'qs';
+import { machineIdSync } from 'node-machine-id';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -84,8 +84,8 @@ export default class ContentTypeCache {
      * @returns id
      */
     private static generateLocalId(): string {
-        log.debug(`generating local Id`);
-        return crc32(__dirname);
+        log.debug(`Generating local id`);
+        return machineIdSync();
     }
 
     /**
