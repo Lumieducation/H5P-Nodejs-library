@@ -143,7 +143,7 @@ export default class LibraryManager {
     /**
      * Gets the language file for the specified language.
      * @param library
-     * @param cleanLanguage the language code
+     * @param language the language code
      * @returns a string with the contents language file; null if the library
      * isn't localized to the language
      */

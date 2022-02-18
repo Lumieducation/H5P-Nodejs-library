@@ -1197,7 +1197,7 @@ export default class H5PEditor {
      * a language and falls back to English if it doesn't. Also removes region
      * suffixes like the US in 'en-US' if it can't find a language file with
      * the suffix.
-     * @param clLanguage
+     * @param language
      */
     private getLanguageReplacer(language: string): (script: string) => string {
         const cleanLanguage = language.toLocaleLowerCase();
