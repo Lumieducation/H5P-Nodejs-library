@@ -188,7 +188,6 @@ export interface IIntegration {
      */
     contents?: {
         [key: string]: {
-            accessLevel?: 'privileged' | 'user';
             /**
              * Can be used to override the URL used for getting content files.
              * It must be a URL to which the actual filenames can be appended.

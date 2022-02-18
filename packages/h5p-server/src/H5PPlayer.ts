@@ -362,21 +362,6 @@ export default class H5PPlayer {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
 
-        let accessLevel: 'privileged' | 'user' | undefined = undefined;
-        if (this.options?.getPermissions) {
-            const permissions = await this.options?.getPermissions(
-                contentId,
-                user
-            );
-            if (permissions.length === 0) {
-                accessLevel = undefined;
-            } else if (permissions.includes(Permission.Edit)) {
-                accessLevel = 'privileged';
-            } else {
-                accessLevel = 'user';
-            }
-        }
-
         return {
             ajax: {
                 contentUserData: this.urlGenerator.contentUserData(user),
@@ -415,8 +400,7 @@ export default class H5PPlayer {
                     scripts: assets.scripts,
                     styles: assets.styles,
                     url: this.urlGenerator.uniqueContentUrl(contentId),
-                    exportUrl: this.urlGenerator.downloadPackage(contentId),
-                    accessLevel
+                    exportUrl: this.urlGenerator.downloadPackage(contentId)
                 }
             },
             core: {
