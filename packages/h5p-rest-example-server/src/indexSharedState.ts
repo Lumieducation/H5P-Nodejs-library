@@ -1,30 +1,43 @@
 import { dir, DirectoryResult } from 'tmp-promise';
+import { Strategy as LocalStrategy } from 'passport-local';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import http from 'http';
 import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
-import path from 'path';
 import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
+import path from 'path';
 import session from 'express-session';
+import { promisify } from 'util';
+import cors from 'cors';
 
 import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter
 } from '@lumieducation/h5p-express';
-
 import * as H5P from '@lumieducation/h5p-server';
+import SharedStateServer from '@lumieducation/h5p-shared-state-server';
+
 import restExpressRoutes from './routes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
+import { IUser, Permission } from '@lumieducation/h5p-server';
 
 let tmpDir: DirectoryResult;
+let sharedStateServer: SharedStateServer;
 
-const userTable = {
+const userTable: {
+    [username: string]: {
+        username: string;
+        name: string;
+        email: string;
+        type: 'teacher' | 'student';
+    };
+} = {
     teacher1: {
         username: 'teacher1',
         name: 'Teacher 1',
@@ -71,6 +84,28 @@ const initPassport = (): void => {
     passport.deserializeUser((user, done): void => {
         done(null, user);
     });
+};
+
+/**
+ * Maps the user received from passport to the one expected by
+ * h5p-express and h5p-server
+ **/
+const expressUserToH5PUser = (user?: {
+    username: string;
+    name: string;
+    email: string;
+    type: 'teacher' | 'student';
+}): IUser => {
+    if (user) {
+        return new User(
+            user.username,
+            user.name,
+            user.email,
+            user.type === 'teacher' ? 'teacher' : 'anonymous'
+        );
+    } else {
+        return new User('0', 'Anonymous', '', 'anonymous');
+    }
 };
 
 const start = async (): Promise<void> => {
@@ -138,7 +173,15 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
-        (key, language) => translationFunction(key, { lng: language })
+        (key, language) => translationFunction(key, { lng: language }),
+        {
+            contentWasDeleted: (contentId) => {
+                return sharedStateServer.deleteState(contentId);
+            },
+            contentWasUpdated: (contentId) => {
+                return sharedStateServer.deleteState(contentId);
+            }
+        }
     );
 
     h5pEditor.setRenderer((model) => model);
@@ -147,23 +190,45 @@ const start = async (): Promise<void> => {
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
-        config
+        config,
+        undefined,
+        undefined,
+        undefined,
+        {
+            getPermissions: async (contentId, user) => {
+                const foundUser = userTable[user.id];
+                if (!foundUser) {
+                    return [];
+                }
+                if (foundUser.type === 'teacher') {
+                    return [
+                        Permission.Delete,
+                        Permission.Download,
+                        Permission.Edit,
+                        Permission.Embed,
+                        Permission.List,
+                        Permission.View
+                    ];
+                }
+                return [Permission.Embed, Permission.View];
+            }
+        }
     );
 
     h5pPlayer.setRenderer((model) => model);
 
     // We now set up the Express server in the usual fashion.
-    const server = express();
+    const app = express();
 
-    server.use(bodyParser.json({ limit: '500mb' }));
-    server.use(
+    app.use(bodyParser.json({ limit: '500mb' }));
+    app.use(
         bodyParser.urlencoded({
             extended: true
         })
     );
 
     // Configure file uploads
-    server.use(
+    app.use(
         fileUpload({
             limits: { fileSize: h5pEditor.config.maxTotalSize },
             useTempFiles: useTempUploads,
@@ -173,45 +238,48 @@ const start = async (): Promise<void> => {
 
     // delete temporary files left over from uploads
     if (useTempUploads) {
-        server.use((req: express.Request & { files: any }, res, next) => {
+        app.use((req: express.Request & { files: any }, res, next) => {
             res.on('finish', async () => clearTempFiles(req));
             next();
         });
     }
 
     // Initialize session with cookie storage
-    server.use(
-        session({ secret: 'mysecret', resave: false, saveUninitialized: false })
-    );
+    const sessionParser = session({
+        secret: 'mysecret',
+        resave: false,
+        saveUninitialized: false
+    });
+    app.use(sessionParser);
+    const sessionParserPromise = promisify(sessionParser);
 
     // Initialize passport for login
     initPassport();
-    server.use(passport.initialize());
-    server.use(passport.session());
+    const passportInitialize = passport.initialize();
+    app.use(passportInitialize);
+    const passportInitializePromise = promisify(passportInitialize);
+
+    const passportSession = passport.session();
+    app.use(passportSession);
+    const passportSessionPromise = promisify(passportSession);
 
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    server.use(
+    app.use(
         (
-            req: express.Request & { user: H5P.IUser } & {
-                user: { username?: string; name?: string; email?: string };
+            req: express.Request & {
+                user?: {
+                    username: string;
+                    name: string;
+                    email: string;
+                    type: 'teacher' | 'student';
+                };
             },
             res,
             next
         ) => {
-            // Maps the user received from passport to the one expected by
-            // h5p-express and h5p-server
-            if (req.user) {
-                req.user = new User(
-                    req.user.username,
-                    req.user.name,
-                    req.user.email,
-                    req.user.type === 'teacher' ? 'teacher' : 'anonymous'
-                );
-            } else {
-                req.user = new User('0', 'Anonymous', '', 'anonymous');
-            }
+            req.user = expressUserToH5PUser(req.user) as any;
             next();
         }
     );
@@ -219,13 +287,13 @@ const start = async (): Promise<void> => {
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
     // (H5P.adapters.express) to function properly.
-    server.use(i18nextHttpMiddleware.handle(i18next));
+    app.use(i18nextHttpMiddleware.handle(i18next));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure
     // which endpoints you want to use. In this case we don't pass an options
     // object, which means we get all of them.
-    server.use(
+    app.use(
         h5pEditor.config.baseUrl,
         h5pAjaxExpressRouter(
             h5pEditor,
@@ -245,7 +313,7 @@ const start = async (): Promise<void> => {
     // - Editing content
     // - Saving content
     // - Deleting content
-    server.use(
+    app.use(
         h5pEditor.config.baseUrl,
         restExpressRoutes(
             h5pEditor,
@@ -258,21 +326,21 @@ const start = async (): Promise<void> => {
 
     // The LibraryAdministrationExpress routes are REST endpoints that offer
     // library management functionality.
-    server.use(
+    app.use(
         `${h5pEditor.config.baseUrl}/libraries`,
         libraryAdministrationExpressRouter(h5pEditor)
     );
 
     // The ContentTypeCacheExpress routes are REST endpoints that allow updating
     // the content type cache manually.
-    server.use(
+    app.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in
     // the session
-    server.post(
+    app.post(
         '/login',
         passport.authenticate('local', {
             failWithError: true
@@ -291,16 +359,79 @@ const start = async (): Promise<void> => {
         }
     );
 
-    server.post('/logout', (req, res) => {
+    app.post('/logout', (req, res) => {
         req.logout();
         res.status(200).send();
     });
+
+    /**
+     * The route returns information about the user. It is used by the client to
+     * find out who the user is and what privilege level he/she has.
+     */
+    app.get(
+        '/auth-data/:contentId',
+        cors({ credentials: true, origin: 'http://localhost:3000' }),
+        (req: express.Request<{ contentId: string }>, res) => {
+            if (!req.user) {
+                res.status(200).json({ level: 'anonymous' });
+            } else {
+                let level: string;
+                if (userTable[(req.user as any)?.id]?.type === 'teacher') {
+                    level = 'privileged';
+                } else {
+                    level = 'user';
+                }
+                res.status(200).json({
+                    level,
+                    userId: (req.user as any).id?.toString()
+                });
+            }
+        }
+    );
 
     const port = process.env.PORT || '8080';
 
     // For developer convenience we display a list of IPs, the server is running
     // on. You can then simply click on it in the terminal.
     displayIps(port);
+
+    // We need to create our own http server to pass it to the shared state
+    // package.
+    const server = http.createServer(app);
+
+    // Add shared state websocket and ShareDB to the server
+    sharedStateServer = new SharedStateServer(
+        server,
+        h5pEditor.libraryManager.libraryStorage.getLibrary.bind(
+            h5pEditor.libraryManager.libraryStorage
+        ),
+        h5pEditor.libraryManager.libraryStorage.getFileAsJson.bind(
+            h5pEditor.libraryManager.libraryStorage
+        ),
+        async (req: express.Request) => {
+            // We get the raw request that was upgraded to the websocket from
+            // SharedStateServer and have to get the user for it from the
+            // session. As the request hasn't passed through the express
+            // middleware, we have to call the required middleware ourselves.
+            await sessionParserPromise(req, {} as any);
+            await passportInitializePromise(req, {} as any);
+            await passportSessionPromise(req, {});
+            return expressUserToH5PUser(req.user as any);
+        },
+        async (user, contentId) => {
+            const userInTable = userTable[user.id];
+            if (!userInTable) {
+                return undefined;
+            }
+            return userInTable.type === 'teacher' ? 'privileged' : 'user';
+        },
+        h5pEditor.contentManager.getContentMetadata.bind(
+            h5pEditor.contentManager
+        ),
+        h5pEditor.contentManager.getContentParameters.bind(
+            h5pEditor.contentManager
+        )
+    );
 
     server.listen(port);
 };
