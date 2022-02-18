@@ -50,6 +50,8 @@ jobs:
                       - packages/h5p-react/node_modules
                       - packages/h5p-server/build
                       - packages/h5p-server/node_modules
+                      - packages/h5p-shared-state-server/build
+                      - packages/h5p-shared-state-server/node_modules
                       - packages/h5p-webcomponents/build
                       - packages/h5p-webcomponents/node_modules
                       - packages/h5p-rest-example-client/node_modules
