@@ -9,30 +9,28 @@ const log = debug('h5p:SharedStateServer:performOpLogicChecks');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
-        context: ShareDB.middleware.SubmitContext<ISharedStateAgent>,
+        context: ShareDB.middleware.SubmitContext,
         next: (err?: any) => void
     ): Promise<void> => {
-        if (context.agent.custom.fromServer) {
+        const agent = context.agent.custom as ISharedStateAgent;
+        if (agent.fromServer) {
             log('Letting op from server pass through');
             return next();
         }
 
-        if (
-            context.op &&
-            context.agent.custom.libraryMetadata.state?.opLogicChecks
-        ) {
+        if (context.op && agent.libraryMetadata.state?.opLogicChecks) {
             const opLogicCheck = await validatorRepository.getOpLogicCheck(
-                context.agent.custom.libraryMetadata
+                agent.libraryMetadata
             );
             if (
                 !checkLogic(
                     {
                         op: context.op.op,
                         create: context.op.create,
-                        params: context.agent.custom.params,
+                        params: agent.params,
                         context: {
-                            user: context.agent.custom.user,
-                            permission: context.agent.custom.permission
+                            user: agent.user,
+                            permission: agent.permission
                         },
                         snapshot: context.snapshot?.data
                     },

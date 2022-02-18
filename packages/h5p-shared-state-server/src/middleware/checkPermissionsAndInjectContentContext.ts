@@ -25,18 +25,19 @@ export default (
         getContentParameters: GetContentParametersFunction
     ) =>
     async (
-        context: ShareDB.middleware.SubmitContext<ISharedStateAgent>,
+        context: ShareDB.middleware.SubmitContext,
         next: (err?: any) => void
     ): Promise<void> => {
         const contentId = context.id;
-        const user = context.agent.custom.user as IUser;
+        const agent = context.agent.custom as ISharedStateAgent;
+        const user = agent.user as IUser;
 
         // Allow all operations by the server
-        if (context.agent.custom.fromServer) {
+        if (agent.fromServer) {
             return next();
         }
 
-        if (!user && !context.agent.custom.fromServer) {
+        if (!user && !agent.fromServer) {
             return next(new Error('No user data in submit request'));
         }
 
@@ -49,7 +50,7 @@ export default (
             );
             return next('You do not have permission to access this content.');
         }
-        context.agent.custom.permission = permission;
+        agent.permission = permission;
 
         log(
             'User %s (%s) is accessing %s with access level %s',
@@ -84,11 +85,10 @@ export default (
                 );
             }
             const params = await getContentParameters(contentId, user);
-            context.agent.custom.params = params;
+            agent.params = params;
 
-            context.agent.custom.ubername =
-                LibraryName.toUberName(libraryMetadata);
-            context.agent.custom.libraryMetadata = libraryMetadata;
+            agent.ubername = LibraryName.toUberName(libraryMetadata);
+            agent.libraryMetadata = libraryMetadata;
         }
 
         next();

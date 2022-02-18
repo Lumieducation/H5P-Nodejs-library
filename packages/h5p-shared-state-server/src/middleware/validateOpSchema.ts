@@ -8,22 +8,21 @@ const log = debug('h5p:SharedStateServer:validateOpSchema');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
-        context: ShareDB.middleware.SubmitContext<ISharedStateAgent>,
+        context: ShareDB.middleware.SubmitContext,
         next: (err?: any) => void
     ): Promise<void> => {
+        const agent = context.agent.custom as ISharedStateAgent;
+
         log('submit %O', context.op);
-        if (context.agent.custom.fromServer) {
+        if (agent.fromServer) {
             log('Letting op from server pass through');
             return next();
         }
 
-        if (
-            context.op &&
-            context.agent.custom.libraryMetadata.state?.opSchema
-        ) {
+        if (context.op && agent.libraryMetadata.state?.opSchema) {
             const opSchemaValidator =
                 await validatorRepository.getOpSchemaValidator(
-                    context.agent.custom.libraryMetadata
+                    agent.libraryMetadata
                 );
             if (
                 !opSchemaValidator({

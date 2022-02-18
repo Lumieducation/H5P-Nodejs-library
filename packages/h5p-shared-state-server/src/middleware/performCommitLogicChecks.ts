@@ -10,33 +10,34 @@ const log = debug('h5p:SharedStateServer:performCommitLogicChecks');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
-        context: ShareDB.middleware.CommitContext<ISharedStateAgent>,
+        context: ShareDB.middleware.CommitContext,
         next: (err?: any) => void
     ): Promise<void> => {
-        const user = context.agent.custom.user as IUser;
+        const agent = context.agent.custom as ISharedStateAgent;
+        const user = agent.user as IUser;
 
-        if (context.agent.custom.fromServer) {
+        if (agent.fromServer) {
             log('letting op from server pass through');
             return next();
         }
 
-        if (!user && !context.agent.custom.fromServer) {
+        if (!user && !agent.fromServer) {
             return next(new Error('No user data in submit request'));
         }
 
-        if (context.agent.custom.libraryMetadata.state?.snapshotLogicChecks) {
+        if (agent.libraryMetadata.state?.snapshotLogicChecks) {
             const snapshotLogicCheck =
                 await validatorRepository.getSnapshotLogicCheck(
-                    context.agent.custom.libraryMetadata
+                    agent.libraryMetadata
                 );
             if (
                 !checkLogic(
                     {
                         snapshot: context.snapshot.data,
-                        params: context.agent.custom.params,
+                        params: agent.params,
                         context: {
-                            user: context.agent.custom.user,
-                            permission: context.agent.custom.permission
+                            user: agent.user,
+                            permission: agent.permission
                         }
                     },
                     snapshotLogicCheck

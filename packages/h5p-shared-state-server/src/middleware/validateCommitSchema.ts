@@ -9,24 +9,25 @@ const log = debug('h5p:SharedStateServer:validateCommitSchema');
 
 export default (validatorRepository: ValidatorRepository) =>
     async (
-        context: ShareDB.middleware.CommitContext<ISharedStateAgent>,
+        context: ShareDB.middleware.CommitContext,
         next: (err?: any) => void
     ): Promise<void> => {
-        const user = context.agent.custom.user as IUser;
+        const agent = context.agent.custom as ISharedStateAgent;
+        const user = agent.user as IUser;
 
-        if (context.agent.custom.fromServer) {
+        if (agent.fromServer) {
             log('letting op from server pass through');
             return next();
         }
 
-        if (!user && !context.agent.custom.fromServer) {
+        if (!user && !agent.fromServer) {
             return next(new Error('No user data in submit request'));
         }
 
-        if (context.agent.custom.libraryMetadata.state?.snapshotSchema) {
+        if (agent.libraryMetadata.state?.snapshotSchema) {
             const snapshotSchemaValidator =
                 await validatorRepository.getSnapshotSchemaValidator(
-                    context.agent.custom.libraryMetadata
+                    agent.libraryMetadata
                 );
             if (!snapshotSchemaValidator(context.snapshot.data)) {
                 log(
