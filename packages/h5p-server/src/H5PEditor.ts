@@ -17,6 +17,7 @@ import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadat
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 import supportedLanguageList from '../assets/editorLanguages.json';
+import variantEquivalents from '../assets/variantEquivalents.json';
 
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -1196,19 +1197,41 @@ export default class H5PEditor {
      * a language and falls back to English if it doesn't. Also removes region
      * suffixes like the US in 'en-US' if it can't find a language file with
      * the suffix.
-     * @param language
+     * @param clLanguage
      */
     private getLanguageReplacer(language: string): (script: string) => string {
-        if (supportedLanguageList.includes(language)) {
+        const cleanLanguage = language.toLocaleLowerCase();
+
+        // obvious case: the language file exists
+        if (supportedLanguageList.includes(cleanLanguage)) {
             return (f) =>
-                f.replace('language/en.js', `language/${language}.js`);
+                f.replace('language/en.js', `language/${cleanLanguage}.js`);
         }
-        const languageWithRegion = language.replace(/-.+$/, '');
-        if (supportedLanguageList.includes(languageWithRegion)) {
+
+        // check if equivalent variants exist (e.g. zh-hans, zh-cn, zh)
+        const variantList = variantEquivalents.find((l) =>
+            l.includes(cleanLanguage)
+        );
+        if (variantList) {
+            const alternativeVariant = variantList.find((v) =>
+                supportedLanguageList.includes(v)
+            );
+            if (alternativeVariant) {
+                return (f) =>
+                    f.replace(
+                        'language/en.js',
+                        `language/${alternativeVariant}.js`
+                    );
+            }
+        }
+
+        // fallback to language without variant code
+        const languageWithoutVariant = cleanLanguage.replace(/-.+$/, '');
+        if (supportedLanguageList.includes(languageWithoutVariant)) {
             return (f) =>
                 f.replace(
                     'language/en.js',
-                    `language/${languageWithRegion}.js`
+                    `language/${languageWithoutVariant}.js`
                 );
         }
         return (f) => f;
