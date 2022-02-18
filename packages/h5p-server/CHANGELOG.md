@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.25.0 ([44f6ef7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/44f6ef78aaa9fdedde14b7d95b26027f2bfcb342))
+* **h5p-server:** variant equivalents for Chinese ([#2057](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2057)) ([0fd9cc6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0fd9cc644266312da487a549003f8b54bc455b5a))
+
+
+
+
+
 ## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
 
 **Note:** Version bump only for package @lumieducation/h5p-server

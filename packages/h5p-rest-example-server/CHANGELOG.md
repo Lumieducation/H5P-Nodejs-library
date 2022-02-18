@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.7 ([7e7e4ef](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7e7e4efb1e0a5c456427b1fb92f800075fd8002c))
+
+
+
+
+
 ## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
 
 
