@@ -212,10 +212,21 @@ export default class LibraryManager {
                 } catch {
                     log.debug('Language en not found');
                 }
+                try {
+                    return await this.getLanguageWithoutFallback(
+                        library,
+                        '.en'
+                    );
+                } catch {
+                    log.debug('Language .en not found');
+                }
             }
             if (cleanLanguage === 'en') {
                 try {
-                    return await this.getLanguage(library, '.en');
+                    return await this.getLanguageWithoutFallback(
+                        library,
+                        '.en'
+                    );
                 } catch {
                     log.debug('Language .en not found');
                 }
