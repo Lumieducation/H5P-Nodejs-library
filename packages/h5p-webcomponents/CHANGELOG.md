@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.9](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.1058.0 ([5777dc5](https://github.com/Lumieducation/h5p-webcomponents/commit/5777dc50284795d1085e4862636d8d6d5b633ddf))
+
+
+
+
+
+## [9.0.8](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.7...v9.0.8) (2022-01-14)
+
+**Note:** Version bump only for package @lumieducation/h5p-webcomponents
+
+
+
+
+
+## [9.0.7](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.6...v9.0.7) (2021-12-13)
+
+
+### Bug Fixes
+
+* **h5p-webcomponents:** corrected external dispatcher check in player ([6cd5cb8](https://github.com/Lumieducation/h5p-webcomponents/commit/6cd5cb8c531c7b63b9909267d9a25c815f3a81e9))
+
+
+
+
+
 ## [9.0.6](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 

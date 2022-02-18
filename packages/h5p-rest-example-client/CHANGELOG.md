@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.1058.0 ([5777dc5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5777dc50284795d1085e4862636d8d6d5b633ddf))
+* **deps:** update dependency dotenv to v12 ([#2034](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2034)) ([a40ad6f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a40ad6fb70656af4e40193a9bd5ae40c28bd360c))
+* **deps:** update dependency http-proxy-middleware to v2.0.2 ([940672f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/940672f68d30a36164cbee740e1f304cf7700e18))
+
+
+
+
+
+## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency express to v4.17.2 ([26af13f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/26af13f03cdca0b74a7814dd9285d43466bf4f07))
+* **deps:** update dependency react-bootstrap to v2.0.4 ([7fdcb82](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7fdcb8238c22fe013ae563db3bfc7fb8ae7583e9))
+* **deps:** update dependency react-bootstrap to v2.1.0 ([13e7787](https://github.com/Lumieducation/H5P-Nodejs-library/commit/13e7787cc04665c2d1dd24965a13380cd9195700))
+* **deps:** update dependency react-bootstrap to v2.1.1 ([5bb46e7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5bb46e79d8bb274c3c8a46a0c0cfe330ecbfb1f8))
+
+
+
+
+
+## [9.0.7](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.6...v9.0.7) (2021-12-13)
+
+**Note:** Version bump only for package @lumieducation/h5p-rest-example-client
+
+
+
+
+
 ## [9.0.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 
