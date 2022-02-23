@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.26.0 ([#2077](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2077)) ([752e4d5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/752e4d590ed65b1f2d35a70b05b147212cbc26fb))
+* **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+* **mongo s3 library storage:** windows paths converted to unix format ([cd9c1c0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/cd9c1c0282b88e2aaab6b664cbd0261011cb83fc))
+
+
+
+
+
 ## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
 
 
