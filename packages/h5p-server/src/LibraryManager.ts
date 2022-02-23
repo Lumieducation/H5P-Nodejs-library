@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 import fsExtra from 'fs-extra';
 import { getAllFiles } from 'get-all-files';
+import upath from 'upath';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -94,7 +95,7 @@ export default class LibraryManager {
         if (!this.config) {
             this.config = {
                 installLibraryLockMaxOccupationTime: 10000,
-                installLibraryLockTimeout: 20000
+                installLibraryLockTimeout: 120000
             };
         }
     }
@@ -770,7 +771,7 @@ export default class LibraryManager {
                     fsExtra.createReadStream(fileFullPath);
                 return this.libraryStorage.addFile(
                     libraryInfo,
-                    fileLocalPath,
+                    upath.toUnix(fileLocalPath),
                     readStream
                 );
             })

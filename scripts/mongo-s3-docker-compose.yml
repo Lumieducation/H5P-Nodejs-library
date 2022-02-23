@@ -20,10 +20,10 @@ services:
         ports:
             - 9000:9000
             - 9001:9001
-        command: ['server', '--console-address', ':9001', '/data']
+        command: ['server', '/data']
         environment:
-            MINIO_ROOT_USER: minioaccesskey
-            MINIO_ROOT_PASSWORD: miniosecret
+            MINIO_ACCESS_KEY: minioaccesskey
+            MINIO_SECRET_KEY: miniosecret
 
 volumes:
     mongodb_data:
