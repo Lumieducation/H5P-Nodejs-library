@@ -8,14 +8,15 @@
         "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
     },
     "scripts": {
-        "build:h5p-server": "npm run build --prefix packages/h5p-server",
         "build:h5p-examples": "npm run build --prefix packages/h5p-examples",
         "build:h5p-express": "npm run build --prefix packages/h5p-express",
         "build:h5p-html-exporter": "npm run build --prefix packages/h5p-html-exporter",
         "build:h5p-react": "npm run build --prefix packages/h5p-react",
-        "build:h5p-webcomponents": "npm run build --prefix packages/h5p-webcomponents",
         "build:h5p-redis-lock": "npm run build --prefix packages/h5p-redis-lock",
-        "build": "npm run build --prefix packages/h5p-server && concurrently \"npm run build --prefix packages/h5p-express\" \"npm run build --prefix packages/h5p-html-exporter\" \"npm run build --prefix packages/h5p-redis-lock\" \"npm run build --prefix packages/h5p-mongos3\" && concurrently \"npm run build --prefix packages/h5p-examples\" \"npm run build:h5p-webcomponents\" && npm run build:h5p-react",
+        "build:h5p-server": "npm run build --prefix packages/h5p-server",
+        "build:h5p-shared-state-server": "npm run build --prefix packages/h5p-shared-state-server",
+        "build:h5p-webcomponents": "npm run build --prefix packages/h5p-webcomponents",
+        "build": "npm run build --prefix packages/h5p-server && concurrently \"npm run build --prefix packages/h5p-express\" \"npm run build --prefix packages/h5p-html-exporter\" \"npm run build --prefix packages/h5p-redis-lock\" \"npm run build --prefix packages/h5p-mongos3\" && concurrently \"npm run build --prefix packages/h5p-shared-state-server\" \"npm run build --prefix packages/h5p-examples\" \"npm run build:h5p-webcomponents\" && npm run build:h5p-react",
         "download:content-type-cache": "ts-node scripts/update-real-content-type-cache.ts",
         "download:content": "node scripts/download-examples.js test/data/content-type-cache/real-content-types.json test/data/hub-content",
         "download:h5p": "sh scripts/install.sh",
@@ -25,6 +26,7 @@
         "lint:main": "eslint -c .eslintrc.js --ext .ts packages --quiet",
         "lint:rest-client": "npm run lint --prefix packages/h5p-rest-example-client",
         "lint": "concurrently \"npm:lint:main\" \"npm:lint:rest-client\" \"npm:lint:docs\"",
+        "localize": "./localize.sh",
         "postinstall": "npx lerna bootstrap && concurrently \"npm run build\" \"npm run download:content-type-cache && npm run download:h5p\"",
         "pre-commit": "concurrently \"npm:lint\" \"npm:format\"",
         "prepare": "husky install",
@@ -44,6 +46,7 @@
         "test:e2e": "npm run test:e2e --prefix packages/h5p-examples",
         "test:h5p-mongos3": "npm test --prefix packages/h5p-mongos3",
         "test:h5p-redis-lock": "npm test --prefix packages/h5p-redis-lock",
+        "test:h5p-shared-state-server": "jest packages/h5p-shared-state-server/test",
         "test:html-exporter": "jest --config packages/h5p-html-exporter/jest.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`} && npm run test:h5p-redis-lock",
         "test:server+upload": "npm run test:server+upload --prefix packages/h5p-server",
@@ -51,8 +54,7 @@
         "test:watch:h5p-express": "npm run test:watch --prefix packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --prefix packages/h5p-mongos3",
         "test:watch": "jest --watch --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "localize": "./localize.sh"
+        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}"
     },
     "release": {
         "branch": "release"

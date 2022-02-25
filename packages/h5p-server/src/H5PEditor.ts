@@ -219,7 +219,11 @@ export default class H5PEditor {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
-        return this.contentManager.deleteContent(contentId, user);
+        await this.contentManager.deleteContent(contentId, user);
+
+        if (this.options?.hooks?.contentWasDeleted) {
+            this.options.hooks.contentWasDeleted(contentId, user);
+        }
     }
 
     /**
@@ -773,6 +777,24 @@ export default class H5PEditor {
             libraryName,
             user
         );
+
+        if (contentId && this.options?.hooks?.contentWasUpdated) {
+            this.options.hooks.contentWasUpdated(
+                newContentId,
+                h5pJson,
+                parameters,
+                user
+            );
+        }
+        if (!contentId && this.options?.hooks.contentWasCreated) {
+            this.options.hooks.contentWasCreated(
+                newContentId,
+                h5pJson,
+                parameters,
+                user
+            );
+        }
+
         return { id: newContentId, metadata: h5pJson };
     }
 
