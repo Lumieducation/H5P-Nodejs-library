@@ -253,7 +253,7 @@ describe('Rendering the HTML page', () => {
                     }
                   },
                   "postUserStatistics": false,
-                  "saveFreq": 30,
+                  "saveFreq": 5,
                   "url": "/h5p",
                   "hubIsEnabled": true,
                   "fullscreenDisabled": 0,
@@ -636,7 +636,7 @@ describe('Rendering the HTML page', () => {
                         }
                       },
                       "postUserStatistics": false,
-                      "saveFreq": 30,
+                      "saveFreq": 5,
                       "url": "/h5p",
                       "hubIsEnabled": true,
                       "fullscreenDisabled": 0,
