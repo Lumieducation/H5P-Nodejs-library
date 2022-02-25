@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.25.0 ([44f6ef7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/44f6ef78aaa9fdedde14b7d95b26027f2bfcb342))
+* **deps:** update dependency dotenv to v12 ([#2034](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2034)) ([a40ad6f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a40ad6fb70656af4e40193a9bd5ae40c28bd360c))
+* **deps:** update dependency i18next to v21.6.7 ([7e7e4ef](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7e7e4efb1e0a5c456427b1fb92f800075fd8002c))
+
+
+
+
+
+## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency express to v4.17.2 ([26af13f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/26af13f03cdca0b74a7814dd9285d43466bf4f07))
+* **deps:** update dependency i18next to v21 ([#1779](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1779)) ([0e6551a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0e6551a65b9030afe7fbe42886eac6412f1b0f81))
+* **deps:** update dependency i18next to v21.6.5 ([a6bccd1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a6bccd1b70b9ca09f1b7876b82b4b37dc2d2e0af))
+* **deps:** update dependency i18next to v21.6.6 ([778d1ac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/778d1acb908bb2e44f1bc412acf6293c5380e0a3))
+* **deps:** update dependency i18next-http-middleware to v3.1.5 ([90a940a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/90a940a2480680121c4369e153052faa89ae2c4f))
+
+
+
+
+
 ## [9.0.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 

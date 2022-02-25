@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-redis-lock",
-    "version": "9.0.6",
+    "version": "9.0.9",
     "description": "A simple Redis-based lock",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -24,7 +24,7 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^9.0.6",
+        "@lumieducation/h5p-server": "^9.0.9",
         "ioredis": "^4.28.0",
         "simple-redis-mutex": "^1.1.0"
     },
@@ -32,7 +32,7 @@
     "types": "./build/RedisLockProvider.d.ts",
     "devDependencies": {
         "@types/ioredis-mock": "5.6.0",
-        "ioredis-mock": "5.8.1",
+        "ioredis-mock": "7.0.1",
         "tmp-promise": "3.0.3"
     }
 }
