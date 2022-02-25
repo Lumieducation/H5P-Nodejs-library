@@ -5,6 +5,7 @@ import {
 } from '@lumieducation/h5p-server';
 
 import { IRequestWithUser } from '../expressTypes';
+import { IAjaxResponse } from 'packages/h5p-server/src/types';
 
 interface IPostContentUserDataRequest
     extends IPostContentUserData,
@@ -18,10 +19,7 @@ export default class ContentUserDataController {
      */
     public getContentUserData = async (
         req: IRequestWithUser,
-        res: express.Response<{
-            data: string;
-            success: boolean;
-        }>
+        res: express.Response<IAjaxResponse<string>>
     ): Promise<void> => {
         const { contentId, dataType, subContentId } = req.params;
         const userState = await this.contentUserDataManager.loadContentUserData(

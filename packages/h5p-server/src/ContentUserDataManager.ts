@@ -10,8 +10,9 @@ import H5pError from './helpers/H5pError';
 const log = new Logger('ContentUserDataManager');
 
 /**
- * The ContentUserDataManager takes care of saving user data and states. It only contains storage-agnostic functionality and
- * depends on a ContentUserDataStorage object to do the actual persistence.
+ * The ContentUserDataManager takes care of saving user data and states. It only
+ * contains storage-agnostic functionality and depends on a
+ * ContentUserDataStorage object to do the actual persistence.
  */
 export default class ContentUserDataManager {
     /**
@@ -22,11 +23,13 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Deletes a contentUserData object for given contentId and userId
-     * Throws errors if something goes wrong.
+     * Deletes a contentUserData object for given contentId and userId. Throws
+     * errors if something goes wrong.
      * @param contentId The content id to delete.
-     * @param userId the userId for which the contentUserData object should be deleted
-     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
+     * @param userId the userId for which the contentUserData object should be
+     * deleted
+     * @param requestingUser The user who wants to delete the content (not the
+     * user the contentUserData belongs to)
      */
     public async deleteContentUserDataByUserId(
         contentId: ContentId,
@@ -65,7 +68,7 @@ export default class ContentUserDataManager {
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
-     * @param user The user who owns this object
+     * @param user The user who is accessing the h5p
      * @returns the saved state as string or undefined when not found
      */
     public async loadContentUserData(
@@ -91,11 +94,15 @@ export default class ContentUserDataManager {
     }
 
     /**
-     * Loads the contentUserData for given contentId and user. The returned data is an array of IContentUserData where the position in the array corresponds with the subContentId or undefined if there is no contentUserData.
+     * Loads the content user data for given contentId and user. The returned data
+     * is an array of IContentUserData where the position in the array
+     * corresponds with the subContentId or undefined if there is no
+     * content user data.
      *
      * @param contentId The id of the content to load user data from
-     * @param user The user who owns this object
-     * @returns an array of IContentUserData or undefined if no contentUserData is found.
+     * @param user The user who is accessing the h5p
+     * @returns an array of IContentUserData or undefined if no content user data
+     * is found.
      */
     public async generateContentUserDataIntegration(
         contentId: ContentId,
@@ -131,17 +138,17 @@ export default class ContentUserDataManager {
      * @param score the score the user reached as an integer
      * @param maxScore the maximum score of the content
      * @param openend the time the user opened the content as UNIX time
-     * @param finished the time the user finished the content as UNIX time
-     * @param time the time the user needed to complete the content (as integer)
+     * @param finishedTimestamp the time the user finished the content as UNIX time
+     * @param completionTime the time the user needed to complete the content (as integer)
      * @param user The user who triggers this method via /setFinished
      */
     public async setFinished(
         contentId: ContentId,
         score: number,
         maxScore: number,
-        opened: number,
-        finished: number,
-        time: number,
+        openedTimestamp: number,
+        finishedTimestamp: number,
+        completionTime: number,
         user: IUser
     ): Promise<void> {
         log.debug(
@@ -156,9 +163,9 @@ export default class ContentUserDataManager {
             contentId,
             score,
             maxScore,
-            opened,
-            finished,
-            time,
+            openedTimestamp,
+            finishedTimestamp,
+            completionTime,
             user
         );
     }
@@ -175,7 +182,7 @@ export default class ContentUserDataManager {
     public async saveContentUserData(
         contentId: ContentId,
         dataType: string,
-        subcontentId: string,
+        subContentId: string,
         userState: string,
         invalidate: boolean,
         preload: boolean,
@@ -187,14 +194,16 @@ export default class ContentUserDataManager {
 
         if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
             log.error(`invalid arguments passed for contentId ${contentId}`);
-            throw new H5pError('invalid-arguments');
+            throw new Error(
+                "saveContentUserData received invalid arguments: invalidate or preload weren't boolean"
+            );
         }
 
         if (this.contentUserDataStorage) {
             return this.contentUserDataStorage.saveContentUserData(
                 contentId,
                 dataType,
-                subcontentId,
+                subContentId,
                 userState,
                 invalidate,
                 preload,

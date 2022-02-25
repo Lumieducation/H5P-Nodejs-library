@@ -427,7 +427,10 @@ export default class H5PPlayer {
             },
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: false,
-            saveFreq: Number(this.config.contentUserStateSaveInterval) / 1000,
+            saveFreq:
+                this.config.contentUserStateSaveInterval !== false
+                    ? Number(this.config.contentUserStateSaveInterval) / 1000
+                    : false,
             url: this.urlGenerator.baseUrl(),
             hubIsEnabled: true,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,

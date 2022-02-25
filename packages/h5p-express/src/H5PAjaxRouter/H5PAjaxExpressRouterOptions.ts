@@ -3,6 +3,7 @@
  */
 export default class H5PAjaxExpressRouterOptions {
     public handleErrors?: boolean = true;
+    public routeContentUserData?: boolean = true;
     public routeCoreFiles?: boolean = true;
     public routeEditorCoreFiles?: boolean = true;
     public routeGetAjax?: boolean = true;
@@ -12,5 +13,4 @@ export default class H5PAjaxExpressRouterOptions {
     public routeGetParameters?: boolean = true;
     public routeGetTemporaryContentFile?: boolean = true;
     public routePostAjax?: boolean = true;
-    public routeContentUserData?: boolean = true;
 }

@@ -23,11 +23,11 @@ export enum Permission {
 /**
  * A response that is sent back to an AJAX call.
  */
-export interface IAjaxResponse {
+export interface IAjaxResponse<T = any> {
     /**
      * The actual payload. Only to be filled in if the request was successful.
      */
-    data?: any;
+    data?: T;
     /**
      * Better description of the error and possibly also which action to take. Only to be filled out if success is false.
      */
@@ -553,8 +553,9 @@ export interface IContentUserData {
 }
 
 /**
- * Implementations can implement the IContentUserDataStorage interface and pass it to the constructor of
- * H5PEditor or H5PPlayer if they wish to keep the user state and allows users to continue where they left off.
+ * Implementations can implement the IContentUserDataStorage interface and pass
+ * it to the constructor of H5PEditor or H5PPlayer if they wish to keep the user
+ * state and allows users to continue where they left off.
  */
 export interface IContentUserDataStorage {
     /**
@@ -578,8 +579,10 @@ export interface IContentUserDataStorage {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param userState The userState as string
-     * @param invalidate Indicates that data should be invalidated when content changes.
-     * @param preload Indicates that data should be loaded when content is loaded.
+     * @param invalidate Indicates that data should be invalidated when content
+     * changes.
+     * @param preload Indicates that data should be loaded when content is
+     * loaded.
      * @param user The user who owns this object
      * @returns the saved state as string
      */
@@ -594,11 +597,11 @@ export interface IContentUserDataStorage {
     ): Promise<void>;
 
     /**
-     * Deletes a contentUserData object.
-     * Throws errors if something goes wrong.
+     * Deletes a contentUserData object. Throws errors if something goes wrong.
      * @param contentId The content id to delete.
      * @param userId the userId of the contentUserData that should be deleted
-     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
+     * @param requestingUser The user who wants to delete the content (not the
+     * user the contentUserData belongs to)
      */
     deleteContentUserDataByUserId(
         contentId: ContentId,
@@ -608,16 +611,19 @@ export interface IContentUserDataStorage {
 
     /**
      * Retrieves all contentUserData for a gien userId
-     * @param userId the userId for which the contentUserData should be retrieved.
+     * @param userId the userId for which the contentUserData should be
+     * retrieved.
      */
     listContentUserDataByUserId(userId: string): Promise<IContentUserData[]>;
 
     /**
-     * Deletes all userContentData objects for a given contentId. (Used when deleting content)
-     * Throws errors if something goes wrong.
+     * Deletes all userContentData objects for a given contentId. (Used when
+     * deleting content) Throws errors if something goes wrong.
      * @param contentId The content id to delete.
-     * @param userId the userId for which the contentUserData object should be deleted
-     * @param requestingUser The user who wants to delete the content (not the user the contentUserData belongs to)
+     * @param userId the userId for which the contentUserData object should be
+     * deleted
+     * @param requestingUser The user who wants to delete the content (not the
+     * user the contentUserData belongs to)
      */
     deleteAllContentUserDataByContentId(
         contentId: ContentId,
@@ -630,17 +636,19 @@ export interface IContentUserDataStorage {
      * @param score the score the user reached as an integer
      * @param maxScore the maximal score of the content
      * @param openend the time the user opened the content as UNIX time
-     * @param finished the time the user finished the content as UNIX time
-     * @param time the time the user needed to complete the content (as integer)
+     * @param finishedTimestamp the time the user finished the content as UNIX
+     * time
+     * @param completionTime the time the user needed to complete the content
+     * (as integer)
      * @param user The user who triggers this method via /setFinished
      */
     saveFinishedDataForUser(
         contentId: ContentId,
         score: number,
         maxScore: number,
-        opened: number,
-        finished: number,
-        time: number,
+        openedTimestamp: number,
+        finishedTimestamp: number,
+        completionTime: number,
         user: IUser
     ): Promise<void>;
 
@@ -648,7 +656,8 @@ export interface IContentUserDataStorage {
      * Lists all associated contentUserData for a given contentId and userId.
      * @param contentId The id of the content to load user data from
      * @param userId The id of the user to load user data from
-     * @returns An array of objects containing the dataType, subContentId and the contentUserState as string in the data field.
+     * @returns An array of objects containing the dataType, subContentId and
+     * the contentUserState as string in the data field.
      */
     listByContent(
         contentId: ContentId,
@@ -657,17 +666,17 @@ export interface IContentUserDataStorage {
 }
 
 /**
- * Implementations need to implement the IContentStorage interface and pass it to the constructor of
- * H5PEditor.
- * It is used to persist content data (semantic data, images, videos etc.) permanently.
- * See the FileContentStorage sample implementation in the examples directory for more details.
+ * Implementations need to implement the IContentStorage interface and pass it
+ * to the constructor of H5PEditor. It is used to persist content data (semantic
+ * data, images, videos etc.) permanently. See the FileContentStorage sample
+ * implementation in the examples directory for more details.
  */
 export interface IContentStorage {
     /**
-     * Creates a content object in the repository. Content files (like images) are added to it later
-     * with addFile(...).
-     * Throws an error if something went wrong. In this case the calling method will remove all traces of
-     * the content and all changes are reverted.
+     * Creates a content object in the repository. Content files (like images)
+     * are added to it later with addFile(...). Throws an error if something
+     * went wrong. In this case the calling method will remove all traces of the
+     * content and all changes are reverted.
      * @param metadata The content metadata of the content (= h5p.json)
      * @param content the content object (= content/content.json)
      * @param user The user who owns this object.
@@ -682,9 +691,11 @@ export interface IContentStorage {
     ): Promise<ContentId>;
 
     /**
-     * Adds a content file to an existing content object. The content object has to be created with addContent(...) first.
+     * Adds a content file to an existing content object. The content object has
+     * to be created with addContent(...) first.
      * @param contentId The id of the content to add the file to
-     * @param filename The filename; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param filename The filename; can be a path including subdirectories
+     * (e.g. 'images/xyz.png')
      * @param readStream A readable stream that contains the data
      * @param user (optional) The user who owns this object
      */
@@ -713,7 +724,8 @@ export interface IContentStorage {
     /**
      * Deletes a file from a content object.
      * @param contentId the content object the file is attached to
-     * @param filename the file to delete; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param filename the file to delete; can be a path including
+     * subdirectories (e.g. 'images/xyz.png')
      */
     deleteFile(
         contentId: ContentId,
@@ -724,13 +736,15 @@ export interface IContentStorage {
     /**
      * Checks if a file exists.
      * @param contentId The id of the content to add the file to
-     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param filename the filename of the file to get; can be a path including
+     * subdirectories (e.g. 'images/xyz.png')
      * @returns true if the file exists
      */
     fileExists(contentId: ContentId, filename: string): Promise<boolean>;
 
     /**
-     * Returns information about a content file (e.g. image or video) inside a piece of content.
+     * Returns information about a content file (e.g. image or video) inside a
+     * piece of content.
      * @param id the id of the content object that the file is attached to
      * @param filename the filename of the file to get information about
      * @param user the user who wants to retrieve the content file
@@ -743,12 +757,16 @@ export interface IContentStorage {
     ): Promise<IFileStats>;
 
     /**
-     * Returns a readable stream of a content file (e.g. image or video) inside a piece of content
+     * Returns a readable stream of a content file (e.g. image or video) inside
+     * a piece of content
      * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get; can be a path including subdirectories (e.g. 'images/xyz.png')
+     * @param filename the filename of the file to get; can be a path including
+     * subdirectories (e.g. 'images/xyz.png')
      * @param user the user who wants to retrieve the content file
-     * @param rangeStart (optional) the position in bytes at which the stream should start
-     * @param rangeEnd (optional) the position in bytes at which the stream should end
+     * @param rangeStart (optional) the position in bytes at which the stream
+     * should start
+     * @param rangeEnd (optional) the position in bytes at which the stream
+     * should end
      * @returns the stream (that can be used to send the file to the user)
      */
     getFileStream(
@@ -762,7 +780,8 @@ export interface IContentStorage {
     /**
      * Returns the content metadata (=h5p.json) for a content id
      * @param contentId the content id for which to retrieve the metadata
-     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @param user (optional) the user who wants to access the metadata. If
+     * undefined, access must be granted.
      * @returns the metadata
      */
     getMetadata(contentId: ContentId, user?: IUser): Promise<IContentMetadata>;
@@ -770,7 +789,8 @@ export interface IContentStorage {
     /**
      * Returns the content object (=content.json) for a content id
      * @param contentId the content id for which to retrieve the metadata
-     * @param user (optional) the user who wants to access the metadata. If undefined, access must be granted.
+     * @param user (optional) the user who wants to access the metadata. If
+     * undefined, access must be granted.
      * @returns the content object
      */
     getParameters(
@@ -792,7 +812,8 @@ export interface IContentStorage {
      * Returns an array of permissions that the user has on the piece of content
      * @param contentId the content id to check
      * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it, delete it etc.)
+     * @returns the permissions the user has for this content (e.g. download it,
+     * delete it etc.)
      */
     getUserPermissions(
         contentId: ContentId,
@@ -800,26 +821,28 @@ export interface IContentStorage {
     ): Promise<Permission[]>;
 
     /**
-     * Lists the content objects in the system (if no user is specified) or owned by the user.
+     * Lists the content objects in the system (if no user is specified) or
+     * owned by the user.
      * @param user (optional) the user who owns the content
      * @returns a list of contentIds
      */
     listContent(user?: IUser): Promise<ContentId[]>;
 
     /**
-     * Gets the filenames of files added to the content with addFile(...) (e.g. images, videos or other files)
+     * Gets the filenames of files added to the content with addFile(...) (e.g.
+     * images, videos or other files)
      * @param contentId the piece of content
      * @param user the user who wants to access the piece of content
-     * @returns a list of files that are used in the piece of content, e.g. ['images/image1.png', 'videos/video2.mp4', 'file.xyz']
+     * @returns a list of files that are used in the piece of content, e.g.
+     * ['images/image1.png', 'videos/video2.mp4', 'file.xyz']
      */
     listFiles(contentId: ContentId, user: IUser): Promise<string[]>;
 
     /**
      * Removes invalid characters from filenames and enforces other filename
      * rules required by the storage implementation (e.g. filename length
-     * restrictions).
-     * Note: file names will be appended with a 9 character long unique id,
-     * so you must make sure to shorten long filenames accordingly!
+     * restrictions). Note: file names will be appended with a 9 character long
+     * unique id, so you must make sure to shorten long filenames accordingly!
      * If you do not implement this method, there will be no sanitization!
      * @param filename the filename to sanitize; this can be a relative path
      * (e.g. "images/image1.png")
@@ -829,18 +852,20 @@ export interface IContentStorage {
 }
 
 /**
- * Implementations need to implement the ILibraryStorage interface and pass it to H5PEditor.
- * It is used to persist library information and files permanently.
- * Note that the library metadata and semantics are accessed regularly, so caching them is a good idea.
- * The library files will also be accessed frequently, so it makes sense to keep them in memory and not
- * access a hard disk every time they are downloaded.
- * See the FileLibraryStorage sample implementation in the examples directory for more details.
+ * Implementations need to implement the ILibraryStorage interface and pass it
+ * to H5PEditor. It is used to persist library information and files
+ * permanently. Note that the library metadata and semantics are accessed
+ * regularly, so caching them is a good idea. The library files will also be
+ * accessed frequently, so it makes sense to keep them in memory and not access
+ * a hard disk every time they are downloaded. See the FileLibraryStorage sample
+ * implementation in the examples directory for more details.
  */
 export interface ILibraryStorage {
     /**
-     * Adds a library file to a library. The library metadata must have been installed with addLibrary(...) first.
-     * Throws an error if something unexpected happens. In this case the method calling addFile(...) will clean
-     * up the partly installed library.
+     * Adds a library file to a library. The library metadata must have been
+     * installed with addLibrary(...) first. Throws an error if something
+     * unexpected happens. In this case the method calling addFile(...) will
+     * clean up the partly installed library.
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
      * @param stream The stream containing the file content
@@ -853,12 +878,15 @@ export interface ILibraryStorage {
     ): Promise<boolean>;
 
     /**
-     * Adds the metadata of the library to the repository and assigns a new id to the installed library.
-     * This dea is used later when the library must be referenced somewhere.
-     * Throws errors if something goes wrong.
-     * @param libraryMetadata The library metadata object (= content of library.json)
-     * @param restricted True if the library can only be used be users allowed to install restricted libraries.
-     * @returns The newly created library object to use when adding library files with addFile(...)
+     * Adds the metadata of the library to the repository and assigns a new id
+     * to the installed library. This dea is used later when the library must be
+     * referenced somewhere. Throws errors if something goes wrong.
+     * @param libraryMetadata The library metadata object (= content of
+     * library.json)
+     * @param restricted True if the library can only be used be users allowed
+     * to install restricted libraries.
+     * @returns The newly created library object to use when adding library
+     * files with addFile(...)
      */
     addLibrary(
         libraryData: ILibraryMetadata,
@@ -866,7 +894,8 @@ export interface ILibraryStorage {
     ): Promise<IInstalledLibrary>;
 
     /**
-     * Removes all files of a library. Doesn't delete the library metadata. (Used when updating libraries.)
+     * Removes all files of a library. Doesn't delete the library metadata.
+     * (Used when updating libraries.)
      * @param library the library whose files should be deleted
      */
     clearFiles(library: ILibraryName): Promise<void>;
@@ -948,7 +977,8 @@ export interface ILibraryStorage {
     /**
      * Gets a list of installed language files for the library.
      * @param library The library to get the languages for
-     * @returns The list of JSON files in the language folder (without the extension .json)
+     * @returns The list of JSON files in the language folder (without the
+     * extension .json)
      */
     getLanguages(library: ILibraryName): Promise<string[]>;
 
@@ -1000,9 +1030,10 @@ export interface ILibraryStorage {
     ): Promise<boolean>;
 
     /**
-     * Updates the library metadata. This is necessary when updating to a new patch version.
-     * After this clearFiles(...) is called by the LibraryManager to remove all old files.
-     * The next step is to add the patched files with addFile(...).
+     * Updates the library metadata. This is necessary when updating to a new
+     * patch version. After this clearFiles(...) is called by the LibraryManager
+     * to remove all old files. The next step is to add the patched files with
+     * addFile(...).
      * @param libraryMetadata the new library metadata
      * @returns The updated library object
      */
@@ -1012,9 +1043,10 @@ export interface ILibraryStorage {
 }
 
 /**
- * This is the actual "content itself", meaning the object contained in content.json. It is
- * created by the JavaScript editor client and played out by the JavaScript player. Its structure
- * can vary depending on the semantics associated with the main library of the content.
+ * This is the actual "content itself", meaning the object contained in
+ * content.json. It is created by the JavaScript editor client and played out by
+ * the JavaScript player. Its structure can vary depending on the semantics
+ * associated with the main library of the content.
  */
 export type ContentParameters = any;
 

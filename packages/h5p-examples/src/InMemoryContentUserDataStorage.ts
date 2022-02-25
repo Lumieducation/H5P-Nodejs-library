@@ -17,13 +17,15 @@ let userFinishedData: {
     contentId: ContentId;
     score: number;
     maxScore: number;
-    opened: number;
-    finished: number;
-    time: number;
+    openedTimestamp: number;
+    finishedTimestamp: number;
+    completionTime: number;
     user: IUser;
 }[] = [];
 
-export default class ContentUserDataStorage implements IContentUserDataStorage {
+export default class InMemoryContentUserDataStorage
+    implements IContentUserDataStorage
+{
     public async loadContentUserData(
         contentId: ContentId,
         dataType: string,
@@ -78,18 +80,18 @@ export default class ContentUserDataStorage implements IContentUserDataStorage {
         contentId: ContentId,
         score: number,
         maxScore: number,
-        opened: number,
-        finished: number,
-        time: number,
+        openedTimestamp: number,
+        finishedTimestamp: number,
+        completionTime: number,
         user: IUser
     ): Promise<void> {
         userFinishedData.push({
             contentId,
             score,
             maxScore,
-            opened,
-            finished,
-            time,
+            openedTimestamp,
+            finishedTimestamp,
+            completionTime,
             user
         });
     }

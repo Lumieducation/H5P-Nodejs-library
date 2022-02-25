@@ -8,7 +8,7 @@ import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
 
-import ContentUserDaraStorage from './contentUserDataStorage';
+import InMemoryContentUserDataStorage from './InMemoryContentUserDataStorage';
 /**
  * Create a H5PEditor object.
  * Which storage classes are used depends on the configuration values set in
@@ -125,7 +125,7 @@ export default async function createH5PEditor(
         );
     }
 
-    const contentUserDaraStorage = new ContentUserDaraStorage();
+    const contentUserDataStorage = new InMemoryContentUserDataStorage();
 
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
@@ -182,7 +182,7 @@ export default async function createH5PEditor(
             enableLibraryNameLocalization: true,
             lockProvider: lock
         },
-        contentUserDaraStorage
+        contentUserDataStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
