@@ -48,7 +48,7 @@
         "ajv": "^8.6.3",
         "ajv-keywords": "^5.0.0",
         "async-lock": "^1.3.0",
-        "axios": "^0.25.0",
+        "axios": "^0.26.0",
         "cache-manager": "^3.4.4",
         "crc": "^3.8.0",
         "debug": "^4.3.2",
@@ -75,7 +75,7 @@
         "@types/async-lock": "1.1.3",
         "@types/escape-html": "1.0.1",
         "@types/fs-extra": "9.0.13",
-        "@types/jest": "27.0.2",
+        "@types/jest": "27.4.1",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.1",
         "@types/sanitize-html": "2.6.2",
@@ -88,7 +88,7 @@
         "promise-parallel-throttle": "3.3.0",
         "source-map-support": "0.5.21",
         "stream-mock": "2.0.5",
-        "ts-node": "10.4.0"
+        "ts-node": "10.5.0"
     },
     "main": "./build/src/index.js",
     "types": "./build/src/index.d.ts"
