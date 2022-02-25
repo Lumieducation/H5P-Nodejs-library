@@ -214,7 +214,11 @@ describe('ContentUserDataManager', () => {
                     false,
                     new User()
                 )
-            ).rejects.toEqual(new Error('invalid-arguments'));
+            ).rejects.toEqual(
+                new Error(
+                    "saveContentUserData received invalid arguments: invalidate or preload weren't boolean"
+                )
+            );
         });
 
         it('calls the saveontentUserData-method of the contentUserDateStorage with the correct arguments', async () => {
