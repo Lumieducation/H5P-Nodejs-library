@@ -1,11 +1,11 @@
 import * as express from 'express';
 import {
     ContentUserDataManager,
+    IAjaxResponse,
     IPostContentUserData
 } from '@lumieducation/h5p-server';
 
 import { IRequestWithUser } from '../expressTypes';
-import { IAjaxResponse } from 'packages/h5p-server/src/types';
 
 interface IPostContentUserDataRequest
     extends IPostContentUserData,
