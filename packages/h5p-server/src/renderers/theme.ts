@@ -6,7 +6,7 @@ export default (theme?: ITheme): string => {
     }
     return `
 .h5peditor-form {
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
+    background-color: ${theme.backgroundColor} !important;
 }
 
 body {
@@ -27,7 +27,7 @@ body {
 
 .h5p-hub-client-drop-down {
     color: ${theme.fontColor} !important;
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
+    background-color: ${theme.backgroundColor} !important;
 }
 
 /* hub selection text */
@@ -38,16 +38,16 @@ body {
 
 .h5peditor-copy-button:before,
 .h5peditor-paste-button:before {
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .h5p-tutorial-url,
 .h5p-example-url {
-    color: ${theme.primaryColor} !important; /* primaryColor */
+    color: ${theme.primaryColor} !important;
 }
 
 .h5peditor {
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
+    background-color: ${theme.backgroundColor} !important;
 }
 
 .h5p-hub {
@@ -65,49 +65,49 @@ body {
 }
 
 .form-manager-head {
-    color: ${theme.fontColor} !important; /* fontColor */
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
-    border-bottom: 1px solid ${theme.dividerColor}; /* dividerColor */
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.backgroundColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor};
 }
 
 .form-manager-button {
-    color: ${theme.fontColor} !important; /* fontColor */
+    color: ${theme.fontColor} !important;
 }
 
 .h5p-hub .h5p-hub-tab-panel [role='tablist'] {
-    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub-search-wrapper {
-    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
+    background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-navbar {
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
+    background: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-list ol {
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
+    background-color: ${theme.backgroundColor} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-list {
-    background-color: ${theme.backgroundColor} !important; /* backgroundColor */
+    background-color: ${theme.backgroundColor} !important;
 }
 
 .h5peditor-label {
-    color: ${theme.fontColor}; /* fontColor */
+    color: ${theme.fontColor};
 }
 
 button.h5p-core-button {
     font-family: ${theme.fontFamily} !important;
     border-radius: ${theme.buttonBorderRadius} !important;
-    background: ${theme.primaryColor} !important; /* primaryColor */
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .h5peditor-field-description,
 .h5p-help-text {
-    color: ${theme.fontColor}; /* fontColor */
+    color: ${theme.fontColor};
 }
 
 .h5p-hub-media .h5p-hub-highlight {
@@ -153,74 +153,74 @@ button.h5p-core-button {
 
 .h5peditor-paste-button,
 .h5peditor-copy-button {
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
-    background: ${theme.primaryColor} !important; /* primaryColor */
+    color: ${theme.primaryContrastColor} !important;
+    background: ${theme.primaryColor} !important;
 }
 /* input */
 .h5peditor textarea,
 .h5peditor .h5peditor-text,
 .h5peditor .ckeditor {
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
+    background: ${theme.backgroundColor} !important;
 }
 
 .h5peditor textarea,
 .h5peditor .h5peditor-text,
 .h5peditor .ckeditor {
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 /* accordion header */
 .group.importance-low > .title,
 .h5p-li > .list-item-title-bar.importance-low,
 .common > .h5peditor-label {
-    background: ${theme.secondaryBackgroundColor}; /* secondaryBackgroundColor */
-    border: 1px solid ${theme.dividerColor}; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.secondaryBackgroundColor};
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.fontColor} !important;
 }
 .h5p-course-presentation {
-    color: ${theme.fontColor} !important; /* fontColor */
+    color: ${theme.fontColor} !important;
 }
 .h5p-dragnbar-keywords span {
-    color: ${theme.fontColor} !important; /* fontColor */
+    color: ${theme.fontColor} !important;
 }
 /* settings */
 .group > .content {
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
 }
 
 .common > .fields {
-    color: ${theme.fontColor} !important; /* fontColor */
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
+    color: ${theme.fontColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
 }
 
 .h5peditor fieldset.common-fields-library-wrapper > legend {
-    color: ${theme.fontColor} !important; /* fontColor */
-    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor*/
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
 }
 
 .h5peditor fieldset.common-fields-library-wrapper {
-    border: solid 1px ${theme.dividerColor} !important; /* dividerColor */
+    border: solid 1px ${theme.dividerColor} !important;
 }
 
 .h5peditor .h5peditor-language-switcher select {
-    color: ${theme.fontColor} !important; /* fontColor */
-    background-color: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border: solid 1px ${theme.dividerColor} !important; /* dividerColor */
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border: solid 1px ${theme.dividerColor} !important;
 }
 
 .h5p-confirmation-dialog-header {
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.backgroundColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .h5p-confirmation-dialog-body {
-    color: ${theme.fontColor} !important; /* fontColor */
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
-    border-top: solid 1px ${theme.dividerColor} !important; /* dividerColor */
+    color: ${theme.fontColor} !important;
+    background: ${theme.backgroundColor} !important;
+    border-top: solid 1px ${theme.dividerColor} !important;
 }
 
 .h5p-hub .h5p-hub-content-type-detail {
@@ -262,8 +262,8 @@ button.h5p-core-button {
 .h5peditor-form-manager-head {
     background: ${theme.secondaryBackgroundColor} !important;
     color: ${theme.fontColor} !important;
-    border-bottom: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    border-bottom: 1px solid ${theme.dividerColor} !important; /* dividerColor */
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor} !important;
 }
 
 .field.wizard .h5peditor-tab-a {
@@ -301,69 +301,69 @@ button.h5p-core-button {
 }
 
 .form-manager-form {
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
+    background: ${theme.backgroundColor} !important;
 }
 
 .form-manager-done,
 .form-manager-proceed {
-    background: ${theme.primaryColor} !important; /* primaryColor */
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .form-manager-footer {
-    border-top: solid 1px ${theme.dividerColor} !important; /* dividerColor */
+    border-top: solid 1px ${theme.dividerColor} !important;
 }
 
 .h5peditor > select,
 .h5peditor .h5peditor-language-switcher select,
 .h5peditor h5peditor-select,
 .h5peditor .field > select {
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
 }
 
 .h5peditor .file .add {
-    background: ${theme.primaryColor} !important; /* primaryColor */
-    border: 1px solid ${theme.dividerColor}; /* dividerColor */
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .h5peditor .file .add .h5peditor-field-file-upload-text:before {
-    color: ${theme.primaryContrastColor} !important; /* primaryContrastColor */
+    color: ${theme.primaryContrastColor} !important;
 }
 
 .group > .title,
 .h5p-li > .list-item-title-bar {
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .h5peditor-button-textual.importance-low {
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border-color: ${theme.dividerColor} !important; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .h5peditor-button-textual.importance-high {
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border-color: ${theme.dividerColor} !important; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .field.importance-high > .h5peditor-label-wrapper > .h5peditor-label {
-    color: ${theme.primaryColor} !important; /* primaryColor */
+    color: ${theme.primaryColor} !important;
 }
 
 .content {
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    background: ${theme.backgroundColor} !important; /* backgroundColor */
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
 }
 
 .h5peditor-button-textual {
-    background: ${theme.secondaryBackgroundColor} !important; /* secondaryBackgroundColor */
-    border: 1px solid ${theme.dividerColor} !important; /* dividerColor */
-    color: ${theme.fontColor} !important; /* fontColor */
+    background: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .h5peditor .ui-dialog .h5p-joubelui-button, .h5peditor .h5p-joubelui-button, .h5p-joubelui-button {
