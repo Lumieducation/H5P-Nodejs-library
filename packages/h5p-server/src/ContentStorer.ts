@@ -236,14 +236,14 @@ export default class ContentStorer {
                 )
             );
 
-        const filepathTonewFilenameMap = new Map<string, string>();
+        const filePathToNewFilenameMap = new Map<string, string>();
         for (const reference of fileReferencesInParams) {
             const filepath = path.join(
                 packageDirectory,
                 'content',
                 reference.filePath
             );
-            let newFilename = filepathTonewFilenameMap.get(filepath);
+            let newFilename = filePathToNewFilenameMap.get(filepath);
             if (newFilename) {
                 reference.context.params.path = `${newFilename}#tmp`;
                 continue;
@@ -269,7 +269,7 @@ export default class ContentStorer {
                 user
             );
             reference.context.params.path = `${newFilename}#tmp`;
-            filepathTonewFilenameMap.set(filepath, newFilename);
+            filePathToNewFilenameMap.set(filepath, newFilename);
         }
         return { metadata, parameters };
     }
