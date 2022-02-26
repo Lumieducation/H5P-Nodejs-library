@@ -2094,7 +2094,6 @@ export interface ILockProvider {
 }
 
 export interface ITheme {
-    themeUrl: string;
     fontColor: string;
     disabledFontColor: string;
     backgroundColor: string;
