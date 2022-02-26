@@ -228,7 +228,7 @@ export default class H5PPlayer {
                 .concat(assets.styles)
                 .concat(
                     this.config.theme
-                        ? [`${this.config.baseUrl}/theme.css`]
+                        ? [`${this.config.baseUrl}${this.config.themeUrl}`]
                         : []
                 ),
             translations: {},

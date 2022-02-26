@@ -159,7 +159,7 @@ export default class H5PEditor {
             this.options?.customization?.global?.styles || [];
         if (this.config.theme) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
-                `${this.config.baseUrl}/theme.css`
+                `${this.config.baseUrl}${this.config.themeUrl}`
             );
         }
 
