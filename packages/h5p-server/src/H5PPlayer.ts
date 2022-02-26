@@ -228,8 +228,8 @@ export default class H5PPlayer {
                 .concat(assets.styles)
                 .concat(
                     this.config.theme
-                        ? `${this.config.baseUrl}/theme.css`
-                        : undefined
+                        ? [`${this.config.baseUrl}/theme.css`]
+                        : []
                 ),
             translations: {},
             embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
