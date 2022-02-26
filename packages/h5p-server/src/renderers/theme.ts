@@ -14,17 +14,26 @@ body {
     color: ${theme.fontColor} !important;
 }
 
+.h5p-hub-section-h5p-hub-upload,
+.h5p-hub-panel,
+.h5p-hub .h5p-hub-content-detail
+{
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-info-list li .h5p-hub-content {
+    color: ${theme.fontColor} !important;
+}
+
 .h5p-hub-client-drop-down {
     color: ${theme.fontColor} !important;
     background-color: ${theme.backgroundColor} !important; /* backgroundColor */
 }
 
 /* hub selection text */
-.h5p-hub .h5p-hub-client-drop-down .h5p-hub-selected {
-    color: ${theme.fontColor} !important; /* fontColor */
-}
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-selected,
 .h5p-hub .h5p-hub-client-drop-down .h5p-hub-icon-hub-icon {
-    color: ${theme.fontColor} !important; /* fontColor */
+    color: ${theme.fontColor} !important;
 }
 
 .h5peditor-copy-button:before,
@@ -48,6 +57,7 @@ body {
 
 .h5p-hub .link, .h5p-hub a {
     font-family: ${theme.fontFamily} !important;
+    color: ${theme.fontColor} !important;
 }
 
 .h5p-hub .h5p-hub-button {
@@ -83,6 +93,7 @@ body {
 .h5p-hub .h5p-hub-content-type-list {
     background-color: ${theme.backgroundColor} !important; /* backgroundColor */
 }
+
 .h5peditor-label {
     color: ${theme.fontColor}; /* fontColor */
 }
@@ -101,6 +112,11 @@ button.h5p-core-button {
 
 .h5p-hub-media .h5p-hub-highlight {
     background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub ul.h5p-hub-list-of-numbers .h5p-hub-list-element a.h5p-hub-highlight {
+    border-color: ${theme.primaryColor};
+    background-color: ${theme.primaryColor};
 }
 
 .h5p-hub .h5p-hub-content-type-list .h5p-hub-media[tabindex='0'] {
@@ -125,7 +141,9 @@ button.h5p-core-button {
     font-family: ${theme.fontFamily} !important;
 }
 
-.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover {
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover,
+.h5p-hub .h5p-hub-content-item.h5p-hub-tabular:hover, .h5p-hub .h5p-hub-content-item.h5p-hub-tabular:focus,
+.h5p-hub .h5p-hub-content-item.h5p-hub-grid:focus .h5p-hub-grid-item, .h5p-hub .h5p-hub-content-item.h5p-hub-grid:hover .h5p-hub-grid-item {
     background-color: ${theme.secondaryBackgroundColor} !important;
 }
 
