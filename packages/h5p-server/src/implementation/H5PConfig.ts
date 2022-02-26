@@ -103,8 +103,8 @@ export default class H5PConfig implements IH5PConfig {
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
     public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = '';
-
     public theme?: ITheme;
+    public themeUrl?: string = '/theme.css';
 
     private storage: IKeyValueStorage;
 
@@ -133,8 +133,9 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('proxy');
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('siteType');
-        await this.loadSettingFromStorage('uuid');
         await this.loadSettingFromStorage('theme');
+        await this.loadSettingFromStorage('themeUrl');
+        await this.loadSettingFromStorage('uuid');
         return this;
     }
 
@@ -162,8 +163,9 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('proxy');
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('siteType');
-        await this.saveSettingToStorage('uuid');
         await this.saveSettingToStorage('theme');
+        await this.saveSettingToStorage('themeUrl');
+        await this.saveSettingToStorage('uuid');
     }
 
     /**

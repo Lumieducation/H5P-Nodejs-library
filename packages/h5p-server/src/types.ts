@@ -1591,7 +1591,15 @@ export interface IH5PConfig {
      */
     installLibraryLockTimeout: number;
 
+    /**
+     * A global theme that is applied to the player and the editor.
+     */
     theme?: ITheme;
+
+    /**
+     * The URL at which the global theme can be accessed. Relative to baseUrl.
+     */
+    themeUrl?: string;
 }
 
 /**

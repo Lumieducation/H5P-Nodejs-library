@@ -1,20 +1,23 @@
-import { Router, static as ExpressStatic } from 'express';
+import { Router } from 'express';
 
-import { H5PEditor } from '@lumieducation/h5p-server';
 import {
-    errorHandler,
-    undefinedOrTrue,
-    catchAndPassOnErrors
-} from '../expressErrorHandler';
+    defaultThemeGenerator,
+    IH5PConfig,
+    ITheme
+} from '@lumieducation/h5p-server';
 
-export default function (h5pEditor: H5PEditor): Router {
+export default function (
+    config: IH5PConfig,
+    themeGenerator: (theme: ITheme) => string = defaultThemeGenerator
+): Router {
     const router = Router();
 
-    // get library file
-    router.get(`/theme.css`, (req, res) => {
-        res.setHeader('content-type', 'text/css');
-        res.status(200).send(h5pEditor.renderTheme());
-    });
+    if (config.theme && config.themeUrl) {
+        router.get(config.themeUrl, (req, res) => {
+            res.setHeader('content-type', 'text/css');
+            res.status(200).send(themeGenerator(config.theme));
+        });
+    }
 
     return router;
 }

@@ -7,6 +7,7 @@ import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import H5PAjaxEndpoint from './H5PAjaxEndpoint';
 import ContentTypeCache from './ContentTypeCache';
+import defaultThemeGenerator from './renderers/theme';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
@@ -56,6 +57,7 @@ import {
     IPostUserFinishedData,
     ITemporaryFile,
     ITemporaryFileStorage,
+    ITheme,
     ITranslationFunction,
     IUrlGenerator,
     IUser,
@@ -121,16 +123,18 @@ export {
     IPostUserFinishedData,
     ITemporaryFile,
     ITemporaryFileStorage,
+    ITheme,
     ITranslationFunction,
     IUrlGenerator,
     IUser,
     Permission,
     // implementations
     H5PConfig,
-    fs,
-    utils,
-    fsImplementations,
     cacheImplementations,
+    defaultThemeGenerator,
+    fs,
+    fsImplementations,
+    SimpleLockProvider,
     UrlGenerator,
-    SimpleLockProvider
+    utils
 };

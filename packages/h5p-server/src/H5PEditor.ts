@@ -16,7 +16,6 @@ import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyri
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
-import renderTheme from './renderers/theme';
 import supportedLanguageList from '../assets/editorLanguages.json';
 
 import ContentManager from './ContentManager';
@@ -52,7 +51,6 @@ import {
     ILumiEditorIntegration,
     ISemanticsEntry,
     ITemporaryFileStorage,
-    ITheme,
     ITranslationFunction,
     IUrlGenerator,
     IUser
@@ -570,10 +568,6 @@ export default class H5PEditor {
         };
 
         return Promise.resolve(this.renderer(model));
-    }
-
-    public renderTheme(theme?: ITheme): string {
-        return renderTheme(theme || this.config.theme);
     }
 
     /**

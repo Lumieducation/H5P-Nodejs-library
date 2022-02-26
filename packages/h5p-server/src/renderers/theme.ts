@@ -570,6 +570,5 @@ button.h5p-core-button {
     font-family: ${theme.fontFamily} !important;
     color: ${theme.primaryColor} !important;
 }
-
 `;
 };

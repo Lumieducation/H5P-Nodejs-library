@@ -149,7 +149,8 @@ const start = async (): Promise<void> => {
     // (H5P.adapters.express) to function properly.
     server.use(i18nextHttpMiddleware.handle(i18next));
 
-    server.use(h5pEditor.config.baseUrl, themeRouter(h5pEditor));
+    // Serve the global theme CSS file (if configured).
+    server.use(h5pEditor.config.baseUrl, themeRouter(config));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure
