@@ -1765,7 +1765,6 @@ export interface IPlayerModel {
     scripts: string[];
     styles: string[];
     translations: any;
-    theme?: ITheme;
     user: IUser;
 }
 
