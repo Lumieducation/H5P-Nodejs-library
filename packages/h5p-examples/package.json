@@ -24,6 +24,7 @@
         "@lumieducation/h5p-html-exporter": "^9.0.6",
         "@lumieducation/h5p-mongos3": "^9.0.6",
         "@lumieducation/h5p-redis-lock": "^9.0.6",
+        "@lumieducation/h5p-sass-theme-builder": "^9.0.6",
         "@lumieducation/h5p-server": "^9.0.6",
         "body-parser": "1.19.1",
         "bootstrap": "^5.1.3",

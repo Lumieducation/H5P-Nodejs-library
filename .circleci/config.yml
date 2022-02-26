@@ -48,15 +48,16 @@ jobs:
                       - packages/h5p-mongos3/node_modules
                       - packages/h5p-react/build
                       - packages/h5p-react/node_modules
+                      - packages/h5p-rest-example-client/build
+                      - packages/h5p-rest-example-client/node_modules
+                      - packages/h5p-rest-example-server/build
+                      - packages/h5p-rest-example-server/h5p
+                      - packages/h5p-rest-example-server/node_modules
+                      - packages/h5p-sass-theme-builder/build
                       - packages/h5p-server/build
                       - packages/h5p-server/node_modules
                       - packages/h5p-webcomponents/build
                       - packages/h5p-webcomponents/node_modules
-                      - packages/h5p-rest-example-client/node_modules
-                      - packages/h5p-rest-example-client/build
-                      - packages/h5p-rest-example-server/node_modules
-                      - packages/h5p-rest-example-server/build
-                      - packages/h5p-rest-example-server/h5p
                       - test/data/content-type-cache/real-content-types.json
                       - test/data/hub-content
 

@@ -1,0 +1,583 @@
+.h5peditor-form {
+    background-color: $backgroundColor !important;
+}
+
+body {
+    font-family: $fontFamily !important;
+    color: $fontColor !important;
+}
+
+.h5p-hub-section-h5p-hub-upload,
+.h5p-hub-panel,
+.h5p-hub .h5p-hub-content-detail
+{
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-info-list li .h5p-hub-content {
+    color: $fontColor !important;
+}
+
+.h5p-hub-client-drop-down {
+    color: $fontColor !important;
+    background-color: $backgroundColor !important;
+}
+
+/* hub selection text */
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-selected,
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-icon-hub-icon {
+    color: $fontColor !important;
+}
+
+.h5peditor-copy-button:before,
+.h5peditor-paste-button:before {
+    color: $primaryContrastColor !important;
+}
+
+.h5p-tutorial-url,
+.h5p-example-url {
+    color: $primaryColor !important;
+}
+
+.h5peditor {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .link, .h5p-hub a {
+    font-family: $fontFamily !important;
+    color: $fontColor !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    font-family: $fontFamily !important;
+}
+
+.form-manager-head {
+    color: $fontColor !important;
+    background-color: $backgroundColor !important;
+    border-bottom: 1px solid $dividerColor;
+}
+
+.form-manager-button {
+    color: $fontColor !important;
+}
+
+.h5p-hub .h5p-hub-tab-panel [role='tablist'] {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub-search-wrapper {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list ol {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list {
+    background-color: $backgroundColor !important;
+}
+
+.h5peditor-label {
+    color: $fontColor;
+}
+
+button.h5p-core-button {
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5peditor-field-description,
+.h5p-help-text {
+    color: $fontColor;
+}
+
+.h5p-hub-media .h5p-hub-highlight {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub ul.h5p-hub-list-of-numbers .h5p-hub-list-element a.h5p-hub-highlight {
+    border-color: $primaryColor;
+    background-color: $primaryColor;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media[tabindex='0'] {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:not(:last-child) {
+    border-bottom: 1px solid $dividerColor;
+}
+
+/* button */
+.h5p-hub .h5p-hub-button.h5p-hub-button-primary {
+    background-color: $primaryColor !important;
+    border-color: $primaryColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .h5p-hub-button.h5p-hub-button-inverse-primary {
+    background-color: $secondaryColor !important;
+    color: $secondaryContrastColor !important;
+    border-color: $secondaryColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover,
+.h5p-hub .h5p-hub-content-item.h5p-hub-tabular:hover, .h5p-hub .h5p-hub-content-item.h5p-hub-tabular:focus,
+.h5p-hub .h5p-hub-content-item.h5p-hub-grid:focus .h5p-hub-grid-item, .h5p-hub .h5p-hub-content-item.h5p-hub-grid:hover .h5p-hub-grid-item {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    color: $fontColor !important;
+}
+
+.h5peditor-paste-button,
+.h5peditor-copy-button {
+    color: $primaryContrastColor !important;
+    background: $primaryColor !important;
+}
+/* input */
+.h5peditor textarea,
+.h5peditor .h5peditor-text,
+.h5peditor .ckeditor {
+    background: $backgroundColor !important;
+}
+
+.h5peditor textarea,
+.h5peditor .h5peditor-text,
+.h5peditor .ckeditor {
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+}
+
+/* accordion header */
+.group.importance-low > .title,
+.h5p-li > .list-item-title-bar.importance-low,
+.common > .h5peditor-label {
+    background: $secondaryBackgroundColor;
+    border: 1px solid $dividerColor;
+    color: $fontColor !important;
+}
+.h5p-course-presentation {
+    color: $fontColor !important;
+}
+.h5p-dragnbar-keywords span {
+    color: $fontColor !important;
+}
+/* settings */
+.group > .content {
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+}
+
+.common > .fields {
+    color: $fontColor !important;
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+}
+
+.h5peditor fieldset.common-fields-library-wrapper > legend {
+    color: $fontColor !important;
+    background-color: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+}
+
+.h5peditor fieldset.common-fields-library-wrapper {
+    border: solid 1px $dividerColor !important;
+}
+
+.h5peditor .h5peditor-language-switcher select {
+    color: $fontColor !important;
+    background-color: $secondaryBackgroundColor !important;
+    border: solid 1px $dividerColor !important;
+}
+
+.h5p-confirmation-dialog-header {
+    background: $backgroundColor !important;
+    color: $fontColor !important;
+}
+
+.h5p-confirmation-dialog-body {
+    color: $fontColor !important;
+    background: $backgroundColor !important;
+    border-top: solid 1px $dividerColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-detail {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    border-radius: $buttonBorderRadius !important;
+    background-color: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-hub-accordion-toggler {
+    color: $fontColor !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a.h5p-hub-highlight {
+    color: $primaryColor !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a {
+    color: $fontColor !important;
+}
+
+.h5p-hub small, .h5p-hub .small, .h5p-hub .h5p-hub-small {
+    color: $fontColor !important;
+}
+
+.h5p-hub-carousel .h5p-hub-navigation {
+    color: $primaryContrastColor !important;
+    background-color: $primaryColor !important;
+}
+
+.h5p-hub-accordion-heading {
+    border-bottom: 1px solid $dividerColor !important;
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5peditor-form-manager-head {
+    background: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+}
+
+.field.wizard .h5peditor-tab-a {
+    background: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+}
+
+.h5p-hub-search-wrapper .h5p-hub-border-wrap {
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub-search-bar {
+    border: 1px solid $dividerColor;
+    color: $fontColor;
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5p-editor-table-list tbody td {
+    background: $secondaryBackgroundColor;
+    border-top: 1px solid $dividerColor;
+    border-bottom: 1px solid $dividerColor;
+}
+
+.field.wizard {
+    border: 1px solid $dividerColor !important;
+}
+
+.field.wizard .h5peditor-tab-a.h5peditor-active {
+    background: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+}
+
+.field.wizard .h5peditor-wizard-navigation-buttons {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.form-manager-form {
+    background: $backgroundColor !important;
+}
+
+.form-manager-done,
+.form-manager-proceed {
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.form-manager-footer {
+    border-top: solid 1px $dividerColor !important;
+}
+
+.h5peditor > select,
+.h5peditor .h5peditor-language-switcher select,
+.h5peditor h5peditor-select,
+.h5peditor .field > select {
+    border: 1px solid $dividerColor !important;
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5peditor .file .add {
+    background: $primaryColor !important;
+    border: 1px solid $dividerColor;
+    color: $primaryContrastColor !important;
+}
+
+.h5peditor .file .add .h5peditor-field-file-upload-text:before {
+    color: $primaryContrastColor !important;
+}
+
+.group > .title,
+.h5p-li > .list-item-title-bar {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+}
+
+.h5peditor-button-textual.importance-low {
+    background: $secondaryBackgroundColor !important;
+    border-color: $dividerColor !important;
+    color: $fontColor !important;
+}
+
+.h5peditor-button-textual.importance-high {
+    background: $secondaryBackgroundColor !important;
+    border-color: $dividerColor !important;
+    color: $fontColor !important;
+}
+
+.field.importance-high > .h5peditor-label-wrapper > .h5peditor-label {
+    color: $primaryColor !important;
+}
+
+.content {
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+}
+
+.h5peditor-button-textual {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+}
+
+.h5peditor .ui-dialog .h5p-joubelui-button, .h5peditor .h5p-joubelui-button, .h5p-joubelui-button {
+    background: $primaryColor;
+    color: $primaryContrastColor;
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+}
+
+.h5p-joubelui-button:hover, .h5p-joubelui-button:focus {
+    background: $primaryColor;
+    color: $primaryContrastColor;
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+}
+
+.h5p-multichoice .h5p-answer:not([aria-disabled="true"]):hover .h5p-alternative-container {
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-content {
+    color: $fontColor;
+    background: $backgroundColor;
+    border: 1px solid $dividerColor;
+}
+
+.h5p-question {
+    background: $backgroundColor;
+    color: $fontColor;
+}
+
+.h5p-multichoice .h5p-alternative-container {
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+}
+
+.h5p-joubelui-score-bar {
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+    border: 1px solid $dividerColor;
+
+}
+
+.h5p-joubelui-score-number {
+    color: $fontColor;
+}
+
+.h5p-drag-text [aria-dropeffect] {
+    background-color: $secondaryBackgroundColor;
+}
+
+.h5p-drag-text [aria-grabbed] {
+    border: 0.1em solid $dividerColor;
+    background: $secondaryBackgroundColor;
+
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: $backgroundColor;
+}
+
+.h5p-course-presentation .h5p-progressbar .h5p-progressbar-part-show {
+    background: $primaryColor;
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: $backgroundColor;
+}
+
+.h5p-li > .list-item-title-bar.importance-high .order-group {
+    background: $primaryColor;
+}
+
+.h5p-editor-table-list tbody td {
+    background: $secondaryBackgroundColor !important;
+    border-top: 1px solid $dividerColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+}
+.h5p-metadata-button-tip {
+    background: $primaryColor !important;
+    border: 1px solid $dividerColor !important;
+}
+.h5p-metadata-toggler {
+    border: 1px solid $dividerColor !important;
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+.h5p-metadata-wrapper {
+    background-color: $backgroundColor !important;
+}
+
+.group.importance-low > .title, .h5p-li > .list-item-title-bar.importance-low > .h5peditor-label, .h5p-li > .list-item-title-bar.importance-low > .title, .common > .h5peditor-label {
+    color: $fontColor;
+}
+
+.field.wizard .h5peditor-wizard-navigation-buttons > div {
+    color: $primaryContrastColor !important;
+    background: $primaryColor !important;
+    border: 1px solid $dividerColor !important;
+}
+
+.h5peditor-widget-option {
+    border: 1px solid $dividerColor;
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+}
+
+.h5p-vtab-a {
+    border: 1px solid $dividerColor !important;
+    background-color: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+}
+
+.important-description-show {
+    background: $warningColor !important;
+    color: $warningContrastColor !important;
+}
+
+.h5peditor-field-important-description {
+    border: 1px solid $dividerColor !important;
+    background-color: $warningColor !important;
+    color: $warningContrastColor !important;
+}
+.h5p-new-scene-button {
+    color: $fontColor !important;
+    background: $primaryColor !important;
+    border: 1px solid $primaryColor !important;
+}
+
+.h5p-editing-dialog {
+    background: $backgroundColor !important;
+}
+
+.h5p-editing-dialog-header .done-button {
+    color: $fontColor !important;
+    background: $primaryColor !important;
+    border-color: $primaryColor !important;
+}
+
+.h5peditor .h5p-add-dialog {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-buttons {
+    padding: 0.5em;
+    border-top: 1px solid $dividerColor !important;
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-add-dialog-table .h5p-file-drop-upload {
+    background-color: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-collage-wrapper {
+    background-color: $secondaryBackgroundColor;
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: $secondaryBackgroundColor !important;
+}
+.h5p-collage-wrapper {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-interactive-book-status {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+    background-color: $secondaryBackgroundColor !important;
+    border-color: $dividerColor !important;
+}
+.h5p-interactive-book-status-chapter .title {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-interactive-book-status-progressbar-front {
+    background-color: $primaryColor !important;;
+}
+
+.h5p-interactive-book-status-menu.h5p-interactive-book-status-menu-active {
+    background-color: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-interactive-book-status-progress-number {
+    color: $primaryColor !important;
+    font-family: $fontFamily;
+}
+.h5p-interactive-book-status-arrow .navigation-button {
+    color: $primaryColor;
+}
+.h5p-interactive-book-status-fullscreen.h5p-interactive-book-enter-fullscreen::before {
+    color: $primaryColor !important;
+}
+
+.h5p-interactive-book-navigation-maintitle {
+    background-color: $primaryColor !important;
+}
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-interactive-book-navigation-chapter-button {
+    background-color: $secondaryBackgroundColor !important;
+    border-bottom: solid 1px $dividerColor;
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+.h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    font-family: $fontFamily !important;
+    color: $primaryColor !important;
+}

@@ -18,6 +18,7 @@ import {
 } from '@lumieducation/h5p-express';
 import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
 import * as H5P from '@lumieducation/h5p-server';
+import sassThemeBuilder from '@lumieducation/h5p-sass-theme-builder';
 
 import startPageRenderer from './startPageRenderer';
 import expressRoutes from './expressRoutes';
@@ -150,7 +151,7 @@ const start = async (): Promise<void> => {
     server.use(i18nextHttpMiddleware.handle(i18next));
 
     // Serve the global theme CSS file (if configured).
-    server.use(h5pEditor.config.baseUrl, themeRouter(config));
+    server.use(h5pEditor.config.baseUrl, themeRouter(config, sassThemeBuilder));
 
     // The Express adapter handles GET and POST requests to various H5P
     // endpoints. You can add an options object as a last parameter to configure

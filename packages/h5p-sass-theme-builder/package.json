@@ -1,0 +1,32 @@
+{
+    "name": "@lumieducation/h5p-sass-theme-builder",
+    "version": "9.0.6",
+    "description": "A theme builder for H5P based on SASS",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
+    },
+    "scripts": {
+        "build:watch": "npx tsc -w -p ./tsconfig.build.json",
+        "build": "npx tsc -p ./tsconfig.build.json",
+        "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "test:watch": "jest --watch",
+        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+    },
+    "release": {
+        "branch": "master"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        }
+    ],
+    "dependencies": {
+        "@lumieducation/h5p-server": "^9.0.6",
+        "sass": "^1.49.9"
+    },
+    "main": "./build/sassThemeBuilder.js",
+    "types": "./build/sassThemeBuilder.d.ts"
+}
