@@ -3,6 +3,7 @@ import redisStore from 'cache-manager-redis-store';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
+import { IContentMetadata, IUser } from '@lumieducation/h5p-server';
 
 /**
  * Create a H5PEditor object.
@@ -30,7 +31,22 @@ export default async function createH5PEditor(
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
-    translationCallback?: H5P.ITranslationFunction
+    translationCallback?: H5P.ITranslationFunction,
+    hooks?: {
+        contentWasDeleted?: (contentId: string, user: IUser) => Promise<void>;
+        contentWasUpdated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+        contentWasCreated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+    }
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
     if (process.env.CACHE === 'in-memory') {
@@ -107,7 +123,8 @@ export default async function createH5PEditor(
         undefined,
         {
             enableHubLocalization: true,
-            enableLibraryNameLocalization: true
+            enableLibraryNameLocalization: true,
+            hooks
         }
     );
 

@@ -1318,6 +1318,15 @@ export interface ILibraryMetadata extends IFullLibraryName {
     runnable: boolean | 0 | 1;
     title: string;
     w?: number;
+    requiredExtensions?: {
+        sharedState: number;
+    };
+    state?: {
+        snapshotSchema: boolean;
+        opSchema: boolean;
+        snapshotLogicChecks: boolean;
+        opLogicChecks: boolean;
+    };
 }
 
 /**
@@ -2093,6 +2102,25 @@ export interface IH5PEditorOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
+
+    /**
+     * Hooks allow you to react to things happening in the library.
+     */
+    hooks?: {
+        contentWasDeleted?: (contentId: string, user: IUser) => Promise<void>;
+        contentWasUpdated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+        contentWasCreated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+    };
 }
 
 /**
@@ -2135,6 +2163,11 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
+
+    getPermissions?: (
+        contentId: ContentId,
+        user: IUser
+    ) => Promise<Permission[]>;
 }
 
 /**

@@ -16,7 +16,8 @@ import {
     IUrlGenerator,
     ILibraryMetadata,
     IUser,
-    ITranslationFunction
+    ITranslationFunction,
+    Permission
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';
@@ -368,6 +369,7 @@ export default class H5PPlayer {
     ): Promise<IIntegration> {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
+
         return {
             ajax: {
                 contentUserData: this.urlGenerator.contentUserData(user),

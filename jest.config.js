@@ -106,7 +106,8 @@ module.exports = {
     roots: [
         '<rootDir>/packages/h5p-express/test',
         '<rootDir>/packages/h5p-server/test',
-        '<rootDir>/packages/h5p-html-exporter/test'
+        '<rootDir>/packages/h5p-html-exporter/test',
+        '<rootDir>/packages/h5p-shared-state-server/test'
     ],
 
     // Allows you to use a custom runner instead of Jest's default test runner
