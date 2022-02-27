@@ -81,14 +81,14 @@
         }
 
         &.h5p-hub-button-inverse-primary {
-            background-color: $secondaryColor !important;
-            color: $secondaryContrastColor !important;
-            border-color: $secondaryColor !important;
+            background-color: transparent !important;
+            color: $primaryColor !important;
+            border-color: $primaryColor !important;
             font-family: $fontFamily !important;
 
             &:hover {
-                background: darken($secondaryColor, 5%) !important;
-                border-color: darken($secondaryColor, 10%) !important;
+                color: lighten($primaryColor, 10%) !important;
+                border-color: lighten($primaryColor, 10%) !important;
             }
         }
     }

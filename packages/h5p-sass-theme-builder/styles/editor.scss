@@ -95,7 +95,7 @@
 }
 
 .form-manager-head {
-    color: $fontColor !important;
+    color: $secondaryFontColor !important;
     background-color: $backgroundColor !important;
     border-bottom: 1px solid $dividerColor;
 }
@@ -103,6 +103,35 @@
 .form-manager-button {
     color: $fontColor !important;
 }
+
+.form-manager-delete {
+    color: $errorColor !important;
+
+    &:hover {
+        background-color: lighten($errorColor, 20%) !important;
+    }
+}
+
+.form-manager-title {
+    &.clickable {
+        color: $primaryColor !important;
+
+        &:after {
+            background-color: $backgroundColor !important;
+        }
+
+        &:hover,
+        &:hover:after {
+            background-color: lighten($backgroundColor, 10%) !important;
+        }
+    }
+}
+
+.form-manager-title:before,
+.form-manager-menutitle:before {
+    color: $secondaryFontColor !important;
+}
+
 
 .h5peditor-field-description,
 .h5p-help-text {
@@ -115,6 +144,11 @@
     .h5peditor-text,
     .ckeditor {
         background: $backgroundColor !important;
+    }
+
+    .h5p-or-vertical .h5p-or-vertical-word-wrapper .h5p-or-vertical-word {
+        color: $fontColor !important;
+        background: $secondaryBackgroundColor !important;
     }
 
     textarea,
@@ -157,10 +191,14 @@
 
     .ui-dialog .h5p-joubelui-button,
     .h5p-joubelui-button {
-        background: $primaryColor;
-        color: $primaryContrastColor;
+        background: $primaryColor !important;
+        color: $primaryContrastColor !important;        
         font-family: $fontFamily !important;
         border-radius: $buttonBorderRadius !important;
+
+        &:hover {
+            background: darken($primaryColor, 10%) !important;
+        }
     }
 
     .h5p-add-dialog {
@@ -173,9 +211,18 @@
             background: $secondaryBackgroundColor !important;
         }
 
-        .h5p-add-dialog-table .h5p-file-drop-upload {
-            background-color: $secondaryBackgroundColor !important;
-            border: 1px solid $dividerColor !important;
+        .h5p-add-dialog-table {
+
+            .h5p-file-drop-upload,
+            .h5p-file-url-wrapper,
+            .h5p-file-drop-upload .h5p-file-drop-upload-inner {
+                background-color: $secondaryBackgroundColor !important;
+                border: 1px solid $dividerColor !important;
+            }
+
+            h3 {
+                color: $fontColor !important;
+            }
         }
     }
 }
@@ -215,10 +262,19 @@
     .h5peditor-tab-a.h5peditor-active {
         background: $secondaryBackgroundColor !important;
         color: $fontColor !important;
+
+        &:before {
+            color: $primaryColor !important;
+        }
     }
 
     .h5peditor-wizard-navigation-buttons {
         background-color: $secondaryBackgroundColor !important;
+
+        div div span:first-child,
+        .nav-button-label:before {
+            color: $secondaryFontColor !important;
+        }
     }
 }
 
@@ -230,6 +286,10 @@
 .form-manager-proceed {
     background: $primaryColor !important;
     color: $primaryContrastColor !important;
+
+    &:hover {
+        background: darken($primaryColor, 10%) !important;
+    }
 }
 
 .form-manager-footer {
