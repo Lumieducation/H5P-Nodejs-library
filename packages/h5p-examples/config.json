@@ -20,6 +20,7 @@
         "backgroundColor": "#222b37",
         "secondaryBackgroundColor": "#333d49",
         "fontColor": "#ffffff",
+        "secondaryFontColor": "#a0a0a1",
         "disabledFontColor": "#a0a0a1",
         "primaryColor": "#7636dc",
         "primaryContrastColor": "#ffffff",

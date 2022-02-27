@@ -2102,6 +2102,7 @@ export interface ILockProvider {
 
 export interface ITheme {
     fontColor: string;
+    secondaryFontColor: string;
     disabledFontColor: string;
     backgroundColor: string;
     secondaryBackgroundColor: string;

@@ -89,7 +89,7 @@
             &:hover {
                 background: darken($secondaryColor, 5%) !important;
                 border-color: darken($secondaryColor, 10%) !important;
-            }    
+            }
         }
     }
 
@@ -143,5 +143,21 @@
     .h5p-hub-client-drop-down {
         color: $fontColor !important;
         background-color: $backgroundColor !important;
+    }
+
+    .h5p-hub-downloading-modal {
+        background-color: $backgroundColor;
+    }
+}
+
+.h5p-hub-message {
+    &.h5p-hub-error {
+        background-color: $errorColor !important;
+        box-shadow: inset 0.167em $errorColor;
+    }
+
+    .h5p-hub-message-content .h5p-hub-message-body,
+    .h5p-hub-message-close {
+        color: $fontColor;
     }
 }

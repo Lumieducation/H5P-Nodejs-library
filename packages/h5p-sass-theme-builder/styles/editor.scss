@@ -236,10 +236,11 @@
     border-top: solid 1px $dividerColor !important;
 }
 
-/* Main button type */
+/* Primary button type */
 .h5peditor .file .add,
 .h5peditor-button-textual.importance-low,
-.h5peditor-button-textual.importance-high {
+.h5peditor-button-textual.importance-high,
+.h5peditor-button-textual {
     background: $primaryColor !important;
     border-color: darken($primaryColor, 10%) !important;
     color: $fontColor !important;
@@ -250,15 +251,21 @@
     }
 }
 
+.h5peditor-range-distribute[aria-disabled="true"],
+.h5peditor-button-textual.h5peditor-range-distribute[aria-disabled="true"]:hover {
+    background: lighten($primaryColor, 10%) !important;
+    border-color: darken($primaryColor, 20%) !important;
+    color: $fontColor !important;
+    color: darken($fontColor, 10%);
+}
+
+.h5peditor-button-textual[disabled]:before,
+.h5peditor-button-textual[aria-disabled="true"]:before {
+    color: darken($fontColor, 10%);
+}
 
 .field.importance-high>.h5peditor-label-wrapper>.h5peditor-label {
     color: $primaryColor !important;
-}
-
-.h5peditor-button-textual {
-    background: $secondaryBackgroundColor !important;
-    border: 1px solid $dividerColor !important;
-    color: $fontColor !important;
 }
 
 .h5p-editor-table-list tbody td {

@@ -6,6 +6,7 @@ import type { ITheme } from '@lumieducation/h5p-server';
 const generateVariablesScss = (theme: ITheme): string => {
     return `
     $fontColor: ${theme.fontColor};
+    $secondaryFontColor: ${theme.secondaryFontColor};
     $disabledFontColor: ${theme.disabledFontColor};
     $backgroundColor: ${theme.backgroundColor};
     $secondaryBackgroundColor: ${theme.secondaryBackgroundColor};
