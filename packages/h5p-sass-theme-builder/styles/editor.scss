@@ -369,3 +369,23 @@
         color: $disabledFontColor;
     }
 }
+
+.h5p-metadata-wrapper {
+    background: $backgroundColor;
+
+    .h5peditor-label,
+    .a11y-title-toggle {
+        color: $fontColor;
+    }
+}
+
+.h5p-metadata-wrapper .h5p-save,
+.h5p-metadata-author-widget .h5p-save-author {
+    background-color: $secondaryColor !important;
+    border-color: darken($secondaryColor, 5%) !important;
+
+    &:hover {
+        background-color: darken($secondaryColor, 5%) !important;
+        border-color: darken($secondaryColor, 10%) !important
+    }
+}
