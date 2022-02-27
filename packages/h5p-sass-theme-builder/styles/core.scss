@@ -28,15 +28,14 @@ button.h5p-core-button {
     color: $primaryContrastColor;
     font-family: $fontFamily !important;
     border-radius: $buttonBorderRadius !important;
-}
 
-
-.h5p-joubelui-button:hover,
-.h5p-joubelui-button:focus {
-    background: $primaryColor;
-    color: $primaryContrastColor;
-    font-family: $fontFamily !important;
-    border-radius: $buttonBorderRadius !important;
+    &:hover,
+    &:focus {
+        background: $primaryColor;
+        color: $primaryContrastColor;
+        font-family: $fontFamily !important;
+        border-radius: $buttonBorderRadius !important;
+    }
 }
 
 .content {
@@ -59,7 +58,6 @@ button.h5p-core-button {
     color: $fontColor;
     background: $secondaryBackgroundColor;
     border: 1px solid $dividerColor;
-
 }
 
 .h5p-joubelui-score-number {

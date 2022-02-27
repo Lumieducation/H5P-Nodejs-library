@@ -1,9 +1,6 @@
 @import "./variables.scss";
 
-.h5peditor-form {
-    background-color: $backgroundColor !important;
-}
-
+.h5peditor-form,
 .h5peditor {
     background-color: $backgroundColor !important;
 }
@@ -13,9 +10,37 @@
     color: $primaryContrastColor !important;
 }
 
-.h5p-tutorial-url,
+.h5p-tutorial-url {
+    &::before {
+        color: $secondaryColor !important;
+        background-color: lighten($secondaryColor, 20%);
+    }
+
+    .h5p-tutorial-url-label {
+        color: $secondaryColor !important;
+    }
+
+    &:hover {
+        background-color: lighten($secondaryColor, 30%);
+    }
+
+}
+
+
 .h5p-example-url {
-    color: $primaryColor !important;
+
+    &::before {
+        background-color: lighten($primaryColor, 20%);
+        color: $primaryColor !important;
+    }
+
+    .h5p-example-url-label {
+        color: $primaryColor !important;
+    }
+
+    &:hover {
+        background-color: lighten($primaryColor, 30%);
+    }
 }
 
 .h5peditor-label {
@@ -43,21 +68,83 @@
     background: $primaryColor !important;
 }
 
-/* input */
-.h5peditor textarea,
-.h5peditor .h5peditor-text,
-.h5peditor .ckeditor {
-    background: $backgroundColor !important;
-}
 
-.h5peditor textarea,
-.h5peditor .h5peditor-text,
-.h5peditor .ckeditor {
-    border: 1px solid $dividerColor !important;
-    color: $fontColor !important;
+.h5peditor {
+
+    textarea,
+    .h5peditor-text,
+    .ckeditor {
+        background: $backgroundColor !important;
+    }
+
+    textarea,
+    .h5peditor-text,
+    .ckeditor {
+        border: 1px solid $dividerColor !important;
+        color: $fontColor !important;
+    }
+
+    fieldset.common-fields-library-wrapper {
+        >legend {
+            color: $fontColor !important;
+            background-color: $secondaryBackgroundColor !important;
+            border: 1px solid $dividerColor !important;
+        }
+
+        border: solid 1px $dividerColor !important;
+    }
+
+    .h5peditor-language-switcher select {
+        color: $fontColor !important;
+        background-color: $secondaryBackgroundColor !important;
+        border: solid 1px $dividerColor !important;
+    }
+
+    >select,
+    .h5peditor-language-switcher select,
+    h5peditor-select,
+    .field>select {
+        border: 1px solid $dividerColor !important;
+        background: $secondaryBackgroundColor !important;
+    }
+
+    .file .add {
+        background: $primaryColor !important;
+        border: 1px solid $dividerColor;
+        color: $primaryContrastColor !important;
+
+        .h5peditor-field-file-upload-text:before {
+            color: $primaryContrastColor !important;
+        }
+    }
+
+    .ui-dialog .h5p-joubelui-button,
+    .h5p-joubelui-button {
+        background: $primaryColor;
+        color: $primaryContrastColor;
+        font-family: $fontFamily !important;
+        border-radius: $buttonBorderRadius !important;
+    }
+
+    .h5p-add-dialog {
+        background: $secondaryBackgroundColor !important;
+        border: 1px solid $dividerColor !important;
+
+        .h5p-buttons {
+            padding: 0.5em;
+            border-top: 1px solid $dividerColor !important;
+            background: $secondaryBackgroundColor !important;
+        }
+
+        .h5p-add-dialog-table .h5p-file-drop-upload {
+            background-color: $secondaryBackgroundColor !important;
+            border: 1px solid $dividerColor !important;
+        }
+    }
 }
 
 /* accordion header */
+
 .group.importance-low>.title,
 .h5p-li>.list-item-title-bar.importance-low,
 .common>.h5peditor-label {
@@ -66,24 +153,6 @@
     color: $fontColor !important;
 }
 
-
-.h5peditor fieldset.common-fields-library-wrapper>legend {
-    color: $fontColor !important;
-    background-color: $secondaryBackgroundColor !important;
-    border: 1px solid $dividerColor !important;
-}
-
-.h5peditor fieldset.common-fields-library-wrapper {
-    border: solid 1px $dividerColor !important;
-}
-
-.h5peditor .h5peditor-language-switcher select {
-    color: $fontColor !important;
-    background-color: $secondaryBackgroundColor !important;
-    border: solid 1px $dividerColor !important;
-}
-
-
 .h5peditor-form-manager-head {
     background: $secondaryBackgroundColor !important;
     color: $fontColor !important;
@@ -91,10 +160,6 @@
     border-bottom: 1px solid $dividerColor !important;
 }
 
-.field.wizard .h5peditor-tab-a {
-    background: $secondaryBackgroundColor !important;
-    color: $fontColor !important;
-}
 
 .h5p-editor-table-list tbody td {
     background: $secondaryBackgroundColor;
@@ -103,16 +168,22 @@
 }
 
 .field.wizard {
+
+    .h5peditor-tab-a {
+        background: $secondaryBackgroundColor !important;
+        color: $fontColor !important;
+    }
+
     border: 1px solid $dividerColor !important;
-}
 
-.field.wizard .h5peditor-tab-a.h5peditor-active {
-    background: $secondaryBackgroundColor !important;
-    color: $fontColor !important;
-}
+    .h5peditor-tab-a.h5peditor-active {
+        background: $secondaryBackgroundColor !important;
+        color: $fontColor !important;
+    }
 
-.field.wizard .h5peditor-wizard-navigation-buttons {
-    background-color: $secondaryBackgroundColor !important;
+    .h5peditor-wizard-navigation-buttons {
+        background-color: $secondaryBackgroundColor !important;
+    }
 }
 
 .form-manager-form {
@@ -129,54 +200,24 @@
     border-top: solid 1px $dividerColor !important;
 }
 
-.h5peditor>select,
-.h5peditor .h5peditor-language-switcher select,
-.h5peditor h5peditor-select,
-.h5peditor .field>select {
-    border: 1px solid $dividerColor !important;
-    background: $secondaryBackgroundColor !important;
-}
+.h5peditor-button-textual {
 
-.h5peditor .file .add {
-    background: $primaryColor !important;
-    border: 1px solid $dividerColor;
-    color: $primaryContrastColor !important;
-}
-
-.h5peditor .file .add .h5peditor-field-file-upload-text:before {
-    color: $primaryContrastColor !important;
-}
-
-
-.h5peditor-button-textual.importance-low {
-    background: $secondaryBackgroundColor !important;
-    border-color: $dividerColor !important;
-    color: $fontColor !important;
-}
-
-.h5peditor-button-textual.importance-high {
-    background: $secondaryBackgroundColor !important;
-    border-color: $dividerColor !important;
-    color: $fontColor !important;
+    &.importance-low,
+    &.importance-high {
+        background: $secondaryBackgroundColor !important;
+        border-color: $dividerColor !important;
+        color: $fontColor !important;
+    }
 }
 
 .field.importance-high>.h5peditor-label-wrapper>.h5peditor-label {
     color: $primaryColor !important;
 }
 
-
 .h5peditor-button-textual {
     background: $secondaryBackgroundColor !important;
     border: 1px solid $dividerColor !important;
     color: $fontColor !important;
-}
-
-.h5peditor .ui-dialog .h5p-joubelui-button,
-.h5peditor .h5p-joubelui-button {
-    background: $primaryColor;
-    color: $primaryContrastColor;
-    font-family: $fontFamily !important;
-    border-radius: $buttonBorderRadius !important;
 }
 
 .h5p-editor-table-list tbody td {
@@ -185,15 +226,28 @@
     border-bottom: 1px solid $dividerColor !important;
 }
 
-.group>.title,
-.h5p-li>.list-item-title-bar {
+.group>.title {
     background: $secondaryBackgroundColor !important;
     border: 1px solid $dividerColor !important;
     color: $fontColor !important;
 }
 
-.h5p-li>.list-item-title-bar.importance-high .order-group {
-    background: $primaryColor;
+.h5p-li>.list-item-title-bar {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+
+    &.importance-high {
+        .order-up,
+        .order-down,
+        .order-group {
+            background: $primaryColor !important;
+
+            &:hover {
+                background: $primaryColor !important;
+            }
+        }
+    }
 }
 
 .h5p-metadata-button-tip {
@@ -211,9 +265,18 @@
     background-color: $backgroundColor !important;
 }
 
-.group.importance-low>.title,
-.h5p-li>.list-item-title-bar.importance-low>.h5peditor-label,
-.h5p-li>.list-item-title-bar.importance-low>.title,
+.group.importance-low>.title {
+    color: $fontColor;
+}
+
+.h5p-li>.list-item-title-bar.importance-low> {
+
+    .h5peditor-label,
+    .title {
+        color: $fontColor;
+    }
+}
+
 .common>.h5peditor-label {
     color: $fontColor;
 }
@@ -229,7 +292,6 @@
     color: $fontColor;
     background: $secondaryBackgroundColor;
 }
-
 
 .h5p-vtab-a {
     border: 1px solid $dividerColor !important;
@@ -248,7 +310,6 @@
     color: $warningContrastColor !important;
 }
 
-
 .h5p-editing-dialog {
     background: $backgroundColor !important;
 }
@@ -259,23 +320,8 @@
     border-color: $primaryColor !important;
 }
 
-.h5peditor .h5p-add-dialog {
-    background: $secondaryBackgroundColor !important;
-    border: 1px solid $dividerColor !important;
-}
-
-.h5peditor .h5p-add-dialog .h5p-buttons {
-    padding: 0.5em;
-    border-top: 1px solid $dividerColor !important;
-    background: $secondaryBackgroundColor !important;
-}
-
-.h5peditor .h5p-add-dialog .h5p-add-dialog-table .h5p-file-drop-upload {
-    background-color: $secondaryBackgroundColor !important;
-    border: 1px solid $dividerColor !important;
-}
-
 /* settings */
+
 .group>.content {
     border: 1px solid $dividerColor !important;
     background: $backgroundColor !important;
