@@ -200,8 +200,7 @@
 
 .h5p-editor-table-list tbody td {
     background: $secondaryBackgroundColor;
-    border-top: 1px solid $dividerColor;
-    border-bottom: 1px solid $dividerColor;
+    border-color: $dividerColor !important;
 }
 
 .field.wizard {
@@ -388,4 +387,9 @@
         background-color: darken($secondaryColor, 5%) !important;
         border-color: darken($secondaryColor, 10%) !important
     }
+}
+
+.h5p-editor-range-list-message-area {
+    border-color: $errorColor !important;
+    background-color: lighten($errorColor, 10%) !important;
 }
