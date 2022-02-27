@@ -216,6 +216,9 @@ describe('H5PEditor', () => {
                     user
                 );
 
+                const files = await contentStorage.listFiles(contentId, user);
+                expect(files).toHaveLength(2);
+
                 // get data we've stored and check if the #tmp tag has been removed from the image
                 const { params } = await h5pEditor.getContent(contentId, user);
 
