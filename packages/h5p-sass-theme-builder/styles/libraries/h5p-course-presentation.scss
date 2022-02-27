@@ -1,0 +1,21 @@
+@import '../variables.scss';
+
+.h5p-course-presentation {
+    color: $fontColor !important;
+}
+
+.h5p-dragnbar-keywords span {
+    color: $fontColor !important;
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: $backgroundColor;
+}
+
+.h5p-course-presentation .h5p-progressbar .h5p-progressbar-part-show {
+    background: $primaryColor;
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: $backgroundColor;
+}

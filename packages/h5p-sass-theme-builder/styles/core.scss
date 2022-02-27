@@ -1,0 +1,67 @@
+@import "./variables.scss";
+
+body {
+    font-family: $fontFamily !important;
+    color: $fontColor !important;
+}
+
+button.h5p-core-button {
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-confirmation-dialog-header {
+    background: $backgroundColor !important;
+    color: $fontColor !important;
+}
+
+.h5p-confirmation-dialog-body {
+    color: $fontColor !important;
+    background: $backgroundColor !important;
+    border-top: solid 1px $dividerColor !important;
+}
+
+.h5p-joubelui-button {
+    background: $primaryColor;
+    color: $primaryContrastColor;
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+}
+
+
+.h5p-joubelui-button:hover,
+.h5p-joubelui-button:focus {
+    background: $primaryColor;
+    color: $primaryContrastColor;
+    font-family: $fontFamily !important;
+    border-radius: $buttonBorderRadius !important;
+}
+
+.content {
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+}
+
+.h5p-content {
+    color: $fontColor;
+    background: $backgroundColor;
+    border: 1px solid $dividerColor;
+}
+
+.h5p-question {
+    background: $backgroundColor;
+    color: $fontColor;
+}
+
+.h5p-joubelui-score-bar {
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+    border: 1px solid $dividerColor;
+
+}
+
+.h5p-joubelui-score-number {
+    color: $fontColor;
+}

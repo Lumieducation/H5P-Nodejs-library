@@ -1,0 +1,12 @@
+@import '../variables.scss';
+
+
+.h5p-drag-text [aria-dropeffect] {
+    background-color: $secondaryBackgroundColor;
+}
+
+.h5p-drag-text [aria-grabbed] {
+    border: 0.1em solid $dividerColor;
+    background: $secondaryBackgroundColor;
+
+}

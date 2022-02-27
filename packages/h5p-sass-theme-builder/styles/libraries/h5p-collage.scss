@@ -1,0 +1,19 @@
+@import '../variables.scss';
+
+.h5p-collage-inner-wrapper,
+.h5p-collage-editor-layout-selector {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-collage-wrapper {
+    background-color: $secondaryBackgroundColor;
+}
+
+.h5p-collage-inner-wrapper,
+.h5p-collage-editor-layout-selector {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-collage-wrapper {
+    background-color: $secondaryBackgroundColor !important;
+}

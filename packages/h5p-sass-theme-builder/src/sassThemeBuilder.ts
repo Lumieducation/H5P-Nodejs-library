@@ -1,7 +1,7 @@
-import sass from 'sass';
+import sass, { ImporterResult } from 'sass';
 import path from 'path';
 import fs from 'fs';
-import { ITheme } from '@lumieducation/h5p-server';
+import type { ITheme } from '@lumieducation/h5p-server';
 
 const generateVariablesScss = (theme: ITheme): string => {
     return `
@@ -25,19 +25,48 @@ const generateVariablesScss = (theme: ITheme): string => {
     `;
 };
 
-const loadScss = (): string => {
-    const styleDir = path.resolve(__dirname, '../styles');
-    let scss: string = '';
-    for (const files of fs.readdirSync(styleDir)) {
-        scss += fs.readFileSync(path.join(styleDir, files));
-    }
-    return scss;
-};
-
 export default (theme: ITheme): string => {
-    const vars = generateVariablesScss(theme);
-    const scss = loadScss();
-    const full = vars + scss;
-    const css = sass.compileString(full, { sourceMap: false });
+    // We don't load the main.scss file with `compile` as sass wouldn't
+    // use the Importer below to resolve variables.scss
+    const css = sass.compileString('@import "main.scss";', {
+        sourceMap: false,
+        // We use a custom importer to override the _variables.scs files.
+        // We also have to load all other files with it as the fallback doesn't work.
+        importers: [
+            {
+                canonicalize: (url) => {
+                    if (url.endsWith('variables.scss')) {
+                        return new URL('override:variables.scss');
+                    }
+                    if (
+                        fs.existsSync(
+                            path.resolve(__dirname, '../styles/', url)
+                        )
+                    ) {
+                        return new URL(`override:${url}`);
+                    }
+                    return null;
+                },
+                load: (url): ImporterResult => {
+                    if (url.toString() === 'override:variables.scss') {
+                        return {
+                            contents: generateVariablesScss(theme),
+                            syntax: 'scss'
+                        };
+                    }
+                    const p = path.resolve(
+                        __dirname,
+                        '../styles',
+                        url.toString().replace('override:', '')
+                    );
+                    return {
+                        contents: fs.readFileSync(p, 'utf8'),
+                        syntax: 'scss'
+                    };
+                }
+            }
+        ],
+        loadPaths: [path.resolve(__dirname, '../styles')]
+    });
     return css.css;
 };

@@ -1,4 +1,4 @@
-import { ITheme } from '@lumieducation/h5p-server';
+import type { ITheme } from '@lumieducation/h5p-server';
 import sassThemeBuilder from '../src/sassThemeBuilder';
 
 const theme: ITheme = {

@@ -1,0 +1,152 @@
+@import "./variables.scss";
+
+.h5p-hub-section-h5p-hub-upload,
+.h5p-hub-panel,
+.h5p-hub .h5p-hub-content-detail {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-info-list li .h5p-hub-content {
+    color: $fontColor !important;
+}
+
+.h5p-hub-client-drop-down {
+    color: $fontColor !important;
+    background-color: $backgroundColor !important;
+}
+
+/* hub selection text */
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-selected,
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-icon-hub-icon {
+    color: $fontColor !important;
+}
+
+
+.h5p-hub {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .link,
+.h5p-hub a {
+    font-family: $fontFamily !important;
+    color: $fontColor !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    font-family: $fontFamily !important;
+}
+
+
+.h5p-hub .h5p-hub-tab-panel [role='tablist'] {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub-search-wrapper {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list ol {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub-media .h5p-hub-highlight {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub ul.h5p-hub-list-of-numbers .h5p-hub-list-element a.h5p-hub-highlight {
+    border-color: $primaryColor;
+    background-color: $primaryColor;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media[tabindex='0'] {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:not(:last-child) {
+    border-bottom: 1px solid $dividerColor;
+}
+
+/* button */
+.h5p-hub .h5p-hub-button.h5p-hub-button-primary {
+    background-color: $primaryColor !important;
+    border-color: $primaryColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .h5p-hub-button.h5p-hub-button-inverse-primary {
+    background-color: $secondaryColor !important;
+    color: $secondaryContrastColor !important;
+    border-color: $secondaryColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover,
+.h5p-hub .h5p-hub-content-item.h5p-hub-tabular:hover,
+.h5p-hub .h5p-hub-content-item.h5p-hub-tabular:focus,
+.h5p-hub .h5p-hub-content-item.h5p-hub-grid:focus .h5p-hub-grid-item,
+.h5p-hub .h5p-hub-content-item.h5p-hub-grid:hover .h5p-hub-grid-item {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    color: $fontColor !important;
+}
+
+
+.h5p-hub .h5p-hub-content-type-detail {
+    background-color: $backgroundColor !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    border-radius: $buttonBorderRadius !important;
+    background-color: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-hub-accordion-toggler {
+    color: $fontColor !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a.h5p-hub-highlight {
+    color: $primaryColor !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a {
+    color: $fontColor !important;
+}
+
+.h5p-hub small,
+.h5p-hub .small,
+.h5p-hub .h5p-hub-small {
+    color: $fontColor !important;
+}
+
+.h5p-hub-carousel .h5p-hub-navigation {
+    color: $primaryContrastColor !important;
+    background-color: $primaryColor !important;
+}
+
+.h5p-hub-accordion-heading {
+    border-bottom: 1px solid $dividerColor !important;
+    background-color: $secondaryBackgroundColor !important;
+}
+
+
+.h5p-hub-search-wrapper .h5p-hub-border-wrap {
+    background: $secondaryBackgroundColor !important;
+}
+
+.h5p-hub-search-bar {
+    border: 1px solid $dividerColor;
+    color: $fontColor;
+    background: $secondaryBackgroundColor !important;
+}

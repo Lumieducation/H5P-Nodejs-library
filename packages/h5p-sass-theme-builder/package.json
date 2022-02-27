@@ -11,8 +11,7 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "test:watch": "jest --watch",
-        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "start": "ts-node scripts/build.ts"
     },
     "release": {
         "branch": "master"
@@ -24,8 +23,10 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^9.0.6",
         "sass": "^1.49.9"
+    },
+    "devDependencies": {
+        "@lumieducation/h5p-server": "^9.0.6"
     },
     "main": "./build/sassThemeBuilder.js",
     "types": "./build/sassThemeBuilder.d.ts"

@@ -17,12 +17,12 @@
         "packages/h5p-rest-example-client/src/**/*",
         "packages/h5p-rest-example-server/src/**/*",
         "packages/h5p-sass-theme-builder/src/**/*",
-        "packages/h5p-sass-theme-builder/test/**/*",
+        "packages/h5p-sass-theme-builder/scripts/**/*",
         "packages/h5p-server/src/**/*",
         "packages/h5p-server/test/**/*",
         "packages/h5p-webcomponents/src/**/*",
         "packages/h5p-webcomponents/test/**/*"
-    ],
+, "packages/h5p-sass-theme-builder/scripts/build.ts"    ],
     "compilerOptions": {
         "outDir": "./build-ide",
         "jsx": "react",
