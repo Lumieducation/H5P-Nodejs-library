@@ -19,3 +19,17 @@
 .h5p-course-presentation .h5p-presentation-wrapper {
     background: $backgroundColor;
 }
+
+.h5p-course-presentation .h5p-slidecontrols-button {
+    border-color: transparent !important;
+    color: $fontColor !important;
+}
+
+.h5p-course-presentation .h5p-slidecontrols-button:before,
+.h5p-course-presentation .h5p-footer .h5p-footer-button {
+    color: $fontColor !important;
+}
+
+.h5p-course-presentation .h5p-footer {
+    background: $backgroundColor !important;
+}
