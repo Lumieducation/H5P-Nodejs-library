@@ -10,6 +10,10 @@ button.h5p-core-button {
     border-radius: $buttonBorderRadius !important;
     background: $primaryColor !important;
     color: $primaryContrastColor !important;
+
+    &:hover {
+        background: darken($primaryColor, 10%) !important;
+    }
 }
 
 .h5p-confirmation-dialog-header {

@@ -5,6 +5,11 @@
     background-color: $backgroundColor !important;
 }
 
+.h5peditor-form,
+.form-manager.h5peditor-form {
+    border-color: $dividerColor !important;
+}
+
 .h5peditor-paste-button,
 .h5peditor-copy-button {
     &::before {
@@ -33,7 +38,7 @@
 
 .h5p-metadata-button-wrapper {
 
-    background-color: $backgroundColor !important;
+    background-color: transparent !important;
 
     .h5p-metadata-button-tip,
     .h5p-metadata-toggler {
@@ -97,7 +102,7 @@
 .form-manager-head {
     color: $secondaryFontColor !important;
     background-color: $backgroundColor !important;
-    border-bottom: 1px solid $dividerColor;
+    border-bottom: 1px solid $dividerColor !important;
 }
 
 .form-manager-button {
@@ -192,7 +197,7 @@
     .ui-dialog .h5p-joubelui-button,
     .h5p-joubelui-button {
         background: $primaryColor !important;
-        color: $primaryContrastColor !important;        
+        color: $primaryContrastColor !important;
         font-family: $fontFamily !important;
         border-radius: $buttonBorderRadius !important;
 
@@ -225,15 +230,26 @@
             }
         }
     }
+
+    .h5p-editing-image-button:before,
+    .h5p-copyright-button:before {
+        color: $primaryContrastColor !important;
+    }
 }
 
 /* accordion header */
-
 .group.importance-low>.title,
 .h5p-li>.list-item-title-bar.importance-low,
 .common>.h5peditor-label {
     background: $secondaryBackgroundColor;
     border: 1px solid $dividerColor;
+    color: $fontColor !important;
+}
+
+.h5p-li>.list-item-title-bar.importance-low>.title:before,
+.h5p-li>.list-item-title-bar.importance-low .remove:after,
+.h5p-li>.list-item-title-bar.importance-low .order-up:after,
+.h5p-li>.list-item-title-bar.importance-low .order-down:after {
     color: $fontColor !important;
 }
 
@@ -270,6 +286,25 @@
 
     .h5peditor-wizard-navigation-buttons {
         background-color: $secondaryBackgroundColor !important;
+
+        >div {
+            color: $primaryContrastColor !important;
+            background: $primaryColor !important;
+            border: 1px solid darken($primaryColor, 10%) !important;
+
+            &:hover {
+                background: darken($primaryColor, 10%) !important;
+                border: 1px solid darken($primaryColor, 20%) !important;
+            }
+        }
+
+        div div {
+            border-color: darken($primaryColor, 10%) !important;
+
+            &:hover {
+                border-color: darken($primaryColor, 20%) !important;
+            }
+        }
 
         div div span:first-child,
         .nav-button-label:before {
@@ -345,9 +380,22 @@
     border: 1px solid $dividerColor !important;
     color: $fontColor !important;
 
+    & {
+
+        & .order-up,
+        .order-down,
+        .order-group {
+            background: darken($secondaryBackgroundColor, 5%) !important;
+
+            &:hover {
+                background: darken($secondaryBackgroundColor, 15%) !important;
+            }
+        }
+    }
+
     &.importance-high {
 
-        .order-up,
+        & .order-up,
         .order-down,
         .order-group {
             background: $primaryColor !important;
@@ -375,12 +423,6 @@
     color: $fontColor;
 }
 
-.field.wizard .h5peditor-wizard-navigation-buttons>div {
-    color: $primaryContrastColor !important;
-    background: $primaryColor !important;
-    border: 1px solid $dividerColor !important;
-}
-
 .h5peditor-widget-option {
     border: 1px solid $dividerColor;
     color: $fontColor;
@@ -392,6 +434,28 @@
     background-color: $secondaryBackgroundColor !important;
     color: $fontColor !important;
 }
+
+.vtab-order-wrapper>.order-up,
+.vtab-order-wrapper>.order-down {
+    background: $backgroundColor !important;
+    color: $fontColor !important;
+
+    &:hover {
+        background: darken($backgroundColor, 10%) !important;
+    }
+}
+
+
+.vtab-order-wrapper>.order-up[aria-disabled="true"],
+.vtab-order-wrapper>.order-down[aria-disabled="true"] {
+    background: $secondaryBackgroundColor !important;
+    color: $disabledFontColor !important;
+
+    &:hover {
+        background: $secondaryBackgroundColor !important;
+    }
+}
+
 
 .important-description-show {
     background: $warningColor !important;
@@ -459,4 +523,14 @@
 .h5p-editor-range-list-message-area {
     border-color: $errorColor !important;
     background-color: lighten($errorColor, 10%) !important;
+}
+
+.h5p-dragnbar-keywords.h5p-open,
+.h5p-keywords-dropdown {
+    background-color: $secondaryBackgroundColor !important;
+    color: $secondaryContrastColor !important;
+
+    >label {
+        color: $secondaryContrastColor !important;
+    }
 }
