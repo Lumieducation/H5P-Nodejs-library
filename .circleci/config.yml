@@ -5,7 +5,7 @@ orbs:
 jobs:
     install-build:
         docker:
-            - image: circleci/node:16
+            - image: circleci/node:17
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -64,7 +64,7 @@ jobs:
 
     lint:
         docker:
-            - image: circleci/node:16
+            - image: circleci/node:17
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -74,7 +74,7 @@ jobs:
 
     format:
         docker:
-            - image: circleci/node:16
+            - image: circleci/node:17
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -84,7 +84,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: circleci/node:17-browsers
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -99,7 +99,7 @@ jobs:
 
     integration-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: circleci/node:17-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
@@ -113,7 +113,7 @@ jobs:
 
     html-exporter-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: circleci/node:17-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
@@ -128,7 +128,7 @@ jobs:
 
     e2e-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: circleci/node:17-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
@@ -139,7 +139,7 @@ jobs:
 
     db-tests:
         docker:
-            - image: circleci/node:16
+            - image: circleci/node:17
             - image: circleci/mongo:latest
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
@@ -160,7 +160,7 @@ jobs:
 
     release:
         docker:
-            - image: 'circleci/node:16'
+            - image: 'circleci/node:17'
         working_directory: /mnt/ramdisk
         steps:
             - checkout
