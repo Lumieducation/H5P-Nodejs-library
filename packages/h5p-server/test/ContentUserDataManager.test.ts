@@ -181,6 +181,34 @@ describe('ContentUserDataManager', () => {
     });
 
     describe('saveContentUserData', () => {
+        it('deletes the contentUserData if invalidate is set to true', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+
+            const user = new User();
+            const contentId = 'contentId';
+
+            await contentUserDataManager.saveContentUserData(
+                contentId,
+                'state',
+                '0',
+                'data',
+                true,
+                false,
+                user
+            );
+
+            expect(
+                mockContentUserDataStorage.deleteContentUserDataByUserId
+            ).toHaveBeenCalledWith(contentId, user.id, user);
+
+            expect(
+                mockContentUserDataStorage.saveContentUserData
+            ).toBeCalledTimes(0);
+        });
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined

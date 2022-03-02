@@ -199,6 +199,17 @@ export default class ContentUserDataManager {
             );
         }
 
+        if (invalidate) {
+            log.debug(
+                `invalidating contentUserData for user with id ${user.id} and contentId ${contentId}`
+            );
+            return this.contentUserDataStorage.deleteContentUserDataByUserId(
+                contentId,
+                user.id,
+                user
+            );
+        }
+
         if (this.contentUserDataStorage) {
             return this.contentUserDataStorage.saveContentUserData(
                 contentId,
