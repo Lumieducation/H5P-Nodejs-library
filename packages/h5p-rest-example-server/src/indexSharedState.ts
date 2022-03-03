@@ -173,6 +173,7 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
+        path.join(__dirname, '../contentUserDataStorage.json'),
         (key, language) => translationFunction(key, { lng: language }),
         {
             contentWasDeleted: (contentId) => {

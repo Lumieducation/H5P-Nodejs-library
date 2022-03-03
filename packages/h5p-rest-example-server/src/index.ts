@@ -139,7 +139,7 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
-        path.join(__dirname, 'h5p/contentUserDataStorage.json'),
+        path.join(__dirname, '../contentUserDataStorage.json'),
         (key, language) => translationFunction(key, { lng: language })
     );
 
@@ -273,7 +273,7 @@ const start = async (): Promise<void> => {
     );
 
     server.use(
-        `${h5pEditor.config.baseUrl}/${h5pEditor.config.contentUserDataUrl}`,
+        `${h5pEditor.config.baseUrl}${h5pEditor.config.contentUserDataUrl}`,
         contentUserDataExpressRouter(h5pEditor.contentUserDataManager)
     );
 

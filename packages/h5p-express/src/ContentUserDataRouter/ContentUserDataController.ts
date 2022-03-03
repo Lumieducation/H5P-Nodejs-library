@@ -22,17 +22,17 @@ export default class ContentUserDataController {
         res: express.Response<IAjaxResponse<string>>
     ): Promise<void> => {
         const { contentId, dataType, subContentId } = req.params;
-        const userState = await this.contentUserDataManager.loadContentUserData(
+        const result = await this.contentUserDataManager.loadContentUserData(
             contentId,
             dataType,
             subContentId,
             req.user
         );
 
-        if (!userState) {
+        if (!result || !result.userState) {
             res.status(404).json({ data: undefined, success: false });
         } else {
-            res.status(200).json({ data: userState, success: true });
+            res.status(200).json({ data: result.userState, success: true });
         }
     };
 

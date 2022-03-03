@@ -3,7 +3,8 @@ import {
     IContentUserData,
     IContentUserDataStorage,
     IUser
-} from '@lumieducation/h5p-server';
+} from '../../types';
+
 import JsonStorage from './JsonStorage';
 
 export default class FileContentUserDataStorage

@@ -93,7 +93,7 @@ export default class UrlGenerator implements IUrlGenerator {
             const qs = this.csrfProtection.queryParamGenerator(user);
             return `${this.config.baseUrl}${this.config.contentUserDataUrl}?${qs.name}=${qs.value}`;
         }
-        return `${this.config.baseUrl}${this.config.contentUserDataUrl}`;
+        return `${this.config.baseUrl}${this.config.contentUserDataUrl}/:contentId/:dataType/:subContentId`;
     };
 
     /**
