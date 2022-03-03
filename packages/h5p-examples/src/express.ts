@@ -202,12 +202,7 @@ const start = async (): Promise<void> => {
     );
 
     server.use(
-        `${
-            h5pEditor.config.baseUrl
-        }${h5pEditor.config.contentUserDataUrl.replace(
-            '/:contentId/:dataType/:subContentId',
-            ''
-        )}`,
+        `${h5pEditor.config.baseUrl}/${h5pEditor.config.contentUserDataUrl}`,
         contentUserDataExpressRouter(h5pEditor.contentUserDataManager)
     );
 

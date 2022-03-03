@@ -13,7 +13,8 @@ import session from 'express-session';
 import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
-    contentTypeCacheExpressRouter
+    contentTypeCacheExpressRouter,
+    contentUserDataExpressRouter
 } from '@lumieducation/h5p-express';
 
 import * as H5P from '@lumieducation/h5p-server';
@@ -138,6 +139,7 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
+        path.join(__dirname, 'h5p/contentUserDataStorage.json'),
         (key, language) => translationFunction(key, { lng: language })
     );
 
@@ -268,6 +270,11 @@ const start = async (): Promise<void> => {
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
+    );
+
+    server.use(
+        `${h5pEditor.config.baseUrl}/${h5pEditor.config.contentUserDataUrl}`,
+        contentUserDataExpressRouter(h5pEditor.contentUserDataManager)
     );
 
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in

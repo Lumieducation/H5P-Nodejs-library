@@ -31,6 +31,7 @@ export default async function createH5PEditor(
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
+    localContentUserDataPath?: string,
     translationCallback?: H5P.ITranslationFunction,
     hooks?: {
         contentWasDeleted?: (contentId: string, user: IUser) => Promise<void>;
@@ -67,6 +68,10 @@ export default async function createH5PEditor(
     } else {
         // using no cache
     }
+    const contentUserDataStorage =
+        new H5P.fsImplementations.FileContentUserDataStorage(
+            localContentUserDataPath
+        );
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
     const h5pEditor = new H5P.H5PEditor(
@@ -125,7 +130,8 @@ export default async function createH5PEditor(
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
             hooks
-        }
+        },
+        contentUserDataStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make
