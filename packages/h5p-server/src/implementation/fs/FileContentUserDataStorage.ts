@@ -4,26 +4,10 @@ import {
     IContentUserDataStorage,
     IUser
 } from '@lumieducation/h5p-server';
+import JsonStorage from './JsonStorage';
 
-let userData: {
-    contentId?: string;
-    dataType: string;
-    subContentId: string;
-    userState: string; // the contentUserState/contentUserData as string
-    userId?: string;
-}[] = [];
-
-let userFinishedData: {
-    contentId: ContentId;
-    score: number;
-    maxScore: number;
-    openedTimestamp: number;
-    finishedTimestamp: number;
-    completionTime: number;
-    user: IUser;
-}[] = [];
-
-export default class InMemoryContentUserDataStorage
+export default class FileContentUserDataStorage
+    extends JsonStorage
     implements IContentUserDataStorage
 {
     public async loadContentUserData(
@@ -31,19 +15,23 @@ export default class InMemoryContentUserDataStorage
         dataType: string,
         subContentId: string,
         user: IUser
-    ): Promise<string> {
+    ): Promise<IContentUserData> {
+        const userData = await this.load('userData');
+
         return userData.filter(
             (data) =>
                 data.contentId === contentId &&
                 data.dataType === dataType &&
                 data.subContentId === subContentId &&
                 data.userId === user.id
-        )[0]?.userState;
+        )[0];
     }
 
     public async listContentUserDataByUserId(
         userId: string
     ): Promise<IContentUserData[]> {
+        const userData = await this.load('userData');
+
         return userData.filter((data) => data.userId === userId);
     }
 
@@ -56,8 +44,10 @@ export default class InMemoryContentUserDataStorage
         preload: boolean,
         user: IUser
     ): Promise<void> {
+        const userData = await this.load('userData');
+
         // make sure we have only one entry for contentId, dataType, subContentId and user
-        userData = userData.filter(
+        const newUserData = userData.filter(
             (data) =>
                 data.contentId !== contentId &&
                 data.dataType !== dataType &&
@@ -65,7 +55,7 @@ export default class InMemoryContentUserDataStorage
                 data.userId !== user.id
         );
 
-        userData.push({
+        newUserData.push({
             contentId,
             dataType,
             subContentId,
@@ -74,6 +64,8 @@ export default class InMemoryContentUserDataStorage
             // preload,
             userId: user.id
         });
+
+        await this.save('userData', newUserData);
     }
 
     public async saveFinishedDataForUser(
@@ -85,6 +77,7 @@ export default class InMemoryContentUserDataStorage
         completionTime: number,
         user: IUser
     ): Promise<void> {
+        const userFinishedData = await this.load('userFinishedData');
         userFinishedData.push({
             contentId,
             score,
@@ -94,6 +87,7 @@ export default class InMemoryContentUserDataStorage
             completionTime,
             user
         });
+        await this.save('userFinishedData', userFinishedData);
     }
 
     public async deleteContentUserDataByUserId(
@@ -101,34 +95,35 @@ export default class InMemoryContentUserDataStorage
         userId: string,
         requestingUser: IUser
     ): Promise<void> {
-        userData = userData.filter(
+        const userData = await this.load('userData');
+
+        const newUserData = userData.filter(
             (data) => data.contentId !== contentId && data.userId !== userId
         );
+
+        await this.save('userData', newUserData);
     }
 
     public async deleteAllContentUserDataByContentId(
         contentId: ContentId,
         requestingUser: IUser
     ): Promise<void> {
-        userData = userData.filter((data) => data.contentId !== contentId);
+        const userData = await this.load('userData');
+
+        const newUserData = userData.filter(
+            (data) => data.contentId !== contentId
+        );
+
+        this.save('userData', newUserData);
     }
 
     public async listByContent(
         contentId: ContentId,
         userId: string
-    ): Promise<
-        {
-            contentId?: string;
-            dataType: string;
-            subContentId: string;
-            userState: string; // the contentUserState/contentUserData as string
-            userId?: string;
-        }[]
-    > {
-        return Promise.resolve(
-            userData.filter(
-                (data) => data.contentId === contentId && data.userId === userId
-            )
+    ): Promise<IContentUserData[]> {
+        const userData = await this.load('userData');
+        return userData.filter(
+            (data) => data.contentId === contentId && data.userId === userId
         );
     }
 }

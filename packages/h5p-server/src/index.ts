@@ -20,6 +20,7 @@ import * as utils from './implementation/utils';
 import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
+import FileContentUserDataStorage from './implementation/fs/FileContentUserDataStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
@@ -74,7 +75,8 @@ const fsImplementations = {
     FileContentStorage,
     FileLibraryStorage,
     InMemoryStorage,
-    JsonStorage
+    JsonStorage,
+    FileContentUserDataStorage
 };
 
 const cacheImplementations = {

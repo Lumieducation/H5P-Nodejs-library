@@ -8,7 +8,6 @@ import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
 
-import InMemoryContentUserDataStorage from './InMemoryContentUserDataStorage';
 /**
  * Create a H5PEditor object.
  * Which storage classes are used depends on the configuration values set in
@@ -35,6 +34,7 @@ export default async function createH5PEditor(
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
+    localContentUserDataPath?: string,
     translationCallback?: H5P.ITranslationFunction
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
@@ -125,7 +125,10 @@ export default async function createH5PEditor(
         );
     }
 
-    const contentUserDataStorage = new InMemoryContentUserDataStorage();
+    const contentUserDataStorage =
+        new H5P.fsImplementations.FileContentUserDataStorage(
+            localContentUserDataPath
+        );
 
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
