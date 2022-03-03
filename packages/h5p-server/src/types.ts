@@ -550,6 +550,8 @@ export interface IContentUserData {
     subContentId: string;
     userState: string; // the contentUserState/contentUserData as string
     userId?: string;
+    preload: boolean;
+    invalidate: boolean;
 }
 
 /**
@@ -571,7 +573,7 @@ export interface IContentUserDataStorage {
         dataType: string,
         subContentId: string,
         user: IUser
-    ): Promise<string>;
+    ): Promise<IContentUserData>;
 
     /**
      * Saves the contentUserData for given contentId, dataType and subContentId

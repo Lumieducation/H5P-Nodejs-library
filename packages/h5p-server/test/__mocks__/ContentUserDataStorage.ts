@@ -31,7 +31,8 @@ const mock = jest.fn().mockImplementation(() => {
                             userId,
                             dataType: 'state',
                             subContentId: '0',
-                            userState: `${contentId}-${userId}`
+                            userState: `${contentId}-${userId}`,
+                            preload: true
                         }
                     ]
                 );

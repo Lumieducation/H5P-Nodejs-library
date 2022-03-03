@@ -337,14 +337,16 @@ describe('ContentUserDataManager', () => {
                     userId: user.id,
                     subContentId: '1',
                     userState: userState2,
-                    dataType: dataType2
+                    dataType: dataType2,
+                    preload: true
                 },
                 {
                     contentId,
                     userId: user.id,
                     subContentId: '0',
                     userState: userState1,
-                    dataType: dataType1
+                    dataType: dataType1,
+                    preload: true
                 }
             ];
 
@@ -359,6 +361,51 @@ describe('ContentUserDataManager', () => {
             expect(generatedContentUserDataIntegration).toEqual([
                 { [dataType1]: userState1 },
                 { [dataType2]: userState2 }
+            ]);
+        });
+
+        it('skips the generation if preload-flag is set to false or undefined', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+            const user = new User();
+            const dataType1 = 'state';
+            const userState1 = '...userState';
+            const dataType2 = 'state2';
+            const userState2 = '...userState2';
+
+            const mockData = [
+                {
+                    contentId,
+                    userId: user.id,
+                    subContentId: '1',
+                    userState: userState2,
+                    dataType: dataType2,
+                    preload: false
+                },
+                {
+                    contentId,
+                    userId: user.id,
+                    subContentId: '0',
+                    userState: userState1,
+                    dataType: dataType1,
+                    preload: true
+                }
+            ];
+
+            mockContentUserDataStorage.setMockData(mockData);
+
+            const generatedContentUserDataIntegration =
+                await contentUserDataManager.generateContentUserDataIntegration(
+                    contentId,
+                    user
+                );
+
+            expect(generatedContentUserDataIntegration).toEqual([
+                { [dataType1]: userState1 }
             ]);
         });
     });

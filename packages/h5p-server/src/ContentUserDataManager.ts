@@ -2,7 +2,8 @@ import {
     ContentId,
     ISerializedContentUserData,
     IUser,
-    IContentUserDataStorage
+    IContentUserDataStorage,
+    IContentUserData
 } from './types';
 import Logger from './helpers/Logger';
 import H5pError from './helpers/H5pError';
@@ -76,7 +77,7 @@ export default class ContentUserDataManager {
         dataType: string,
         subContentId: string,
         user: IUser
-    ): Promise<string> {
+    ): Promise<IContentUserData> {
         if (!this.contentUserDataStorage) {
             return undefined;
         }
@@ -125,9 +126,13 @@ export default class ContentUserDataManager {
             (a, b) => Number(a.subContentId) - Number(b.subContentId)
         );
 
-        const mappedStates = sortedStates.map((state) => ({
-            [state.dataType]: state.userState
-        }));
+        const mappedStates = sortedStates
+            // filter removes states where preload is set to false
+            .filter((state) => state.preload)
+            // maps the state to an object where the key is the dataType and the userState is the value
+            .map((state) => ({
+                [state.dataType]: state.userState
+            }));
 
         return mappedStates;
     }
