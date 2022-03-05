@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+
+
+
+
+
 ## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
 
 
