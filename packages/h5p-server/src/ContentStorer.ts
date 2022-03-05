@@ -236,12 +236,18 @@ export default class ContentStorer {
                 )
             );
 
+        const filePathToNewFilenameMap = new Map<string, string>();
         for (const reference of fileReferencesInParams) {
             const filepath = path.join(
                 packageDirectory,
                 'content',
                 reference.filePath
             );
+            let newFilename = filePathToNewFilenameMap.get(filepath);
+            if (newFilename) {
+                reference.context.params.path = `${newFilename}#tmp`;
+                continue;
+            }
             // If the file referenced in the parameters isn't included in the
             // package, we first check if the path is actually a URL and if not,
             // we delete the reference.
@@ -257,12 +263,13 @@ export default class ContentStorer {
                 continue;
             }
             const readStream = fsExtra.createReadStream(filepath);
-            const newFilename = await this.temporaryFileManager.addFile(
+            newFilename = await this.temporaryFileManager.addFile(
                 reference.filePath,
                 readStream,
                 user
             );
             reference.context.params.path = `${newFilename}#tmp`;
+            filePathToNewFilenameMap.set(filepath, newFilename);
         }
         return { metadata, parameters };
     }
@@ -487,6 +494,7 @@ export default class ContentStorer {
         oldFiles: string[]
     ): Promise<IFileReference[]> {
         const filesToCopyFromTemporaryStorage: IFileReference[] = [];
+        const hashSet = new Set<string>();
 
         for (const ref of fileReferencesInNewParams) {
             // We mark the file to be copied over from temporary storage if the
@@ -495,11 +503,15 @@ export default class ContentStorer {
                 // We only save temporary file for later copying, however, if
                 // the there isn't already a file with the exact name. This
                 // might be the case if the user presses "save" twice.
-                if (!oldFiles.some((f) => f === ref.filePath)) {
+                if (
+                    !hashSet.has(ref.filePath) &&
+                    !oldFiles.some((f) => f === ref.filePath)
+                ) {
                     filesToCopyFromTemporaryStorage.push(ref);
                 }
                 // remove temporary file marker from parameters
                 ref.context.params.path = ref.filePath;
+                hashSet.add(ref.filePath);
             }
         }
         return filesToCopyFromTemporaryStorage;
