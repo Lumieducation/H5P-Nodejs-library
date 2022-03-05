@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+**Note:** Version bump only for package @lumieducation/h5p-react
+
+
+
+
+
 ## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
 
 

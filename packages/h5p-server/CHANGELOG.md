@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+
+### Bug Fixes
+
+* **h5p-server:** added gltf and glb to allowed content file formats ([add90d4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/add90d4232bb3c252250ef5c06c2dad63bf5f106))
+
+
+### Features
+
+* **shared state server:** added shared state server ([#2056](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2056)) ([3924d44](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3924d4478cdc791d08d1e2b4daf91500d4dce861))
+
+
+### Performance Improvements
+
+* **h5p-server:** reduce memory and IO when uploading package ([#2100](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2100)) ([6352040](https://github.com/Lumieducation/H5P-Nodejs-library/commit/63520408e83abe31e07536999203660b73dde4f4))
+
+
+
+
+
 ## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
 
 

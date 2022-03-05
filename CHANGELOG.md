@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency aws-sdk to v2.1080.0 ([2ad603b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2ad603b5f69d9cba92a5b6e833e9b47bc3798a7f))
+* **deps:** update dependency aws-sdk to v2.1081.0 ([ec9845e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ec9845ee5326e064460123d1b82258fa8aff8d71))
+* **deps:** update dependency aws-sdk to v2.1082.0 ([3c3f4b6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3c3f4b693596a2ed2b0b0a5c7ce88b5866be1720))
+* **deps:** update dependency aws-sdk to v2.1083.0 ([97d0244](https://github.com/Lumieducation/H5P-Nodejs-library/commit/97d024495b0dc005d452b4d299a31211d8dc648f))
+* **deps:** update dependency aws-sdk to v2.1084.0 ([47e223c](https://github.com/Lumieducation/H5P-Nodejs-library/commit/47e223c9b4d9c9375f4d4ade216a32fa1e85ce27))
+* **deps:** update dependency aws-sdk to v2.1085.0 ([3e2fda2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3e2fda2d4c03a003c213d789e43a6818e35ceb86))
+* **deps:** update dependency aws-sdk to v2.1087.0 ([#2118](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2118)) ([e3076fb](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e3076fb10253e6588d9fbd32a58ff96e43d41a60))
+* **deps:** update dependency i18next to v21.6.12 ([1b97cd6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1b97cd6f3fafcdbf766abf270d8b0b422929384e))
+* **deps:** update dependency i18next to v21.6.13 ([564d4d1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/564d4d1ffbac89dd80a153259e0f72580b37a5d8))
+* **deps:** update dependency mongodb to v4.4.1 ([6f17374](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6f173747e64889945fc2de21514dcb842c85eb64))
+* **deps:** update dependency react-bootstrap to v2.2.0 ([#2120](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2120)) ([c4b9bcc](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c4b9bccf27650a28be6efc1aa2ec996d532935e0))
+* **h5p-server:** added gltf and glb to allowed content file formats ([add90d4](https://github.com/Lumieducation/H5P-Nodejs-library/commit/add90d4232bb3c252250ef5c06c2dad63bf5f106))
+
+
+### Features
+
+* **shared state server:** added shared state server ([#2056](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2056)) ([3924d44](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3924d4478cdc791d08d1e2b4daf91500d4dce861))
+
+
+### Performance Improvements
+
+* **h5p-server:** reduce memory and IO when uploading package ([#2100](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2100)) ([6352040](https://github.com/Lumieducation/H5P-Nodejs-library/commit/63520408e83abe31e07536999203660b73dde4f4))
+
+
+
+
+
 ## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
 
 
