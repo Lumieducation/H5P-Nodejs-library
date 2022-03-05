@@ -35,6 +35,13 @@
                     return;
                 }
             }
+            var basePath = window.location.href.substr(
+                0,
+                window.location.href.lastIndexOf('/')
+            );
+            if (value.startsWith(basePath)) {
+                value = value.substr(basePath.length + 1);
+            }
             var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
                 const file = match[1];
@@ -64,6 +71,13 @@
                     nativeSetScriptAttribute.call(this, name, value);
                     return;
                 }
+            }
+            var basePath = window.location.href.substr(
+                0,
+                window.location.href.lastIndexOf('/')
+            );
+            if (value.startsWith(basePath)) {
+                value = value.substr(basePath.length + 1);
             }
             var match = value.match(/^.\/libraries\/([^?]+)\??.*$/);
             if (match) {
