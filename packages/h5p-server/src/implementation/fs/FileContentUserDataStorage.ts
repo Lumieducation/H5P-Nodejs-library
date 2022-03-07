@@ -36,7 +36,7 @@ export default class FileContentUserDataStorage
         return userData.filter((data) => data.userId === userId);
     }
 
-    public async saveContentUserData(
+    public async createOrUpdateContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,

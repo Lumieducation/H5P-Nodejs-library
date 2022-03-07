@@ -197,7 +197,7 @@ export default class ContentUserDataManager {
      * @param user The user who owns this object
      * @returns the saved state as string
      */
-    public async saveContentUserData(
+    public async createOrUpdateContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
@@ -213,12 +213,12 @@ export default class ContentUserDataManager {
         if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
             log.error(`invalid arguments passed for contentId ${contentId}`);
             throw new Error(
-                "saveContentUserData received invalid arguments: invalidate or preload weren't boolean"
+                "createOrUpdateContentUserData received invalid arguments: invalidate or preload weren't boolean"
             );
         }
 
         if (this.contentUserDataStorage) {
-            return this.contentUserDataStorage.saveContentUserData(
+            return this.contentUserDataStorage.createOrUpdateContentUserData(
                 contentId,
                 dataType,
                 subContentId,

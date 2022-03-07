@@ -211,14 +211,14 @@ describe('ContentUserDataManager', () => {
         });
     });
 
-    describe('saveContentUserData', () => {
+    describe('createOrUpdateContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
 
             expect(
-                await contentUserDataManager.saveContentUserData(
+                await contentUserDataManager.createOrUpdateContentUserData(
                     'contentId',
                     'state',
                     '0',
@@ -236,7 +236,7 @@ describe('ContentUserDataManager', () => {
             );
 
             await expect(
-                contentUserDataManager.saveContentUserData(
+                contentUserDataManager.createOrUpdateContentUserData(
                     'contentId',
                     'state',
                     '0',
@@ -247,7 +247,7 @@ describe('ContentUserDataManager', () => {
                 )
             ).rejects.toEqual(
                 new Error(
-                    "saveContentUserData received invalid arguments: invalidate or preload weren't boolean"
+                    "createOrUpdateContentUserData received invalid arguments: invalidate or preload weren't boolean"
                 )
             );
         });
@@ -264,7 +264,7 @@ describe('ContentUserDataManager', () => {
             const userState = '[exampleUserState]';
             const user = new User();
 
-            await contentUserDataManager.saveContentUserData(
+            await contentUserDataManager.createOrUpdateContentUserData(
                 contentId,
                 dataType,
                 subContentId,
@@ -275,7 +275,7 @@ describe('ContentUserDataManager', () => {
             );
 
             expect(
-                mockContentUserDataStorage.saveContentUserData
+                mockContentUserDataStorage.createOrUpdateContentUserData
             ).toHaveBeenCalledWith(
                 contentId,
                 dataType,

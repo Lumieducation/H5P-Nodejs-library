@@ -582,7 +582,7 @@ export interface IContentUserDataStorage {
     deleteInvalidContentUserData(contentId: ContentId): Promise<void>;
 
     /**
-     * Saves the contentUserData for given contentId, dataType and subContentId
+     * Creates or updates the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
@@ -594,7 +594,7 @@ export interface IContentUserDataStorage {
      * @param user The user who owns this object
      * @returns the saved state as string
      */
-    saveContentUserData(
+    createOrUpdateContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,

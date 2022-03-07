@@ -47,7 +47,7 @@ export default class ContentUserDataController {
         const { contentId, dataType, subContentId } = req.params;
         const { user, body } = req;
 
-        await this.contentUserDataManager.saveContentUserData(
+        await this.contentUserDataManager.createOrUpdateContentUserData(
             contentId,
             dataType,
             subContentId,

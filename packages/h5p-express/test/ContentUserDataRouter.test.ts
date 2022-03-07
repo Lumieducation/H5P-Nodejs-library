@@ -16,7 +16,7 @@ const MockContentUserDataManager = jest.fn().mockImplementation(() => {
         loadContentUserData: jest.fn().mockImplementation(() => {
             return mockReturnData;
         }),
-        saveContentUserData: jest.fn().mockImplementation(() => {
+        createOrUpdateContentUserData: jest.fn().mockImplementation(() => {
             return '';
         }),
         setFinished: jest.fn().mockImplementation(() => {
@@ -79,7 +79,7 @@ describe('ContentUserData endpoint adapter', () => {
         tempDir = '';
     });
 
-    it('calls saveContentUserData on POST', async () => {
+    it('calls createOrUpdateContentUserData on POST', async () => {
         const contentId = 'contentId';
         const dataType = 'state';
         const subContentId = '0';
@@ -90,7 +90,7 @@ describe('ContentUserData endpoint adapter', () => {
             .send(body);
 
         expect(
-            mockContentUserDataManager.saveContentUserData
+            mockContentUserDataManager.createOrUpdateContentUserData
         ).toHaveBeenCalledWith(
             contentId,
             dataType,

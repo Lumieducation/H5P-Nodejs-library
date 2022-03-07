@@ -1,7 +1,7 @@
 // import ContentUserDataManager from '../src/ContentUserDataManager';
 import fsExtra from 'fs-extra';
 import FileContentUserDataStorage from '../../src/implementation/fs/FileContentUserDataStorage';
-import { withDir, withFile } from 'tmp-promise';
+import { withFile } from 'tmp-promise';
 
 import User from '../User';
 
@@ -181,7 +181,7 @@ describe('FileContentUserDataStorage', () => {
         });
     });
 
-    describe('saveContentUserData', () => {
+    describe('createOrUpdateContentUserData', () => {
         it('saves the contentUserData to a json file', async () => {
             await withFile(async ({ path: jsonFilePath }) => {
                 await fsExtra.writeJSON(jsonFilePath, {
@@ -192,7 +192,7 @@ describe('FileContentUserDataStorage', () => {
                 const fileContentUserDataStorage =
                     new FileContentUserDataStorage(jsonFilePath);
 
-                await fileContentUserDataStorage.saveContentUserData(
+                await fileContentUserDataStorage.createOrUpdateContentUserData(
                     'contentId',
                     'state',
                     '0',
