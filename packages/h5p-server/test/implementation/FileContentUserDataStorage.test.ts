@@ -209,7 +209,9 @@ describe('FileContentUserDataStorage', () => {
                             dataType: 'state',
                             subContentId: '0',
                             userState: 'testUserState',
-                            userId: '1'
+                            userId: '1',
+                            preload: false,
+                            invalidate: false
                         }
                     ],
                     userFinishedData: []
@@ -391,6 +393,77 @@ describe('FileContentUserDataStorage', () => {
                         invalidate: false
                     }
                 ]);
+            });
+        });
+    });
+
+    describe('deleteInvalidContentUserData', () => {
+        it('deletes all invalid contentUserData', async () => {
+            await withFile(async ({ path: jsonFilePath }) => {
+                await fsExtra.writeJSON(jsonFilePath, {
+                    userData: [
+                        {
+                            contentId: 'contentId',
+                            dataType: 'state',
+                            subContentId: '0',
+                            userState: 'testUserState',
+                            userId: user.id,
+                            preload: true,
+                            invalidate: true
+                        },
+                        {
+                            contentId: 'contentId',
+                            dataType: 'state',
+                            subContentId: '0',
+                            userState: 'testUserState',
+                            userId: user.id,
+                            preload: true,
+                            invalidate: false
+                        },
+                        {
+                            contentId: 'contentId2',
+                            dataType: 'state',
+                            subContentId: '0',
+                            userState: 'testUserState',
+                            userId: user.id,
+                            preload: true,
+                            invalidate: true
+                        }
+                    ],
+                    userFinishedData: []
+                });
+
+                const fileContentUserDataStorage =
+                    new FileContentUserDataStorage(jsonFilePath);
+
+                await fileContentUserDataStorage.deleteInvalidContentUserData(
+                    'contentId'
+                );
+
+                const json = await fsExtra.readJSON(jsonFilePath);
+                expect(json).toEqual({
+                    userData: [
+                        {
+                            contentId: 'contentId',
+                            dataType: 'state',
+                            subContentId: '0',
+                            userState: 'testUserState',
+                            userId: user.id,
+                            preload: true,
+                            invalidate: false
+                        },
+                        {
+                            contentId: 'contentId2',
+                            dataType: 'state',
+                            subContentId: '0',
+                            userState: 'testUserState',
+                            userId: user.id,
+                            preload: true,
+                            invalidate: true
+                        }
+                    ],
+                    userFinishedData: []
+                });
             });
         });
     });

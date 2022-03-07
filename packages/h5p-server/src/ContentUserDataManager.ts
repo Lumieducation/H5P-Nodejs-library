@@ -49,6 +49,19 @@ export default class ContentUserDataManager {
         }
     }
 
+    public async deleteInvalidContentUserDataByContentId(
+        contentId: ContentId
+    ): Promise<void> {
+        if (this.contentUserDataStorage && contentId) {
+            log.debug(
+                `deleting invalid contentUserData for ContentId ${contentId}`
+            );
+            return this.contentUserDataStorage.deleteInvalidContentUserData(
+                contentId
+            );
+        }
+    }
+
     public async deleteAllContentUserDataByContentId(
         contentId: ContentId,
         requestingUser: IUser
@@ -201,17 +214,6 @@ export default class ContentUserDataManager {
             log.error(`invalid arguments passed for contentId ${contentId}`);
             throw new Error(
                 "saveContentUserData received invalid arguments: invalidate or preload weren't boolean"
-            );
-        }
-
-        if (invalidate) {
-            log.debug(
-                `invalidating contentUserData for user with id ${user.id} and contentId ${contentId}`
-            );
-            return this.contentUserDataStorage.deleteContentUserDataByUserId(
-                contentId,
-                user.id,
-                user
             );
         }
 

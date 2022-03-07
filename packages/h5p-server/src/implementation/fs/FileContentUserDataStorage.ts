@@ -61,8 +61,8 @@ export default class FileContentUserDataStorage
             dataType,
             subContentId,
             userState,
-            // invalidate,
-            // preload,
+            invalidate,
+            preload,
             userId: user.id
         });
 
@@ -89,6 +89,24 @@ export default class FileContentUserDataStorage
             user
         });
         await this.save('userFinishedData', userFinishedData);
+    }
+
+    public async deleteInvalidContentUserData(
+        contentId: string
+    ): Promise<void> {
+        const userData = await this.load('userData');
+
+        const newUserData = userData.filter((data) => {
+            if (contentId !== data.contentId) {
+                return true;
+            }
+            if (contentId === data.contentId && !data.invalidate) {
+                return true;
+            }
+            return false;
+        });
+
+        await this.save('userData', newUserData);
     }
 
     public async deleteContentUserDataByUserId(

@@ -11,6 +11,9 @@ const mock = jest.fn().mockImplementation(() => {
             .mockImplementation(() => {
                 return;
             }),
+        deleteInvalidContentUserData: jest.fn().mockImplementation(() => {
+            return;
+        }),
         loadContentUserData: jest.fn().mockImplementation(() => {
             return 'this is some data';
         }),

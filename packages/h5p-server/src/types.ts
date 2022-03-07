@@ -576,6 +576,12 @@ export interface IContentUserDataStorage {
     ): Promise<IContentUserData>;
 
     /**
+     * Deletes all content userData which has the invalid-field set to true. This method is called from the editor when content is changed and the saved contentUserData becomes invalid.
+     * @param contentId The id of the content which
+     */
+    deleteInvalidContentUserData(contentId: ContentId): Promise<void>;
+
+    /**
      * Saves the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client

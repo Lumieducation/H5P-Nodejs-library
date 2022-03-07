@@ -42,6 +42,37 @@ describe('ContentUserDataManager', () => {
         });
     });
 
+    describe('deleteInvalidContentUserData', () => {
+        it('returns undefined if contentUserDataStorage is undefined', async () => {
+            const contentUserDataManager = new ContentUserDataManager(
+                undefined
+            );
+
+            expect(
+                await contentUserDataManager.deleteInvalidContentUserDataByContentId(
+                    'contentId'
+                )
+            ).toBeUndefined();
+        });
+
+        it('calls the deleteInvalidContentUserData-method of the contentUserDateStorage', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+
+            await contentUserDataManager.deleteInvalidContentUserDataByContentId(
+                contentId
+            );
+
+            expect(
+                mockContentUserDataStorage.deleteInvalidContentUserData
+            ).toHaveBeenCalledWith(contentId);
+        });
+    });
+
     describe('setFinished', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
@@ -181,34 +212,6 @@ describe('ContentUserDataManager', () => {
     });
 
     describe('saveContentUserData', () => {
-        it('deletes the contentUserData if invalidate is set to true', async () => {
-            const mockContentUserDataStorage = MockContentUserDataStorage();
-
-            const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
-            );
-
-            const user = new User();
-            const contentId = 'contentId';
-
-            await contentUserDataManager.saveContentUserData(
-                contentId,
-                'state',
-                '0',
-                'data',
-                true,
-                false,
-                user
-            );
-
-            expect(
-                mockContentUserDataStorage.deleteContentUserDataByUserId
-            ).toHaveBeenCalledWith(contentId, user.id, user);
-
-            expect(
-                mockContentUserDataStorage.saveContentUserData
-            ).toBeCalledTimes(0);
-        });
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined

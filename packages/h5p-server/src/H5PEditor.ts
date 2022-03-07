@@ -722,6 +722,9 @@ export default class H5PEditor {
         mainLibraryUbername: string,
         user: IUser
     ): Promise<ContentId> {
+        await this.contentUserDataManager.deleteInvalidContentUserDataByContentId(
+            contentId
+        );
         return (
             await this.saveOrUpdateContentReturnMetaData(
                 contentId,
