@@ -127,11 +127,126 @@ describe('H5PEditor', () => {
                     await packageFinishedPromise;
                     writeStream.close();
 
-                    // CHeck if filename remains short
+                    // Check if filename remains short
                     expect(
                         /^earth-[0-9a-z]+\.jpg$/i.test(parameters?.image?.path)
                     ).toBe(true);
                 }
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    // context: activity contains 3 images; image1 uploaded, image2
+    // copy/pasted from image1, image3 uploaded
+    it(
+        'returns parameters containing items 1 and 2 referencing file 1, and ' +
+            'item 3 referencing file 2',
+        async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    const { h5pEditor, temporaryStorage } =
+                        createH5PEditor(tempDirPath);
+                    const user = new User();
+
+                    const fileBuffer = fsExtra.readFileSync(
+                        path.resolve('test/data/validator/valid3-3-images.h5p')
+                    );
+                    const { parameters } = await h5pEditor.uploadPackage(
+                        fileBuffer,
+                        user
+                    );
+
+                    const tmpFilePath1 =
+                        parameters.items[0].image.params.file.path;
+                    const tmpFilePath2 =
+                        parameters.items[1].image.params.file.path;
+                    const tmpFilePath3 =
+                        parameters.items[2].image.params.file.path;
+                    expect(tmpFilePath1).toEqual(tmpFilePath2);
+                    expect(tmpFilePath2).not.toEqual(tmpFilePath3);
+
+                    const files = await temporaryStorage.listFiles(user);
+                    expect(files).toHaveLength(2);
+
+                    expect(
+                        temporaryStorage.fileExists(
+                            tmpFilePath1.substr(0, tmpFilePath1.length - 4),
+                            user
+                        )
+                    ).resolves.toEqual(true);
+
+                    expect(
+                        temporaryStorage.fileExists(
+                            tmpFilePath3.substr(0, tmpFilePath3.length - 4),
+                            user
+                        )
+                    ).resolves.toEqual(true);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        }
+    );
+
+    // context: activity contains 3 images; image1 uploaded, image2
+    // copy/pasted from image1, image3 uploaded
+    it('saves uploaded package as new content; 2 images saved to permanent storage', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const fileBuffer = fsExtra.readFileSync(
+                    path.resolve('test/data/validator/valid3-3-images.h5p')
+                );
+                const { metadata, parameters } = await h5pEditor.uploadPackage(
+                    fileBuffer,
+                    user
+                );
+
+                const tmpFilePath1 = parameters.items[0].image.params.file.path;
+                const tmpFilePath3 = parameters.items[2].image.params.file.path;
+
+                const contentId = await h5pEditor.saveOrUpdateContent(
+                    undefined,
+                    parameters,
+                    metadata,
+                    ContentMetadata.toUbername(metadata),
+                    user
+                );
+
+                const files = await contentStorage.listFiles(contentId, user);
+                expect(files).toHaveLength(2);
+
+                // get data we've stored and check if the #tmp tag has been removed from the image
+                const { params } = await h5pEditor.getContent(contentId, user);
+
+                // FIRST IMAGE =======================
+                const newFilename1 = tmpFilePath1.substr(
+                    0,
+                    tmpFilePath1.length - 4
+                );
+                expect(params.params.items[0].image.params.file.path).toEqual(
+                    newFilename1
+                );
+                // check if image is now in permanent storage
+                await expect(
+                    contentStorage.fileExists(contentId, newFilename1)
+                ).resolves.toEqual(true);
+
+                // SECOND IMAGE =======================
+                const newFilename2 = tmpFilePath3.substr(
+                    0,
+                    tmpFilePath3.length - 4
+                );
+                expect(params.params.items[2].image.params.file.path).toEqual(
+                    newFilename2
+                );
+                // check if image is now in permanent storage
+                await expect(
+                    contentStorage.fileExists(contentId, newFilename2)
+                ).resolves.toEqual(true);
             },
             { keep: false, unsafeCleanup: true }
         );

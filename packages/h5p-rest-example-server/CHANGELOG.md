@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.12 ([1b97cd6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1b97cd6f3fafcdbf766abf270d8b0b422929384e))
+* **deps:** update dependency i18next to v21.6.13 ([564d4d1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/564d4d1ffbac89dd80a153259e0f72580b37a5d8))
+
+
+### Features
+
+* **shared state server:** added shared state server ([#2056](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2056)) ([3924d44](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3924d4478cdc791d08d1e2b4daf91500d4dce861))
+
+
+
+
+
+## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency body-parser to v1.19.2 ([b5d44ec](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b5d44ec79f0a1b7aac2045c82ea854df6a905c94))
+* **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+* **deps:** update dependency express to v4.17.3 ([765ff8a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/765ff8ae4bea0b6167dc7188fbd93c74affad00b))
+* **deps:** update dependency express-fileupload to v1.3.1 ([#2078](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2078)) ([d04a120](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d04a1205ff7b7b8a12222bcc34fa6874321e3d12))
+* **deps:** update dependency i18next to v21.6.11 ([#2072](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2072)) ([17beecd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/17beecda2c3280e92e42fd49e39fbf215c1bd1d3))
+* **deps:** update dependency i18next-http-middleware to v3.2.0 ([#2079](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2079)) ([11a15ac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/11a15ac4e6008e4e1909d0ca44208ef4bf134947))
+
+
+
+
+
 ## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
 
 
