@@ -5,7 +5,7 @@ orbs:
 jobs:
     install-build:
         docker:
-            - image: cimg/node:17.6
+            - image: cimg/node:17.7
         resource_class: medium+
         working_directory: /mnt/ramdisk
         steps:
@@ -65,7 +65,7 @@ jobs:
 
     lint:
         docker:
-            - image: cimg/node:17.6
+            - image: cimg/node:17.7
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -75,7 +75,7 @@ jobs:
 
     format:
         docker:
-            - image: cimg/node:17.6
+            - image: cimg/node:17.7
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -85,7 +85,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: cimg/node:17.6-browsers
+            - image: cimg/node:17.7-browsers
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -100,7 +100,7 @@ jobs:
 
     integration-tests:
         docker:
-            - image: cimg/node:17.6-browsers
+            - image: cimg/node:17.7-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         resource_class: medium+
@@ -115,7 +115,7 @@ jobs:
 
     html-exporter-tests:
         docker:
-            - image: cimg/node:17.6-browsers
+            - image: cimg/node:17.7-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         resource_class: medium+
@@ -131,7 +131,7 @@ jobs:
 
     e2e-tests:
         docker:
-            - image: cimg/node:17.6-browsers
+            - image: cimg/node:17.7-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
@@ -142,7 +142,7 @@ jobs:
 
     db-tests:
         docker:
-            - image: cimg/node:17.6
+            - image: cimg/node:17.7
             - image: circleci/mongo:latest
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
@@ -163,7 +163,7 @@ jobs:
 
     release:
         docker:
-            - image: 'cimg/node:17.6'
+            - image: 'cimg/node:17.7'
         working_directory: /mnt/ramdisk
         steps:
             - checkout
