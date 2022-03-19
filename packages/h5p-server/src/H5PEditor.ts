@@ -786,7 +786,7 @@ export default class H5PEditor {
                 user
             );
         }
-        if (!contentId && this.options?.hooks.contentWasCreated) {
+        if (!contentId && this.options?.hooks?.contentWasCreated) {
             this.options.hooks.contentWasCreated(
                 newContentId,
                 h5pJson,
