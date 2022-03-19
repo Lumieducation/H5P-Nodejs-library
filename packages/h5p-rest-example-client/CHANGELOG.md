@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.0...v9.1.1) (2022-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-bootstrap to v2.2.1 ([95b4514](https://github.com/Lumieducation/H5P-Nodejs-library/commit/95b4514612cedd38576b42551c3e382b6f474569))
+
+
+
+
+
 # [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
 
 
