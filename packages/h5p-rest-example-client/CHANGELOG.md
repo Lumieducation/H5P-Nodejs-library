@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.1...v9.1.2) (2022-03-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fortawesome/react-fontawesome to v0.1.17 ([d656e43](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d656e4340f90fbc0e070a8a416d3f47329ef19ca))
+* **deps:** update dependency @fortawesome/react-fontawesome to v0.1.18 ([c31a106](https://github.com/Lumieducation/H5P-Nodejs-library/commit/c31a106550f75b3316ed38ae8834f6abf9c4b4f9))
+* **deps:** update dependency http-proxy-middleware to v2.0.4 ([d04ada9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d04ada9b8e856ff97f67f5c091697dcf87def311))
+
+
+
+
+
 ## [9.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.0...v9.1.1) (2022-03-12)
 
 
