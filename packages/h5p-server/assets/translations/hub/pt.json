@@ -32,7 +32,7 @@
     "H5P_Collage": {
         "title": "Colagem (Collage)",
         "summary": "Crie uma colagem de várias imagens",
-        "description": "A ferramenta de colagem permite que você organize imagens em uma composição suave.",
+        "description": "A ferramenta de colagem permite que você organize imagens em uma composição suave. ",
         "keywords": {
             "collage": "colagem",
             "image": "imagem"
@@ -77,7 +77,7 @@
     "H5P_DragQuestion": {
         "title": "Arrastar e soltar (Drag and Drop)",
         "summary": "Crie tarefas de arrastar e soltar com imagens",
-        "description": "A pergunta de arrastar e soltar permite ao aluno associar dois ou mais elementos e fazer conexões lógicas de forma visual. Crie perguntas de arrastar e soltar usando texto e imagens como alternativas arrastáveis. As perguntas de arrastar e soltar do H5P oferecem suporte a relações um para um, um para muitos, muitos para um e muitos para muitos entre perguntas e respostas.",
+        "description": "A pergunta de arrastar e soltar permite ao aluno associar dois ou mais elementos e fazer conexões lógicas de forma visual. Crie perguntas de arrastar e soltar usando texto e imagens como alternativas arrastáveis. As perguntas de arrastar e soltar do H5P oferecem suporte a relações um para um, um para muitos, muitos para um e muitos para muitos entre perguntas e respostas. ",
         "keywords": {
             "drag_and drop": "arrastar e soltar"
         }
@@ -257,7 +257,7 @@
     "H5P_AudioRecorder": {
         "title": "Gravador de áudio (Audio Recorder)",
         "summary": "Crie uma gravação de áudio",
-        "description": "Um gravador de áudio HTML5. Grave sua voz e reproduza ou baixe um arquivo .wav de sua gravação. Use o plugin H5P para criar o gravador de áudio H5P para seu site Drupal, Wordpress ou Moodle.",
+        "description": "Um gravador de áudio HTML5. Grave sua voz e reproduza ou baixe um arquivo .wav de sua gravação. Use o plugin H5P para criar o gravador de áudio H5P para seu site Drupal, Wordpress ou Moodle. ",
         "keywords": {
             "audio": "audio",
             "recorder": "gravador"
@@ -278,7 +278,7 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "title": "Agamotto (Misturador de Imagem) (Agamotto (Image Blender))",
         "summary": "Apresente uma sequência de imagens e explicações",
         "description": "Apresente uma sequência de imagens que as pessoas devem olhar uma após a outra, por exemplo, fotos de um item que muda com o tempo, esquemas ou mapas que são organizados em diferentes camadas ou imagens que revelam cada vez mais detalhes.",
         "keywords": {
@@ -290,7 +290,7 @@
     "H5P_ImageSequencing": {
         "title": "Sequenciamento de imagens (Image Sequencing)",
         "summary": "Coloque as imagens na ordem correta",
-        "description": "Um tipo de conteúdo de sequenciamento de imagens baseado em HTML5 gratuito que permite aos autores adicionar uma sequência de suas próprias imagens (e uma descrição opcional da imagem) ao jogo em uma ordem específica. A ordem das imagens será aleatória e os jogadores terão que reordená-las com base na descrição da tarefa.",
+        "description": "Um tipo de conteúdo de sequenciamento de imagens baseado em HTML5 gratuito que permite aos autores adicionar uma sequência de suas próprias imagens (e uma descrição opcional da imagem) ao jogo em uma ordem específica. A ordem das imagens será aleatória e os jogadores terão que reordená-las com base na descrição da tarefa. ",
         "keywords": {
             "image": "imagem",
             "sequence": "seqüência",
@@ -343,7 +343,7 @@
     "H5P_ImagePair": {
         "title": "Emparelhamento de imagens (Image Pairing)",
         "summary": "Arrastar e soltar jogo de correspondência de imagens",
-        "description": "O emparelhamento de imagens é uma atividade simples e eficaz que exige que os alunos combinem pares de imagens. Uma vez que não é necessário que as duas imagens em um par sejam iguais, os autores também podem testar a compreensão de uma relação entre duas imagens diferentes.",
+        "description": "O emparelhamento de imagens é uma atividade simples e eficaz que exige que os alunos combinem pares de imagens. Uma vez que não é necessário que as duas imagens em um par sejam iguais, os autores também podem testar a compreensão de uma relação entre duas imagens diferentes. ",
         "keywords": {
             "image_images matching pair": "imagem imagens combinando par"
         }
@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Cenário de Ramificação (beta) (Branching Scenario (beta))",
+        "title": "Cenário de Ramificação (Branching Scenario)",
         "summary": "Crie dilemas e aprendizagem individualizada",
         "description": "O cenário de ramificação permite que os autores apresentem aos alunos uma variedade de opções e conteúdos interativos ricos. As escolhas que os alunos fazem determinarão o próximo conteúdo que verão. Pode ser usado para criar dilemas, jogos sérios e aprendizagem individualizada."
     },
