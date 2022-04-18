@@ -446,9 +446,7 @@ describe('Express Ajax endpoint adapter', () => {
             .reply(() => [
                 200,
                 fsExtra.createReadStream(
-                    path.resolve(
-                        'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
-                    )
+                    path.resolve('test/data/example-packages/H5P.DragText.h5p')
                 )
             ]);
         const result = await supertest(app).post(
