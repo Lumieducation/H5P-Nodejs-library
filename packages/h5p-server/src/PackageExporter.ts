@@ -35,6 +35,7 @@ export default class PackageExporter {
         // we don't use content storage directly as we want the
         // alterLibrarySemantics hook to work
         private libraryManager: LibraryManager,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         private contentStorage: IContentStorage = null,
         { exportMaxContentPathLength }: { exportMaxContentPathLength: number }
     ) {
