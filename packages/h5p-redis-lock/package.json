@@ -24,8 +24,8 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^9.1.1",
-        "ioredis": "^4.28.0",
+        "@lumieducation/h5p-server": "^9.1.2",
+        "ioredis": "^4.28.5",
         "simple-redis-mutex": "^1.1.0"
     },
     "main": "./build/RedisLockProvider.js",
