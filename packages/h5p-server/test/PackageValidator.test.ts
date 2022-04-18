@@ -167,7 +167,7 @@ describe('validating H5P files', () => {
         await expect(
             validatePackage(libraryManagerMock, config, h5pFile)
         ).rejects.toThrow(
-            'package-validation-failed:invalid-language-file,invalid-schema-library-json-file'
+            "package-validation-failed:invalid-language-file (file: XXX!.json, library: H5P.GreetingCard-1.0),invalid-schema-library-json-file (name: H5P.GreetingCard2-1.0, reason: must have required property 'title')"
         );
     });
 
