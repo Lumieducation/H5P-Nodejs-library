@@ -87,7 +87,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: cimg/node:17.9-browsers
+            - image: cimg/node:17.9
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -102,7 +102,7 @@ jobs:
 
     integration-tests:
         docker:
-            - image: cimg/node:17.9-browsers
+            - image: cimg/node:17.9
               environment:
                   TMPDIR: /mnt/ramdisk
         resource_class: medium+
@@ -117,7 +117,7 @@ jobs:
 
     html-exporter-tests:
         docker:
-            - image: cimg/node:17.9-browsers
+            - image: cimg/node:17.9
               environment:
                   TMPDIR: /mnt/ramdisk
         resource_class: medium+
@@ -133,7 +133,7 @@ jobs:
 
     e2e-tests:
         docker:
-            - image: cimg/node:17.9-browsers
+            - image: cimg/node:17.9
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
