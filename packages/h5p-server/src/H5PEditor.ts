@@ -553,6 +553,7 @@ export default class H5PEditor {
      */
     public render(
         contentId: ContentId,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         language: string = 'en',
         user: IUser
     ): Promise<string | any> {
