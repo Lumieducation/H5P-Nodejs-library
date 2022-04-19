@@ -163,6 +163,13 @@ jobs:
                   parallel: true
                   flag_name: DB tests
 
+    push_coveralls:
+        docker:
+            - image: 'cimg/node:17.7'
+        steps:
+            - coveralls/upload:
+                  parallel_finished: true
+
     release:
         docker:
             - image: 'cimg/node:17.7'
@@ -172,8 +179,6 @@ jobs:
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - attach_workspace:
                   at: .
-            - coveralls/upload:
-                  parallel_finished: true
             - run:
                   name: config git
                   command: git config --global user.email "c@Lumi.education" && git config --global user.name "Lumi"
@@ -211,6 +216,16 @@ workflows:
                   filters:
                       branches:
                           only: release
+                  requires:
+                      - install-build
+                      - lint
+                      - format
+                      - unit-tests
+                      - html-exporter-tests
+                      # - e2e-tests
+                      - integration-tests
+                      - db-tests
+            - push_coveralls:
                   requires:
                       - install-build
                       - lint
