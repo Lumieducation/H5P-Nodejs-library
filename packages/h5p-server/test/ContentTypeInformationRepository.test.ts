@@ -485,7 +485,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                         200,
                         fsExtra.createReadStream(
                             path.resolve(
-                                'packages/h5p-server/test/data/example-packages/H5P.DragText.h5p'
+                                'test/data/example-packages/H5P.DragText.h5p'
                             )
                         )
                     ]);

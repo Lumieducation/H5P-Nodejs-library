@@ -564,6 +564,7 @@ export default class H5PEditor {
      */
     public render(
         contentId: ContentId,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         language: string = 'en',
         user: IUser
     ): Promise<string | any> {
@@ -800,7 +801,7 @@ export default class H5PEditor {
                 user
             );
         }
-        if (!contentId && this.options?.hooks.contentWasCreated) {
+        if (!contentId && this.options?.hooks?.contentWasCreated) {
             this.options.hooks.contentWasCreated(
                 newContentId,
                 h5pJson,

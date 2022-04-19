@@ -34,13 +34,15 @@ export default class SimpleLockProvider implements ILockProvider {
                 } as any // the typescript typings are out of date
             );
         } catch (error) {
-            if (error.message == 'async-lock timed out') {
+            if (error.message.startsWith('async-lock timed out')) {
                 log.debug(
                     `There was a timeout when acquiring lock for key ${key}.`
                 );
                 throw new Error('timeout');
             }
-            if (error.message == 'Maximum occupation time is exceeded') {
+            if (
+                error.message.startsWith('Maximum occupation time is exceeded')
+            ) {
                 log.debug(
                     `The operation holding the lock for key ${key} took longer than allowed. Releasing key.`
                 );

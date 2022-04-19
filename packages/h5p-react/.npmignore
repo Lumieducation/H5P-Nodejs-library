@@ -13,7 +13,6 @@ commitlint.config.js
 node_modules/
 release.config.js
 renovate.json
-src/
 test/
 tsconfig*.json
 .eslintrc.js

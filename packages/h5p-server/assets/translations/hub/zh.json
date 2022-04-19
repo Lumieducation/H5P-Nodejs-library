@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "分支方案(beta) (Branching Scenario (beta))",
+        "title": "分支方案(测试版) (Branching Scenario (beta))",
         "summary": "造成困境和自主学习",
         "description": "分支方案允许作者向学习者展示各种丰富的交互式内容和选择。学习者所做的选择将决定他们所看到的下一个内容。可能会造成困境，严肃的游戏和自定进度的学习。"
     },
