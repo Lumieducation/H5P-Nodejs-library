@@ -428,7 +428,7 @@ export default class H5PPlayer {
                 )
             },
             libraryConfig: this.config.libraryConfig,
-            postUserStatistics: false,
+            postUserStatistics: this.config.setFinishedEnabled,
             saveFreq:
                 this.config.contentUserStateSaveInterval !== false
                     ? Math.round(

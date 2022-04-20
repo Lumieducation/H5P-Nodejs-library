@@ -13,7 +13,6 @@ import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
     contentTypeCacheExpressRouter,
-    contentUserDataExpressRouter,
     IRequestWithUser
 } from '@lumieducation/h5p-express';
 import H5PHtmlExporter from '@lumieducation/h5p-html-exporter';
@@ -199,11 +198,6 @@ const start = async (): Promise<void> => {
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
-    );
-
-    server.use(
-        `${h5pEditor.config.baseUrl}/${h5pEditor.config.contentUserDataUrl}`,
-        contentUserDataExpressRouter(h5pEditor.contentUserDataManager)
     );
 
     const htmlExporter = new H5PHtmlExporter(

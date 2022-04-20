@@ -1149,7 +1149,7 @@ export default class H5PEditor {
                 )
             },
             libraryConfig: this.config.libraryConfig,
-            postUserStatistics: false,
+            postUserStatistics: this.config.setFinishedEnabled,
             saveFreq:
                 this.config.contentUserStateSaveInterval !== false
                     ? Math.round(

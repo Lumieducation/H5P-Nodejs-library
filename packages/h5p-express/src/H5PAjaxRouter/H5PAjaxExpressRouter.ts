@@ -8,6 +8,7 @@ import {
 } from '../expressErrorHandler';
 import H5PAjaxExpressController from './H5PAjaxExpressController';
 import H5PAjaxExpressRouterOptions from './H5PAjaxExpressRouterOptions';
+import ContentUserDataExpressRouter from '../ContentUserDataRouter/ContentUserDataExpressRouter';
 
 /**
  * This router implements all Ajax calls necessary for the H5P (editor) client to work.
@@ -99,6 +100,13 @@ export default function (
                 h5pController.postAjax,
                 routeOptions.handleErrors
             )
+        );
+    }
+
+    if (undefinedOrTrue(routeOptions.routeContentUserData)) {
+        router.use(
+            h5pEditor.config.contentUserDataUrl,
+            ContentUserDataExpressRouter(h5pEditor.contentUserDataManager)
         );
     }
 

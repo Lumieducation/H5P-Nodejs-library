@@ -82,7 +82,7 @@ export default class ContentUserDataManager {
         }
 
         log.debug(
-            `loading contentUserData for user with id ${user.id} and contentId ${contentId}`
+            `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}`
         );
 
         return this.contentUserDataStorage.getContentUserData(
@@ -113,15 +113,29 @@ export default class ContentUserDataManager {
         );
 
         if (!this.contentUserDataStorage) {
+            log.debug(`No contentUserDataStorage set.`);
             return undefined;
         }
 
-        const states = (
+        log.debug(`Getting states`);
+
+        let states =
             await this.contentUserDataStorage.getContentUserDataByContentIdAndUser(
                 contentId,
                 user
-            )
-        ).filter((s) => s.preload === true);
+            );
+
+        console.log('states', states);
+
+        if (!states) {
+            return undefined;
+        }
+
+        log.debug('Got', states.length, 'states');
+
+        states = states.filter((s) => s.preload === true);
+
+        log.debug(states.length, 'of them should be preloaded');
 
         const sortedStates = states.sort(
             (a, b) => Number(a.subContentId) - Number(b.subContentId)

@@ -99,6 +99,7 @@ export default class H5PConfig implements IH5PConfig {
     };
     public sendUsageStatistics: boolean = false;
     public setFinishedUrl: string = '/contentUserData/setFinished';
+    public setFinishedEnabled: boolean = true;
     public siteType: 'local' | 'network' | 'internet' = 'local';
     public contentUserStateSaveInterval: number = 5 * 1000; // the interval to save the contentUserData in milliseconds
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes

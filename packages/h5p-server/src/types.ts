@@ -1738,6 +1738,13 @@ export interface IH5PConfig {
      * the user has finished content)
      */
     setFinishedUrl: string;
+
+    /**
+     * If true, the H5P client is told to send data about users finished a
+     * content object to the server. (This is the custom H5P setFinished report,
+     * not an xAPI statement)
+     */
+    setFinishedEnabled: boolean;
     /**
      * Indicates on what kind of network the site is running. Can be "local",
      * "network" or "internet". TODO: This value should not be
