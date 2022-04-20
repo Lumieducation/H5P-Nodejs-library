@@ -431,7 +431,10 @@ export default class H5PPlayer {
             postUserStatistics: false,
             saveFreq:
                 this.config.contentUserStateSaveInterval !== false
-                    ? Number(this.config.contentUserStateSaveInterval) / 1000
+                    ? Math.round(
+                          Number(this.config.contentUserStateSaveInterval) /
+                              1000
+                      ) || 1
                     : false,
             url: this.urlGenerator.baseUrl(),
             hubIsEnabled: true,

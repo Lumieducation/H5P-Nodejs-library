@@ -42,7 +42,7 @@ export default class ContentUserDataManager {
     ): Promise<void> {
         if (this.contentUserDataStorage && contentId) {
             log.debug(
-                `deleting invalid contentUserData for ContentId ${contentId}`
+                `deleting invalidated contentUserData for contentId ${contentId}`
             );
             return this.contentUserDataStorage.deleteInvalidatedContentUserData(
                 contentId
@@ -55,7 +55,7 @@ export default class ContentUserDataManager {
     ): Promise<void> {
         if (this.contentUserDataStorage) {
             log.debug(
-                `deleting all contentUserData for ContentId ${contentId}`
+                `deleting all content user data for contentId ${contentId}`
             );
             return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
                 contentId

@@ -2,7 +2,8 @@ import * as express from 'express';
 import {
     ContentUserDataManager,
     IAjaxResponse,
-    IPostContentUserData
+    IPostContentUserData,
+    AjaxSuccessResponse
 } from '@lumieducation/h5p-server';
 
 import { IRequestWithUser } from '../expressTypes';
@@ -32,7 +33,7 @@ export default class ContentUserDataController {
         if (!result || !result.userState) {
             res.status(404).json({ data: undefined, success: false });
         } else {
-            res.status(200).json({ data: result.userState, success: true });
+            res.status(200).json(new AjaxSuccessResponse(result.userState));
         }
     };
 
@@ -62,7 +63,6 @@ export default class ContentUserDataController {
 
     /**
      * Saving the setFinished state for a given user
-     *
      */
     public postSetFinished = async (
         req: IPostContentUserDataRequest,

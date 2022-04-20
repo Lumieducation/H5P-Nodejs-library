@@ -140,7 +140,7 @@ describe('H5P.render()', () => {
         ).toEqual([{ state: `${contentId}-${user.id}` }]);
     });
 
-    it('sets contentUserData to undefinded if contentUserDataStorage is not present', async () => {
+    it('sets contentUserData to undefined if contentUserDataStorage is not present', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const metadata: any = {};
@@ -174,7 +174,7 @@ describe('H5P.render()', () => {
         ).toBeUndefined();
     });
 
-    it('sets contentUserData to undefinded if no contentUserData is found for the id', async () => {
+    it('sets contentUserData to undefined if no contentUserData is found for the id', async () => {
         const contentId = 'abc';
         const contentObject = {};
         const metadata: any = {};

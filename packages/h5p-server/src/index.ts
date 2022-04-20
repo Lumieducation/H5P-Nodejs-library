@@ -10,6 +10,7 @@ import ContentTypeCache from './ContentTypeCache';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
+import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
 import { streamToString } from './helpers/StreamHelpers';
 
 import Logger from './helpers/Logger';
@@ -89,6 +90,7 @@ export {
     // classes
     AggregateH5pError,
     AjaxErrorResponse,
+    AjaxSuccessResponse,
     streamToString,
     ContentFileScanner,
     ContentTypeCache,
