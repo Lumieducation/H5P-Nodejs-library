@@ -6,7 +6,6 @@ import {
     IContentUserData
 } from './types';
 import Logger from './helpers/Logger';
-import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentUserDataManager');
 
@@ -26,53 +25,40 @@ export default class ContentUserDataManager {
     /**
      * Deletes a contentUserData object for given contentId and userId. Throws
      * errors if something goes wrong.
-     * @param contentId The content id to delete.
-     * @param userId the userId for which the contentUserData object should be
+     * @param user the user for which the contentUserData object should be
      * deleted
-     * @param requestingUser The user who wants to delete the content (not the
-     * user the contentUserData belongs to)
      */
-    public async deleteContentUserDataByUserId(
-        contentId: ContentId,
-        userId: string,
-        requestingUser: IUser
-    ): Promise<void> {
+    public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
         if (this.contentUserDataStorage) {
-            log.debug(
-                `deleting contentUserData for ContentId ${contentId} and userId ${userId}`
-            );
-            return this.contentUserDataStorage.deleteContentUserDataByUserId(
-                contentId,
-                userId,
-                requestingUser
+            log.debug(`deleting contentUserData for userId ${user.id}`);
+            return this.contentUserDataStorage.deleteAllContentUserDataByUser(
+                user
             );
         }
     }
 
-    public async deleteInvalidContentUserDataByContentId(
+    public async deleteInvalidatedContentUserDataByContentId(
         contentId: ContentId
     ): Promise<void> {
         if (this.contentUserDataStorage && contentId) {
             log.debug(
                 `deleting invalid contentUserData for ContentId ${contentId}`
             );
-            return this.contentUserDataStorage.deleteInvalidContentUserData(
+            return this.contentUserDataStorage.deleteInvalidatedContentUserData(
                 contentId
             );
         }
     }
 
     public async deleteAllContentUserDataByContentId(
-        contentId: ContentId,
-        requestingUser: IUser
+        contentId: ContentId
     ): Promise<void> {
         if (this.contentUserDataStorage) {
             log.debug(
                 `deleting all contentUserData for ContentId ${contentId}`
             );
             return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
-                contentId,
-                requestingUser
+                contentId
             );
         }
     }
@@ -85,7 +71,7 @@ export default class ContentUserDataManager {
      * @param user The user who is accessing the h5p
      * @returns the saved state as string or undefined when not found
      */
-    public async loadContentUserData(
+    public async getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
@@ -99,7 +85,7 @@ export default class ContentUserDataManager {
             `loading contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
 
-        return this.contentUserDataStorage.loadContentUserData(
+        return this.contentUserDataStorage.getContentUserData(
             contentId,
             dataType,
             subContentId,
@@ -130,10 +116,12 @@ export default class ContentUserDataManager {
             return undefined;
         }
 
-        const states = await this.contentUserDataStorage.listByContent(
-            contentId,
-            user.id
-        );
+        const states = (
+            await this.contentUserDataStorage.getContentUserDataByContentIdAndUser(
+                contentId,
+                user
+            )
+        ).filter((s) => s.preload === true);
 
         const sortedStates = states.sort(
             (a, b) => Number(a.subContentId) - Number(b.subContentId)
@@ -155,7 +143,7 @@ export default class ContentUserDataManager {
      * @param contentId The content id to delete.
      * @param score the score the user reached as an integer
      * @param maxScore the maximum score of the content
-     * @param openend the time the user opened the content as UNIX time
+     * @param openedTimestamp the time the user opened the content as UNIX time
      * @param finishedTimestamp the time the user finished the content as UNIX time
      * @param completionTime the time the user needed to complete the content (as integer)
      * @param user The user who triggers this method via /setFinished
@@ -177,15 +165,15 @@ export default class ContentUserDataManager {
             return undefined;
         }
 
-        await this.contentUserDataStorage.saveFinishedDataForUser(
+        await this.contentUserDataStorage.createOrUpdateFinishedData({
             contentId,
             score,
             maxScore,
             openedTimestamp,
             finishedTimestamp,
             completionTime,
-            user
-        );
+            userId: user.id
+        });
     }
 
     /**
@@ -218,15 +206,15 @@ export default class ContentUserDataManager {
         }
 
         if (this.contentUserDataStorage) {
-            return this.contentUserDataStorage.createOrUpdateContentUserData(
+            return this.contentUserDataStorage.createOrUpdateContentUserData({
                 contentId,
                 dataType,
                 subContentId,
                 userState,
                 invalidate,
                 preload,
-                user
-            );
+                userId: user.id
+            });
         }
     }
 }

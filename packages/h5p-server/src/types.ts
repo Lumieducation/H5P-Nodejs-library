@@ -546,29 +546,97 @@ export interface IUser {
 
 export interface IContentUserData {
     contentId?: ContentId;
+    /**
+     * Used by the h5p.js client
+     */
     dataType: string;
+    /**
+     * The id provided by the h5p.js client call
+     */
     subContentId: string;
+    /**
+     * The userState as string
+     */
     userState: string; // the contentUserState/contentUserData as string
     userId?: string;
+    /**
+     * Indicates that data should be loaded when content is loaded.
+     */
     preload: boolean;
+    /**
+     * Indicates that data should be invalidated when content changes.
+     */
     invalidate: boolean;
+}
+
+export interface IFinishedUserData {
+    /**
+     * the score the user reached as an integer
+     */
+    score: number;
+    /**
+     * the maximum score of the content
+     */
+    maxScore: number;
+    /**
+     * the time the user opened the content as UNIX time
+     */
+    openedTimestamp: number;
+    /*
+     * the time the user finished the content as UNIX time
+     */
+    finishedTimestamp: number;
+    /**
+     * the time the user needed to complete the content (as integer)
+     */
+    completionTime: number;
+    contentId: ContentId;
+    userId: string;
 }
 
 /**
  * Implementations can implement the IContentUserDataStorage interface and pass
  * it to the constructor of H5PEditor or H5PPlayer if they wish to keep the user
- * state and allows users to continue where they left off.
+ * state and allows users to continue where they left off. It also tracks
+ * content completion.
  */
 export interface IContentUserDataStorage {
+    /**
+     * Creates or updates the content user data.
+     */
+    createOrUpdateContentUserData(userData: IContentUserData): Promise<void>;
+
+    /**
+     * Deletes all content userData which has the invalidate field set to true.
+     * This method is called from the editor when content is changed and the
+     * saved contentUserData becomes invalidated.
+     * @param contentId The id of the content which to delete
+     */
+    deleteInvalidatedContentUserData(contentId: ContentId): Promise<void>;
+
+    /**
+     * Deletes a contentUserData object. (Useful for implementing GDPR rights
+     * functionality.) Throws errors if something goes wrong.
+     * @param user the user of the content user data that should be deleted
+     */
+    deleteAllContentUserDataByUser(user: IUser): Promise<void>;
+
+    /**
+     * Deletes all userContentData objects for a given contentId. (Used when
+     * deleting content) Throws errors if something goes wrong.
+     * @param contentId The content id to delete.
+     */
+    deleteAllContentUserDataByContentId(contentId: ContentId): Promise<void>;
+
     /**
      * Loads the contentUserData for given contentId, dataType and subContentId
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who owns this object
-     * @returns the saved state as string
+     * @returns the data
      */
-    loadContentUserData(
+    getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
@@ -576,101 +644,54 @@ export interface IContentUserDataStorage {
     ): Promise<IContentUserData>;
 
     /**
-     * Deletes all content userData which has the invalid-field set to true. This method is called from the editor when content is changed and the saved contentUserData becomes invalid.
-     * @param contentId The id of the content which
-     */
-    deleteInvalidContentUserData(contentId: ContentId): Promise<void>;
-
-    /**
-     * Creates or updates the contentUserData for given contentId, dataType and subContentId
+     * Lists all associated contentUserData for a given contentId and user.
      * @param contentId The id of the content to load user data from
-     * @param dataType Used by the h5p.js client
-     * @param subContentId The id provided by the h5p.js client call
-     * @param userState The userState as string
-     * @param invalidate Indicates that data should be invalidated when content
-     * changes.
-     * @param preload Indicates that data should be loaded when content is
-     * loaded.
-     * @param user The user who owns this object
-     * @returns the saved state as string
-     */
-    createOrUpdateContentUserData(
-        contentId: ContentId,
-        dataType: string,
-        subContentId: string,
-        userState: string,
-        invalidate: boolean,
-        preload: boolean,
-        user: IUser
-    ): Promise<void>;
-
-    /**
-     * Deletes a contentUserData object. Throws errors if something goes wrong.
-     * @param contentId The content id to delete.
-     * @param userId the userId of the contentUserData that should be deleted
-     * @param requestingUser The user who wants to delete the content (not the
-     * user the contentUserData belongs to)
-     */
-    deleteContentUserDataByUserId(
-        contentId: ContentId,
-        userId: string,
-        requestingUser: IUser
-    ): Promise<void>;
-
-    /**
-     * Retrieves all contentUserData for a gien userId
-     * @param userId the userId for which the contentUserData should be
-     * retrieved.
-     */
-    listContentUserDataByUserId(userId: string): Promise<IContentUserData[]>;
-
-    /**
-     * Deletes all userContentData objects for a given contentId. (Used when
-     * deleting content) Throws errors if something goes wrong.
-     * @param contentId The content id to delete.
-     * @param userId the userId for which the contentUserData object should be
-     * deleted
-     * @param requestingUser The user who wants to delete the content (not the
-     * user the contentUserData belongs to)
-     */
-    deleteAllContentUserDataByContentId(
-        contentId: ContentId,
-        requestingUser: IUser
-    ): Promise<void>;
-
-    /**
-     * Saves data when a user completes content. T
-     * @param contentId The content id to delete.
-     * @param score the score the user reached as an integer
-     * @param maxScore the maximal score of the content
-     * @param openend the time the user opened the content as UNIX time
-     * @param finishedTimestamp the time the user finished the content as UNIX
-     * time
-     * @param completionTime the time the user needed to complete the content
-     * (as integer)
-     * @param user The user who triggers this method via /setFinished
-     */
-    saveFinishedDataForUser(
-        contentId: ContentId,
-        score: number,
-        maxScore: number,
-        openedTimestamp: number,
-        finishedTimestamp: number,
-        completionTime: number,
-        user: IUser
-    ): Promise<void>;
-
-    /**
-     * Lists all associated contentUserData for a given contentId and userId.
-     * @param contentId The id of the content to load user data from
-     * @param userId The id of the user to load user data from
+     * @param user The id of the user to load user data from
      * @returns An array of objects containing the dataType, subContentId and
-     * the contentUserState as string in the data field.
+    the contentUserState as string in the data field.
      */
-    listByContent(
+    getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        userId: string
+        user: IUser
     ): Promise<IContentUserData[]>;
+
+    /**
+     * Retrieves all contentUserData for a given user (Useful for implementing
+     * GDPR rights functionality.)
+     * @param user the user for which the contentUserData should be retrieved.
+     */
+    getContentUserDataByUser(user: IUser): Promise<IContentUserData[]>;
+
+    /**
+     * Saves data when a user completes content or replaces the previous
+     * finished data.
+     */
+    createOrUpdateFinishedData(finishedData: IFinishedUserData): Promise<void>;
+
+    /**
+     * Gets the finished data of all users for a specific piece of content.
+     */
+    getFinishedDataByContent(
+        contentId: ContentId
+    ): Promise<IFinishedUserData[]>;
+
+    /**
+     * Gets all finished user data for a specific user (across all content
+     * objects). (Useful for implementing GDPR rights functionality.)
+     */
+    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData>;
+
+    /**
+     * Deletes all finished user data of a content object. (Called when the
+     * content object is deleted)
+     */
+    deleteFinishedDataByContentId(contentId: ContentId): Promise<void>;
+
+    /**
+     * Deletes all finished user data for a specific user (across all content
+     * objects). (Useful for implementing GDPR rights functionality.)
+     */
+    deleteFinishedDataByUser(user: IUser): Promise<void>;
 }
 
 /**

@@ -111,7 +111,7 @@ describe('H5P.render()', () => {
 
         const mockContentUserDataStorage = MockContentUserDataStorage(
             contentId,
-            user
+            user.id
         );
 
         const player = new H5PPlayer(

@@ -150,9 +150,9 @@ describe('ContentManager', () => {
                 await expect(
                     contentManager.deleteContent(contentId, user)
                 ).resolves.toBeUndefined();
-                await expect(
+                expect(
                     mockContentUserDataStorage.deleteAllContentUserDataByContentId
-                ).toHaveBeenCalledWith(contentId, user);
+                ).toHaveBeenCalledWith(contentId);
             },
             { keep: false, unsafeCleanup: true }
         );

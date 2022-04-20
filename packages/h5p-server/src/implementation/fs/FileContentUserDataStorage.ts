@@ -2,6 +2,7 @@ import {
     ContentId,
     IContentUserData,
     IContentUserDataStorage,
+    IFinishedUserData,
     IUser
 } from '../../types';
 
@@ -11,7 +12,7 @@ export default class FileContentUserDataStorage
     extends JsonStorage
     implements IContentUserDataStorage
 {
-    public async loadContentUserData(
+    public async getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
@@ -28,70 +29,34 @@ export default class FileContentUserDataStorage
         )[0];
     }
 
-    public async listContentUserDataByUserId(
-        userId: string
+    public async getContentUserDataByUser(
+        user: IUser
     ): Promise<IContentUserData[]> {
         const userData = await this.load('userData');
 
-        return userData.filter((data) => data.userId === userId);
+        return userData.filter((data) => data.userId === user.id);
     }
 
     public async createOrUpdateContentUserData(
-        contentId: ContentId,
-        dataType: string,
-        subContentId: string,
-        userState: string,
-        invalidate: boolean,
-        preload: boolean,
-        user: IUser
+        userData: IContentUserData
     ): Promise<void> {
-        const userData = await this.load('userData');
+        const allUserData = await this.load('userData');
 
         // make sure we have only one entry for contentId, dataType, subContentId and user
-        const newUserData = userData.filter(
+        const newUserData = allUserData.filter(
             (data) =>
-                data.contentId !== contentId &&
-                data.dataType !== dataType &&
-                data.subContentId !== subContentId &&
-                data.userId !== user.id
+                data.contentId !== userData.contentId &&
+                data.dataType !== userData.dataType &&
+                data.subContentId !== userData.subContentId &&
+                data.userId !== userData.userId
         );
 
-        newUserData.push({
-            contentId,
-            dataType,
-            subContentId,
-            userState,
-            invalidate,
-            preload,
-            userId: user.id
-        });
+        newUserData.push(userData);
 
         await this.save('userData', newUserData);
     }
 
-    public async saveFinishedDataForUser(
-        contentId: ContentId,
-        score: number,
-        maxScore: number,
-        openedTimestamp: number,
-        finishedTimestamp: number,
-        completionTime: number,
-        user: IUser
-    ): Promise<void> {
-        const userFinishedData = await this.load('userFinishedData');
-        userFinishedData.push({
-            contentId,
-            score,
-            maxScore,
-            openedTimestamp,
-            finishedTimestamp,
-            completionTime,
-            user
-        });
-        await this.save('userFinishedData', userFinishedData);
-    }
-
-    public async deleteInvalidContentUserData(
+    public async deleteInvalidatedContentUserData(
         contentId: string
     ): Promise<void> {
         const userData = await this.load('userData');
@@ -109,23 +74,16 @@ export default class FileContentUserDataStorage
         await this.save('userData', newUserData);
     }
 
-    public async deleteContentUserDataByUserId(
-        contentId: ContentId,
-        userId: string,
-        requestingUser: IUser
-    ): Promise<void> {
+    public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
         const userData = await this.load('userData');
 
-        const newUserData = userData.filter(
-            (data) => data.contentId !== contentId && data.userId !== userId
-        );
+        const newUserData = userData.filter((data) => data.userId !== user.id);
 
         await this.save('userData', newUserData);
     }
 
     public async deleteAllContentUserDataByContentId(
-        contentId: ContentId,
-        requestingUser: IUser
+        contentId: ContentId
     ): Promise<void> {
         const userData = await this.load('userData');
 
@@ -136,13 +94,41 @@ export default class FileContentUserDataStorage
         this.save('userData', newUserData);
     }
 
-    public async listByContent(
+    public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        userId: string
+        user: IUser
     ): Promise<IContentUserData[]> {
         const userData = await this.load('userData');
         return userData.filter(
-            (data) => data.contentId === contentId && data.userId === userId
+            (data) => data.contentId === contentId && data.userId === user.id
         );
+    }
+
+    public async createOrUpdateFinishedData(
+        finishedData: IFinishedUserData
+    ): Promise<void> {
+        const allFinishedData = await this.load('userFinishedData');
+
+        const newUserData = allFinishedData.filter(
+            (data) =>
+                data.userId !== finishedData.userId &&
+                data.contentId !== finishedData.contentId
+        );
+
+        newUserData.push(finishedData);
+        await this.save('userFinishedData', newUserData);
+    }
+
+    getFinishedDataByContent(contentId: string): Promise<IFinishedUserData[]> {
+        throw new Error('Method not implemented.');
+    }
+    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData> {
+        throw new Error('Method not implemented.');
+    }
+    deleteFinishedDataByContentId(contentId: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    deleteFinishedDataByUser(user: IUser): Promise<void> {
+        throw new Error('Method not implemented.');
     }
 }

@@ -371,7 +371,7 @@ describe('H5PEditor', () => {
                 );
 
                 expect(
-                    mockContentUserDataStorage.deleteInvalidContentUserData
+                    mockContentUserDataStorage.deleteInvalidatedContentUserData
                 ).toHaveBeenCalledWith(contentId);
             },
             { keep: false, unsafeCleanup: true }

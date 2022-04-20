@@ -10,7 +10,7 @@ describe('FileContentUserDataStorage', () => {
     // const fileContentUserDataStorage = new FileContentUserDataStorage(testFile);
     const user = new User();
 
-    describe('loadContentUserData', () => {
+    describe('getContentUserData', () => {
         it('loads the contentUserData from a json file', async () => {
             await withFile(async ({ path: jsonFilePath }) => {
                 await fsExtra.writeJSON(jsonFilePath, {
@@ -32,7 +32,7 @@ describe('FileContentUserDataStorage', () => {
                     new FileContentUserDataStorage(jsonFilePath);
 
                 const contentUserData =
-                    await fileContentUserDataStorage.loadContentUserData(
+                    await fileContentUserDataStorage.getContentUserData(
                         'contentId',
                         'state',
                         '0',
@@ -52,7 +52,7 @@ describe('FileContentUserDataStorage', () => {
         });
     });
 
-    describe('listContentUserDataByUserId', () => {
+    describe('getContentUserDataByUser', () => {
         it('lists all contentUserData by userId', async () => {
             const userData = [
                 {
@@ -84,8 +84,8 @@ describe('FileContentUserDataStorage', () => {
                     new FileContentUserDataStorage(jsonFilePath);
 
                 const result =
-                    await fileContentUserDataStorage.listContentUserDataByUserId(
-                        user.id
+                    await fileContentUserDataStorage.getContentUserDataByUser(
+                        user
                     );
 
                 expect(result).toEqual(userData);
@@ -123,15 +123,16 @@ describe('FileContentUserDataStorage', () => {
                     new FileContentUserDataStorage(jsonFilePath);
 
                 const emptyResult =
-                    await fileContentUserDataStorage.listContentUserDataByUserId(
-                        'empty'
-                    );
+                    await fileContentUserDataStorage.getContentUserDataByUser({
+                        ...new User(),
+                        id: '2'
+                    });
 
                 expect(emptyResult).toEqual([]);
             });
         });
 
-        it('returns only the contentUserData for the given userId', async () => {
+        it('returns only the contentUserData for the given user', async () => {
             const userData = [
                 {
                     contentId: 'contentId',
@@ -162,8 +163,8 @@ describe('FileContentUserDataStorage', () => {
                     new FileContentUserDataStorage(jsonFilePath);
 
                 const result =
-                    await fileContentUserDataStorage.listContentUserDataByUserId(
-                        user.id
+                    await fileContentUserDataStorage.getContentUserDataByUser(
+                        user
                     );
 
                 expect(result).toEqual([
@@ -192,15 +193,15 @@ describe('FileContentUserDataStorage', () => {
                 const fileContentUserDataStorage =
                     new FileContentUserDataStorage(jsonFilePath);
 
-                await fileContentUserDataStorage.createOrUpdateContentUserData(
-                    'contentId',
-                    'state',
-                    '0',
-                    'testUserState',
-                    false,
-                    false,
-                    user
-                );
+                await fileContentUserDataStorage.createOrUpdateContentUserData({
+                    contentId: 'contentId',
+                    dataType: 'state',
+                    subContentId: '0',
+                    userState: 'testUserState',
+                    invalidate: false,
+                    preload: false,
+                    userId: user.id
+                });
                 const json = await fsExtra.readJSON(jsonFilePath);
                 expect(json).toEqual({
                     userData: [
@@ -220,8 +221,8 @@ describe('FileContentUserDataStorage', () => {
         });
     });
 
-    describe('deleteContentUserDataByUserId', () => {
-        it('deletes the contentUserData for a given contentId and userId', async () => {
+    describe('deleteAllContentUserDataByUser', () => {
+        it('deletes the contentUserData for a given userId', async () => {
             await withFile(async ({ path: jsonFilePath }) => {
                 await fsExtra.writeJSON(jsonFilePath, {
                     userData: [
@@ -250,9 +251,7 @@ describe('FileContentUserDataStorage', () => {
                 const fileContentUserDataStorage =
                     new FileContentUserDataStorage(jsonFilePath);
 
-                await fileContentUserDataStorage.deleteContentUserDataByUserId(
-                    'contentId2',
-                    user.id,
+                await fileContentUserDataStorage.deleteAllContentUserDataByUser(
                     user
                 );
 
@@ -315,8 +314,7 @@ describe('FileContentUserDataStorage', () => {
                     new FileContentUserDataStorage(jsonFilePath);
 
                 await fileContentUserDataStorage.deleteAllContentUserDataByContentId(
-                    'contentId',
-                    user
+                    'contentId'
                 );
 
                 const json = await fsExtra.readJSON(jsonFilePath);
@@ -338,8 +336,8 @@ describe('FileContentUserDataStorage', () => {
         });
     });
 
-    describe('listByContent', () => {
-        it('lists all contentUserData for a given contentId and userId', async () => {
+    describe('getContentUserDataByContentIdAndUser', () => {
+        it('lists all contentUserData for a given contentId and user', async () => {
             await withFile(async ({ path: jsonFilePath }) => {
                 await fsExtra.writeJSON(jsonFilePath, {
                     userData: [
@@ -377,10 +375,11 @@ describe('FileContentUserDataStorage', () => {
                 const fileContentUserDataStorage =
                     new FileContentUserDataStorage(jsonFilePath);
 
-                const result = await fileContentUserDataStorage.listByContent(
-                    'contentId',
-                    user.id
-                );
+                const result =
+                    await fileContentUserDataStorage.getContentUserDataByContentIdAndUser(
+                        'contentId',
+                        user
+                    );
 
                 expect(result).toEqual([
                     {
@@ -397,7 +396,7 @@ describe('FileContentUserDataStorage', () => {
         });
     });
 
-    describe('deleteInvalidContentUserData', () => {
+    describe('deleteInvalidatedContentUserData', () => {
         it('deletes all invalid contentUserData', async () => {
             await withFile(async ({ path: jsonFilePath }) => {
                 await fsExtra.writeJSON(jsonFilePath, {
@@ -436,7 +435,7 @@ describe('FileContentUserDataStorage', () => {
                 const fileContentUserDataStorage =
                     new FileContentUserDataStorage(jsonFilePath);
 
-                await fileContentUserDataStorage.deleteInvalidContentUserData(
+                await fileContentUserDataStorage.deleteInvalidatedContentUserData(
                     'contentId'
                 );
 

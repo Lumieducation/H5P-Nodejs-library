@@ -5,57 +5,49 @@ import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 import User from './User';
 
 describe('ContentUserDataManager', () => {
-    describe('deleteContentUserDataByUserId', () => {
+    describe('deleteAllContentUserDataByUser', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
 
             expect(
-                await contentUserDataManager.deleteContentUserDataByUserId(
-                    'contentId',
-                    'userId',
+                await contentUserDataManager.deleteAllContentUserDataByUser(
                     new User()
                 )
             ).toBeUndefined();
         });
 
-        it('calls the deleteContentUserDataByUserId-method of the contentUserDateStorage', async () => {
+        it('calls the deleteAllContentUserDataByUser method of the contentUserDateStorage', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
                 mockContentUserDataStorage
             );
-            const contentId = 'contentId';
-            const userId = 'userId';
             const user = new User();
 
-            await contentUserDataManager.deleteContentUserDataByUserId(
-                contentId,
-                userId,
-                user
-            );
+            await contentUserDataManager.deleteAllContentUserDataByUser(user);
 
             expect(
-                mockContentUserDataStorage.deleteContentUserDataByUserId
-            ).toHaveBeenCalledWith(contentId, userId, user);
+                mockContentUserDataStorage.deleteAllContentUserDataByUser
+            ).toHaveBeenCalledWith(user);
         });
     });
 
-    describe('deleteInvalidContentUserData', () => {
+    describe('deleteInvalidatedContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
 
             expect(
-                await contentUserDataManager.deleteInvalidContentUserDataByContentId(
+                await contentUserDataManager.deleteInvalidatedContentUserDataByContentId(
                     'contentId'
                 )
             ).toBeUndefined();
         });
 
-        it('calls the deleteInvalidContentUserData-method of the contentUserDateStorage', async () => {
+        it('calls the deleteInvalidatedContentUserData method of the contentUserDateStorage', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -63,12 +55,12 @@ describe('ContentUserDataManager', () => {
             );
             const contentId = 'contentId';
 
-            await contentUserDataManager.deleteInvalidContentUserDataByContentId(
+            await contentUserDataManager.deleteInvalidatedContentUserDataByContentId(
                 contentId
             );
 
             expect(
-                mockContentUserDataStorage.deleteInvalidContentUserData
+                mockContentUserDataStorage.deleteInvalidatedContentUserData
             ).toHaveBeenCalledWith(contentId);
         });
     });
@@ -99,7 +91,7 @@ describe('ContentUserDataManager', () => {
             ).toBeUndefined();
         });
 
-        it('calls the saveSetFinishedDataForUser-method of the contentUserDateStorage', async () => {
+        it('calls the saveSetFinishedDataForUser method of the contentUserDateStorage', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -124,16 +116,16 @@ describe('ContentUserDataManager', () => {
             );
 
             expect(
-                mockContentUserDataStorage.saveFinishedDataForUser
-            ).toHaveBeenCalledWith(
+                mockContentUserDataStorage.createOrUpdateFinishedData
+            ).toHaveBeenCalledWith({
                 contentId,
                 score,
                 maxScore,
-                opened,
-                finished,
-                time,
-                user
-            );
+                openedTimestamp: opened,
+                finishedTimestamp: finished,
+                completionTime: time,
+                userId: user.id
+            });
         });
     });
 
@@ -145,40 +137,37 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 await contentUserDataManager.deleteAllContentUserDataByContentId(
-                    'contentId',
-                    new User()
+                    'contentId'
                 )
             ).toBeUndefined();
         });
 
-        it('calls the deleteAllContentUserDataByContentId-method of the contentUserDateStorage', async () => {
+        it('calls the deleteAllContentUserDataByContentId method of the contentUserDateStorage', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
                 mockContentUserDataStorage
             );
             const contentId = 'contentId';
-            const user = new User();
 
             await contentUserDataManager.deleteAllContentUserDataByContentId(
-                contentId,
-                user
+                contentId
             );
 
             expect(
                 mockContentUserDataStorage.deleteAllContentUserDataByContentId
-            ).toHaveBeenCalledWith(contentId, user);
+            ).toHaveBeenCalledWith(contentId);
         });
     });
 
-    describe('loadContentUserData', () => {
+    describe('getContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
                 undefined
             );
 
             expect(
-                await contentUserDataManager.loadContentUserData(
+                await contentUserDataManager.getContentUserData(
                     'contentId',
                     'state',
                     '0',
@@ -187,7 +176,7 @@ describe('ContentUserDataManager', () => {
             ).toBeUndefined();
         });
 
-        it('calls the loadContentUserData-method of the contentUserDateStorage with the correct arguments', async () => {
+        it('calls the getContentUserData method of the contentUserDateStorage with the correct arguments', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -198,7 +187,7 @@ describe('ContentUserDataManager', () => {
             const subContentId = '0';
             const user = new User();
 
-            await contentUserDataManager.loadContentUserData(
+            await contentUserDataManager.getContentUserData(
                 contentId,
                 dataType,
                 subContentId,
@@ -206,7 +195,7 @@ describe('ContentUserDataManager', () => {
             );
 
             expect(
-                mockContentUserDataStorage.loadContentUserData
+                mockContentUserDataStorage.getContentUserData
             ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
         });
     });
@@ -252,7 +241,7 @@ describe('ContentUserDataManager', () => {
             );
         });
 
-        it('calls the saveontentUserData-method of the contentUserDateStorage with the correct arguments', async () => {
+        it('calls the saveontentUserData method of the contentUserDateStorage with the correct arguments', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -276,15 +265,15 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 mockContentUserDataStorage.createOrUpdateContentUserData
-            ).toHaveBeenCalledWith(
+            ).toHaveBeenCalledWith({
                 contentId,
                 dataType,
                 subContentId,
                 userState,
-                false,
-                false,
-                user
-            );
+                invalidate: false,
+                preload: false,
+                userId: user.id
+            });
         });
     });
 
@@ -302,7 +291,7 @@ describe('ContentUserDataManager', () => {
             ).toBeUndefined();
         });
 
-        it('calls the listByContent-method of the contentUserDateStorage with the correct arguments', async () => {
+        it('calls the getContentUserDataByContentIdAndUser method of the contentUserDateStorage with the correct arguments', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -317,8 +306,8 @@ describe('ContentUserDataManager', () => {
             );
 
             expect(
-                mockContentUserDataStorage.listByContent
-            ).toHaveBeenCalledWith(contentId, user.id);
+                mockContentUserDataStorage.getContentUserDataByContentIdAndUser
+            ).toHaveBeenCalledWith(contentId, user);
         });
 
         it('generates the contentUserDataIntegration as an array in the correct order', async () => {
@@ -367,7 +356,7 @@ describe('ContentUserDataManager', () => {
             ]);
         });
 
-        it('skips the generation if preload-flag is set to false or undefined', async () => {
+        it('skips the generation if preload flag is set to false or undefined', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(

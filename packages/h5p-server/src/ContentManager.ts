@@ -107,12 +107,11 @@ export default class ContentManager {
         if (this.contentUserDataStorage) {
             try {
                 await this.contentUserDataStorage.deleteAllContentUserDataByContentId(
-                    contentId,
-                    user
+                    contentId
                 );
             } catch (error) {
                 log.error(
-                    `could not delete contentUserData with contentId ${contentId}`
+                    `Could not delete contentUserData with contentId ${contentId}`
                 );
                 log.error(error);
             }

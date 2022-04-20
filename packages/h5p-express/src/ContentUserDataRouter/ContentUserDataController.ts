@@ -22,7 +22,7 @@ export default class ContentUserDataController {
         res: express.Response<IAjaxResponse<string>>
     ): Promise<void> => {
         const { contentId, dataType, subContentId } = req.params;
-        const result = await this.contentUserDataManager.loadContentUserData(
+        const result = await this.contentUserDataManager.getContentUserData(
             contentId,
             dataType,
             subContentId,

@@ -1,9 +1,9 @@
-import { ContentId } from '../../src/types';
+import { ContentId, IUser } from '../../src/types';
 
 let mockData;
 const mock = jest.fn().mockImplementation(() => {
     return {
-        deleteContentUserDataByUserId: jest.fn().mockImplementation(() => {
+        deleteAllContentUserDataByUser: jest.fn().mockImplementation(() => {
             return;
         }),
         deleteAllContentUserDataByContentId: jest
@@ -11,30 +11,30 @@ const mock = jest.fn().mockImplementation(() => {
             .mockImplementation(() => {
                 return;
             }),
-        deleteInvalidContentUserData: jest.fn().mockImplementation(() => {
+        deleteInvalidatedContentUserData: jest.fn().mockImplementation(() => {
             return;
         }),
-        loadContentUserData: jest.fn().mockImplementation(() => {
+        getContentUserData: jest.fn().mockImplementation(() => {
             return 'this is some data';
         }),
         createOrUpdateContentUserData: jest.fn().mockImplementation(() => {
             return;
         }),
-        saveFinishedDataForUser: jest.fn().mockImplementation(() => {
+        createOrUpdateFinishedData: jest.fn().mockImplementation(() => {
             return;
         }),
         setMockData: (m) => (mockData = m),
-        listByContent: jest
+        getContentUserDataByContentIdAndUser: jest
             .fn()
-            .mockImplementation((contentId: ContentId, userId: string) => {
+            .mockImplementation((contentId: ContentId, user: IUser) => {
                 return (
                     mockData || [
                         {
                             contentId,
-                            userId,
+                            userId: user.id,
                             dataType: 'state',
                             subContentId: '0',
-                            userState: `${contentId}-${userId}`,
+                            userState: `${contentId}-${user.id}`,
                             preload: true
                         }
                     ]

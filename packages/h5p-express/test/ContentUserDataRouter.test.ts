@@ -13,7 +13,7 @@ import ContentUserDataExpressRouter from '../src/ContentUserDataRouter/ContentUs
 const mockReturnData = { userState: 'returndata' };
 const MockContentUserDataManager = jest.fn().mockImplementation(() => {
     return {
-        loadContentUserData: jest.fn().mockImplementation(() => {
+        getContentUserData: jest.fn().mockImplementation(() => {
             return mockReturnData;
         }),
         createOrUpdateContentUserData: jest.fn().mockImplementation(() => {
@@ -103,7 +103,7 @@ describe('ContentUserData endpoint adapter', () => {
         expect(res.status).toBe(200);
     });
 
-    it('calls loadContentUserData on GET', async () => {
+    it('calls getContentUserData on GET', async () => {
         const contentId = 'contentId';
         const dataType = 'state';
         const subContentId = '0';
@@ -113,7 +113,7 @@ describe('ContentUserData endpoint adapter', () => {
         );
 
         expect(
-            mockContentUserDataManager.loadContentUserData
+            mockContentUserDataManager.getContentUserData
         ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
         expect(res.status).toBe(200);
         expect(res.body).toEqual({

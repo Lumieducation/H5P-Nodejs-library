@@ -7,7 +7,8 @@ import {
     IContentUserDataStorage,
     IUser,
     IContentUserData,
-    Logger
+    Logger,
+    IFinishedUserData
 } from '@lumieducation/h5p-server';
 
 const log = new Logger('MongoContentUserDataStorage');
@@ -22,14 +23,14 @@ export default class MongoContentUserDataStorage
         log.info('initialize');
     }
 
-    public async loadContentUserData(
+    public async getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
         user: IUser
     ): Promise<IContentUserData> {
         log.debug(
-            `loadContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id}`
+            `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id}`
         );
         return this.mongodb.findOne<IContentUserData>({
             contentId,
@@ -39,63 +40,51 @@ export default class MongoContentUserDataStorage
         });
     }
 
-    public async listContentUserDataByUserId(
-        userId: string
+    public async getContentUserDataByUser(
+        user: IUser
     ): Promise<IContentUserData[]> {
         return this.mongodb
             .find<IContentUserData>({
-                userId
+                userId: user.id
             })
             .toArray();
     }
 
     public async createOrUpdateContentUserData(
-        contentId: ContentId,
-        dataType: string,
-        subContentId: string,
-        userState: string,
-        invalidate: boolean,
-        preload: boolean,
-        user: IUser
+        userData: IContentUserData
     ): Promise<void> {
         await this.mongodb.updateOne(
             {
-                contentId,
-                dataType,
-                subContentId,
-                userState,
-                invalidate,
-                preload,
-                userId: user.id
+                contentId: userData.contentId,
+                dataType: userData.dataType,
+                subContentId: userData.subContentId,
+                userState: userData.userState,
+                invalidate: userData.invalidate,
+                preload: userData.preload,
+                userId: userData.userId
             },
             { upsert: true }
         );
     }
 
-    public async saveFinishedDataForUser(
-        contentId: ContentId,
-        score: number,
-        maxScore: number,
-        openedTimestamp: number,
-        finishedTimestamp: number,
-        completionTime: number,
-        user: IUser
+    public async createOrUpdateFinishedData(
+        finishedData: IFinishedUserData
     ): Promise<void> {
         await this.mongodb.updateOne(
             {
-                contentId,
-                score,
-                maxScore,
-                openedTimestamp,
-                finishedTimestamp,
-                completionTime,
-                user
+                contentId: finishedData.contentId,
+                score: finishedData.score,
+                maxScore: finishedData.maxScore,
+                openedTimestamp: finishedData.openedTimestamp,
+                finishedTimestamp: finishedData.finishedTimestamp,
+                completionTime: finishedData.completionTime,
+                userId: finishedData.userId
             },
             { upsert: true }
         );
     }
 
-    public async deleteInvalidContentUserData(
+    public async deleteInvalidatedContentUserData(
         contentId: string
     ): Promise<void> {
         await this.mongodb.deleteMany({
@@ -104,32 +93,39 @@ export default class MongoContentUserDataStorage
         });
     }
 
-    public async deleteContentUserDataByUserId(
-        contentId: ContentId,
-        userId: string,
-        requestingUser: IUser
-    ): Promise<void> {
+    public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
         await this.mongodb.deleteMany({
-            contentId,
-            userId
+            userId: user.id
         });
     }
 
     public async deleteAllContentUserDataByContentId(
-        contentId: ContentId,
-        requestingUser: IUser
+        contentId: ContentId
     ): Promise<void> {
         await this.mongodb.deleteMany({
             contentId
         });
     }
 
-    public async listByContent(
+    public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        userId: string
+        user: IUser
     ): Promise<IContentUserData[]> {
         return this.mongodb
-            .find<IContentUserData>({ contentId, userId })
+            .find<IContentUserData>({ contentId, userId: user.id })
             .toArray();
+    }
+
+    getFinishedDataByContent(contentId: string): Promise<IFinishedUserData[]> {
+        throw new Error('Method not implemented.');
+    }
+    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData> {
+        throw new Error('Method not implemented.');
+    }
+    deleteFinishedDataByContentId(contentId: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    deleteFinishedDataByUser(user: IUser): Promise<void> {
+        throw new Error('Method not implemented.');
     }
 }
