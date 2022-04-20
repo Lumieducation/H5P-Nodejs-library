@@ -113,11 +113,8 @@ export default class ContentUserDataManager {
         );
 
         if (!this.contentUserDataStorage) {
-            log.debug(`No contentUserDataStorage set.`);
             return undefined;
         }
-
-        log.debug(`Getting states`);
 
         let states =
             await this.contentUserDataStorage.getContentUserDataByContentIdAndUser(
@@ -125,17 +122,11 @@ export default class ContentUserDataManager {
                 user
             );
 
-        console.log('states', states);
-
         if (!states) {
             return undefined;
         }
 
-        log.debug('Got', states.length, 'states');
-
         states = states.filter((s) => s.preload === true);
-
-        log.debug(states.length, 'of them should be preloaded');
 
         const sortedStates = states.sort(
             (a, b) => Number(a.subContentId) - Number(b.subContentId)
