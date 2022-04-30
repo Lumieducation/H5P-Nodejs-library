@@ -1969,6 +1969,18 @@ export interface IH5PEditorOptions {
             user: IUser
         ) => Promise<void>;
     };
+
+    /**
+     * Allows you to inject custom machine ids. This id is sent to the H5P.org
+     * Hub server when registering to get a UUID for the local instance or when
+     * refreshing the list of available content types.
+     *
+     * By default the server gets an ID for the local machine by calling
+     * node-machine-id, so you don't have to use the override. There are cases
+     * in which calling node-machine-id might not work, so you can use the
+     * override.
+     */
+    getLocalIdOverride?: () => string;
 }
 
 /**
