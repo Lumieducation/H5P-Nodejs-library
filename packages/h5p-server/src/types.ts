@@ -679,7 +679,7 @@ export interface IContentUserDataStorage {
      * Gets all finished user data for a specific user (across all content
      * objects). (Useful for implementing GDPR rights functionality.)
      */
-    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData>;
+    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData[]>;
 
     /**
      * Deletes all finished user data of a content object. (Called when the

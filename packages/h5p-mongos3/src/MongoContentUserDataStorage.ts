@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import MongoDB from 'mongodb';
 
 import {
@@ -17,10 +15,70 @@ export default class MongoContentUserDataStorage
     implements IContentUserDataStorage
 {
     /**
-     * @param mongodb a MongoDB collection (read- and writable)
+     * @param userDataCollection a MongoDB collection (read- and writable)
      */
-    constructor(private mongodb: MongoDB.Collection) {
+    constructor(
+        private userDataCollection: MongoDB.Collection,
+        private finishedCollection: MongoDB.Collection
+    ) {
         log.info('initialize');
+    }
+
+    /**
+     * Creates indexes to speed up read access. Can be safely used even if
+     * indexes already exist.
+     */
+    public async createIndexes(): Promise<void> {
+        await this.userDataCollection.createIndexes([
+            {
+                key: {
+                    contentId: 1
+                }
+            },
+            {
+                key: {
+                    contentId: 1,
+                    invalidate: 1
+                }
+            },
+            {
+                key: {
+                    contentId: 1,
+                    dataType: 1,
+                    subContentId: 1,
+                    userId: 1
+                }
+            },
+            {
+                key: {
+                    userId: 1
+                }
+            },
+            {
+                key: {
+                    contentId: 1,
+                    userId: 1
+                }
+            }
+        ]);
+        await this.finishedCollection.createIndexes([
+            {
+                key: {
+                    contentId: 1,
+                    userId: 1
+                }
+            },
+            {
+                key: {
+                    contentId: 1
+                }
+            },
+            {
+                key: {
+                    userId: 1
+                }
+            }
+        ]);
     }
 
     public async getContentUserData(
@@ -32,7 +90,7 @@ export default class MongoContentUserDataStorage
         log.debug(
             `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id}`
         );
-        return this.mongodb.findOne<IContentUserData>({
+        return this.userDataCollection.findOne<IContentUserData>({
             contentId,
             dataType,
             subContentId,
@@ -43,7 +101,7 @@ export default class MongoContentUserDataStorage
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
-        return this.mongodb
+        return this.userDataCollection
             .find<IContentUserData>({
                 userId: user.id
             })
@@ -53,7 +111,13 @@ export default class MongoContentUserDataStorage
     public async createOrUpdateContentUserData(
         userData: IContentUserData
     ): Promise<void> {
-        await this.mongodb.updateOne(
+        await this.userDataCollection.replaceOne(
+            {
+                contentId: userData.contentId,
+                dataType: userData.dataType,
+                subContentId: userData.subContentId,
+                userId: userData.userId
+            },
             {
                 contentId: userData.contentId,
                 dataType: userData.dataType,
@@ -70,7 +134,11 @@ export default class MongoContentUserDataStorage
     public async createOrUpdateFinishedData(
         finishedData: IFinishedUserData
     ): Promise<void> {
-        await this.mongodb.updateOne(
+        await this.finishedCollection.replaceOne(
+            {
+                contentId: finishedData.contentId,
+                userId: finishedData.userId
+            },
             {
                 contentId: finishedData.contentId,
                 score: finishedData.score,
@@ -87,14 +155,14 @@ export default class MongoContentUserDataStorage
     public async deleteInvalidatedContentUserData(
         contentId: string
     ): Promise<void> {
-        await this.mongodb.deleteMany({
+        await this.userDataCollection.deleteMany({
             contentId,
             invalidate: true
         });
     }
 
     public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
-        await this.mongodb.deleteMany({
+        await this.userDataCollection.deleteMany({
             userId: user.id
         });
     }
@@ -102,7 +170,7 @@ export default class MongoContentUserDataStorage
     public async deleteAllContentUserDataByContentId(
         contentId: ContentId
     ): Promise<void> {
-        await this.mongodb.deleteMany({
+        await this.userDataCollection.deleteMany({
             contentId
         });
     }
@@ -111,21 +179,34 @@ export default class MongoContentUserDataStorage
         contentId: ContentId,
         user: IUser
     ): Promise<IContentUserData[]> {
-        return this.mongodb
+        return this.userDataCollection
             .find<IContentUserData>({ contentId, userId: user.id })
             .toArray();
     }
 
-    getFinishedDataByContent(contentId: string): Promise<IFinishedUserData[]> {
-        throw new Error('Method not implemented.');
+    public async getFinishedDataByContent(
+        contentId: string
+    ): Promise<IFinishedUserData[]> {
+        return this.finishedCollection
+            .find<IFinishedUserData>({ contentId })
+            .toArray();
     }
-    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData> {
-        throw new Error('Method not implemented.');
+
+    public async getFinishedDataByUser(
+        user: IUser
+    ): Promise<IFinishedUserData[]> {
+        return this.finishedCollection
+            .find<IFinishedUserData>({ userId: user.id })
+            .toArray();
     }
-    deleteFinishedDataByContentId(contentId: string): Promise<void> {
-        throw new Error('Method not implemented.');
+
+    public async deleteFinishedDataByContentId(
+        contentId: string
+    ): Promise<void> {
+        await this.finishedCollection.deleteMany({ contentId });
     }
-    deleteFinishedDataByUser(user: IUser): Promise<void> {
-        throw new Error('Method not implemented.');
+
+    public async deleteFinishedDataByUser(user: IUser): Promise<void> {
+        await this.finishedCollection.deleteMany({ userID: user.id });
     }
 }
