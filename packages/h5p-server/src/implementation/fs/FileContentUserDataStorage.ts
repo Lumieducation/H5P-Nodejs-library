@@ -122,7 +122,7 @@ export default class FileContentUserDataStorage
     getFinishedDataByContent(contentId: string): Promise<IFinishedUserData[]> {
         throw new Error('Method not implemented.');
     }
-    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData> {
+    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData[]> {
         throw new Error('Method not implemented.');
     }
     deleteFinishedDataByContentId(contentId: string): Promise<void> {
