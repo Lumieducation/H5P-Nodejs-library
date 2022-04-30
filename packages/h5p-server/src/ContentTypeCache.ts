@@ -36,15 +36,15 @@ export default class ContentTypeCache {
      * @param config The configuration to use.
      * @param storage The storage object.
      */
-    constructor(config: IH5PConfig, storage: IKeyValueStorage) {
-        log.info(`initialize`);
-        this.config = config;
-        this.storage = storage;
+    constructor(
+        private config: IH5PConfig,
+        private storage: IKeyValueStorage,
+        private getLocalIdOverride?: () => string
+    ) {
+        log.info('initialize');
         this.httpClient = HttpClient(config);
     }
 
-    private config: IH5PConfig;
-    private storage: IKeyValueStorage;
     private httpClient: AxiosInstance;
 
     /**
@@ -77,15 +77,6 @@ export default class ContentTypeCache {
             tutorial: entry.tutorial || '',
             updatedAt: Date.parse(entry.updatedAt)
         };
-    }
-
-    /**
-     * Creates an identifier for the running instance.
-     * @returns id
-     */
-    private static generateLocalId(): string {
-        log.debug(`Generating local id`);
-        return machineIdSync();
     }
 
     /**
@@ -274,7 +265,7 @@ export default class ContentTypeCache {
             core_api_version: `${this.config.coreApiVersion.major}.${this.config.coreApiVersion.minor}`,
             disabled: this.config.fetchingDisabled,
             h5p_version: this.config.h5pVersion,
-            local_id: ContentTypeCache.generateLocalId(),
+            local_id: this.getLocalId(),
             platform_name: this.config.platformName,
             platform_version: this.config.platformVersion,
             type: this.config.siteType,
@@ -291,5 +282,19 @@ export default class ContentTypeCache {
             libraries: {}, // TODO: add library information here
             num_authors: 0 // number of active authors
         };
+    }
+
+    /**
+     * Creates an identifier for the running instance.
+     * @returns id
+     */
+    private getLocalId(): string {
+        if (this.getLocalIdOverride) {
+            log.debug('Getting local ID from override');
+            return this.getLocalIdOverride();
+        } else {
+            log.debug('Generating local id with node-machine-id');
+            return machineIdSync();
+        }
     }
 }

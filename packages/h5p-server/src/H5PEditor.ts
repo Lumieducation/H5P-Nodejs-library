@@ -105,7 +105,11 @@ export default class H5PEditor {
         this.config = config;
 
         this.renderer = defaultRenderer;
-        this.contentTypeCache = new ContentTypeCache(config, cache);
+        this.contentTypeCache = new ContentTypeCache(
+            config,
+            cache,
+            this.options?.getLocalIdOverride
+        );
         this.contentHub = new ContentHub(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
