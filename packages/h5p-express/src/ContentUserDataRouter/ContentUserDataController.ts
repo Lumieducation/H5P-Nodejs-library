@@ -31,7 +31,7 @@ export default class ContentUserDataController {
         );
 
         if (!result || !result.userState) {
-            res.status(404).json({ data: undefined, success: false });
+            res.status(200).json(new AjaxSuccessResponse(false));
         } else {
             res.status(200).json(new AjaxSuccessResponse(result.userState));
         }
