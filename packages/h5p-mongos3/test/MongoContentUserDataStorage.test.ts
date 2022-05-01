@@ -1,7 +1,7 @@
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb';
 
 import MongoContentUserDataStorage from '../src/MongoContentUserDataStorage';
-import ContentUserDataStorageTests from '../../h5p-server/test/implementation/ContentUserDataStorage.test';
+import ContentUserDataStorageTests from '../../h5p-server/test/implementation/ContentUserDataStorage';
 import { IContentUserDataStorage } from '@lumieducation/h5p-server';
 
 describe('MongoContentUserDataStorage', () => {

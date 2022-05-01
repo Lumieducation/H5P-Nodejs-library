@@ -3,7 +3,7 @@ import { dir, DirectoryResult } from 'tmp-promise';
 import FileContentUserDataStorage from '../../src/implementation/fs/FileContentUserDataStorage';
 import { IContentUserDataStorage } from '../../src/types';
 
-import ContentUserDataStorageTests from './ContentUserDataStorage.test';
+import ContentUserDataStorageTests from './ContentUserDataStorage';
 
 describe('FileContentUserDataStorage', () => {
     let dirResult: DirectoryResult;
