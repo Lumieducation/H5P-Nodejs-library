@@ -1,3 +1,7 @@
+import path from 'path';
+import fs from 'fs-extra';
+import getAllFiles from 'get-all-files';
+
 import {
     ContentId,
     IContentUserData,
@@ -5,45 +9,121 @@ import {
     IFinishedUserData,
     IUser
 } from '../../types';
+import Logger from '../../helpers/Logger';
 
-import JsonStorage from './JsonStorage';
+const log = new Logger('FileContentUserDataStorage');
 
 export default class FileContentUserDataStorage
-    extends JsonStorage
     implements IContentUserDataStorage
 {
+    constructor(protected directory: string) {
+        if (!fs.pathExistsSync(directory)) {
+            log.debug('Creating directory', directory);
+            fs.mkdirpSync(directory);
+        }
+    }
+
     public async getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
         user: IUser
     ): Promise<IContentUserData> {
-        const userData = await this.load('userData');
-
-        return userData.filter(
-            (data) =>
-                data.contentId === contentId &&
-                data.dataType === dataType &&
-                data.subContentId === subContentId &&
-                data.userId === user.id
-        )[0];
+        const file = this.getUserDataFilePath(contentId);
+        let dataList: IContentUserData[];
+        try {
+            dataList = await fs.readJSON(file);
+        } catch (error) {
+            log.error(
+                'getContentUserData',
+                'Error reading file',
+                file,
+                'Error:',
+                error
+            );
+            return undefined;
+        }
+        try {
+            return dataList.find(
+                (data) =>
+                    data.contentId === contentId &&
+                    data.dataType === dataType &&
+                    data.subContentId === subContentId &&
+                    data.userId === user.id
+            );
+        } catch (error) {
+            log.error(
+                'getContentUserData',
+                'Corrupt file',
+                file,
+                'Error:',
+                error
+            );
+        }
     }
 
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
-        const userData = await this.load('userData');
-
-        return userData.filter((data) => data.userId === user.id);
+        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const result: IContentUserData[] = [];
+        for (const file of files) {
+            if (!file.endsWith('-userdata.json')) {
+                continue;
+            }
+            let data: IContentUserData[];
+            try {
+                data = await fs.readJSON(file);
+            } catch (error) {
+                log.error(
+                    'getContentUserDataByUser',
+                    'Error reading file',
+                    file,
+                    'Error:',
+                    error,
+                    'Data in the corrupt file is not part of the list'
+                );
+            }
+            try {
+                for (const entry of data) {
+                    if (entry.userId === user.id) {
+                        result.push(entry);
+                    }
+                }
+            } catch (error) {
+                log.error(
+                    'getContentUserDataByUser',
+                    'Error going through data in file',
+                    file,
+                    'Error:',
+                    error
+                );
+            }
+        }
+        return result;
     }
 
     public async createOrUpdateContentUserData(
         userData: IContentUserData
     ): Promise<void> {
-        const allUserData = await this.load('userData');
+        const filename = this.getUserDataFilePath(userData.contentId);
+        let oldData: IContentUserData[];
+        try {
+            oldData = await fs.readJSON(filename);
+        } catch (error) {
+            log.debug(
+                'createOrUpdateContentUserData',
+                'Error while reading user data file for contentId',
+                userData.contentId,
+                '(error:',
+                error,
+                '). Seeding with empty list.'
+            );
+            oldData = [];
+        }
 
         // make sure we have only one entry for contentId, dataType, subContentId and user
-        const newUserData = allUserData.filter(
+        const newUserData = oldData.filter(
             (data) =>
                 data.contentId !== userData.contentId &&
                 data.dataType !== userData.dataType &&
@@ -52,85 +132,331 @@ export default class FileContentUserDataStorage
         );
 
         newUserData.push(userData);
-
-        await this.save('userData', newUserData);
+        try {
+            await fs.writeJSON(filename, newUserData);
+        } catch (error) {
+            log.error(
+                'createOrUpdateContentUserData',
+                'Error while writing user data to file for contentId',
+                userData.contentId,
+                'Error:',
+                error
+            );
+        }
     }
 
     public async deleteInvalidatedContentUserData(
         contentId: string
     ): Promise<void> {
-        const userData = await this.load('userData');
+        const filename = this.getUserDataFilePath(contentId);
+        let oldData: IContentUserData[];
+        try {
+            oldData = await fs.readJSON(filename);
+        } catch (error) {
+            log.debug(
+                'deleteInvalidatedContentUserData',
+                'Error while reading user data file for contentId',
+                contentId,
+                '(error:',
+                error,
+                '). Seeding with empty list.'
+            );
+            oldData = [];
+        }
 
-        const newUserData = userData.filter((data) => {
-            if (contentId !== data.contentId) {
-                return true;
-            }
-            if (contentId === data.contentId && !data.invalidate) {
-                return true;
-            }
-            return false;
-        });
+        // make sure we have only one entry for contentId, dataType, subContentId and user
+        const newUserData = oldData.filter(
+            (data) => data.contentId !== contentId || !data.invalidate
+        );
 
-        await this.save('userData', newUserData);
+        try {
+            await fs.writeJSON(filename, newUserData);
+        } catch (error) {
+            log.error(
+                'deleteInvalidatedContentUserData',
+                'Error while writing user data to file for contentId',
+                contentId,
+                'Error:',
+                error
+            );
+        }
     }
 
     public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
-        const userData = await this.load('userData');
-
-        const newUserData = userData.filter((data) => data.userId !== user.id);
-
-        await this.save('userData', newUserData);
+        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        for (const file of files) {
+            if (!file.endsWith('-userdata.json')) {
+                continue;
+            }
+            let data: IContentUserData[];
+            try {
+                data = await fs.readJSON(file);
+            } catch (error) {
+                log.error(
+                    'deleteAllContentUserDataByUser',
+                    'Error reading file',
+                    file,
+                    'Error:',
+                    error,
+                    'Data in the corrupt file is not part of the list'
+                );
+            }
+            let newData: IContentUserData[];
+            try {
+                newData = data?.filter((d) => d.userId !== user.id);
+            } catch (error) {
+                log.error(
+                    'deleteAllContentUserDataByUser',
+                    'Error going through data in file',
+                    file,
+                    'Error:',
+                    error
+                );
+            }
+            if (newData) {
+                try {
+                    await fs.writeJson(file, newData);
+                } catch (error) {
+                    log.error(
+                        'deleteAllContentUserDataByUser',
+                        'Error writing data to file',
+                        file,
+                        'Error:',
+                        error
+                    );
+                }
+            }
+        }
     }
 
     public async deleteAllContentUserDataByContentId(
         contentId: ContentId
     ): Promise<void> {
-        const userData = await this.load('userData');
-
-        const newUserData = userData.filter(
-            (data) => data.contentId !== contentId
-        );
-
-        this.save('userData', newUserData);
+        const file = this.getUserDataFilePath(contentId);
+        try {
+            await fs.unlink(file);
+        } catch (error) {
+            log.error(
+                'deleteAllContentUserDataByContentId',
+                'Could not delete file',
+                file,
+                'Error:',
+                error
+            );
+        }
     }
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
         user: IUser
     ): Promise<IContentUserData[]> {
-        const userData = await this.load('userData');
-        return userData.filter(
-            (data) => data.contentId === contentId && data.userId === user.id
-        );
+        const file = this.getUserDataFilePath(contentId);
+        let dataList: IContentUserData[];
+        try {
+            dataList = await fs.readJSON(file);
+        } catch (error) {
+            log.error(
+                'getContentUserDataByContentIdAndUser',
+                'Error reading file',
+                file,
+                'Error:',
+                error
+            );
+            return undefined;
+        }
+
+        try {
+            return dataList.filter(
+                (data) =>
+                    data.contentId === contentId && data.userId === user.id
+            );
+        } catch (error) {
+            log.error(
+                'getContentUserDataByContentIdAndUser',
+                'Corrupt file',
+                file
+            );
+            return [];
+        }
     }
 
     public async createOrUpdateFinishedData(
         finishedData: IFinishedUserData
     ): Promise<void> {
-        const allFinishedData = await this.load('userFinishedData');
+        const filename = this.getFinishedFilePath(finishedData.contentId);
+        let oldData: IFinishedUserData[];
+        try {
+            oldData = await fs.readJSON(filename);
+        } catch (error) {
+            log.debug(
+                'createOrUpdateFinishedData',
+                'Error while reading finished file for contentId',
+                finishedData.contentId,
+                '(error:',
+                error,
+                '). Seeding with empty list.'
+            );
+            oldData = [];
+        }
 
-        const newUserData = allFinishedData.filter(
+        // make sure we have only one entry for contentId and user
+        const newData = oldData.filter(
             (data) =>
-                data.userId !== finishedData.userId &&
-                data.contentId !== finishedData.contentId
+                data.contentId !== finishedData.contentId &&
+                data.userId !== finishedData.userId
         );
 
-        newUserData.push(finishedData);
-        await this.save('userFinishedData', newUserData);
+        newData.push(finishedData);
+
+        try {
+            await fs.writeJSON(filename, newData);
+        } catch (error) {
+            log.error(
+                'createOrUpdateFinishedData',
+                'Error while writing finished data to file for contentId',
+                finishedData.contentId,
+                'Error:',
+                error
+            );
+        }
     }
 
-    getFinishedDataByContentId(
+    public async getFinishedDataByContentId(
         contentId: string
     ): Promise<IFinishedUserData[]> {
-        throw new Error('Method not implemented.');
+        const file = this.getFinishedFilePath(contentId);
+        let finishedList: IFinishedUserData[];
+        try {
+            finishedList = await fs.readJSON(file);
+        } catch (error) {
+            log.error(
+                'getFinishedDataByContentId',
+                'Error reading file',
+                file,
+                'Error:',
+                error
+            );
+            return undefined;
+        }
+
+        if (Array.isArray(finishedList)) {
+            return finishedList;
+        } else {
+            log.error('getFinishedDataByContentId', 'Corrupt file', file);
+            return [];
+        }
     }
-    getFinishedDataByUser(user: IUser): Promise<IFinishedUserData[]> {
-        throw new Error('Method not implemented.');
+
+    public async getFinishedDataByUser(
+        user: IUser
+    ): Promise<IFinishedUserData[]> {
+        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const result: IFinishedUserData[] = [];
+        for (const file of files) {
+            if (!file.endsWith('-finished.json')) {
+                continue;
+            }
+            let data: IFinishedUserData[];
+            try {
+                data = await fs.readJSON(file);
+            } catch (error) {
+                log.error(
+                    'getFinishedDataByUser',
+                    'Error reading file',
+                    file,
+                    'Error:',
+                    error,
+                    'Data in the corrupt file is not part of the list'
+                );
+            }
+            try {
+                for (const entry of data) {
+                    if (entry.userId === user.id) {
+                        result.push(entry);
+                    }
+                }
+            } catch (error) {
+                log.error(
+                    'getFinishedDataByUser',
+                    'Error going through data in file',
+                    file,
+                    'Error:',
+                    error
+                );
+            }
+        }
+        return result;
     }
-    deleteFinishedDataByContentId(contentId: string): Promise<void> {
-        throw new Error('Method not implemented.');
+
+    public async deleteFinishedDataByContentId(
+        contentId: string
+    ): Promise<void> {
+        const file = this.getFinishedFilePath(contentId);
+        try {
+            await fs.unlink(file);
+        } catch (error) {
+            log.error(
+                'deleteFinishedDataByContentId',
+                'Could not delete file',
+                file,
+                'Error:',
+                error
+            );
+        }
     }
-    deleteFinishedDataByUser(user: IUser): Promise<void> {
-        throw new Error('Method not implemented.');
+
+    public async deleteFinishedDataByUser(user: IUser): Promise<void> {
+        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        for (const file of files) {
+            if (!file.endsWith('-finished.json')) {
+                continue;
+            }
+            let data: IFinishedUserData[];
+            try {
+                data = await fs.readJSON(file);
+            } catch (error) {
+                log.error(
+                    'deleteFinishedDataByUser',
+                    'Error reading file',
+                    file,
+                    'Error:',
+                    error,
+                    'Data in the corrupt file is not part of the list'
+                );
+            }
+            let newData: IFinishedUserData[];
+            try {
+                newData = data?.filter((d) => d.userId !== user.id);
+            } catch (error) {
+                log.error(
+                    'deleteFinishedDataByUser',
+                    'Error going through data in file',
+                    file,
+                    'Error:',
+                    error
+                );
+            }
+            if (newData) {
+                try {
+                    await fs.writeJson(file, newData);
+                } catch (error) {
+                    log.error(
+                        'deleteFinishedDataByUser',
+                        'Error writing data to file',
+                        file,
+                        'Error:',
+                        error
+                    );
+                }
+            }
+        }
+    }
+
+    private getUserDataFilePath(contentId: string): string {
+        return path.join(this.directory, `${contentId}-userdata.json`);
+    }
+
+    private getFinishedFilePath(contentId: string): string {
+        return path.join(this.directory, `${contentId}-finished.json`);
     }
 }
