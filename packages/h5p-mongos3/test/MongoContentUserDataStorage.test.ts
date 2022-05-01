@@ -243,6 +243,18 @@ describe('MongoContentUserDataStorage', () => {
             const user1Data = await storage.getContentUserDataByUser(user);
             expect(user1Data.length).toEqual(1);
         });
+
+        it('gracefully deals with deleting non-existent user data', async () => {
+            await expect(
+                storage.deleteAllContentUserDataByContentId('0')
+            ).resolves.not.toThrow();
+            await expect(
+                storage.deleteAllContentUserDataByUser(user)
+            ).resolves.not.toThrow();
+            await expect(
+                storage.deleteInvalidatedContentUserData('0')
+            ).resolves.not.toThrow();
+        });
     });
     describe('finished data', () => {
         const user = new User();
@@ -343,6 +355,16 @@ describe('MongoContentUserDataStorage', () => {
                 id: '2'
             });
             expect(ret2.length).toEqual(1);
+        });
+
+        it('gracefully deals with deleting non-existent finished data', async () => {
+            await expect(
+                storage.deleteFinishedDataByContentId('0')
+            ).resolves.not.toThrow();
+
+            await expect(
+                storage.deleteFinishedDataByUser(user)
+            ).resolves.not.toThrow();
         });
     });
 });
