@@ -111,7 +111,17 @@ export default class ContentManager {
                 );
             } catch (error) {
                 log.error(
-                    `Could not delete contentUserData with contentId ${contentId}`
+                    `Could not delete content user data with contentId ${contentId}`
+                );
+                log.error(error);
+            }
+            try {
+                await this.contentUserDataStorage.deleteFinishedDataByContentId(
+                    contentId
+                );
+            } catch (error) {
+                log.error(
+                    `Could not finished data with contentId ${contentId}`
                 );
                 log.error(error);
             }
