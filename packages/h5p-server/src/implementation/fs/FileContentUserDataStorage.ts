@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import getAllFiles from 'get-all-files';
+import { getAllFiles } from 'get-all-files';
 
 import {
     ContentId,
@@ -41,15 +41,16 @@ export default class FileContentUserDataStorage
                 'Error:',
                 error
             );
-            return undefined;
+            return null;
         }
         try {
-            return dataList.find(
-                (data) =>
-                    data.contentId === contentId &&
-                    data.dataType === dataType &&
-                    data.subContentId === subContentId &&
-                    data.userId === user.id
+            return (
+                dataList.find(
+                    (data) =>
+                        data.dataType === dataType &&
+                        data.subContentId === subContentId &&
+                        data.userId === user.id
+                ) || null
             );
         } catch (error) {
             log.error(
@@ -59,13 +60,14 @@ export default class FileContentUserDataStorage
                 'Error:',
                 error
             );
+            return null;
         }
     }
 
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
-        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory).toArray();
         const result: IContentUserData[] = [];
         for (const file of files) {
             if (!file.endsWith('-userdata.json')) {
@@ -183,7 +185,7 @@ export default class FileContentUserDataStorage
     }
 
     public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
-        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory).toArray();
         for (const file of files) {
             if (!file.endsWith('-userdata.json')) {
                 continue;
@@ -262,14 +264,11 @@ export default class FileContentUserDataStorage
                 'Error:',
                 error
             );
-            return undefined;
+            return [];
         }
 
         try {
-            return dataList.filter(
-                (data) =>
-                    data.contentId === contentId && data.userId === user.id
-            );
+            return dataList.filter((data) => data.userId === user.id);
         } catch (error) {
             log.error(
                 'getContentUserDataByContentIdAndUser',
@@ -299,11 +298,9 @@ export default class FileContentUserDataStorage
             oldData = [];
         }
 
-        // make sure we have only one entry for contentId and user
+        // make sure we have only one entry for user
         const newData = oldData.filter(
-            (data) =>
-                data.contentId !== finishedData.contentId &&
-                data.userId !== finishedData.userId
+            (data) => data.userId !== finishedData.userId
         );
 
         newData.push(finishedData);
@@ -350,7 +347,7 @@ export default class FileContentUserDataStorage
     public async getFinishedDataByUser(
         user: IUser
     ): Promise<IFinishedUserData[]> {
-        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory).toArray();
         const result: IFinishedUserData[] = [];
         for (const file of files) {
             if (!file.endsWith('-finished.json')) {
@@ -406,7 +403,7 @@ export default class FileContentUserDataStorage
     }
 
     public async deleteFinishedDataByUser(user: IUser): Promise<void> {
-        const files = await getAllFiles.getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory).toArray();
         for (const file of files) {
             if (!file.endsWith('-finished.json')) {
                 continue;

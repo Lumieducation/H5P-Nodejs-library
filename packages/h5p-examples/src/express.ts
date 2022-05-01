@@ -93,7 +93,7 @@ const start = async (): Promise<void> => {
         path.join(__dirname, '../h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.,
-        path.join(__dirname, '../h5p/contentUserDataStorage.json'),
+        path.join(__dirname, '../h5p/user-data'),
         (key, language) => translationFunction(key, { lng: language })
     );
 
