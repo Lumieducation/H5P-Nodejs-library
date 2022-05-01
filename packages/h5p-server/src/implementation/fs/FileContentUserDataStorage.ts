@@ -119,7 +119,9 @@ export default class FileContentUserDataStorage
         await this.save('userFinishedData', newUserData);
     }
 
-    getFinishedDataByContent(contentId: string): Promise<IFinishedUserData[]> {
+    getFinishedDataByContentId(
+        contentId: string
+    ): Promise<IFinishedUserData[]> {
         throw new Error('Method not implemented.');
     }
     getFinishedDataByUser(user: IUser): Promise<IFinishedUserData[]> {

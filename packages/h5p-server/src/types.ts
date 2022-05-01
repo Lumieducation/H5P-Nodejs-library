@@ -671,7 +671,7 @@ export interface IContentUserDataStorage {
     /**
      * Gets the finished data of all users for a specific piece of content.
      */
-    getFinishedDataByContent(
+    getFinishedDataByContentId(
         contentId: ContentId
     ): Promise<IFinishedUserData[]>;
 

@@ -11,11 +11,17 @@ import {
 
 const log = new Logger('MongoContentUserDataStorage');
 
+/**
+ * MongoDB storage for user data and finished data.
+ *
+ * It is highly recommended to call `createIndexes` on initialization.
+ */
 export default class MongoContentUserDataStorage
     implements IContentUserDataStorage
 {
     /**
      * @param userDataCollection a MongoDB collection (read- and writable)
+     * @param finishedCollection a MongoDB collection (read- and writable)
      */
     constructor(
         private userDataCollection: MongoDB.Collection,
@@ -90,22 +96,26 @@ export default class MongoContentUserDataStorage
         log.debug(
             `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id}`
         );
-        return this.userDataCollection.findOne<IContentUserData>({
-            contentId,
-            dataType,
-            subContentId,
-            userId: user.id
-        });
+        return this.cleanMongoUserData(
+            await this.userDataCollection.findOne<IContentUserData>({
+                contentId,
+                dataType,
+                subContentId,
+                userId: user.id
+            })
+        );
     }
 
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
-        return this.userDataCollection
-            .find<IContentUserData>({
-                userId: user.id
-            })
-            .toArray();
+        return (
+            await this.userDataCollection
+                .find<IContentUserData>({
+                    userId: user.id
+                })
+                .toArray()
+        )?.map(this.cleanMongoUserData);
     }
 
     public async createOrUpdateContentUserData(
@@ -179,25 +189,31 @@ export default class MongoContentUserDataStorage
         contentId: ContentId,
         user: IUser
     ): Promise<IContentUserData[]> {
-        return this.userDataCollection
-            .find<IContentUserData>({ contentId, userId: user.id })
-            .toArray();
+        return (
+            await this.userDataCollection
+                .find<IContentUserData>({ contentId, userId: user.id })
+                .toArray()
+        )?.map(this.cleanMongoUserData);
     }
 
-    public async getFinishedDataByContent(
+    public async getFinishedDataByContentId(
         contentId: string
     ): Promise<IFinishedUserData[]> {
-        return this.finishedCollection
-            .find<IFinishedUserData>({ contentId })
-            .toArray();
+        return (
+            await this.finishedCollection
+                .find<IFinishedUserData>({ contentId })
+                .toArray()
+        )?.map(this.cleanMongoFinishedData);
     }
 
     public async getFinishedDataByUser(
         user: IUser
     ): Promise<IFinishedUserData[]> {
-        return this.finishedCollection
-            .find<IFinishedUserData>({ userId: user.id })
-            .toArray();
+        return (
+            await this.finishedCollection
+                .find<IFinishedUserData>({ userId: user.id })
+                .toArray()
+        )?.map(this.cleanMongoFinishedData);
     }
 
     public async deleteFinishedDataByContentId(
@@ -207,6 +223,50 @@ export default class MongoContentUserDataStorage
     }
 
     public async deleteFinishedDataByUser(user: IUser): Promise<void> {
-        await this.finishedCollection.deleteMany({ userID: user.id });
+        await this.finishedCollection.deleteMany({ userId: user.id });
+    }
+
+    /**
+     * To avoid leaking internal MongoDB data (id), this method maps the data
+     * we've received from Mongo to a new object.
+     * @param mongoData the original data received by MongoDB
+     * @returns the same data but with all Mongo-internal fields removed
+     */
+    private cleanMongoUserData(mongoData: IContentUserData): IContentUserData {
+        if (!mongoData) {
+            return mongoData;
+        }
+        return {
+            dataType: mongoData.dataType,
+            invalidate: mongoData.invalidate,
+            preload: mongoData.preload,
+            subContentId: mongoData.subContentId,
+            userState: mongoData.userState,
+            contentId: mongoData.contentId,
+            userId: mongoData.userId
+        };
+    }
+
+    /**
+     * To avoid leaking internal MongoDB data (id), this method maps the data
+     * we've received from Mongo to a new object.
+     * @param mongoData the original data received by MongoDB
+     * @returns the same data but with all Mongo-internal fields removed
+     */
+    private cleanMongoFinishedData(
+        mongoData: IFinishedUserData
+    ): IFinishedUserData {
+        if (!mongoData) {
+            return mongoData;
+        }
+        return {
+            completionTime: mongoData.completionTime,
+            contentId: mongoData.contentId,
+            finishedTimestamp: mongoData.finishedTimestamp,
+            maxScore: mongoData.maxScore,
+            openedTimestamp: mongoData.openedTimestamp,
+            score: mongoData.score,
+            userId: mongoData.userId
+        };
     }
 }
