@@ -1286,6 +1286,17 @@ export default class H5PEditor {
             this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
 
+        if (!library) {
+            throw new H5pError(
+                'library-missing',
+                {
+                    library: LibraryName.toUberName(libraryName)
+                },
+                404,
+                'when calling H5PEditor.listAssets'
+            );
+        }
+
         const addonsForLibrary = await this.getAddonsForLibrary(
             library.machineName
         );
