@@ -25,7 +25,7 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
         window.H5PIntegration = {
   \\"ajax\\": {
     \\"contentUserData\\": \\"/h5p/contentUserData/:contentId/:dataType/:subContentId\\",
-    \\"setFinished\\": \\"/h5p/contentUserData/setFinished\\"
+    \\"setFinished\\": \\"/h5p/finishedData\\"
   },
   \\"ajaxPath\\": \\"/h5p/ajax?action=\\",
   \\"contents\\": {
@@ -282,7 +282,7 @@ exports[`Rendering the HTML page uses default renderer and integration values 1`
         window.H5PIntegration = {
   \\"ajax\\": {
     \\"contentUserData\\": \\"/h5p/contentUserData/:contentId/:dataType/:subContentId\\",
-    \\"setFinished\\": \\"/h5p/contentUserData/setFinished\\"
+    \\"setFinished\\": \\"/h5p/finishedData\\"
   },
   \\"ajaxPath\\": \\"/h5p/ajax?action=\\",
   \\"contents\\": {

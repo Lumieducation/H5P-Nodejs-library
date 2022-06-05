@@ -7,7 +7,7 @@ import supertest from 'supertest';
 import * as H5P from '@lumieducation/h5p-server';
 
 import User from './User';
-import ContentUserDataExpressRouter from '../src/ContentUserDataRouter/ContentUserDataExpressRouter';
+import FinishedDataExpressRouter from '../src/FinishedDataRouter/FinishedDataExpressRouter';
 
 // Mock Setup
 const mockReturnData = { userState: 'returndata' };
@@ -25,7 +25,7 @@ const MockContentUserDataManager = jest.fn().mockImplementation(() => {
     };
 });
 
-describe('ContentUserData endpoint adapter', () => {
+describe('ContentUserData endpoint adapter for finished data', () => {
     const user: H5P.IUser = new User();
     let app: express.Application;
     let cleanup: () => Promise<void>;
@@ -68,8 +68,8 @@ describe('ContentUserData endpoint adapter', () => {
             next();
         });
         app.use(
-            `/contentUserData`,
-            ContentUserDataExpressRouter(mockContentUserDataManager)
+            `/finishedData`,
+            FinishedDataExpressRouter(mockContentUserDataManager)
         );
     });
 
@@ -79,46 +79,33 @@ describe('ContentUserData endpoint adapter', () => {
         tempDir = '';
     });
 
-    it('calls createOrUpdateContentUserData on POST', async () => {
+    it('calls setFinished on POST to /finishedData', async () => {
         const contentId = 'contentId';
-        const dataType = 'state';
-        const subContentId = '0';
-        const body = { data: 'testData', invalidate: 0, preload: 1 };
+        const score = 1;
+        const maxScore = 10;
+        const opened = 1291348;
+        const finished = 239882384;
+        const time = 123;
 
-        const res = await supertest(app)
-            .post(`/contentUserData/${contentId}/${dataType}/${subContentId}`)
-            .send(body);
-
-        expect(
-            mockContentUserDataManager.createOrUpdateContentUserData
-        ).toHaveBeenCalledWith(
+        const res = await supertest(app).post(`/finishedData`).send({
             contentId,
-            dataType,
-            subContentId,
-            body.data,
-            false,
-            true,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        });
+
+        expect(mockContentUserDataManager.setFinished).toHaveBeenCalledWith(
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
             user
         );
-        expect(res.status).toBe(200);
-    });
-
-    it('calls getContentUserData on GET', async () => {
-        const contentId = 'contentId';
-        const dataType = 'state';
-        const subContentId = '0';
-
-        const res = await supertest(app).get(
-            `/contentUserData/${contentId}/${dataType}/${subContentId}`
-        );
-
-        expect(
-            mockContentUserDataManager.getContentUserData
-        ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
-        expect(res.status).toBe(200);
-        expect(res.body).toEqual({
-            data: mockReturnData.userState,
-            success: true
-        });
+        expect(res.status).toBe(204);
     });
 });
