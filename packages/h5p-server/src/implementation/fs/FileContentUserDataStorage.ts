@@ -10,6 +10,7 @@ import {
     IUser
 } from '../../types';
 import Logger from '../../helpers/Logger';
+import { checkFilename, sanitizeFilename } from './filenameUtils';
 
 const log = new Logger('FileContentUserDataStorage');
 
@@ -450,10 +451,18 @@ export default class FileContentUserDataStorage
     }
 
     private getUserDataFilePath(contentId: string): string {
-        return path.join(this.directory, `${contentId}-userdata.json`);
+        checkFilename(contentId);
+        return path.join(
+            this.directory,
+            sanitizeFilename(`${contentId}-userdata.json`, 80)
+        );
     }
 
     private getFinishedFilePath(contentId: string): string {
-        return path.join(this.directory, `${contentId}-finished.json`);
+        checkFilename(contentId);
+        return path.join(
+            this.directory,
+            sanitizeFilename(`${contentId}-finished.json`, 80)
+        );
     }
 }
