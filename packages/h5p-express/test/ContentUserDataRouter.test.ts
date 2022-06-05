@@ -122,7 +122,7 @@ describe('ContentUserData endpoint adapter', () => {
         });
     });
 
-    it('calls setFinished on POST to /setFinished', async () => {
+    it('calls setFinished on POST to /finishedData', async () => {
         const contentId = 'contentId';
         const score = 1;
         const maxScore = 10;
@@ -130,17 +130,15 @@ describe('ContentUserData endpoint adapter', () => {
         const finished = 239882384;
         const time = 123;
 
-        const res = await supertest(app)
-            .post(`/contentUserData/setFinished`)
-            .send({
-                contentId,
-                score,
-                maxScore,
-                opened,
-                finished,
-                time,
-                user
-            });
+        const res = await supertest(app).post(`/finishedData`).send({
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        });
 
         expect(mockContentUserDataManager.setFinished).toHaveBeenCalledWith(
             contentId,

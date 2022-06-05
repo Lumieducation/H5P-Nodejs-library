@@ -6,6 +6,7 @@ export default class H5PAjaxExpressRouterOptions {
     public routeContentUserData?: boolean = true;
     public routeCoreFiles?: boolean = true;
     public routeEditorCoreFiles?: boolean = true;
+    public routeFinishedData?: boolean = true;
     public routeGetAjax?: boolean = true;
     public routeGetContentFile?: boolean = true;
     public routeGetDownload?: boolean = true;

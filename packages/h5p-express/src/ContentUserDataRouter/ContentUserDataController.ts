@@ -60,28 +60,4 @@ export default class ContentUserDataController {
 
         res.status(200).end();
     };
-
-    /**
-     * Saving the setFinished state for a given user
-     */
-    public postSetFinished = async (
-        req: IPostContentUserDataRequest,
-        res: express.Response
-    ): Promise<void> => {
-        const { user, body } = req;
-
-        const { contentId, score, maxScore, opened, finished, time } = body;
-
-        await this.contentUserDataManager.setFinished(
-            contentId,
-            score,
-            maxScore,
-            opened,
-            finished,
-            time,
-            user
-        );
-
-        res.status(200).end();
-    };
 }

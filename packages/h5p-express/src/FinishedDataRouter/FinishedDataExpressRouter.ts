@@ -6,10 +6,10 @@ import {
     undefinedOrTrue,
     catchAndPassOnErrors
 } from '../expressErrorHandler';
-import ContentUserDataController from './ContentUserDataController';
+import ContentUserDataController from './FinishedDataController';
 
 /**
- * This router implements necessary routes for the contentUserData (userState) to work.
+ * This router implements necessary routes for set finished to work.
  * If you only want certain routes, you can specify this in the options parameter.
  * @param options sets if you want and how to handle errors
  * @param languageOverride the language to use when returning errors.
@@ -29,18 +29,10 @@ export default function (
         contentUserDataManager
     );
 
-    router.get(
-        `/:contentId/:dataType/:subContentId`,
-        catchAndPassOnErrors(
-            contentUserDataController.getContentUserData,
-            undefinedOrTrue(options?.handleErrors)
-        )
-    );
-
     router.post(
-        `/:contentId/:dataType/:subContentId`,
+        `/`,
         catchAndPassOnErrors(
-            contentUserDataController.postContentUserData,
+            contentUserDataController.postSetFinished,
             undefinedOrTrue(options?.handleErrors)
         )
     );

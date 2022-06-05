@@ -98,7 +98,7 @@ export default class H5PConfig implements IH5PConfig {
         protocol?: 'http' | 'https';
     };
     public sendUsageStatistics: boolean = false;
-    public setFinishedUrl: string = '/contentUserData/setFinished';
+    public setFinishedUrl: string = '/finishedData';
     public setFinishedEnabled: boolean = true;
     public siteType: 'local' | 'network' | 'internet' = 'local';
     public contentUserStateSaveInterval: number = 5 * 1000; // the interval to save the contentUserData in milliseconds
