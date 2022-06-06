@@ -454,7 +454,11 @@ export default class FileContentUserDataStorage
         checkFilename(contentId);
         return path.join(
             this.directory,
-            sanitizeFilename(`${contentId}-userdata.json`, 80)
+            sanitizeFilename(
+                `${contentId}-userdata.json`,
+                80,
+                /[^A-Za-z0-9\-._]/g
+            )
         );
     }
 
@@ -462,7 +466,11 @@ export default class FileContentUserDataStorage
         checkFilename(contentId);
         return path.join(
             this.directory,
-            sanitizeFilename(`${contentId}-finished.json`, 80)
+            sanitizeFilename(
+                `${contentId}-finished.json`,
+                80,
+                /[^A-Za-z0-9\-._]/g
+            )
         );
     }
 }
