@@ -128,9 +128,9 @@ export default class FileContentUserDataStorage
         // make sure we have only one entry for contentId, dataType, subContentId and user
         const newUserData = oldData.filter(
             (data) =>
-                data.contentId !== userData.contentId &&
-                data.dataType !== userData.dataType &&
-                data.subContentId !== userData.subContentId &&
+                data.contentId !== userData.contentId ||
+                data.dataType !== userData.dataType ||
+                data.subContentId !== userData.subContentId ||
                 data.userId !== userData.userId
         );
 

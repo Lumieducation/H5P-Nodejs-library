@@ -30,6 +30,41 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             expect(res.length).toEqual(1);
         });
 
+        it('adds data for multiple users and lets you retrieve it again', async () => {
+            const storage = getStorage();
+            await expect(
+                storage.createOrUpdateContentUserData(dataTemplate)
+            ).resolves.not.toThrow();
+            await expect(
+                storage.createOrUpdateContentUserData({
+                    ...dataTemplate,
+                    userId: '2'
+                })
+            ).resolves.not.toThrow();
+            await expect(
+                storage.createOrUpdateContentUserData({
+                    ...dataTemplate,
+                    userId: '3'
+                })
+            ).resolves.not.toThrow();
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user)
+            ).resolves.toMatchObject(dataTemplate);
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', {
+                    ...user,
+                    id: '2'
+                })
+            ).resolves.toMatchObject({ ...dataTemplate, userId: '2' });
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', {
+                    ...user,
+                    id: '3'
+                })
+            ).resolves.toMatchObject({ ...dataTemplate, userId: '3' });
+        });
+
         it("returns null if user data doesn't exist", async () => {
             const storage = getStorage();
             await expect(
