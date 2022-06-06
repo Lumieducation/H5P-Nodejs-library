@@ -108,7 +108,10 @@ export default function (
     if (undefinedOrTrue(routeOptions.routeContentUserData)) {
         router.use(
             h5pEditor.config.contentUserDataUrl,
-            ContentUserDataExpressRouter(h5pEditor.contentUserDataManager)
+            ContentUserDataExpressRouter(
+                h5pEditor.contentUserDataManager,
+                h5pEditor.config
+            )
         );
     }
 
@@ -116,7 +119,10 @@ export default function (
     if (undefinedOrTrue(routeOptions.routeFinishedData)) {
         router.use(
             h5pEditor.config.setFinishedUrl,
-            FinishedDataExpressRouter(h5pEditor.contentUserDataManager)
+            FinishedDataExpressRouter(
+                h5pEditor.contentUserDataManager,
+                h5pEditor.config
+            )
         );
     }
 

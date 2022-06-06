@@ -3,7 +3,8 @@ import {
     ContentUserDataManager,
     IAjaxResponse,
     IPostContentUserData,
-    AjaxSuccessResponse
+    AjaxSuccessResponse,
+    IH5PConfig
 } from '@lumieducation/h5p-server';
 
 import { IRequestWithUser } from '../expressTypes';
@@ -13,7 +14,10 @@ interface IPostContentUserDataRequest
         IRequestWithUser {}
 
 export default class ContentUserDataController {
-    constructor(protected contentUserDataManager: ContentUserDataManager) {}
+    constructor(
+        protected contentUserDataManager: ContentUserDataManager,
+        protected config: IH5PConfig
+    ) {}
 
     /**
      * Returns the userState for given contentId, dataType and subContentId
@@ -22,6 +26,11 @@ export default class ContentUserDataController {
         req: IRequestWithUser,
         res: express.Response<IAjaxResponse<string>>
     ): Promise<void> => {
+        if (!this.config.contentUserStateSaveInterval) {
+            res.status(403).end();
+            return;
+        }
+
         const { contentId, dataType, subContentId } = req.params;
         const result = await this.contentUserDataManager.getContentUserData(
             contentId,
@@ -45,6 +54,11 @@ export default class ContentUserDataController {
         req: IPostContentUserDataRequest,
         res: express.Response
     ): Promise<void> => {
+        if (!this.config.contentUserStateSaveInterval) {
+            res.status(403).end();
+            return;
+        }
+
         const { contentId, dataType, subContentId } = req.params;
         const { user, body } = req;
 

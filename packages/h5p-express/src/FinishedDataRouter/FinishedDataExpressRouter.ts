@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ContentUserDataManager } from '@lumieducation/h5p-server';
+import { ContentUserDataManager, IH5PConfig } from '@lumieducation/h5p-server';
 
 import {
     errorHandler,
@@ -20,13 +20,15 @@ import ContentUserDataController from './FinishedDataController';
  */
 export default function (
     contentUserDataManager: ContentUserDataManager,
+    config: IH5PConfig,
     options: { handleErrors: boolean } = { handleErrors: true },
     languageOverride: string | 'auto' = 'auto'
 ): Router {
     const router = Router();
 
     const contentUserDataController = new ContentUserDataController(
-        contentUserDataManager
+        contentUserDataManager,
+        config
     );
 
     router.post(

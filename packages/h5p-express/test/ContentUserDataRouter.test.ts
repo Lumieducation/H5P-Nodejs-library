@@ -69,7 +69,10 @@ describe('ContentUserData endpoint adapter', () => {
         });
         app.use(
             `/contentUserData`,
-            ContentUserDataExpressRouter(mockContentUserDataManager)
+            ContentUserDataExpressRouter(
+                mockContentUserDataManager,
+                h5pEditor.config
+            )
         );
     });
 
@@ -120,5 +123,34 @@ describe('ContentUserData endpoint adapter', () => {
             data: mockReturnData.userState,
             success: true
         });
+    });
+
+    it('returns 403 when calling POST with feature disabled', async () => {
+        const contentId = 'contentId';
+        const dataType = 'state';
+        const subContentId = '0';
+        const body = { data: 'testData', invalidate: 0, preload: 1 };
+
+        h5pEditor.config.contentUserStateSaveInterval = false;
+
+        const res = await supertest(app)
+            .post(`/contentUserData/${contentId}/${dataType}/${subContentId}`)
+            .send(body);
+
+        expect(res.status).toBe(403);
+    });
+
+    it('returns 403 when calling GET with feature disabled', async () => {
+        const contentId = 'contentId';
+        const dataType = 'state';
+        const subContentId = '0';
+
+        h5pEditor.config.contentUserStateSaveInterval = false;
+
+        const res = await supertest(app).get(
+            `/contentUserData/${contentId}/${dataType}/${subContentId}`
+        );
+
+        expect(res.status).toBe(403);
     });
 });

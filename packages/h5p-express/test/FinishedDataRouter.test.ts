@@ -69,7 +69,10 @@ describe('ContentUserData endpoint adapter for finished data', () => {
         });
         app.use(
             `/finishedData`,
-            FinishedDataExpressRouter(mockContentUserDataManager)
+            FinishedDataExpressRouter(
+                mockContentUserDataManager,
+                h5pEditor.config
+            )
         );
     });
 
@@ -107,5 +110,28 @@ describe('ContentUserData endpoint adapter for finished data', () => {
             user
         );
         expect(res.status).toBe(204);
+    });
+
+    it('rejects POST to /finishedData when feature is disabled', async () => {
+        const contentId = 'contentId';
+        const score = 1;
+        const maxScore = 10;
+        const opened = 1291348;
+        const finished = 239882384;
+        const time = 123;
+
+        h5pEditor.config.setFinishedEnabled = false;
+
+        const res = await supertest(app).post(`/finishedData`).send({
+            contentId,
+            score,
+            maxScore,
+            opened,
+            finished,
+            time,
+            user
+        });
+
+        expect(res.status).toBe(403);
     });
 });

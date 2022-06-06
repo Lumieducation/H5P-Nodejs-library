@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {
     ContentUserDataManager,
+    IH5PConfig,
     IPostContentUserData
 } from '@lumieducation/h5p-server';
 
@@ -11,7 +12,10 @@ interface IPostContentUserDataRequest
         IRequestWithUser {}
 
 export default class FinishedDataController {
-    constructor(protected contentUserDataManager: ContentUserDataManager) {}
+    constructor(
+        protected contentUserDataManager: ContentUserDataManager,
+        protected config: IH5PConfig
+    ) {}
 
     /**
      * Saving the setFinished state for a given user
@@ -20,8 +24,12 @@ export default class FinishedDataController {
         req: IPostContentUserDataRequest,
         res: express.Response
     ): Promise<void> => {
-        const { user, body } = req;
+        if (!this.config.setFinishedEnabled) {
+            res.status(403).end();
+            return;
+        }
 
+        const { user, body } = req;
         const { contentId, score, maxScore, opened, finished, time } = body;
 
         await this.contentUserDataManager.setFinished(
