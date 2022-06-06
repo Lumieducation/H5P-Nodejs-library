@@ -126,4 +126,7 @@ export class ContentService implements IContentService {
     setCsrfToken = (csrfToken): void => {
         this.csrfToken = csrfToken;
     };
+    getCsrfToken = (): string | undefined => {
+        return this.csrfToken;
+    };
 }

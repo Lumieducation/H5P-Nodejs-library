@@ -220,6 +220,15 @@ const start = async (): Promise<void> => {
     server.use(passport.initialize());
     server.use(passport.session());
 
+    // Initialize CSRF protection. If we add it as middleware, it checks if a
+    // token was passed into a state altering route. We pass this token to the
+    // client in two ways:
+    //   - Return it as a property of the return data on login (used for the CUD
+    //     routes in the content service)
+    //   - Add the token to the URLs in the H5PIntegration object as a query
+    //     parameter. This is done by passing in a custom UrlGenerator that gets
+    //     the csrfToken from the user object. We put the token into the user
+    //     object in the addCsrfTokenToUser middleware.
     const csrfProtection = csurf();
 
     // It is important that you inject a user object into the request object!
@@ -282,9 +291,9 @@ const start = async (): Promise<void> => {
     server.use(
         h5pEditor.config.baseUrl,
         csrfProtection,
-        // We need to add the token to the user so that the UrlGenerator can
-        // read it when we generate the integration object with the URLs that
-        // contain the token.
+        // We need to add the token to the user by adding the addCsrfTokenToUser
+        // middleware, so that the UrlGenerator can read it when we generate the
+        // integration object with the URLs that contain the token.
         addCsrfTokenToUser,
         restExpressRoutes(
             h5pEditor,
@@ -299,6 +308,7 @@ const start = async (): Promise<void> => {
     // library management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
+        csrfProtection,
         libraryAdministrationExpressRouter(h5pEditor)
     );
 
@@ -306,6 +316,7 @@ const start = async (): Promise<void> => {
     // the content type cache manually.
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
+        csrfProtection,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
@@ -317,6 +328,9 @@ const start = async (): Promise<void> => {
             failWithError: true
         }),
         csurf({
+            // We need csurf to get the token for the current session, but we
+            // don't want to protect the current route, as the login can't have
+            // a CSRF token.
             ignoreMethods: ['POST']
         }),
         function (
@@ -334,7 +348,7 @@ const start = async (): Promise<void> => {
         }
     );
 
-    server.post('/logout', (req, res) => {
+    server.post('/logout', csrfProtection, (req, res) => {
         req.logout();
         res.status(200).send();
     });

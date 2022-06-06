@@ -70,7 +70,8 @@ export default class Login extends React.Component<
             method: 'POST',
             headers: {
                 Accept: 'application/json, text/plain, */*',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'CSRF-Token': this.props.contentService.getCsrfToken() ?? ''
             },
             body: JSON.stringify({})
         })

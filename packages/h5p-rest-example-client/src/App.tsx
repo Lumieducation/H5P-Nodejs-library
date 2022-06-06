@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
 
 import ContentListComponent from './components/ContentListComponent';
-import { ContentService, IContentService } from './services/ContentService';
+import { ContentService } from './services/ContentService';
 import Login from './components/Login';
 
 import './App.css';
