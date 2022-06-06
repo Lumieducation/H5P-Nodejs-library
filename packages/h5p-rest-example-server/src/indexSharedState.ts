@@ -165,6 +165,7 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
+        undefined,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
