@@ -98,7 +98,7 @@ export default function (
         router.post(
             h5pEditor.config.ajaxUrl,
             catchAndPassOnErrors(
-                h5pController.postAjax,
+                h5pController.postAjax as any,
                 routeOptions.handleErrors
             )
         );

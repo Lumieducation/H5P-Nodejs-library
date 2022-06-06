@@ -109,7 +109,11 @@ export default class H5PEditor {
         this.config = config;
 
         this.renderer = defaultRenderer;
-        this.contentTypeCache = new ContentTypeCache(config, cache);
+        this.contentTypeCache = new ContentTypeCache(
+            config,
+            cache,
+            this.options?.getLocalIdOverride
+        );
         this.contentHub = new ContentHub(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -1301,6 +1305,17 @@ export default class H5PEditor {
             this.libraryManager.getLibrary(libraryName),
             this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
+
+        if (!library) {
+            throw new H5pError(
+                'library-missing',
+                {
+                    library: LibraryName.toUberName(libraryName)
+                },
+                404,
+                'when calling H5PEditor.listAssets'
+            );
+        }
 
         const addonsForLibrary = await this.getAddonsForLibrary(
             library.machineName

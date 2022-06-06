@@ -11,6 +11,10 @@ import InMemoryStorage from '../src/implementation/InMemoryStorage';
 const axiosMock = new AxiosMockAdapter(axios);
 
 describe('registering the site at H5P Hub', () => {
+    afterEach(() => {
+        axiosMock.reset();
+    });
+
     it('returns a uuid', async () => {
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
@@ -47,6 +51,28 @@ describe('registering the site at H5P Hub', () => {
             error = e;
         }
         expect(error).toBeDefined();
+    });
+
+    it("get ids from external if there's an override", async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PConfig(storage);
+        const getIdSpy = jest.fn(() => 'overriden id');
+        const cache = new ContentTypeCache(config, storage, getIdSpy);
+        axiosMock.reset();
+        axiosMock
+            .onPost(config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                fsExtra.readJSONSync(
+                    path.resolve(
+                        'test/data/content-type-cache/registration.json'
+                    )
+                )
+            );
+        await expect(cache.registerOrGetUuid()).resolves.toEqual(
+            '8de62c47-f335-42f6-909d-2d8f4b7fb7f5'
+        );
+        expect(getIdSpy).toHaveBeenCalled();
     });
 });
 
