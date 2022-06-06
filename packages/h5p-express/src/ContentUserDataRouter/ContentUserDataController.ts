@@ -72,6 +72,6 @@ export default class ContentUserDataController {
             user
         );
 
-        res.status(200).end();
+        res.status(200).json(new AjaxSuccessResponse(undefined)).end();
     };
 }

@@ -15,7 +15,7 @@ export default class App extends React.Component {
         this.contentService = new ContentService('/h5p');
     }
 
-    private contentService: IContentService;
+    private contentService: ContentService;
 
     render() {
         return (
@@ -26,7 +26,7 @@ export default class App extends React.Component {
                             <h1>H5P NodeJs SPA Demo</h1>
                         </Col>
                         <Col md="auto" className="m-2">
-                            <Login />
+                            <Login contentService={this.contentService} />
                         </Col>
                     </Row>
                     <Alert variant="warning">

@@ -9,6 +9,7 @@ import path from 'path';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
+import csurf from 'csurf';
 
 import {
     h5pAjaxExpressRouter,
@@ -73,6 +74,11 @@ const initPassport = (): void => {
     });
 };
 
+const addCsrfTokenToUser = (req, res, next): void => {
+    (req.user as any).csrfToken = req.csrfToken;
+    next();
+};
+
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS === 'true';
     if (useTempUploads) {
@@ -118,6 +124,24 @@ const start = async (): Promise<void> => {
         new H5P.fsImplementations.JsonStorage(path.resolve('config.json'))
     ).load();
 
+    const urlGenerator = new H5P.UrlGenerator(config, {
+        queryParamGenerator: (user) => {
+            if ((user as any).csrfToken) {
+                return {
+                    name: '_csrf',
+                    value: (user as any).csrfToken()
+                };
+            }
+            return {
+                name: '',
+                value: ''
+            };
+        },
+        protectAjax: true,
+        protectContentUserData: true,
+        protectSetFinished: true
+    });
+
     // The H5PEditor object is central to all operations of h5p-nodejs-library
     // if you want to user the editor component.
     //
@@ -130,6 +154,7 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
+        urlGenerator,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
@@ -150,7 +175,7 @@ const start = async (): Promise<void> => {
         h5pEditor.contentStorage,
         config,
         undefined,
-        undefined,
+        urlGenerator,
         undefined,
         undefined,
         h5pEditor.contentUserDataStorage
@@ -195,6 +220,8 @@ const start = async (): Promise<void> => {
     server.use(passport.initialize());
     server.use(passport.session());
 
+    const csrfProtection = csurf();
+
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
@@ -233,6 +260,7 @@ const start = async (): Promise<void> => {
     // object, which means we get all of them.
     server.use(
         h5pEditor.config.baseUrl,
+        csrfProtection,
         h5pAjaxExpressRouter(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the
@@ -253,6 +281,11 @@ const start = async (): Promise<void> => {
     // - Deleting content
     server.use(
         h5pEditor.config.baseUrl,
+        csrfProtection,
+        // We need to add the token to the user so that the UrlGenerator can
+        // read it when we generate the integration object with the URLs that
+        // contain the token.
+        addCsrfTokenToUser,
         restExpressRoutes(
             h5pEditor,
             h5pPlayer,
@@ -283,6 +316,9 @@ const start = async (): Promise<void> => {
         passport.authenticate('local', {
             failWithError: true
         }),
+        csurf({
+            ignoreMethods: ['POST']
+        }),
         function (
             req: express.Request & {
                 user: { username: string; email: string; name: string };
@@ -292,7 +328,8 @@ const start = async (): Promise<void> => {
             res.status(200).json({
                 username: req.user.username,
                 email: req.user.email,
-                name: req.user.name
+                name: req.user.name,
+                csrfToken: req.csrfToken()
             });
         }
     );

@@ -1,5 +1,6 @@
 import * as express from 'express';
 import {
+    AjaxSuccessResponse,
     ContentUserDataManager,
     IH5PConfig,
     IPostContentUserData
@@ -42,6 +43,6 @@ export default class FinishedDataController {
             user
         );
 
-        res.status(204).send().end();
+        res.status(200).json(new AjaxSuccessResponse(undefined));
     };
 }
