@@ -109,7 +109,7 @@ describe('ContentUserData endpoint adapter for finished data', () => {
             time,
             user
         );
-        expect(res.status).toBe(204);
+        expect(res.status).toBe(200);
     });
 
     it('rejects POST to /finishedData when feature is disabled', async () => {
