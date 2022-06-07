@@ -57,7 +57,7 @@
     "types": "./build/HtmlExporter.d.ts",
     "devDependencies": {
         "promisepipe": "3.0.0",
-        "puppeteer": "14.2.1",
+        "puppeteer": "14.3.0",
         "tmp-promise": "3.0.3"
     }
 }
