@@ -7,6 +7,8 @@
   * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
   * [REST Example](examples/rest/README.md)
 - Advanced usage
+  * [User content state](advanced/user-content-state.md)
+  * [Basic completion tracking](advanced/completion-tracking.md)
   * [Localization](advanced/localization.md)
   * [Cluster](advanced/cluster.md)
   * [Addons](advanced/addons.md)

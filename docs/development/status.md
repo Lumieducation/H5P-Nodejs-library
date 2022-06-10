@@ -34,11 +34,11 @@ implemented and what isn't.
 
 ## Unfinished functionality
 
-* [ ] storing user state in the player (for continuing later where the user left off)
+* [ ] storing user state in the player (for continuing later where the user left off) [work-in-progress]
 * [ ] validation of content against full library semantics (currently only text is validated)
 * [ ] logging & statistics generation: e.g. use of libraries by author, view of embedded content etc. (see h5p-php-library:h5p-event-base.class.php for a list of events)
-* [ ] provide embed option for content (as div and as iframe)
-* [ ] cache assets (aggregates all css and js files into two big files to decrease http requests; done in h5p-php-library:h5p-default-storage.class.php-&gt;cacheAssets(...))
+* [ ] provide embed route for content [embed links can be generated but no route yet]
+* [ ] bundle and cache assets (aggregates all css and js files into two big files to decrease http requests; done in h5p-php-library:h5p-default-storage.class.php-&gt;cacheAssets(...))
 * [ ] logging and statistics (there is a debug logger, but not one that allows you to log domain events)
 * [ ] mass content updates
 * [ ] option to disable H5P Hub

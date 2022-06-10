@@ -10,20 +10,22 @@ export interface IRequestWithUser extends Request {
 }
 
 export interface IActionRequest extends IRequestWithUser {
-    files: {
-        file: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        };
-        h5p: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        };
-    };
+    files:
+        | {
+              file: {
+                  data?: Buffer;
+                  mimetype: string;
+                  name: string;
+                  size: number;
+                  tempFilePath?: string;
+              };
+              h5p: {
+                  data?: Buffer;
+                  mimetype: string;
+                  name: string;
+                  size: number;
+                  tempFilePath?: string;
+              };
+          }
+        | any;
 }

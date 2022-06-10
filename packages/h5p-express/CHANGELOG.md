@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.1...v9.1.2) (2022-03-19)
+
+**Note:** Version bump only for package @lumieducation/h5p-express
+
+
+
+
+
+## [9.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.0...v9.1.1) (2022-03-12)
+
+**Note:** Version bump only for package @lumieducation/h5p-express
+
+
+
+
+
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+**Note:** Version bump only for package @lumieducation/h5p-express
+
+
+
+
+
+## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.26.0 ([#2077](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2077)) ([752e4d5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/752e4d590ed65b1f2d35a70b05b147212cbc26fb))
+* **deps:** update dependency body-parser to v1.19.2 ([b5d44ec](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b5d44ec79f0a1b7aac2045c82ea854df6a905c94))
+* **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+* **deps:** update dependency express to v4.17.3 ([765ff8a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/765ff8ae4bea0b6167dc7188fbd93c74affad00b))
+* **deps:** update dependency express-fileupload to v1.3.1 ([#2078](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2078)) ([d04a120](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d04a1205ff7b7b8a12222bcc34fa6874321e3d12))
+
+
+
+
+
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.25.0 ([44f6ef7](https://github.com/Lumieducation/H5P-Nodejs-library/commit/44f6ef78aaa9fdedde14b7d95b26027f2bfcb342))
+
+
+
+
+
+## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency express to v4.17.2 ([26af13f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/26af13f03cdca0b74a7814dd9285d43466bf4f07))
+
+
+
+
+
 ## [9.0.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 

@@ -92,7 +92,8 @@ const start = async (): Promise<void> => {
         // content storage class.
         path.join(__dirname, '../h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
-        // necessary if you use the local filesystem temporary storage class.
+        // necessary if you use the local filesystem temporary storage class.,
+        path.join(__dirname, '../h5p/user-data'),
         (key, language) => translationFunction(key, { lng: language })
     );
 
@@ -103,7 +104,9 @@ const start = async (): Promise<void> => {
         config,
         undefined,
         undefined,
-        (key, language) => translationFunction(key, { lng: language })
+        (key, language) => translationFunction(key, { lng: language }),
+        undefined,
+        h5pEditor.contentUserDataStorage
     );
 
     // We now set up the Express server in the usual fashion.
@@ -208,7 +211,11 @@ const start = async (): Promise<void> => {
     server.get('/h5p/html/:contentId', async (req, res) => {
         const html = await htmlExporter.createSingleBundle(
             req.params.contentId,
-            (req as any).user
+            (req as any).user,
+            {
+                language: req.language ?? 'en',
+                showLicenseButton: true
+            }
         );
         res.setHeader(
             'Content-disposition',
@@ -228,50 +235,6 @@ const start = async (): Promise<void> => {
     server.use(
         '/node_modules',
         express.static(path.join(__dirname, '../node_modules'))
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
-            req: express.Request<
-                { contentId: string; dataType: string; subContentId: string },
-                {},
-                H5P.IPostContentUserData
-            >,
-            res
-        ) => {
-            res.status(200).send();
-        }
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.get(
-        '/h5p/contentUserData/:contentId/:dataType/:subContentId',
-        (
-            req: express.Request<{
-                contentId: string;
-                dataType: string;
-                subContentId: string;
-            }>,
-            res: express.Response<H5P.IGetContentUserData | {}>
-        ) => {
-            res.status(200).json({});
-        }
-    );
-
-    // STUB, not implemented yet. You have to get the user id through a session
-    // cookie as h5P does not add it to the request. Alternatively you could add
-    // it to the URL generator.
-    server.post(
-        '/h5p/setFinished',
-        (req: express.Request<{}, {}, H5P.IPostContentUserData>, res) => {
-            res.status(200).send();
-        }
     );
 
     // Remove temporary directory on shutdown

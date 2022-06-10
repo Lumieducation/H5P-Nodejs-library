@@ -1,6 +1,7 @@
 import H5PEditor from '../../H5PEditor';
 import {
     IContentStorage,
+    IContentUserDataStorage,
     ITranslationFunction,
     IH5PEditorOptions,
     IUrlGenerator,
@@ -16,6 +17,7 @@ export default function h5pfs(
     librariesPath: string,
     temporaryStoragePath: string,
     contentPath: string,
+    contentUserDataStorage?: IContentUserDataStorage,
     contentStorage?: IContentStorage,
     translationCallback?: ITranslationFunction,
     urlGenerator?: IUrlGenerator,
@@ -29,6 +31,7 @@ export default function h5pfs(
         new DirectoryTemporaryFileStorage(temporaryStoragePath),
         translationCallback,
         urlGenerator,
-        options
+        options,
+        contentUserDataStorage
     );
 }

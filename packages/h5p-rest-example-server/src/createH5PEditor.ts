@@ -3,6 +3,7 @@ import redisStore from 'cache-manager-redis-store';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
+import { IContentMetadata, IUser } from '@lumieducation/h5p-server';
 
 /**
  * Create a H5PEditor object.
@@ -27,10 +28,27 @@ import * as dbImplementations from '@lumieducation/h5p-mongos3';
  */
 export default async function createH5PEditor(
     config: H5P.IH5PConfig,
+    urlGenerator: H5P.IUrlGenerator,
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
-    translationCallback?: H5P.ITranslationFunction
+    localContentUserDataPath?: string,
+    translationCallback?: H5P.ITranslationFunction,
+    hooks?: {
+        contentWasDeleted?: (contentId: string, user: IUser) => Promise<void>;
+        contentWasUpdated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+        contentWasCreated?: (
+            contentId: string,
+            metadata: IContentMetadata,
+            parameters: any,
+            user: IUser
+        ) => Promise<void>;
+    }
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
     if (process.env.CACHE === 'in-memory') {
@@ -51,6 +69,10 @@ export default async function createH5PEditor(
     } else {
         // using no cache
     }
+    const contentUserDataStorage =
+        new H5P.fsImplementations.FileContentUserDataStorage(
+            localContentUserDataPath
+        );
     // Depending on the environment variables we use different implementations
     // of the storage interfaces.
     const h5pEditor = new H5P.H5PEditor(
@@ -104,11 +126,13 @@ export default async function createH5PEditor(
                   localTemporaryPath
               ),
         translationCallback,
-        undefined,
+        urlGenerator,
         {
             enableHubLocalization: true,
-            enableLibraryNameLocalization: true
-        }
+            enableLibraryNameLocalization: true,
+            hooks
+        },
+        contentUserDataStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make

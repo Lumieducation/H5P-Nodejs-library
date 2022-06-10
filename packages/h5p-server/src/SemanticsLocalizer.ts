@@ -30,6 +30,7 @@ export default class SemanticsLocalizer {
         language: string,
         localizeAllFields?: boolean
     ): any {
+        log.debug(`Localizing semantics into ${language}`);
         return this.walkSemanticsRecursive(
             semantics,
             language,

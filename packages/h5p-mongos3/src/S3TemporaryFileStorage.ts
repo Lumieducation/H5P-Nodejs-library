@@ -445,7 +445,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                         LifecycleConfiguration: {
                             Rules: [
                                 {
-                                    Filter: { Prefix: '/' },
+                                    Filter: { Prefix: '' },
                                     Status: 'Enabled',
                                     Expiration: {
                                         Days: roundToNearestDay(

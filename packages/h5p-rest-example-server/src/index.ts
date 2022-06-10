@@ -6,12 +6,15 @@ import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import session from 'express-session';
+import csurf from 'csurf';
 
 import {
     h5pAjaxExpressRouter,
     libraryAdministrationExpressRouter,
-    contentTypeCacheExpressRouter,
-    IRequestWithUser
+    contentTypeCacheExpressRouter
 } from '@lumieducation/h5p-express';
 
 import * as H5P from '@lumieducation/h5p-server';
@@ -21,6 +24,60 @@ import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 
 let tmpDir: DirectoryResult;
+
+const userTable = {
+    teacher1: {
+        username: 'teacher1',
+        name: 'Teacher 1',
+        email: 'teacher1@example.com',
+        type: 'teacher'
+    },
+    teacher2: {
+        username: 'teacher2',
+        name: 'Teacher 2',
+        email: 'teacher2@example.com',
+        type: 'teacher'
+    },
+    student1: {
+        username: 'student1',
+        name: 'Student 1',
+        email: 'student1@example.com',
+        type: 'student'
+    },
+    student2: {
+        username: 'student2',
+        name: 'Student 2',
+        email: 'student2@example.com',
+        type: 'student'
+    }
+};
+
+const initPassport = (): void => {
+    passport.use(
+        new LocalStrategy((username, password, callback) => {
+            // We don't check the password. In a real application you'll perform
+            // DB access here.
+            const user = userTable[username];
+            if (!user) {
+                callback('User not found in user table');
+            } else {
+                callback(null, user);
+            }
+        })
+    );
+    passport.serializeUser((user, done): void => {
+        done(null, user);
+    });
+
+    passport.deserializeUser((user, done): void => {
+        done(null, user);
+    });
+};
+
+const addCsrfTokenToUser = (req, res, next): void => {
+    (req.user as any).csrfToken = req.csrfToken;
+    next();
+};
 
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS === 'true';
@@ -67,6 +124,24 @@ const start = async (): Promise<void> => {
         new H5P.fsImplementations.JsonStorage(path.resolve('config.json'))
     ).load();
 
+    const urlGenerator = new H5P.UrlGenerator(config, {
+        queryParamGenerator: (user) => {
+            if ((user as any).csrfToken) {
+                return {
+                    name: '_csrf',
+                    value: (user as any).csrfToken()
+                };
+            }
+            return {
+                name: '',
+                value: ''
+            };
+        },
+        protectAjax: true,
+        protectContentUserData: true,
+        protectSetFinished: true
+    });
+
     // The H5PEditor object is central to all operations of h5p-nodejs-library
     // if you want to user the editor component.
     //
@@ -79,6 +154,7 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
+        urlGenerator,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
@@ -87,6 +163,7 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
+        path.resolve('h5p/user-data'),
         (key, language) => translationFunction(key, { lng: language })
     );
 
@@ -96,7 +173,12 @@ const start = async (): Promise<void> => {
     const h5pPlayer = new H5P.H5PPlayer(
         h5pEditor.libraryStorage,
         h5pEditor.contentStorage,
-        config
+        config,
+        undefined,
+        urlGenerator,
+        undefined,
+        undefined,
+        h5pEditor.contentUserDataStorage
     );
 
     h5pPlayer.setRenderer((model) => model);
@@ -128,15 +210,53 @@ const start = async (): Promise<void> => {
         });
     }
 
+    // Initialize session with cookie storage
+    server.use(
+        session({ secret: 'mysecret', resave: false, saveUninitialized: false })
+    );
+
+    // Initialize passport for login
+    initPassport();
+    server.use(passport.initialize());
+    server.use(passport.session());
+
+    // Initialize CSRF protection. If we add it as middleware, it checks if a
+    // token was passed into a state altering route. We pass this token to the
+    // client in two ways:
+    //   - Return it as a property of the return data on login (used for the CUD
+    //     routes in the content service)
+    //   - Add the token to the URLs in the H5PIntegration object as a query
+    //     parameter. This is done by passing in a custom UrlGenerator that gets
+    //     the csrfToken from the user object. We put the token into the user
+    //     object in the addCsrfTokenToUser middleware.
+    const csrfProtection = csurf();
+
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    // In your real implementation you would create the object using sessions,
-    // JSON webtokens or some other means.
-    server.use((req: IRequestWithUser, res, next) => {
-        req.user = new User();
-        next();
-    });
+    server.use(
+        (
+            req: express.Request & { user: H5P.IUser } & {
+                user: { username?: string; name?: string; email?: string };
+            },
+            res,
+            next
+        ) => {
+            // Maps the user received from passport to the one expected by
+            // h5p-express and h5p-server
+            if (req.user) {
+                req.user = new User(
+                    req.user.username,
+                    req.user.name,
+                    req.user.email,
+                    req.user.type === 'teacher' ? 'teacher' : 'anonymous'
+                );
+            } else {
+                req.user = new User('0', 'Anonymous', '', 'anonymous');
+            }
+            next();
+        }
+    );
 
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
@@ -149,6 +269,7 @@ const start = async (): Promise<void> => {
     // object, which means we get all of them.
     server.use(
         h5pEditor.config.baseUrl,
+        csrfProtection,
         h5pAjaxExpressRouter(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the
@@ -169,6 +290,11 @@ const start = async (): Promise<void> => {
     // - Deleting content
     server.use(
         h5pEditor.config.baseUrl,
+        csrfProtection,
+        // We need to add the token to the user by adding the addCsrfTokenToUser
+        // middleware, so that the UrlGenerator can read it when we generate the
+        // integration object with the URLs that contain the token.
+        addCsrfTokenToUser,
         restExpressRoutes(
             h5pEditor,
             h5pPlayer,
@@ -182,6 +308,7 @@ const start = async (): Promise<void> => {
     // library management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
+        csrfProtection,
         libraryAdministrationExpressRouter(h5pEditor)
     );
 
@@ -189,8 +316,42 @@ const start = async (): Promise<void> => {
     // the content type cache manually.
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
+        csrfProtection,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
+
+    // Simple login endpoint that returns HTTP 200 on auth and sets the user in
+    // the session
+    server.post(
+        '/login',
+        passport.authenticate('local', {
+            failWithError: true
+        }),
+        csurf({
+            // We need csurf to get the token for the current session, but we
+            // don't want to protect the current route, as the login can't have
+            // a CSRF token.
+            ignoreMethods: ['POST']
+        }),
+        function (
+            req: express.Request & {
+                user: { username: string; email: string; name: string };
+            },
+            res: express.Response
+        ): void {
+            res.status(200).json({
+                username: req.user.username,
+                email: req.user.email,
+                name: req.user.name,
+                csrfToken: req.csrfToken()
+            });
+        }
+    );
+
+    server.post('/logout', csrfProtection, (req, res) => {
+        req.logout();
+        res.status(200).send();
+    });
 
     const port = process.env.PORT || '8080';
 

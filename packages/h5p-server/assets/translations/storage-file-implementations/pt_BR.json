@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Não é possível adicionar o arquivo {{filename}} ao conteúdo com id {{id}}: o conteúdo não existe.",
+    "add-library-file-not-installed": "Não é possível adicionar {{filename}} à biblioteca {{libraryName}} porque a biblioteca não foi instalada.",
+    "clear-library-not-found": "Não é possível limpar a biblioteca {{libraryName}} porque a biblioteca não foi instalada.",
+    "delete-content-file-not-found": "Não é possível excluir o arquivo {{filename}}: ele não existe.",
+    "delete-content-not-found": "Não é possível excluir o conteúdo: Não existe.",
+    "error-creating-content": "Não foi possível criar conteúdo.",
+    "error-generating-content-id": "Não foi possível gerar o ID para o novo conteúdo.",
+    "error-generating-unique-temporary-filename": "Não é possível determinar um nome de arquivo exclusivo para {{name}}",
+    "error-updating-metadata": "Os metadados adicionais da biblioteca {{library}} não podem ser atualizados. Erro: {{error}}",
+    "get-library-metadata-not-installed": "Não é possível obter metadados para a biblioteca {{libraryName}} porque a biblioteca não foi instalada.",
+    "illegal-absolute-filename": "Caminhos absolutos em nomes de arquivos não são permitidos: {{filename}} é ilegal",
+    "illegal-relative-filename": "Caminhos relativos em nomes de arquivos não são permitidos: {{filename}} é ilegal",
+    "install-library-already-installed": "A biblioteca {{libraryName}} já foi instalada.",
+    "remove-library-library-missing": "A biblioteca {{libraryName}} não está instalada no sistema.",
+    "temporary-file-not-found": "O arquivo {{filename}} não está acessível para o usuário {{userId}} ou não existe.",
+    "update-library-library-missing": "A biblioteca {{libraryName}} não pode ser atualizada porque ainda não foi instalada."
+}

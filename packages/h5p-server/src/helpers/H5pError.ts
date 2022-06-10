@@ -13,7 +13,18 @@ export default class H5pError extends Error {
         public debugMessage?: string,
         public clientErrorId?: string
     ) {
-        super(`${errorId}${debugMessage ? `: ${debugMessage}` : ''}`);
+        let replacementsString: string = null;
+        if (replacements && Object.keys(replacements).length > 0) {
+            replacementsString = ` (${Object.keys(replacements)
+                .map((k) => `${k}: ${replacements[k]}`)
+                .join(', ')})`;
+        }
+        super(
+            `${errorId}${debugMessage ? `: ${debugMessage}` : ''}${
+                replacementsString ? replacementsString : ''
+            }`
+        );
+        Error.captureStackTrace(this, H5pError);
         Object.setPrototypeOf(this, new.target.prototype); // need to restore the prototype chain
     }
 }

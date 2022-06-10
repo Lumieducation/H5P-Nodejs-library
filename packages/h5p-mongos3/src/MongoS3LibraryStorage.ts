@@ -203,7 +203,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * indexes already exist.
      */
     public async createIndexes(): Promise<void> {
-        this.mongodb.createIndexes([
+        await this.mongodb.createIndexes([
             {
                 key: {
                     'metadata.machineName': 1

@@ -1,9 +1,12 @@
 import {
     AggregateH5pError,
     AjaxErrorResponse,
-    H5pError
+    H5pError,
+    Logger
 } from '@lumieducation/h5p-server';
 import { Request, Response, NextFunction } from 'express';
+
+const log = new Logger('h5p-express');
 
 export function undefinedOrTrue(option: boolean): boolean {
     return option === undefined || option;
@@ -70,6 +73,9 @@ export const catchAndPassOnErrors =
                     : req.t(err.errorId, err.replacements);
             clientErrorId = err.clientErrorId || '';
 
+            log.debug(`H5PError: ${statusCode} - ${statusText}`);
+            log.debug(err.stack);
+
             if (err instanceof AggregateH5pError) {
                 detailsList = err.getErrors().map((e) => ({
                     code: e.errorId,
@@ -80,6 +86,9 @@ export const catchAndPassOnErrors =
                 }));
             }
         } else {
+            log.error('An unexpected error occurred:');
+            log.error(err.message);
+            log.error(err.stack);
             statusText = err.message;
         }
         res.status(statusCode).json(

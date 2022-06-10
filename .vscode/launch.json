@@ -1,10 +1,22 @@
 {
     "configurations": [
-    {
-        "command": "npm start",
-        "name": "Run npm start",
-        "request": "launch",
-        "type": "node-terminal"
-    }
+        {
+            "command": "DEBUG=h5p:* npm start",
+            "name": "Run npm start",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/packages/h5p-examples/build/express.js",
+            "runtimeArgs": ["-r", "source-map-support/register"],
+            "env": {
+                "DEBUG": "h5p*"
+            },
+            "outputCapture": "std",
+            "console": "integratedTerminal"
+        }
     ]
 }
