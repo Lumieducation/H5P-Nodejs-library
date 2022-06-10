@@ -2,10 +2,17 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 
+import { ContentService } from '../services/ContentService';
+
 export default class Login extends React.Component<
-    any,
+    { contentService: ContentService },
     {
-        loginData?: { username: string; name: string; email: string };
+        loginData?: {
+            username: string;
+            name: string;
+            email: string;
+            csrfToken: string;
+        };
         loginMessage?: string;
     }
 > {
@@ -28,17 +35,24 @@ export default class Login extends React.Component<
         })
             .then(async (res) => {
                 if (res.status === 200) {
+                    const loginData = await res.json();
                     this.setState({
                         ...this.state,
-                        loginData: await res.json(),
+                        loginData,
                         loginMessage: undefined
                     });
+                    if (loginData.csrfToken) {
+                        this.props.contentService.setCsrfToken(
+                            loginData.csrfToken
+                        );
+                    }
                 } else {
                     this.setState({
                         ...this.state,
                         loginData: undefined,
                         loginMessage: await res.text()
                     });
+                    this.props.contentService.setCsrfToken(undefined);
                 }
             })
             .catch((reason) => {
@@ -47,6 +61,7 @@ export default class Login extends React.Component<
                     loginData: undefined,
                     loginMessage: reason
                 });
+                this.props.contentService.setCsrfToken(undefined);
             });
     };
 
@@ -55,7 +70,8 @@ export default class Login extends React.Component<
             method: 'POST',
             headers: {
                 Accept: 'application/json, text/plain, */*',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'CSRF-Token': this.props.contentService.getCsrfToken() ?? ''
             },
             body: JSON.stringify({})
         })
@@ -65,6 +81,7 @@ export default class Login extends React.Component<
                     loginData: undefined,
                     loginMessage: undefined
                 });
+                this.props.contentService.setCsrfToken(undefined);
             })
             .catch((reason) => {
                 this.setState({
@@ -72,6 +89,7 @@ export default class Login extends React.Component<
                     loginData: undefined,
                     loginMessage: `Error logging out: ${reason}`
                 });
+                this.props.contentService.setCsrfToken(undefined);
             });
     };
 

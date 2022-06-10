@@ -6,7 +6,9 @@
     "sendUsageStatistics": false,
     "hubRegistrationEndpoint": "https://api.h5p.org/v1/sites",
     "hubContentTypesEndpoint": "https://api.h5p.org/v1/content-types/",
+    "contentUserDataUrl": "/contentUserData",
     "contentTypeCacheRefreshInterval": 86400000,
+    "contentUserStateSaveInterval": 5000,
     "enableLrsContentTypes": true,
     "editorAddons": {
         "H5P.CoursePresentation": ["H5P.MathDisplay"],

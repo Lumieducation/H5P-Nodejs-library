@@ -29,10 +29,15 @@ export class ContentService implements IContentService {
      */
     constructor(protected baseUrl: string = '') {}
 
+    private csrfToken: string | undefined = undefined;
+
     delete = async (contentId: string): Promise<void> => {
         console.log(`ContentService: deleting ${contentId}...`);
         const result = await fetch(`${this.baseUrl}/${contentId}`, {
-            method: 'delete'
+            method: 'delete',
+            headers: {
+                'CSRF-Token': this.csrfToken ?? ''
+            }
         });
         if (!result.ok) {
             throw new Error(
@@ -94,14 +99,16 @@ export class ContentService implements IContentService {
             ? await fetch(`${this.baseUrl}/${contentId}`, {
                   method: 'PATCH',
                   headers: {
-                      'Content-Type': 'application/json'
+                      'Content-Type': 'application/json',
+                      'CSRF-Token': this.csrfToken ?? ''
                   },
                   body
               })
             : await fetch(this.baseUrl, {
                   method: 'POST',
                   headers: {
-                      'Content-Type': 'application/json'
+                      'Content-Type': 'application/json',
+                      'CSRF-Token': this.csrfToken ?? ''
                   },
                   body
               });
@@ -115,4 +122,11 @@ export class ContentService implements IContentService {
     };
     generateDownloadLink = (contentId: string): string =>
         `${this.baseUrl}/download/${contentId}`;
+
+    setCsrfToken = (csrfToken): void => {
+        this.csrfToken = csrfToken;
+    };
+    getCsrfToken = (): string | undefined => {
+        return this.csrfToken;
+    };
 }

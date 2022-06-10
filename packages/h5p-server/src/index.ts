@@ -10,6 +10,7 @@ import ContentTypeCache from './ContentTypeCache';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
+import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
 import { streamToString } from './helpers/StreamHelpers';
 
 import Logger from './helpers/Logger';
@@ -20,13 +21,14 @@ import * as utils from './implementation/utils';
 import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from './implementation/fs/FileContentStorage';
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
+import FileContentUserDataStorage from './implementation/fs/FileContentUserDataStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
 import { ContentFileScanner } from './ContentFileScanner';
 import LibraryManager from './LibraryManager';
-import ContentManager from './ContentManager';
+import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 
@@ -35,10 +37,14 @@ import {
     ContentId,
     ContentParameters,
     IAdditionalLibraryMetadata,
+    IAjaxResponse,
     IContentMetadata,
     IContentStorage,
+    IContentUserData,
+    IContentUserDataStorage,
     IEditorModel,
     IFileStats,
+    IFinishedUserData,
     IGetContentUserData,
     IH5PConfig,
     IInstalledLibrary,
@@ -71,7 +77,8 @@ const fsImplementations = {
     FileContentStorage,
     FileLibraryStorage,
     InMemoryStorage,
-    JsonStorage
+    JsonStorage,
+    FileContentUserDataStorage
 };
 
 const cacheImplementations = {
@@ -83,10 +90,11 @@ export {
     // classes
     AggregateH5pError,
     AjaxErrorResponse,
+    AjaxSuccessResponse,
     streamToString,
     ContentFileScanner,
-    ContentManager,
     ContentTypeCache,
+    ContentUserDataManager,
     H5PAjaxEndpoint,
     H5PEditor,
     H5pError,
@@ -101,10 +109,14 @@ export {
     ContentId,
     ContentParameters,
     IAdditionalLibraryMetadata,
+    IAjaxResponse,
     IContentMetadata,
     IContentStorage,
+    IContentUserData,
+    IContentUserDataStorage,
     IEditorModel,
     IFileStats,
+    IFinishedUserData,
     IGetContentUserData,
     IH5PConfig,
     IInstalledLibrary,

@@ -165,6 +165,7 @@ const start = async (): Promise<void> => {
     // H5P.fs(...).
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
+        undefined,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
@@ -173,6 +174,7 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/temporary-storage'), // the path on the local disc
         // where temporary files (uploads) should be stored. Only used /
         // necessary if you use the local filesystem temporary storage class.
+        path.resolve('h5p/user-data'),
         (key, language) => translationFunction(key, { lng: language }),
         {
             contentWasDeleted: (contentId) => {

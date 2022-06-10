@@ -6,6 +6,7 @@ import {
     ContentParameters,
     IContentMetadata,
     IContentStorage,
+    IContentUserDataStorage,
     IUser,
     Permission
 } from './types';
@@ -21,10 +22,13 @@ const log = new Logger('ContentManager');
 export default class ContentManager {
     /**
      * @param contentStorage The storage object
+     * @param contentUserDataStorage The contentUserDataStorage to delete contentUserData for content when it is deleted
      */
-    constructor(public contentStorage: IContentStorage) {
+    constructor(
+        public contentStorage: IContentStorage,
+        public contentUserDataStorage?: IContentUserDataStorage
+    ) {
         log.info('initialize');
-        this.contentStorage = contentStorage;
     }
 
     /**
@@ -90,7 +94,7 @@ export default class ContentManager {
     }
 
     /**
-     * Deletes a piece of content and all files dependent on it.
+     * Deletes a piece of content, the corresponding contentUserData and all files dependent on it.
      * @param contentId the piece of content to delete
      * @param user the user who wants to delete it
      */
@@ -98,7 +102,30 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
-        return this.contentStorage.deleteContent(contentId, user);
+        await this.contentStorage.deleteContent(contentId, user);
+
+        if (this.contentUserDataStorage) {
+            try {
+                await this.contentUserDataStorage.deleteAllContentUserDataByContentId(
+                    contentId
+                );
+            } catch (error) {
+                log.error(
+                    `Could not delete content user data with contentId ${contentId}`
+                );
+                log.error(error);
+            }
+            try {
+                await this.contentUserDataStorage.deleteFinishedDataByContentId(
+                    contentId
+                );
+            } catch (error) {
+                log.error(
+                    `Could not finished data with contentId ${contentId}`
+                );
+                log.error(error);
+            }
+        }
     }
 
     /**

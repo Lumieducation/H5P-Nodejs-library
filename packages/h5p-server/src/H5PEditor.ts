@@ -19,6 +19,8 @@ import defaultRenderer from './renderers/default';
 import supportedLanguageList from '../assets/editorLanguages.json';
 import variantEquivalents from '../assets/variantEquivalents.json';
 
+import ContentUserDataManager from './ContentUserDataManager';
+
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
@@ -37,6 +39,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IContentUserDataStorage,
     IEditorModel,
     IH5PConfig,
     IH5PEditorOptions,
@@ -98,7 +101,8 @@ export default class H5PEditor {
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private options?: IH5PEditorOptions
+        private options?: IH5PEditorOptions,
+        public contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
 
@@ -122,7 +126,10 @@ export default class H5PEditor {
             this.options?.lockProvider,
             this.config
         );
-        this.contentManager = new ContentManager(contentStorage);
+        this.contentManager = new ContentManager(
+            contentStorage,
+            contentUserDataStorage
+        );
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
@@ -132,6 +139,9 @@ export default class H5PEditor {
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
+        );
+        this.contentUserDataManager = new ContentUserDataManager(
+            contentUserDataStorage
         );
         this.contentStorer = new ContentStorer(
             this.contentManager,
@@ -185,6 +195,7 @@ export default class H5PEditor {
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public contentTypeRepository: ContentTypeInformationRepository;
+    public contentUserDataManager: ContentUserDataManager;
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
@@ -716,6 +727,9 @@ export default class H5PEditor {
         mainLibraryUbername: string,
         user: IUser
     ): Promise<ContentId> {
+        await this.contentUserDataManager.deleteInvalidatedContentUserDataByContentId(
+            contentId
+        );
         return (
             await this.saveOrUpdateContentReturnMetaData(
                 contentId,
@@ -1139,8 +1153,14 @@ export default class H5PEditor {
                 )
             },
             libraryConfig: this.config.libraryConfig,
-            postUserStatistics: false,
-            saveFreq: false,
+            postUserStatistics: this.config.setFinishedEnabled,
+            saveFreq:
+                this.config.contentUserStateSaveInterval !== false
+                    ? Math.round(
+                          Number(this.config.contentUserStateSaveInterval) /
+                              1000
+                      ) || 1
+                    : false,
             libraryUrl: this.urlGenerator.coreFiles(),
             pluginCacheBuster: this.cacheBusterGenerator(),
             url: this.urlGenerator.baseUrl(),

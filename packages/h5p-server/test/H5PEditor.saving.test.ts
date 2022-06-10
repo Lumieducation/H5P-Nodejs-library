@@ -22,7 +22,10 @@ import H5PConfig from '../src/implementation/H5PConfig';
 import UrlGenerator from '../src/UrlGenerator';
 import { validatePackage } from './helpers/PackageValidatorHelper';
 
+import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
+
 describe('H5PEditor', () => {
+    const mockContentUserDataStorage = new MockContentUserDataStorage();
     function createH5PEditor(
         tempPath: string,
         options?: { withUrlGenerator?: boolean }
@@ -66,7 +69,9 @@ describe('H5PEditor', () => {
                           value: 'token'
                       })
                   })
-                : undefined
+                : undefined,
+            undefined,
+            mockContentUserDataStorage
         );
 
         return {
@@ -328,6 +333,46 @@ describe('H5PEditor', () => {
                 await expect(
                     contentStorage.fileExists(contentId, newFilename)
                 ).resolves.toEqual(false);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('adds files to previously existing content and deletes them again', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor, contentStorage } =
+                    createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // install the test library so that we can work with the test content we want to upload
+                await h5pEditor.libraryManager.installFromDirectory(
+                    path.resolve(
+                        'test/data/sample-content/H5P.GreetingCard-1.0'
+                    )
+                );
+
+                // save content without an image
+                const contentId = await h5pEditor.saveOrUpdateContent(
+                    undefined,
+                    mockupParametersWithoutImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                // save the H5P content object
+                await h5pEditor.saveOrUpdateContent(
+                    contentId,
+                    mockupParametersWithImage,
+                    mockupMetadata,
+                    mockupMainLibraryName,
+                    user
+                );
+
+                expect(
+                    mockContentUserDataStorage.deleteInvalidatedContentUserData
+                ).toHaveBeenCalledWith(contentId);
             },
             { keep: false, unsafeCleanup: true }
         );

@@ -8,6 +8,8 @@ import {
 } from '../expressErrorHandler';
 import H5PAjaxExpressController from './H5PAjaxExpressController';
 import H5PAjaxExpressRouterOptions from './H5PAjaxExpressRouterOptions';
+import ContentUserDataExpressRouter from '../ContentUserDataRouter/ContentUserDataExpressRouter';
+import FinishedDataExpressRouter from '../FinishedDataRouter/FinishedDataExpressRouter';
 
 /**
  * This router implements all Ajax calls necessary for the H5P (editor) client to work.
@@ -98,6 +100,28 @@ export default function (
             catchAndPassOnErrors(
                 h5pController.postAjax as any,
                 routeOptions.handleErrors
+            )
+        );
+    }
+
+    // save and retrieve the state of individual users
+    if (undefinedOrTrue(routeOptions.routeContentUserData)) {
+        router.use(
+            h5pEditor.config.contentUserDataUrl,
+            ContentUserDataExpressRouter(
+                h5pEditor.contentUserDataManager,
+                h5pEditor.config
+            )
+        );
+    }
+
+    // track usage of users
+    if (undefinedOrTrue(routeOptions.routeFinishedData)) {
+        router.use(
+            h5pEditor.config.setFinishedUrl,
+            FinishedDataExpressRouter(
+                h5pEditor.contentUserDataManager,
+                h5pEditor.config
             )
         );
     }

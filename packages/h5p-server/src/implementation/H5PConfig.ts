@@ -1,13 +1,16 @@
 import { IH5PConfig, IKeyValueStorage } from '../types';
 
 /**
- * Stores configuration options and literals that are used throughout the system.
- * Also loads and saves the configuration of changeable values (only those as "user-configurable") in the storage object.
+ * Stores configuration options and literals that are used throughout the
+ * system. Also loads and saves the configuration of changeable values (only
+ * those as "user-configurable") in the storage object.
  */
 export default class H5PConfig implements IH5PConfig {
     /**
-     * @param storage A key-value storage object that persists the changes to the disk or gets them from the implementation/plugin
-     * @param defaults default values to use instead of the ones set by this class
+     * @param storage A key-value storage object that persists the changes to
+     * the disk or gets them from the implementation/plugin
+     * @param defaults default values to use instead of the ones set by this
+     * class
      */
     constructor(storage?: IKeyValueStorage, defaults?: Partial<IH5PConfig>) {
         this.storage = storage;
@@ -98,8 +101,10 @@ export default class H5PConfig implements IH5PConfig {
         protocol?: 'http' | 'https';
     };
     public sendUsageStatistics: boolean = false;
-    public setFinishedUrl: string = '/setFinished';
+    public setFinishedUrl: string = '/finishedData';
+    public setFinishedEnabled: boolean = true;
     public siteType: 'local' | 'network' | 'internet' = 'local';
+    public contentUserStateSaveInterval: number | false = 5 * 1000; // the interval to save the contentUserData in milliseconds
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
     public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = '';
@@ -114,6 +119,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('contentHubEnabled');
         await this.loadSettingFromStorage('contentHubMetadataRefreshInterval');
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
+        await this.loadSettingFromStorage('contentUserStateSaveInterval');
         await this.loadSettingFromStorage('contentWhitelist');
         await this.loadSettingFromStorage('customization');
         await this.loadSettingFromStorage('disableFullscreen');
@@ -130,6 +136,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('playerAddons');
         await this.loadSettingFromStorage('proxy');
         await this.loadSettingFromStorage('sendUsageStatistics');
+        await this.loadSettingFromStorage('setFinishedEnabled');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
         return this;
@@ -142,6 +149,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('contentHubEnabled');
         await this.saveSettingToStorage('contentHubMetadataRefreshInterval');
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
+        await this.saveSettingToStorage('contentUserStateSaveInterval');
         await this.saveSettingToStorage('contentWhitelist');
         await this.saveSettingToStorage('customization');
         await this.saveSettingToStorage('disableFullscreen');
@@ -158,18 +166,21 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('playerAddons');
         await this.saveSettingToStorage('proxy');
         await this.saveSettingToStorage('sendUsageStatistics');
+        await this.saveSettingToStorage('setFinishedEnabled');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
     }
 
     /**
-     * Loads a settings from the storage interface. Uses the default value configured in this file if there is none in the configuration.
+     * Loads a settings from the storage interface. Uses the default value
+     * configured in this file if there is none in the configuration.
      * @param settingName
      * @returns the value of the setting
      */
     private async loadSettingFromStorage(settingName: string): Promise<any> {
         this[settingName] =
-            (await this.storage.load(settingName)) || this[settingName];
+            (await this.storage?.load(settingName)) ?? this[settingName];
+        return this[settingName];
     }
 
     /**
@@ -177,6 +188,6 @@ export default class H5PConfig implements IH5PConfig {
      * @param settingName
      */
     private async saveSettingToStorage(settingName: string): Promise<void> {
-        await this.storage.save(settingName, this[settingName]);
+        await this.storage?.save(settingName, this[settingName]);
     }
 }
