@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Dallanma Senaryosu (beta) (Branching Scenario (beta))",
+        "title": "Dallanma Senaryosu (Branching Scenario)",
         "summary": "İkilemler ve kendi kendine öğrenme hızı yaratın",
         "description": "Dallanma Senaryosu, yazarların öğrencilere çeşitli zengin etkileşimli içerik ve seçenekler sunmasına olanak tanır. Öğrencilerin yaptığı seçimler, görecekleri sonraki içeriği belirleyecektir. İkilemler, ciddi oyunlar ve kendi hızınıza göre öğrenme yaratmak için kullanılabilir."
     },
