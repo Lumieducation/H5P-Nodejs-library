@@ -544,7 +544,14 @@ export interface IUser {
     type: 'local' | string;
 }
 
+/**
+ * Saves the current state of users, so that users can resume where they left
+ * off.
+ */
 export interface IContentUserData {
+    /**
+     * The id of the content object to which this state belongs.
+     */
     contentId?: ContentId;
     /**
      * Used by the h5p.js client
@@ -555,20 +562,33 @@ export interface IContentUserData {
      */
     subContentId: string;
     /**
-     * The userState as string
+     * The actual user state as string. This is typically a serialized JSON
+     * string that the content type generates when called by the H5P client. We
+     * don't need to know what is in it for the server
      */
-    userState: string; // the contentUserState/contentUserData as string
+    userState: string;
+    /**
+     * The id of the user to which the state belongs.
+     */
     userId?: string;
     /**
-     * Indicates that data should be loaded when content is loaded.
+     * Indicates that data should be included in the H5PIntegration object when
+     * content is first loaded. (This is usually on. It is set by the content
+     * type.)
      */
     preload: boolean;
     /**
-     * Indicates that data should be invalidated when content changes.
+     * Indicates that data should be invalidated when content changes. The
+     * server then deletes the state when the content is updated.
      */
     invalidate: boolean;
 }
 
+/**
+ * Simple tracking data of user's activities in content. It is generated from an
+ * xAPI statement generated inside the content type. It is sent by the client to
+ * the server.
+ */
 export interface IFinishedUserData {
     /**
      * the score the user reached as an integer

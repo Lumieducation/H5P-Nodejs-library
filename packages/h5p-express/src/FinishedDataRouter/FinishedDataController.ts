@@ -19,7 +19,7 @@ export default class FinishedDataController {
     ) {}
 
     /**
-     * Saving the setFinished state for a given user
+     * Saves the setFinished state for a given user
      */
     public postSetFinished = async (
         req: IPostContentUserDataRequest,

@@ -149,8 +149,10 @@ export default class ContentUserDataManager {
      * @param score the score the user reached as an integer
      * @param maxScore the maximum score of the content
      * @param openedTimestamp the time the user opened the content as UNIX time
-     * @param finishedTimestamp the time the user finished the content as UNIX time
-     * @param completionTime the time the user needed to complete the content (as integer)
+     * @param finishedTimestamp the time the user finished the content as UNIX
+     * time
+     * @param completionTime the time the user needed to complete the content
+     * (as integer)
      * @param user The user who triggers this method via /setFinished
      */
     public async setFinished(

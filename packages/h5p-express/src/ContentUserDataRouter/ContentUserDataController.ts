@@ -47,8 +47,7 @@ export default class ContentUserDataController {
     };
 
     /**
-     * Saving a userState for given contentId, dataType and subContentId
-     *
+     * Saves a userState for given contentId, dataType and subContentId
      */
     public postContentUserData = async (
         req: IPostContentUserDataRequest,

@@ -9,13 +9,13 @@ import {
 import ContentUserDataController from './FinishedDataController';
 
 /**
- * This router implements necessary routes for set finished to work.
- * If you only want certain routes, you can specify this in the options parameter.
+ * This router implements necessary routes for setFinished to work. If you only
+ * want certain routes, you can specify this in the options parameter.
  * @param options sets if you want and how to handle errors
- * @param languageOverride the language to use when returning errors.
- * Only has an effect if you use the i18next http middleware, as it relies on
- * req.i18n.changeLanguage to be present. Defaults to auto, which means the
- * a language detector must have detected language and req.t translated to the
+ * @param languageOverride the language to use when returning errors. Only has
+ * an effect if you use the i18next http middleware, as it relies on
+ * req.i18n.changeLanguage to be present. Defaults to auto, which means the a
+ * language detector must have detected language and req.t translated to the
  * detected language.
  */
 export default function (
