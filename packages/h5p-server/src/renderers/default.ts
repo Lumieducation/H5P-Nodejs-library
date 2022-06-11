@@ -105,24 +105,19 @@ var ns = H5PEditor;
                 .change();
         }
 
-        var formIsUpdated = false;
+        var formIsSubmitting = false; // Prevents multiple submissions if
+        // users accidentally click on "save" twice.
         $('#h5p-content-form').submit(function(event) {
             if ($type.length && $type.filter(':checked').val() === 'upload') {
               return; // Old file upload
             }
 
-            if (h5peditor !== undefined && !formIsUpdated) {
+            if (h5peditor !== undefined && !formIsSubmitting) {
                 var params = h5peditor.getParams();
 
                 if (params.params !== undefined) {
-                    // Validate mandatory main title. Prevent submitting if that's not set.
-                    // Deliberately doing it after getParams(), so that any other validation
-                    // problems are also revealed
-                    // if (!h5peditor.isMainTitleSet()) {
-
-                    // }
-
-                    // Get content from editor
+                    // Get content from editor (also validates the entered data 
+                    // and metadata and upgrades the parameters as side effects)
                     h5peditor.getContent(function (content) {
 
                       // Set main library
@@ -132,7 +127,7 @@ var ns = H5PEditor;
                       $params.val(content.params);
 
                       // Submit form data
-                      formIsUpdated = true;
+                      formIsSubmitting = true;
 
                       $.ajax({
                           data: JSON.stringify({
