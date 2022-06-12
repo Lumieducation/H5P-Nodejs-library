@@ -132,7 +132,7 @@ var ns = H5PEditor;
                       $.ajax({
                           data: JSON.stringify({
                               library: content.library,
-                              params
+                              params: JSON.parse(content.params)
                           }),
                           headers: {
                               'Content-Type': 'application/json'
