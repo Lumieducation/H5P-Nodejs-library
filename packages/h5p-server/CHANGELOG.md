@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.2...v9.2.0) (2022-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.27.1 ([dacf71e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/dacf71eb7ff2107eee04c3be25ecdc95f9ccf944))
+* **deps:** update dependency cache-manager to v3.6.1 ([9357fc5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9357fc5f787e49c54a823db14aa655a319a4687f))
+* **deps:** update dependency cache-manager to v3.6.2 ([18608ab](https://github.com/Lumieducation/H5P-Nodejs-library/commit/18608ab30e8bb9de8cf7285e32fd8d5ad8652f9f))
+* **deps:** update dependency cache-manager to v3.6.3 ([6508fe6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/6508fe624257398c2f03d4ba38c7adeba6db1a91))
+* **deps:** update dependency fs-extra to v10.0.1 ([3e4b063](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3e4b0638a2b84a1cdde1a79ff575bfba10a17dfd))
+* **h5p-server:** added getLocalIdOverride to h5p editor options ([#2251](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2251)) ([da2ce76](https://github.com/Lumieducation/H5P-Nodejs-library/commit/da2ce7628e4fe118e5841f49adf80550052b0a90))
+* translation updates for various languages ([43464a9](https://github.com/Lumieducation/H5P-Nodejs-library/commit/43464a967644327f1f069d40f0139a9a32eff3ca))
+
+
+### Features
+
+* **h5p-server:** added content user state (closes [#1014](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1014)) ([#1886](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1886)) ([bdf66da](https://github.com/Lumieducation/H5P-Nodejs-library/commit/bdf66da63e5f68fa8aa9bf8a63b6489677af776d)), closes [/github.com/Lumieducation/H5P-Nodejs-library/issues/1014#issuecomment-968314801](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/issues/1014/issues/issuecomment-968314801) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r748820671](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r748820671) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r748820014](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r748820014) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r753821541](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r753821541) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r753822128](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r753822128) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r753822128](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r753822128) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#discussion_r760102698](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/discussion_r760102698) [#1991](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1991) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#issuecomment-1050627214](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/issuecomment-1050627214) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#issuecomment-1050627214](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/issuecomment-1050627214) [/github.com/Lumieducation/H5P-Nodejs-library/pull/1886#issuecomment-1059275916](https://github.com//github.com/Lumieducation/H5P-Nodejs-library/pull/1886/issues/issuecomment-1059275916)
+
+
+
+
+
 ## [9.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.1...v9.1.2) (2022-03-19)
 
 

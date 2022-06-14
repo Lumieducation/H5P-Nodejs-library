@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.2.0](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.1.2...v9.2.0) (2022-06-14)
+
+**Note:** Version bump only for package @lumieducation/h5p-webcomponents
+
+
+
+
+
 ## [9.1.2](https://github.com/Lumieducation/h5p-webcomponents/compare/v9.1.1...v9.1.2) (2022-03-19)
 
 **Note:** Version bump only for package @lumieducation/h5p-webcomponents
