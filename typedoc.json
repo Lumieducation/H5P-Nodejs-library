@@ -1,0 +1,13 @@
+{
+    "entryPointStrategy": "packages",
+    "entryPoints": [
+        "packages/h5p-server",
+        "packages/h5p-express",
+        "packages/h5p-mongos3",
+        "packages/h5p-redis-lock",
+        "packages/h5p-html-exporter"
+    ],
+    "out": "typedoc",
+    "disableSources": true,
+    "excludePrivate": true
+}
