@@ -22,7 +22,7 @@
         "@lumieducation/h5p-shared-state-server": "^9.1.2",
         "body-parser": "1.20.0",
         "cache-manager-redis-store": "2.0.0",
-        "cache-manager": "3.6.3",
+        "cache-manager": "4.0.1",
         "cors": "2.8.5",
         "csurf": "1.11.0",
         "express-fileupload": "1.4.0",
