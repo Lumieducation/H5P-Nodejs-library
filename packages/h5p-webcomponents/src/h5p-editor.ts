@@ -269,7 +269,7 @@ export class H5PEditorComponent extends HTMLElement {
                 }
             );
         } catch (error) {
-            this.dispatchAndThrowError('validation-error', 'error');
+            this.dispatchAndThrowError('validation-error', error.toString());
         }
 
         let saveResponseObject: {
