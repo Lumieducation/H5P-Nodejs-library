@@ -105,38 +105,45 @@ var ns = H5PEditor;
                 .change();
         }
 
+        var formIsSubmitting = false; // Prevents multiple submissions if
+        // users accidentally click on "save" twice.
         $('#h5p-content-form').submit(function(event) {
-            if (h5peditor !== undefined) {
+            if ($type.length && $type.filter(':checked').val() === 'upload') {
+              return; // Old file upload
+            }
+
+            if (h5peditor !== undefined && !formIsSubmitting) {
                 var params = h5peditor.getParams();
 
                 if (params.params !== undefined) {
-                    // Validate mandatory main title. Prevent submitting if that's not set.
-                    // Deliberately doing it after getParams(), so that any other validation
-                    // problems are also revealed
-                    // if (!h5peditor.isMainTitleSet()) {
+                    // Get content from editor (also validates the entered data 
+                    // and metadata and upgrades the parameters as side effects)
+                    h5peditor.getContent(function (content) {
 
-                    // }
+                      // Set main library
+                      $library.val(content.library);
 
-                    // Set main library
-                    $library.val(h5peditor.getLibrary());
+                      // Set params
+                      $params.val(content.params);
 
-                    // Set params
-                    $params.val(JSON.stringify(params));
+                      // Submit form data
+                      formIsSubmitting = true;
 
-                    $.ajax({
-                        data: JSON.stringify({
-                            library: h5peditor.getLibrary(),
-                            params
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        type: 'POST'
-                    }).then((result) => {
-                        const parsedResult = JSON.parse(result)
-                        if(parsedResult.contentId) {
-                            window.location.href = '${model.urlGenerator.play()}/' + parsedResult.contentId;
-                        }
+                      $.ajax({
+                          data: JSON.stringify({
+                              library: content.library,
+                              params: JSON.parse(content.params)
+                          }),
+                          headers: {
+                              'Content-Type': 'application/json'
+                          },
+                          type: 'POST'
+                      }).then((result) => {
+                          const parsedResult = JSON.parse(result)
+                          if(parsedResult.contentId) {
+                              window.location.href = '${model.urlGenerator.play()}/' + parsedResult.contentId;
+                          }
+                      });
                     });
 
                     return event.preventDefault();
