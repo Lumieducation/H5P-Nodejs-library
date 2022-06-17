@@ -16,7 +16,7 @@
         "@teamwork/websocket-json-stream": "^2.0.0",
         "ajv": "^8.11.0",
         "debug": "^4.3.4",
-        "jsonpath-plus": "^6.0.1",
+        "jsonpath-plus": "^7.0.0",
         "sharedb": "^3.0.0",
         "ws": "^8.5.0"
     },
