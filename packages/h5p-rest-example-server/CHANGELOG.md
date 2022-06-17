@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.1...v9.1.2) (2022-03-19)
+
+**Note:** Version bump only for package @lumieducation/h5p-rest-example-server
+
+
+
+
+
+## [9.1.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.0...v9.1.1) (2022-03-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.14 ([d86e4f5](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d86e4f5268791e46bf5ad9866f2648c73c015919))
+
+
+
+
+
+# [9.1.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.10...v9.1.0) (2022-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.12 ([1b97cd6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1b97cd6f3fafcdbf766abf270d8b0b422929384e))
+* **deps:** update dependency i18next to v21.6.13 ([564d4d1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/564d4d1ffbac89dd80a153259e0f72580b37a5d8))
+
+
+### Features
+
+* **shared state server:** added shared state server ([#2056](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2056)) ([3924d44](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3924d4478cdc791d08d1e2b4daf91500d4dce861))
+
+
+
+
+
+## [9.0.10](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.9...v9.0.10) (2022-02-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency body-parser to v1.19.2 ([b5d44ec](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b5d44ec79f0a1b7aac2045c82ea854df6a905c94))
+* **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+* **deps:** update dependency express to v4.17.3 ([765ff8a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/765ff8ae4bea0b6167dc7188fbd93c74affad00b))
+* **deps:** update dependency express-fileupload to v1.3.1 ([#2078](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2078)) ([d04a120](https://github.com/Lumieducation/H5P-Nodejs-library/commit/d04a1205ff7b7b8a12222bcc34fa6874321e3d12))
+* **deps:** update dependency i18next to v21.6.11 ([#2072](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2072)) ([17beecd](https://github.com/Lumieducation/H5P-Nodejs-library/commit/17beecda2c3280e92e42fd49e39fbf215c1bd1d3))
+* **deps:** update dependency i18next-http-middleware to v3.2.0 ([#2079](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2079)) ([11a15ac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/11a15ac4e6008e4e1909d0ca44208ef4bf134947))
+
+
+
+
+
+## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.7 ([7e7e4ef](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7e7e4efb1e0a5c456427b1fb92f800075fd8002c))
+
+
+
+
+
+## [9.0.8](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.7...v9.0.8) (2022-01-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency express to v4.17.2 ([26af13f](https://github.com/Lumieducation/H5P-Nodejs-library/commit/26af13f03cdca0b74a7814dd9285d43466bf4f07))
+* **deps:** update dependency i18next to v21 ([#1779](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1779)) ([0e6551a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0e6551a65b9030afe7fbe42886eac6412f1b0f81))
+* **deps:** update dependency i18next to v21.6.5 ([a6bccd1](https://github.com/Lumieducation/H5P-Nodejs-library/commit/a6bccd1b70b9ca09f1b7876b82b4b37dc2d2e0af))
+* **deps:** update dependency i18next to v21.6.6 ([778d1ac](https://github.com/Lumieducation/H5P-Nodejs-library/commit/778d1acb908bb2e44f1bc412acf6293c5380e0a3))
+* **deps:** update dependency i18next-http-middleware to v3.1.5 ([90a940a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/90a940a2480680121c4369e153052faa89ae2c4f))
+
+
+
+
+
 ## [9.0.6](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.5...v9.0.6) (2021-12-13)
 
 

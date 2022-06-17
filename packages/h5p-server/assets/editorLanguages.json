@@ -1,17 +1,19 @@
 [
     "ar",
     "bs",
+    "cs",
     "de",
     "el",
     "en",
     "es-cr",
-    "es-mx",
     "es",
+    "es-mx",
     "et",
     "eu",
     "fi",
     "fr",
     "it",
+    "ko",
     "nb",
     "nl",
     "nn",
@@ -19,5 +21,8 @@
     "pt-br",
     "pt",
     "ru",
-    "tr"
+    "sl",
+    "sv",
+    "tr",
+    "zh-cn"
 ]

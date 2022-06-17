@@ -234,6 +234,7 @@ export class H5PEditorComponent extends HTMLElement {
             );
         }
 
+        // Get parameters (and also validates them as a side effect)
         const params = this.editorInstance.getParams();
         if (!params.params) {
             this.dispatchAndThrowError(
@@ -251,13 +252,34 @@ export class H5PEditorComponent extends HTMLElement {
             );
         }
 
+        let content: { library: string; params: string };
+        try {
+            content = await new Promise<{ library: string; params: string }>(
+                (res, rej) => {
+                    // By calling getContent we also upgrade the content (this
+                    // is an unexpected side effect)
+                    this.editorInstance.getContent(
+                        (c) => {
+                            res(c);
+                        },
+                        (err) => {
+                            rej(err);
+                        }
+                    );
+                }
+            );
+        } catch (error) {
+            this.dispatchAndThrowError('validation-error', error.toString());
+        }
+
         let saveResponseObject: {
             contentId: string;
             metadata: IContentMetadata;
         };
+
         const requestBody = {
-            library: this.editorInstance.getLibrary(),
-            params
+            library: content.library,
+            params: JSON.parse(content.params)
         };
         try {
             saveResponseObject = await this.saveContentCallback(

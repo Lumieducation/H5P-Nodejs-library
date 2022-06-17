@@ -5,7 +5,8 @@ orbs:
 jobs:
     install-build:
         docker:
-            - image: circleci/node:16
+            - image: cimg/node:17.7
+        resource_class: medium+
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -48,6 +49,8 @@ jobs:
                       - packages/h5p-mongos3/node_modules
                       - packages/h5p-react/build
                       - packages/h5p-react/node_modules
+                      - packages/h5p-redis-lock/build
+                      - packages/h5p-redis-lock/node_modules
                       - packages/h5p-rest-example-client/build
                       - packages/h5p-rest-example-client/node_modules
                       - packages/h5p-rest-example-server/build
@@ -56,6 +59,8 @@ jobs:
                       - packages/h5p-sass-theme-builder/build
                       - packages/h5p-server/build
                       - packages/h5p-server/node_modules
+                      - packages/h5p-shared-state-server/build
+                      - packages/h5p-shared-state-server/node_modules
                       - packages/h5p-webcomponents/build
                       - packages/h5p-webcomponents/node_modules
                       - test/data/content-type-cache/real-content-types.json
@@ -63,7 +68,7 @@ jobs:
 
     lint:
         docker:
-            - image: circleci/node:16
+            - image: cimg/node:17.7
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -73,7 +78,7 @@ jobs:
 
     format:
         docker:
-            - image: circleci/node:16
+            - image: cimg/node:17.7
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -83,7 +88,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:17.7
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -98,9 +103,10 @@ jobs:
 
     integration-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:17.7
               environment:
                   TMPDIR: /mnt/ramdisk
+        resource_class: medium+
         steps:
             - checkout
             - attach_workspace:
@@ -112,9 +118,10 @@ jobs:
 
     html-exporter-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:17.7-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
+        resource_class: medium+
         steps:
             - checkout
             - attach_workspace:
@@ -127,7 +134,7 @@ jobs:
 
     e2e-tests:
         docker:
-            - image: circleci/node:16-browsers
+            - image: cimg/node:17.7
               environment:
                   TMPDIR: /mnt/ramdisk
         steps:
@@ -138,7 +145,7 @@ jobs:
 
     db-tests:
         docker:
-            - image: circleci/node:16
+            - image: cimg/node:17.7
             - image: circleci/mongo:latest
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
@@ -157,17 +164,22 @@ jobs:
                   parallel: true
                   flag_name: DB tests
 
+    push_coveralls:
+        docker:
+            - image: 'cimg/node:17.7'
+        steps:
+            - coveralls/upload:
+                  parallel_finished: true
+
     release:
         docker:
-            - image: 'circleci/node:16'
+            - image: 'cimg/node:17.7'
         working_directory: /mnt/ramdisk
         steps:
             - checkout
             - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
             - attach_workspace:
                   at: .
-            - coveralls/upload:
-                  parallel_finished: true
             - run:
                   name: config git
                   command: git config --global user.email "c@Lumi.education" && git config --global user.name "Lumi"
@@ -205,6 +217,16 @@ workflows:
                   filters:
                       branches:
                           only: release
+                  requires:
+                      - install-build
+                      - lint
+                      - format
+                      - unit-tests
+                      - html-exporter-tests
+                      # - e2e-tests
+                      - integration-tests
+                      - db-tests
+            - push_coveralls:
                   requires:
                       - install-build
                       - lint

@@ -17,6 +17,9 @@ import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadat
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
 import supportedLanguageList from '../assets/editorLanguages.json';
+import variantEquivalents from '../assets/variantEquivalents.json';
+
+import ContentUserDataManager from './ContentUserDataManager';
 
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -36,6 +39,7 @@ import {
     IAssets,
     IContentMetadata,
     IContentStorage,
+    IContentUserDataStorage,
     IEditorModel,
     IH5PConfig,
     IH5PEditorOptions,
@@ -97,14 +101,19 @@ export default class H5PEditor {
             'copyright-semantics': defaultCopyrightSemanticsLanguageFile
         }).t,
         private urlGenerator: IUrlGenerator = new UrlGenerator(config),
-        private options?: IH5PEditorOptions
+        private options?: IH5PEditorOptions,
+        public contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
 
         this.config = config;
 
         this.renderer = defaultRenderer;
-        this.contentTypeCache = new ContentTypeCache(config, cache);
+        this.contentTypeCache = new ContentTypeCache(
+            config,
+            cache,
+            this.options?.getLocalIdOverride
+        );
         this.contentHub = new ContentHub(config, cache);
         this.libraryManager = new LibraryManager(
             libraryStorage,
@@ -117,7 +126,10 @@ export default class H5PEditor {
             this.options?.lockProvider,
             this.config
         );
-        this.contentManager = new ContentManager(contentStorage);
+        this.contentManager = new ContentManager(
+            contentStorage,
+            contentUserDataStorage
+        );
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
@@ -127,6 +139,9 @@ export default class H5PEditor {
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config
+        );
+        this.contentUserDataManager = new ContentUserDataManager(
+            contentUserDataStorage
         );
         this.contentStorer = new ContentStorer(
             this.contentManager,
@@ -186,6 +201,7 @@ export default class H5PEditor {
     public contentManager: ContentManager;
     public contentTypeCache: ContentTypeCache;
     public contentTypeRepository: ContentTypeInformationRepository;
+    public contentUserDataManager: ContentUserDataManager;
     public libraryManager: LibraryManager;
     public packageImporter: PackageImporter;
     public temporaryFileManager: TemporaryFileManager;
@@ -224,7 +240,11 @@ export default class H5PEditor {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
-        return this.contentManager.deleteContent(contentId, user);
+        await this.contentManager.deleteContent(contentId, user);
+
+        if (this.options?.hooks?.contentWasDeleted) {
+            this.options.hooks.contentWasDeleted(contentId, user);
+        }
     }
 
     /**
@@ -554,6 +574,7 @@ export default class H5PEditor {
      */
     public render(
         contentId: ContentId,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         language: string = 'en',
         user: IUser
     ): Promise<string | any> {
@@ -712,6 +733,9 @@ export default class H5PEditor {
         mainLibraryUbername: string,
         user: IUser
     ): Promise<ContentId> {
+        await this.contentUserDataManager.deleteInvalidatedContentUserDataByContentId(
+            contentId
+        );
         return (
             await this.saveOrUpdateContentReturnMetaData(
                 contentId,
@@ -778,6 +802,24 @@ export default class H5PEditor {
             libraryName,
             user
         );
+
+        if (contentId && this.options?.hooks?.contentWasUpdated) {
+            this.options.hooks.contentWasUpdated(
+                newContentId,
+                h5pJson,
+                parameters,
+                user
+            );
+        }
+        if (!contentId && this.options?.hooks?.contentWasCreated) {
+            this.options.hooks.contentWasCreated(
+                newContentId,
+                h5pJson,
+                parameters,
+                user
+            );
+        }
+
         return { id: newContentId, metadata: h5pJson };
     }
 
@@ -1117,8 +1159,14 @@ export default class H5PEditor {
                 )
             },
             libraryConfig: this.config.libraryConfig,
-            postUserStatistics: false,
-            saveFreq: false,
+            postUserStatistics: this.config.setFinishedEnabled,
+            saveFreq:
+                this.config.contentUserStateSaveInterval !== false
+                    ? Math.round(
+                          Number(this.config.contentUserStateSaveInterval) /
+                              1000
+                      ) || 1
+                    : false,
             libraryUrl: this.urlGenerator.coreFiles(),
             pluginCacheBuster: this.cacheBusterGenerator(),
             url: this.urlGenerator.baseUrl(),
@@ -1205,16 +1253,38 @@ export default class H5PEditor {
      * @param language
      */
     private getLanguageReplacer(language: string): (script: string) => string {
-        if (supportedLanguageList.includes(language)) {
+        const cleanLanguage = language.toLocaleLowerCase();
+
+        // obvious case: the language file exists
+        if (supportedLanguageList.includes(cleanLanguage)) {
             return (f) =>
-                f.replace('language/en.js', `language/${language}.js`);
+                f.replace('language/en.js', `language/${cleanLanguage}.js`);
         }
-        const languageWithRegion = language.replace(/-.+$/, '');
-        if (supportedLanguageList.includes(languageWithRegion)) {
+
+        // check if equivalent variants exist (e.g. zh-hans, zh-cn, zh)
+        const variantList = variantEquivalents.find((l) =>
+            l.includes(cleanLanguage)
+        );
+        if (variantList) {
+            const alternativeVariant = variantList.find((v) =>
+                supportedLanguageList.includes(v)
+            );
+            if (alternativeVariant) {
+                return (f) =>
+                    f.replace(
+                        'language/en.js',
+                        `language/${alternativeVariant}.js`
+                    );
+            }
+        }
+
+        // fallback to language without variant code
+        const languageWithoutVariant = cleanLanguage.replace(/-.+$/, '');
+        if (supportedLanguageList.includes(languageWithoutVariant)) {
             return (f) =>
                 f.replace(
                     'language/en.js',
-                    `language/${languageWithRegion}.js`
+                    `language/${languageWithoutVariant}.js`
                 );
         }
         return (f) => f;
@@ -1241,6 +1311,17 @@ export default class H5PEditor {
             this.libraryManager.getLibrary(libraryName),
             this.libraryManager.getLanguage(libraryName, language || 'en')
         ]);
+
+        if (!library) {
+            throw new H5pError(
+                'library-missing',
+                {
+                    library: LibraryName.toUberName(libraryName)
+                },
+                404,
+                'when calling H5PEditor.listAssets'
+            );
+        }
 
         const addonsForLibrary = await this.getAddonsForLibrary(
             library.machineName

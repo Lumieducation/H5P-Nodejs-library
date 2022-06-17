@@ -10,6 +10,8 @@ import { IContentMetadata } from '../src/types';
 
 import User from './User';
 
+import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
+
 describe('ContentManager', () => {
     const mockupMetadata: IContentMetadata = {
         embedTypes: ['div'],
@@ -124,6 +126,33 @@ describe('ContentManager', () => {
                 await expect(
                     contentManager.getContentMetadata(contentId, user)
                 ).rejects.toThrow();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('deletes the related contentUserData', async () => {
+        const mockContentUserDataStorage = MockContentUserDataStorage();
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const contentManager = new ContentManager(
+                    new FileContentStorage(tempDirPath),
+                    mockContentUserDataStorage
+                );
+
+                const user = new User();
+                const contentId = await contentManager.createOrUpdateContent(
+                    mockupMetadata,
+                    mockupParameters,
+                    user
+                );
+
+                await expect(
+                    contentManager.deleteContent(contentId, user)
+                ).resolves.toBeUndefined();
+                expect(
+                    mockContentUserDataStorage.deleteAllContentUserDataByContentId
+                ).toHaveBeenCalledWith(contentId);
             },
             { keep: false, unsafeCleanup: true }
         );

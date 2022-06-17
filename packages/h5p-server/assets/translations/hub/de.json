@@ -358,7 +358,7 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Verzweigende Aufgabe (Branching Scenario) (beta)",
+        "title": "Verzweigende Aufgabe (Branching Scenario)",
         "summary": "Erstelle Szenarien zum selbstgesteuertes Lernen",
         "description": "Die Verzweigende Aufgabe ermöglicht es dir, den Lernenden eine Vielzahl von interaktiven Inhalten und Auswahlmöglichkeiten zu präsentieren. Die Entscheidungen, die die Lernenden treffen, bestimmen den nächsten Inhalt, den sie sehen. Dieser Inhaltstyp kann verwendet werden, um Dilemmata, ernsthafte Spiele und Inhalte zum selbstgesteuertes Lernen zu erstellen."
     },

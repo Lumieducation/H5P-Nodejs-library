@@ -34,6 +34,7 @@ export default async function createH5PEditor(
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
+    localContentUserDataPath?: string,
     translationCallback?: H5P.ITranslationFunction
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
@@ -124,6 +125,11 @@ export default async function createH5PEditor(
         );
     }
 
+    const contentUserDataStorage =
+        new H5P.fsImplementations.FileContentUserDataStorage(
+            localContentUserDataPath
+        );
+
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
         config,
@@ -178,7 +184,8 @@ export default async function createH5PEditor(
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
             lockProvider: lock
-        }
+        },
+        contentUserDataStorage
     );
 
     // Set bucket lifecycle configuration for S3 temporary storage to make

@@ -33,7 +33,8 @@ describe('S3TemporaryFileStorage', () => {
             secretAccessKey: 'miniosecret',
             endpoint: 'http://localhost:9000',
             s3ForcePathStyle: true,
-            signatureVersion: 'v4'
+            signatureVersion: 'v4',
+            correctClockSkew: true
         });
     });
 
@@ -56,6 +57,22 @@ describe('S3TemporaryFileStorage', () => {
     });
 
     it('initializes and can set bucket lifecycle configuration', async () => {
+        const filename = 'testfile1.jpg';
+        await storage.saveFile(
+            filename,
+            fsExtra.createReadStream(stubImagePath),
+            stubUser,
+            new Date()
+        );
+
+        let fileMetadata = await s3
+            .headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
+            .promise();
+        expect(fileMetadata.Expiration).toBeUndefined();
+
         await storage.setBucketLifecycleConfiguration(
             new H5PConfig(undefined, {
                 temporaryFileLifetime: 3 * 1000 * 60 * 24
@@ -69,7 +86,16 @@ describe('S3TemporaryFileStorage', () => {
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(3);
-        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('/');
+        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('');
+
+        fileMetadata = await s3
+            .headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
+            .promise();
+        // Example output: expiry-date="Thu, 10 Mar 2022 00:00:00 GMT", rule-id=""
+        expect(fileMetadata.Expiration).toBeDefined();
 
         await storage.setBucketLifecycleConfiguration(
             new H5PConfig(undefined, {
@@ -84,7 +110,16 @@ describe('S3TemporaryFileStorage', () => {
         expect(lifecycleConfiguration.Rules.length).toEqual(1);
         expect(lifecycleConfiguration.Rules[0].Status).toEqual('Enabled');
         expect(lifecycleConfiguration.Rules[0].Expiration.Days).toEqual(4);
-        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('/');
+        expect(lifecycleConfiguration.Rules[0].Filter.Prefix).toEqual('');
+
+        fileMetadata = await s3
+            .headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
+            .promise();
+        // Example output: expiry-date="Thu, 10 Mar 2022 00:00:00 GMT", rule-id=""
+        expect(fileMetadata.Expiration).toBeDefined();
     });
 
     it('adds files and returns stats and stream to them', async () => {
