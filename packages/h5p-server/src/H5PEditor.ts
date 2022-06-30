@@ -172,6 +172,12 @@ export default class H5PEditor {
 
         this.globalCustomStyles =
             this.options?.customization?.global?.styles || [];
+        if (this.config.theme) {
+            this.globalCustomStyles = this.globalCustomStyles.concat(
+                `${this.config.baseUrl}${this.config.themeUrl}`
+            );
+        }
+
         if (this.config.customization?.global?.editor?.styles) {
             this.globalCustomStyles = this.globalCustomStyles.concat(
                 this.config.customization.global?.editor.styles

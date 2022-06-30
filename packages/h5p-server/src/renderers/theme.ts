@@ -1,0 +1,592 @@
+import { ITheme } from '../types';
+
+export default (theme?: ITheme): string => {
+    if (!theme) {
+        return ``;
+    }
+    return `
+.h5peditor-form {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+body {
+    font-family: ${theme.fontFamily} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub-section-h5p-hub-upload,
+.h5p-hub-panel,
+.h5p-hub .h5p-hub-content-detail
+{
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-info-list li .h5p-hub-content {
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub-client-drop-down {
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.backgroundColor} !important;
+}
+
+/* hub selection text */
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-selected,
+.h5p-hub .h5p-hub-client-drop-down .h5p-hub-icon-hub-icon {
+    color: ${theme.fontColor} !important;
+}
+
+.h5peditor-copy-button:before,
+.h5peditor-paste-button:before {
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5p-tutorial-url,
+.h5p-example-url {
+    color: ${theme.primaryColor} !important;
+}
+
+.h5peditor {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-hub {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-hub .link, .h5p-hub a {
+    font-family: ${theme.fontFamily} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    font-family: $${theme.fontFamily} !important;
+}
+
+.form-manager-head {
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.backgroundColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor};
+}
+
+.form-manager-button {
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub .h5p-hub-tab-panel [role='tablist'] {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub-search-wrapper {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    background: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list ol {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5peditor-label {
+    color: ${theme.fontColor};
+}
+
+button.h5p-core-button {
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5peditor-field-description,
+.h5p-help-text {
+    color: ${theme.fontColor};
+}
+
+.h5p-hub-media .h5p-hub-highlight {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub ul.h5p-hub-list-of-numbers .h5p-hub-list-element a.h5p-hub-highlight {
+    border-color: ${theme.primaryColor};
+    background-color: ${theme.primaryColor};
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media[tabindex='0'] {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:not(:last-child) {
+    border-bottom: 1px solid ${theme.dividerColor};
+}
+
+/* button */
+.h5p-hub .h5p-hub-button.h5p-hub-button-primary {
+    background-color: ${theme.primaryColor} !important;
+    border-color: ${theme.primaryColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-hub .h5p-hub-button.h5p-hub-button-inverse-primary {
+    background-color: ${theme.secondaryColor} !important;
+    color: ${theme.secondaryContrastColor} !important;
+    border-color: ${theme.secondaryColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-hub .h5p-hub-content-type-list .h5p-hub-media:hover,
+.h5p-hub .h5p-hub-content-item.h5p-hub-tabular:hover, .h5p-hub .h5p-hub-content-item.h5p-hub-tabular:focus,
+.h5p-hub .h5p-hub-content-item.h5p-hub-grid:focus .h5p-hub-grid-item, .h5p-hub .h5p-hub-content-item.h5p-hub-grid:hover .h5p-hub-grid-item {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-navbar {
+    color: ${theme.fontColor} !important;
+}
+
+.h5peditor-paste-button,
+.h5peditor-copy-button {
+    color: ${theme.primaryContrastColor} !important;
+    background: ${theme.primaryColor} !important;
+}
+/* input */
+.h5peditor textarea,
+.h5peditor .h5peditor-text,
+.h5peditor .ckeditor {
+    background: ${theme.backgroundColor} !important;
+}
+
+.h5peditor textarea,
+.h5peditor .h5peditor-text,
+.h5peditor .ckeditor {
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+/* accordion header */
+.group.importance-low > .title,
+.h5p-li > .list-item-title-bar.importance-low,
+.common > .h5peditor-label {
+    background: ${theme.secondaryBackgroundColor};
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.fontColor} !important;
+}
+.h5p-course-presentation {
+    color: ${theme.fontColor} !important;
+}
+.h5p-dragnbar-keywords span {
+    color: ${theme.fontColor} !important;
+}
+/* settings */
+.group > .content {
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
+}
+
+.common > .fields {
+    color: ${theme.fontColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
+}
+
+.h5peditor fieldset.common-fields-library-wrapper > legend {
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5peditor fieldset.common-fields-library-wrapper {
+    border: solid 1px ${theme.dividerColor} !important;
+}
+
+.h5peditor .h5peditor-language-switcher select {
+    color: ${theme.fontColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border: solid 1px ${theme.dividerColor} !important;
+}
+
+.h5p-confirmation-dialog-header {
+    background: ${theme.backgroundColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-confirmation-dialog-body {
+    color: ${theme.fontColor} !important;
+    background: ${theme.backgroundColor} !important;
+    border-top: solid 1px ${theme.dividerColor} !important;
+}
+
+.h5p-hub .h5p-hub-content-type-detail {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-hub .h5p-hub-button {
+    border-radius: ${theme.buttonBorderRadius} !important;
+    background-color: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5p-hub-accordion-toggler {
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a.h5p-hub-highlight {
+    color: ${theme.primaryColor} !important;
+}
+
+.h5p-hub ul.h5p-hub-sort-by-list>li>a {
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub small, .h5p-hub .small, .h5p-hub .h5p-hub-small {
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub-carousel .h5p-hub-navigation {
+    color: ${theme.primaryContrastColor} !important;
+    background-color: ${theme.primaryColor} !important;
+}
+
+.h5p-hub-accordion-heading {
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5peditor-form-manager-head {
+    background: ${theme.secondaryBackgroundColor} !important;
+    color: ${theme.fontColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+}
+
+.field.wizard .h5peditor-tab-a {
+    background: ${theme.secondaryBackgroundColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5p-hub-search-wrapper .h5p-hub-border-wrap {
+    background: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-hub-search-bar {
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.fontColor};
+    background: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-editor-table-list tbody td {
+    background: ${theme.secondaryBackgroundColor};
+    border-top: 1px solid ${theme.dividerColor};
+    border-bottom: 1px solid ${theme.dividerColor};
+}
+
+.field.wizard {
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.field.wizard .h5peditor-tab-a.h5peditor-active {
+    background: ${theme.secondaryBackgroundColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.field.wizard .h5peditor-wizard-navigation-buttons {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.form-manager-form {
+    background: ${theme.backgroundColor} !important;
+}
+
+.form-manager-done,
+.form-manager-proceed {
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.form-manager-footer {
+    border-top: solid 1px ${theme.dividerColor} !important;
+}
+
+.h5peditor > select,
+.h5peditor .h5peditor-language-switcher select,
+.h5peditor h5peditor-select,
+.h5peditor .field > select {
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5peditor .file .add {
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5peditor .file .add .h5peditor-field-file-upload-text:before {
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.group > .title,
+.h5p-li > .list-item-title-bar {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5peditor-button-textual.importance-low {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5peditor-button-textual.importance-high {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.field.importance-high > .h5peditor-label-wrapper > .h5peditor-label {
+    color: ${theme.primaryColor} !important;
+}
+
+.content {
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.backgroundColor} !important;
+}
+
+.h5peditor-button-textual {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.h5peditor .ui-dialog .h5p-joubelui-button, .h5peditor .h5p-joubelui-button, .h5p-joubelui-button {
+    background: ${theme.primaryColor};
+    color: ${theme.primaryContrastColor};
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
+}
+
+.h5p-joubelui-button:hover, .h5p-joubelui-button:focus {
+    background: ${theme.primaryColor};
+    color: ${theme.primaryContrastColor};
+    font-family: ${theme.fontFamily} !important;
+    border-radius: ${theme.buttonBorderRadius} !important;
+}
+
+.h5p-multichoice .h5p-answer:not([aria-disabled="true"]):hover .h5p-alternative-container {
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5p-content {
+    color: ${theme.fontColor};
+    background: ${theme.backgroundColor};
+    border: 1px solid ${theme.dividerColor};
+}
+
+.h5p-question {
+    background: ${theme.backgroundColor};
+    color: ${theme.fontColor};
+}
+
+.h5p-multichoice .h5p-alternative-container {
+    color: ${theme.fontColor};
+    background: ${theme.secondaryBackgroundColor};
+}
+
+.h5p-joubelui-score-bar {
+    color: ${theme.fontColor};
+    background: ${theme.secondaryBackgroundColor};
+    border: 1px solid ${theme.dividerColor};
+
+}
+
+.h5p-joubelui-score-number {
+    color: ${theme.fontColor};
+}
+
+.h5p-drag-text [aria-dropeffect] {
+    background-color: ${theme.secondaryBackgroundColor};
+}
+
+.h5p-drag-text [aria-grabbed] {
+    border: 0.1em solid ${theme.dividerColor};
+    background: ${theme.secondaryBackgroundColor};
+
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: ${theme.backgroundColor};
+}
+
+.h5p-course-presentation .h5p-progressbar .h5p-progressbar-part-show {
+    background: ${theme.primaryColor};
+}
+
+.h5p-course-presentation .h5p-presentation-wrapper {
+    background: ${theme.backgroundColor};
+}
+
+.h5p-li > .list-item-title-bar.importance-high .order-group {
+    background: ${theme.primaryColor};
+}
+
+.h5p-editor-table-list tbody td {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border-top: 1px solid ${theme.dividerColor} !important;
+    border-bottom: 1px solid ${theme.dividerColor} !important;
+}
+.h5p-metadata-button-tip {
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+.h5p-metadata-toggler {
+    border: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+.h5p-metadata-wrapper {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.group.importance-low > .title, .h5p-li > .list-item-title-bar.importance-low > .h5peditor-label, .h5p-li > .list-item-title-bar.importance-low > .title, .common > .h5peditor-label {
+    color: ${theme.fontColor};
+}
+
+.field.wizard .h5peditor-wizard-navigation-buttons > div {
+    color: ${theme.primaryContrastColor} !important;
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5peditor-widget-option {
+    border: 1px solid ${theme.dividerColor};
+    color: ${theme.fontColor};
+    background: ${theme.secondaryBackgroundColor};
+}
+
+.h5p-vtab-a {
+    border: 1px solid ${theme.dividerColor} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    color: ${theme.fontColor} !important;
+}
+
+.important-description-show {
+    background: ${theme.warningColor} !important;
+    color: ${theme.warningContrastColor} !important;
+}
+
+.h5peditor-field-important-description {
+    border: 1px solid ${theme.dividerColor} !important;
+    background-color: ${theme.warningColor} !important;
+    color: ${theme.warningContrastColor} !important;
+}
+.h5p-new-scene-button {
+    color: ${theme.fontColor} !important;
+    background: ${theme.primaryColor} !important;
+    border: 1px solid ${theme.primaryColor} !important;
+}
+
+.h5p-editing-dialog {
+    background: ${theme.backgroundColor} !important;
+}
+
+.h5p-editing-dialog-header .done-button {
+    color: ${theme.fontColor} !important;
+    background: ${theme.primaryColor} !important;
+    border-color: ${theme.primaryColor} !important;
+}
+
+.h5peditor .h5p-add-dialog {
+    background: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-buttons {
+    padding: 0.5em;
+    border-top: 1px solid ${theme.dividerColor} !important;
+    background: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5peditor .h5p-add-dialog .h5p-add-dialog-table .h5p-file-drop-upload {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border: 1px solid ${theme.dividerColor} !important;
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: ${theme.backgroundColor} !important;
+}
+
+.h5p-collage-wrapper {
+    background-color: ${theme.secondaryBackgroundColor};
+}
+
+.h5p-collage-inner-wrapper, .h5p-collage-editor-layout-selector {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+.h5p-collage-wrapper {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-interactive-book-status {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border-color: ${theme.dividerColor} !important;
+}
+.h5p-interactive-book-status-chapter .title {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-interactive-book-status-progressbar-front {
+    background-color: ${theme.primaryColor} !important;;
+}
+
+.h5p-interactive-book-status-menu.h5p-interactive-book-status-menu-active {
+    background-color: ${theme.primaryColor} !important;
+    color: ${theme.primaryContrastColor} !important;
+}
+
+.h5p-interactive-book-status-progress-number {
+    color: ${theme.primaryColor} !important;
+    font-family: ${theme.fontFamily};
+}
+.h5p-interactive-book-status-arrow .navigation-button {
+    color: ${theme.primaryColor};
+}
+.h5p-interactive-book-status-fullscreen.h5p-interactive-book-enter-fullscreen::before {
+    color: ${theme.primaryColor} !important;
+}
+
+.h5p-interactive-book-navigation-maintitle {
+    background-color: ${theme.primaryColor} !important;
+}
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+}
+
+.h5p-interactive-book-navigation-chapter-button {
+    background-color: ${theme.secondaryBackgroundColor} !important;
+    border-bottom: solid 1px ${theme.dividerColor};
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    color: ${theme.fontColor} !important;
+    font-family: ${theme.fontFamily} !important;
+}
+.h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    font-family: ${theme.fontFamily} !important;
+    color: ${theme.primaryColor} !important;
+}
+`;
+};

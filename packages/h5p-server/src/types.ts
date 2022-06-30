@@ -1807,6 +1807,16 @@ export interface IH5PConfig {
      * library.
      */
     installLibraryLockTimeout: number;
+
+    /**
+     * A global theme that is applied to the player and the editor.
+     */
+    theme?: ITheme;
+
+    /**
+     * The URL at which the global theme can be accessed. Relative to baseUrl.
+     */
+    themeUrl?: string;
 }
 
 /**
@@ -2341,4 +2351,25 @@ export interface ILockProvider {
         callback: () => Promise<T>,
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T>;
+}
+
+export interface ITheme {
+    fontColor: string;
+    secondaryFontColor: string;
+    disabledFontColor: string;
+    backgroundColor: string;
+    secondaryBackgroundColor: string;
+    primaryColor: string;
+    primaryContrastColor: string;
+    secondaryColor: string;
+    secondaryContrastColor: string;
+    dividerColor: string;
+    warningColor: string;
+    warningContrastColor: string;
+    successColor: string;
+    successContrastColor: string;
+    errorColor: string;
+    errorContrastColor: string;
+    fontFamily: string;
+    buttonBorderRadius: string;
 }

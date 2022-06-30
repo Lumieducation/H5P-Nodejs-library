@@ -1,0 +1,61 @@
+@import '../variables.scss';
+
+.h5p-interactive-book-status {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+    background-color: $secondaryBackgroundColor !important;
+    border-color: $dividerColor !important;
+}
+
+.h5p-interactive-book-status-chapter .title {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-interactive-book-status-progressbar-front {
+    background-color: $primaryColor !important;
+    ;
+}
+
+.h5p-interactive-book-status-menu.h5p-interactive-book-status-menu-active {
+    background-color: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-interactive-book-status-progress-number {
+    color: $primaryColor !important;
+    font-family: $fontFamily;
+}
+
+.h5p-interactive-book-status-arrow .navigation-button {
+    color: $primaryColor;
+}
+
+.h5p-interactive-book-status-fullscreen.h5p-interactive-book-enter-fullscreen::before {
+    color: $primaryColor !important;
+}
+
+.h5p-interactive-book-navigation-maintitle {
+    background-color: $primaryColor !important;
+}
+
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button {
+    background-color: $secondaryBackgroundColor !important;
+}
+
+.h5p-interactive-book-navigation-chapter-button {
+    background-color: $secondaryBackgroundColor !important;
+    border-bottom: solid 1px $dividerColor;
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-interactive-book-navigation-closed .h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+}
+
+.h5p-interactive-book-navigation-chapter-button .h5p-interactive-book-navigation-chapter-title-text {
+    font-family: $fontFamily !important;
+    color: $primaryColor !important;
+}

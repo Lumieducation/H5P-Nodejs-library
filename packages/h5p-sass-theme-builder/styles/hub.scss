@@ -1,0 +1,168 @@
+@import "./variables.scss";
+
+.h5p-hub {
+    color: $fontColor !important;
+    font-family: $fontFamily !important;
+
+    .h5p-hub-content-detail,
+    .h5p-hub-content-type-detail,
+    .h5p-hub-section-h5p-hub-upload,
+    .h5p-hub-panel {
+        background-color: $backgroundColor !important;
+    }
+
+    .h5p-hub-info-list li .h5p-hub-content,
+    .h5p-hub-navbar,
+    small,
+    .small,
+    .h5p-hub-small,
+    .h5p-hub-accordion-toggler,
+    .link,
+    a {
+        font-family: $fontFamily !important;
+        color: $fontColor !important;
+    }
+
+    .h5p-hub-client-drop-down {
+
+        .h5p-hub-selected,
+        .h5p-hub-icon-hub-icon {
+            color: $fontColor !important;
+        }
+    }
+
+    .h5p-hub-tab-panel [role='tablist'],
+    .h5p-hub-navbar,
+    .h5p-hub-content-type-list .h5p-hub-media:hover,
+    .h5p-hub-search-wrapper,
+    .h5p-hub-media .h5p-hub-highlight {
+        background-color: $secondaryBackgroundColor !important;
+    }
+
+    .h5p-hub-content-type-list {
+        ol {
+            background-color: $backgroundColor !important;
+        }
+
+        background-color: $backgroundColor !important;
+    }
+
+    ul.h5p-hub-list-of-numbers .h5p-hub-list-element a.h5p-hub-highlight {
+        border-color: $primaryColor;
+        background-color: lighten($primaryColor, 10%);
+    }
+
+    .h5p-hub-content-type-list .h5p-hub-media {
+        &[tabindex='0'] {
+            background-color: $secondaryBackgroundColor !important;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid $dividerColor;
+        }
+    }
+
+    .h5p-hub-button {
+        font-family: $fontFamily !important;
+        border-radius: $buttonBorderRadius !important;
+        background-color: $primaryColor !important;
+        color: $primaryContrastColor !important;
+        border-color: darken($primaryColor, 10%) !important;
+
+        &:hover {
+            background: darken($primaryColor, 10%) !important;
+            border-color: darken($primaryColor, 20%) !important;
+        }
+
+        &.h5p-hub-button-primary {
+            background-color: $primaryColor !important;
+            border-color: $primaryColor !important;
+            font-family: $fontFamily !important;
+        }
+
+        &.h5p-hub-button-inverse-primary {
+            background-color: transparent !important;
+            color: $primaryColor !important;
+            border-color: $primaryColor !important;
+            font-family: $fontFamily !important;
+
+            &:hover {
+                color: lighten($primaryColor, 10%) !important;
+                border-color: lighten($primaryColor, 10%) !important;
+            }
+        }
+    }
+
+    .h5p-hub-content-item {
+        &.h5p-hub-tabular {
+
+            &:hover,
+            &:focus {
+                background-color: $secondaryBackgroundColor !important;
+            }
+        }
+
+        &.h5p-hub-grid {
+
+            &:focus .h5p-hub-grid-item,
+            &:hover .h5p-hub-grid-item {
+                background-color: $secondaryBackgroundColor !important;
+            }
+        }
+    }
+
+    ul.h5p-hub-sort-by-list>li>a {
+        &.h5p-hub-highlight {
+            color: $primaryColor !important;
+        }
+
+        color: $fontColor !important;
+    }
+
+
+    .h5p-hub-carousel .h5p-hub-navigation {
+        color: $primaryContrastColor !important;
+        background-color: $primaryColor !important;
+    }
+
+    .h5p-hub-accordion-heading {
+        border-bottom: 1px solid $dividerColor !important;
+        background-color: $secondaryBackgroundColor !important;
+    }
+
+    .h5p-hub-search-wrapper .h5p-hub-border-wrap {
+        background: $secondaryBackgroundColor !important;
+    }
+
+    .h5p-hub-search-bar {
+        border: 1px solid $dividerColor;
+        color: $fontColor;
+        background: $secondaryBackgroundColor !important;
+    }
+
+    .h5p-hub-client-drop-down {
+        color: $fontColor !important;
+        background-color: $backgroundColor !important;
+    }
+
+    .h5p-hub-downloading-modal {
+        background-color: $backgroundColor;
+    }
+}
+
+.h5p-hub-message {
+    &.h5p-hub-error {
+        background-color: transparentize($errorColor, 0.75) !important;
+        box-shadow: inset 0.167em $errorColor;
+    }
+
+    &.h5p-hub-info {
+        background-color: transparentize($successColor, 0.75) !important;
+        box-shadow: inset 0.167em $successColor;
+    }
+
+    .h5p-hub-message-content .h5p-hub-message-body,
+    .h5p-hub-message-close {
+        color: $fontColor;
+    }
+}

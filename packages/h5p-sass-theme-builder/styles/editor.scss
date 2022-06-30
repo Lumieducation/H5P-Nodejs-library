@@ -1,0 +1,535 @@
+@import "./variables.scss";
+
+.h5peditor-form,
+.h5peditor {
+    background-color: $backgroundColor !important;
+}
+
+.h5peditor-form,
+.form-manager.h5peditor-form {
+    border-color: $dividerColor !important;
+}
+
+.h5peditor-paste-button,
+.h5peditor-copy-button {
+    &::before {
+        color: $primaryContrastColor !important;
+    }
+
+    color: $primaryContrastColor !important;
+    background: lighten($primaryColor, 12.5%) !important;
+    border-color: lighten($primaryColor, 10%) !important;
+
+    &:hover {
+        border-color: $primaryColor !important;
+        background: lighten($primaryColor, 7.5%) !important;
+    }
+
+    &.disabled {
+        background: lighten($primaryColor, 25%) !important;
+        border-color: lighten($primaryColor, 20%) !important;
+
+        &:hover {
+            background: lighten($primaryColor, 25%) !important;
+            border-color: lighten($primaryColor, 20%) !important;
+        }
+    }
+}
+
+.h5p-metadata-button-wrapper {
+
+    background-color: transparent !important;
+
+    .h5p-metadata-button-tip,
+    .h5p-metadata-toggler {
+        border: 1px solid lighten($primaryColor, 10%) !important;
+        background: lighten($primaryColor, 12.5%) !important;
+    }
+
+
+    .h5p-metadata-toggler {
+        color: $primaryContrastColor !important;
+        border-left: none !important;
+    }
+
+    &:hover {
+
+        .h5p-metadata-button-tip,
+        .h5p-metadata-toggler {
+            border-color: $primaryColor !important;
+            background: lighten($primaryColor, 7.5%) !important;
+        }
+    }
+}
+
+.h5p-tutorial-url {
+    &::before {
+        color: $secondaryColor !important;
+        background-color: lighten($secondaryColor, 20%);
+    }
+
+    .h5p-tutorial-url-label {
+        color: $secondaryColor !important;
+    }
+
+    &:hover {
+        background-color: lighten($secondaryColor, 30%);
+    }
+
+}
+
+
+.h5p-example-url {
+
+    &::before {
+        background-color: lighten($primaryColor, 20%);
+        color: $primaryColor !important;
+    }
+
+    .h5p-example-url-label {
+        color: $primaryColor !important;
+    }
+
+    &:hover {
+        background-color: lighten($primaryColor, 30%);
+    }
+}
+
+.h5peditor-label {
+    color: $fontColor;
+}
+
+.form-manager-head {
+    color: $secondaryFontColor !important;
+    background-color: $backgroundColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+}
+
+.form-manager-button {
+    color: $fontColor !important;
+}
+
+.form-manager-delete {
+    color: $errorColor !important;
+
+    &:hover {
+        background-color: lighten($errorColor, 20%) !important;
+    }
+}
+
+.form-manager-title {
+    &.clickable {
+        color: $primaryColor !important;
+
+        &:after {
+            background-color: $backgroundColor !important;
+        }
+
+        &:hover,
+        &:hover:after {
+            background-color: lighten($backgroundColor, 10%) !important;
+        }
+    }
+}
+
+.form-manager-title:before,
+.form-manager-menutitle:before {
+    color: $secondaryFontColor !important;
+}
+
+
+.h5peditor-field-description,
+.h5p-help-text {
+    color: $fontColor;
+}
+
+.h5peditor {
+
+    textarea,
+    .h5peditor-text,
+    .ckeditor {
+        background: $backgroundColor !important;
+    }
+
+    .h5p-or-vertical .h5p-or-vertical-word-wrapper .h5p-or-vertical-word {
+        color: $fontColor !important;
+        background: $secondaryBackgroundColor !important;
+    }
+
+    textarea,
+    .h5peditor-text,
+    .ckeditor {
+        border: 1px solid $dividerColor !important;
+        color: $fontColor !important;
+    }
+
+    fieldset.common-fields-library-wrapper {
+        >legend {
+            color: $fontColor !important;
+            background-color: $secondaryBackgroundColor !important;
+            border: 1px solid $dividerColor !important;
+        }
+
+        border: solid 1px $dividerColor !important;
+    }
+
+    .h5peditor-language-switcher select {
+        color: $fontColor !important;
+        background-color: $secondaryBackgroundColor !important;
+        border: solid 1px $dividerColor !important;
+    }
+
+    >select,
+    .h5peditor-language-switcher select,
+    h5peditor-select,
+    .field>select {
+        border: 1px solid $dividerColor !important;
+        background: $secondaryBackgroundColor !important;
+        color: $fontColor !important;
+    }
+
+    .file .add {
+        .h5peditor-field-file-upload-text:before {
+            color: $primaryContrastColor !important;
+        }
+    }
+
+    .ui-dialog .h5p-joubelui-button,
+    .h5p-joubelui-button {
+        background: $primaryColor !important;
+        color: $primaryContrastColor !important;
+        font-family: $fontFamily !important;
+        border-radius: $buttonBorderRadius !important;
+
+        &:hover {
+            background: darken($primaryColor, 10%) !important;
+        }
+    }
+
+    .h5p-add-dialog {
+        background: $secondaryBackgroundColor !important;
+        border: 1px solid $dividerColor !important;
+
+        .h5p-buttons {
+            padding: 0.5em;
+            border-top: 1px solid $dividerColor !important;
+            background: $secondaryBackgroundColor !important;
+        }
+
+        .h5p-add-dialog-table {
+
+            .h5p-file-drop-upload,
+            .h5p-file-url-wrapper,
+            .h5p-file-drop-upload .h5p-file-drop-upload-inner {
+                background-color: $secondaryBackgroundColor !important;
+                border: 1px solid $dividerColor !important;
+            }
+
+            h3 {
+                color: $fontColor !important;
+            }
+        }
+    }
+
+    .h5p-editing-image-button:before,
+    .h5p-copyright-button:before {
+        color: $primaryContrastColor !important;
+    }
+}
+
+/* accordion header */
+.group.importance-low>.title,
+.h5p-li>.list-item-title-bar.importance-low,
+.common>.h5peditor-label {
+    background: $secondaryBackgroundColor;
+    border: 1px solid $dividerColor;
+    color: $fontColor !important;
+}
+
+.h5p-li>.list-item-title-bar.importance-low>.title:before,
+.h5p-li>.list-item-title-bar.importance-low .remove:after,
+.h5p-li>.list-item-title-bar.importance-low .order-up:after,
+.h5p-li>.list-item-title-bar.importance-low .order-down:after {
+    color: $fontColor !important;
+}
+
+.h5peditor-form-manager-head {
+    background: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+}
+
+
+.h5p-editor-table-list tbody td {
+    background: $secondaryBackgroundColor;
+    border-color: $dividerColor !important;
+}
+
+.field.wizard {
+
+    .h5peditor-tab-a {
+        background: $secondaryBackgroundColor !important;
+        color: $fontColor !important;
+    }
+
+    border: 1px solid $dividerColor !important;
+
+    .h5peditor-tab-a.h5peditor-active {
+        background: $secondaryBackgroundColor !important;
+        color: $fontColor !important;
+
+        &:before {
+            color: $primaryColor !important;
+        }
+    }
+
+    .h5peditor-wizard-navigation-buttons {
+        background-color: $secondaryBackgroundColor !important;
+
+        >div {
+            color: $primaryContrastColor !important;
+            background: $primaryColor !important;
+            border: 1px solid darken($primaryColor, 10%) !important;
+
+            &:hover {
+                background: darken($primaryColor, 10%) !important;
+                border: 1px solid darken($primaryColor, 20%) !important;
+            }
+        }
+
+        div div {
+            border-color: darken($primaryColor, 10%) !important;
+
+            &:hover {
+                border-color: darken($primaryColor, 20%) !important;
+            }
+        }
+
+        div div span:first-child,
+        .nav-button-label:before {
+            color: $secondaryFontColor !important;
+        }
+    }
+}
+
+.form-manager-form {
+    background: $backgroundColor !important;
+}
+
+.form-manager-done,
+.form-manager-proceed {
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+
+    &:hover {
+        background: darken($primaryColor, 10%) !important;
+    }
+}
+
+.form-manager-footer {
+    border-top: solid 1px $dividerColor !important;
+}
+
+/* Primary button type */
+.h5peditor .file .add,
+.h5peditor-button-textual.importance-low,
+.h5peditor-button-textual.importance-high,
+.h5peditor-button-textual {
+    background: $primaryColor !important;
+    border-color: darken($primaryColor, 10%) !important;
+    color: $fontColor !important;
+
+    &:hover {
+        background: darken($primaryColor, 10%) !important;
+        border-color: darken($primaryColor, 20%) !important;
+    }
+}
+
+.h5peditor-range-distribute[aria-disabled="true"],
+.h5peditor-button-textual.h5peditor-range-distribute[aria-disabled="true"]:hover {
+    background: lighten($primaryColor, 10%) !important;
+    border-color: darken($primaryColor, 20%) !important;
+    color: $fontColor !important;
+    color: darken($fontColor, 10%);
+}
+
+.h5peditor-button-textual[disabled]:before,
+.h5peditor-button-textual[aria-disabled="true"]:before {
+    color: darken($fontColor, 10%);
+}
+
+.field.importance-high>.h5peditor-label-wrapper>.h5peditor-label {
+    color: $primaryColor !important;
+}
+
+.h5p-editor-table-list tbody td {
+    background: $secondaryBackgroundColor !important;
+    border-top: 1px solid $dividerColor !important;
+    border-bottom: 1px solid $dividerColor !important;
+}
+
+.group>.title {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+}
+
+.h5p-li>.list-item-title-bar {
+    background: $secondaryBackgroundColor !important;
+    border: 1px solid $dividerColor !important;
+    color: $fontColor !important;
+
+    & {
+
+        & .order-up,
+        .order-down,
+        .order-group {
+            background: darken($secondaryBackgroundColor, 5%) !important;
+
+            &:hover {
+                background: darken($secondaryBackgroundColor, 15%) !important;
+            }
+        }
+    }
+
+    &.importance-high {
+
+        & .order-up,
+        .order-down,
+        .order-group {
+            background: $primaryColor !important;
+
+            &:hover {
+                background: darken($primaryColor, 10%) !important;
+            }
+        }
+    }
+}
+
+.group.importance-low>.title {
+    color: $fontColor;
+}
+
+.h5p-li>.list-item-title-bar.importance-low> {
+
+    .h5peditor-label,
+    .title {
+        color: $fontColor;
+    }
+}
+
+.common>.h5peditor-label {
+    color: $fontColor;
+}
+
+.h5peditor-widget-option {
+    border: 1px solid $dividerColor;
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+}
+
+.h5p-vtab-a {
+    border: 1px solid $dividerColor !important;
+    background-color: $secondaryBackgroundColor !important;
+    color: $fontColor !important;
+}
+
+.vtab-order-wrapper>.order-up,
+.vtab-order-wrapper>.order-down {
+    background: $backgroundColor !important;
+    color: $fontColor !important;
+
+    &:hover {
+        background: darken($backgroundColor, 10%) !important;
+    }
+}
+
+
+.vtab-order-wrapper>.order-up[aria-disabled="true"],
+.vtab-order-wrapper>.order-down[aria-disabled="true"] {
+    background: $secondaryBackgroundColor !important;
+    color: $disabledFontColor !important;
+
+    &:hover {
+        background: $secondaryBackgroundColor !important;
+    }
+}
+
+.important-description-show {
+    background: $warningColor !important;
+    color: $warningContrastColor !important;
+}
+
+.h5peditor-field-important-description {
+    border: 1px solid $dividerColor !important;
+    background-color: $warningColor !important;
+    color: $warningContrastColor !important;
+
+    .important-description-example {
+        border: 1px solid darken($successColor, 5%);
+        background-color: $successColor;
+    }
+}
+
+.h5p-editing-dialog {
+    background: $backgroundColor !important;
+}
+
+.h5p-editing-dialog-header .done-button {
+    color: $fontColor !important;
+    background: $primaryColor !important;
+    border-color: $primaryColor !important;
+}
+
+/* settings */
+
+.group>.content {
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+}
+
+.common>.fields {
+    color: $fontColor !important;
+    border: 1px solid $dividerColor !important;
+    background: $backgroundColor !important;
+
+    .desc {
+        color: $disabledFontColor;
+    }
+}
+
+.h5p-metadata-wrapper {
+    background: $backgroundColor;
+
+    .h5peditor-label,
+    .a11y-title-toggle {
+        color: $fontColor;
+    }
+}
+
+.h5p-metadata-wrapper .h5p-save,
+.h5p-metadata-author-widget .h5p-save-author {
+    background-color: $secondaryColor !important;
+    border-color: darken($secondaryColor, 5%) !important;
+
+    &:hover {
+        background-color: darken($secondaryColor, 5%) !important;
+        border-color: darken($secondaryColor, 10%) !important
+    }
+}
+
+.h5p-editor-range-list-message-area {
+    border-color: $errorColor !important;
+    background-color: lighten($errorColor, 10%) !important;
+}
+
+.h5p-dragnbar-keywords.h5p-open,
+.h5p-keywords-dropdown {
+    background-color: $secondaryBackgroundColor !important;
+    color: $secondaryContrastColor !important;
+
+    >label {
+        color: $secondaryContrastColor !important;
+    }
+}

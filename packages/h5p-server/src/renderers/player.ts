@@ -11,7 +11,6 @@ export default (model: IPlayerModel): string => `<!doctype html>
     ${model.scripts
         .map((script) => `<script src="${script}"></script>`)
         .join('\n    ')}
-
     <script>
         window.H5PIntegration = ${JSON.stringify(model.integration, null, 2)};
     </script>

@@ -20,7 +20,6 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
     <script src=\\"/h5p/core/js/h5p-action-bar.js?version=1.24-master\\"></script>
     <script src=\\"/h5p/core/js/request-queue.js?version=1.24-master\\"></script>
     <script src=\\"/test.js\\"></script>
-
     <script>
         window.H5PIntegration = {
   \\"ajax\\": {
@@ -277,7 +276,6 @@ exports[`Rendering the HTML page uses default renderer and integration values 1`
     <script src=\\"/h5p/core/js/h5p-confirmation-dialog.js?version=1.24-master\\"></script>
     <script src=\\"/h5p/core/js/h5p-action-bar.js?version=1.24-master\\"></script>
     <script src=\\"/h5p/core/js/request-queue.js?version=1.24-master\\"></script>
-
     <script>
         window.H5PIntegration = {
   \\"ajax\\": {

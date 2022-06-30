@@ -56,6 +56,7 @@ jobs:
                       - packages/h5p-rest-example-server/build
                       - packages/h5p-rest-example-server/h5p
                       - packages/h5p-rest-example-server/node_modules
+                      - packages/h5p-sass-theme-builder/build
                       - packages/h5p-server/build
                       - packages/h5p-server/node_modules
                       - packages/h5p-shared-state-server/build

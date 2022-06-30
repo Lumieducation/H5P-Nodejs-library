@@ -1,0 +1,22 @@
+@import '../variables.scss';
+
+.h5p-select-handle,
+.expanded-scene-selector .header,
+.h5p-scene-row {
+    background: lighten($secondaryBackgroundColor, 10%) !important;
+    color: $secondaryContrastColor !important;
+}
+
+.h5p-scene-row.marked-scene {
+    background: lighten($successColor, 20%) !important;
+}
+
+.h5p-scene-selector {
+    background: $secondaryBackgroundColor !important;
+    border: $dividerColor !important;
+
+    &:hover {
+        background: lighten($secondaryBackgroundColor, 10%) !important;
+        border: lighten($dividerColor, 10%) !important;
+    }
+}

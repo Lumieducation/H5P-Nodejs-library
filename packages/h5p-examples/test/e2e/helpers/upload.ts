@@ -100,21 +100,23 @@ export async function uploadSave(file: string): Promise<void> {
             window.onEditorLoaded(browserFile);
         });
     }, file);
-    await contentFrame.waitForSelector('#upload');
-    await contentFrame.focus('#upload');
-    await contentFrame.click('#upload');
-    await contentFrame.waitForSelector(".input-wrapper input[type='file']");
+    await contentFrame.waitForSelector('#h5p-hub-upload');
+    await contentFrame.focus('#h5p-hub-upload');
+    await contentFrame.click('#h5p-hub-upload');
+    await contentFrame.waitForSelector(
+        ".h5p-hub-input-wrapper input[type='file']"
+    );
     const uploadHandle = await contentFrame.$(
-        ".input-wrapper input[type='file']"
+        ".h5p-hub-input-wrapper input[type='file']"
     );
     await uploadHandle.uploadFile(file);
-    await contentFrame.waitForSelector('button.use-button');
-    await contentFrame.focus('button.use-button');
-    await contentFrame.click('button.use-button');
+    await contentFrame.waitForSelector('button.h5p-hub-use-button');
+    await contentFrame.focus('button.h5p-hub-use-button');
+    await contentFrame.click('button.h5p-hub-use-button');
 
     // Wait until the file was validated.
-    if (!(await contentFrame.$('div.h5p-hub-message.info'))) {
-        await contentFrame.waitForSelector('div.h5p-hub-message.info', {
+    if (!(await contentFrame.$('div.h5p-hub-message.h5p-hub-info'))) {
+        await contentFrame.waitForSelector('div.h5p-hub-message.h5p-hub-info', {
             timeout: 60000 // increased timeout as validation can take
             // ages
         });

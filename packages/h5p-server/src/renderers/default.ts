@@ -1,5 +1,4 @@
 import { IEditorModel } from '../types';
-
 export default (model: IEditorModel): string => `<html>
 <head>
 <meta charset="UTF-8">

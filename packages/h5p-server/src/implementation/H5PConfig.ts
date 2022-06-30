@@ -1,4 +1,4 @@
-import { IH5PConfig, IKeyValueStorage } from '../types';
+import { IH5PConfig, IKeyValueStorage, ITheme } from '../types';
 
 /**
  * Stores configuration options and literals that are used throughout the
@@ -16,9 +16,9 @@ export default class H5PConfig implements IH5PConfig {
         this.storage = storage;
         if (defaults) {
             for (const key in defaults) {
-                if (this[key] !== undefined) {
-                    this[key] = defaults[key];
-                }
+                // if (this[key] !== undefined) {
+                this[key] = defaults[key];
+                // }
             }
         }
     }
@@ -108,6 +108,8 @@ export default class H5PConfig implements IH5PConfig {
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
     public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = '';
+    public theme?: ITheme;
+    public themeUrl?: string = '/theme.css';
 
     private storage: IKeyValueStorage;
 
@@ -138,6 +140,8 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('setFinishedEnabled');
         await this.loadSettingFromStorage('siteType');
+        await this.loadSettingFromStorage('theme');
+        await this.loadSettingFromStorage('themeUrl');
         await this.loadSettingFromStorage('uuid');
         return this;
     }
@@ -168,6 +172,8 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('setFinishedEnabled');
         await this.saveSettingToStorage('siteType');
+        await this.saveSettingToStorage('theme');
+        await this.saveSettingToStorage('themeUrl');
         await this.saveSettingToStorage('uuid');
     }
 

@@ -233,7 +233,13 @@ export default class H5PPlayer {
                 }
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
-            styles: this.listCoreStyles().concat(assets.styles),
+            styles: this.listCoreStyles()
+                .concat(assets.styles)
+                .concat(
+                    this.config.theme
+                        ? [`${this.config.baseUrl}${this.config.themeUrl}`]
+                        : []
+                ),
             translations: {},
             embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
             user

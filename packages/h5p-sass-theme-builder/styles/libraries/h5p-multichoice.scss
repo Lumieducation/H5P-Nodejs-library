@@ -1,0 +1,11 @@
+@import '../variables.scss';
+
+.h5p-multichoice .h5p-answer:not([aria-disabled="true"]):hover .h5p-alternative-container {
+    background: $primaryColor !important;
+    color: $primaryContrastColor !important;
+}
+
+.h5p-multichoice .h5p-alternative-container {
+    color: $fontColor;
+    background: $secondaryBackgroundColor;
+}
