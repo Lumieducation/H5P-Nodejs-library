@@ -108,7 +108,7 @@
         "eslint-plugin-react-hooks": "4.6.0",
         "husky": "8.0.1",
         "jest": "27.5.1",
-        "json-autotranslate": "1.10.2",
+        "json-autotranslate": "1.10.3",
         "lerna": "5.1.8",
         "prettier": "2.7.1",
         "remark-cli": "10.0.1",
