@@ -48,7 +48,7 @@
         "@types/ioredis": "4.28.10",
         "@types/puppeteer": "5.4.6",
         "@types/react": "18.0.17",
-        "puppeteer": "14.4.1",
+        "puppeteer": "16.2.0",
         "start-server-and-test": "1.14.0"
     }
 }
