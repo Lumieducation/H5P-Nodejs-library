@@ -89,12 +89,12 @@
         }
     ],
     "devDependencies": {
-        "@commitlint/config-conventional": "17.0.3",
+        "@commitlint/config-conventional": "17.1.0",
         "@types/jest": "27.5.2",
         "@typescript-eslint/eslint-plugin": "5.35.1",
         "@typescript-eslint/parser": "5.35.1",
         "axios": "0.27.2",
-        "commitlint": "17.0.3",
+        "commitlint": "17.1.1",
         "concurrently": "7.3.0",
         "eslint": "8.23.0",
         "eslint-config-airbnb": "19.0.4",
