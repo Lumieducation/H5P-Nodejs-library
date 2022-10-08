@@ -27,7 +27,7 @@
         "csurf": "1.11.0",
         "express-fileupload": "1.4.0",
         "express-session": "1.17.3",
-        "express": "4.18.1",
+        "express": "4.18.2",
         "fs-extra": "10.1.0",
         "i18next-fs-backend": "1.1.5",
         "i18next-http-middleware": "3.2.1",
