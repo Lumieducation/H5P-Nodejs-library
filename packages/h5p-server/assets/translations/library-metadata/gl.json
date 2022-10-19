@@ -1,0 +1,65 @@
+{
+    "H5P_Image": {
+        "title": "Imaxe"
+    },
+    "H5P_ContinuousText": {
+        "title": "Texto continuo"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "Pregunta de texto libre"
+    },
+    "H5P_GoToScene": {
+        "title": "Ir á escena"
+    },
+    "H5P_GoToQuestion": {
+        "title": "Encrucillada"
+    },
+    "H5P_GoalsPage": {
+        "title": "Páxina de metas"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Páxina de avaliación de metas"
+    },
+    "H5P_StandardPage": {
+        "title": "Páxina normal"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "Páxina de exportación de documentos"
+    },
+    "H5P_Link": {
+        "title": "Ligazón"
+    },
+    "H5P_Nil": {
+        "title": "Etiqueta"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "Pregunta de resposta aberta"
+    },
+    "H5P_Shape": {
+        "title": "Formas"
+    },
+    "H5P_Summary": {
+        "title": "Resumo"
+    },
+    "H5P_Text": {
+        "title": "Texto"
+    },
+    "H5P_Video": {
+        "title": "Vídeo"
+    },
+    "H5P_AdvancedText": {
+        "title": "Texto"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "Escolla múltiple simple"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "Pregunta de ramificación"
+    },
+    "H5P_IVHotspot": {
+        "title": "Punto de Navegación"
+    },
+    "H5P_Table": {
+        "title": "Táboa"
+    }
+}
