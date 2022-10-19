@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Non é posíbel engadir o ficheiro {{filename}} ao contido con identificador {{id}}: O contido non existe.",
+    "add-library-file-not-installed": "Non é posíbel engadir {{filename}} á biblioteca {{libraryName}} porque a biblioteca non se instalou.",
+    "clear-library-not-found": "Non é posíbel borrar a biblioteca {{libraryName}} porque a biblioteca non se instalou.",
+    "delete-content-file-not-found": "Non é posíbel eliminar o ficheiro {{filename}}: non existe.",
+    "delete-content-not-found": "Non é posíbel eliminar o contido: non existe.",
+    "error-creating-content": "Non foi posíbel crear contido.",
+    "error-generating-content-id": "Non foi posíbel xerar o identificador para o contido novo.",
+    "error-generating-unique-temporary-filename": "Non é posíbel determinar un nome de ficheiro único para {{name}}",
+    "error-updating-metadata": "Non é posíbel actualizar os metadatos adicionais da biblioteca {{library}}. Erro: {{error}}",
+    "get-library-metadata-not-installed": "Non é posíbel obter metadatos para a biblioteca {{libraryName}} porque a biblioteca non se instalou.",
+    "illegal-absolute-filename": "Non se permiten rutas absolutas nos nomes de ficheiros: {{filename}} é ilegal",
+    "illegal-relative-filename": "Non se permiten rutas relativas nos nomes de ficheiros: {{filename}} é ilegal",
+    "install-library-already-installed": "A biblioteca {{libraryName}} xa se instalou.",
+    "remove-library-library-missing": "A biblioteca {{libraryName}} non está instalada no sistema.",
+    "temporary-file-not-found": "O ficheiro {{filename}} non é accesible para o usuario {{userId}} ou non existe.",
+    "update-library-library-missing": "A biblioteca {{libraryName}} non se pode actualizar porque aínda non se instalou."
+}
