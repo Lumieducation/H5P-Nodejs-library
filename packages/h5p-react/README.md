@@ -1,4 +1,4 @@
-# @lumieducation/h5p-webcomponents
+# @lumieducation/h5p-react
 
 This package contains two React components that are meant to be used with a server using [@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server). They simplify the creation of the H5P editor and player in a client-side-rendering scenario (SPA).
 
