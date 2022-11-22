@@ -6,7 +6,7 @@
         "@fortawesome/free-solid-svg-icons": "6.2.0",
         "@fortawesome/react-fontawesome": "0.2.0",
         "@lumieducation/h5p-react": "^9.1.2",
-        "bootstrap": "5.2.2",
+        "bootstrap": "5.2.3",
         "http-proxy-middleware": "2.0.6",
         "react": "18.2.0",
         "react-bootstrap": "2.6.0",
