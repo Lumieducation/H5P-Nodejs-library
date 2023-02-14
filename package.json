@@ -107,7 +107,7 @@
         "husky": "8.0.3",
         "jest": "27.5.1",
         "json-autotranslate": "1.10.5",
-        "lerna": "6.5.0",
+        "lerna": "6.5.1",
         "prettier": "2.8.4",
         "remark-cli": "11.0.0",
         "remark-validate-links": "12.1.0",
