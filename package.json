@@ -108,7 +108,7 @@
         "jest": "27.5.1",
         "json-autotranslate": "1.11.0",
         "lerna": "6.5.1",
-        "prettier": "2.8.4",
+        "prettier": "2.8.8",
         "remark-cli": "11.0.0",
         "remark-validate-links": "12.1.0",
         "ts-jest": "27.1.5",
