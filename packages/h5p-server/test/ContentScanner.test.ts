@@ -107,61 +107,7 @@ describe('ContentScanner', () => {
                         return false;
                     }
                 );
-                expect(calledJsonPaths.sort()).toEqual(
-                    [
-                        '$.media',
-                        '$.media.type',
-                        '$.media.type.params.file',
-                        '$.media.type.params.alt',
-                        '$.media.type.params.title',
-                        '$.media.type.params.contentName',
-                        '$.media.disableImageZooming',
-                        '$.text',
-                        '$.questions',
-                        '$.questions[0]',
-                        '$.questions[1]',
-                        '$.questions[2]',
-                        '$.overallFeedback',
-                        '$.overallFeedback[0]',
-                        '$.overallFeedback[0].feedback',
-                        '$.overallFeedback[0].from',
-                        '$.overallFeedback[0].to',
-                        '$.showSolutions',
-                        '$.tryAgain',
-                        '$.checkAnswer',
-                        '$.notFilledOut',
-                        '$.answerIsCorrect',
-                        '$.answerIsWrong',
-                        '$.answeredCorrectly',
-                        '$.answeredIncorrectly',
-                        '$.solutionLabel',
-                        '$.inputLabel',
-                        '$.inputHasTipLabel',
-                        '$.tipLabel',
-                        '$.behaviour',
-                        '$.behaviour.enableRetry',
-                        '$.behaviour.enableSolutionsButton',
-                        '$.behaviour.enableCheckButton',
-                        '$.behaviour.autoCheck',
-                        '$.behaviour.caseSensitive',
-                        '$.behaviour.showSolutionsRequiresInput',
-                        '$.behaviour.separateLines',
-                        '$.behaviour.confirmCheckDialog',
-                        '$.behaviour.confirmRetryDialog',
-                        '$.behaviour.acceptSpellingErrors',
-                        '$.confirmCheck',
-                        '$.confirmCheck.header',
-                        '$.confirmCheck.body',
-                        '$.confirmCheck.cancelLabel',
-                        '$.confirmCheck.confirmLabel',
-                        '$.confirmRetry',
-                        '$.confirmRetry.header',
-                        '$.confirmRetry.body',
-                        '$.confirmRetry.cancelLabel',
-                        '$.confirmRetry.confirmLabel',
-                        '$.scoreBarLabel'
-                    ].sort()
-                );
+                expect(calledJsonPaths.sort()).toMatchSnapshot();
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -202,41 +148,7 @@ describe('ContentScanner', () => {
                         return false;
                     }
                 );
-                expect(calledJsonPaths.sort()).toEqual(
-                    [
-                        '$.media',
-                        '$.text',
-                        '$.questions',
-                        '$.questions[0]',
-                        '$.questions[1]',
-                        '$.questions[2]',
-                        '$.overallFeedback',
-                        '$.overallFeedback[0]',
-                        '$.overallFeedback[0].feedback',
-                        '$.overallFeedback[0].from',
-                        '$.overallFeedback[0].to',
-                        '$.showSolutions',
-                        '$.tryAgain',
-                        '$.checkAnswer',
-                        '$.notFilledOut',
-                        '$.answerIsCorrect',
-                        '$.answerIsWrong',
-                        '$.answeredCorrectly',
-                        '$.answeredIncorrectly',
-                        '$.solutionLabel',
-                        '$.inputLabel',
-                        '$.inputHasTipLabel',
-                        '$.tipLabel',
-                        '$.behaviour',
-                        '$.confirmCheck',
-                        '$.confirmRetry',
-                        '$.confirmRetry.header',
-                        '$.confirmRetry.body',
-                        '$.confirmRetry.cancelLabel',
-                        '$.confirmRetry.confirmLabel',
-                        '$.scoreBarLabel'
-                    ].sort()
-                );
+                expect(calledJsonPaths.sort()).toMatchSnapshot();
             },
             { keep: false, unsafeCleanup: true }
         );

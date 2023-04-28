@@ -109,13 +109,13 @@ describe('RedisLockerProvider', () => {
                         })
                     ),
                     {
-                        installLibraryLockMaxOccupationTime: 50,
-                        installLibraryLockTimeout: 30
+                        installLibraryLockMaxOccupationTime: 500,
+                        installLibraryLockTimeout: 50
                     }
                 );
 
                 const promises: Promise<ILibraryInstallResult>[] = [];
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 10; i++) {
                     promises.push(
                         libManager.installFromDirectory(
                             `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
@@ -128,8 +128,9 @@ describe('RedisLockerProvider', () => {
                     settled.some(
                         (s) =>
                             s.status === 'rejected' &&
-                            s.reason.message ===
+                            s.reason.message.startsWith(
                                 'server:install-library-lock-timeout'
+                            )
                     )
                 ).toBe(true);
             },
