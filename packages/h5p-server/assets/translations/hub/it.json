@@ -1,10 +1,10 @@
 {
     "H5P_Accordion": {
-        "title": "Fisarmonica (Accordion)",
+        "title": "Accordion (Accordion)",
         "summary": "Crea elementi espandibili impilati verticalmente",
-        "description": "Riduci la quantità di testo presentato ai lettori utilizzando questa fisarmonica reattiva. I lettori decidono quali titoli dare un'occhiata più da vicino espandendo il titolo. Eccellente per fornire una panoramica con spiegazioni approfondite opzionali.",
+        "description": "Riduci la quantità di testo presentato ai lettori utilizzando questa accordion responsiva. I lettori decidono a quali titoli dare un'occhiata più da vicino espandendo il titolo. Perfetta per fornire una panoramica con appronfondire le opzioni.",
         "keywords": {
-            "accordion": "fisarmonica",
+            "accordion": "accordion",
             "collapsible_text": "testo comprimibile"
         }
     },
@@ -21,71 +21,71 @@
     "H5P_Chart": {
         "title": "Grafico (Chart)",
         "summary": "Genera rapidamente grafici a barre e a torta",
-        "description": "Hai bisogno di presentare graficamente semplici dati statistici senza creare manualmente la grafica? Il grafico è la tua risposta.",
+        "description": "Hai bisogno di presentare graficamente semplici dati statistici senza creare manualmente la grafica? Il grafico (Chart) è la tua risposta.",
         "keywords": {
-            "chart": "grafico",
+            "chart": "cartesiano",
             "bar_chart": "grafico a barre",
-            "pie_chart": "Grafico a torta",
+            "pie_chart": "grafico a torta",
             "graph": "grafico"
         }
     },
     "H5P_Collage": {
-        "title": "Incollaggio (Collage)",
-        "summary": "Crea un collage di più immagini",
+        "title": "Collage",
+        "summary": "Crea un collage con più immagini",
         "description": "Lo strumento Collage ti consente di organizzare le immagini in una composizione rilassante.",
         "keywords": {
             "collage": "collage",
-            "image": "Immagine"
+            "image": "immagine"
         }
     },
     "H5P_Column": {
         "title": "Colonna (Column)",
-        "summary": "Organizza il contenuto H5P in un layout di colonna",
-        "description": "Organizza il tuo tipo di contenuto in un layout di colonna con H5P Column. I tipi di contenuto che trattano materiale simile o condividono un tema comune possono ora essere raggruppati insieme per creare un'esperienza di apprendimento coerente. Inoltre, gli autori sono liberi di essere creativi combinando quasi tutti i tipi di contenuto H5P esistenti.",
+        "summary": "Organizza il contenuto H5P in un layout a colonna",
+        "description": "Organizza il tuo tipo di contenuto in un layout a colonna con H5P Column. I tipi di contenuto che trattano materiale simile o condividono un tema comune possono ora essere raggruppati per creare un documento di apprendimento coerente. Inoltre, gli autori sono liberi di essere creativi combinando quasi tutti i tipi di contenuto H5P esistenti.",
         "keywords": {
             "column": "colonna",
-            "layout": "disposizione",
+            "layout": "disposizione (layout)",
             "compound": "composto"
         }
     },
     "H5P_CoursePresentation": {
         "title": "Presentazione del corso (Course Presentation)",
         "summary": "Crea una presentazione con diapositive interattive",
-        "description": "Le presentazioni del corso consistono in diapositive con contenuti multimediali, testo e molti diversi tipi di interazioni come riassunti interattivi, domande a scelta multipla e video interattivi. Gli studenti possono sperimentare nuovo materiale di apprendimento interattivo e testare le loro conoscenze e la memoria nelle presentazioni del corso. Come sempre con H5P, il contenuto è modificabile nei browser web e il tipo di attività Presentazione del corso include uno strumento di creazione basato su trascinamento della selezione WYSIWYG. Un uso tipico dell'attività di presentazione del corso consiste nell'usare alcune diapositive per introdurre un argomento e seguirle con altre diapositive in cui viene testata la conoscenza dell'utente. Le presentazioni del corso possono tuttavia essere utilizzate in molti modi diversi, incluso come strumento di presentazione da utilizzare in classe o come gioco in cui la navigazione abituale viene sostituita con pulsanti di navigazione in cima alle diapositive per consentire all'utente di fare scelte e vedere le conseguenze delle loro scelte.",
+        "description": "Le presentazioni a corso (course presentation) consistono in diapositive con contenuti multimediali, testo e molti diversi tipi di interazioni come riassunti interattivi, domande a scelta multipla e video interattivi. Gli studenti possono sperimentare nuovo materiale di apprendimento interattivo e testare le loro conoscenze e la memoria questo strumento. Come sempre con H5P, il contenuto è modificabile nei browser web e il tipo di attività include uno strumento di creazione basato su trascinamento della selezione WYSIWYG. Un uso tipico dell'attività di presentazione a corso consiste nell'usare alcune diapositive per introdurre un argomento e seguirle con altre diapositive in cui viene testata la conoscenza dell'utente. Le presentazioni a corso possono tuttavia essere utilizzate in molti modi diversi, incluso come strumento di presentazione da utilizzare in classe o come gioco in cui la navigazione abituale viene sostituita con pulsanti di navigazione in cima alle diapositive per consentire all'utente di fare scelte e vedere le conseguenze delle loro scelte.",
         "keywords": {
-            "course_presentation": "presentazione del corso",
+            "course_presentation": "presentazione a corso (course presentation)",
             "slides": "diapositive",
-            "powerpoint": "presa della corrente"
+            "powerpoint": "powerpoint"
         }
     },
     "H5P_Dialogcards": {
         "title": "Schede di dialogo (Dialog Cards)",
-        "summary": "Crea carte di svolta basate sul testo",
-        "description": "Le schede di dialogo possono essere utilizzate come esercitazione per aiutare gli studenti a memorizzare parole, espressioni o frasi. Sulla parte anteriore della carta c'è un suggerimento per una parola o un'espressione. Girando la carta, lo studente rivela una parola o un'espressione corrispondente. Le schede di dialogo possono essere utilizzate nell'apprendimento delle lingue, per presentare problemi di matematica o aiutare gli studenti a ricordare fatti come eventi storici, formule o nomi.",
+        "summary": "Crea carte girevoli basate sul testo",
+        "description": "Le carte di dialogo possono essere utilizzate come esercitazione per aiutare gli studenti a memorizzare parole, espressioni o frasi. Sulla parte anteriore della carta c'è un suggerimento per una parola o un'espressione. Girando la carta, lo studente legge una parola o un'espressione corrispondente. Le carte di dialogo possono essere utilizzate nell'apprendimento delle lingue, per presentare problemi di matematica o aiutare gli studenti a ricordare fatti come eventi storici, formule o nomi.",
         "keywords": {
-            "dialog_cards": "schede di dialogo"
+            "dialog_cards": "carte di dialogo"
         }
     },
     "H5P_DocumentationTool": {
         "title": "Strumento di documentazione (Documentation Tool)",
         "summary": "Crea una procedura guidata per i moduli con l'esportazione del testo",
-        "description": "Lo strumento di documentazione mira a semplificare la creazione di procedure guidate di valutazione per attività guidate da obiettivi. Può anche essere utilizzato come procedura guidata per i moduli. Durante la modifica, l'autore può aggiungere più passaggi alla procedura guidata. In ogni fase, l'autore può definire quale contenuto va in quella fase. Il contenuto può essere testo semplice, campi di input, definizione dell'obiettivo e valutazione dell'obiettivo. Una volta pubblicato, l'utente finale verrà guidato attraverso i passaggi della procedura guidata. Nell'ultimo passaggio della procedura guidata, l'utente può generare un documento con tutti gli input che sono stati inviati. Questo documento può essere scaricato. Lo strumento di documentazione è completamente reattivo e funziona alla grande su schermi più piccoli e sul desktop.",
+        "description": "Lo strumento di documentazione mira a semplificare la creazione di procedure guidate di valutazione per attività guidate da obiettivi. Può anche essere utilizzato come procedura guidata per i moduli. Durante la modifica, l'autore può aggiungere più passaggi alla procedura guidata. In ogni fase, l'autore può definire quale contenuto inserire in quella fase. Il contenuto può essere testo semplice, campi di input, definizione dell'obiettivo e valutazione dell'obiettivo. Una volta pubblicato, l'utente finale verrà guidato attraverso i passaggi della procedura guidata. Nell'ultimo passaggio della procedura guidata, l'utente può generare un documento con tutti gli input che sono stati inviati. Questo documento può essere scaricato. Lo strumento di documentazione è completamente reattivo e funziona molto bene sia su schermi piccoli che sul desktop.",
         "keywords": {
-            "dialog_cards": "schede di dialogo"
+            "dialog_cards": "carte di dialogo"
         }
     },
     "H5P_DragQuestion": {
-        "title": "Trascina e rilascia (Drag and Drop)",
+        "title": "Clicca e trascina (Drag and Drop)",
         "summary": "Crea attività di trascinamento della selezione con immagini",
-        "description": "La domanda drag and drop consente allo studente di associare due o più elementi e di creare connessioni logiche in modo visivo. Crea domande Drag and drop utilizzando testo e immagini come alternative trascinabili. Le domande di trascinamento della selezione di H5P supportano le relazioni uno-a-uno, uno-a-molti, molti-a-uno e molti-a-molti tra domande e risposte.",
+        "description": "La domanda clicca e trascina consente allo studente di associare due o più elementi e di creare connessioni logiche in modo visivo. Crea le domande utilizzando testo e immagini come alternative trascinabili. Le domande clicca e trascina di H5P supportano le relazioni uno-a-uno, uno-a-molti, molti-a-uno e molti-a-molti tra domande e risposte. ",
         "keywords": {
             "drag_and drop": "trascinare e rilasciare"
         }
     },
     "H5P_DragText": {
-        "title": "Trascina le parole (Drag the Words)",
+        "title": "Sposta le parole (Drag the Words)",
         "summary": "Crea attività di trascinamento della selezione basate su testo",
-        "description": "Trascina le parole consente ai designer di contenuti di creare espressioni testuali con parti di testo mancanti. L'utente finale trascina una parte di testo mancante nella posizione corretta, per formare un'espressione completa. Può essere utilizzato per verificare se l'utente ricorda un testo che ha letto o se capisce qualcosa. Aiuta l'utente a pensare attraverso un testo. È semplicissimo creare un'attività di trascinamento delle parole. L'editor scrive semplicemente il testo e racchiude le parole che devono essere trascinate con segni di asterisco come * trascinabileWord *.",
+        "description": "Sposta le parole consente ai designer di contenuti di creare espressioni testuali con parti di testo mancanti. L'utente finale trascina una parte di testo mancante nella posizione corretta, per formare un'espressione completa. Può essere utilizzato per verificare se l'utente ricorda un testo che ha letto o la semplice comprensione. Aiuta l'utente a pensare attraverso un testo. È semplicissimo creare un'attività di trascinamento delle parole. L'editor scrive semplicemente il testo e racchiudere le parole che devono essere trascinate con segni di asterisco come questa *parolaTrascinabile*.",
         "keywords": {
             "drag": "trascinare",
             "words": "parole"
@@ -107,8 +107,8 @@
         "description": "Questo tipo di contenuto consente agli utenti finali di premere da qualche parte su un'immagine e ottenere feedback sul fatto che fosse corretto o errato in base alla descrizione dell'attività. L'autore carica un'immagine e definisce vari hotspot corrispondenti a dettagli o sezioni dell'immagine. Gli hotspot possono essere definiti corretti o errati e l'autore fornisce un testo di feedback appropriato in entrambi i casi. L'autore può anche definire un feedback se l'utente finale preme da qualche parte che non è né definito come un hotspot corretto né errato.",
         "keywords": {
             "find": "trova",
-            "hotspot": "punto di accesso",
-            "image": "Immagine"
+            "hotspot": "hotspot",
+            "image": "immagine"
         }
     },
     "H5P_GuessTheAnswer": {
@@ -121,7 +121,7 @@
         }
     },
     "H5P_IFrameEmbed": {
-        "title": "Iframe Embedder",
+        "title": "Incorpora codice (Iframe Embedder)",
         "summary": "Incorpora da un URL o da un insieme di file",
         "description": "L'Iframe embedder semplifica la creazione di un H5P di applicazioni JavaScript già esistenti.",
         "keywords": {
@@ -132,7 +132,7 @@
     "H5P_InteractiveVideo": {
         "title": "Video interattivo (Interactive Video)",
         "summary": "Crea video arricchiti con interazioni",
-        "description": "Aggiungi interattività al tuo video con spiegazioni, immagini extra, tabelle, riempi gli spazi vuoti e domande a scelta multipla. Le domande del quiz supportano l'adattività, il che significa che puoi passare a un'altra parte del video in base all'input dell'utente. È possibile aggiungere riepiloghi interattivi alla fine del video. I video interattivi vengono creati e modificati utilizzando lo strumento di creazione H5P in un browser Web standard.",
+        "description": "Aggiungi interattività al tuo video con spiegazioni, immagini extra, tabelle, riempi gli spazi vuoti e domande a scelta multipla. Le domande del quiz supportano l'adattività, il che significa che puoi passare a un'altra parte del video in base all'input dell'utente. È possibile aggiungere riepiloghi interattivi alla fine del video. I video interattivi vengono creati e modificati utilizzando lo strumento di creazione H5P in un browser web standard.",
         "keywords": {
             "interactive": "interattivo",
             "video": "video"
@@ -141,9 +141,9 @@
     "H5P_MarkTheWords": {
         "title": "Segna le parole (Mark the Words)",
         "summary": "Crea un'attività in cui gli utenti evidenziano le parole",
-        "description": "Contrassegna le parole consente ai progettisti di contenuti di creare espressioni testuali con un insieme definito di parole corrette. L'utente finale evidenzia le parole in base alla descrizione dell'attività e riceve un punteggio. Per l'editor è semplicissimo creare una sfida con un clic. L'editor digita il testo e racchiude le parole su cui l'utente dovrebbe fare clic, le risposte corrette, in asterisco come * correctWord *.",
+        "description": "Segna le parole consente ai progettisti di contenuti di creare espressioni testuali con un insieme definito di parole corrette. L'utente finale evidenzia le parole in base alla descrizione dell'attività e riceve un punteggio. Per l'editor è semplicissimo creare una sfida con un clic. L'editor digita il testo e racchiude le parole su cui l'utente dovrebbe fare clic, le risposte corrette, in asterisco come qui *parolaCorretta *.",
         "keywords": {
-            "mark": "marchio",
+            "mark": "segno",
             "words": "parole"
         }
     },
@@ -162,7 +162,7 @@
         "summary": "Crea domande a scelta multipla flessibili",
         "description": "Le domande a scelta multipla possono essere uno strumento di valutazione efficace. Lo studente riceve un feedback immediato sulle prestazioni. Le domande a scelta multipla di H5P possono avere una o più opzioni corrette per domanda.",
         "keywords": {
-            "multiple": "multiplo",
+            "multiple": "multipla",
             "choice": "scelta",
             "quiz": "quiz"
         }
@@ -177,11 +177,11 @@
         }
     },
     "H5P_Questionnaire": {
-        "title": "Il questionario (Questionnaire)",
-        "summary": "Crea un questionario per ricevere feedback",
+        "title": "Sondaggio (Questionnaire)",
+        "summary": "Crea un sondaggio per ricevere feedback",
         "description": "Ottieni feedback e poni domande aperte nei video interattivi e in altri tipi di contenuto con Questionario. Il questionario rende disponibili le risposte dell'utente tramite un'integrazione xAPI. Ciò significa che i proprietari di siti Web possono memorizzare le risposte in molti modi diversi. Le risposte possono essere archiviate in un LRS, i siti possiedono un archivio personalizzato o uno script può recuperare l'indirizzo e-mail e utilizzarlo per inviare un'e-mail all'utente. Su H5P.org le risposte sono archiviate in Google Analytics.",
         "keywords": {
-            "questionnaire": "questionario"
+            "questionnaire": "sondaggio"
         }
     },
     "H5P_QuestionSet": {
@@ -205,19 +205,19 @@
         }
     },
     "H5P_Summary": {
-        "title": "Riepilogo (Summary)",
+        "title": "Riassunto (Summary)",
         "summary": "Crea attività con un elenco di dichiarazioni",
         "description": "I riassunti aiutano lo studente a ricordare le informazioni chiave in un testo, un video o una presentazione, compilando attivamente un riepilogo sull'argomento in questione. Quando lo studente ha completato un riepilogo, viene visualizzato un elenco completo delle dichiarazioni chiave sull'argomento.",
         "keywords": {
-            "summary": "sommario"
+            "summary": "riassunto"
         }
     },
     "H5P_Timeline": {
         "title": "Sequenza temporale (Timeline)",
-        "summary": "Crea una cronologia degli eventi con contenuti multimediali",
+        "summary": "Crea una linea del tempo con contenuti multimediali",
         "description": "Questo è Timeline.js sviluppato da Knight Lab, confezionato come un tipo di contenuto H5P per rendere le timeline facilmente modificabili, condivisibili e riutilizzabili. Il tipo di contenuto Timeline consente di inserire una sequenza di eventi in ordine cronologico. Per ogni evento puoi aggiungere immagini e testi. Puoi anche includere risorse da Twitter, YouTube, Flickr, Vimeo, Google Maps e SoundCloud.",
         "keywords": {
-            "timeline": "sequenza temporale",
+            "timeline": "linea del tempo",
             "slider": "cursore"
         }
     },
