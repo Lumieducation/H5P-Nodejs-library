@@ -1,10 +1,10 @@
 {
     "H5P_Accordion": {
-        "title": "Harmonika (Accordion)",
-        "summary": "Stvorite vertikalno složene proširive predmete",
-        "description": "Smanjite količinu teksta predstavljenog čitaocima pomoću ove harmonike koja odgovara. Čitatelji odlučuju koje će naslove pobliže pogledati proširujući naslov. Izvrsno za pružanje pregleda sa opcionalnim detaljnim objašnjenjima.",
+        "title": "Padajući tekst (Accordion)",
+        "summary": "Stvorite vertikalno složene proširive elemente",
+        "description": "Smanjite količinu teksta predstavljenog čitaocima pomoću padajućeg teksta koji. Čitatelji odlučuju koje će naslove detaljnije pogledati proširujući naslov. Izvrsno za pružanje pregleda sa opcionalnim detaljnim objašnjenjima.",
         "keywords": {
-            "accordion": "harmonika",
+            "accordion": "sklopivi tekst",
             "collapsible_text": "sklopivi tekst"
         }
     },
