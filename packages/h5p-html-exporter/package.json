@@ -44,7 +44,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^9.1.2",
-        "fs-extra": "10.1.0",
+        "fs-extra": "11.1.1",
         "mime-types": "^2.1.35",
         "postcss-clean": "^1.2.2",
         "postcss-safe-parser": "^6.0.0",
