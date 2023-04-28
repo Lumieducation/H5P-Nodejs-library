@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.2...v9.2.0) (2022-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fs-extra to v10.0.1 ([3e4b063](https://github.com/Lumieducation/H5P-Nodejs-library/commit/3e4b0638a2b84a1cdde1a79ff575bfba10a17dfd))
+
+
+
+
+
 ## [9.1.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.1...v9.1.2) (2022-03-19)
 
 **Note:** Version bump only for package @lumieducation/h5p-html-exporter
