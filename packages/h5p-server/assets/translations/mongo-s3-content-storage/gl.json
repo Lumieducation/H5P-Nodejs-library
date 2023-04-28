@@ -3,7 +3,7 @@
     "deleting-content-error": "Produciuse un erro ao eliminar o obxecto de contido.",
     "deleting-file-error": "Produciuse un erro ao eliminar o ficheiro {{filename}} do obxecto de contido.",
     "filename-too-long": "O nome do ficheiro é demasiado longo: {{filename}}",
-    "illegal-filename": "O nome de ficheiro utilizado ({{filename}})non está permitido.",
+    "illegal-filename": "O nome de ficheiro ({{filename}})non está permitido.",
     "listing-content-error": "Produciuse un erro ao obter a lista de obxectos de contido",
     "missing-delete-permission": "Non ten permiso para eliminar este obxecto de contido.",
     "missing-list-content-permission": "Non ten permiso para listar obxectos de contido.",
