@@ -1,0 +1,23 @@
+{
+    "copyright-information": "Autorinių teisių informacija",
+    "title": "Pavadinimas",
+    "title-placeholder": "Džokonda",
+    "author": "Autorius",
+    "author-placeholder": "Leonardas Davinčis",
+    "years": "Metai",
+    "years-placeholder": "1503 - 1517",
+    "source": "Šaltinis",
+    "source-placeholder": "http://en.wikipedia.org/wiki/Mona_Lisa",
+    "license": "Licencija",
+    "undisclosed": "Neatskleidžiama",
+    "attribution": "Atributai",
+    "40-international": "4.0 Tarptautinis",
+    "30-unported": "3.0 Neperkeltas",
+    "25-generic": "2.5 Generinis",
+    "20-generic": "2.0 Generinis",
+    "10-generic": "1.0 Generinis",
+    "attribution-sharealike": "Priskyrimas - ShareAlike",
+    "attribution-noderivs": "Priskyrimas-NoDerivs",
+    "attribution-noncommercial": "Priskyrimas - Nekomercinis",
+    "attribution-noncommercial-sharealike": "Priskirti - Nemokomercinis - ShareAlike"
+}
