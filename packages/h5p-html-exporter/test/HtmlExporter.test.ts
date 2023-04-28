@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { Browser, Page, launch } from 'puppeteer';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
@@ -16,8 +16,8 @@ import { IIntegration } from '../../h5p-server/src/types';
 
 import User from './User';
 
-let browser: puppeteer.Browser;
-let page: puppeteer.Page;
+let browser: Browser;
+let page: Page;
 
 async function importAndExportHtml(
     packagePath: string,
@@ -137,7 +137,7 @@ async function importAndExportHtml(
 }
 describe('HtmlExporter', () => {
     beforeAll(async () => {
-        browser = await puppeteer.launch({
+        browser = await launch({
             headless: true,
             args: [
                 '--headless',
