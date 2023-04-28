@@ -89,8 +89,8 @@
     "devDependencies": {
         "@commitlint/config-conventional": "17.4.4",
         "@types/jest": "27.5.2",
-        "@typescript-eslint/eslint-plugin": "5.54.0",
-        "@typescript-eslint/parser": "5.54.0",
+        "@typescript-eslint/eslint-plugin": "5.59.1",
+        "@typescript-eslint/parser": "5.59.1",
         "axios": "0.27.2",
         "commitlint": "17.4.4",
         "concurrently": "7.6.0",
