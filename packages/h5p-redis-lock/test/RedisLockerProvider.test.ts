@@ -1,4 +1,4 @@
-import ioredis from 'ioredis-mock';
+import ioredis from 'ioredis';
 import { withDir } from 'tmp-promise';
 
 import {
@@ -26,8 +26,7 @@ describe('RedisLockerProvider', () => {
     });
 
     afterEach(async () => {
-        redis.disconnect();
-        await redis.quit();
+        redis = null;
     });
 
     it('prevents race conditions when installing libraries', async () => {
@@ -66,11 +65,7 @@ describe('RedisLockerProvider', () => {
                     undefined,
                     undefined,
                     undefined,
-                    new RedisLockProvider(
-                        new ioredis(redisPort, redisHost, {
-                            db: redisDb
-                        })
-                    ),
+                    new RedisLockProvider(redis),
                     {
                         installLibraryLockMaxOccupationTime: 1,
                         installLibraryLockTimeout: 50
@@ -79,12 +74,14 @@ describe('RedisLockerProvider', () => {
 
                 const promises: Promise<ILibraryInstallResult>[] = [];
                 for (let i = 0; i < 100; i++) {
-                    promises.push(
-                        libManager.installFromDirectory(
-                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
-                            false
-                        )
-                    );
+                    if (redis) {
+                        promises.push(
+                            libManager.installFromDirectory(
+                                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                                false
+                            )
+                        );
+                    }
                 }
                 await expect(Promise.all(promises)).rejects.toThrowError(
                     'server:install-library-lock-max-time-exceeded'
@@ -103,25 +100,23 @@ describe('RedisLockerProvider', () => {
                     undefined,
                     undefined,
                     undefined,
-                    new RedisLockProvider(
-                        new ioredis(redisPort, redisHost, {
-                            db: redisDb
-                        })
-                    ),
+                    new RedisLockProvider(redis),
                     {
                         installLibraryLockMaxOccupationTime: 500,
-                        installLibraryLockTimeout: 50
+                        installLibraryLockTimeout: 2
                     }
                 );
 
                 const promises: Promise<ILibraryInstallResult>[] = [];
                 for (let i = 0; i < 10; i++) {
-                    promises.push(
-                        libManager.installFromDirectory(
-                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
-                            false
-                        )
-                    );
+                    if (redis) {
+                        promises.push(
+                            libManager.installFromDirectory(
+                                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                                false
+                            )
+                        );
+                    }
                 }
                 const settled = await Promise.allSettled(promises);
                 expect(
