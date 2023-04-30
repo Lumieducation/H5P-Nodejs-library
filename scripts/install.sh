@@ -1,7 +1,7 @@
 # If the editor and core files are missing, we download them from GitHub.
 if [ ! -d "packages/h5p-examples/h5p/editor" ] || [ ! -d "packages/h5p-examples/h5p/core" ]
 then    
-    sh packages/h5p-examples/download-core.sh c79f97a16fd8c6fc0232c10d5bed5b94502ee9e9 c886fa6ded498bbe0148e9484f9b1534facc264e
+    sh packages/h5p-examples/download-core.sh 661d4f6c7d7b1117587654941f5fcf91acb5f4eb 0365b081efa8b55ab9fd58594aa599f9630268f6
 else
     echo "Not downloading H5P Core and Editor files as they are already present!"
 fi
