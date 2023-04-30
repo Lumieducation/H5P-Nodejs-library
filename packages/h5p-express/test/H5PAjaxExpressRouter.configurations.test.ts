@@ -16,7 +16,7 @@ const axiosMock = new AxiosMockAdapter(axios);
 interface RequestEx extends express.Request {
     language: string;
     languages: any;
-    t: (id: string, replacements: any) => string;
+    t: any;
     user: H5P.IUser;
 }
 
