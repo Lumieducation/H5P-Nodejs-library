@@ -349,8 +349,13 @@ const start = async (): Promise<void> => {
     );
 
     server.post('/logout', csrfProtection, (req, res) => {
-        req.logout();
-        res.status(200).send();
+        req.logout((err) => {
+            if (!err) {
+                res.status(200).send();
+            } else {
+                res.status(500).send(err.message);
+            }
+        });
     });
 
     const port = process.env.PORT || '8080';

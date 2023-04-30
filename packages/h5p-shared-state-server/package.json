@@ -14,11 +14,11 @@
     "dependencies": {
         "@lumieducation/h5p-server": "^9.2.0",
         "@teamwork/websocket-json-stream": "^2.0.0",
-        "ajv": "^8.11.0",
+        "ajv": "^8.12.0",
         "debug": "^4.3.4",
-        "jsonpath-plus": "^7.0.0",
-        "sharedb": "^3.0.0",
-        "ws": "^8.5.0"
+        "jsonpath-plus": "^7.2.0",
+        "sharedb": "^3.3.1",
+        "ws": "^8.13.0"
     },
     "devDependencies": {
         "@types/sharedb": "3.3.1",
