@@ -128,7 +128,7 @@ jobs:
             - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
-                  path_to_lcov: ./packages/h5p-html-exporter/coverage/lcov.info
+                  coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
                   flag_name: HTML Exporter Tests
 
     e2e-tests:
