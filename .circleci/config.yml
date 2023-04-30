@@ -149,7 +149,7 @@ jobs:
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
                   MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
-            - image: minio/minio
+            - image: minio/minio:RELEASE.2023-04-28T18-11-17Z
               environment:
                   MINIO_ACCESS_KEY: minioaccesskey
                   MINIO_SECRET_KEY: miniosecret
@@ -187,7 +187,6 @@ jobs:
                   command: npx lerna version -y --conventional-commits --create-release github && npx lerna publish -y from-package
 
 workflows:
-    version: 2
     h5p-nodejs-library:
         jobs:
             - install-build
