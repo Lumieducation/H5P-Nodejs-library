@@ -458,12 +458,15 @@ export default class HtmlExporter {
                 );
                 let processedCss = '';
                 const pCss = postCss(
+                    // add support for @import statements in CSS
                     postCssImport({
                         resolve: (importedFile) => {
                             // Here, we need to return the path of the file that
-                            // is passed to `load`. As we use our
+                            // is passed to `load`. As we use our own
                             // `getFileAsText` in `load`, we need to add the
-                            // directory of the file that is importing.
+                            // directory of the file that is importing. That way
+                            // we preserve the origin of the file (core, editor,
+                            // library).
                             return upath.join(
                                 path.dirname(style),
                                 importedFile
@@ -477,6 +480,9 @@ export default class HtmlExporter {
                             return txt;
                         },
                         plugins: [
+                            // We need to add the plugins redundantly, as the
+                            // files inside the imported css files also need to
+                            // be parsed.
                             postCssRemoveRedundantUrls(
                                 undefined,
                                 library
@@ -493,6 +499,10 @@ export default class HtmlExporter {
                             ),
                             postCssUrl({
                                 url: this.urlInternalizer(
+                                    // Even though we don't operate on the file
+                                    // but on a file that is imported, we pass
+                                    // in the filename here, as it's only used
+                                    // to determine the file's parent directory.
                                     filename,
                                     library,
                                     editor,
