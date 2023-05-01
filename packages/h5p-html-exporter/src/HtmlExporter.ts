@@ -2,6 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import postCss, { CssSyntaxError } from 'postcss';
 import postCssUrl from 'postcss-url';
+import postCssImport from 'postcss-import';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import uglifyJs from 'uglify-js';
@@ -457,6 +458,51 @@ export default class HtmlExporter {
                 );
                 let processedCss = '';
                 const pCss = postCss(
+                    postCssImport({
+                        resolve: (importedFile) => {
+                            // Here, we need to return the path of the file that
+                            // is passed to `load`. As we use our
+                            // `getFileAsText` in `load`, we need to add the
+                            // directory of the file that is importing.
+                            return upath.join(
+                                path.dirname(style),
+                                importedFile
+                            );
+                        },
+                        load: async (importedFile) => {
+                            const { text: txt } = await this.getFileAsText(
+                                importedFile,
+                                usedFiles
+                            );
+                            return txt;
+                        },
+                        plugins: [
+                            postCssRemoveRedundantUrls(
+                                undefined,
+                                library
+                                    ? (f) => {
+                                          usedFiles.addFile(
+                                              library,
+                                              upath.join(
+                                                  path.dirname(filename),
+                                                  f
+                                              )
+                                          );
+                                      }
+                                    : undefined
+                            ),
+                            postCssUrl({
+                                url: this.urlInternalizer(
+                                    filename,
+                                    library,
+                                    editor,
+                                    core,
+                                    usedFiles
+                                )
+                            }),
+                            postCssClean()
+                        ]
+                    }),
                     postCssRemoveRedundantUrls(
                         undefined,
                         library
