@@ -23,6 +23,6 @@
     },
     "devDependencies": {
         "@lumieducation/h5p-server": "^9.2.0",
-        "@types/react": "18.2.0"
+        "@types/react": "18.2.2"
     }
 }
