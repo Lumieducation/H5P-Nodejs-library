@@ -16,7 +16,7 @@ const redisDb = process.env.LOCK_REDIS_DB
     ? Number.parseInt(process.env.LOCK_REDIS_DB)
     : 1;
 
-let redis: ioredis.Redis;
+let redis: ioredis;
 
 describe('RedisLockerProvider', () => {
     beforeEach(() => {
