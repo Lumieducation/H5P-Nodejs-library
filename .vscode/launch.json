@@ -9,11 +9,27 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Debug with Mongo / S3 / Redis",
             "program": "${workspaceFolder}/packages/h5p-examples/build/express.js",
             "runtimeArgs": ["-r", "source-map-support/register"],
             "env": {
-                "DEBUG": "h5p*"
+                "DEBUG": "h5p*",
+                "LOG_LEVEL": "debug",
+                "DOTENV_CONFIG_PATH": "${workspaceFolder}/packages/h5p-examples/mongo+s3+redis.env"
+            },
+            "outputCapture": "std",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug with pure mongo library storage + mongo/s3 content storage",
+            "program": "${workspaceFolder}/packages/h5p-examples/build/express.js",
+            "runtimeArgs": ["-r", "source-map-support/register"],
+            "env": {
+                "DEBUG": "h5p*",
+                "LOG_LEVEL": "debug",
+                "DOTENV_CONFIG_PATH": "${workspaceFolder}/packages/h5p-examples/mongo+mongos3.env"
             },
             "outputCapture": "std",
             "console": "integratedTerminal"

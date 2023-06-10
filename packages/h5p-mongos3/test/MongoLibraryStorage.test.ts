@@ -6,7 +6,7 @@ import { Db, MongoClient, Collection, ObjectId } from 'mongodb';
 import fsExtra from 'fs-extra';
 import path from 'path';
 
-import { ILibraryMetadata } from '@lumieducation/h5p-server';
+import { ILibraryMetadata, streamToString } from '@lumieducation/h5p-server';
 import MongoLibraryStorage from '../src/MongoLibraryStorage';
 
 describe('MongoS3LibraryStorage', () => {
@@ -197,6 +197,33 @@ describe('MongoS3LibraryStorage', () => {
                 minorVersion: 1
             })
         ).rejects.toThrowError('mongo-library-storage:library-not-found');
+    });
+
+    it('gets the metadata and its stats as a file (simulates GET on library.json) ', async () => {
+        const metadata = await fsExtra.readJSON(
+            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        );
+
+        await storage.addLibrary(metadata, false);
+        const retrievedStats = await storage.getFileStats(
+            {
+                machineName: 'H5P.Example1',
+                majorVersion: 1,
+                minorVersion: 1
+            },
+            'library.json'
+        );
+        const retrievedStream = await storage.getFileStream(
+            {
+                machineName: 'H5P.Example1',
+                majorVersion: 1,
+                minorVersion: 1
+            },
+            'library.json'
+        );
+        const retrievedMetadata = await streamToString(retrievedStream);
+        expect(JSON.parse(retrievedMetadata)).toMatchObject(metadata);
+        expect(retrievedMetadata.length).toEqual(retrievedStats.size);
     });
 
     it('update additional metadata', async () => {
