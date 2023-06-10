@@ -402,6 +402,13 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         file: string
     ): Promise<IFileStats> {
         this.validateFilename(file);
+
+        // The metadata is not saved as a file
+        if (file === 'library.json') {
+            const metadata = JSON.stringify(await this.getMetadata(library));
+            return { size: metadata.length, birthtime: new Date() };
+        }
+
         let fileStats: any;
         try {
             fileStats = await this.mongodb.findOne(

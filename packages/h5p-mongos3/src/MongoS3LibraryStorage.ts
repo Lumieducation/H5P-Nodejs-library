@@ -431,6 +431,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     ): Promise<IFileStats> {
         validateFilename(file, this.options?.invalidCharactersRegexp);
 
+        // As the metadata is not S3, we need to get it from MongoDB.
+        if (file === 'library.json') {
+            const metadata = JSON.stringify(await this.getMetadata(library));
+            return { size: metadata.length, birthtime: new Date() };
+        }
+
         try {
             const head = await this.s3
                 .headObject({
