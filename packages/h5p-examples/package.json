@@ -1,7 +1,7 @@
 {
     "name": "@lumieducation/h5p-examples",
     "private": "true",
-    "version": "9.2.1",
+    "version": "9.2.2",
     "description": "",
     "main": "build/express.js",
     "scripts": {
@@ -20,10 +20,10 @@
     "license": "ISC",
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.0",
-        "@lumieducation/h5p-express": "^9.2.1",
-        "@lumieducation/h5p-html-exporter": "^9.2.1",
-        "@lumieducation/h5p-mongos3": "^9.2.1",
-        "@lumieducation/h5p-redis-lock": "^9.2.1",
+        "@lumieducation/h5p-express": "^9.2.2",
+        "@lumieducation/h5p-html-exporter": "^9.2.2",
+        "@lumieducation/h5p-mongos3": "^9.2.2",
+        "@lumieducation/h5p-redis-lock": "^9.2.2",
         "@lumieducation/h5p-server": "^9.2.1",
         "body-parser": "1.20.2",
         "bootstrap": "^5.2.3",

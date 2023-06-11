@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-rest-example-server",
-    "version": "9.2.1",
+    "version": "9.2.2",
     "private": true,
     "description": "",
     "main": "src/index.ts",
@@ -16,10 +16,10 @@
     "author": "S. Rettig",
     "license": "MIT",
     "dependencies": {
-        "@lumieducation/h5p-express": "^9.2.1",
-        "@lumieducation/h5p-mongos3": "^9.2.1",
+        "@lumieducation/h5p-express": "^9.2.2",
+        "@lumieducation/h5p-mongos3": "^9.2.2",
         "@lumieducation/h5p-server": "^9.2.1",
-        "@lumieducation/h5p-shared-state-server": "^9.2.1",
+        "@lumieducation/h5p-shared-state-server": "^9.2.2",
         "body-parser": "1.20.2",
         "cache-manager": "4.1.0",
         "cache-manager-redis-store": "2.0.0",

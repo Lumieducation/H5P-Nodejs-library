@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.2.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.1...v9.2.2) (2023-06-11)
+
+**Note:** Version bump only for package @lumieducation/h5p-html-exporter
+
 ## [9.2.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.0...v9.2.1) (2023-05-31)
 
 ### Bug Fixes
