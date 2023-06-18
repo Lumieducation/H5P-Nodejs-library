@@ -196,7 +196,44 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 mockContentUserDataStorage.getContentUserData
-            ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
+            ).toHaveBeenCalledWith(
+                contentId,
+                dataType,
+                subContentId,
+                user,
+                undefined
+            );
+        });
+
+        it('calls the getContentUserData method of the contentUserDateStorage with the correct arguments using contextId', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+            const dataType = 'string';
+            const subContentId = '0';
+            const user = new User();
+            const contextId = '123';
+
+            await contentUserDataManager.getContentUserData(
+                contentId,
+                dataType,
+                subContentId,
+                user,
+                contextId
+            );
+
+            expect(
+                mockContentUserDataStorage.getContentUserData
+            ).toHaveBeenCalledWith(
+                contentId,
+                dataType,
+                subContentId,
+                user,
+                contextId
+            );
         });
     });
 
@@ -241,7 +278,7 @@ describe('ContentUserDataManager', () => {
             );
         });
 
-        it('calls the saveontentUserData method of the contentUserDateStorage with the correct arguments', async () => {
+        it('calls the saveContentUserData method of the contentUserDateStorage with the correct arguments', async () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
@@ -272,7 +309,46 @@ describe('ContentUserDataManager', () => {
                 userState,
                 invalidate: false,
                 preload: false,
-                userId: user.id
+                userId: user.id,
+                contextId: undefined
+            });
+        });
+
+        it('calls the saveContentUserData method of the contentUserDateStorage with the correct arguments using contextId', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+            const dataType = 'state';
+            const subContentId = '0';
+            const userState = '[exampleUserState]';
+            const user = new User();
+            const contextId = '123';
+
+            await contentUserDataManager.createOrUpdateContentUserData(
+                contentId,
+                dataType,
+                subContentId,
+                userState,
+                false,
+                false,
+                user,
+                contextId
+            );
+
+            expect(
+                mockContentUserDataStorage.createOrUpdateContentUserData
+            ).toHaveBeenCalledWith({
+                contentId,
+                dataType,
+                subContentId,
+                userState,
+                invalidate: false,
+                preload: false,
+                userId: user.id,
+                contextId
             });
         });
     });
@@ -307,7 +383,28 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 mockContentUserDataStorage.getContentUserDataByContentIdAndUser
-            ).toHaveBeenCalledWith(contentId, user);
+            ).toHaveBeenCalledWith(contentId, user, undefined);
+        });
+
+        it('calls the getContentUserDataByContentIdAndUser method of the contentUserDateStorage with the correct arguments using contextId', async () => {
+            const mockContentUserDataStorage = MockContentUserDataStorage();
+
+            const contentUserDataManager = new ContentUserDataManager(
+                mockContentUserDataStorage
+            );
+            const contentId = 'contentId';
+            const user = new User();
+            const contextId = '123';
+
+            await contentUserDataManager.generateContentUserDataIntegration(
+                contentId,
+                user,
+                contextId
+            );
+
+            expect(
+                mockContentUserDataStorage.getContentUserDataByContentIdAndUser
+            ).toHaveBeenCalledWith(contentId, user, contextId);
         });
 
         it('generates the contentUserDataIntegration as an array in the correct order', async () => {

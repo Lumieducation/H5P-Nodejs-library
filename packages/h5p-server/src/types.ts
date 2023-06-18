@@ -562,6 +562,13 @@ export interface IContentUserData {
      */
     subContentId: string;
     /**
+     * An identifier that can be used to have multiple states for one content -
+     * user tuple. The identifier is provided by the implementation and its use
+     * is optional. contextId is an extension of the NodeJS library and not
+     * standard H5P.
+     */
+    contextId?: string;
+    /**
      * The actual user state as string. This is typically a serialized JSON
      * string that the content type generates when called by the H5P client. We
      * don't need to know what is in it for the server
@@ -623,6 +630,8 @@ export interface IFinishedUserData {
 export interface IContentUserDataStorage {
     /**
      * Creates or updates the content user data.
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      */
     createOrUpdateContentUserData(userData: IContentUserData): Promise<void>;
 
@@ -654,25 +663,31 @@ export interface IContentUserDataStorage {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who owns this object
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      * @returns the data
      */
     getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData>;
 
     /**
      * Lists all associated contentUserData for a given contentId and user.
      * @param contentId The id of the content to load user data from
      * @param user The id of the user to load user data from
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      * @returns An array of objects containing the dataType, subContentId and
     the contentUserState as string in the data field.
      */
     getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData[]>;
 
     /**

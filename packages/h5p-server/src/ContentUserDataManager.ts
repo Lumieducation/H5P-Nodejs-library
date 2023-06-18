@@ -69,27 +69,31 @@ export default class ContentUserDataManager {
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
      * @param user The user who is accessing the h5p
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      * @returns the saved state as string or undefined when not found
      */
     public async getContentUserData(
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData> {
         if (!this.contentUserDataStorage) {
             return undefined;
         }
 
         log.debug(
-            `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}`
+            `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}, contextId ${contextId}`
         );
 
         return this.contentUserDataStorage.getContentUserData(
             contentId,
             dataType,
             subContentId,
-            user
+            user,
+            contextId
         );
     }
 
@@ -101,15 +105,18 @@ export default class ContentUserDataManager {
      *
      * @param contentId The id of the content to load user data from
      * @param user The user who is accessing the h5p
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      * @returns an array of IContentUserData or undefined if no content user data
      * is found.
      */
     public async generateContentUserDataIntegration(
         contentId: ContentId,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<ISerializedContentUserData[]> {
         log.debug(
-            `generating contentUserDataIntegration for user with id ${user.id} and contentId ${contentId}`
+            `Generating contentUserDataIntegration for user with id ${user.id}, contentId ${contentId} and contextId ${contextId}.`
         );
 
         if (!this.contentUserDataStorage) {
@@ -119,7 +126,8 @@ export default class ContentUserDataManager {
         let states =
             await this.contentUserDataStorage.getContentUserDataByContentIdAndUser(
                 contentId,
-                user
+                user,
+                contextId
             );
 
         if (!states) {
@@ -190,6 +198,8 @@ export default class ContentUserDataManager {
      * @param subContentId The id provided by the h5p.js client call
      * @param userState The userState as string
      * @param user The user who owns this object
+     * @param contextId an arbitrary value that can be used to save multiple
+     * states for one content - user tuple
      * @returns the saved state as string
      */
     public async createOrUpdateContentUserData(
@@ -199,7 +209,8 @@ export default class ContentUserDataManager {
         userState: string,
         invalidate: boolean,
         preload: boolean,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<void> {
         log.debug(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
@@ -215,11 +226,12 @@ export default class ContentUserDataManager {
         if (this.contentUserDataStorage) {
             return this.contentUserDataStorage.createOrUpdateContentUserData({
                 contentId,
+                contextId,
                 dataType,
-                subContentId,
-                userState,
                 invalidate,
                 preload,
+                subContentId,
+                userState,
                 userId: user.id
             });
         }
