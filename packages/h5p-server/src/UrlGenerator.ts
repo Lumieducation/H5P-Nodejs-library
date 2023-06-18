@@ -85,15 +85,23 @@ export default class UrlGenerator implements IUrlGenerator {
         );
     }
 
-    public contentUserData = (user: IUser): string => {
+    public contentUserData = (user: IUser, contextId?: string): string => {
         if (
             this.csrfProtection?.queryParamGenerator &&
             this.csrfProtection?.protectContentUserData
         ) {
             const qs = this.csrfProtection.queryParamGenerator(user);
-            return `${this.config.baseUrl}${this.config.contentUserDataUrl}/:contentId/:dataType/:subContentId?${qs.name}=${qs.value}`;
+            return `${this.config.baseUrl}${
+                this.config.contentUserDataUrl
+            }/:contentId/:dataType/:subContentId?${qs.name}=${qs.value}${
+                contextId ? `&contextId=${contextId}` : ''
+            }`;
         }
-        return `${this.config.baseUrl}${this.config.contentUserDataUrl}/:contentId/:dataType/:subContentId`;
+        return `${this.config.baseUrl}${
+            this.config.contentUserDataUrl
+        }/:contentId/:dataType/:subContentId${
+            contextId ? `?contextId=${contextId}` : ''
+        }`;
     };
 
     /**

@@ -124,6 +124,8 @@ export default class H5PPlayer {
      * @param metadataOverride (optional) the metadata of a piece of content
      * (=h5p.json); if you use this option, the parameters won't be loaded from
      * storage
+     * @param contextId (optional) allows implementations to have multiple
+     * content states for a single content object and user tuple
      * @returns a HTML string that you can insert into your page
      */
     public async render(
@@ -140,6 +142,7 @@ export default class H5PPlayer {
             showFrame?: boolean;
             showH5PIcon?: boolean;
             showLicenseButton?: boolean;
+            contextId?: string;
         }
     ): Promise<string | any> {
         log.debug(`rendering page for ${contentId} in language ${language}`);
@@ -230,7 +233,8 @@ export default class H5PPlayer {
                     showFrame: options?.showFrame ?? false,
                     showH5PIcon: options?.showH5PIcon ?? false,
                     showLicenseButton: options?.showLicenseButton ?? false
-                }
+                },
+                options?.contextId
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
@@ -365,14 +369,18 @@ export default class H5PPlayer {
             showFrame: boolean;
             showH5PIcon: boolean;
             showLicenseButton: boolean;
-        }
+        },
+        contextId: string
     ): Promise<IIntegration> {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
 
         return {
             ajax: {
-                contentUserData: this.urlGenerator.contentUserData(user),
+                contentUserData: this.urlGenerator.contentUserData(
+                    user,
+                    contextId
+                ),
                 setFinished: this.urlGenerator.setFinished(user)
             },
             ajaxPath: this.urlGenerator.ajaxEndpoint(user),
@@ -393,7 +401,8 @@ export default class H5PPlayer {
                     contentUserData:
                         await this.contentUserDataManager.generateContentUserDataIntegration(
                             contentId,
-                            user
+                            user,
+                            contextId
                         ),
                     metadata: {
                         license: metadata.license || 'U',

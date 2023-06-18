@@ -2019,7 +2019,13 @@ export interface IUrlGenerator {
      * http://127.0.0.1:9000/s3bucket/123`)
      */
     contentFilesUrl(contentId: ContentId): string | undefined;
-    contentUserData(user: IUser): string;
+    /**
+     * Generates a URL to which the user data can be sent.
+     * @param user the user who is currently accessing the h5p object
+     * @param contextId allows implementation to have multiple user data objects
+     * for one h5p content object
+     */
+    contentUserData(user: IUser, contextId?: string): string;
     coreFile(file: string): string;
     coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
