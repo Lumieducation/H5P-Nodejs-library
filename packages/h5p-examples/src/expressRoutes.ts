@@ -35,7 +35,18 @@ export default function (
                         showDownloadButton: true,
                         showFrame: true,
                         showH5PIcon: true,
-                        showLicenseButton: true
+                        showLicenseButton: true,
+                        // We pass through the contextId here to illustrate how
+                        // to work with it. Context ids allow you to have
+                        // multiple user states per content object. They are
+                        // purely optional. You should *NOT* pass the contextId
+                        // to the render method if you don't need contextIds!
+                        // You can test the contextId by opening
+                        // `/h5p/play/XXXX?contextId=YYY` in the browser.
+                        contextId:
+                            typeof req.query.contextId === 'string'
+                                ? req.query.contextId
+                                : undefined
                     }
                 );
                 res.send(h5pPage);

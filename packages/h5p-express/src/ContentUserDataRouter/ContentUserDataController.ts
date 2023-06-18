@@ -32,11 +32,17 @@ export default class ContentUserDataController {
         }
 
         const { contentId, dataType, subContentId } = req.params;
+        const contextId =
+            typeof req.query.contextId === 'string'
+                ? req.query.contextId
+                : undefined;
+
         const result = await this.contentUserDataManager.getContentUserData(
             contentId,
             dataType,
             subContentId,
-            req.user
+            req.user,
+            contextId
         );
 
         if (!result || !result.userState) {
@@ -59,6 +65,10 @@ export default class ContentUserDataController {
         }
 
         const { contentId, dataType, subContentId } = req.params;
+        const contextId =
+            typeof req.query.contextId === 'string'
+                ? req.query.contextId
+                : undefined;
         const { user, body } = req;
 
         await this.contentUserDataManager.createOrUpdateContentUserData(
@@ -68,7 +78,8 @@ export default class ContentUserDataController {
             body.data,
             body.invalidate === 1 || body.invalidate === '1',
             body.preload === 1 || body.preload === '1',
-            user
+            user,
+            contextId
         );
 
         res.status(200).json(new AjaxSuccessResponse(undefined)).end();
