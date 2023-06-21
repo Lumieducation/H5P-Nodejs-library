@@ -16,8 +16,7 @@ import {
     IUrlGenerator,
     ILibraryMetadata,
     IUser,
-    ITranslationFunction,
-    Permission
+    ITranslationFunction
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import Logger from './helpers/Logger';

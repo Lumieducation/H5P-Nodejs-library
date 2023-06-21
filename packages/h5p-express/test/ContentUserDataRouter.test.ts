@@ -82,7 +82,7 @@ describe('ContentUserData endpoint adapter', () => {
         tempDir = '';
     });
 
-    it('calls createOrUpdateContentUserData on POST', async () => {
+    it('calls createOrUpdateContentUserData on POST without contextId', async () => {
         const contentId = 'contentId';
         const dataType = 'state';
         const subContentId = '0';
@@ -101,12 +101,40 @@ describe('ContentUserData endpoint adapter', () => {
             body.data,
             false,
             true,
-            user
+            user,
+            undefined
         );
         expect(res.status).toBe(200);
     });
 
-    it('calls getContentUserData on GET', async () => {
+    it('calls createOrUpdateContentUserData on POST with contextId', async () => {
+        const contentId = 'contentId';
+        const dataType = 'state';
+        const subContentId = '0';
+        const body = { data: 'testData', invalidate: 0, preload: 1 };
+
+        const res = await supertest(app)
+            .post(
+                `/contentUserData/${contentId}/${dataType}/${subContentId}?contextId=cid1`
+            )
+            .send(body);
+
+        expect(
+            mockContentUserDataManager.createOrUpdateContentUserData
+        ).toHaveBeenCalledWith(
+            contentId,
+            dataType,
+            subContentId,
+            body.data,
+            false,
+            true,
+            user,
+            'cid1'
+        );
+        expect(res.status).toBe(200);
+    });
+
+    it('calls getContentUserData on GET without contextId', async () => {
         const contentId = 'contentId';
         const dataType = 'state';
         const subContentId = '0';
@@ -117,7 +145,32 @@ describe('ContentUserData endpoint adapter', () => {
 
         expect(
             mockContentUserDataManager.getContentUserData
-        ).toHaveBeenCalledWith(contentId, dataType, subContentId, user);
+        ).toHaveBeenCalledWith(
+            contentId,
+            dataType,
+            subContentId,
+            user,
+            undefined
+        );
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({
+            data: mockReturnData.userState,
+            success: true
+        });
+    });
+
+    it('calls getContentUserData on GET with contextId', async () => {
+        const contentId = 'contentId';
+        const dataType = 'state';
+        const subContentId = '0';
+
+        const res = await supertest(app).get(
+            `/contentUserData/${contentId}/${dataType}/${subContentId}?contextId=cid1`
+        );
+
+        expect(
+            mockContentUserDataManager.getContentUserData
+        ).toHaveBeenCalledWith(contentId, dataType, subContentId, user, 'cid1');
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             data: mockReturnData.userState,
