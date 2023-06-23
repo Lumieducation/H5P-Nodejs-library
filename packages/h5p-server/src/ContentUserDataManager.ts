@@ -8,7 +8,7 @@ import {
     Permission
 } from './types';
 import Logger from './helpers/Logger';
-import H5pError from './helpers/H5pError.js';
+import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentUserDataManager');
 
@@ -26,10 +26,6 @@ export default class ContentUserDataManager {
         private permissionSystem: IPermissionSystem
     ) {
         log.info('initialize');
-
-        if (!this.contentUserDataStorage) {
-            throw new Error('ContentUserDataManager requires a storage object');
-        }
     }
 
     /**
@@ -42,6 +38,10 @@ export default class ContentUserDataManager {
         forUserId: string,
         actingUser: IUser
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(`deleting contentUserData for userId ${actingUser.id}`);
 
         if (
@@ -84,6 +84,10 @@ export default class ContentUserDataManager {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(`deleting all content user data for contentId ${contentId}`);
 
         if (
@@ -125,6 +129,10 @@ export default class ContentUserDataManager {
         user: IUser,
         contextId?: string
     ): Promise<IContentUserData> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(
             `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}, contextId ${contextId}`
         );
@@ -173,6 +181,10 @@ export default class ContentUserDataManager {
         user: IUser,
         contextId?: string
     ): Promise<ISerializedContentUserData[]> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(
             `Generating contentUserDataIntegration for user with id ${user.id}, contentId ${contentId} and contextId ${contextId}.`
         );
@@ -243,6 +255,10 @@ export default class ContentUserDataManager {
         completionTime: number,
         user: IUser
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(
             `saving finished data for ${user.id} and contentId ${contentId}`
         );
@@ -296,6 +312,10 @@ export default class ContentUserDataManager {
         user: IUser,
         contextId?: string
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         log.debug(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
@@ -342,6 +362,10 @@ export default class ContentUserDataManager {
         contentId: string,
         actingUser: IUser
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         if (
             !(await this.permissionSystem.checkContent(
                 actingUser,

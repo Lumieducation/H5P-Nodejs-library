@@ -65,7 +65,7 @@ import SimpleTranslator from './helpers/SimpleTranslator';
 import DependencyGetter from './DependencyGetter';
 import ContentHub from './ContentHub';
 import { downloadFile } from './helpers/downloadFile';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem.js';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('H5PEditor');
 
@@ -145,6 +145,7 @@ export default class H5PEditor {
             temporaryStorage,
             this.config
         );
+
         this.contentUserDataManager = new ContentUserDataManager(
             contentUserDataStorage,
             permissionsSystem

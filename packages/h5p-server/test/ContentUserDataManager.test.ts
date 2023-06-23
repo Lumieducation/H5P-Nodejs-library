@@ -3,17 +3,22 @@ import ContentUserDataManager from '../src/ContentUserDataManager';
 import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 
 import User from './User';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 describe('ContentUserDataManager', () => {
     describe('deleteAllContentUserDataByUser', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
+
+            const user = new User();
 
             expect(
                 await contentUserDataManager.deleteAllContentUserDataByUser(
-                    new User()
+                    user.id,
+                    user
                 )
             ).toBeUndefined();
         });
@@ -22,11 +27,15 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const user = new User();
 
-            await contentUserDataManager.deleteAllContentUserDataByUser(user);
+            await contentUserDataManager.deleteAllContentUserDataByUser(
+                user.id,
+                user
+            );
 
             expect(
                 mockContentUserDataStorage.deleteAllContentUserDataByUser
@@ -37,7 +46,8 @@ describe('ContentUserDataManager', () => {
     describe('deleteInvalidatedContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             expect(
@@ -51,7 +61,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
 
@@ -68,7 +79,8 @@ describe('ContentUserDataManager', () => {
     describe('setFinished', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             const contentId = 'contentId';
@@ -95,7 +107,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
 
             const contentId = 'contentId';
@@ -132,12 +145,14 @@ describe('ContentUserDataManager', () => {
     describe('deleteAllContentUserDataByContentId', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             expect(
                 await contentUserDataManager.deleteAllContentUserDataByContentId(
-                    'contentId'
+                    'contentId',
+                    new User()
                 )
             ).toBeUndefined();
         });
@@ -146,12 +161,14 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
 
             await contentUserDataManager.deleteAllContentUserDataByContentId(
-                contentId
+                contentId,
+                new User()
             );
 
             expect(
@@ -163,7 +180,8 @@ describe('ContentUserDataManager', () => {
     describe('getContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             expect(
@@ -180,7 +198,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const dataType = 'string';
@@ -209,7 +228,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const dataType = 'string';
@@ -240,7 +260,8 @@ describe('ContentUserDataManager', () => {
     describe('createOrUpdateContentUserData', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             expect(
@@ -258,7 +279,8 @@ describe('ContentUserDataManager', () => {
 
         it('throws an error if invalid arguments are passed', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             await expect(
@@ -282,7 +304,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const dataType = 'state';
@@ -318,7 +341,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const dataType = 'state';
@@ -356,7 +380,8 @@ describe('ContentUserDataManager', () => {
     describe('generateContentUserDataIntegration', () => {
         it('returns undefined if contentUserDataStorage is undefined', async () => {
             const contentUserDataManager = new ContentUserDataManager(
-                undefined
+                undefined,
+                new LaissezFairePermissionSystem()
             );
 
             expect(
@@ -371,7 +396,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const user = new User();
@@ -390,7 +416,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const user = new User();
@@ -411,7 +438,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const user = new User();
@@ -457,7 +485,8 @@ describe('ContentUserDataManager', () => {
             const mockContentUserDataStorage = MockContentUserDataStorage();
 
             const contentUserDataManager = new ContentUserDataManager(
-                mockContentUserDataStorage
+                mockContentUserDataStorage,
+                new LaissezFairePermissionSystem()
             );
             const contentId = 'contentId';
             const user = new User();

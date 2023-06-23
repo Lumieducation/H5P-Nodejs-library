@@ -31,8 +31,8 @@ import LibraryManager from './LibraryManager';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
 import ContentUserDataManager from './ContentUserDataManager';
-import ContentManager from './ContentManager.js';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem.js';
+import ContentManager from './ContentManager';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('Player');
 

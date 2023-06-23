@@ -13,6 +13,7 @@ import { ContentId, ILibraryName, IUser } from '../src/types';
 import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 async function createContentScanner(
     file: string,
@@ -30,7 +31,8 @@ async function createContentScanner(
     await fsExtra.ensureDir(libraryDir);
 
     const contentManager = new ContentManager(
-        new FileContentStorage(contentDir)
+        new FileContentStorage(contentDir),
+        new LaissezFairePermissionSystem()
     );
     const libraryManager = new LibraryManager(
         new FileLibraryStorage(libraryDir)

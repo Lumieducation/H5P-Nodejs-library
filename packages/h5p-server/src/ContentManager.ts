@@ -14,8 +14,8 @@ import {
 } from './types';
 
 import Logger from './helpers/Logger';
-import H5pError from './helpers/H5pError.js';
-import ContentUserDataManager from './ContentUserDataManager.js';
+import H5pError from './helpers/H5pError';
+import ContentUserDataManager from './ContentUserDataManager';
 
 const log = new Logger('ContentManager');
 

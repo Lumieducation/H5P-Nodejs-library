@@ -18,7 +18,7 @@ import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import generateFilename from './helpers/FilenameGenerator';
 import { generalizedSanitizeFilename } from './implementation/utils';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem.js';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('PackageExporter');
 
