@@ -2238,6 +2238,8 @@ export interface IH5PEditorOptions {
      * override.
      */
     getLocalIdOverride?: () => string;
+
+    permissionSystem?: IPermissionSystem;
 }
 
 /**
@@ -2280,6 +2282,7 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
+    permissionsSystem?: IPermissionSystem;
 }
 
 /**

@@ -81,7 +81,7 @@ export default class PackageExporter {
         user: IUser
     ): Promise<void> {
         log.info(`creating package for ${contentId}`);
-        await this.checkAccess(contentId, user);
+        await this.checkPermission(contentId, user);
 
         // create zip files
         const outputZipFile = new yazl.ZipFile();
@@ -201,7 +201,7 @@ export default class PackageExporter {
      * permissions for it. Throws an exception with the respective error message
      * if this is not the case.
      */
-    private async checkAccess(
+    private async checkPermission(
         contentId: ContentId,
         user: IUser
     ): Promise<void> {

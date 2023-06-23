@@ -31,6 +31,8 @@ import LibraryManager from './LibraryManager';
 import SemanticsLocalizer from './SemanticsLocalizer';
 import SimpleTranslator from './helpers/SimpleTranslator';
 import ContentUserDataManager from './ContentUserDataManager';
+import ContentManager from './ContentManager.js';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem.js';
 
 const log = new Logger('Player');
 
@@ -77,7 +79,17 @@ export default class H5PPlayer {
             this.config
         );
 
+        const permissionsSystem =
+            options?.permissionsSystem ?? new LaissezFairePermissionSystem();
+
         this.contentUserDataManager = new ContentUserDataManager(
+            contentUserDataStorage,
+            permissionsSystem
+        );
+
+        this.contentManager = new ContentManager(
+            contentStorage,
+            permissionsSystem,
             contentUserDataStorage
         );
 
@@ -103,6 +115,7 @@ export default class H5PPlayer {
     private globalCustomScripts: string[] = [];
     private globalCustomStyles: string[] = [];
     private libraryManager: LibraryManager;
+    private contentManager: ContentManager;
     private contentUserDataManager: ContentUserDataManager;
     private renderer: (model: IPlayerModel) => string | any;
 
@@ -149,7 +162,7 @@ export default class H5PPlayer {
         let parameters: ContentParameters;
         if (!options?.parametersOverride) {
             try {
-                parameters = await this.contentStorage.getParameters(
+                parameters = await this.contentManager.getContentParameters(
                     contentId,
                     options?.ignoreUserPermissions ? undefined : user
                 );
@@ -163,7 +176,7 @@ export default class H5PPlayer {
         let metadata: ContentMetadata;
         if (!options?.metadataOverride) {
             try {
-                metadata = await this.contentStorage.getMetadata(
+                metadata = await this.contentManager.getContentMetadata(
                     contentId,
                     options?.ignoreUserPermissions ? undefined : user
                 );

@@ -198,7 +198,7 @@ export default class H5PAjaxEndpoint {
         }
 
         // getFileStats validates filenames itself, so we don't do it here.
-        const stats = await this.h5pEditor.contentStorage.getFileStats(
+        const stats = await this.h5pEditor.contentManager.getContentFileStats(
             contentId,
             filename,
             user

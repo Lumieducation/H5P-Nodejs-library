@@ -11,12 +11,9 @@ import {
     IContentStorage,
     IFileStats,
     IUser,
-    Permission,
     ILibraryName,
     H5pError,
-    Logger,
-    IPermissionSystem,
-    LaissezFairePermissionSystem
+    Logger
 } from '@lumieducation/h5p-server';
 import { validateFilename, sanitizeFilename } from './S3Utils';
 
@@ -39,7 +36,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         private s3: AWS.S3,
         private mongodb: MongoDB.Collection,
         private options: {
-            permissionSystem?: IPermissionSystem;
             /**
              * These characters will be removed from files that are saved to S3.
              * There is a very strict default list that basically only leaves
@@ -71,20 +67,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
         // By default we shorten to 1002 as S3 supports a maximum of 1024
         // characters and we need to account for contentIds (12), unique ids
         // appended to the name (8) and separators (2).
-
-        if (this.options.permissionSystem) {
-            this.permissionSystem = this.options.permissionSystem;
-        } else {
-            this.permissionSystem = new LaissezFairePermissionSystem();
-        }
     }
 
     /**
      * Indicates how long keys can be.
      */
     private maxKeyLength: number;
-
-    private permissionSystem: IPermissionSystem;
 
     /**
      * Generates the S3 key for a file in a content object
@@ -122,21 +110,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser,
         contentId?: ContentId
     ): Promise<ContentId> {
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.Edit,
-                contentId
-            ))
-        ) {
-            log.error(`User tried add content without proper permissions.`);
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
-                {},
-                403
-            );
-        }
-
         try {
             if (!contentId) {
                 log.debug(`Inserting new content into MongoDB.`);
@@ -205,23 +178,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         );
         validateFilename(filename);
 
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.Edit,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to upload a file without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
-                {},
-                403
-            );
-        }
-
         try {
             await this.s3
                 .upload({
@@ -279,22 +235,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user?: IUser
     ): Promise<void> {
         log.debug(`Deleting content with id ${contentId}.`);
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.Delete,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to delete a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-delete-permission',
-                {},
-                403
-            );
-        }
         try {
             const filesToDelete = await this.listFiles(contentId, user);
             log.debug(
@@ -362,23 +302,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         log.debug(
             `Deleting file "${filename}" from content with id ${contentId}.`
         );
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.Edit,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to delete a file from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
-                {},
-                403
-            );
-        }
-
         try {
             await this.s3
                 .deleteObject({
@@ -452,23 +375,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
     ): Promise<IFileStats> {
         validateFilename(filename);
 
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.View,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to get stats of file from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
-
         try {
             const head = await this.s3
                 .headObject({
@@ -518,23 +424,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
             );
         }
 
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.View,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to display a file from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
-
         return this.s3
             .getObject({
                 Bucket: this.options.s3Bucket,
@@ -552,22 +441,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user?: IUser
     ): Promise<IContentMetadata> {
         log.debug(`Getting metadata for content with id ${contentId}.`);
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.View,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to get metadata of a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
 
         try {
             const ret = await this.mongodb.findOne({
@@ -583,24 +456,9 @@ export default class MongoS3ContentStorage implements IContentStorage {
             );
         }
     }
+
     public async getParameters(contentId: string, user?: IUser): Promise<any> {
         log.debug(`Getting parameters for content with id ${contentId}.`);
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.View,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to get parameters of a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
 
         try {
             const ret = await this.mongodb.findOne({
@@ -688,18 +546,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
 
     public async listContent(user?: IUser): Promise<ContentId[]> {
         log.debug(`Listing content objects.`);
-        if (
-            !(await this.permissionSystem.checkContent(user, Permission.List))
-        ) {
-            log.error(
-                `User tried to list all content objects without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-list-content-permission',
-                {},
-                403
-            );
-        }
 
         try {
             const cursor = this.mongodb.find({}, { projection: { _id: true } });
@@ -729,22 +575,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
         user: IUser
     ): Promise<string[]> {
         log.debug(`Listing files in content object with id ${contentId}.`);
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.View,
-                contentId
-            ))
-        ) {
-            log.error(
-                `User tried to get the list of files from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
 
         const prefix = MongoS3ContentStorage.getS3Key(contentId, '');
         let files: string[] = [];

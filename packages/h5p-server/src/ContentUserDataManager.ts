@@ -3,9 +3,12 @@ import {
     ISerializedContentUserData,
     IUser,
     IContentUserDataStorage,
-    IContentUserData
+    IContentUserData,
+    IPermissionSystem,
+    Permission
 } from './types';
 import Logger from './helpers/Logger';
+import H5pError from './helpers/H5pError.js';
 
 const log = new Logger('ContentUserDataManager');
 
@@ -18,29 +21,56 @@ export default class ContentUserDataManager {
     /**
      * @param contentUserDataStorage The storage object
      */
-    constructor(private contentUserDataStorage: IContentUserDataStorage) {
+    constructor(
+        private contentUserDataStorage: IContentUserDataStorage,
+        private permissionSystem: IPermissionSystem
+    ) {
         log.info('initialize');
+
+        if (!this.contentUserDataStorage) {
+            throw new Error('ContentUserDataManager requires a storage object');
+        }
     }
 
     /**
      * Deletes a contentUserData object for given contentId and userId. Throws
      * errors if something goes wrong.
-     * @param user the user for which the contentUserData object should be
+     * @param actingUser the user for which the contentUserData object should be
      * deleted
      */
-    public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
-        if (this.contentUserDataStorage) {
-            log.debug(`deleting contentUserData for userId ${user.id}`);
-            return this.contentUserDataStorage.deleteAllContentUserDataByUser(
-                user
+    public async deleteAllContentUserDataByUser(
+        forUserId: string,
+        actingUser: IUser
+    ): Promise<void> {
+        log.debug(`deleting contentUserData for userId ${actingUser.id}`);
+
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteUserState,
+                undefined,
+                forUserId
+            ))
+        ) {
+            log.error(
+                `User tried delete content states without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-user-states-permission',
+                {},
+                403
             );
         }
+
+        return this.contentUserDataStorage.deleteAllContentUserDataByUser(
+            actingUser
+        );
     }
 
     public async deleteInvalidatedContentUserDataByContentId(
         contentId: ContentId
     ): Promise<void> {
-        if (this.contentUserDataStorage && contentId) {
+        if (contentId) {
             log.debug(
                 `deleting invalidated contentUserData for contentId ${contentId}`
             );
@@ -51,16 +81,31 @@ export default class ContentUserDataManager {
     }
 
     public async deleteAllContentUserDataByContentId(
-        contentId: ContentId
+        contentId: ContentId,
+        user: IUser
     ): Promise<void> {
-        if (this.contentUserDataStorage) {
-            log.debug(
-                `deleting all content user data for contentId ${contentId}`
-            );
-            return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
+        log.debug(`deleting all content user data for contentId ${contentId}`);
+
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.DeleteUserState,
                 contentId
+            ))
+        ) {
+            log.error(
+                `User tried delete content user state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-user-state-permission',
+                {},
+                403
             );
         }
+
+        return this.contentUserDataStorage.deleteAllContentUserDataByContentId(
+            contentId
+        );
     }
 
     /**
@@ -80,13 +125,26 @@ export default class ContentUserDataManager {
         user: IUser,
         contextId?: string
     ): Promise<IContentUserData> {
-        if (!this.contentUserDataStorage) {
-            return undefined;
-        }
-
         log.debug(
             `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}, contextId ${contextId}`
         );
+
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.ViewUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried view user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-user-data-permission',
+                {},
+                403
+            );
+        }
 
         return this.contentUserDataStorage.getContentUserData(
             contentId,
@@ -119,8 +177,21 @@ export default class ContentUserDataManager {
             `Generating contentUserDataIntegration for user with id ${user.id}, contentId ${contentId} and contextId ${contextId}.`
         );
 
-        if (!this.contentUserDataStorage) {
-            return undefined;
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.ViewUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried viewing user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-user-state-permission',
+                {},
+                403
+            );
         }
 
         let states =
@@ -176,8 +247,21 @@ export default class ContentUserDataManager {
             `saving finished data for ${user.id} and contentId ${contentId}`
         );
 
-        if (!this.contentUserDataStorage) {
-            return undefined;
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.EditFinished,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried add finished data without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-edit-finished-permission',
+                {},
+                403
+            );
         }
 
         await this.contentUserDataStorage.createOrUpdateFinishedData({
@@ -223,6 +307,23 @@ export default class ContentUserDataManager {
             );
         }
 
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.EditUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried add / edit user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-edit-user-data-permission',
+                {},
+                403
+            );
+        }
+
         if (this.contentUserDataStorage) {
             return this.contentUserDataStorage.createOrUpdateContentUserData({
                 contentId,
@@ -235,5 +336,30 @@ export default class ContentUserDataManager {
                 userId: user.id
             });
         }
+    }
+
+    public async deleteFinishedDataByContentId(
+        contentId: string,
+        actingUser: IUser
+    ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteFinished,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried add delete finished data for content without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-finished-permission',
+                {},
+                403
+            );
+        }
+        await this.contentUserDataStorage.deleteFinishedDataByContentId(
+            contentId
+        );
     }
 }
