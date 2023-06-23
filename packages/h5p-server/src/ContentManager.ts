@@ -7,8 +7,7 @@ import {
     IContentMetadata,
     IContentStorage,
     IContentUserDataStorage,
-    IUser,
-    Permission
+    IUser
 } from './types';
 
 import Logger from './helpers/Logger';
@@ -195,20 +194,6 @@ export default class ContentManager {
         user: IUser
     ): Promise<ContentParameters> {
         return this.contentStorage.getParameters(contentId, user);
-    }
-
-    /**
-     * Returns an array of permissions a user has on a piece of content.
-     * @param contentId the content to check
-     * @param user the user who wants to access the piece of content
-     * @returns an array of permissions
-     */
-    public async getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]> {
-        log.info(`checking user permissions for ${contentId}`);
-        return this.contentStorage.getUserPermissions(contentId, user);
     }
 
     /**

@@ -10,13 +10,15 @@ import {
     ContentId,
     IContentMetadata,
     IUser,
-    Permission
+    Permission,
+    IPermissionSystem
 } from './types';
 import { ContentFileScanner } from './ContentFileScanner';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import generateFilename from './helpers/FilenameGenerator';
 import { generalizedSanitizeFilename } from './implementation/utils';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem.js';
 
 const log = new Logger('PackageExporter');
 
@@ -37,13 +39,26 @@ export default class PackageExporter {
         private libraryManager: LibraryManager,
         // eslint-disable-next-line @typescript-eslint/default-param-last
         private contentStorage: IContentStorage = null,
-        { exportMaxContentPathLength }: { exportMaxContentPathLength: number }
+        {
+            exportMaxContentPathLength,
+            permissionsSystem
+        }: {
+            exportMaxContentPathLength: number;
+            permissionsSystem?: IPermissionSystem;
+        }
     ) {
         log.info(`initialize`);
         this.maxContentPathLength = exportMaxContentPathLength ?? 255;
+        if (permissionsSystem) {
+            this.permissionsSystem = permissionsSystem;
+        } else {
+            this.permissionsSystem = new LaissezFairePermissionSystem();
+        }
     }
 
     private maxContentPathLength: number;
+
+    private permissionsSystem: IPermissionSystem;
 
     /**
      * Creates a .h5p-package for the specified content file and pipes it to the
@@ -198,9 +213,11 @@ export default class PackageExporter {
             );
         }
         if (
-            !(
-                await this.contentStorage.getUserPermissions(contentId, user)
-            ).some((p) => p === Permission.Download)
+            !(await this.permissionsSystem.checkContent(
+                user,
+                Permission.Download,
+                contentId
+            ))
         ) {
             throw new H5pError(
                 'download-content-forbidden',

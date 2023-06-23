@@ -73,7 +73,7 @@ export default class TemporaryFileManager {
         }
         await Promise.all(
             filesToDelete.map((f) =>
-                this.storage.deleteFile(f.filename, f.ownedByUserId)
+                this.storage.deleteFile(f.filename, null, f.ownedByUserId)
             )
         );
     }
@@ -86,7 +86,7 @@ export default class TemporaryFileManager {
      */
     public async deleteFile(filename: string, user: IUser): Promise<void> {
         if (await this.storage.fileExists(filename, user)) {
-            await this.storage.deleteFile(filename, user.id);
+            await this.storage.deleteFile(filename, user);
         }
     }
 

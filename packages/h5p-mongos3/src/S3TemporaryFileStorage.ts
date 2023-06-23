@@ -8,7 +8,9 @@ import {
     IH5PConfig,
     IFileStats,
     H5pError,
-    Logger
+    Logger,
+    IPermissionSystem,
+    LaissezFairePermissionSystem
 } from '@lumieducation/h5p-server';
 import { ReadStream } from 'fs';
 import { validateFilename, sanitizeFilename } from './S3Utils';
@@ -31,19 +33,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     constructor(
         private s3: AWS.S3,
         private options: {
-            /**
-             * This function is called to determine whether a user has access
-             * rights to a file stored in temporary storage. Returns a list
-             * of all permissions the user has on this file.
-             *
-             * Note: The Permissions enumeration is also used for content and
-             * includes more values than necessary for temporary storage. Only
-             * the values 'Edit', 'View' and 'Delete' are used in this class.
-             */
-            getPermissions?: (
-                userId: string,
-                filename?: string
-            ) => Promise<Permission[]>;
+            permissionSystem?: IPermissionSystem;
             /**
              * These characters will be removed from files that are saved to S3.
              * There is a very strict default list that basically only leaves
@@ -77,6 +67,12 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         // By default we shorten to 1002 as S3 supports a maximum of 1024
         // characters and we need to account for contentIds (12), unique ids
         // appended to the name (8) and separators (2).
+
+        if (options?.permissionSystem) {
+            this.permissionSystem = this.permissionSystem;
+        } else {
+            this.permissionSystem = new LaissezFairePermissionSystem();
+        }
     }
 
     /**
@@ -84,13 +80,19 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      */
     private maxKeyLength: number;
 
+    private permissionSystem: IPermissionSystem;
+
     /**
      * Deletes the file from temporary storage.
      * Throws errors of something goes wrong.
      * @param filename the file to delete
      * @param userId the user ID of the user who wants to delete the file
      */
-    public async deleteFile(filename: string, userId: string): Promise<void> {
+    public async deleteFile(
+        filename: string,
+        user: IUser | null,
+        _ownerId?: string
+    ): Promise<void> {
         log.debug(`Deleting file "${filename}" from temporary storage.`);
         validateFilename(filename);
 
@@ -100,9 +102,12 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         }
 
         if (
-            !(await this.getUserPermissions(userId, filename)).includes(
-                Permission.Delete
-            )
+            user !== null &&
+            !(await this.permissionSystem.checkTemporary(
+                user,
+                Permission.Delete,
+                filename
+            ))
         ) {
             log.error(
                 `User tried to delete a file from a temporary storage without proper permissions.`
@@ -184,9 +189,11 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         validateFilename(filename);
 
         if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkTemporary(
+                user,
+                Permission.View,
+                filename
+            ))
         ) {
             log.error(
                 `User tried to get stats of a content object without proper permissions.`
@@ -238,9 +245,11 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         }
 
         if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkTemporary(
+                user,
+                Permission.View,
+                filename
+            ))
         ) {
             log.error(
                 `User tried to display a file from a content object without proper permissions.`
@@ -262,31 +271,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                         : undefined
             })
             .createReadStream();
-    }
-
-    /**
-     * Checks if a user has access rights on file in temporary storage.
-     * @param userId
-     * @param filename
-     * @returns the list of permissions the user has on the file.
-     */
-    public async getUserPermissions(
-        userId: string,
-        filename?: string
-    ): Promise<Permission[]> {
-        log.debug(
-            `Getting temporary storage permissions for userId ${userId}.`
-        );
-        if (this.options?.getPermissions) {
-            log.debug(
-                `Using function passed in through constructor to get permissions.`
-            );
-            return this.options.getPermissions(userId, filename);
-        }
-        log.debug(
-            `No permission function set in constructor. Allowing everything.`
-        );
-        return [Permission.Delete, Permission.Edit, Permission.View];
     }
 
     /**
@@ -340,9 +324,11 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         }
 
         if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.Edit
-            )
+            !(await this.permissionSystem.checkTemporary(
+                user,
+                Permission.Edit,
+                filename
+            ))
         ) {
             log.error(
                 `User tried upload file to temporary storage without proper permissions.`

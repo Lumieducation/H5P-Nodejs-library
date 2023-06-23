@@ -17,7 +17,14 @@ export enum Permission {
     Edit,
     Embed,
     List,
-    View
+    View,
+    EditUserState,
+    DeleteUserState,
+    ViewUserState,
+    ListUserStates,
+    EditFinished,
+    ViewFinished,
+    DeleteFinished
 }
 
 /**
@@ -873,18 +880,6 @@ export interface IContentStorage {
     ): Promise<{ asDependency: number; asMainLibrary: number }>;
 
     /**
-     * Returns an array of permissions that the user has on the piece of content
-     * @param contentId the content id to check
-     * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it,
-     * delete it etc.)
-     */
-    getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]>;
-
-    /**
      * Lists the content objects in the system (if no user is specified) or
      * owned by the user.
      * @param user (optional) the user who owns the content
@@ -1104,6 +1099,31 @@ export interface ILibraryStorage {
     updateLibrary(
         libraryMetadata: ILibraryMetadata
     ): Promise<IInstalledLibrary>;
+}
+
+/**
+ * Manages permissions of users.
+ */
+export interface IPermissionSystem {
+    /**
+     * Checks if a user has a certain permission
+     * @param actingUser the user to check
+     * @param permission the permission to check
+     * @param contentId (optional) the content for which to check
+     * @returns true if the user is allowed to do it
+     */
+    checkContent(
+        actingUser: IUser,
+        permission: Permission,
+        contentId?: ContentId,
+        affectedUserId?: string
+    ): Promise<boolean>;
+
+    checkTemporary(
+        user: IUser,
+        permission: Permission,
+        filename?: string
+    ): Promise<boolean>;
 }
 
 /**
@@ -1849,11 +1869,19 @@ export interface ITemporaryFile {
 export interface ITemporaryFileStorage {
     /**
      * Deletes the file from temporary storage (e.g. because it has expired)
-     * @param filename the filename; can be a path including subdirectories (e.g. 'images/xyz.png')
-     * @param userId the user id
+     * @param filename the filename; can be a path including subdirectories
+     * (e.g. 'images/xyz.png')
+     * @param userId the user id doing the delete; if null, no permission checks
+     * will be performed
+     * @param ownerId (optional) when there is no user deleting, you must specify who the
+     * owner of the temporary file is; only needed when userId is null
      * @returns true if deletion was successful
      */
-    deleteFile(filename: string, userId: string): Promise<void>;
+    deleteFile(
+        filename: string,
+        user: IUser | null,
+        ownerId?: string
+    ): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.
@@ -2252,11 +2280,6 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
-
-    getPermissions?: (
-        contentId: ContentId,
-        user: IUser
-    ) => Promise<Permission[]>;
 }
 
 /**

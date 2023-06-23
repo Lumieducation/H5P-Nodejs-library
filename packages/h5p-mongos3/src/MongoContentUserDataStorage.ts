@@ -6,7 +6,11 @@ import {
     IUser,
     IContentUserData,
     Logger,
-    IFinishedUserData
+    IFinishedUserData,
+    IPermissionSystem,
+    LaissezFairePermissionSystem,
+    Permission,
+    H5pError
 } from '@lumieducation/h5p-server';
 
 const log = new Logger('MongoContentUserDataStorage');
@@ -25,10 +29,21 @@ export default class MongoContentUserDataStorage
      */
     constructor(
         private userDataCollection: MongoDB.Collection,
-        private finishedCollection: MongoDB.Collection
+        private finishedCollection: MongoDB.Collection,
+        options?: {
+            permissionSystem?: IPermissionSystem;
+        }
     ) {
         log.info('initialize');
+
+        if (options.permissionSystem) {
+            this.permissionSystem = this.permissionSystem;
+        } else {
+            this.permissionSystem = new LaissezFairePermissionSystem();
+        }
     }
+
+    private permissionSystem: IPermissionSystem;
 
     /**
      * Creates indexes to speed up read access. Can be safely used even if
@@ -99,6 +114,24 @@ export default class MongoContentUserDataStorage
         log.debug(
             `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id} and contextId ${contextId}`
         );
+
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.ViewUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried view user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-user-data-permission',
+                {},
+                403
+            );
+        }
+
         return this.cleanMongoUserData(
             await this.userDataCollection.findOne<IContentUserData>({
                 contentId,
@@ -113,6 +146,22 @@ export default class MongoContentUserDataStorage
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.ListUserStates
+            ))
+        ) {
+            log.error(
+                `User tried to list their content states without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-list-user-data-permission',
+                {},
+                403
+            );
+        }
+
         return (
             await this.userDataCollection
                 .find<IContentUserData>({
@@ -123,8 +172,26 @@ export default class MongoContentUserDataStorage
     }
 
     public async createOrUpdateContentUserData(
-        userData: IContentUserData
+        userData: IContentUserData,
+        user: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.EditUserState,
+                userData.contentId
+            ))
+        ) {
+            log.error(
+                `User tried add / edit user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-edit-user-data-permission',
+                {},
+                403
+            );
+        }
+
         await this.userDataCollection.replaceOne(
             {
                 contentId: userData.contentId,
@@ -148,8 +215,26 @@ export default class MongoContentUserDataStorage
     }
 
     public async createOrUpdateFinishedData(
-        finishedData: IFinishedUserData
+        finishedData: IFinishedUserData,
+        user: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.EditFinished,
+                finishedData.contentId
+            ))
+        ) {
+            log.error(
+                `User tried add finished data without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-edit-finished-permission',
+                {},
+                403
+            );
+        }
+
         await this.finishedCollection.replaceOne(
             {
                 contentId: finishedData.contentId,
@@ -177,15 +262,54 @@ export default class MongoContentUserDataStorage
         });
     }
 
-    public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
+    public async deleteAllContentUserDataByUser(
+        userId: string,
+        actingUser: IUser
+    ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteUserState,
+                undefined,
+                actingUser
+            ))
+        ) {
+            log.error(
+                `User tried delete content states without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-user-states-permission',
+                {},
+                403
+            );
+        }
+
         await this.userDataCollection.deleteMany({
-            userId: user.id
+            userId
         });
     }
 
     public async deleteAllContentUserDataByContentId(
-        contentId: ContentId
+        contentId: ContentId,
+        actingUser: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried delete content user state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-user-state-permission',
+                {},
+                403
+            );
+        }
+
         await this.userDataCollection.deleteMany({
             contentId
         });
@@ -193,14 +317,31 @@ export default class MongoContentUserDataStorage
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser,
+        actingUser: IUser,
         contextId?: string
     ): Promise<IContentUserData[]> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.ViewUserState,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried viewing user content state without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-user-state-permission',
+                {},
+                403
+            );
+        }
+
         return (
             await this.userDataCollection
                 .find<IContentUserData>({
                     contentId,
-                    userId: user.id,
+                    userId: actingUser.id,
                     contextId
                 })
                 .toArray()
@@ -208,8 +349,26 @@ export default class MongoContentUserDataStorage
     }
 
     public async getFinishedDataByContentId(
-        contentId: string
+        contentId: string,
+        actingUser: IUser
     ): Promise<IFinishedUserData[]> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.ViewFinished,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to view finished data for content without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-finished-data-permission',
+                {},
+                403
+            );
+        }
+
         return (
             await this.finishedCollection
                 .find<IFinishedUserData>({ contentId })
@@ -218,23 +377,79 @@ export default class MongoContentUserDataStorage
     }
 
     public async getFinishedDataByUser(
-        user: IUser
+        forUserId: string,
+        actingUser: IUser
     ): Promise<IFinishedUserData[]> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.ViewUserState,
+                undefined,
+                forUserId
+            ))
+        ) {
+            log.error(
+                `User tried to view finished data for content without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-view-finished-data-permission',
+                {},
+                403
+            );
+        }
+
         return (
             await this.finishedCollection
-                .find<IFinishedUserData>({ userId: user.id })
+                .find<IFinishedUserData>({ userId: forUserId })
                 .toArray()
         )?.map(this.cleanMongoFinishedData);
     }
 
     public async deleteFinishedDataByContentId(
-        contentId: string
+        contentId: string,
+        actingUser: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteFinished,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried add delete finished data for content without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-finished-permission',
+                {},
+                403
+            );
+        }
         await this.finishedCollection.deleteMany({ contentId });
     }
 
-    public async deleteFinishedDataByUser(user: IUser): Promise<void> {
-        await this.finishedCollection.deleteMany({ userId: user.id });
+    public async deleteFinishedDataByUser(
+        forUserId: string,
+        actingUser: IUser
+    ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkContent(
+                actingUser,
+                Permission.DeleteFinished,
+                undefined,
+                forUserId
+            ))
+        ) {
+            log.error(
+                `User tried to delete all finished data for a user without proper permissions.`
+            );
+            throw new H5pError(
+                'mongo-content-user-data-storage:missing-delete-finished-data-permission',
+                {},
+                403
+            );
+        }
+        await this.finishedCollection.deleteMany({ userId: forUserId });
     }
 
     /**

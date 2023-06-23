@@ -58,6 +58,7 @@ import {
     ILibraryStorage,
     ILicenseData,
     ILockProvider,
+    IPermissionSystem,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -85,6 +86,8 @@ const cacheImplementations = {
     CachedKeyValueStorage,
     CachedLibraryStorage
 };
+
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 export {
     // classes
@@ -130,6 +133,7 @@ export {
     ILibraryStorage,
     ILicenseData,
     ILockProvider,
+    IPermissionSystem,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -141,6 +145,7 @@ export {
     Permission,
     // implementations
     H5PConfig,
+    LaissezFairePermissionSystem,
     fs,
     utils,
     fsImplementations,

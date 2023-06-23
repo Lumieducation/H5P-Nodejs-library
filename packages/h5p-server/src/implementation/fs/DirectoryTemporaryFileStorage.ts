@@ -58,14 +58,32 @@ export default class DirectoryTemporaryFileStorage
 
     private maxFileLength: number;
 
-    public async deleteFile(filename: string, userId: string): Promise<void> {
+    public async deleteFile(
+        filename: string,
+        user: IUser,
+        ownerId?: string
+    ): Promise<void> {
         checkFilename(filename);
-        checkFilename(userId);
-        const filePath = this.getAbsoluteFilePath(userId, filename);
+        if (user === null) {
+            if (!ownerId) {
+                throw new Error(
+                    'invalid arguments for DirectoryTemporaryFileStorage.deleteFile: you must specify an ownerId when user is null'
+                );
+            }
+            checkFilename(ownerId);
+        } else {
+            checkFilename(user.id);
+        }
+        const filePath = this.getAbsoluteFilePath(
+            user ? user.id : ownerId,
+            filename
+        );
         await fsExtra.remove(filePath);
         await fsExtra.remove(`${filePath}.metadata`);
 
-        const userDirectoryPath = this.getAbsoluteUserDirectoryPath(userId);
+        const userDirectoryPath = this.getAbsoluteUserDirectoryPath(
+            user ? user.id : ownerId
+        );
         const fileDirectoryPath = path.dirname(filePath);
         if (userDirectoryPath !== fileDirectoryPath) {
             await this.deleteEmptyDirectory(fileDirectoryPath);

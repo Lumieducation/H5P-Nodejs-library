@@ -14,7 +14,9 @@ import {
     Permission,
     ILibraryName,
     H5pError,
-    Logger
+    Logger,
+    IPermissionSystem,
+    LaissezFairePermissionSystem
 } from '@lumieducation/h5p-server';
 import { validateFilename, sanitizeFilename } from './S3Utils';
 
@@ -37,16 +39,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
         private s3: AWS.S3,
         private mongodb: MongoDB.Collection,
         private options: {
-            /**
-             * If set, the function is called to retrieve a list of permissions
-             * a user has on a certain content object.
-             * This function can function as an adapter to your rights and
-             * privileges system.
-             */
-            getPermissions?: (
-                contentId: ContentId,
-                user: IUser
-            ) => Promise<Permission[]>;
+            permissionSystem?: IPermissionSystem;
             /**
              * These characters will be removed from files that are saved to S3.
              * There is a very strict default list that basically only leaves
@@ -78,12 +71,20 @@ export default class MongoS3ContentStorage implements IContentStorage {
         // By default we shorten to 1002 as S3 supports a maximum of 1024
         // characters and we need to account for contentIds (12), unique ids
         // appended to the name (8) and separators (2).
+
+        if (this.options.permissionSystem) {
+            this.permissionSystem = this.options.permissionSystem;
+        } else {
+            this.permissionSystem = new LaissezFairePermissionSystem();
+        }
     }
 
     /**
      * Indicates how long keys can be.
      */
     private maxKeyLength: number;
+
+    private permissionSystem: IPermissionSystem;
 
     /**
      * Generates the S3 key for a file in a content object
@@ -122,9 +123,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
         contentId?: ContentId
     ): Promise<ContentId> {
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.Edit
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.Edit,
+                contentId
+            ))
         ) {
             log.error(`User tried add content without proper permissions.`);
             throw new H5pError(
@@ -203,9 +206,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
         validateFilename(filename);
 
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.Edit
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.Edit,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to upload a file without proper permissions.`
@@ -275,9 +280,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
     ): Promise<void> {
         log.debug(`Deleting content with id ${contentId}.`);
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.Delete
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.Delete,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to delete a content object without proper permissions.`
@@ -356,9 +363,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
             `Deleting file "${filename}" from content with id ${contentId}.`
         );
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.Edit
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.Edit,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to delete a file from a content object without proper permissions.`
@@ -444,9 +453,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
         validateFilename(filename);
 
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.View,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to get stats of file from a content object without proper permissions.`
@@ -508,9 +519,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
 
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.View,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to display a file from a content object without proper permissions.`
@@ -540,9 +553,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
     ): Promise<IContentMetadata> {
         log.debug(`Getting metadata for content with id ${contentId}.`);
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.View,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to get metadata of a content object without proper permissions.`
@@ -571,9 +586,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
     public async getParameters(contentId: string, user?: IUser): Promise<any> {
         log.debug(`Getting parameters for content with id ${contentId}.`);
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.View,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to get parameters of a content object without proper permissions.`
@@ -669,42 +686,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
         return { asMainLibrary, asDependency };
     }
 
-    /**
-     * Returns an array of permissions that the user has on the piece of content
-     * @param contentId the content id to check
-     * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it, delete it etc.)
-     */
-    public async getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]> {
-        log.debug(`Getting user permissions for content with id ${contentId}.`);
-        if (this.options.getPermissions) {
-            log.debug(
-                `Using function passed in through constructor to get permissions.`
-            );
-            return this.options.getPermissions(contentId, user);
-        }
-        log.debug(
-            `No permission function set in constructor. Allowing everything.`
-        );
-        return [
-            Permission.Delete,
-            Permission.Download,
-            Permission.Edit,
-            Permission.Embed,
-            Permission.List,
-            Permission.View
-        ];
-    }
-
     public async listContent(user?: IUser): Promise<ContentId[]> {
         log.debug(`Listing content objects.`);
         if (
-            !(await this.getUserPermissions(undefined, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(user, Permission.List))
         ) {
             log.error(
                 `User tried to list all content objects without proper permissions.`
@@ -745,9 +730,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
     ): Promise<string[]> {
         log.debug(`Listing files in content object with id ${contentId}.`);
         if (
-            !(await this.getUserPermissions(contentId, user)).includes(
-                Permission.View
-            )
+            !(await this.permissionSystem.checkContent(
+                user,
+                Permission.View,
+                contentId
+            ))
         ) {
             log.error(
                 `User tried to get the list of files from a content object without proper permissions.`

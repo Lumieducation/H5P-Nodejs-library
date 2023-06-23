@@ -8,7 +8,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
-import { Permission, H5PConfig } from '@lumieducation/h5p-server';
+import { Permission } from '@lumieducation/h5p-server';
 
 import User from './User';
 import initS3 from '../src/initS3';
