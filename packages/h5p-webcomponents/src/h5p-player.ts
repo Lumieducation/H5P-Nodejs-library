@@ -26,6 +26,14 @@ export class H5PPlayerComponent extends HTMLElement {
         this.setAttribute('content-id', contentId);
     }
 
+    get contextId(): string {
+        return this.getAttribute('context-id');
+    }
+
+    set contextId(contextId: string) {
+        this.setAttribute('context-id', contextId);
+    }
+
     /**
      * The internal H5P instance object of the H5P content.
      *
@@ -78,18 +86,22 @@ export class H5PPlayerComponent extends HTMLElement {
      * goes wrong.
      */
     public get loadContentCallback(): (
-        contentId: string
+        contentId: string,
+        contextId?: string
     ) => Promise<IPlayerModel> {
         return this.privateLoadContentCallback;
     }
 
     public set loadContentCallback(
-        callback: (contentId: string) => Promise<IPlayerModel>
+        callback: (
+            contentId: string,
+            contextId?: string
+        ) => Promise<IPlayerModel>
     ) {
         const mustRender = this.privateLoadContentCallback !== callback;
         this.privateLoadContentCallback = callback;
         if (mustRender) {
-            this.render(this.contentId);
+            this.render(this.contentId, this.contextId);
         }
     }
 
@@ -99,7 +111,7 @@ export class H5PPlayerComponent extends HTMLElement {
      * @memberof H5PPlayerComponent
      */
     static get observedAttributes(): string[] {
-        return ['content-id'];
+        return ['content-id', 'context-id'];
     }
     constructor() {
         super();
@@ -110,7 +122,8 @@ export class H5PPlayerComponent extends HTMLElement {
     private static template: HTMLTemplateElement;
     private playerModel: IPlayerModel;
     private privateLoadContentCallback: (
-        contentId: string
+        contentId: string,
+        contextId?: string
     ) => Promise<IPlayerModel>;
     private resizeObserver: ResizeObserver;
     private root: HTMLElement;
@@ -162,7 +175,13 @@ export class H5PPlayerComponent extends HTMLElement {
             if (oldVal) {
                 removeUnusedContent(oldVal);
             }
-            await this.render(newVal);
+            await this.render(newVal, this.contextId);
+        }
+        if (name === 'context-id') {
+            if (oldVal) {
+                removeUnusedContent(this.contentId);
+            }
+            await this.render(this.contentId, newVal);
         }
     }
 
@@ -361,13 +380,16 @@ export class H5PPlayerComponent extends HTMLElement {
      * Displays content.
      * @param {string} contentId
      */
-    private async render(contentId: string): Promise<void> {
+    private async render(contentId: string, contextId?: string): Promise<void> {
         if (!this.loadContentCallback) {
             return;
         }
         // Get data from H5P server
         try {
-            this.playerModel = await this.loadContentCallback(contentId);
+            this.playerModel = await this.loadContentCallback(
+                contentId,
+                contextId
+            );
         } catch (error) {
             this.root.innerHTML = `<p>Error loading H5P content from server: ${error.message}</p>`;
             return;

@@ -26,7 +26,11 @@ declare global {
 
 interface IH5PPlayerUIProps {
     contentId: string;
-    loadContentCallback: (contentId: string) => Promise<IPlayerModel>;
+    contextId?: string;
+    loadContentCallback: (
+        contentId: string,
+        contextId?: string
+    ) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
     onxAPIStatement?: (statement: any, context: any, event: IxAPIEvent) => void;
 }
@@ -104,6 +108,7 @@ export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
             <h5p-player
                 ref={this.h5pPlayer}
                 content-id={this.props.contentId}
+                context-id={this.props.contextId}
             />
         );
     }
@@ -126,8 +131,10 @@ export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
     }
 
     private loadContentCallbackWrapper = (
-        contentId: string
-    ): Promise<IPlayerModel> => this.props.loadContentCallback(contentId);
+        contentId: string,
+        contextId?: string
+    ): Promise<IPlayerModel> =>
+        this.props.loadContentCallback(contentId, contextId);
 
     private onInitialized = (
         event: CustomEvent<{ contentId: string }>

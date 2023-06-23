@@ -26,7 +26,18 @@ export default function (
                 req.user,
                 languageOverride === 'auto'
                     ? req.language ?? 'en'
-                    : languageOverride
+                    : languageOverride,
+                {
+                    // We pass through the contextId here to illustrate how
+                    // to work with it. Context ids allow you to have
+                    // multiple user states per content object. They are
+                    // purely optional. You should *NOT* pass the contextId
+                    // to the render method if you don't need contextIds!
+                    contextId:
+                        typeof req.query.contextId === 'string'
+                            ? req.query.contextId
+                            : undefined
+                }
             );
             res.send(content);
             res.status(200).end();
