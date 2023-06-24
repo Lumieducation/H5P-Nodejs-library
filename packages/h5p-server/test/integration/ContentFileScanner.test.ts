@@ -12,6 +12,7 @@ import LibraryManager from '../../src/LibraryManager';
 import PackageImporter from '../../src/PackageImporter';
 import { ContentId } from '../../src/types';
 import ContentStorer from '../../src/ContentStorer';
+import { LaissezFairePermissionSystem } from '../../src/implementation/LaissezFairePermissionSystem';
 
 import User from '../User';
 
@@ -52,7 +53,10 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         await fsExtra.ensureDir(contentDir);
         await fsExtra.ensureDir(libraryDir);
 
-        contentManager = new ContentManager(new FileContentStorage(contentDir));
+        contentManager = new ContentManager(
+            new FileContentStorage(contentDir),
+            new LaissezFairePermissionSystem()
+        );
         const libraryManager = new LibraryManager(
             new FileLibraryStorage(libraryDir)
         );
