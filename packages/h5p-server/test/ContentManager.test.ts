@@ -142,6 +142,7 @@ describe('ContentManager', () => {
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
                     new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem(),
                     mockContentUserDataStorage
                 );
 

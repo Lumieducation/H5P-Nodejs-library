@@ -70,6 +70,10 @@ export default class ContentUserDataManager {
     public async deleteInvalidatedContentUserDataByContentId(
         contentId: ContentId
     ): Promise<void> {
+        if (!this.contentUserDataStorage) {
+            return;
+        }
+
         if (contentId) {
             log.debug(
                 `deleting invalidated contentUserData for contentId ${contentId}`
@@ -312,6 +316,12 @@ export default class ContentUserDataManager {
         user: IUser,
         contextId?: string
     ): Promise<void> {
+        if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
+            log.error(`invalid arguments passed for contentId ${contentId}`);
+            throw new Error(
+                "createOrUpdateContentUserData received invalid arguments: invalidate or preload weren't boolean"
+            );
+        }
         if (!this.contentUserDataStorage) {
             return;
         }
@@ -319,13 +329,6 @@ export default class ContentUserDataManager {
         log.debug(
             `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
         );
-
-        if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
-            log.error(`invalid arguments passed for contentId ${contentId}`);
-            throw new Error(
-                "createOrUpdateContentUserData received invalid arguments: invalidate or preload weren't boolean"
-            );
-        }
 
         if (
             !(await this.permissionSystem.checkContent(

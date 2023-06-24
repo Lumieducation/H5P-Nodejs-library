@@ -1,9 +1,9 @@
 import ContentUserDataManager from '../src/ContentUserDataManager';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 
 import User from './User';
-import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 describe('ContentUserDataManager', () => {
     describe('deleteAllContentUserDataByUser', () => {

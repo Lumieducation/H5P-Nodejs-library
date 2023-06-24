@@ -11,6 +11,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 import User from './User';
 
@@ -73,7 +74,8 @@ describe('package importer', () => {
                 user.canUpdateAndInstallLibraries = true;
 
                 const contentManager = new ContentManager(
-                    new FileContentStorage(contentDir)
+                    new FileContentStorage(contentDir),
+                    new LaissezFairePermissionSystem()
                 );
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
@@ -145,7 +147,8 @@ describe('package importer', () => {
                 user.canUpdateAndInstallLibraries = false;
 
                 const contentManager = new ContentManager(
-                    new FileContentStorage(contentDir)
+                    new FileContentStorage(contentDir),
+                    new LaissezFairePermissionSystem()
                 );
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
