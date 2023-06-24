@@ -139,6 +139,7 @@ export default class H5PEditor {
             this.contentTypeCache,
             this.libraryManager,
             config,
+            permissionsSystem,
             options?.enableHubLocalization ? translationCallback : undefined
         );
         this.temporaryFileManager = new TemporaryFileManager(
@@ -158,6 +159,7 @@ export default class H5PEditor {
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.config,
+            permissionsSystem,
             this.contentManager,
             this.contentStorer
         );

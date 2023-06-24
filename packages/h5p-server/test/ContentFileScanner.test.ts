@@ -45,6 +45,7 @@ describe('ContentFileScanner', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             new H5PConfig(null),
+            new LaissezFairePermissionSystem(),
             contentManager,
             new ContentStorer(contentManager, libraryManager, undefined)
         );
@@ -64,7 +65,6 @@ describe('ContentFileScanner', () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const user = new User();
-                user.canUpdateAndInstallLibraries = true;
 
                 const { contentScanner, contentId, contentManager } =
                     await createContentFileScanner(
@@ -107,7 +107,6 @@ describe('ContentFileScanner', () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const user = new User();
-                user.canUpdateAndInstallLibraries = true;
 
                 const { contentScanner, contentId, contentManager } =
                     await createContentFileScanner(

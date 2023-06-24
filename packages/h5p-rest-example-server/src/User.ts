@@ -16,8 +16,5 @@ export default class User implements IUser {
         this.type = 'local';
     }
 
-    public canCreateRestricted: boolean;
-    public canInstallRecommended: boolean;
-    public canUpdateAndInstallLibraries: boolean;
     public type: 'local';
 }

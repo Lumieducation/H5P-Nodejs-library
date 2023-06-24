@@ -15,7 +15,9 @@ import {
     IH5PConfig,
     ILibraryInstallResult,
     ILibraryName,
-    IUser
+    IPermissionSystem,
+    IUser,
+    Permission
 } from './types';
 import Logger from './helpers/Logger';
 import LibraryName from './LibraryName';
@@ -55,6 +57,7 @@ export default class PackageImporter {
     constructor(
         private libraryManager: LibraryManager,
         private config: IH5PConfig,
+        private permissionSystem: IPermissionSystem,
         private contentManager: ContentManager = null,
         private contentStorer: ContentStorer = null
     ) {
@@ -147,8 +150,10 @@ export default class PackageImporter {
                 packagePath,
                 {
                     copyMode: ContentCopyModes.Install,
-                    installLibraries:
-                        user?.canUpdateAndInstallLibraries === true
+                    installLibraries: await this.permissionSystem.checkGeneral(
+                        user,
+                        Permission.CanUpdateAndInstallLibraries
+                    )
                 },
                 user,
                 contentId
@@ -184,7 +189,10 @@ export default class PackageImporter {
             packagePath,
             {
                 copyMode: ContentCopyModes.Temporary,
-                installLibraries: user.canUpdateAndInstallLibraries
+                installLibraries: await this.permissionSystem.checkGeneral(
+                    user,
+                    Permission.CanUpdateAndInstallLibraries
+                )
             },
             user
         );

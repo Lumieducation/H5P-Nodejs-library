@@ -27,7 +27,6 @@ export function importAndExportPackage(
             await fsExtra.ensureDir(libraryDir);
 
             const user = new User();
-            user.canUpdateAndInstallLibraries = true;
 
             const contentStorage = new FileContentStorage(contentDir);
             const contentManager = new ContentManager(
@@ -41,6 +40,7 @@ export function importAndExportPackage(
             const packageImporter = new PackageImporter(
                 libraryManager,
                 config,
+                new LaissezFairePermissionSystem(),
                 contentManager,
                 new ContentStorer(contentManager, libraryManager, undefined)
             );

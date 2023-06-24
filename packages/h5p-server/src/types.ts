@@ -24,7 +24,21 @@ export enum Permission {
     ListUserStates,
     EditFinished,
     ViewFinished,
-    DeleteFinished
+    DeleteFinished,
+    /**
+     * If true, the user can create content of content types that are set to "restricted".
+     */
+    CanCreateRestricted,
+    /**
+     * If true, the user can install content types from the hub that are set the "recommended"
+     * by the Hub.
+     */
+    CanInstallRecommended,
+    /**
+     * If true, the user can generally install and update libraries. This includes Hub
+     * content types that aren't set to "recommended" or uploading custom packages.
+     */
+    CanUpdateAndInstallLibraries
 }
 
 /**
@@ -519,20 +533,6 @@ export interface ILibraryOverviewForClient {
  * implementations.
  */
 export interface IUser {
-    /**
-     * If true, the user can create content of content types that are set to "restricted".
-     */
-    canCreateRestricted: boolean;
-    /**
-     * If true, the user can install content types from the hub that are set the "recommended"
-     * by the Hub.
-     */
-    canInstallRecommended: boolean;
-    /**
-     * If true, the user can generally install and update libraries. This includes Hub
-     * content types that aren't set to "recommended" or uploading custom packages.
-     */
-    canUpdateAndInstallLibraries: boolean;
     /**
      * E-Mail address.
      */
@@ -1124,6 +1124,8 @@ export interface IPermissionSystem {
         permission: Permission,
         filename?: string
     ): Promise<boolean>;
+
+    checkGeneral(actingUser: IUser, permission: Permission): Promise<boolean>;
 }
 
 /**

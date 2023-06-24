@@ -40,7 +40,6 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     let contentScanner: ContentFileScanner = null;
     let packageIdMap: Map<string, ContentId>;
     const user = new User();
-    user.canUpdateAndInstallLibraries = true;
 
     // We have to use beforeAll as describe(...) doesn't accept async functions
     beforeAll(async () => {
@@ -65,6 +64,7 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             new H5PConfig(null),
+            new LaissezFairePermissionSystem(),
             contentManager,
             new ContentStorer(contentManager, libraryManager, undefined)
         );
