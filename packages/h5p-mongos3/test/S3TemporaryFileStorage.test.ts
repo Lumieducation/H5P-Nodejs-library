@@ -172,14 +172,4 @@ describe('S3TemporaryFileStorage', () => {
             storage.saveFile('/bin/bash', undefined, stubUser, new Date())
         ).rejects.toThrowError('illegal-filename');
     });
-
-    it('rejects write operations for unprivileged users', async () => {
-        storage = new S3TemporaryFileStorage(s3, {
-            s3Bucket: bucketName,
-            getPermissions: async () => [Permission.View]
-        });
-        await expect(
-            storage.saveFile('123', undefined, new User(), new Date())
-        ).rejects.toThrowError('s3-temporary-storage:missing-write-permission');
-    });
 });

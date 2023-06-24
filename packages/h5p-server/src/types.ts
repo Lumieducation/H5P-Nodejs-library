@@ -1873,17 +1873,11 @@ export interface ITemporaryFileStorage {
      * Deletes the file from temporary storage (e.g. because it has expired)
      * @param filename the filename; can be a path including subdirectories
      * (e.g. 'images/xyz.png')
-     * @param userId the user id doing the delete; if null, no permission checks
-     * will be performed
      * @param ownerId (optional) when there is no user deleting, you must specify who the
      * owner of the temporary file is; only needed when userId is null
      * @returns true if deletion was successful
      */
-    deleteFile(
-        filename: string,
-        user: IUser | null,
-        ownerId?: string
-    ): Promise<void>;
+    deleteFile(filename: string, ownerId: string): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.

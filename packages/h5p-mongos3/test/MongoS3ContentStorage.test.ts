@@ -406,18 +406,6 @@ describe('MongoS3ContentStorage', () => {
         ).rejects.toThrowError('illegal-filename');
     });
 
-    it('rejects write operations for unprivileged users', async () => {
-        storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName,
-            getPermissions: async () => [Permission.View]
-        });
-        await expect(
-            storage.addContent(stubMetadata, stubParameters, new User())
-        ).rejects.toThrowError(
-            'mongo-s3-content-storage:missing-write-permission'
-        );
-    });
-
     describe('getUsage', () => {
         it(`doesn't count main libraries as dependencies`, async () => {
             await storage.addContent(stubMetadata, stubParameters, new User());

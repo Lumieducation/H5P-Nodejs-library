@@ -4,13 +4,10 @@ import {
     ITemporaryFileStorage,
     IUser,
     ITemporaryFile,
-    Permission,
     IH5PConfig,
     IFileStats,
     H5pError,
-    Logger,
-    IPermissionSystem,
-    LaissezFairePermissionSystem
+    Logger
 } from '@lumieducation/h5p-server';
 import { ReadStream } from 'fs';
 import { validateFilename, sanitizeFilename } from './S3Utils';
@@ -33,7 +30,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     constructor(
         private s3: AWS.S3,
         private options: {
-            permissionSystem?: IPermissionSystem;
             /**
              * These characters will be removed from files that are saved to S3.
              * There is a very strict default list that basically only leaves
@@ -67,12 +63,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         // By default we shorten to 1002 as S3 supports a maximum of 1024
         // characters and we need to account for contentIds (12), unique ids
         // appended to the name (8) and separators (2).
-
-        if (options?.permissionSystem) {
-            this.permissionSystem = this.permissionSystem;
-        } else {
-            this.permissionSystem = new LaissezFairePermissionSystem();
-        }
     }
 
     /**
@@ -80,43 +70,19 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      */
     private maxKeyLength: number;
 
-    private permissionSystem: IPermissionSystem;
-
     /**
      * Deletes the file from temporary storage.
      * Throws errors of something goes wrong.
      * @param filename the file to delete
      * @param userId the user ID of the user who wants to delete the file
      */
-    public async deleteFile(
-        filename: string,
-        user: IUser | null,
-        _ownerId?: string
-    ): Promise<void> {
+    public async deleteFile(filename: string, _ownerId: string): Promise<void> {
         log.debug(`Deleting file "${filename}" from temporary storage.`);
         validateFilename(filename);
 
         if (!filename) {
             log.error(`Filename empty!`);
             throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
-        }
-
-        if (
-            user !== null &&
-            !(await this.permissionSystem.checkTemporary(
-                user,
-                Permission.Delete,
-                filename
-            ))
-        ) {
-            log.error(
-                `User tried to delete a file from a temporary storage without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-delete-permission',
-                {},
-                403
-            );
         }
 
         try {
@@ -143,7 +109,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * @param filename the file to check
      * @param user the user who wants to access the file
      */
-    public async fileExists(filename: string, user: IUser): Promise<boolean> {
+    public async fileExists(filename: string, _user: IUser): Promise<boolean> {
         log.debug(`Checking if file ${filename} exists in temporary storage.`);
         validateFilename(filename);
 
@@ -184,26 +150,9 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      */
     public async getFileStats(
         filename: string,
-        user: IUser
+        _user: IUser
     ): Promise<IFileStats> {
         validateFilename(filename);
-
-        if (
-            !(await this.permissionSystem.checkTemporary(
-                user,
-                Permission.View,
-                filename
-            ))
-        ) {
-            log.error(
-                `User tried to get stats of a content object without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
 
         try {
             const head = await this.s3
@@ -242,23 +191,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         if (!filename) {
             log.error(`Filename empty!`);
             throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
-        }
-
-        if (
-            !(await this.permissionSystem.checkTemporary(
-                user,
-                Permission.View,
-                filename
-            ))
-        ) {
-            log.error(
-                `User tried to display a file from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
-                {},
-                403
-            );
         }
 
         return this.s3
@@ -321,23 +253,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         if (!filename) {
             log.error(`Filename empty!`);
             throw new H5pError('illegal-filename', {}, 400);
-        }
-
-        if (
-            !(await this.permissionSystem.checkTemporary(
-                user,
-                Permission.Edit,
-                filename
-            ))
-        ) {
-            log.error(
-                `User tried upload file to temporary storage without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-write-permission',
-                {},
-                403
-            );
         }
 
         try {

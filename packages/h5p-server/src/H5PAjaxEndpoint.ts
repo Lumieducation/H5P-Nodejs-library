@@ -384,7 +384,7 @@ export default class H5PAjaxEndpoint {
         }
         // Filenames are validated in the storage classes, so we don't validate
         // them here.
-        const stats = await this.h5pEditor.temporaryStorage.getFileStats(
+        const stats = await this.h5pEditor.temporaryFileManager.getFileStats(
             filename,
             user
         );

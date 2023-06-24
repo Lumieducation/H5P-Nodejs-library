@@ -144,7 +144,8 @@ export default class H5PEditor {
         );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
-            this.config
+            this.config,
+            permissionsSystem
         );
 
         this.contentUserDataManager = new ContentUserDataManager(
