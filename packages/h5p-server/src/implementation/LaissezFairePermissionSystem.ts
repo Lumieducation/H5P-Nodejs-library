@@ -1,4 +1,10 @@
-import { IPermissionSystem, IUser, Permission } from '../types';
+import {
+    IPermissionSystem,
+    IUser,
+    ContentPermission,
+    GeneralPermission,
+    TemporaryFilePermission
+} from '../types';
 
 /**
  * A permission system that allows everything to every user.
@@ -6,20 +12,20 @@ import { IPermissionSystem, IUser, Permission } from '../types';
 export class LaissezFairePermissionSystem implements IPermissionSystem {
     async checkGeneral(
         _actingUser: IUser,
-        _permission: Permission
+        _permission: GeneralPermission
     ): Promise<boolean> {
         return true;
     }
     async checkContent(
         _user: IUser,
-        _permission: Permission,
+        _permission: ContentPermission,
         _contentId?: string
     ): Promise<boolean> {
         return true;
     }
     async checkTemporary(
         _user: IUser,
-        _permission: Permission,
+        _permission: TemporaryFilePermission,
         _filename?: string
     ): Promise<boolean> {
         return true;

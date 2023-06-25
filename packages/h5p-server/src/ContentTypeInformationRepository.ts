@@ -17,7 +17,7 @@ import {
     IPermissionSystem,
     ITranslationFunction,
     IUser,
-    Permission
+    GeneralPermission
 } from './types';
 import Logger from './helpers/Logger';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
@@ -94,11 +94,11 @@ export default class ContentTypeInformationRepository {
                 (await this.contentTypeCache.isOutdated()) &&
                 ((await this.permissionSystem.checkGeneral(
                     user,
-                    Permission.CanInstallRecommended
+                    GeneralPermission.InstallRecommended
                 )) ||
                     (await this.permissionSystem.checkGeneral(
                         user,
-                        Permission.CanUpdateAndInstallLibraries
+                        GeneralPermission.UpdateAndInstallLibraries
                     ))),
             recentlyUsed: [], // TODO: store this somewhere
             user: user.type
@@ -226,7 +226,7 @@ export default class ContentTypeInformationRepository {
                     this.libraryIsRestricted(localLib) &&
                     !(await this.permissionSystem.checkGeneral(
                         user,
-                        Permission.CanCreateRestricted
+                        GeneralPermission.CreateRestricted
                     )),
                 title: localLib.title
             }));
@@ -292,7 +292,7 @@ export default class ContentTypeInformationRepository {
                         this.libraryIsRestricted(localLib) &&
                         !(await this.permissionSystem.checkGeneral(
                             user,
-                            Permission.CanCreateRestricted
+                            GeneralPermission.CreateRestricted
                         ));
                     hubLib.canInstall =
                         !this.libraryIsRestricted(localLib) &&
@@ -322,12 +322,12 @@ export default class ContentTypeInformationRepository {
         return (
             (await this.permissionSystem.checkGeneral(
                 user,
-                Permission.CanUpdateAndInstallLibraries
+                GeneralPermission.UpdateAndInstallLibraries
             )) ||
             (library.isRecommended &&
                 (await this.permissionSystem.checkGeneral(
                     user,
-                    Permission.CanInstallRecommended
+                    GeneralPermission.InstallRecommended
                 )))
         );
     }

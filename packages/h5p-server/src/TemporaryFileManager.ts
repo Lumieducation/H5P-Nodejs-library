@@ -8,7 +8,7 @@ import {
     IPermissionSystem,
     ITemporaryFileStorage,
     IUser,
-    Permission
+    TemporaryFilePermission
 } from './types';
 import FilenameGenerator from './helpers/FilenameGenerator';
 import H5pError from './helpers/H5pError';
@@ -47,7 +47,7 @@ export default class TemporaryFileManager {
         if (
             !(await this.permissionSystem.checkTemporary(
                 user,
-                Permission.Edit,
+                TemporaryFilePermission.Create,
                 filename
             ))
         ) {
@@ -116,7 +116,7 @@ export default class TemporaryFileManager {
                 user !== null &&
                 !(await this.permissionSystem.checkTemporary(
                     user,
-                    Permission.Delete,
+                    TemporaryFilePermission.Delete,
                     filename
                 ))
             ) {
@@ -163,7 +163,7 @@ export default class TemporaryFileManager {
         if (
             !(await this.permissionSystem.checkTemporary(
                 user,
-                Permission.View,
+                TemporaryFilePermission.View,
                 filename
             ))
         ) {
@@ -196,7 +196,7 @@ export default class TemporaryFileManager {
         if (
             !(await this.permissionSystem.checkTemporary(
                 user,
-                Permission.View,
+                TemporaryFilePermission.View,
                 filename
             ))
         ) {

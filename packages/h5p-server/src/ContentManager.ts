@@ -10,7 +10,7 @@ import {
     IFileStats,
     IPermissionSystem,
     IUser,
-    Permission
+    ContentPermission
 } from './types';
 
 import Logger from './helpers/Logger';
@@ -64,7 +64,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.Edit,
+                ContentPermission.Edit,
                 contentId
             ))
         ) {
@@ -117,19 +117,40 @@ export default class ContentManager {
         contentId?: ContentId
     ): Promise<ContentId> {
         log.info(`creating content for ${contentId}`);
-        if (
-            !(await this.permissionSystem.checkContent(
-                user,
-                Permission.Edit,
-                contentId
-            ))
-        ) {
-            log.error(`User tried add content without proper permissions.`);
-            throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
-                {},
-                403
-            );
+        if (contentId) {
+            if (
+                !(await this.permissionSystem.checkContent(
+                    user,
+                    ContentPermission.Edit,
+                    contentId
+                ))
+            ) {
+                log.error(
+                    `User tried edit content without proper permissions.`
+                );
+                throw new H5pError(
+                    'mongo-s3-content-storage:missing-edit-permission',
+                    {},
+                    403
+                );
+            }
+        } else {
+            if (
+                !(await this.permissionSystem.checkContent(
+                    user,
+                    ContentPermission.Create,
+                    contentId
+                ))
+            ) {
+                log.error(
+                    `User tried create content without proper permissions.`
+                );
+                throw new H5pError(
+                    'mongo-s3-content-storage:missing-create-permission',
+                    {},
+                    403
+                );
+            }
         }
 
         return this.contentStorage.addContent(
@@ -152,7 +173,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.Delete,
+                ContentPermission.Delete,
                 contentId
             ))
         ) {
@@ -207,7 +228,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.Edit,
+                ContentPermission.Edit,
                 contentId
             ))
         ) {
@@ -245,7 +266,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.View,
+                ContentPermission.View,
                 contentId
             ))
         ) {
@@ -281,7 +302,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.View,
+                ContentPermission.View,
                 contentId
             ))
         ) {
@@ -310,7 +331,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.View,
+                ContentPermission.View,
                 contentId
             ))
         ) {
@@ -340,7 +361,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.View,
+                ContentPermission.View,
                 contentId
             ))
         ) {
@@ -364,7 +385,10 @@ export default class ContentManager {
      */
     public async listContent(user?: IUser): Promise<ContentId[]> {
         if (
-            !(await this.permissionSystem.checkContent(user, Permission.List))
+            !(await this.permissionSystem.checkContent(
+                user,
+                ContentPermission.List
+            ))
         ) {
             log.error(
                 `User tried to list all content objects without proper permissions.`
@@ -393,7 +417,7 @@ export default class ContentManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.View,
+                ContentPermission.View,
                 contentId
             ))
         ) {

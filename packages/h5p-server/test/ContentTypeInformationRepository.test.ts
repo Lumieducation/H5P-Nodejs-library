@@ -11,7 +11,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
 import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
-import { IUser, Permission } from '../src/types';
+import { IUser, GeneralPermission } from '../src/types';
 
 import User from './User';
 
@@ -349,9 +349,9 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             new (class extends LaissezFairePermissionSystem {
                 async checkGeneral(
                     _actingUser: IUser,
-                    permission: Permission
+                    permission: GeneralPermission
                 ): Promise<boolean> {
-                    return permission !== Permission.CanCreateRestricted;
+                    return permission !== GeneralPermission.CreateRestricted;
                 }
             })()
         );
@@ -451,11 +451,13 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             new (class extends LaissezFairePermissionSystem {
                 async checkGeneral(
                     _actingUser: IUser,
-                    permission: Permission
+                    permission: GeneralPermission
                 ): Promise<boolean> {
                     return !(
-                        permission === Permission.CanInstallRecommended ||
-                        permission === Permission.CanUpdateAndInstallLibraries
+                        permission ===
+                            GeneralPermission.InstallRecommended ||
+                        permission ===
+                            GeneralPermission.UpdateAndInstallLibraries
                     );
                 }
             })()
@@ -472,10 +474,11 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             new (class extends LaissezFairePermissionSystem {
                 async checkGeneral(
                     _actingUser: IUser,
-                    permission: Permission
+                    permission: GeneralPermission
                 ): Promise<boolean> {
                     return (
-                        permission !== Permission.CanUpdateAndInstallLibraries
+                        permission !==
+                        GeneralPermission.UpdateAndInstallLibraries
                     );
                 }
             })()

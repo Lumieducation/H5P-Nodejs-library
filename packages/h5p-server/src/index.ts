@@ -36,6 +36,8 @@ import SimpleLockProvider from './implementation/SimpleLockProvider';
 import {
     ContentId,
     ContentParameters,
+    ContentPermission,
+    GeneralPermission,
     IAdditionalLibraryMetadata,
     IAjaxResponse,
     IContentMetadata,
@@ -67,7 +69,7 @@ import {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    Permission
+    TemporaryFilePermission
 } from './types';
 
 // Adapters
@@ -111,6 +113,8 @@ export {
     // interfaces
     ContentId,
     ContentParameters,
+    ContentPermission,
+    GeneralPermission,
     IAdditionalLibraryMetadata,
     IAjaxResponse,
     IContentMetadata,
@@ -142,7 +146,7 @@ export {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    Permission,
+    TemporaryFilePermission,
     // implementations
     H5PConfig,
     LaissezFairePermissionSystem,

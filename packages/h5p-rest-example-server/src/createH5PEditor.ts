@@ -29,6 +29,7 @@ import { IContentMetadata, IUser } from '@lumieducation/h5p-server';
 export default async function createH5PEditor(
     config: H5P.IH5PConfig,
     urlGenerator: H5P.IUrlGenerator,
+    permissionSystem: H5P.IPermissionSystem,
     localLibraryPath: string,
     localContentPath?: string,
     localTemporaryPath?: string,
@@ -130,7 +131,8 @@ export default async function createH5PEditor(
         {
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
-            hooks
+            hooks,
+            permissionSystem
         },
         contentUserDataStorage
     );

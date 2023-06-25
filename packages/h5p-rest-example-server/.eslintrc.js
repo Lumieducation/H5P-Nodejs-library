@@ -1,7 +1,9 @@
+const path = require('path');
+
 module.exports = {
     extends: ['../../.eslintrc.js'],
     parserOptions: {
-        project: './tsconfig.build.json',
+        project: path.join(__dirname, 'tsconfig.build.json'),
         sourceType: 'module'
     },
     rules: {

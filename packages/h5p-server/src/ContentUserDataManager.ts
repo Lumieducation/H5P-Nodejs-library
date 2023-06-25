@@ -5,7 +5,7 @@ import {
     IContentUserDataStorage,
     IContentUserData,
     IPermissionSystem,
-    Permission
+    ContentPermission
 } from './types';
 import Logger from './helpers/Logger';
 import H5pError from './helpers/H5pError';
@@ -47,7 +47,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 actingUser,
-                Permission.DeleteUserState,
+                ContentPermission.DeleteUserState,
                 undefined,
                 forUserId
             ))
@@ -97,7 +97,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.DeleteUserState,
+                ContentPermission.DeleteUserState,
                 contentId
             ))
         ) {
@@ -144,7 +144,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.ViewUserState,
+                ContentPermission.ViewUserState,
                 contentId
             ))
         ) {
@@ -196,8 +196,9 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.ViewUserState,
-                contentId
+                ContentPermission.ViewUserState,
+                contentId,
+                user.id
             ))
         ) {
             log.error(
@@ -270,7 +271,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.EditFinished,
+                ContentPermission.EditFinished,
                 contentId
             ))
         ) {
@@ -333,7 +334,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 user,
-                Permission.EditUserState,
+                ContentPermission.EditUserState,
                 contentId
             ))
         ) {
@@ -372,7 +373,7 @@ export default class ContentUserDataManager {
         if (
             !(await this.permissionSystem.checkContent(
                 actingUser,
-                Permission.DeleteFinished,
+                ContentPermission.DeleteFinished,
                 contentId
             ))
         ) {

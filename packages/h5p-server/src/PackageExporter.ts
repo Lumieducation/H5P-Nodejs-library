@@ -10,7 +10,7 @@ import {
     ContentId,
     IContentMetadata,
     IUser,
-    Permission,
+    ContentPermission,
     IPermissionSystem
 } from './types';
 import { ContentFileScanner } from './ContentFileScanner';
@@ -215,7 +215,7 @@ export default class PackageExporter {
         if (
             !(await this.permissionsSystem.checkContent(
                 user,
-                Permission.Download,
+                ContentPermission.Download,
                 contentId
             ))
         ) {

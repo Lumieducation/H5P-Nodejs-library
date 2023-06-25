@@ -12,7 +12,7 @@ import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
 import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
-import { IUser, Permission } from '../src/types';
+import { IUser, ContentPermission, GeneralPermission } from '../src/types';
 
 import User from './User';
 
@@ -151,11 +151,11 @@ describe('package importer', () => {
                     new (class extends LaissezFairePermissionSystem {
                         async checkGeneral(
                             _actingUser: IUser,
-                            permission: Permission
+                            permission: GeneralPermission
                         ): Promise<boolean> {
                             return (
                                 permission !==
-                                Permission.CanUpdateAndInstallLibraries
+                                GeneralPermission.UpdateAndInstallLibraries
                             );
                         }
                     })();

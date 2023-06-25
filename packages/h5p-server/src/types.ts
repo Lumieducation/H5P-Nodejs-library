@@ -11,7 +11,8 @@ export type ContentId = string;
 /**
  * Permissions give rights to users to do certain actions with a piece of content.
  */
-export enum Permission {
+export enum ContentPermission {
+    Create,
     Delete,
     Download,
     Edit,
@@ -24,21 +25,33 @@ export enum Permission {
     ListUserStates,
     EditFinished,
     ViewFinished,
-    DeleteFinished,
+    DeleteFinished
+}
+
+export enum TemporaryFilePermission {
+    Create,
+    Delete,
+    List,
+    View
+}
+
+export enum GeneralPermission {
     /**
-     * If true, the user can create content of content types that are set to "restricted".
+     * If given, the user can create content of content types that are set to
+     * "restricted".
      */
-    CanCreateRestricted,
+    CreateRestricted,
     /**
-     * If true, the user can install content types from the hub that are set the "recommended"
-     * by the Hub.
+     * If given, the user can install content types from the hub that have the
+     *  "recommended" flag in the Hub.
      */
-    CanInstallRecommended,
+    InstallRecommended,
     /**
-     * If true, the user can generally install and update libraries. This includes Hub
-     * content types that aren't set to "recommended" or uploading custom packages.
+     * If given, the user can generally install and update libraries. This
+     * includes Hub content types that aren't set to "recommended" or uploading
+     * custom packages.
      */
-    CanUpdateAndInstallLibraries
+    UpdateAndInstallLibraries
 }
 
 /**
@@ -1104,7 +1117,7 @@ export interface ILibraryStorage {
 /**
  * Manages permissions of users.
  */
-export interface IPermissionSystem {
+export interface IPermissionSystem<TUser extends IUser = IUser> {
     /**
      * Checks if a user has a certain permission
      * @param actingUser the user to check
@@ -1113,19 +1126,22 @@ export interface IPermissionSystem {
      * @returns true if the user is allowed to do it
      */
     checkContent(
-        actingUser: IUser,
-        permission: Permission,
+        actingUser: TUser | undefined,
+        permission: ContentPermission,
         contentId?: ContentId,
         affectedUserId?: string
     ): Promise<boolean>;
 
     checkTemporary(
-        user: IUser,
-        permission: Permission,
+        user: TUser | undefined,
+        permission: TemporaryFilePermission,
         filename?: string
     ): Promise<boolean>;
 
-    checkGeneral(actingUser: IUser, permission: Permission): Promise<boolean>;
+    checkGeneral(
+        actingUser: TUser | undefined,
+        permission: GeneralPermission
+    ): Promise<boolean>;
 }
 
 /**

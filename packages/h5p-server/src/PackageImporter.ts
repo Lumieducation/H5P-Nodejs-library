@@ -17,7 +17,7 @@ import {
     ILibraryName,
     IPermissionSystem,
     IUser,
-    Permission
+    GeneralPermission
 } from './types';
 import Logger from './helpers/Logger';
 import LibraryName from './LibraryName';
@@ -152,7 +152,7 @@ export default class PackageImporter {
                     copyMode: ContentCopyModes.Install,
                     installLibraries: await this.permissionSystem.checkGeneral(
                         user,
-                        Permission.CanUpdateAndInstallLibraries
+                        GeneralPermission.UpdateAndInstallLibraries
                     )
                 },
                 user,
@@ -191,7 +191,7 @@ export default class PackageImporter {
                 copyMode: ContentCopyModes.Temporary,
                 installLibraries: await this.permissionSystem.checkGeneral(
                     user,
-                    Permission.CanUpdateAndInstallLibraries
+                    GeneralPermission.UpdateAndInstallLibraries
                 )
             },
             user

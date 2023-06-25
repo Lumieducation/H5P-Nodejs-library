@@ -19,9 +19,10 @@ import {
 
 import * as H5P from '@lumieducation/h5p-server';
 import restExpressRoutes from './routes';
-import User from './User';
+import ExampleUser from './ExampleUser';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
+import ExamplePermissionSystem from './ExamplePermissionSystem';
 
 let tmpDir: DirectoryResult;
 
@@ -30,25 +31,37 @@ const userTable = {
         username: 'teacher1',
         name: 'Teacher 1',
         email: 'teacher1@example.com',
-        type: 'teacher'
+        role: 'teacher'
     },
     teacher2: {
         username: 'teacher2',
         name: 'Teacher 2',
         email: 'teacher2@example.com',
-        type: 'teacher'
+        role: 'teacher'
     },
     student1: {
         username: 'student1',
         name: 'Student 1',
         email: 'student1@example.com',
-        type: 'student'
+        role: 'student'
     },
     student2: {
         username: 'student2',
         name: 'Student 2',
         email: 'student2@example.com',
-        type: 'student'
+        role: 'student'
+    },
+    admin: {
+        username: 'admin',
+        name: 'Administration',
+        email: 'admin@example.com',
+        role: 'admin'
+    },
+    anonymous: {
+        username: 'anonymous',
+        name: 'Anonymous',
+        email: '',
+        role: 'anonymous'
     }
 };
 
@@ -142,6 +155,8 @@ const start = async (): Promise<void> => {
         protectSetFinished: true
     });
 
+    const permissionSystem = new ExamplePermissionSystem();
+
     // The H5PEditor object is central to all operations of h5p-nodejs-library
     // if you want to user the editor component.
     //
@@ -155,6 +170,7 @@ const start = async (): Promise<void> => {
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
         urlGenerator,
+        permissionSystem,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
@@ -177,7 +193,7 @@ const start = async (): Promise<void> => {
         undefined,
         urlGenerator,
         undefined,
-        undefined,
+        { permissionsSystem: permissionSystem },
         h5pEditor.contentUserDataStorage
     );
 
@@ -237,7 +253,12 @@ const start = async (): Promise<void> => {
     server.use(
         (
             req: express.Request & { user: H5P.IUser } & {
-                user: { username?: string; name?: string; email?: string };
+                user: {
+                    username?: string;
+                    name?: string;
+                    email?: string;
+                    role?: 'anonymous' | 'teacher' | 'student' | 'admin';
+                };
             },
             res,
             next
@@ -245,14 +266,19 @@ const start = async (): Promise<void> => {
             // Maps the user received from passport to the one expected by
             // h5p-express and h5p-server
             if (req.user) {
-                req.user = new User(
+                req.user = new ExampleUser(
                     req.user.username,
                     req.user.name,
                     req.user.email,
-                    req.user.type === 'teacher' ? 'teacher' : 'anonymous'
+                    req.user.role
                 );
             } else {
-                req.user = new User('0', 'Anonymous', '', 'anonymous');
+                req.user = new ExampleUser(
+                    'anonymous',
+                    'Anonymous',
+                    '',
+                    'anonymous'
+                );
             }
             next();
         }
