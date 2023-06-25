@@ -454,8 +454,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                     permission: GeneralPermission
                 ): Promise<boolean> {
                     return !(
-                        permission ===
-                            GeneralPermission.InstallRecommended ||
+                        permission === GeneralPermission.InstallRecommended ||
                         permission ===
                             GeneralPermission.UpdateAndInstallLibraries
                     );
