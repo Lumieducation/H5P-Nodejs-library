@@ -69,7 +69,8 @@ import {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    TemporaryFilePermission
+    TemporaryFilePermission,
+    UserDataPermission
 } from './types';
 
 // Adapters
@@ -147,6 +148,7 @@ export {
     IUrlGenerator,
     IUser,
     TemporaryFilePermission,
+    UserDataPermission,
     // implementations
     H5PConfig,
     LaissezFairePermissionSystem,

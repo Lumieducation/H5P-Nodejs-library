@@ -5,7 +5,7 @@ import {
     IContentUserDataStorage,
     IContentUserData,
     IPermissionSystem,
-    ContentPermission
+    UserDataPermission
 } from './types';
 import Logger from './helpers/Logger';
 import H5pError from './helpers/H5pError';
@@ -45,9 +45,9 @@ export default class ContentUserDataManager {
         log.debug(`deleting contentUserData for userId ${actingUser.id}`);
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 actingUser,
-                ContentPermission.DeleteUserState,
+                UserDataPermission.DeleteState,
                 undefined,
                 forUserId
             ))
@@ -95,10 +95,11 @@ export default class ContentUserDataManager {
         log.debug(`deleting all content user data for contentId ${contentId}`);
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 user,
-                ContentPermission.DeleteUserState,
-                contentId
+                UserDataPermission.DeleteState,
+                contentId,
+                undefined
             ))
         ) {
             log.error(
@@ -142,10 +143,11 @@ export default class ContentUserDataManager {
         );
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 user,
-                ContentPermission.ViewUserState,
-                contentId
+                UserDataPermission.ViewState,
+                contentId,
+                user.id
             ))
         ) {
             log.error(
@@ -194,9 +196,9 @@ export default class ContentUserDataManager {
         );
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 user,
-                ContentPermission.ViewUserState,
+                UserDataPermission.ViewState,
                 contentId,
                 user.id
             ))
@@ -269,10 +271,11 @@ export default class ContentUserDataManager {
         );
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 user,
-                ContentPermission.EditFinished,
-                contentId
+                UserDataPermission.EditFinished,
+                contentId,
+                user.id
             ))
         ) {
             log.error(
@@ -332,10 +335,11 @@ export default class ContentUserDataManager {
         );
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 user,
-                ContentPermission.EditUserState,
-                contentId
+                UserDataPermission.EditState,
+                contentId,
+                user.id
             ))
         ) {
             log.error(
@@ -371,10 +375,11 @@ export default class ContentUserDataManager {
         }
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkUserData(
                 actingUser,
-                ContentPermission.DeleteFinished,
-                contentId
+                UserDataPermission.DeleteFinished,
+                contentId,
+                undefined
             ))
         ) {
             log.error(

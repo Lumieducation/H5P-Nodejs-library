@@ -3,13 +3,22 @@ import {
     IUser,
     ContentPermission,
     GeneralPermission,
-    TemporaryFilePermission
+    TemporaryFilePermission,
+    UserDataPermission
 } from '../types';
 
 /**
  * A permission system that allows everything to every user.
  */
 export class LaissezFairePermissionSystem implements IPermissionSystem {
+    async checkUserData(
+        _actingUser: IUser,
+        _permission: UserDataPermission,
+        _contentId: string,
+        _affectedUserId?: string
+    ): Promise<boolean> {
+        return true;
+    }
     async checkGeneral(
         _actingUser: IUser,
         _permission: GeneralPermission

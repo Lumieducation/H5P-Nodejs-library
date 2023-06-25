@@ -2,7 +2,8 @@ import {
     IPermissionSystem,
     GeneralPermission,
     TemporaryFilePermission,
-    ContentPermission
+    ContentPermission,
+    UserDataPermission
 } from '@lumieducation/h5p-server';
 
 import ExampleUser from './ExampleUser';
@@ -10,6 +11,49 @@ import ExampleUser from './ExampleUser';
 export default class ExamplePermissionSystem
     implements IPermissionSystem<ExampleUser>
 {
+    async checkUserData(
+        actingUser: ExampleUser,
+        permission: UserDataPermission,
+        contentId: string,
+        affectedUserId?: string
+    ): Promise<boolean> {
+        if (!actingUser) {
+            return false;
+        }
+        if (actingUser.role === 'admin') {
+            return true;
+        } else if (actingUser.role === 'teacher') {
+            switch (permission) {
+                case UserDataPermission.DeleteFinished:
+                case UserDataPermission.DeleteState:
+                case UserDataPermission.EditFinished:
+                case UserDataPermission.EditState:
+                case UserDataPermission.ListStates:
+                case UserDataPermission.ViewFinished:
+                case UserDataPermission.ViewState:
+                    return true;
+                default:
+                    return false;
+            }
+        } else if (actingUser.role === 'student') {
+            switch (permission) {
+                case UserDataPermission.EditFinished:
+                case UserDataPermission.EditState:
+                case UserDataPermission.ListStates:
+                case UserDataPermission.ViewState:
+                case UserDataPermission.ViewFinished:
+                    if (affectedUserId === actingUser.id) {
+                        return true;
+                    }
+                    return false;
+                default:
+                    return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     async checkContent(
         actingUser: ExampleUser | undefined,
         permission: ContentPermission,
@@ -27,33 +71,17 @@ export default class ExamplePermissionSystem
                 case ContentPermission.Delete:
                 case ContentPermission.Download:
                 case ContentPermission.Edit:
-                case ContentPermission.DeleteFinished:
-                case ContentPermission.DeleteUserState:
-                case ContentPermission.EditFinished:
-                case ContentPermission.EditUserState:
                 case ContentPermission.Embed:
                 case ContentPermission.List:
-                case ContentPermission.ListUserStates:
                 case ContentPermission.View:
-                case ContentPermission.ViewFinished:
-                case ContentPermission.ViewUserState:
                     return true;
                 default:
                     return false;
             }
         } else if (actingUser.role === 'student') {
             switch (permission) {
-                case ContentPermission.EditFinished:
-                case ContentPermission.EditUserState:
-                case ContentPermission.ListUserStates:
-                case ContentPermission.ViewUserState:
-                    if (!affectedUserId || affectedUserId === actingUser.id) {
-                        return true;
-                    }
-                    return false;
                 case ContentPermission.List:
                 case ContentPermission.View:
-                case ContentPermission.ViewFinished:
                     return true;
                 default:
                     return false;

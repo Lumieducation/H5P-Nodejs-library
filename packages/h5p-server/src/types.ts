@@ -18,11 +18,14 @@ export enum ContentPermission {
     Edit,
     Embed,
     List,
-    View,
-    EditUserState,
-    DeleteUserState,
-    ViewUserState,
-    ListUserStates,
+    View
+}
+
+export enum UserDataPermission {
+    EditState,
+    DeleteState,
+    ViewState,
+    ListStates,
     EditFinished,
     ViewFinished,
     DeleteFinished
@@ -1129,6 +1132,13 @@ export interface IPermissionSystem<TUser extends IUser = IUser> {
         actingUser: TUser | undefined,
         permission: ContentPermission,
         contentId?: ContentId,
+        affectedUserId?: string
+    ): Promise<boolean>;
+
+    checkUserData(
+        actingUser: TUser | undefined,
+        permission: UserDataPermission,
+        contentId: ContentId,
         affectedUserId?: string
     ): Promise<boolean>;
 
