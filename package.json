@@ -114,7 +114,7 @@
         "ts-jest": "29.1.0",
         "ts-node": "10.9.1",
         "typedoc": "0.24.8",
-        "typescript": "5.1.5"
+        "typescript": "5.1.6"
     },
     "engines": {
         "node": ">=15.0.0",
