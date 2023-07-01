@@ -94,7 +94,7 @@
         "axios": "1.4.0",
         "commitlint": "17.6.6",
         "concurrently": "8.2.0",
-        "eslint": "8.43.0",
+        "eslint": "8.44.0",
         "eslint-config-airbnb": "19.0.4",
         "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-config-prettier": "8.8.0",
