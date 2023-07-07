@@ -125,7 +125,7 @@ export default class H5PPlayer {
      * with the content id. Only call it with parameters and metadata if don't
      * want to use the IContentStorage object passed into the constructor.
      * @param contentId the content id
-     * @param user the user who wants to access the content
+     * @param actingUser the user who wants to access the content
      * @param ignoreUserPermission (optional) If set to true, the user object
      * won't be passed to the storage classes for permission checks. You can use
      * this option if you have already checked the user's permission in a
@@ -136,13 +136,25 @@ export default class H5PPlayer {
      * @param metadataOverride (optional) the metadata of a piece of content
      * (=h5p.json); if you use this option, the parameters won't be loaded from
      * storage
-     * @param contextId (optional) allows implementations to have multiple
-     * content states for a single content object and user tuple
+     * @param options.contextId (optional) allows implementations to have
+     * multiple content states for a single content object and user tuple
+     * @param options.asUserId (optional) allows you to impersonate another
+     * user. You will see their user state instead of yours.
+     * @param options.readOnlyState (optional) allows you to disable saving of
+        the user state. You will still see the state, but changes won't be
+        persisted. This is useful if you want to review other users' states by
+        setting `asUserId` and don't want to change their state. Note that the
+        H5P doesn't support this behavior and we use a workaround to implement
+        it. The workaround includes setting the query parameter `ignorePost=yes`
+        in the URL of the content state Ajax call. The h5p-express adapter
+        ignores posts that have this query parameter. You should, however, still
+        prevent malicious users from writing other users' states in the
+        permission system! 
      * @returns a HTML string that you can insert into your page
      */
     public async render(
         contentId: ContentId,
-        user: IUser,
+        actingUser: IUser,
         language: string = 'en',
         options?: {
             ignoreUserPermissions?: boolean;
@@ -155,16 +167,21 @@ export default class H5PPlayer {
             showH5PIcon?: boolean;
             showLicenseButton?: boolean;
             contextId?: string;
+            asUserId?: string; // the user for which the content state should be displayed;
+            readOnlyState?: boolean;
         }
     ): Promise<string | any> {
         log.debug(`rendering page for ${contentId} in language ${language}`);
+        if (options?.asUserId) {
+            log.debug(`Personifying ${options.asUserId}`);
+        }
 
         let parameters: ContentParameters;
         if (!options?.parametersOverride) {
             try {
                 parameters = await this.contentManager.getContentParameters(
                     contentId,
-                    options?.ignoreUserPermissions ? undefined : user
+                    options?.ignoreUserPermissions ? undefined : actingUser
                 );
             } catch (error) {
                 throw new H5pError('h5p-player:content-missing', {}, 404);
@@ -178,7 +195,7 @@ export default class H5PPlayer {
             try {
                 metadata = await this.contentManager.getContentMetadata(
                     contentId,
-                    options?.ignoreUserPermissions ? undefined : user
+                    options?.ignoreUserPermissions ? undefined : actingUser
                 );
             } catch (error) {
                 throw new H5pError('h5p-player:content-missing', {}, 404);
@@ -236,7 +253,7 @@ export default class H5PPlayer {
                 metadata,
                 assets,
                 mainLibrarySupportsFullscreen,
-                user,
+                actingUser,
                 language,
                 {
                     showCopyButton: options?.showCopyButton ?? false,
@@ -246,13 +263,15 @@ export default class H5PPlayer {
                     showH5PIcon: options?.showH5PIcon ?? false,
                     showLicenseButton: options?.showLicenseButton ?? false
                 },
-                options?.contextId
+                options?.contextId,
+                options?.asUserId,
+                options?.readOnlyState
             ),
             scripts: this.listCoreScripts().concat(assets.scripts),
             styles: this.listCoreStyles().concat(assets.styles),
             translations: {},
             embedTypes: metadata.embedTypes, // TODO: check if the library supports the embed type!
-            user
+            user: actingUser
         };
 
         return this.renderer(model);
@@ -372,7 +391,7 @@ export default class H5PPlayer {
         metadata: IContentMetadata,
         assets: IAssets,
         supportsFullscreen: boolean,
-        user: IUser,
+        actingUser: IUser,
         language: string,
         displayOptions: {
             showCopyButton: boolean;
@@ -382,7 +401,9 @@ export default class H5PPlayer {
             showH5PIcon: boolean;
             showLicenseButton: boolean;
         },
-        contextId: string
+        contextId: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ): Promise<IIntegration> {
         // see https://h5p.org/creating-your-own-h5p-plugin
         log.info(`generating integration for ${contentId}`);
@@ -390,12 +411,14 @@ export default class H5PPlayer {
         return {
             ajax: {
                 contentUserData: this.urlGenerator.contentUserData(
-                    user,
-                    contextId
+                    actingUser,
+                    contextId,
+                    asUserId,
+                    { readonly: readOnlyState }
                 ),
-                setFinished: this.urlGenerator.setFinished(user)
+                setFinished: this.urlGenerator.setFinished(actingUser)
             },
-            ajaxPath: this.urlGenerator.ajaxEndpoint(user),
+            ajaxPath: this.urlGenerator.ajaxEndpoint(actingUser),
             contents: {
                 [`cid-${contentId}`]: {
                     displayOptions: {
@@ -413,8 +436,9 @@ export default class H5PPlayer {
                     contentUserData:
                         await this.contentUserDataManager.generateContentUserDataIntegration(
                             contentId,
-                            user,
-                            contextId
+                            actingUser,
+                            contextId,
+                            asUserId
                         ),
                     metadata: {
                         license: metadata.license || 'U',
@@ -450,21 +474,21 @@ export default class H5PPlayer {
             },
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: this.config.setFinishedEnabled,
-            saveFreq:
-                this.config.contentUserStateSaveInterval !== false
-                    ? Math.round(
-                          Number(this.config.contentUserStateSaveInterval) /
-                              1000
-                      ) || 1
-                    : false,
+            saveFreq: readOnlyState
+                ? Number.MAX_SAFE_INTEGER
+                : this.config.contentUserStateSaveInterval !== false
+                ? Math.round(
+                      Number(this.config.contentUserStateSaveInterval) / 1000
+                  ) || 1
+                : false,
             url: this.urlGenerator.baseUrl(),
             hubIsEnabled: true,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
             ...this.integrationObjectDefaults,
             user: {
-                name: user.name,
-                mail: user.email,
-                id: user.id
+                name: actingUser.name,
+                mail: actingUser.email,
+                id: actingUser.id
             }
         };
     }

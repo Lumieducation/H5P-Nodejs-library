@@ -37,12 +37,18 @@ export default class ContentUserDataController {
                 ? req.query.contextId
                 : undefined;
 
+        const asUserId =
+            typeof req.query.asUserId === 'string'
+                ? req.query.asUserId
+                : undefined;
+
         const result = await this.contentUserDataManager.getContentUserData(
             contentId,
             dataType,
             subContentId,
             req.user,
-            contextId
+            contextId,
+            asUserId
         );
 
         if (!result || !result.userState) {
@@ -69,6 +75,25 @@ export default class ContentUserDataController {
             typeof req.query.contextId === 'string'
                 ? req.query.contextId
                 : undefined;
+        const asUserId =
+            typeof req.query.asUserId === 'string'
+                ? req.query.asUserId
+                : undefined;
+        const ignorePost =
+            typeof req.query.ignorePost === 'string'
+                ? req.query.ignorePost
+                : undefined;
+
+        if (ignorePost == 'yes') {
+            res.status(200).json(
+                new AjaxSuccessResponse(
+                    undefined,
+                    'The user state was not saved, as the query parameter ignorePost was set.'
+                )
+            );
+            return;
+        }
+
         const { user, body } = req;
 
         await this.contentUserDataManager.createOrUpdateContentUserData(
@@ -79,7 +104,8 @@ export default class ContentUserDataController {
             body.invalidate === 1 || body.invalidate === '1',
             body.preload === 1 || body.preload === '1',
             user,
-            contextId
+            contextId,
+            asUserId
         );
 
         res.status(200).json(new AjaxSuccessResponse(undefined)).end();

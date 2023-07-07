@@ -33,7 +33,7 @@ export default class FileContentUserDataStorage
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData> {
         const file = this.getUserDataFilePath(contentId);
@@ -56,7 +56,7 @@ export default class FileContentUserDataStorage
                     (data) =>
                         data.dataType === dataType &&
                         data.subContentId === subContentId &&
-                        data.userId === user.id &&
+                        data.userId === userId &&
                         data.contextId === contextId
                 ) || null
             );
@@ -260,7 +260,7 @@ export default class FileContentUserDataStorage
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData[]> {
         const file = this.getUserDataFilePath(contentId);
@@ -280,7 +280,7 @@ export default class FileContentUserDataStorage
 
         try {
             return dataList.filter(
-                (data) => data.userId === user.id && data.contextId == contextId
+                (data) => data.userId === userId && data.contextId == contextId
             );
         } catch (error) {
             log.error(

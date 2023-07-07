@@ -132,14 +132,17 @@ export default class ContentUserDataManager {
         dataType: string,
         subContentId: string,
         user: IUser,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string
     ): Promise<IContentUserData> {
         if (!this.contentUserDataStorage) {
             return;
         }
 
         log.debug(
-            `loading contentUserData for user with id ${user.id}, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}, contextId ${contextId}`
+            `loading contentUserData for user with id ${
+                asUserId ?? user.id
+            }, contentId ${contentId}, subContentId ${subContentId}, dataType ${dataType}, contextId ${contextId}`
         );
 
         if (
@@ -147,7 +150,7 @@ export default class ContentUserDataManager {
                 user,
                 UserDataPermission.ViewState,
                 contentId,
-                user.id
+                asUserId ?? user.id
             ))
         ) {
             log.error(
@@ -164,7 +167,7 @@ export default class ContentUserDataManager {
             contentId,
             dataType,
             subContentId,
-            user,
+            asUserId ?? user.id,
             contextId
         );
     }
@@ -176,7 +179,7 @@ export default class ContentUserDataManager {
      * content user data.
      *
      * @param contentId The id of the content to load user data from
-     * @param user The user who is accessing the h5p
+     * @param actingUser The user who is accessing the h5p
      * @param contextId an arbitrary value that can be used to save multiple
      * states for one content - user tuple
      * @returns an array of IContentUserData or undefined if no content user data
@@ -184,23 +187,24 @@ export default class ContentUserDataManager {
      */
     public async generateContentUserDataIntegration(
         contentId: ContentId,
-        user: IUser,
-        contextId?: string
+        actingUser: IUser,
+        contextId?: string,
+        asUserId?: string
     ): Promise<ISerializedContentUserData[]> {
         if (!this.contentUserDataStorage) {
             return;
         }
 
         log.debug(
-            `Generating contentUserDataIntegration for user with id ${user.id}, contentId ${contentId} and contextId ${contextId}.`
+            `Generating contentUserDataIntegration for user with id ${actingUser.id}, contentId ${contentId} and contextId ${contextId}.`
         );
 
         if (
             !(await this.permissionSystem.checkUserData(
-                user,
+                actingUser,
                 UserDataPermission.ViewState,
                 contentId,
-                user.id
+                asUserId ?? actingUser.id
             ))
         ) {
             log.error(
@@ -216,7 +220,7 @@ export default class ContentUserDataManager {
         let states =
             await this.contentUserDataStorage.getContentUserDataByContentIdAndUser(
                 contentId,
-                user,
+                asUserId ?? actingUser.id,
                 contextId
             );
 
@@ -318,7 +322,8 @@ export default class ContentUserDataManager {
         invalidate: boolean,
         preload: boolean,
         user: IUser,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string
     ): Promise<void> {
         if (typeof invalidate !== 'boolean' || typeof preload !== 'boolean') {
             log.error(`invalid arguments passed for contentId ${contentId}`);
@@ -331,7 +336,9 @@ export default class ContentUserDataManager {
         }
 
         log.debug(
-            `saving contentUserData for user with id ${user.id} and contentId ${contentId}`
+            `saving contentUserData for user with id ${
+                asUserId ?? user.id
+            } and contentId ${contentId}`
         );
 
         if (
@@ -339,7 +346,7 @@ export default class ContentUserDataManager {
                 user,
                 UserDataPermission.EditState,
                 contentId,
-                user.id
+                asUserId ?? user.id
             ))
         ) {
             log.error(
@@ -361,7 +368,7 @@ export default class ContentUserDataManager {
                 preload,
                 subContentId,
                 userState,
-                userId: user.id
+                userId: asUserId ?? user.id
             });
         }
     }

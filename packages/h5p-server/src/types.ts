@@ -694,7 +694,7 @@ export interface IContentUserDataStorage {
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData>;
 
@@ -709,7 +709,7 @@ export interface IContentUserDataStorage {
      */
     getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData[]>;
 
@@ -2075,7 +2075,12 @@ export interface IUrlGenerator {
      * @param contextId allows implementation to have multiple user data objects
      * for one h5p content object
      */
-    contentUserData(user: IUser, contextId?: string): string;
+    contentUserData(
+        user: IUser,
+        contextId?: string,
+        asUserId?: string,
+        options?: { readonly?: boolean }
+    ): string;
     coreFile(file: string): string;
     coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
