@@ -16,6 +16,7 @@
   * [Performance optimizations](advanced/performance-optimizations.md)
   * [Privacy](advanced/privacy.md)
   * [Forward proxy support](advanced/proxy.md)
+  * [Multiple content states per object](advanced/context-ids.md)
 - NPM packages
   - h5p-mongos3
     * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)

@@ -2,11 +2,20 @@ import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
 import ioredis from 'ioredis';
 import debug from 'debug';
+import type { Db } from 'mongodb';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
+
+let mongoDb;
+async function getMongoDb(): Promise<Db> {
+    if (!mongoDb) {
+        mongoDb = await dbImplementations.initMongo();
+    }
+    return mongoDb;
+}
 
 /**
  * Create a H5PEditor object.
@@ -90,7 +99,7 @@ export default async function createH5PEditor(
     if (process.env.LIBRARYSTORAGE === 'mongo') {
         debug('h5p-example')('Using pure MongoDB for library storage.');
         const mongoLibraryStorage = new dbImplementations.MongoLibraryStorage(
-            (await dbImplementations.initMongo()).collection(
+            (await getMongoDb()).collection(
                 process.env.LIBRARY_MONGO_COLLECTION
             )
         );
@@ -104,7 +113,7 @@ export default async function createH5PEditor(
                     s3ForcePathStyle: true,
                     signatureVersion: 'v4'
                 }),
-                (await dbImplementations.initMongo()).collection(
+                (await getMongoDb()).collection(
                     process.env.LIBRARY_MONGO_COLLECTION
                 ),
                 {
@@ -125,10 +134,28 @@ export default async function createH5PEditor(
         );
     }
 
-    const contentUserDataStorage =
-        new H5P.fsImplementations.FileContentUserDataStorage(
-            localContentUserDataPath
-        );
+    let contentUserDataStorage: H5P.IContentUserDataStorage;
+    if (process.env.USERDATASTORAGE === 'mongo') {
+        const mongoContentUserDataStorage =
+            new dbImplementations.MongoContentUserDataStorage(
+                (await getMongoDb()).collection(
+                    process.env.USERDATA_MONGO_COLLECTION
+                ),
+                (await getMongoDb()).collection(
+                    process.env.FINISHED_MONGO_COLLECTION
+                )
+            );
+        await mongoContentUserDataStorage.createIndexes();
+        contentUserDataStorage = mongoContentUserDataStorage;
+    } else if (
+        !process.env.USERDATASTORAGE ||
+        process.env.USERDATASTORAGE === 'file'
+    ) {
+        contentUserDataStorage =
+            new H5P.fsImplementations.FileContentUserDataStorage(
+                localContentUserDataPath
+            );
+    }
 
     const h5pEditor = new H5P.H5PEditor(
         new H5P.cacheImplementations.CachedKeyValueStorage('kvcache', cache), // this is a general-purpose cache
@@ -146,7 +173,7 @@ export default async function createH5PEditor(
                       s3ForcePathStyle: true,
                       signatureVersion: 'v4'
                   }),
-                  (await dbImplementations.initMongo()).collection(
+                  (await getMongoDb()).collection(
                       process.env.CONTENT_MONGO_COLLECTION
                   ),
                   {

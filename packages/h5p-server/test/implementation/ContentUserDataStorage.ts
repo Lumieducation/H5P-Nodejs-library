@@ -30,6 +30,41 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             expect(res.length).toEqual(1);
         });
 
+        it('can differentiate between data with contextId and without when there is user data with contextId', async () => {
+            const storage = getStorage();
+            await expect(
+                storage.createOrUpdateContentUserData(dataTemplate)
+            ).resolves.not.toThrow();
+            await expect(
+                storage.createOrUpdateContentUserData({
+                    ...dataTemplate,
+                    contextId: '123'
+                })
+            ).resolves.not.toThrow();
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user)
+            ).resolves.toMatchObject(dataTemplate);
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user, '123')
+            ).resolves.toMatchObject({
+                ...dataTemplate,
+                contextId: '123'
+            });
+        });
+
+        it('returns null when trying to get user data with contextId when there is user data without contextId', async () => {
+            const storage = getStorage();
+            await expect(
+                storage.createOrUpdateContentUserData(dataTemplate)
+            ).resolves.not.toThrow();
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user, '123')
+            ).resolves.toEqual(null);
+        });
+
         it('adds data for multiple users and lets you retrieve it again', async () => {
             const storage = getStorage();
             await expect(
@@ -97,6 +132,44 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             expect(allUserData.length).toEqual(1);
         });
 
+        it('user data with contextId ignores updates of regular user data', async () => {
+            const storage = getStorage();
+            await storage.createOrUpdateContentUserData(dataTemplate);
+            await storage.createOrUpdateContentUserData({
+                ...dataTemplate,
+                contextId: '123'
+            });
+
+            const data2 = { ...dataTemplate, userState: 'state2' };
+
+            await storage.createOrUpdateContentUserData(data2);
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user, '123')
+            ).resolves.toMatchObject({ ...dataTemplate, contextId: '123' });
+        });
+
+        it('user data without contextId ignores updates of user data with contextId', async () => {
+            const storage = getStorage();
+            await storage.createOrUpdateContentUserData(dataTemplate);
+            await storage.createOrUpdateContentUserData({
+                ...dataTemplate,
+                contextId: '123'
+            });
+
+            const data2 = {
+                ...dataTemplate,
+                contextId: '123',
+                userState: 'state2'
+            };
+
+            await storage.createOrUpdateContentUserData(data2);
+
+            await expect(
+                storage.getContentUserData('1', 'dataType', '0', user)
+            ).resolves.toMatchObject(dataTemplate);
+        });
+
         it('returns all data for a user', async () => {
             const storage = getStorage();
             const returned1 = await storage.getContentUserDataByUser(user);
@@ -107,6 +180,25 @@ export default (getStorage: () => IContentUserDataStorage): void => {
                 ...dataTemplate,
                 dataType: 'dataType2',
                 contentId: '2'
+            };
+            await storage.createOrUpdateContentUserData(data1);
+            await storage.createOrUpdateContentUserData(data2);
+
+            const returned2 = await storage.getContentUserDataByUser(user);
+            expect(returned2.length).toEqual(2);
+        });
+
+        it('returns all data for a user even if one has a contextId', async () => {
+            const storage = getStorage();
+            const returned1 = await storage.getContentUserDataByUser(user);
+            expect(returned1.length).toEqual(0);
+
+            const data1 = { ...dataTemplate, dataType: 'dataType1' };
+            const data2 = {
+                ...dataTemplate,
+                dataType: 'dataType2',
+                contentId: '2',
+                contextId: '123'
             };
             await storage.createOrUpdateContentUserData(data1);
             await storage.createOrUpdateContentUserData(data2);

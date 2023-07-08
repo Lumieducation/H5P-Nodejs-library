@@ -52,7 +52,8 @@ export default class MongoContentUserDataStorage
                     contentId: 1,
                     dataType: 1,
                     subContentId: 1,
-                    userId: 1
+                    userId: 1,
+                    contextId: 1
                 }
             },
             {
@@ -63,7 +64,8 @@ export default class MongoContentUserDataStorage
             {
                 key: {
                     contentId: 1,
-                    userId: 1
+                    userId: 1,
+                    contextId: 1
                 }
             }
         ]);
@@ -91,17 +93,19 @@ export default class MongoContentUserDataStorage
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData> {
         log.debug(
-            `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id}`
+            `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id} and contextId ${contextId}`
         );
         return this.cleanMongoUserData(
             await this.userDataCollection.findOne<IContentUserData>({
                 contentId,
                 dataType,
                 subContentId,
-                userId: user.id
+                userId: user.id,
+                contextId
             })
         );
     }
@@ -126,7 +130,8 @@ export default class MongoContentUserDataStorage
                 contentId: userData.contentId,
                 dataType: userData.dataType,
                 subContentId: userData.subContentId,
-                userId: userData.userId
+                userId: userData.userId,
+                contextId: userData.contextId
             },
             {
                 contentId: userData.contentId,
@@ -135,7 +140,8 @@ export default class MongoContentUserDataStorage
                 userState: userData.userState,
                 invalidate: userData.invalidate,
                 preload: userData.preload,
-                userId: userData.userId
+                userId: userData.userId,
+                contextId: userData.contextId
             },
             { upsert: true }
         );
@@ -187,11 +193,16 @@ export default class MongoContentUserDataStorage
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData[]> {
         return (
             await this.userDataCollection
-                .find<IContentUserData>({ contentId, userId: user.id })
+                .find<IContentUserData>({
+                    contentId,
+                    userId: user.id,
+                    contextId
+                })
                 .toArray()
         )?.map(this.cleanMongoUserData);
     }
@@ -243,7 +254,8 @@ export default class MongoContentUserDataStorage
             subContentId: mongoData.subContentId,
             userState: mongoData.userState,
             contentId: mongoData.contentId,
-            userId: mongoData.userId
+            userId: mongoData.userId,
+            contextId: mongoData.contextId
         };
     }
 

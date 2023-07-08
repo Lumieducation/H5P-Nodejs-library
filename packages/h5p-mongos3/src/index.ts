@@ -4,6 +4,7 @@ import initMongo from './initMongo';
 import S3TemporaryFileStorage from './S3TemporaryFileStorage';
 import MongoS3LibraryStorage from './MongoS3LibraryStorage';
 import MongoLibraryStorage from './MongoLibraryStorage';
+import MongoContentUserDataStorage from './MongoContentUserDataStorage';
 
 export {
     MongoS3ContentStorage,
@@ -11,5 +12,6 @@ export {
     initMongo,
     S3TemporaryFileStorage,
     MongoS3LibraryStorage,
-    MongoLibraryStorage
+    MongoLibraryStorage,
+    MongoContentUserDataStorage
 };

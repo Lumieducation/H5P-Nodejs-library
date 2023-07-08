@@ -8,6 +8,7 @@ import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
+import { Form } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -20,7 +21,8 @@ import {
     faPencilAlt,
     faFileDownload,
     faTrashAlt,
-    faCopyright
+    faCopyright,
+    faHashtag
 } from '@fortawesome/free-solid-svg-icons';
 
 import { H5PEditorUI, H5PPlayerUI } from '@lumieducation/h5p-react';
@@ -53,14 +55,17 @@ export default class ContentListEntryComponent extends React.Component<{
             loading: true,
             saveErrorMessage: '',
             saveError: false,
-            showingCustomCopyright: false
+            showingCustomCopyright: false,
+            showContextIdModal: false
         };
         this.h5pEditor = React.createRef();
         this.saveButton = React.createRef();
         this.h5pPlayer = React.createRef();
+        this.contextIdInput = React.createRef();
     }
 
     public state: {
+        contextId?: string;
         editing: boolean;
         loading: boolean;
         playing: boolean;
@@ -69,11 +74,13 @@ export default class ContentListEntryComponent extends React.Component<{
         saveError: boolean;
         saveErrorMessage: string;
         showingCustomCopyright: boolean;
+        showContextIdModal: boolean;
     };
 
     private h5pPlayer: React.RefObject<H5PPlayerUI>;
     private h5pEditor: React.RefObject<H5PEditorUI>;
     private saveButton: React.RefObject<HTMLButtonElement>;
+    private contextIdInput: React.RefObject<HTMLInputElement>;
 
     public render(): React.ReactNode {
         return (
@@ -87,19 +94,50 @@ export default class ContentListEntryComponent extends React.Component<{
                         <Col className="p-2">
                             <h5>{this.props.data.title}</h5>
                             <Row className="small">
-                                <Col className="me-2" lg="auto">
+                                <Col
+                                    className="me-2 d-flex align-items-center"
+                                    lg="auto"
+                                >
                                     <FontAwesomeIcon
                                         icon={faBookOpen}
                                         className="me-1"
                                     />
                                     {this.props.data.mainLibrary}
                                 </Col>
-                                <Col className="me-2" lg="auto">
+                                <Col
+                                    className="me-2 d-flex align-items-center"
+                                    lg="auto"
+                                >
                                     <FontAwesomeIcon
                                         icon={faFingerprint}
                                         className="me-1"
                                     />
                                     {this.props.data.contentId}
+                                </Col>
+                                <Col
+                                    className="me-2 d-flex align-items-center"
+                                    lg="auto"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faHashtag}
+                                        className="me-1"
+                                    />
+                                    {this.state.contextId
+                                        ? this.state.contextId
+                                        : 'no context id'}
+                                    <Button
+                                        variant="link"
+                                        className="d-flex align-items-center"
+                                        size="sm"
+                                        onClick={() =>
+                                            this.showContextIdModal()
+                                        }
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faPencilAlt}
+                                            className="me-2"
+                                        />
+                                    </Button>
                                 </Col>
                             </Row>
                         </Col>
@@ -310,6 +348,7 @@ export default class ContentListEntryComponent extends React.Component<{
                         <H5PPlayerUI
                             ref={this.h5pPlayer}
                             contentId={this.props.data.contentId}
+                            contextId={this.state.contextId || undefined}
                             loadContentCallback={
                                 this.props.contentService.getPlay
                             }
@@ -357,6 +396,53 @@ export default class ContentListEntryComponent extends React.Component<{
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={this.state.showContextIdModal}>
+                    <Modal.Header>
+                        <Modal.Title>Change context id</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            <Form.Label htmlFor="contextIdInput">
+                                Set contextId to:
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                id="contextIdInput"
+                                defaultValue={this.state.contextId}
+                                onKeyDown={(e) => {
+                                    if (e.code === 'Enter') {
+                                        this.setContextId();
+                                    }
+                                    if (e.code === 'Escape') {
+                                        this.closeContextIdModal();
+                                    }
+                                }}
+                                ref={this.contextIdInput}
+                            />
+                            <Form.Text muted>
+                                A contextId allows you to have multiple user
+                                states (= data entered by users) for one content
+                                - user tuple. A use case is if your users can
+                                store the states of multiple attempts. This is
+                                an optional feature of the H5P NodeJS version.
+                            </Form.Text>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={() => this.closeContextIdModal()}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => this.setContextId()}
+                        >
+                            Set context id
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </ListGroupItem>
         );
     }
@@ -379,6 +465,17 @@ export default class ContentListEntryComponent extends React.Component<{
 
     protected closeCopyrightCustom() {
         this.setState({ showingCustomCopyright: false });
+    }
+
+    protected showContextIdModal() {
+        this.setState({ showContextIdModal: true });
+        setTimeout(() => {
+            this.contextIdInput.current?.focus();
+        }, 100);
+    }
+
+    protected closeContextIdModal() {
+        this.setState({ showContextIdModal: false });
     }
 
     protected showCopyrightNative() {
@@ -433,6 +530,13 @@ export default class ContentListEntryComponent extends React.Component<{
 
     protected onEditorLoaded = () => {
         this.setState({ loading: false });
+    };
+
+    protected setContextId = () => {
+        this.setState({
+            contextId: this.contextIdInput.current?.value,
+            showContextIdModal: false
+        });
     };
 
     private isNew() {

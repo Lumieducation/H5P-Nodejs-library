@@ -14,7 +14,7 @@ export interface IContentListEntry {
 export interface IContentService {
     delete(contentId: string): Promise<void>;
     getEdit(contentId: string): Promise<IEditorModel>;
-    getPlay(contentId: string): Promise<IPlayerModel>;
+    getPlay(contentId: string, contextId?: string): Promise<IPlayerModel>;
     list(): Promise<IContentListEntry[]>;
     save(
         contentId: string,
@@ -59,11 +59,20 @@ export class ContentService implements IContentService {
         return res.json();
     };
 
-    getPlay = async (contentId: string): Promise<IPlayerModel> => {
+    getPlay = async (
+        contentId: string,
+        contextId?: string
+    ): Promise<IPlayerModel> => {
         console.log(
-            `ContentService: Getting information to play ${contentId}...`
+            `ContentService: Getting information to play ${contentId}${
+                contextId ? ` and contextId ${contextId}` : ''
+            }...`
         );
-        const res = await fetch(`${this.baseUrl}/${contentId}/play`);
+        const res = await fetch(
+            `${this.baseUrl}/${contentId}/play${
+                contextId ? `?contextId=${contextId}` : ''
+            }`
+        );
         if (!res || !res.ok) {
             throw new Error(`${res.status} ${res.statusText}`);
         }

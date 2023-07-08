@@ -14,6 +14,11 @@ import { checkFilename, sanitizeFilename } from './filenameUtils';
 
 const log = new Logger('FileContentUserDataStorage');
 
+/**
+ * Saves user data in JSON files on the disk. It creates one file per content
+ * object. There's a separate file for user states and one for the finished data.
+ * Each file contains a list of all states or finished data objects.
+ */
 export default class FileContentUserDataStorage
     implements IContentUserDataStorage
 {
@@ -28,7 +33,8 @@ export default class FileContentUserDataStorage
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData> {
         const file = this.getUserDataFilePath(contentId);
         let dataList: IContentUserData[];
@@ -50,7 +56,8 @@ export default class FileContentUserDataStorage
                     (data) =>
                         data.dataType === dataType &&
                         data.subContentId === subContentId &&
-                        data.userId === user.id
+                        data.userId === user.id &&
+                        data.contextId === contextId
                 ) || null
             );
         } catch (error) {
@@ -125,13 +132,15 @@ export default class FileContentUserDataStorage
             oldData = [];
         }
 
-        // make sure we have only one entry for contentId, dataType, subContentId and user
+        // make sure we have only one entry for contentId, dataType,
+        // subContentId, user and contextId
         const newUserData = oldData.filter(
             (data) =>
                 data.contentId !== userData.contentId ||
                 data.dataType !== userData.dataType ||
                 data.subContentId !== userData.subContentId ||
-                data.userId !== userData.userId
+                data.userId !== userData.userId ||
+                data.contextId !== userData.contextId
         );
 
         newUserData.push(userData);
@@ -251,7 +260,8 @@ export default class FileContentUserDataStorage
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser
+        user: IUser,
+        contextId?: string
     ): Promise<IContentUserData[]> {
         const file = this.getUserDataFilePath(contentId);
         let dataList: IContentUserData[];
@@ -269,7 +279,9 @@ export default class FileContentUserDataStorage
         }
 
         try {
-            return dataList.filter((data) => data.userId === user.id);
+            return dataList.filter(
+                (data) => data.userId === user.id && data.contextId == contextId
+            );
         } catch (error) {
             log.error(
                 'getContentUserDataByContentIdAndUser',

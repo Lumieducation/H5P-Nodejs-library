@@ -24,14 +24,14 @@ describe('H5P.render()', () => {
             });
     });
 
-    it('should generate AJAX URLs with CSRF token if option is set', () => {
+    it('should generate AJAX URLs with CSRF token if option is set', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const metadata: any = {};
 
         const config = new H5PConfig(undefined);
 
-        new H5PPlayer(
+        const model = await new H5PPlayer(
             undefined,
             undefined,
             config,
@@ -46,16 +46,15 @@ describe('H5P.render()', () => {
                 })
             })
         )
-            .setRenderer((model) => model)
+            .setRenderer((m) => m)
             .render(contentId, new User(), 'en', {
                 parametersOverride: contentObject,
                 metadataOverride: metadata as any
-            })
-            .then((model) => {
-                expect((model as IPlayerModel).integration.ajaxPath).toBe(
-                    '/h5p/ajax?_csrf=token&action='
-                );
             });
+
+        expect((model as IPlayerModel).integration.ajaxPath).toBe(
+            '/h5p/ajax?_csrf=token&action='
+        );
     });
 
     it('should not generate AJAX URLs with CSRF token if option is not set', async () => {
@@ -101,7 +100,7 @@ describe('H5P.render()', () => {
         expect(playerModel.integration.user.name).toEqual(user.name);
     });
 
-    it('adds contentUserData to integration if a contentUserDataStorage is present', async () => {
+    it('adds contentUserData to integration if a contentUserDataStorage is present and sets the contentUserData POST URL', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const metadata: any = {};
@@ -138,6 +137,97 @@ describe('H5P.render()', () => {
         expect(
             playerModel.integration.contents[`cid-${contentId}`].contentUserData
         ).toEqual([{ state: `${contentId}-${user.id}` }]);
+        expect(playerModel.integration.ajax.contentUserData).toEqual(
+            '/h5p/contentUserData/:contentId/:dataType/:subContentId'
+        );
+    });
+
+    it('adds the contextId to the contentUserData POST URL if contextId is used', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const metadata: any = {};
+
+        const config = new H5PConfig(undefined);
+        const user = new User();
+
+        const mockContentUserDataStorage = MockContentUserDataStorage(
+            contentId,
+            user.id
+        );
+
+        const player = new H5PPlayer(
+            undefined,
+            undefined,
+            config,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            mockContentUserDataStorage
+        );
+        player.setRenderer((model) => model);
+        const playerModel: IPlayerModel = await player.render(
+            contentId,
+            user,
+            'en',
+            {
+                parametersOverride: contentObject,
+                metadataOverride: metadata as any,
+                contextId: '123'
+            }
+        );
+
+        expect(playerModel.integration.ajax.contentUserData).toEqual(
+            '/h5p/contentUserData/:contentId/:dataType/:subContentId?contextId=123'
+        );
+    });
+
+    it('adds the contextId to the contentUserData POST URl with CSRF token if contextId is used', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const metadata: any = {};
+
+        const config = new H5PConfig(undefined);
+        const user = new User();
+
+        const mockContentUserDataStorage = MockContentUserDataStorage(
+            contentId,
+            user.id
+        );
+
+        const player = new H5PPlayer(
+            undefined,
+            undefined,
+            config,
+            undefined,
+            new UrlGenerator(config, {
+                protectAjax: true,
+                protectContentUserData: true,
+                protectSetFinished: true,
+                queryParamGenerator: () => ({
+                    name: '_csrf',
+                    value: 'token'
+                })
+            }),
+            undefined,
+            undefined,
+            mockContentUserDataStorage
+        );
+        player.setRenderer((model) => model);
+        const playerModel: IPlayerModel = await player.render(
+            contentId,
+            user,
+            'en',
+            {
+                parametersOverride: contentObject,
+                metadataOverride: metadata as any,
+                contextId: '123'
+            }
+        );
+
+        expect(playerModel.integration.ajax.contentUserData).toEqual(
+            '/h5p/contentUserData/:contentId/:dataType/:subContentId?_csrf=token&contextId=123'
+        );
     });
 
     it('sets contentUserData to undefined if contentUserDataStorage is not present', async () => {
