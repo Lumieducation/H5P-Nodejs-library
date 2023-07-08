@@ -21,11 +21,11 @@ export default (getStorage: () => IContentUserDataStorage): void => {
                 storage.createOrUpdateContentUserData(dataTemplate)
             ).resolves.not.toThrow();
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toMatchObject(dataTemplate);
             const res = await storage.getContentUserDataByContentIdAndUser(
                 '1',
-                user
+                user.id
             );
             expect(res.length).toEqual(1);
         });
@@ -43,11 +43,11 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             ).resolves.not.toThrow();
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toMatchObject(dataTemplate);
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user, '123')
+                storage.getContentUserData('1', 'dataType', '0', user.id, '123')
             ).resolves.toMatchObject({
                 ...dataTemplate,
                 contextId: '123'
@@ -61,7 +61,7 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             ).resolves.not.toThrow();
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user, '123')
+                storage.getContentUserData('1', 'dataType', '0', user.id, '123')
             ).resolves.toEqual(null);
         });
 
@@ -84,26 +84,20 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             ).resolves.not.toThrow();
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toMatchObject(dataTemplate);
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', {
-                    ...user,
-                    id: '2'
-                })
+                storage.getContentUserData('1', 'dataType', '0', '2')
             ).resolves.toMatchObject({ ...dataTemplate, userId: '2' });
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', {
-                    ...user,
-                    id: '3'
-                })
+                storage.getContentUserData('1', 'dataType', '0', '3')
             ).resolves.toMatchObject({ ...dataTemplate, userId: '3' });
         });
 
         it("returns null if user data doesn't exist", async () => {
             const storage = getStorage();
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toEqual(null);
         });
 
@@ -111,7 +105,7 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             const storage = getStorage();
             const res = await storage.getContentUserDataByContentIdAndUser(
                 '1',
-                user
+                user.id
             );
             expect(res.length).toEqual(0);
         });
@@ -125,7 +119,7 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             await storage.createOrUpdateContentUserData(data2);
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toMatchObject(data2);
 
             const allUserData = await storage.getContentUserDataByUser(user);
@@ -145,7 +139,7 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             await storage.createOrUpdateContentUserData(data2);
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user, '123')
+                storage.getContentUserData('1', 'dataType', '0', user.id, '123')
             ).resolves.toMatchObject({ ...dataTemplate, contextId: '123' });
         });
 
@@ -166,7 +160,7 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             await storage.createOrUpdateContentUserData(data2);
 
             await expect(
-                storage.getContentUserData('1', 'dataType', '0', user)
+                storage.getContentUserData('1', 'dataType', '0', user.id)
             ).resolves.toMatchObject(dataTemplate);
         });
 
@@ -231,20 +225,20 @@ export default (getStorage: () => IContentUserDataStorage): void => {
             const notFound1 =
                 await storage.getContentUserDataByContentIdAndUser(
                     dataTemplate.contentId,
-                    user
+                    user.id
                 );
             expect(notFound1.length).toEqual(0);
 
             const notFound2 =
                 await storage.getContentUserDataByContentIdAndUser(
                     dataTemplate.contentId,
-                    { ...user, id: '2' }
+                    '2'
                 );
             expect(notFound2.length).toEqual(0);
 
             const found = await storage.getContentUserDataByContentIdAndUser(
                 dataTemplate.contentId,
-                { ...user, id: '3' }
+                '3'
             );
             expect(found.length).toEqual(1);
         });
@@ -267,19 +261,22 @@ export default (getStorage: () => IContentUserDataStorage): void => {
 
             await storage.deleteAllContentUserDataByUser(user);
             const notFound1 =
-                await storage.getContentUserDataByContentIdAndUser('1', user);
+                await storage.getContentUserDataByContentIdAndUser(
+                    '1',
+                    user.id
+                );
             expect(notFound1.length).toEqual(0);
 
             const notFound2 =
-                await storage.getContentUserDataByContentIdAndUser('2', user);
+                await storage.getContentUserDataByContentIdAndUser(
+                    '2',
+                    user.id
+                );
             expect(notFound2.length).toEqual(0);
 
             const found = await storage.getContentUserDataByContentIdAndUser(
                 '1',
-                {
-                    ...user,
-                    id: '2'
-                }
+                '2'
             );
             expect(found.length).toEqual(1);
         });

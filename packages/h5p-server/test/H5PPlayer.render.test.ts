@@ -182,7 +182,7 @@ describe('H5P.render()', () => {
         );
     });
 
-    it('adds the contextId to the contentUserData POST URl with CSRF token if contextId is used', async () => {
+    it('adds the contextId to the contentUserData POST URL with CSRF token if contextId is used', async () => {
         const contentId = 'foo';
         const contentObject = {};
         const metadata: any = {};
@@ -226,7 +226,7 @@ describe('H5P.render()', () => {
         );
 
         expect(playerModel.integration.ajax.contentUserData).toEqual(
-            '/h5p/contentUserData/:contentId/:dataType/:subContentId?_csrf=token&contextId=123'
+            '/h5p/contentUserData/:contentId/:dataType/:subContentId?contextId=123&_csrf=token'
         );
     });
 

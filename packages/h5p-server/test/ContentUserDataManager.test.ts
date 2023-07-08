@@ -219,7 +219,7 @@ describe('ContentUserDataManager', () => {
                 contentId,
                 dataType,
                 subContentId,
-                user,
+                user.id,
                 undefined
             );
         });
@@ -251,7 +251,7 @@ describe('ContentUserDataManager', () => {
                 contentId,
                 dataType,
                 subContentId,
-                user,
+                user.id,
                 contextId
             );
         });
@@ -409,7 +409,7 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 mockContentUserDataStorage.getContentUserDataByContentIdAndUser
-            ).toHaveBeenCalledWith(contentId, user, undefined);
+            ).toHaveBeenCalledWith(contentId, user.id, undefined);
         });
 
         it('calls the getContentUserDataByContentIdAndUser method of the contentUserDateStorage with the correct arguments using contextId', async () => {
@@ -431,7 +431,7 @@ describe('ContentUserDataManager', () => {
 
             expect(
                 mockContentUserDataStorage.getContentUserDataByContentIdAndUser
-            ).toHaveBeenCalledWith(contentId, user, contextId);
+            ).toHaveBeenCalledWith(contentId, user.id, contextId);
         });
 
         it('generates the contentUserDataIntegration as an array in the correct order', async () => {
