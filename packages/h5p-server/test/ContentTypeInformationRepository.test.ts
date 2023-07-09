@@ -347,7 +347,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             libManager,
             config,
             new (class extends LaissezFairePermissionSystem {
-                async checkGeneral(
+                async checkForGeneralAction(
                     _actingUser: IUser,
                     permission: GeneralPermission
                 ): Promise<boolean> {
@@ -449,7 +449,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             libManager,
             config,
             new (class extends LaissezFairePermissionSystem {
-                async checkGeneral(
+                async checkForGeneralAction(
                     _actingUser: IUser,
                     permission: GeneralPermission
                 ): Promise<boolean> {
@@ -471,7 +471,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             libManager,
             config,
             new (class extends LaissezFairePermissionSystem {
-                async checkGeneral(
+                async checkForGeneralAction(
                     _actingUser: IUser,
                     permission: GeneralPermission
                 ): Promise<boolean> {

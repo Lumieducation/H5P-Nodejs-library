@@ -9,7 +9,7 @@ import { Readable, Stream } from 'stream';
 export type ContentId = string;
 
 /**
- * Permissions give rights to users to do certain actions with a piece of content.
+ * Give rights to users to perform certain actions with a piece of content.
  */
 export enum ContentPermission {
     Create,
@@ -21,6 +21,9 @@ export enum ContentPermission {
     View
 }
 
+/**
+ * Give rights to users to perform certain actions with a user data.
+ */
 export enum UserDataPermission {
     EditState,
     DeleteState,
@@ -31,6 +34,9 @@ export enum UserDataPermission {
     DeleteFinished
 }
 
+/**
+ * Give rights to users to perform certain actions with temporary files.
+ */
 export enum TemporaryFilePermission {
     Create,
     Delete,
@@ -38,6 +44,10 @@ export enum TemporaryFilePermission {
     View
 }
 
+/**
+ * Give rights to users to perform certain actions that are not associated with
+ * existing objects.
+ */
 export enum GeneralPermission {
     /**
      * If given, the user can create content of content types that are set to
@@ -1122,34 +1132,59 @@ export interface ILibraryStorage {
  */
 export interface IPermissionSystem<TUser extends IUser = IUser> {
     /**
-     * Checks if a user has a certain permission
-     * @param actingUser the user to check
+     * Checks if a user has a certain permission on a content object
+     * @param actingUser the user who is currently active
      * @param permission the permission to check
-     * @param contentId (optional) the content for which to check
+     * @param contentId the content for which to check; if the permission if
+     * `ContentPermission.List` or `ContentPermission.Create` the id will be
+     * undefined
      * @returns true if the user is allowed to do it
      */
-    checkContent(
-        actingUser: TUser | undefined,
+    checkForContent(
+        actingUser: TUser,
         permission: ContentPermission,
-        contentId?: ContentId,
-        affectedUserId?: string
+        contentId: ContentId | undefined
     ): Promise<boolean>;
 
-    checkUserData(
-        actingUser: TUser | undefined,
+    /**
+     * Checks if a user has a certain permission on a user data object.
+     * @param actingUser the user who is currently active
+     * @param permission the permission to check
+     * @param contentId the content id to which the user data belongs
+     * @param affectedUserId (optional) if the acting user tries to access user
+     * data that is not their own, the affected user will be specified here
+     * @returns true if the user is allowed to do it
+     */
+    checkForUserData(
+        actingUser: TUser,
         permission: UserDataPermission,
         contentId: ContentId,
         affectedUserId?: string
     ): Promise<boolean>;
 
-    checkTemporary(
-        user: TUser | undefined,
+    /**
+     * Checks if a user has a certain permission on a temporary file
+     * @param actingUser the currently active user
+     * @param permission the permission to check
+     * @param filename the file the user is trying to access; can be undefined
+     * if the the check is for TemporaryFilePermission.Create
+     * @returns true if the user is allowed to do it
+     */
+    checkForTemporaryFile(
+        actingUser: TUser,
         permission: TemporaryFilePermission,
-        filename?: string
+        filename: string | undefined
     ): Promise<boolean>;
 
-    checkGeneral(
-        actingUser: TUser | undefined,
+    /**
+     * Checks if a user has a certain permission that is not associated with any
+     * object, but part of their general role.
+     * @param actingUser the currently active user
+     * @param permission the permission to check
+     * @return true if the user is allowed to do it
+     */
+    checkForGeneralAction(
+        actingUser: TUser,
         permission: GeneralPermission
     ): Promise<boolean>;
 }
@@ -2309,7 +2344,7 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
-    permissionsSystem?: IPermissionSystem;
+    permissionSystem?: IPermissionSystem;
 }
 
 /**

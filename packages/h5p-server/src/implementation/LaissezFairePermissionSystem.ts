@@ -11,7 +11,7 @@ import {
  * A permission system that allows everything to every user.
  */
 export class LaissezFairePermissionSystem implements IPermissionSystem {
-    async checkUserData(
+    async checkForUserData(
         _actingUser: IUser,
         _permission: UserDataPermission,
         _contentId: string,
@@ -19,20 +19,20 @@ export class LaissezFairePermissionSystem implements IPermissionSystem {
     ): Promise<boolean> {
         return true;
     }
-    async checkGeneral(
+    async checkForGeneralAction(
         _actingUser: IUser,
         _permission: GeneralPermission
     ): Promise<boolean> {
         return true;
     }
-    async checkContent(
+    async checkForContent(
         _user: IUser,
         _permission: ContentPermission,
         _contentId?: string
     ): Promise<boolean> {
         return true;
     }
-    async checkTemporary(
+    async checkForTemporaryFile(
         _user: IUser,
         _permission: TemporaryFilePermission,
         _filename?: string

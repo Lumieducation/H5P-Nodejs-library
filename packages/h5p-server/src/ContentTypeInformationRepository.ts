@@ -92,11 +92,11 @@ export default class ContentTypeInformationRepository {
             libraries: hubInfoWithLocalInfo,
             outdated:
                 (await this.contentTypeCache.isOutdated()) &&
-                ((await this.permissionSystem.checkGeneral(
+                ((await this.permissionSystem.checkForGeneralAction(
                     user,
                     GeneralPermission.InstallRecommended
                 )) ||
-                    (await this.permissionSystem.checkGeneral(
+                    (await this.permissionSystem.checkForGeneralAction(
                         user,
                         GeneralPermission.UpdateAndInstallLibraries
                     ))),
@@ -224,7 +224,7 @@ export default class ContentTypeInformationRepository {
                 patchVersion: localLib.patchVersion,
                 restricted:
                     this.libraryIsRestricted(localLib) &&
-                    !(await this.permissionSystem.checkGeneral(
+                    !(await this.permissionSystem.checkForGeneralAction(
                         user,
                         GeneralPermission.CreateRestricted
                     )),
@@ -290,7 +290,7 @@ export default class ContentTypeInformationRepository {
                     hubLib.installed = true;
                     hubLib.restricted =
                         this.libraryIsRestricted(localLib) &&
-                        !(await this.permissionSystem.checkGeneral(
+                        !(await this.permissionSystem.checkForGeneralAction(
                             user,
                             GeneralPermission.CreateRestricted
                         ));
@@ -320,12 +320,12 @@ export default class ContentTypeInformationRepository {
             `checking if user can install library ${library.machineName}`
         );
         return (
-            (await this.permissionSystem.checkGeneral(
+            (await this.permissionSystem.checkForGeneralAction(
                 user,
                 GeneralPermission.UpdateAndInstallLibraries
             )) ||
             (library.isRecommended &&
-                (await this.permissionSystem.checkGeneral(
+                (await this.permissionSystem.checkForGeneralAction(
                     user,
                     GeneralPermission.InstallRecommended
                 )))

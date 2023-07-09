@@ -79,17 +79,17 @@ export default class H5PPlayer {
             this.config
         );
 
-        const permissionsSystem =
-            options?.permissionsSystem ?? new LaissezFairePermissionSystem();
+        const permissionSystem =
+            options?.permissionSystem ?? new LaissezFairePermissionSystem();
 
         this.contentUserDataManager = new ContentUserDataManager(
             contentUserDataStorage,
-            permissionsSystem
+            permissionSystem
         );
 
         this.contentManager = new ContentManager(
             contentStorage,
-            permissionsSystem,
+            permissionSystem,
             contentUserDataStorage
         );
 
@@ -126,16 +126,16 @@ export default class H5PPlayer {
      * want to use the IContentStorage object passed into the constructor.
      * @param contentId the content id
      * @param actingUser the user who wants to access the content
-     * @param ignoreUserPermission (optional) If set to true, the user object
-     * won't be passed to the storage classes for permission checks. You can use
-     * this option if you have already checked the user's permission in a
-     * different layer.
-     * @param parametersOverride (optional) the parameters of a piece of content
-     * (=content.json); if you use this option, the parameters won't be loaded
-     * from storage
-     * @param metadataOverride (optional) the metadata of a piece of content
-     * (=h5p.json); if you use this option, the parameters won't be loaded from
-     * storage
+     * @param options.ignoreUserPermission (optional) If set to true, the user
+     * object won't be passed to the storage classes for permission checks. You
+     * can use this option if you have already checked the user's permission in
+     * a different layer.
+     * @param options.parametersOverride (optional) the parameters of a piece of
+     * content (=content.json); if you use this option, the parameters won't be
+     * loaded from storage
+     * @param options.metadataOverride (optional) the metadata of a piece of
+     * content (=h5p.json); if you use this option, the parameters won't be
+     * loaded from storage
      * @param options.contextId (optional) allows implementations to have
      * multiple content states for a single content object and user tuple
      * @param options.asUserId (optional) allows you to impersonate another
@@ -474,13 +474,7 @@ export default class H5PPlayer {
             },
             libraryConfig: this.config.libraryConfig,
             postUserStatistics: this.config.setFinishedEnabled,
-            saveFreq: readOnlyState
-                ? Number.MAX_SAFE_INTEGER
-                : this.config.contentUserStateSaveInterval !== false
-                ? Math.round(
-                      Number(this.config.contentUserStateSaveInterval) / 1000
-                  ) || 1
-                : false,
+            saveFreq: this.getSaveFreq(readOnlyState),
             url: this.urlGenerator.baseUrl(),
             hubIsEnabled: true,
             fullscreenDisabled: this.config.disableFullscreen ? 1 : 0,
@@ -491,6 +485,20 @@ export default class H5PPlayer {
                 id: actingUser.id
             }
         };
+    }
+
+    private getSaveFreq(readOnlyState: boolean): number | boolean {
+        if (readOnlyState) {
+            return Number.MAX_SAFE_INTEGER;
+        }
+        if (this.config.contentUserStateSaveInterval !== false) {
+            return (
+                Math.round(
+                    Number(this.config.contentUserStateSaveInterval) / 1000
+                ) || 1
+            );
+        }
+        return false;
     }
 
     /**

@@ -45,17 +45,17 @@ export default class TemporaryFileManager {
         user: IUser
     ): Promise<string> {
         if (
-            !(await this.permissionSystem.checkTemporary(
+            !(await this.permissionSystem.checkForTemporaryFile(
                 user,
                 TemporaryFilePermission.Create,
-                filename
+                undefined
             ))
         ) {
             log.error(
                 `User tried upload file to temporary storage without proper permissions.`
             );
             throw new H5pError(
-                's3-temporary-storage:missing-write-permission',
+                'h5p-server:temporary-file-missing-write-permission',
                 {},
                 403
             );
@@ -114,7 +114,7 @@ export default class TemporaryFileManager {
         if (await this.storage.fileExists(filename, user)) {
             if (
                 user !== null &&
-                !(await this.permissionSystem.checkTemporary(
+                !(await this.permissionSystem.checkForTemporaryFile(
                     user,
                     TemporaryFilePermission.Delete,
                     filename
@@ -124,7 +124,7 @@ export default class TemporaryFileManager {
                     `User tried to delete a file from a temporary storage without proper permissions.`
                 );
                 throw new H5pError(
-                    's3-temporary-storage:missing-delete-permission',
+                    'h5p-server:temporary-file-missing-delete-permission',
                     {},
                     403
                 );
@@ -161,7 +161,7 @@ export default class TemporaryFileManager {
         rangeEnd?: number
     ): Promise<Readable> {
         if (
-            !(await this.permissionSystem.checkTemporary(
+            !(await this.permissionSystem.checkForTemporaryFile(
                 user,
                 TemporaryFilePermission.View,
                 filename
@@ -171,7 +171,7 @@ export default class TemporaryFileManager {
                 `User tried to display a file from a content object without proper permissions.`
             );
             throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
+                'h5p-server:temporary-file-missing-delete-permission',
                 {},
                 403
             );
@@ -194,7 +194,7 @@ export default class TemporaryFileManager {
         user: IUser
     ): Promise<IFileStats> {
         if (
-            !(await this.permissionSystem.checkTemporary(
+            !(await this.permissionSystem.checkForTemporaryFile(
                 user,
                 TemporaryFilePermission.View,
                 filename
@@ -204,7 +204,7 @@ export default class TemporaryFileManager {
                 `User tried to get stats of a content object without proper permissions.`
             );
             throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
+                'h5p-server:temporary-file-missing-view-permission',
                 {},
                 403
             );

@@ -31,7 +31,7 @@ import ExamplePermissionSystem from './ExamplePermissionSystem';
 let tmpDir: DirectoryResult;
 let sharedStateServer: SharedStateServer;
 
-const userTable = {
+const users = {
     teacher1: {
         username: 'teacher1',
         name: 'Teacher 1',
@@ -75,7 +75,7 @@ const initPassport = (): void => {
         new LocalStrategy((username, password, callback) => {
             // We don't check the password. In a real application you'll perform
             // DB access here.
-            const user = userTable[username];
+            const user = users[username];
             if (!user) {
                 callback('User not found in user table');
             } else {
@@ -200,7 +200,7 @@ const start = async (): Promise<void> => {
         undefined,
         undefined,
         undefined,
-        { permissionsSystem: permissionSystem }
+        { permissionSystem }
     );
 
     h5pPlayer.setRenderer((model) => model);
@@ -370,8 +370,8 @@ const start = async (): Promise<void> => {
             } else {
                 let level: string;
                 if (
-                    userTable[(req.user as any)?.id]?.role === 'teacher' ||
-                    userTable[(req.user as any)?.id]?.role === 'admin'
+                    users[(req.user as any)?.id]?.role === 'teacher' ||
+                    users[(req.user as any)?.id]?.role === 'admin'
                 ) {
                     level = 'privileged';
                 } else {
@@ -414,8 +414,8 @@ const start = async (): Promise<void> => {
             await passportSessionPromise(req, {});
             return expressUserToH5PUser(req.user as any);
         },
-        async (user, contentId) => {
-            const userInTable = userTable[user.id];
+        async (user, _contentId) => {
+            const userInTable = users[user.id];
             if (!userInTable) {
                 return undefined;
             }

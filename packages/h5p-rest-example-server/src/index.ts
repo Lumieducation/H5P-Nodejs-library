@@ -193,7 +193,7 @@ const start = async (): Promise<void> => {
         undefined,
         urlGenerator,
         undefined,
-        { permissionsSystem: permissionSystem },
+        { permissionSystem },
         h5pEditor.contentUserDataStorage
     );
 

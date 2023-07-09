@@ -11,7 +11,7 @@ import ExampleUser from './ExampleUser';
 export default class ExamplePermissionSystem
     implements IPermissionSystem<ExampleUser>
 {
-    async checkUserData(
+    async checkForUserData(
         actingUser: ExampleUser,
         permission: UserDataPermission,
         contentId: string,
@@ -54,11 +54,10 @@ export default class ExamplePermissionSystem
         }
     }
 
-    async checkContent(
+    async checkForContent(
         actingUser: ExampleUser | undefined,
         permission: ContentPermission,
-        contentId?: string,
-        affectedUserId?: string
+        contentId?: string
     ): Promise<boolean> {
         if (!actingUser) {
             return false;
@@ -91,7 +90,7 @@ export default class ExamplePermissionSystem
         }
     }
 
-    async checkTemporary(
+    async checkForTemporaryFile(
         user: ExampleUser | undefined,
         permission: TemporaryFilePermission,
         filename?: string
@@ -102,7 +101,7 @@ export default class ExamplePermissionSystem
         return true;
     }
 
-    async checkGeneral(
+    async checkForGeneralAction(
         actingUser: ExampleUser | undefined,
         permission: GeneralPermission
     ): Promise<boolean> {

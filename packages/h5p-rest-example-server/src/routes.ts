@@ -97,7 +97,7 @@ export default function (
                 req.user
             );
 
-        res.status(200).send(JSON.stringify({ contentId, metadata }));
+        res.status(200).json({ contentId, metadata });
     });
 
     router.patch('/:contentId', async (req: IRequestWithUser, res) => {
@@ -120,7 +120,7 @@ export default function (
                 req.user
             );
 
-        res.status(200).send(JSON.stringify({ contentId, metadata }));
+        res.status(200).json({ contentId, metadata });
     });
 
     router.delete('/:contentId', async (req: IRequestWithUser, res) => {

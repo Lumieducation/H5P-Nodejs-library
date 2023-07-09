@@ -41,24 +41,24 @@ export default class PackageExporter {
         private contentStorage: IContentStorage = null,
         {
             exportMaxContentPathLength,
-            permissionsSystem
+            permissionSystem
         }: {
             exportMaxContentPathLength: number;
-            permissionsSystem?: IPermissionSystem;
+            permissionSystem?: IPermissionSystem;
         }
     ) {
         log.info(`initialize`);
         this.maxContentPathLength = exportMaxContentPathLength ?? 255;
-        if (permissionsSystem) {
-            this.permissionsSystem = permissionsSystem;
+        if (permissionSystem) {
+            this.permissionSystem = permissionSystem;
         } else {
-            this.permissionsSystem = new LaissezFairePermissionSystem();
+            this.permissionSystem = new LaissezFairePermissionSystem();
         }
     }
 
     private maxContentPathLength: number;
 
-    private permissionsSystem: IPermissionSystem;
+    private permissionSystem: IPermissionSystem;
 
     /**
      * Creates a .h5p-package for the specified content file and pipes it to the
@@ -213,7 +213,7 @@ export default class PackageExporter {
             );
         }
         if (
-            !(await this.permissionsSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.Download,
                 contentId

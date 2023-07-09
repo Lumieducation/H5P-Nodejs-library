@@ -62,7 +62,7 @@ export default class ContentManager {
         log.info(`adding file ${filename} to content ${contentId}`);
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.Edit,
                 contentId
@@ -72,7 +72,7 @@ export default class ContentManager {
                 `User tried to upload a file without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
+                'h5p-server:content-missing-edit-permission',
                 {},
                 403
             );
@@ -119,7 +119,7 @@ export default class ContentManager {
         log.info(`creating content for ${contentId}`);
         if (contentId) {
             if (
-                !(await this.permissionSystem.checkContent(
+                !(await this.permissionSystem.checkForContent(
                     user,
                     ContentPermission.Edit,
                     contentId
@@ -129,24 +129,24 @@ export default class ContentManager {
                     `User tried edit content without proper permissions.`
                 );
                 throw new H5pError(
-                    'mongo-s3-content-storage:missing-edit-permission',
+                    'h5p-server:content-missing-edit-permission',
                     {},
                     403
                 );
             }
         } else {
             if (
-                !(await this.permissionSystem.checkContent(
+                !(await this.permissionSystem.checkForContent(
                     user,
                     ContentPermission.Create,
-                    contentId
+                    undefined
                 ))
             ) {
                 log.error(
                     `User tried create content without proper permissions.`
                 );
                 throw new H5pError(
-                    'mongo-s3-content-storage:missing-create-permission',
+                    'h5p-server:content-missing-create-permission',
                     {},
                     403
                 );
@@ -171,7 +171,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<void> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.Delete,
                 contentId
@@ -181,7 +181,7 @@ export default class ContentManager {
                 `User tried to delete a content object without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-delete-permission',
+                'h5p-server:content-missing-delete-permission',
                 {},
                 403
             );
@@ -226,7 +226,7 @@ export default class ContentManager {
         user?: IUser
     ): Promise<void> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.Edit,
                 contentId
@@ -236,7 +236,7 @@ export default class ContentManager {
                 `User tried to delete a file from a content object without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-write-permission',
+                'h5p-server:content-missing-edit-permission',
                 {},
                 403
             );
@@ -264,7 +264,7 @@ export default class ContentManager {
         log.debug(`loading ${filename} for ${contentId}`);
 
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.View,
                 contentId
@@ -274,7 +274,7 @@ export default class ContentManager {
                 `User tried to display a file from a content object without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
+                'h5p-server:content-missing-view-permission',
                 {},
                 403
             );
@@ -300,7 +300,7 @@ export default class ContentManager {
         user: IUser
     ): Promise<IContentMetadata> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.View,
                 contentId
@@ -310,7 +310,7 @@ export default class ContentManager {
                 `User tried to get metadata of a content object without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
+                'h5p-server:content-missing-view-permission',
                 {},
                 403
             );
@@ -329,17 +329,17 @@ export default class ContentManager {
         user: IUser
     ): Promise<IFileStats> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.View,
                 contentId
             ))
         ) {
             log.error(
-                `User tried to get stats of file from a content object without proper permissions.`
+                `User tried to get stats of file from a content object without view permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
+                'h5p-server:content-missing-view-permission',
                 {},
                 403
             );
@@ -359,17 +359,17 @@ export default class ContentManager {
         user: IUser
     ): Promise<ContentParameters> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.View,
                 contentId
             ))
         ) {
             log.error(
-                `User tried to get parameters of a content object without proper permissions.`
+                `User tried to get parameters of a content object without view permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
+                'h5p-server:content-missing-view-permission',
                 {},
                 403
             );
@@ -385,16 +385,17 @@ export default class ContentManager {
      */
     public async listContent(user?: IUser): Promise<ContentId[]> {
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
-                ContentPermission.List
+                ContentPermission.List,
+                undefined
             ))
         ) {
             log.error(
                 `User tried to list all content objects without proper permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-list-content-permission',
+                'h5p-server:content-missing-list-permission',
                 {},
                 403
             );
@@ -415,17 +416,17 @@ export default class ContentManager {
     ): Promise<string[]> {
         log.info(`loading content files for ${contentId}`);
         if (
-            !(await this.permissionSystem.checkContent(
+            !(await this.permissionSystem.checkForContent(
                 user,
                 ContentPermission.View,
                 contentId
             ))
         ) {
             log.error(
-                `User tried to get the list of files from a content object without proper permissions.`
+                `User tried to get the list of files from a content object without view permissions.`
             );
             throw new H5pError(
-                'mongo-s3-content-storage:missing-view-permission',
+                'h5p-server:content-missing-view-permission',
                 {},
                 403
             );

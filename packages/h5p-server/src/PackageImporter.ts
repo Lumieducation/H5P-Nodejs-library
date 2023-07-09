@@ -150,7 +150,7 @@ export default class PackageImporter {
                 packagePath,
                 {
                     copyMode: ContentCopyModes.Install,
-                    installLibraries: await this.permissionSystem.checkGeneral(
+                    installLibraries: await this.permissionSystem.checkForGeneralAction(
                         user,
                         GeneralPermission.UpdateAndInstallLibraries
                     )
@@ -189,7 +189,7 @@ export default class PackageImporter {
             packagePath,
             {
                 copyMode: ContentCopyModes.Temporary,
-                installLibraries: await this.permissionSystem.checkGeneral(
+                installLibraries: await this.permissionSystem.checkForGeneralAction(
                     user,
                     GeneralPermission.UpdateAndInstallLibraries
                 )

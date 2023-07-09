@@ -107,7 +107,7 @@ export default class H5PEditor {
     ) {
         log.info('initialize');
 
-        const permissionsSystem =
+        const permissionSystem =
             options?.permissionSystem ?? new LaissezFairePermissionSystem();
 
         this.config = config;
@@ -132,25 +132,25 @@ export default class H5PEditor {
         );
         this.contentManager = new ContentManager(
             contentStorage,
-            permissionsSystem,
+            permissionSystem,
             contentUserDataStorage
         );
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
             config,
-            permissionsSystem,
+            permissionSystem,
             options?.enableHubLocalization ? translationCallback : undefined
         );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
             this.config,
-            permissionsSystem
+            permissionSystem
         );
 
         this.contentUserDataManager = new ContentUserDataManager(
             contentUserDataStorage,
-            permissionsSystem
+            permissionSystem
         );
         this.contentStorer = new ContentStorer(
             this.contentManager,
@@ -160,7 +160,7 @@ export default class H5PEditor {
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.config,
-            permissionsSystem,
+            permissionSystem,
             this.contentManager,
             this.contentStorer
         );

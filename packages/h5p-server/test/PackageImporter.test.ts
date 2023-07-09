@@ -149,7 +149,7 @@ describe('package importer', () => {
 
                 const permissionSystem =
                     new (class extends LaissezFairePermissionSystem {
-                        async checkGeneral(
+                        async checkForGeneralAction(
                             _actingUser: IUser,
                             permission: GeneralPermission
                         ): Promise<boolean> {

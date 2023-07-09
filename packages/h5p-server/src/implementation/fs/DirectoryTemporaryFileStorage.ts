@@ -62,7 +62,7 @@ export default class DirectoryTemporaryFileStorage
         checkFilename(filename);
         if (!ownerId) {
             throw new Error(
-                'invalid arguments for DirectoryTemporaryFileStorage.deleteFile: you must specify an ownerId when user is null'
+                'Invalid arguments for DirectoryTemporaryFileStorage.deleteFile: you must specify an ownerId'
             );
         }
         checkFilename(ownerId);

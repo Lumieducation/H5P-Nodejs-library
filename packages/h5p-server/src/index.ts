@@ -31,6 +31,7 @@ import LibraryManager from './LibraryManager';
 import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 // Interfaces
 import {
@@ -89,8 +90,6 @@ const cacheImplementations = {
     CachedKeyValueStorage,
     CachedLibraryStorage
 };
-
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 export {
     // classes
