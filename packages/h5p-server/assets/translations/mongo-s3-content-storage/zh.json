@@ -5,10 +5,6 @@
     "filename-too-long": "文件名太长： {{filename}}",
     "illegal-filename": "不允许使用文件名{{filename}}",
     "listing-content-error": "获取内容对象列表时出错",
-    "missing-delete-permission": "您无权删除此内容对象。",
-    "missing-list-content-permission": "您无权列出内容对象。",
-    "missing-view-permission": "您无权查看此内容对象。",
-    "missing-write-permission": "您无权更改此内容对象。",
     "mongo-add-update-error": "在数据库中添加或更新内容时出错。",
     "mongo-replace-error": "更新数据库中的内容时出错。",
     "s3-upload-error": "将文件{{filename}}上载到S3时出错。"

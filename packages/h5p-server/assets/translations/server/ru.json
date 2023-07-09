@@ -60,5 +60,18 @@
     "content-hub-download-error": "При подключении к H5P Content Hub произошла ошибка. Пожалуйста, повторите попытку позже.",
     "install-missing-libraries": "Не удалось загрузить контент, поскольку в этой системе не установлены следующие библиотеки: {{libraries}}",
     "install-library-lock-timeout": "Не удалось установить библиотеку {{ubername}} , потому что те же библиотеки устанавливаются из другого места (ожидание блокировки библиотеки в течение {{limit}}",
-    "install-library-lock-max-time-exceeded": "Библиотеку {{ubername}} установить не удалось, потому что на это ушло больше разрешенной {{limit}} мс."
+    "install-library-lock-max-time-exceeded": "Библиотеку {{ubername}} установить не удалось, потому что на это ушло больше разрешенной {{limit}} мс.",
+    "content-missing-create-permission": "Вам не разрешено создавать новый контент.",
+    "content-missing-delete-permission": "Вам не разрешено удалять этот контент.",
+    "content-missing-edit-permission": "Вам не разрешено редактировать этот контент.",
+    "content-missing-list-permission": "Вы не можете перечислить весь контент.",
+    "content-missing-view-permission": "Вам не разрешено просматривать этот контент.",
+    "finished-data-missing-delete-permission": "Вы не можете удалить эти готовые данные.",
+    "finished-data-missing-edit-permission": "Вам не разрешено редактировать эти готовые данные.",
+    "temporary-file-missing-delete-permission": "Вам не разрешено удалять этот временный файл.",
+    "temporary-file-missing-view-permission": "Вам не разрешено просматривать этот временный файл.",
+    "temporary-file-missing-write-permission": "Вам не разрешено создавать временный файл.",
+    "user-state-missing-delete-permission": "Вам не разрешено удалять это состояние пользователя.",
+    "user-state-missing-edit-permission": "Вам не разрешено редактировать это состояние пользователя.",
+    "user-state-missing-view-permission": "Вам не разрешено просматривать это состояние пользователя."
 }

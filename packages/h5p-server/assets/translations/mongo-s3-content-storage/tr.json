@@ -5,10 +5,6 @@
     "filename-too-long": "Dosya adı çok uzun: {{filename}}",
     "illegal-filename": "{{filename}} dosya adına izin verilmiyor.",
     "listing-content-error": "İçerik nesnelerinin listesi alınırken bir hata oluştu",
-    "missing-delete-permission": "Bu içerik nesnesini silme izniniz yok.",
-    "missing-list-content-permission": "İçerik nesnelerini listeleme izniniz yok.",
-    "missing-view-permission": "Bu dosyayı görüntüleme izniniz yok.",
-    "missing-write-permission": "Bu içerik nesnesini değiştirme izniniz yok.",
     "mongo-add-update-error": "Veritabanına içerik eklenirken veya güncellenirken bir hata oluştu.",
     "mongo-replace-error": "Veritabanındaki içerik güncellenirken bir hata oluştu.",
     "s3-upload-error": "{{filename}} dosyasını S3'e yüklerken bir hata oluştu."

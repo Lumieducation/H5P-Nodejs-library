@@ -60,5 +60,18 @@
     "content-hub-download-error": "Beim Herstellen einer Verbindung zum H5P Content Hub ist ein Fehler aufgetreten. Bitte versuchen es später noch einmal.",
     "install-missing-libraries": "Der Inhalt konnte nicht geladen werden, da die folgenden Bibliotheken auf diesem System nicht installiert sind: {{libraries}}",
     "install-library-lock-timeout": "Die Bibliothek {{ubername}} konnte nicht installiert werden, da die gleichen Bibliotheken von einem anderen Ort installiert werden ( {{limit}} ms auf Sperre der Bibliothek gewartet).",
-    "install-library-lock-max-time-exceeded": "Die Bibliothek {{ubername}} konnte nicht installiert werden, da es länger als die erlaubten {{limit}} ms gedauert hat."
+    "install-library-lock-max-time-exceeded": "Die Bibliothek {{ubername}} konnte nicht installiert werden, da es länger als die erlaubten {{limit}} ms gedauert hat.",
+    "content-missing-create-permission": "Es ist dir nicht gestattet, neue Inhalte zu erstellen.",
+    "content-missing-delete-permission": "Es ist dir nicht gestattet, diesen Inhalt zu löschen.",
+    "content-missing-edit-permission": "Es ist dir nicht gestattet, diesen Inhalt zu bearbeiten.",
+    "content-missing-list-permission": "Es ist dir nicht gestattet, alle Inhalte aufzulisten.",
+    "content-missing-view-permission": "Es ist dir nicht gestattet, diesen Inhalt anzuzeigen.",
+    "finished-data-missing-delete-permission": "Du darfst diese Daten der Abschlussverfolgung nicht löschen.",
+    "finished-data-missing-edit-permission": "Du darfst diese Daten der Abschlussverfolgung nicht bearbeiten.",
+    "temporary-file-missing-delete-permission": "Du darfst diese temporäre Datei nicht löschen.",
+    "temporary-file-missing-view-permission": "Du darfst diese temporäre Datei nicht anzeigen.",
+    "temporary-file-missing-write-permission": "Es ist dir nicht gestattet, eine temporäre Datei zu erstellen.",
+    "user-state-missing-delete-permission": "Du darfst diesen Benutzerstatus nicht löschen.",
+    "user-state-missing-edit-permission": "Du darfst diesen Benutzerstatus nicht bearbeiten.",
+    "user-state-missing-view-permission": "Du bist nicht berechtigt, diesen Benutzerstatus anzuzeigen."
 }

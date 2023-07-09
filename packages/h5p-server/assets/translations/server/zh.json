@@ -60,5 +60,18 @@
     "content-hub-download-error": "连接到H5P内容中心时出错。请稍后再试。",
     "install-missing-libraries": "无法加载内容，因为此系统上未安装以下库： {{libraries}}",
     "install-library-lock-timeout": "无法安装库{{ubername}} ，因为正在从另一个地方安装相同的库（等待{{limit}}毫秒以锁定库）。",
-    "install-library-lock-max-time-exceeded": "无法安装库{{ubername}} ，因为它花费的时间超过了允许的{{limit}}毫秒。"
+    "install-library-lock-max-time-exceeded": "无法安装库{{ubername}} ，因为它花费的时间超过了允许的{{limit}}毫秒。",
+    "content-missing-create-permission": "您不得创建新内容。",
+    "content-missing-delete-permission": "您无权删除该内容。",
+    "content-missing-edit-permission": "您无权编辑此内容。",
+    "content-missing-list-permission": "您不能列出所有内容。",
+    "content-missing-view-permission": "您无权查看此内容。",
+    "finished-data-missing-delete-permission": "您不能删除此已完成的数据。",
+    "finished-data-missing-edit-permission": "您不能编辑此完成的数据。",
+    "temporary-file-missing-delete-permission": "您不能删除该临时文件。",
+    "temporary-file-missing-view-permission": "您无权查看此临时文件。",
+    "temporary-file-missing-write-permission": "不允许您创建临时文件。",
+    "user-state-missing-delete-permission": "您不能删除该用户状态。",
+    "user-state-missing-edit-permission": "您无权编辑此用户状态。",
+    "user-state-missing-view-permission": "您无权查看该用户状态。"
 }

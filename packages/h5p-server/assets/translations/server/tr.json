@@ -60,5 +60,18 @@
     "content-hub-download-error": "H5P İçerik Merkezine bağlanırken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
     "install-missing-libraries": "Bu sistemde aşağıdaki kütüphaneler kurulu olmadığı için içerik yüklenemedi: {{libraries}}",
     "install-library-lock-timeout": "{{ubername}} kütüphanesi yüklenemedi, çünkü aynı kütüphaneler başka bir yerden yükleniyor ( {{limit}} ms beklendi).",
-    "install-library-lock-max-time-exceeded": "{{limit}} ms'den daha uzun sürdüğü için {{ubername}} kitaplığı yüklenemedi."
+    "install-library-lock-max-time-exceeded": "{{limit}} ms'den daha uzun sürdüğü için {{ubername}} kitaplığı yüklenemedi.",
+    "content-missing-create-permission": "Yeni içerik oluşturmanıza izin verilmiyor.",
+    "content-missing-delete-permission": "Bu içeriği silmenize izin verilmiyor.",
+    "content-missing-edit-permission": "Bu içeriği düzenlemenize izin verilmiyor.",
+    "content-missing-list-permission": "Tüm içeriği listelemenize izin verilmiyor.",
+    "content-missing-view-permission": "Bu içeriği görüntülemenize izin verilmiyor.",
+    "finished-data-missing-delete-permission": "Bu tamamlanmış verileri silmenize izin verilmez.",
+    "finished-data-missing-edit-permission": "Bu tamamlanmış verileri düzenlemenize izin verilmiyor.",
+    "temporary-file-missing-delete-permission": "Bu geçici dosyayı silmenize izin verilmiyor.",
+    "temporary-file-missing-view-permission": "Bu geçici dosyayı görüntüleme izniniz yok.",
+    "temporary-file-missing-write-permission": "Geçici bir dosya oluşturmanıza izin verilmez.",
+    "user-state-missing-delete-permission": "Bu kullanıcı durumunu silme izniniz yok.",
+    "user-state-missing-edit-permission": "Bu kullanıcı durumunu düzenleme izniniz yok.",
+    "user-state-missing-view-permission": "Bu kullanıcı durumunu görüntüleme izniniz yok."
 }

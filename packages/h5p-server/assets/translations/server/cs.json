@@ -60,5 +60,18 @@
     "content-hub-download-error": "Při připojování k H5P Content Hub došlo k chybě. Prosím zkuste to znovu později.",
     "install-missing-libraries": "Obsah nelze načíst, protože v tomto systému nejsou nainstalovány následující knihovny: {{libraries}}",
     "install-library-lock-timeout": "Knihovnu {{ubername}} nelze nainstalovat, protože se stejné knihovny instalují z jiného místa (čekalo se {{limit}} ms na uzamčení knihovny).",
-    "install-library-lock-max-time-exceeded": "Knihovnu {{ubername}} nebylo možné nainstalovat, protože to trvalo déle než povolenou {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Knihovnu {{ubername}} nebylo možné nainstalovat, protože to trvalo déle než povolenou {{limit}} ms.",
+    "content-missing-create-permission": "Nemáte oprávnění vytvářet nový obsah.",
+    "content-missing-delete-permission": "Nemáte oprávnění smazat tento obsah.",
+    "content-missing-edit-permission": "Nemáte oprávnění upravovat tento obsah.",
+    "content-missing-list-permission": "Nemáte povoleno uvádět veškerý obsah.",
+    "content-missing-view-permission": "Nemáte oprávnění prohlížet tento obsah.",
+    "finished-data-missing-delete-permission": "Tato hotová data nesmíte smazat.",
+    "finished-data-missing-edit-permission": "Tato hotová data nemáte povoleno upravovat.",
+    "temporary-file-missing-delete-permission": "Nemáte oprávnění smazat tento dočasný soubor.",
+    "temporary-file-missing-view-permission": "Nemáte oprávnění prohlížet tento dočasný soubor.",
+    "temporary-file-missing-write-permission": "Nemáte oprávnění vytvořit dočasný soubor.",
+    "user-state-missing-delete-permission": "Nemáte oprávnění smazat tento uživatelský stav.",
+    "user-state-missing-edit-permission": "Nemáte oprávnění upravovat tento stav uživatele.",
+    "user-state-missing-view-permission": "Nemáte oprávnění zobrazit tento stav uživatele."
 }

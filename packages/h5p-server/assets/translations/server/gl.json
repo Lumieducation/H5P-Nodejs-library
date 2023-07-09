@@ -60,5 +60,18 @@
     "not-in-whitelist": "Non se permite o ficheiro «{{filename}}». Só se permiten ficheiros coas seguintes extensións: {{files-allowed}}.",
     "content-hub-download-error-with-message": "Produciuse un erro ao conectarse ao Hub de contido de H5P ({{message}}). Ténteo de novo máis tarde.",
     "install-library-lock-timeout": "Non foi posíbel instalar a biblioteca {{ubername}} porque as mesmas bibliotecas estanse instalando desde outro lugar (agardáronse {{limit}} ms para o bloqueo da biblioteca).",
-    "install-library-lock-max-time-exceeded": "Non foi posíbel instalar a biblioteca {{ubername}} porque levou máis tempo do permitido {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Non foi posíbel instalar a biblioteca {{ubername}} porque levou máis tempo do permitido {{limit}} ms.",
+    "content-missing-create-permission": "Non tes permiso para crear contido novo.",
+    "content-missing-delete-permission": "Non tes permiso para eliminar este contido.",
+    "content-missing-edit-permission": "Non tes permiso para editar este contido.",
+    "content-missing-list-permission": "Non tes permiso para enumerar todo o contido.",
+    "content-missing-view-permission": "Non tes permiso para ver este contido.",
+    "finished-data-missing-delete-permission": "Non tes permiso para eliminar estes datos rematados.",
+    "finished-data-missing-edit-permission": "Non tes permiso para editar estes datos rematados.",
+    "temporary-file-missing-delete-permission": "Non tes permiso para eliminar este ficheiro temporal.",
+    "temporary-file-missing-view-permission": "Non tes permiso para ver este ficheiro temporal.",
+    "temporary-file-missing-write-permission": "Non tes permiso para crear un ficheiro temporal.",
+    "user-state-missing-delete-permission": "Non tes permiso para eliminar este estado de usuario.",
+    "user-state-missing-edit-permission": "Non tes permiso para editar este estado de usuario.",
+    "user-state-missing-view-permission": "Non tes permiso para ver este estado de usuario."
 }

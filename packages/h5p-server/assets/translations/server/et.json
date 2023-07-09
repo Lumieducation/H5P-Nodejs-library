@@ -60,5 +60,18 @@
     "content-hub-download-error": "H5P sisukeskusega ühenduse loomisel ilmnes viga. Palun proovi hiljem uuesti.",
     "install-missing-libraries": "Sisu ei saanud laadida, kuna sellesse süsteemi pole installitud järgmisi teeke: {{libraries}}",
     "install-library-lock-timeout": "Teeki {{ubername}} ei saanud installida, kuna samu teeke installitakse teisest kohast (ootas {{limit}} ms teegi lukustamist).",
-    "install-library-lock-max-time-exceeded": "Teeki {{ubername}} ei saanud installida, kuna see võttis kauem aega kui lubatud {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Teeki {{ubername}} ei saanud installida, kuna see võttis kauem aega kui lubatud {{limit}} ms.",
+    "content-missing-create-permission": "Teil ei ole lubatud uut sisu luua.",
+    "content-missing-delete-permission": "Teil ei ole lubatud seda sisu kustutada.",
+    "content-missing-edit-permission": "Teil ei ole lubatud seda sisu muuta.",
+    "content-missing-list-permission": "Teil ei ole lubatud kogu sisu loetleda.",
+    "content-missing-view-permission": "Teil ei ole lubatud seda sisu vaadata.",
+    "finished-data-missing-delete-permission": "Teil ei ole lubatud neid valmis andmeid kustutada.",
+    "finished-data-missing-edit-permission": "Teil ei ole lubatud neid valmis andmeid redigeerida.",
+    "temporary-file-missing-delete-permission": "Teil ei ole lubatud seda ajutist faili kustutada.",
+    "temporary-file-missing-view-permission": "Teil ei ole lubatud seda ajutist faili vaadata.",
+    "temporary-file-missing-write-permission": "Teil ei ole lubatud ajutist faili luua.",
+    "user-state-missing-delete-permission": "Teil ei ole lubatud seda kasutaja olekut kustutada.",
+    "user-state-missing-edit-permission": "Teil ei ole lubatud seda kasutaja olekut muuta.",
+    "user-state-missing-view-permission": "Teil ei ole lubatud seda kasutaja olekut vaadata."
 }

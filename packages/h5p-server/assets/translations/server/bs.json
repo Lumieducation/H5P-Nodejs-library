@@ -60,5 +60,18 @@
     "content-hub-download-error": "Došlo je do greške prilikom povezivanja sa H5P Content Hubom. Pokušajte ponovo kasnije.",
     "install-missing-libraries": "Nije moguće učitati sadržaj jer sljedeće biblioteke nisu instalirane na ovom sistemu: {{libraries}}",
     "install-library-lock-timeout": "Biblioteka {{ubername}} se nije mogla instalirati, jer se iste biblioteke instaliraju sa drugog mjesta (čekalo se {{limit}} ms za zaključavanje biblioteke).",
-    "install-library-lock-max-time-exceeded": "Biblioteku {{ubername}} nije bilo moguće instalirati, jer je trebalo duže od dozvoljenog {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Biblioteku {{ubername}} nije bilo moguće instalirati, jer je trebalo duže od dozvoljenog {{limit}} ms.",
+    "content-missing-create-permission": "Nije vam dozvoljeno kreirati novi sadržaj.",
+    "content-missing-delete-permission": "Nije vam dozvoljeno brisanje ovog sadržaja.",
+    "content-missing-edit-permission": "Nije vam dozvoljeno uređivati ovaj sadržaj.",
+    "content-missing-list-permission": "Nije vam dozvoljeno da navedete sav sadržaj.",
+    "content-missing-view-permission": "Nije vam dozvoljeno da vidite ovaj sadržaj.",
+    "finished-data-missing-delete-permission": "Nije vam dozvoljeno brisanje ovih gotovih podataka.",
+    "finished-data-missing-edit-permission": "Nije vam dozvoljeno uređivati ove gotove podatke.",
+    "temporary-file-missing-delete-permission": "Nije vam dozvoljeno da izbrišete ovaj privremeni fajl.",
+    "temporary-file-missing-view-permission": "Nije vam dozvoljeno da vidite ovaj privremeni fajl.",
+    "temporary-file-missing-write-permission": "Nije vam dozvoljeno da kreirate privremeni fajl.",
+    "user-state-missing-delete-permission": "Nije vam dozvoljeno da izbrišete ovo korisničko stanje.",
+    "user-state-missing-edit-permission": "Nije vam dozvoljeno uređivati ovo korisničko stanje.",
+    "user-state-missing-view-permission": "Nije vam dozvoljeno da vidite ovo korisničko stanje."
 }

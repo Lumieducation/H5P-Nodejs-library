@@ -60,5 +60,18 @@
     "content-hub-download-error": "Prišlo je do napake pri povezovanju s H5P Content Hub. Prosim poskusite kasneje.",
     "install-missing-libraries": "Vsebine ni bilo mogoče naložiti, ker v tem sistemu niso nameščene naslednje knjižnice: {{libraries}}",
     "install-library-lock-timeout": "Knjižnice {{ubername}} ni bilo mogoče namestiti, ker se iste knjižnice nameščajo z drugega mesta (čakal {{limit}} ms za zaklepanje knjižnice).",
-    "install-library-lock-max-time-exceeded": "Knjižnice {{ubername}} ni bilo mogoče namestiti, ker je trajalo dlje od dovoljene {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Knjižnice {{ubername}} ni bilo mogoče namestiti, ker je trajalo dlje od dovoljene {{limit}} ms.",
+    "content-missing-create-permission": "Ni vam dovoljeno ustvarjati nove vsebine.",
+    "content-missing-delete-permission": "Nimate dovoljenja za brisanje te vsebine.",
+    "content-missing-edit-permission": "Nimate dovoljenja za urejanje te vsebine.",
+    "content-missing-list-permission": "Nimate dovoljenja za seznam vseh vsebin.",
+    "content-missing-view-permission": "Nimate dovoljenja za ogled te vsebine.",
+    "finished-data-missing-delete-permission": "Teh končanih podatkov ne smete izbrisati.",
+    "finished-data-missing-edit-permission": "Nimate dovoljenja za urejanje teh končnih podatkov.",
+    "temporary-file-missing-delete-permission": "Nimate dovoljenja za brisanje te začasne datoteke.",
+    "temporary-file-missing-view-permission": "Nimate dovoljenja za ogled te začasne datoteke.",
+    "temporary-file-missing-write-permission": "Nimate dovoljenja za ustvarjanje začasne datoteke.",
+    "user-state-missing-delete-permission": "Nimate dovoljenja za brisanje tega uporabniškega stanja.",
+    "user-state-missing-edit-permission": "Nimate dovoljenja za urejanje tega uporabniškega stanja.",
+    "user-state-missing-view-permission": "Nimate dovoljenja za ogled tega uporabniškega stanja."
 }

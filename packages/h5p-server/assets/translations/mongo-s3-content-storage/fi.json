@@ -5,10 +5,6 @@
     "filename-too-long": "Tiedostonimi on liian pitkä: {{filename}}",
     "illegal-filename": "Tiedostonimi {{filename}} ei ole sallittu.",
     "listing-content-error": "Sisältöobjektien luettelon noutamisessa tapahtui virhe",
-    "missing-delete-permission": "Sinulla ei ole lupaa poistaa tätä sisältöobjektia.",
-    "missing-list-content-permission": "Sinulla ei ole lupaa luetteloida sisältöobjekteja.",
-    "missing-view-permission": "Sinulla ei ole lupaa tarkastella tätä sisältöobjektia.",
-    "missing-write-permission": "Sinulla ei ole lupaa muuttaa tätä sisältöobjektia.",
     "mongo-add-update-error": "Tietokannan sisältöä lisätessä tai päivitettäessä tapahtui virhe.",
     "mongo-replace-error": "Tietokannan sisältöä päivitettäessä tapahtui virhe.",
     "s3-upload-error": "{{filename}} lataamisessa S3: een tapahtui virhe."

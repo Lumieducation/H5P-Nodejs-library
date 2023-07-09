@@ -5,10 +5,6 @@
     "filename-too-long": "Filnamnet är för långt: {{filename}}",
     "illegal-filename": "Filnamnet {{filename}} är inte tillåtet.",
     "listing-content-error": "Det uppstod ett fel när listan över innehållsobjekt hämtades",
-    "missing-delete-permission": "Du har inte behörighet att radera detta innehållsobjekt.",
-    "missing-list-content-permission": "Du har inte behörighet att lista innehållsobjekt.",
-    "missing-view-permission": "Du har inte behörighet att visa detta innehållsobjekt.",
-    "missing-write-permission": "Du har inte behörighet att ändra detta innehållsobjekt.",
     "mongo-add-update-error": "Det uppstod ett fel när du lade till eller uppdaterade innehåll i databasen.",
     "mongo-replace-error": "Det uppstod ett fel när innehållet i databasen uppdaterades.",
     "s3-upload-error": "Det uppstod ett fel när filen {{filename}} till S3 överfördes."

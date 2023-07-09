@@ -60,5 +60,18 @@
     "content-hub-download-error": "Ocorreu um erro ao conectar ao H5P Content Hub. Por favor, tente novamente mais tarde.",
     "install-missing-libraries": "Não foi possível carregar o conteúdo porque as seguintes bibliotecas não estão instaladas neste sistema: {{libraries}}",
     "install-library-lock-timeout": "A biblioteca {{ubername}} não pôde ser instalada, porque as mesmas bibliotecas estão sendo instaladas de outro local (esperou {{limit}} ms pelo bloqueio na biblioteca).",
-    "install-library-lock-max-time-exceeded": "A biblioteca {{ubername}} não pôde ser instalada porque demorou mais do que o permitido {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "A biblioteca {{ubername}} não pôde ser instalada porque demorou mais do que o permitido {{limit}} ms.",
+    "content-missing-create-permission": "Você não tem permissão para criar novos conteúdos.",
+    "content-missing-delete-permission": "Você não tem permissão para excluir este conteúdo.",
+    "content-missing-edit-permission": "Você não tem permissão para editar este conteúdo.",
+    "content-missing-list-permission": "Você não tem permissão para listar todo o conteúdo.",
+    "content-missing-view-permission": "Você não tem permissão para visualizar este conteúdo.",
+    "finished-data-missing-delete-permission": "Você não tem permissão para excluir esses dados concluídos.",
+    "finished-data-missing-edit-permission": "Você não tem permissão para editar esses dados finalizados.",
+    "temporary-file-missing-delete-permission": "Você não tem permissão para excluir este arquivo temporário.",
+    "temporary-file-missing-view-permission": "Você não tem permissão para visualizar este arquivo temporário.",
+    "temporary-file-missing-write-permission": "Você não tem permissão para criar um arquivo temporário.",
+    "user-state-missing-delete-permission": "Você não tem permissão para excluir este estado de usuário.",
+    "user-state-missing-edit-permission": "Você não tem permissão para editar este estado de usuário.",
+    "user-state-missing-view-permission": "Você não tem permissão para visualizar este estado de usuário."
 }

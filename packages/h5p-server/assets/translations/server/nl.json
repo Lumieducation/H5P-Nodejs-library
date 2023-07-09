@@ -60,5 +60,18 @@
     "content-hub-download-error": "Er is een fout opgetreden bij het verbinden met de H5P Content Hub. Probeer het later nog eens.",
     "install-missing-libraries": "Kon de inhoud niet laden omdat de volgende bibliotheken niet op dit systeem zijn geïnstalleerd: {{libraries}}",
     "install-library-lock-timeout": "De bibliotheek {{ubername}} kon niet worden geïnstalleerd, omdat dezelfde bibliotheken vanaf een andere plaats worden geïnstalleerd ( {{limit}} ms gewacht op vergrendeling op de bibliotheek).",
-    "install-library-lock-max-time-exceeded": "De bibliotheek {{ubername}} kon niet worden geïnstalleerd, omdat het langer duurde dan de toegestane {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "De bibliotheek {{ubername}} kon niet worden geïnstalleerd, omdat het langer duurde dan de toegestane {{limit}} ms.",
+    "content-missing-create-permission": "U mag geen nieuwe inhoud maken.",
+    "content-missing-delete-permission": "U mag deze inhoud niet verwijderen.",
+    "content-missing-edit-permission": "U mag deze inhoud niet bewerken.",
+    "content-missing-list-permission": "U mag niet alle inhoud vermelden.",
+    "content-missing-view-permission": "U mag deze inhoud niet bekijken.",
+    "finished-data-missing-delete-permission": "U mag deze voltooide gegevens niet verwijderen.",
+    "finished-data-missing-edit-permission": "U mag deze voltooide gegevens niet bewerken.",
+    "temporary-file-missing-delete-permission": "U mag dit tijdelijke bestand niet verwijderen.",
+    "temporary-file-missing-view-permission": "U mag dit tijdelijke bestand niet bekijken.",
+    "temporary-file-missing-write-permission": "U mag geen tijdelijk bestand aanmaken.",
+    "user-state-missing-delete-permission": "U mag deze gebruikersstatus niet verwijderen.",
+    "user-state-missing-edit-permission": "U mag deze gebruikersstatus niet bewerken.",
+    "user-state-missing-view-permission": "U mag deze gebruikersstatus niet bekijken."
 }

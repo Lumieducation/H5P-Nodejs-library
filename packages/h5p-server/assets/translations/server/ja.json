@@ -60,5 +60,18 @@
     "content-hub-download-error-with-message": "{{message}} ）への接続中にエラーが発生しました。後でもう一度やり直してください。",
     "content-hub-download-error": "H5Pコンテンツハブへの接続中にエラーが発生しました。後でもう一度やり直してください。",
     "install-library-lock-timeout": "同じライブラリが別の場所からインストールされているため、ライブラリ{{ubername}} {{limit}}ミリ秒待機しました）。",
-    "install-library-lock-max-time-exceeded": "ライブラリ{{ubername}} {{limit}}ミリ秒より長くかかったため、インストールできませんでした。"
+    "install-library-lock-max-time-exceeded": "ライブラリ{{ubername}} {{limit}}ミリ秒より長くかかったため、インストールできませんでした。",
+    "content-missing-create-permission": "新しいコンテンツを作成することはできません。",
+    "content-missing-delete-permission": "このコンテンツを削除することはできません。",
+    "content-missing-edit-permission": "このコンテンツを編集することはできません。",
+    "content-missing-list-permission": "すべてのコンテンツをリストすることは許可されていません。",
+    "content-missing-view-permission": "このコンテンツを閲覧することはできません。",
+    "finished-data-missing-delete-permission": "この完成したデータを削除することはできません。",
+    "finished-data-missing-edit-permission": "この完成データを編集することはできません。",
+    "temporary-file-missing-delete-permission": "この一時ファイルを削除することはできません。",
+    "temporary-file-missing-view-permission": "この一時ファイルを表示することはできません。",
+    "temporary-file-missing-write-permission": "一時ファイルを作成することはできません。",
+    "user-state-missing-delete-permission": "このユーザー状態を削除することはできません。",
+    "user-state-missing-edit-permission": "このユーザー状態を編集することはできません。",
+    "user-state-missing-view-permission": "このユーザー状態を表示することは許可されていません。"
 }

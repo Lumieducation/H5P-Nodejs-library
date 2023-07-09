@@ -60,5 +60,18 @@
     "content-hub-download-error": "H5P 콘텐츠 허브에 연결하는 중에 오류가 발생했습니다. 나중에 다시 시도 해주십시오.",
     "install-missing-libraries": "이 시스템에 다음 라이브러리가 설치되어 있지 않으므로 콘텐츠를 로드할 수 없습니다. {{libraries}}",
     "install-library-lock-timeout": "도서관 {{ubername}} 같은 라이브러리가 다른 장소에서 설치되고 있기 때문에, 설치할 수 없습니다 (기다렸다 {{limit}} 라이브러리에 잠금 밀리 초).",
-    "install-library-lock-max-time-exceeded": "라이브러리 {{ubername}} 는이 허용 된 것보다 더 오래 걸렸다 때문에, 설치할 수없는 {{limit}} 밀리."
+    "install-library-lock-max-time-exceeded": "라이브러리 {{ubername}} 는이 허용 된 것보다 더 오래 걸렸다 때문에, 설치할 수없는 {{limit}} 밀리.",
+    "content-missing-create-permission": "새 콘텐츠를 만들 수 없습니다.",
+    "content-missing-delete-permission": "이 콘텐츠를 삭제할 권한이 없습니다.",
+    "content-missing-edit-permission": "이 콘텐츠를 편집할 권한이 없습니다.",
+    "content-missing-list-permission": "모든 콘텐츠를 나열할 수 없습니다.",
+    "content-missing-view-permission": "이 콘텐츠를 볼 수 없습니다.",
+    "finished-data-missing-delete-permission": "이 완료된 데이터를 삭제할 수 없습니다.",
+    "finished-data-missing-edit-permission": "이 완료된 데이터를 편집할 수 없습니다.",
+    "temporary-file-missing-delete-permission": "이 임시 파일을 삭제할 권한이 없습니다.",
+    "temporary-file-missing-view-permission": "이 임시 파일을 볼 수 없습니다.",
+    "temporary-file-missing-write-permission": "임시 파일을 만들 수 없습니다.",
+    "user-state-missing-delete-permission": "이 사용자 상태를 삭제할 권한이 없습니다.",
+    "user-state-missing-edit-permission": "이 사용자 상태를 편집할 권한이 없습니다.",
+    "user-state-missing-view-permission": "이 사용자 상태를 볼 수 없습니다."
 }

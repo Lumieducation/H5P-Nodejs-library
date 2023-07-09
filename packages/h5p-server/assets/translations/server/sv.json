@@ -60,5 +60,18 @@
     "content-hub-download-error": "Det uppstod ett fel vid anslutning till H5P Content Hub. Vänligen försök igen senare.",
     "install-missing-libraries": "Det gick inte att ladda innehållet eftersom följande bibliotek inte är installerade på det här systemet: {{libraries}}",
     "install-library-lock-timeout": "Biblioteket {{ubername}} kunde inte installeras, eftersom samma bibliotek installeras från en annan plats (väntade {{limit}} ms för låsning av biblioteket).",
-    "install-library-lock-max-time-exceeded": "Biblioteket {{ubername}} kunde inte installeras eftersom det tog längre tid än tillåtna {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Biblioteket {{ubername}} kunde inte installeras eftersom det tog längre tid än tillåtna {{limit}} ms.",
+    "content-missing-create-permission": "Du får inte skapa nytt innehåll.",
+    "content-missing-delete-permission": "Du får inte radera detta innehåll.",
+    "content-missing-edit-permission": "Du får inte redigera detta innehåll.",
+    "content-missing-list-permission": "Du får inte lista allt innehåll.",
+    "content-missing-view-permission": "Du får inte se detta innehåll.",
+    "finished-data-missing-delete-permission": "Du får inte radera denna färdiga data.",
+    "finished-data-missing-edit-permission": "Du får inte redigera denna färdiga data.",
+    "temporary-file-missing-delete-permission": "Du får inte ta bort den här temporära filen.",
+    "temporary-file-missing-view-permission": "Du får inte se den här temporära filen.",
+    "temporary-file-missing-write-permission": "Du får inte skapa en temporär fil.",
+    "user-state-missing-delete-permission": "Du får inte ta bort denna användarstatus.",
+    "user-state-missing-edit-permission": "Du får inte redigera denna användarstatus.",
+    "user-state-missing-view-permission": "Du får inte se denna användarstatus."
 }

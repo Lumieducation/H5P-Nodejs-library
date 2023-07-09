@@ -60,5 +60,18 @@
     "content-hub-download-error": "S'ha produït un error en connectar-se al centre de contingut H5P. Siusplau, intenta-ho més tard.",
     "install-missing-libraries": "No s'ha pogut carregar el contingut ja que les biblioteques següents no estan instal·lades en aquest sistema: {{libraries}}",
     "install-library-lock-timeout": "No s'ha pogut instal·lar la biblioteca {{ubername}} , perquè s'està instal·lant les mateixes biblioteques des d'un altre lloc (s'ha esperat {{limit}} ms per bloquejar la biblioteca).",
-    "install-library-lock-max-time-exceeded": "La biblioteca {{ubername}} no s'ha pogut instal·lar perquè ha trigat més que els {{limit}} ms permès."
+    "install-library-lock-max-time-exceeded": "La biblioteca {{ubername}} no s'ha pogut instal·lar perquè ha trigat més que els {{limit}} ms permès.",
+    "content-missing-create-permission": "No teniu permís per crear contingut nou.",
+    "content-missing-delete-permission": "No teniu permís per suprimir aquest contingut.",
+    "content-missing-edit-permission": "No teniu permís per editar aquest contingut.",
+    "content-missing-list-permission": "No teniu permís per llistar tot el contingut.",
+    "content-missing-view-permission": "No teniu permís per veure aquest contingut.",
+    "finished-data-missing-delete-permission": "No teniu permís per suprimir aquestes dades acabades.",
+    "finished-data-missing-edit-permission": "No teniu permís per editar aquestes dades acabades.",
+    "temporary-file-missing-delete-permission": "No teniu permís per suprimir aquest fitxer temporal.",
+    "temporary-file-missing-view-permission": "No teniu permís per veure aquest fitxer temporal.",
+    "temporary-file-missing-write-permission": "No teniu permís per crear un fitxer temporal.",
+    "user-state-missing-delete-permission": "No teniu permís per suprimir aquest estat d'usuari.",
+    "user-state-missing-edit-permission": "No teniu permís per editar aquest estat d'usuari.",
+    "user-state-missing-view-permission": "No teniu permís per veure aquest estat d'usuari."
 }

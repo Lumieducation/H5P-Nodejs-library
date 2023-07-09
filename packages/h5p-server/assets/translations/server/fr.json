@@ -60,5 +60,18 @@
     "content-hub-download-error": "Une erreur s'est produite lors de la connexion au H5P Content Hub. Veuillez réessayer plus tard.",
     "install-missing-libraries": "Impossible de charger le contenu car les bibliothèques suivantes ne sont pas installées sur ce système : {{libraries}}",
     "install-library-lock-timeout": "La bibliothèque {{ubername}} n'a pas pu être installée, car les mêmes bibliothèques sont installées à partir d'un autre endroit (attendu {{limit}} ms pour le verrouillage sur la bibliothèque).",
-    "install-library-lock-max-time-exceeded": "La bibliothèque {{ubername}} n'a pas pu être installée, car elle a pris plus de temps que les {{limit}} ms autorisées."
+    "install-library-lock-max-time-exceeded": "La bibliothèque {{ubername}} n'a pas pu être installée, car elle a pris plus de temps que les {{limit}} ms autorisées.",
+    "content-missing-create-permission": "Vous n'êtes pas autorisé à créer de nouveau contenu.",
+    "content-missing-delete-permission": "Vous n'êtes pas autorisé à supprimer ce contenu.",
+    "content-missing-edit-permission": "Vous n'êtes pas autorisé à modifier ce contenu.",
+    "content-missing-list-permission": "Vous n'êtes pas autorisé à répertorier tout le contenu.",
+    "content-missing-view-permission": "Vous n'êtes pas autorisé à voir ce contenu.",
+    "finished-data-missing-delete-permission": "Vous n'êtes pas autorisé à supprimer ces données finies.",
+    "finished-data-missing-edit-permission": "Vous n'êtes pas autorisé à modifier ces données finies.",
+    "temporary-file-missing-delete-permission": "Vous n'êtes pas autorisé à supprimer ce fichier temporaire.",
+    "temporary-file-missing-view-permission": "Vous n'êtes pas autorisé à afficher ce fichier temporaire.",
+    "temporary-file-missing-write-permission": "Vous n'êtes pas autorisé à créer un fichier temporaire.",
+    "user-state-missing-delete-permission": "Vous n'êtes pas autorisé à supprimer cet état utilisateur.",
+    "user-state-missing-edit-permission": "Vous n'êtes pas autorisé à modifier cet état utilisateur.",
+    "user-state-missing-view-permission": "Vous n'êtes pas autorisé à afficher cet état d'utilisateur."
 }
