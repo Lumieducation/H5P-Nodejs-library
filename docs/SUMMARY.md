@@ -7,7 +7,10 @@
   * [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
   * [REST Example](examples/rest/README.md)
 - Advanced usage
+  * [Authorization](advanced/authorization.md)
   * [User content state](advanced/user-content-state.md)
+  * [Multiple user states per object](advanced/context-ids.md)
+  * [Impersonating users](advanced/impersonation.md)
   * [Basic completion tracking](advanced/completion-tracking.md)
   * [Localization](advanced/localization.md)
   * [Cluster](advanced/cluster.md)
@@ -16,7 +19,6 @@
   * [Performance optimizations](advanced/performance-optimizations.md)
   * [Privacy](advanced/privacy.md)
   * [Forward proxy support](advanced/proxy.md)
-  * [Multiple content states per object](advanced/context-ids.md)
 - NPM packages
   - h5p-mongos3
     * [Mongo/S3 Content Storage](packages/h5p-mongos3/mongo-s3-content-storage.md)
