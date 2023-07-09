@@ -13,6 +13,7 @@ import LibraryManager from '../../h5p-server/src/LibraryManager';
 import PackageImporter from '../../h5p-server/src/PackageImporter';
 import HtmlExporter from '../src/HtmlExporter';
 import { IIntegration } from '../../h5p-server/src/types';
+import { LaissezFairePermissionSystem } from '../../h5p-server';
 
 import User from './User';
 
@@ -31,10 +32,12 @@ async function importAndExportHtml(
             await fsExtra.ensureDir(libraryDir);
 
             const user = new User();
-            user.canUpdateAndInstallLibraries = true;
 
             const contentStorage = new FileContentStorage(contentDir);
-            const contentManager = new ContentManager(contentStorage);
+            const contentManager = new ContentManager(
+                contentStorage,
+                new LaissezFairePermissionSystem()
+            );
             const libraryStorage = new FileLibraryStorage(libraryDir);
             const libraryManager = new LibraryManager(libraryStorage);
             const config = new H5PConfig(null);
@@ -42,6 +45,7 @@ async function importAndExportHtml(
             const packageImporter = new PackageImporter(
                 libraryManager,
                 config,
+                new LaissezFairePermissionSystem(),
                 contentManager,
                 new ContentStorer(contentManager, libraryManager, undefined)
             );
@@ -222,10 +226,12 @@ describe('HtmlExporter template', () => {
         await fsExtra.ensureDir(libraryDir);
 
         const user = new User();
-        user.canUpdateAndInstallLibraries = true;
 
         const contentStorage = new FileContentStorage(contentDir);
-        const contentManager = new ContentManager(contentStorage);
+        const contentManager = new ContentManager(
+            contentStorage,
+            new LaissezFairePermissionSystem()
+        );
         const libraryStorage = new FileLibraryStorage(libraryDir);
         const libraryManager = new LibraryManager(libraryStorage);
         const config = new H5PConfig(null);
@@ -233,6 +239,7 @@ describe('HtmlExporter template', () => {
         const packageImporter = new PackageImporter(
             libraryManager,
             config,
+            new LaissezFairePermissionSystem(),
             contentManager,
             new ContentStorer(contentManager, libraryManager, undefined)
         );

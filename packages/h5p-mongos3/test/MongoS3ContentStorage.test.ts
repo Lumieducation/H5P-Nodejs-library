@@ -8,7 +8,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
-import { IContentMetadata, Permission } from '@lumieducation/h5p-server';
+import { IContentMetadata } from '@lumieducation/h5p-server';
 
 import MongoS3ContentStorage from '../src/MongoS3ContentStorage';
 import User from './User';
