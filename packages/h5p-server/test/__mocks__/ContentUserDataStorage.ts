@@ -1,4 +1,4 @@
-import { ContentId, IUser } from '../../src/types';
+import { ContentId } from '../../src/types';
 
 let mockData;
 const mock = jest.fn().mockImplementation(() => {
