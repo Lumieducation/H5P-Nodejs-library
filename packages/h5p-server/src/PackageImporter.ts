@@ -150,10 +150,11 @@ export default class PackageImporter {
                 packagePath,
                 {
                     copyMode: ContentCopyModes.Install,
-                    installLibraries: await this.permissionSystem.checkForGeneralAction(
-                        user,
-                        GeneralPermission.UpdateAndInstallLibraries
-                    )
+                    installLibraries:
+                        await this.permissionSystem.checkForGeneralAction(
+                            user,
+                            GeneralPermission.UpdateAndInstallLibraries
+                        )
                 },
                 user,
                 contentId
@@ -189,10 +190,11 @@ export default class PackageImporter {
             packagePath,
             {
                 copyMode: ContentCopyModes.Temporary,
-                installLibraries: await this.permissionSystem.checkForGeneralAction(
-                    user,
-                    GeneralPermission.UpdateAndInstallLibraries
-                )
+                installLibraries:
+                    await this.permissionSystem.checkForGeneralAction(
+                        user,
+                        GeneralPermission.UpdateAndInstallLibraries
+                    )
             },
             user
         );
