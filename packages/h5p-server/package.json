@@ -73,7 +73,7 @@
     "devDependencies": {
         "@types/async-lock": "1.4.0",
         "@types/fs-extra": "11.0.1",
-        "@types/jest": "29.5.2",
+        "@types/jest": "29.5.3",
         "@types/jsonpath": "0.2.0",
         "@types/mime-types": "2.1.1",
         "@types/sanitize-html": "2.9.0",
