@@ -15,3 +15,8 @@ Note that the `IPermissionSystem` is a generic. You can use any sub-type of
 `IUser` as the generic type. The call of the methods of `IPermissionSystem` will
 include a user of the generic type. This is the user object you've injected in
 your controllers. That means you can add any arbitrary date to it, like roles.
+
+## Acknowledgement
+
+The development of this feature was kindly funded by PHWE Systeme GmbH und Co.
+KG (https://www.phywe.de/).

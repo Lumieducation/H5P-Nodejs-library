@@ -28,3 +28,17 @@ state. If you don't use this package, you must do this yourself.
 
 Obviously you also have to make sure malicious users won't change the user state
 of others, by rejecting these operations in the authorization/permission system!
+
+## Trying it out in the examples
+
+The server-side-rendering example supports impersonation and read-only state.
+You can use them by passing in query parameter in the URL, e.g.
+`http://localhost:8080/h5p/play/<CONTENTID>?asUserId=<USERID>&readOnlyState=yes`.
+
+The REST example also supports impersonation and read-only states. You can
+enable these features in the web interface.
+
+## Acknowledgement
+
+The development of this feature was kindly funded by PHWE Systeme GmbH und Co.
+KG (https://www.phywe.de/).
