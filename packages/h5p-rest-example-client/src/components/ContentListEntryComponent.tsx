@@ -22,7 +22,9 @@ import {
     faFileDownload,
     faTrashAlt,
     faCopyright,
-    faHashtag
+    faHashtag,
+    faUser,
+    faLock
 } from '@fortawesome/free-solid-svg-icons';
 
 import { H5PEditorUI, H5PPlayerUI } from '@lumieducation/h5p-react';
@@ -56,31 +58,38 @@ export default class ContentListEntryComponent extends React.Component<{
             saveErrorMessage: '',
             saveError: false,
             showingCustomCopyright: false,
-            showContextIdModal: false
+            showContextIdModal: false,
+            showAsUserIdModal: false,
+            readOnlyState: false
         };
         this.h5pEditor = React.createRef();
         this.saveButton = React.createRef();
         this.h5pPlayer = React.createRef();
         this.contextIdInput = React.createRef();
+        this.asUserIdSelect = React.createRef();
     }
 
     public state: {
+        asUserId?: string;
         contextId?: string;
         editing: boolean;
         loading: boolean;
         playing: boolean;
+        readOnlyState: boolean;
         saved: boolean;
-        saving: boolean;
         saveError: boolean;
         saveErrorMessage: string;
-        showingCustomCopyright: boolean;
+        saving: boolean;
+        showAsUserIdModal: boolean;
         showContextIdModal: boolean;
+        showingCustomCopyright: boolean;
     };
 
     private h5pPlayer: React.RefObject<H5PPlayerUI>;
     private h5pEditor: React.RefObject<H5PEditorUI>;
     private saveButton: React.RefObject<HTMLButtonElement>;
     private contextIdInput: React.RefObject<HTMLInputElement>;
+    private asUserIdSelect: React.RefObject<HTMLSelectElement>;
 
     public render(): React.ReactNode {
         return (
@@ -138,6 +147,52 @@ export default class ContentListEntryComponent extends React.Component<{
                                             className="me-2"
                                         />
                                     </Button>
+                                </Col>
+                                <Col
+                                    className="me-2 d-flex align-items-center"
+                                    lg="auto"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faUser}
+                                        className="me-1"
+                                    />
+                                    {this.state.asUserId
+                                        ? this.state.asUserId
+                                        : "displaying real user's state"}
+                                    <Button
+                                        variant="link"
+                                        className="d-flex align-items-center"
+                                        size="sm"
+                                        onClick={() => this.showAsUserIdModal()}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faPencilAlt}
+                                            className="me-2"
+                                        />
+                                    </Button>
+                                </Col>
+                                <Col
+                                    className="me-2 d-flex align-items-center"
+                                    lg="auto"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faLock}
+                                        className="me-1"
+                                    />
+
+                                    <Form.Check
+                                        className="d-flex align-items-center gap-2"
+                                        type="checkbox"
+                                        id="readOnlyStateCheckbox"
+                                        label="read only user state"
+                                        checked={this.state.readOnlyState}
+                                        onChange={() =>
+                                            this.setState({
+                                                readOnlyState:
+                                                    !this.state.readOnlyState
+                                            })
+                                        }
+                                    ></Form.Check>
                                 </Col>
                             </Row>
                         </Col>
@@ -349,6 +404,8 @@ export default class ContentListEntryComponent extends React.Component<{
                             ref={this.h5pPlayer}
                             contentId={this.props.data.contentId}
                             contextId={this.state.contextId || undefined}
+                            asUserId={this.state.asUserId || undefined}
+                            readOnlyState={this.state.readOnlyState}
                             loadContentCallback={
                                 this.props.contentService.getPlay
                             }
@@ -443,6 +500,49 @@ export default class ContentListEntryComponent extends React.Component<{
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={this.state.showAsUserIdModal}>
+                    <Modal.Header>
+                        <Modal.Title>Impersonate user</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            <Form.Label htmlFor="asUserIdInput">
+                                Show the user state of this user:
+                            </Form.Label>
+                            <Form.Select
+                                defaultValue={this.state.asUserId}
+                                ref={this.asUserIdSelect}
+                            >
+                                <option value="">No impersonation</option>
+                                <option value="teacher1">Teacher 1</option>
+                                <option value="teacher2">Teacher 2</option>
+                                <option value="student1">Student 1</option>
+                                <option value="student2">Student 2</option>
+                                <option value="admin">Administrator</option>
+                            </Form.Select>
+                            <Form.Text muted>
+                                You switch whose user state you want to display
+                                here. The example permission system only allows
+                                displaying others' user states to teachers and
+                                administrators.
+                            </Form.Text>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={() => this.closeAsUserIdModal()}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => this.setAsUserId()}
+                        >
+                            Impersonate
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </ListGroupItem>
         );
     }
@@ -476,6 +576,17 @@ export default class ContentListEntryComponent extends React.Component<{
 
     protected closeContextIdModal() {
         this.setState({ showContextIdModal: false });
+    }
+
+    protected showAsUserIdModal() {
+        this.setState({ showAsUserIdModal: true });
+        setTimeout(() => {
+            this.asUserIdSelect.current?.focus();
+        }, 100);
+    }
+
+    protected closeAsUserIdModal() {
+        this.setState({ showAsUserIdModal: false });
     }
 
     protected showCopyrightNative() {
@@ -536,6 +647,13 @@ export default class ContentListEntryComponent extends React.Component<{
         this.setState({
             contextId: this.contextIdInput.current?.value,
             showContextIdModal: false
+        });
+    };
+
+    protected setAsUserId = () => {
+        this.setState({
+            asUserId: this.asUserIdSelect.current?.value,
+            showAsUserIdModal: false
         });
     };
 

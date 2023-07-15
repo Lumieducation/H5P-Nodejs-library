@@ -34,6 +34,22 @@ export class H5PPlayerComponent extends HTMLElement {
         this.setAttribute('context-id', contextId);
     }
 
+    get asUserId(): string {
+        return this.getAttribute('as-user-id');
+    }
+
+    set asUserId(asUserId: string) {
+        this.setAttribute('as-user-id', asUserId);
+    }
+
+    get readOnlyState(): string {
+        return this.getAttribute('read-only-state');
+    }
+
+    set readOnlyState(readOnlyState: string) {
+        this.setAttribute('read-only-state', readOnlyState);
+    }
+
     /**
      * The internal H5P instance object of the H5P content.
      *
@@ -87,7 +103,9 @@ export class H5PPlayerComponent extends HTMLElement {
      */
     public get loadContentCallback(): (
         contentId: string,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ) => Promise<IPlayerModel> {
         return this.privateLoadContentCallback;
     }
@@ -95,13 +113,20 @@ export class H5PPlayerComponent extends HTMLElement {
     public set loadContentCallback(
         callback: (
             contentId: string,
-            contextId?: string
+            contextId?: string,
+            asUserId?: string,
+            readOnlyState?: boolean
         ) => Promise<IPlayerModel>
     ) {
         const mustRender = this.privateLoadContentCallback !== callback;
         this.privateLoadContentCallback = callback;
         if (mustRender) {
-            this.render(this.contentId, this.contextId);
+            this.render(
+                this.contentId,
+                this.contextId,
+                this.asUserId,
+                this.readOnlyState
+            );
         }
     }
 
@@ -111,7 +136,7 @@ export class H5PPlayerComponent extends HTMLElement {
      * @memberof H5PPlayerComponent
      */
     static get observedAttributes(): string[] {
-        return ['content-id', 'context-id'];
+        return ['content-id', 'context-id', 'as-user-id', 'read-only-state'];
     }
     constructor() {
         super();
@@ -123,7 +148,9 @@ export class H5PPlayerComponent extends HTMLElement {
     private playerModel: IPlayerModel;
     private privateLoadContentCallback: (
         contentId: string,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ) => Promise<IPlayerModel>;
     private resizeObserver: ResizeObserver;
     private root: HTMLElement;
@@ -175,13 +202,42 @@ export class H5PPlayerComponent extends HTMLElement {
             if (oldVal) {
                 removeUnusedContent(oldVal);
             }
-            await this.render(newVal, this.contextId);
-        }
-        if (name === 'context-id') {
+            await this.render(
+                newVal,
+                this.contextId,
+                this.asUserId,
+                this.readOnlyState
+            );
+        } else if (name === 'context-id') {
             if (oldVal) {
                 removeUnusedContent(this.contentId);
             }
-            await this.render(this.contentId, newVal);
+            await this.render(
+                this.contentId,
+                newVal,
+                this.asUserId,
+                this.readOnlyState
+            );
+        } else if (name === 'as-user-id') {
+            if (oldVal) {
+                removeUnusedContent(this.contentId);
+            }
+            await this.render(
+                this.contentId,
+                this.contextId,
+                newVal,
+                this.readOnlyState
+            );
+        } else if (name === 'read-only-state') {
+            if (oldVal) {
+                removeUnusedContent(this.contentId);
+            }
+            await this.render(
+                this.contentId,
+                this.contextId,
+                this.asUserId,
+                newVal
+            );
         }
     }
 
@@ -380,15 +436,23 @@ export class H5PPlayerComponent extends HTMLElement {
      * Displays content.
      * @param {string} contentId
      */
-    private async render(contentId: string, contextId?: string): Promise<void> {
+    private async render(
+        contentId: string,
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: string
+    ): Promise<void> {
         if (!this.loadContentCallback) {
             return;
         }
         // Get data from H5P server
         try {
+            console.log('readOnlyState', readOnlyState);
             this.playerModel = await this.loadContentCallback(
                 contentId,
-                contextId
+                contextId,
+                asUserId,
+                readOnlyState === 'true'
             );
         } catch (error) {
             this.root.innerHTML = `<p>Error loading H5P content from server: ${error.message}</p>`;
