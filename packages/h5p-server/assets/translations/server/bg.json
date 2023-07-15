@@ -60,5 +60,18 @@
     "content-hub-download-error": "Възникна грешка при свързването към H5P Content Hub. Моля, опитайте отново по-късно.",
     "install-missing-libraries": "Не може да се зареди съдържанието, тъй като следните библиотеки не са инсталирани в тази система: {{libraries}}",
     "install-library-lock-timeout": "Библиотеката {{ubername}} не можа да бъде инсталирана, тъй като същите библиотеки се инсталират от друго място (изчаква се {{limit}} ms за заключване на библиотеката).",
-    "install-library-lock-max-time-exceeded": "Библиотеката {{ubername}} не можа да бъде инсталирана, защото отне повече от разрешените {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Библиотеката {{ubername}} не можа да бъде инсталирана, защото отне повече от разрешените {{limit}} ms.",
+    "content-missing-create-permission": "Нямате право да създавате ново съдържание.",
+    "content-missing-delete-permission": "Нямате право да изтриете това съдържание.",
+    "content-missing-edit-permission": "Нямате право да редактирате това съдържание.",
+    "content-missing-list-permission": "Нямате право да изброявате цялото съдържание.",
+    "content-missing-view-permission": "Нямате право да преглеждате това съдържание.",
+    "finished-data-missing-delete-permission": "Нямате право да изтриете тези готови данни.",
+    "finished-data-missing-edit-permission": "Нямате право да редактирате тези готови данни.",
+    "temporary-file-missing-delete-permission": "Нямате право да изтриете този временен файл.",
+    "temporary-file-missing-view-permission": "Нямате право да преглеждате този временен файл.",
+    "temporary-file-missing-write-permission": "Нямате право да създавате временен файл.",
+    "user-state-missing-delete-permission": "Нямате право да изтриете това потребителско състояние.",
+    "user-state-missing-edit-permission": "Нямате право да редактирате това потребителско състояние.",
+    "user-state-missing-view-permission": "Нямате право да преглеждате това потребителско състояние."
 }

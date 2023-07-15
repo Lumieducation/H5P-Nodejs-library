@@ -8,6 +8,7 @@ import { withDir } from 'tmp-promise';
 import H5PConfig from '../src/implementation/H5PConfig';
 import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
 import TemporaryFileManager from '../src/TemporaryFileManager';
+import { LaissezFairePermissionSystem } from '../src';
 
 import User from './User';
 
@@ -21,7 +22,8 @@ describe('TemporaryFileManager', () => {
             async ({ path: tempDirPath }) => {
                 const tmpManager = new TemporaryFileManager(
                     new DirectoryTemporaryFileStorage(tempDirPath),
-                    config
+                    config,
+                    new LaissezFairePermissionSystem()
                 );
                 const newFilename = await tmpManager.addFile(
                     'real-content-types.json',
@@ -61,7 +63,8 @@ describe('TemporaryFileManager', () => {
             async ({ path: tempDirPath }) => {
                 const tmpManager = new TemporaryFileManager(
                     new DirectoryTemporaryFileStorage(tempDirPath),
-                    config
+                    config,
+                    new LaissezFairePermissionSystem()
                 );
                 const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',
@@ -96,7 +99,8 @@ describe('TemporaryFileManager', () => {
                 async ({ path: tempDirPath }) => {
                     const tmpManager = new TemporaryFileManager(
                         new DirectoryTemporaryFileStorage(tempDirPath),
-                        config
+                        config,
+                        new LaissezFairePermissionSystem()
                     );
 
                     // add files that will expire
@@ -173,7 +177,8 @@ describe('TemporaryFileManager', () => {
             async ({ path: tempDirPath }) => {
                 const tmpManager = new TemporaryFileManager(
                     new DirectoryTemporaryFileStorage(tempDirPath),
-                    config
+                    config,
+                    new LaissezFairePermissionSystem()
                 );
                 const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',

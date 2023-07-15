@@ -14,8 +14,10 @@ import {
     IHubInfo,
     IInstalledLibrary,
     ILibraryInstallResult,
+    IPermissionSystem,
     ITranslationFunction,
-    IUser
+    IUser,
+    GeneralPermission
 } from './types';
 import Logger from './helpers/Logger';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
@@ -47,6 +49,7 @@ export default class ContentTypeInformationRepository {
         private contentTypeCache: ContentTypeCache,
         private libraryManager: LibraryManager,
         private config: IH5PConfig,
+        private permissionSystem: IPermissionSystem,
         translationCallback?: ITranslationFunction
     ) {
         log.info(`initialize`);
@@ -89,8 +92,14 @@ export default class ContentTypeInformationRepository {
             libraries: hubInfoWithLocalInfo,
             outdated:
                 (await this.contentTypeCache.isOutdated()) &&
-                (user.canInstallRecommended ||
-                    user.canUpdateAndInstallLibraries),
+                ((await this.permissionSystem.checkForGeneralAction(
+                    user,
+                    GeneralPermission.InstallRecommended
+                )) ||
+                    (await this.permissionSystem.checkForGeneralAction(
+                        user,
+                        GeneralPermission.UpdateAndInstallLibraries
+                    ))),
             recentlyUsed: [], // TODO: store this somewhere
             user: user.type
         };
@@ -124,7 +133,7 @@ export default class ContentTypeInformationRepository {
         }
 
         // Reject installation of content types that the user has no permission to
-        if (!this.canInstallLibrary(localContentType[0], user)) {
+        if (!(await this.canInstallLibrary(localContentType[0], user))) {
             log.warn(
                 `rejecting installation of content type ${machineName}: user has no permission`
             );
@@ -152,7 +161,8 @@ export default class ContentTypeInformationRepository {
 
                 const packageImporter = new PackageImporter(
                     this.libraryManager,
-                    this.config
+                    this.config,
+                    this.permissionSystem
                 );
                 installedLibraries =
                     await packageImporter.installLibrariesFromPackage(
@@ -214,7 +224,10 @@ export default class ContentTypeInformationRepository {
                 patchVersion: localLib.patchVersion,
                 restricted:
                     this.libraryIsRestricted(localLib) &&
-                    !user.canCreateRestricted,
+                    !(await this.permissionSystem.checkForGeneralAction(
+                        user,
+                        GeneralPermission.CreateRestricted
+                    )),
                 title: localLib.title
             }));
         const finalLocalLibs = await Promise.all(localLibs);
@@ -264,17 +277,26 @@ export default class ContentTypeInformationRepository {
                 );
                 if (!localLib) {
                     hubLib.installed = false;
-                    hubLib.restricted = !this.canInstallLibrary(hubLib, user);
-                    hubLib.canInstall = this.canInstallLibrary(hubLib, user);
+                    hubLib.restricted = !(await this.canInstallLibrary(
+                        hubLib,
+                        user
+                    ));
+                    hubLib.canInstall = await this.canInstallLibrary(
+                        hubLib,
+                        user
+                    );
                     hubLib.isUpToDate = true;
                 } else {
                     hubLib.installed = true;
                     hubLib.restricted =
                         this.libraryIsRestricted(localLib) &&
-                        !user.canCreateRestricted;
+                        !(await this.permissionSystem.checkForGeneralAction(
+                            user,
+                            GeneralPermission.CreateRestricted
+                        ));
                     hubLib.canInstall =
                         !this.libraryIsRestricted(localLib) &&
-                        this.canInstallLibrary(hubLib, user);
+                        (await this.canInstallLibrary(hubLib, user));
                     hubLib.isUpToDate =
                         !(await this.libraryManager.libraryHasUpgrade(hubLib));
                     hubLib.localMajorVersion = localLib.majorVersion;
@@ -290,13 +312,23 @@ export default class ContentTypeInformationRepository {
      * Checks if users can install library due to their rights.
      * @param library
      */
-    private canInstallLibrary(library: IHubContentType, user: IUser): boolean {
+    private async canInstallLibrary(
+        library: IHubContentType,
+        user: IUser
+    ): Promise<boolean> {
         log.verbose(
             `checking if user can install library ${library.machineName}`
         );
         return (
-            user.canUpdateAndInstallLibraries ||
-            (library.isRecommended && user.canInstallRecommended)
+            (await this.permissionSystem.checkForGeneralAction(
+                user,
+                GeneralPermission.UpdateAndInstallLibraries
+            )) ||
+            (library.isRecommended &&
+                (await this.permissionSystem.checkForGeneralAction(
+                    user,
+                    GeneralPermission.InstallRecommended
+                )))
         );
     }
 

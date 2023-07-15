@@ -152,7 +152,6 @@ export default class ContentStorer {
 
     /**
      * Adds content from a H5P package (in a temporary directory) to the system.
-     * It does not check whether the user has permissions to save content.
      * @deprecated The method should not be used as it anymore, as there might
      * be issues with invalid filenames!
      * @param packageDirectory The absolute path containing the package (the
@@ -181,7 +180,7 @@ export default class ContentStorer {
         );
 
         const newContentId: ContentId =
-            await this.contentManager.contentStorage.addContent(
+            await this.contentManager.createOrUpdateContent(
                 metadata,
                 parameters,
                 user,
@@ -195,18 +194,17 @@ export default class ContentStorer {
                     const readStream: Stream = fsExtra.createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
                     log.debug(`adding ${file} to ${packageDirectory}`);
-                    return this.contentManager.contentStorage.addFile(
+                    return this.contentManager.addContentFile(
                         newContentId,
                         localPath,
-                        readStream
+                        readStream,
+                        user
                     );
                 })
             );
         } catch (error) {
             log.error(error);
-            await this.contentManager.contentStorage.deleteContent(
-                newContentId
-            );
+            await this.contentManager.deleteContent(newContentId, user);
             throw error;
         }
         return { id: newContentId, metadata, parameters };

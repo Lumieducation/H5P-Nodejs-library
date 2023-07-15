@@ -13,6 +13,7 @@ import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 export function importAndExportPackage(
     packagePath: string,
@@ -26,10 +27,12 @@ export function importAndExportPackage(
             await fsExtra.ensureDir(libraryDir);
 
             const user = new User();
-            user.canUpdateAndInstallLibraries = true;
 
             const contentStorage = new FileContentStorage(contentDir);
-            const contentManager = new ContentManager(contentStorage);
+            const contentManager = new ContentManager(
+                contentStorage,
+                new LaissezFairePermissionSystem()
+            );
             const libraryStorage = new FileLibraryStorage(libraryDir);
             const libraryManager = new LibraryManager(libraryStorage);
             const config = new H5PConfig(null);
@@ -37,6 +40,7 @@ export function importAndExportPackage(
             const packageImporter = new PackageImporter(
                 libraryManager,
                 config,
+                new LaissezFairePermissionSystem(),
                 contentManager,
                 new ContentStorer(contentManager, libraryManager, undefined)
             );

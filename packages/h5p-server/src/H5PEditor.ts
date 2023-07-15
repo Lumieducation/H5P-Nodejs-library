@@ -65,6 +65,7 @@ import SimpleTranslator from './helpers/SimpleTranslator';
 import DependencyGetter from './DependencyGetter';
 import ContentHub from './ContentHub';
 import { downloadFile } from './helpers/downloadFile';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('H5PEditor');
 
@@ -106,6 +107,9 @@ export default class H5PEditor {
     ) {
         log.info('initialize');
 
+        const permissionSystem =
+            options?.permissionSystem ?? new LaissezFairePermissionSystem();
+
         this.config = config;
 
         this.renderer = defaultRenderer;
@@ -128,20 +132,25 @@ export default class H5PEditor {
         );
         this.contentManager = new ContentManager(
             contentStorage,
+            permissionSystem,
             contentUserDataStorage
         );
         this.contentTypeRepository = new ContentTypeInformationRepository(
             this.contentTypeCache,
             this.libraryManager,
             config,
+            permissionSystem,
             options?.enableHubLocalization ? translationCallback : undefined
         );
         this.temporaryFileManager = new TemporaryFileManager(
             temporaryStorage,
-            this.config
+            this.config,
+            permissionSystem
         );
+
         this.contentUserDataManager = new ContentUserDataManager(
-            contentUserDataStorage
+            contentUserDataStorage,
+            permissionSystem
         );
         this.contentStorer = new ContentStorer(
             this.contentManager,
@@ -151,6 +160,7 @@ export default class H5PEditor {
         this.packageImporter = new PackageImporter(
             this.libraryManager,
             this.config,
+            permissionSystem,
             this.contentManager,
             this.contentStorer
         );

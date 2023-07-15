@@ -11,6 +11,8 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
+import { IUser, ContentPermission, GeneralPermission } from '../src/types';
 
 import User from './User';
 
@@ -26,7 +28,8 @@ describe('package importer', () => {
                 );
                 const packageImporter = new PackageImporter(
                     libraryManager,
-                    new H5PConfig(null)
+                    new H5PConfig(null),
+                    new LaissezFairePermissionSystem()
                 );
                 const installedLibraryNames =
                     await packageImporter.installLibrariesFromPackage(
@@ -70,10 +73,10 @@ describe('package importer', () => {
                 await fsExtra.ensureDir(libraryDir);
 
                 const user = new User();
-                user.canUpdateAndInstallLibraries = true;
 
                 const contentManager = new ContentManager(
-                    new FileContentStorage(contentDir)
+                    new FileContentStorage(contentDir),
+                    new LaissezFairePermissionSystem()
                 );
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
@@ -81,6 +84,7 @@ describe('package importer', () => {
                 const packageImporter = new PackageImporter(
                     libraryManager,
                     new H5PConfig(null),
+                    new LaissezFairePermissionSystem(),
                     contentManager,
                     new ContentStorer(contentManager, libraryManager, undefined)
                 );
@@ -142,10 +146,23 @@ describe('package importer', () => {
                 await fsExtra.ensureDir(libraryDir);
 
                 const user = new User();
-                user.canUpdateAndInstallLibraries = false;
+
+                const permissionSystem =
+                    new (class extends LaissezFairePermissionSystem {
+                        async checkForGeneralAction(
+                            _actingUser: IUser,
+                            permission: GeneralPermission
+                        ): Promise<boolean> {
+                            return (
+                                permission !==
+                                GeneralPermission.UpdateAndInstallLibraries
+                            );
+                        }
+                    })();
 
                 const contentManager = new ContentManager(
-                    new FileContentStorage(contentDir)
+                    new FileContentStorage(contentDir),
+                    permissionSystem
                 );
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
@@ -153,6 +170,7 @@ describe('package importer', () => {
                 const packageImporter = new PackageImporter(
                     libraryManager,
                     new H5PConfig(null),
+                    permissionSystem,
                     contentManager,
                     new ContentStorer(contentManager, libraryManager, undefined)
                 );

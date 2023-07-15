@@ -18,6 +18,9 @@ declare global {
         interface IntrinsicElements {
             'h5p-player': {
                 'content-id'?: string;
+                'context-id'?: string;
+                'read-only-state'?: boolean;
+                'as-user-id'?: string;
                 ref?: any;
             };
         }
@@ -27,9 +30,13 @@ declare global {
 interface IH5PPlayerUIProps {
     contentId: string;
     contextId?: string;
+    asUserId?: string;
+    readOnlyState?: boolean;
     loadContentCallback: (
         contentId: string,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ) => Promise<IPlayerModel>;
     onInitialized?: (contentId: string) => void;
     onxAPIStatement?: (statement: any, context: any, event: IxAPIEvent) => void;
@@ -109,6 +116,8 @@ export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
                 ref={this.h5pPlayer}
                 content-id={this.props.contentId}
                 context-id={this.props.contextId}
+                as-user-id={this.props.asUserId}
+                read-only-state={this.props.readOnlyState}
             />
         );
     }
@@ -132,9 +141,16 @@ export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
 
     private loadContentCallbackWrapper = (
         contentId: string,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ): Promise<IPlayerModel> =>
-        this.props.loadContentCallback(contentId, contextId);
+        this.props.loadContentCallback(
+            contentId,
+            contextId,
+            asUserId,
+            readOnlyState
+        );
 
     private onInitialized = (
         event: CustomEvent<{ contentId: string }>

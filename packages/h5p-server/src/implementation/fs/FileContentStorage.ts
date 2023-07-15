@@ -11,7 +11,6 @@ import {
     IContentMetadata,
     IContentStorage,
     IUser,
-    Permission,
     ContentParameters,
     IFileStats,
     ILibraryName
@@ -390,26 +389,6 @@ export default class FileContentStorage implements IContentStorage {
         }
 
         return { asDependency, asMainLibrary };
-    }
-
-    /**
-     * Returns an array of permissions that the user has on the piece of content
-     * @param contentId the content id to check
-     * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it,
-     * delete it etc.)
-     */
-    public async getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]> {
-        return [
-            Permission.Delete,
-            Permission.Download,
-            Permission.Edit,
-            Permission.Embed,
-            Permission.View
-        ];
     }
 
     /**

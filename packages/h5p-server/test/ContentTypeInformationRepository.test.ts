@@ -10,6 +10,8 @@ import H5PConfig from '../src/implementation/H5PConfig';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../src/implementation/InMemoryStorage';
 import LibraryManager from '../src/LibraryManager';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
+import { IUser, GeneralPermission } from '../src/types';
 
 import User from './User';
 
@@ -50,7 +52,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
@@ -101,6 +104,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             cache,
             libManager,
             config,
+            new LaissezFairePermissionSystem(),
             translationSpy
         );
         const content = await repository.get(new User(), 'de');
@@ -148,6 +152,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             cache,
             libManager,
             config,
+            new LaissezFairePermissionSystem(),
             translationSpy
         );
         const content = await repository.get(new User(), 'de');
@@ -189,7 +194,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         const content = await repository.get(new User());
         expect(content.outdated).toBe(false);
@@ -234,7 +240,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
@@ -272,7 +279,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
@@ -303,7 +311,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         const content = await repository.get(new User());
         expect(content.libraries.length).toEqual(2);
@@ -320,7 +329,6 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         config.enableLrsContentTypes = false;
         config.lrsContentTypes = ['H5P.Example1'];
-        user.canCreateRestricted = false;
 
         axiosMock
             .onPost(config.hubRegistrationEndpoint)
@@ -337,7 +345,15 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new (class extends LaissezFairePermissionSystem {
+                async checkForGeneralAction(
+                    _actingUser: IUser,
+                    permission: GeneralPermission
+                ): Promise<boolean> {
+                    return permission !== GeneralPermission.CreateRestricted;
+                }
+            })()
         );
         const content = await repository.get(user);
         expect(content.libraries.length).toEqual(2);
@@ -385,7 +401,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         const repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new LaissezFairePermissionSystem()
         );
         await expect(
             repository.installContentType(undefined, new User())
@@ -427,20 +444,44 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         await cache.updateIfNecessary();
 
-        const repository = new ContentTypeInformationRepository(
+        let repository = new ContentTypeInformationRepository(
             cache,
             libManager,
-            config
+            config,
+            new (class extends LaissezFairePermissionSystem {
+                async checkForGeneralAction(
+                    _actingUser: IUser,
+                    permission: GeneralPermission
+                ): Promise<boolean> {
+                    return !(
+                        permission === GeneralPermission.InstallRecommended ||
+                        permission ===
+                            GeneralPermission.UpdateAndInstallLibraries
+                    );
+                }
+            })()
         );
 
-        user.canInstallRecommended = false;
-        user.canUpdateAndInstallLibraries = false;
         await expect(
             repository.installContentType('H5P.Blanks', user)
         ).rejects.toThrow('hub-install-denied');
 
-        user.canInstallRecommended = true;
-        user.canUpdateAndInstallLibraries = false;
+        repository = repository = new ContentTypeInformationRepository(
+            cache,
+            libManager,
+            config,
+            new (class extends LaissezFairePermissionSystem {
+                async checkForGeneralAction(
+                    _actingUser: IUser,
+                    permission: GeneralPermission
+                ): Promise<boolean> {
+                    return (
+                        permission !==
+                        GeneralPermission.UpdateAndInstallLibraries
+                    );
+                }
+            })()
+        );
         await expect(
             repository.installContentType('H5P.ImageHotspotQuestion', user)
         ).rejects.toThrow('hub-install-denied');
@@ -494,7 +535,8 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
                 const repository = new ContentTypeInformationRepository(
                     cache,
                     libManager,
-                    config
+                    config,
+                    new LaissezFairePermissionSystem()
                 );
 
                 await expect(

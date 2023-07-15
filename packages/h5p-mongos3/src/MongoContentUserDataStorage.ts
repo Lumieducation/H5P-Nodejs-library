@@ -93,18 +93,19 @@ export default class MongoContentUserDataStorage
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData> {
         log.debug(
-            `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${user.id} and contextId ${contextId}`
+            `getContentUserData: loading contentUserData for contentId ${contentId} and userId ${userId} and contextId ${contextId}`
         );
+
         return this.cleanMongoUserData(
             await this.userDataCollection.findOne<IContentUserData>({
                 contentId,
                 dataType,
                 subContentId,
-                userId: user.id,
+                userId: userId,
                 contextId
             })
         );
@@ -193,14 +194,14 @@ export default class MongoContentUserDataStorage
 
     public async getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData[]> {
         return (
             await this.userDataCollection
                 .find<IContentUserData>({
                     contentId,
-                    userId: user.id,
+                    userId,
                     contextId
                 })
                 .toArray()

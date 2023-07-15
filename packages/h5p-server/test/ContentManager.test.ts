@@ -6,6 +6,7 @@ import { withDir } from 'tmp-promise';
 
 import ContentManager from '../src/ContentManager';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
+import { LaissezFairePermissionSystem } from '../src/index';
 import { IContentMetadata } from '../src/types';
 
 import User from './User';
@@ -43,7 +44,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const contentId = await contentManager.createOrUpdateContent(
@@ -61,7 +63,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const contentId = await contentManager.createOrUpdateContent(
@@ -80,7 +83,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const user = new User();
@@ -110,7 +114,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const user = new User();
@@ -137,6 +142,7 @@ describe('ContentManager', () => {
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
                     new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem(),
                     mockContentUserDataStorage
                 );
 
@@ -162,7 +168,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const user = new User();
@@ -235,7 +242,8 @@ describe('ContentManager', () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 const contentManager = new ContentManager(
-                    new FileContentStorage(tempDirPath)
+                    new FileContentStorage(tempDirPath),
+                    new LaissezFairePermissionSystem()
                 );
 
                 const user1 = new User();

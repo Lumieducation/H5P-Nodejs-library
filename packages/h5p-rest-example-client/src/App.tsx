@@ -17,6 +17,12 @@ export default class App extends React.Component {
 
     private contentService: ContentService;
 
+    public state: {
+        loggedIn: boolean;
+    } = {
+        loggedIn: false
+    };
+
     render() {
         return (
             <div className="App">
@@ -26,16 +32,31 @@ export default class App extends React.Component {
                             <h1>H5P NodeJs SPA Demo</h1>
                         </Col>
                         <Col md="auto" className="m-2">
-                            <Login contentService={this.contentService} />
+                            <Login
+                                contentService={this.contentService}
+                                onLoggedIn={() => {
+                                    this.setState({ loggedIn: true });
+                                }}
+                                onLoggedOut={() => {
+                                    this.setState({ loggedIn: false });
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Alert variant="warning">
                         This demo is for debugging and demonstration purposes
                         only and not suitable for production use!
                     </Alert>
-                    <ContentListComponent
-                        contentService={this.contentService}
-                    ></ContentListComponent>
+                    {this.state.loggedIn ? (
+                        <ContentListComponent
+                            contentService={this.contentService}
+                        ></ContentListComponent>
+                    ) : (
+                        <Alert variant="danger">
+                            Content is only visible to logged in users! Please
+                            log in with the button on the top
+                        </Alert>
+                    )}
                 </Container>
             </div>
         );

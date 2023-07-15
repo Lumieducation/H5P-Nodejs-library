@@ -7,11 +7,15 @@ import {
     IContentMetadata,
     IContentStorage,
     IContentUserDataStorage,
+    IFileStats,
+    IPermissionSystem,
     IUser,
-    Permission
+    ContentPermission
 } from './types';
 
 import Logger from './helpers/Logger';
+import H5pError from './helpers/H5pError';
+import ContentUserDataManager from './ContentUserDataManager';
 
 const log = new Logger('ContentManager');
 
@@ -26,10 +30,20 @@ export default class ContentManager {
      */
     constructor(
         public contentStorage: IContentStorage,
+        private permissionSystem: IPermissionSystem,
         public contentUserDataStorage?: IContentUserDataStorage
     ) {
         log.info('initialize');
+
+        if (contentUserDataStorage) {
+            this.contentUserDataManager = new ContentUserDataManager(
+                contentUserDataStorage,
+                permissionSystem
+            );
+        }
     }
+
+    private contentUserDataManager: ContentUserDataManager;
 
     /**
      * Adds a content file to an existing content object. The content object has to be created with createContent(...) first.
@@ -46,6 +60,24 @@ export default class ContentManager {
         user: IUser
     ): Promise<void> {
         log.info(`adding file ${filename} to content ${contentId}`);
+
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.Edit,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to upload a file without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-edit-permission',
+                {},
+                403
+            );
+        }
+
         return this.contentStorage.addFile(contentId, filename, stream, user);
     }
 
@@ -85,6 +117,42 @@ export default class ContentManager {
         contentId?: ContentId
     ): Promise<ContentId> {
         log.info(`creating content for ${contentId}`);
+        if (contentId) {
+            if (
+                !(await this.permissionSystem.checkForContent(
+                    user,
+                    ContentPermission.Edit,
+                    contentId
+                ))
+            ) {
+                log.error(
+                    `User tried edit content without proper permissions.`
+                );
+                throw new H5pError(
+                    'h5p-server:content-missing-edit-permission',
+                    {},
+                    403
+                );
+            }
+        } else {
+            if (
+                !(await this.permissionSystem.checkForContent(
+                    user,
+                    ContentPermission.Create,
+                    undefined
+                ))
+            ) {
+                log.error(
+                    `User tried create content without proper permissions.`
+                );
+                throw new H5pError(
+                    'h5p-server:content-missing-create-permission',
+                    {},
+                    403
+                );
+            }
+        }
+
         return this.contentStorage.addContent(
             metadata,
             content,
@@ -102,12 +170,30 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.Delete,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to delete a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-delete-permission',
+                {},
+                403
+            );
+        }
+
         await this.contentStorage.deleteContent(contentId, user);
 
-        if (this.contentUserDataStorage) {
+        if (this.contentUserDataManager) {
             try {
-                await this.contentUserDataStorage.deleteAllContentUserDataByContentId(
-                    contentId
+                await this.contentUserDataManager.deleteAllContentUserDataByContentId(
+                    contentId,
+                    user
                 );
             } catch (error) {
                 log.error(
@@ -116,8 +202,9 @@ export default class ContentManager {
                 log.error(error);
             }
             try {
-                await this.contentUserDataStorage.deleteFinishedDataByContentId(
-                    contentId
+                await this.contentUserDataManager.deleteFinishedDataByContentId(
+                    contentId,
+                    user
                 );
             } catch (error) {
                 log.error(
@@ -135,8 +222,26 @@ export default class ContentManager {
      */
     public async deleteContentFile(
         contentId: ContentId,
-        filename: string
+        filename: string,
+        user?: IUser
     ): Promise<void> {
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.Edit,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to delete a file from a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-edit-permission',
+                {},
+                403
+            );
+        }
+
         return this.contentStorage.deleteFile(contentId, filename);
     }
 
@@ -158,6 +263,23 @@ export default class ContentManager {
     ): Promise<Readable> {
         log.debug(`loading ${filename} for ${contentId}`);
 
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.View,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to display a file from a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-view-permission',
+                {},
+                403
+            );
+        }
+
         return this.contentStorage.getFileStream(
             contentId,
             filename,
@@ -177,11 +299,53 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<IContentMetadata> {
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.View,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to get metadata of a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-view-permission',
+                {},
+                403
+            );
+        }
+
         // We don't directly return the h5p.json file content as
         // we have to make sure it conforms to the schema.
         return new ContentMetadata(
             await this.contentStorage.getMetadata(contentId, user)
         );
+    }
+
+    public async getContentFileStats(
+        contentId: string,
+        filename: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.View,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to get stats of file from a content object without view permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-view-permission',
+                {},
+                403
+            );
+        }
+
+        return this.contentStorage.getFileStats(contentId, filename, user);
     }
 
     /**
@@ -194,21 +358,24 @@ export default class ContentManager {
         contentId: ContentId,
         user: IUser
     ): Promise<ContentParameters> {
-        return this.contentStorage.getParameters(contentId, user);
-    }
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.View,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to get parameters of a content object without view permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-view-permission',
+                {},
+                403
+            );
+        }
 
-    /**
-     * Returns an array of permissions a user has on a piece of content.
-     * @param contentId the content to check
-     * @param user the user who wants to access the piece of content
-     * @returns an array of permissions
-     */
-    public async getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]> {
-        log.info(`checking user permissions for ${contentId}`);
-        return this.contentStorage.getUserPermissions(contentId, user);
+        return this.contentStorage.getParameters(contentId, user);
     }
 
     /**
@@ -216,7 +383,24 @@ export default class ContentManager {
      * @param user (optional) the user who owns the content
      * @returns a list of contentIds
      */
-    public listContent(user?: IUser): Promise<ContentId[]> {
+    public async listContent(user?: IUser): Promise<ContentId[]> {
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.List,
+                undefined
+            ))
+        ) {
+            log.error(
+                `User tried to list all content objects without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-list-permission',
+                {},
+                403
+            );
+        }
+
         return this.contentStorage.listContent(user);
     }
 
@@ -231,6 +415,23 @@ export default class ContentManager {
         user: IUser
     ): Promise<string[]> {
         log.info(`loading content files for ${contentId}`);
+        if (
+            !(await this.permissionSystem.checkForContent(
+                user,
+                ContentPermission.View,
+                contentId
+            ))
+        ) {
+            log.error(
+                `User tried to get the list of files from a content object without view permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:content-missing-view-permission',
+                {},
+                403
+            );
+        }
+
         return this.contentStorage.listFiles(contentId, user);
     }
 

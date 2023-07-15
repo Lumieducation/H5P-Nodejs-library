@@ -31,11 +31,14 @@ import LibraryManager from './LibraryManager';
 import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 // Interfaces
 import {
     ContentId,
     ContentParameters,
+    ContentPermission,
+    GeneralPermission,
     IAdditionalLibraryMetadata,
     IAjaxResponse,
     IContentMetadata,
@@ -58,6 +61,7 @@ import {
     ILibraryStorage,
     ILicenseData,
     ILockProvider,
+    IPermissionSystem,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -66,7 +70,8 @@ import {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    Permission
+    TemporaryFilePermission,
+    UserDataPermission
 } from './types';
 
 // Adapters
@@ -108,6 +113,8 @@ export {
     // interfaces
     ContentId,
     ContentParameters,
+    ContentPermission,
+    GeneralPermission,
     IAdditionalLibraryMetadata,
     IAjaxResponse,
     IContentMetadata,
@@ -130,6 +137,7 @@ export {
     ILibraryStorage,
     ILicenseData,
     ILockProvider,
+    IPermissionSystem,
     IPlayerModel,
     IPostContentUserData,
     IPostUserFinishedData,
@@ -138,9 +146,11 @@ export {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    Permission,
+    TemporaryFilePermission,
+    UserDataPermission,
     // implementations
     H5PConfig,
+    LaissezFairePermissionSystem,
     fs,
     utils,
     fsImplementations,

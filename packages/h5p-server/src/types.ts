@@ -9,15 +9,62 @@ import { Readable, Stream } from 'stream';
 export type ContentId = string;
 
 /**
- * Permissions give rights to users to do certain actions with a piece of content.
+ * Give rights to users to perform certain actions with a piece of content.
  */
-export enum Permission {
+export enum ContentPermission {
+    Create,
     Delete,
     Download,
     Edit,
     Embed,
     List,
     View
+}
+
+/**
+ * Give rights to users to perform certain actions with a user data.
+ */
+export enum UserDataPermission {
+    EditState,
+    DeleteState,
+    ViewState,
+    ListStates,
+    EditFinished,
+    ViewFinished,
+    DeleteFinished
+}
+
+/**
+ * Give rights to users to perform certain actions with temporary files.
+ */
+export enum TemporaryFilePermission {
+    Create,
+    Delete,
+    List,
+    View
+}
+
+/**
+ * Give rights to users to perform certain actions that are not associated with
+ * existing objects.
+ */
+export enum GeneralPermission {
+    /**
+     * If given, the user can create content of content types that are set to
+     * "restricted".
+     */
+    CreateRestricted,
+    /**
+     * If given, the user can install content types from the hub that have the
+     *  "recommended" flag in the Hub.
+     */
+    InstallRecommended,
+    /**
+     * If given, the user can generally install and update libraries. This
+     * includes Hub content types that aren't set to "recommended" or uploading
+     * custom packages.
+     */
+    UpdateAndInstallLibraries
 }
 
 /**
@@ -513,20 +560,6 @@ export interface ILibraryOverviewForClient {
  */
 export interface IUser {
     /**
-     * If true, the user can create content of content types that are set to "restricted".
-     */
-    canCreateRestricted: boolean;
-    /**
-     * If true, the user can install content types from the hub that are set the "recommended"
-     * by the Hub.
-     */
-    canInstallRecommended: boolean;
-    /**
-     * If true, the user can generally install and update libraries. This includes Hub
-     * content types that aren't set to "recommended" or uploading custom packages.
-     */
-    canUpdateAndInstallLibraries: boolean;
-    /**
      * E-Mail address.
      */
     email: string;
@@ -671,7 +704,7 @@ export interface IContentUserDataStorage {
         contentId: ContentId,
         dataType: string,
         subContentId: string,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData>;
 
@@ -686,7 +719,7 @@ export interface IContentUserDataStorage {
      */
     getContentUserDataByContentIdAndUser(
         contentId: ContentId,
-        user: IUser,
+        userId: string,
         contextId?: string
     ): Promise<IContentUserData[]>;
 
@@ -871,18 +904,6 @@ export interface IContentStorage {
     getUsage(
         library: ILibraryName
     ): Promise<{ asDependency: number; asMainLibrary: number }>;
-
-    /**
-     * Returns an array of permissions that the user has on the piece of content
-     * @param contentId the content id to check
-     * @param user the user who wants to access the piece of content
-     * @returns the permissions the user has for this content (e.g. download it,
-     * delete it etc.)
-     */
-    getUserPermissions(
-        contentId: ContentId,
-        user: IUser
-    ): Promise<Permission[]>;
 
     /**
      * Lists the content objects in the system (if no user is specified) or
@@ -1104,6 +1125,68 @@ export interface ILibraryStorage {
     updateLibrary(
         libraryMetadata: ILibraryMetadata
     ): Promise<IInstalledLibrary>;
+}
+
+/**
+ * Manages permissions of users.
+ */
+export interface IPermissionSystem<TUser extends IUser = IUser> {
+    /**
+     * Checks if a user has a certain permission on a content object
+     * @param actingUser the user who is currently active
+     * @param permission the permission to check
+     * @param contentId the content for which to check; if the permission if
+     * `ContentPermission.List` or `ContentPermission.Create` the id will be
+     * undefined
+     * @returns true if the user is allowed to do it
+     */
+    checkForContent(
+        actingUser: TUser,
+        permission: ContentPermission,
+        contentId: ContentId | undefined
+    ): Promise<boolean>;
+
+    /**
+     * Checks if a user has a certain permission on a user data object.
+     * @param actingUser the user who is currently active
+     * @param permission the permission to check
+     * @param contentId the content id to which the user data belongs
+     * @param affectedUserId (optional) if the acting user tries to access user
+     * data that is not their own, the affected user will be specified here
+     * @returns true if the user is allowed to do it
+     */
+    checkForUserData(
+        actingUser: TUser,
+        permission: UserDataPermission,
+        contentId: ContentId,
+        affectedUserId?: string
+    ): Promise<boolean>;
+
+    /**
+     * Checks if a user has a certain permission on a temporary file
+     * @param actingUser the currently active user
+     * @param permission the permission to check
+     * @param filename the file the user is trying to access; can be undefined
+     * if the the check is for TemporaryFilePermission.Create
+     * @returns true if the user is allowed to do it
+     */
+    checkForTemporaryFile(
+        actingUser: TUser,
+        permission: TemporaryFilePermission,
+        filename: string | undefined
+    ): Promise<boolean>;
+
+    /**
+     * Checks if a user has a certain permission that is not associated with any
+     * object, but part of their general role.
+     * @param actingUser the currently active user
+     * @param permission the permission to check
+     * @return true if the user is allowed to do it
+     */
+    checkForGeneralAction(
+        actingUser: TUser,
+        permission: GeneralPermission
+    ): Promise<boolean>;
 }
 
 /**
@@ -1849,11 +1932,13 @@ export interface ITemporaryFile {
 export interface ITemporaryFileStorage {
     /**
      * Deletes the file from temporary storage (e.g. because it has expired)
-     * @param filename the filename; can be a path including subdirectories (e.g. 'images/xyz.png')
-     * @param userId the user id
+     * @param filename the filename; can be a path including subdirectories
+     * (e.g. 'images/xyz.png')
+     * @param ownerId (optional) when there is no user deleting, you must specify who the
+     * owner of the temporary file is; only needed when userId is null
      * @returns true if deletion was successful
      */
-    deleteFile(filename: string, userId: string): Promise<void>;
+    deleteFile(filename: string, ownerId: string): Promise<void>;
 
     /**
      * Checks if a file exists in temporary storage.
@@ -2025,7 +2110,12 @@ export interface IUrlGenerator {
      * @param contextId allows implementation to have multiple user data objects
      * for one h5p content object
      */
-    contentUserData(user: IUser, contextId?: string): string;
+    contentUserData(
+        user: IUser,
+        contextId?: string,
+        asUserId?: string,
+        options?: { readonly?: boolean }
+    ): string;
     coreFile(file: string): string;
     coreFiles(): string;
     downloadPackage(contentId: ContentId): string;
@@ -2210,6 +2300,8 @@ export interface IH5PEditorOptions {
      * override.
      */
     getLocalIdOverride?: () => string;
+
+    permissionSystem?: IPermissionSystem;
 }
 
 /**
@@ -2252,11 +2344,7 @@ export interface IH5PPlayerOptions {
      * is used in a multi-process or cluster environment.
      */
     lockProvider?: ILockProvider;
-
-    getPermissions?: (
-        contentId: ContentId,
-        user: IUser
-    ) => Promise<Permission[]>;
+    permissionSystem?: IPermissionSystem;
 }
 
 /**

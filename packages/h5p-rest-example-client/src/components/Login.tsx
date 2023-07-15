@@ -5,7 +5,11 @@ import { Button, Col, Dropdown, Row } from 'react-bootstrap';
 import { ContentService } from '../services/ContentService';
 
 export default class Login extends React.Component<
-    { contentService: ContentService },
+    {
+        contentService: ContentService;
+        onLoggedIn: () => void;
+        onLoggedOut: () => void;
+    },
     {
         loginData?: {
             username: string;
@@ -46,6 +50,7 @@ export default class Login extends React.Component<
                             loginData.csrfToken
                         );
                     }
+                    this.props.onLoggedIn();
                 } else {
                     this.setState({
                         ...this.state,
@@ -53,6 +58,7 @@ export default class Login extends React.Component<
                         loginMessage: await res.text()
                     });
                     this.props.contentService.setCsrfToken(undefined);
+                    this.props.onLoggedOut();
                 }
             })
             .catch((reason) => {
@@ -62,6 +68,7 @@ export default class Login extends React.Component<
                     loginMessage: reason
                 });
                 this.props.contentService.setCsrfToken(undefined);
+                this.props.onLoggedOut();
             });
     };
 
@@ -82,6 +89,7 @@ export default class Login extends React.Component<
                     loginMessage: undefined
                 });
                 this.props.contentService.setCsrfToken(undefined);
+                this.props.onLoggedOut();
             })
             .catch((reason) => {
                 this.setState({
@@ -90,6 +98,7 @@ export default class Login extends React.Component<
                     loginMessage: `Error logging out: ${reason}`
                 });
                 this.props.contentService.setCsrfToken(undefined);
+                this.props.onLoggedOut();
             });
     };
 
@@ -121,6 +130,9 @@ export default class Login extends React.Component<
                                 onClick={() => this.login('student2')}
                             >
                                 Student 2
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.login('admin')}>
+                                Administrator
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

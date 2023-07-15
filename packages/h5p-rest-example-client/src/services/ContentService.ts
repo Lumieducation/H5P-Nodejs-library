@@ -14,7 +14,12 @@ export interface IContentListEntry {
 export interface IContentService {
     delete(contentId: string): Promise<void>;
     getEdit(contentId: string): Promise<IEditorModel>;
-    getPlay(contentId: string, contextId?: string): Promise<IPlayerModel>;
+    getPlay(
+        contentId: string,
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
+    ): Promise<IPlayerModel>;
     list(): Promise<IContentListEntry[]>;
     save(
         contentId: string,
@@ -61,16 +66,36 @@ export class ContentService implements IContentService {
 
     getPlay = async (
         contentId: string,
-        contextId?: string
+        contextId?: string,
+        asUserId?: string,
+        readOnlyState?: boolean
     ): Promise<IPlayerModel> => {
         console.log(
             `ContentService: Getting information to play ${contentId}${
-                contextId ? ` and contextId ${contextId}` : ''
+                contextId ? `, contextId ${contextId}` : ''
+            }${asUserId ? `, asUserId ${asUserId}` : ''}${
+                readOnlyState !== undefined
+                    ? `, readOnlyState ${readOnlyState}`
+                    : ''
             }...`
         );
+
+        const query = new URLSearchParams();
+        if (contextId) {
+            query.append('contextId', contextId);
+        }
+        if (asUserId) {
+            query.append('asUserId', asUserId);
+        }
+        if (readOnlyState === true) {
+            query.append('readOnlyState', 'yes');
+        }
+
+        const queryString = query.toString();
+
         const res = await fetch(
             `${this.baseUrl}/${contentId}/play${
-                contextId ? `?contextId=${contextId}` : ''
+                queryString ? `?${queryString}` : ''
             }`
         );
         if (!res || !res.ok) {

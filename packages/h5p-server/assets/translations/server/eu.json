@@ -60,5 +60,18 @@
     "content-hub-download-error": "Errore bat gertatu da H5P Eduki Zentrora konektatzean. Saiatu berriro geroago.",
     "install-missing-libraries": "Ezin izan da edukia kargatu liburutegi hauek ez daudelako instalatuta sistema honetan: {{libraries}}",
     "install-library-lock-timeout": "Ezin {{ubername}} liburutegia instalatu, liburutegi berdinak beste leku batetik instalatzen ari direlako ( {{limit}} ms itxaron liburutegian blokeatzeko).",
-    "install-library-lock-max-time-exceeded": "Ezin izan da {{ubername}} liburutegia instalatu {{limit}} ms baino gehiago behar izan duelako."
+    "install-library-lock-max-time-exceeded": "Ezin izan da {{ubername}} liburutegia instalatu {{limit}} ms baino gehiago behar izan duelako.",
+    "content-missing-create-permission": "Ez duzu eduki berririk sortzeko baimenik.",
+    "content-missing-delete-permission": "Ez duzu eduki hau ezabatzeko baimenik.",
+    "content-missing-edit-permission": "Ez duzu eduki hau editatzeko baimenik.",
+    "content-missing-list-permission": "Ez duzu eduki guztia zerrendatzeko baimenik.",
+    "content-missing-view-permission": "Ez duzu eduki hau ikusteko baimenik.",
+    "finished-data-missing-delete-permission": "Ezin duzu amaitutako datu hauek ezabatzeko baimenik.",
+    "finished-data-missing-edit-permission": "Ezin duzu amaitutako datu hauek editatzeko baimenik.",
+    "temporary-file-missing-delete-permission": "Ezin duzu aldi baterako fitxategi hau ezabatzeko baimenik.",
+    "temporary-file-missing-view-permission": "Ez duzu aldi baterako fitxategi hau ikusteko baimenik.",
+    "temporary-file-missing-write-permission": "Ezin duzu aldi baterako fitxategirik sortzeko baimenik.",
+    "user-state-missing-delete-permission": "Ez duzu erabiltzaile-egoera hau ezabatzeko baimenik.",
+    "user-state-missing-edit-permission": "Ez duzu erabiltzaile-egoera hau editatzeko baimenik.",
+    "user-state-missing-view-permission": "Ez duzu erabiltzaile-egoera hau ikusteko baimenik."
 }

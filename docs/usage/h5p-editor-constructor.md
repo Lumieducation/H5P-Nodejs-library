@@ -115,6 +115,16 @@ for an implementation sample using the urlGenerator.
 Allows you to customize styles and scripts of the client. Also allows passing in
 a lock implementation (needed for multi-process or clustered setups).
 
+## options.permissionSystem (optional)
+
+By passing in an implementation of `IPermissionSystem` you get fine-grained
+control over who can do what in your system. The library calls the methods of
+`IPermissionSystem` whenever a user performs an action that requires
+authorization.
+
+If you leave options.permissionSystem `undefined`, the library will allow
+everything to everyone!
+
 ## contentUserDataStorage (optional)
 
 The `contentUserDataStorage` handles saving and loading user states, so users

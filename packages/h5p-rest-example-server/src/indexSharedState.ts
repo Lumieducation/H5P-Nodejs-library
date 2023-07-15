@@ -22,45 +22,51 @@ import * as H5P from '@lumieducation/h5p-server';
 import SharedStateServer from '@lumieducation/h5p-shared-state-server';
 
 import restExpressRoutes from './routes';
-import User from './User';
+import ExampleUser from './ExampleUser';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
-import { IUser, Permission } from '@lumieducation/h5p-server';
+import { IUser } from '@lumieducation/h5p-server';
+import ExamplePermissionSystem from './ExamplePermissionSystem';
 
 let tmpDir: DirectoryResult;
 let sharedStateServer: SharedStateServer;
 
-const userTable: {
-    [username: string]: {
-        username: string;
-        name: string;
-        email: string;
-        type: 'teacher' | 'student';
-    };
-} = {
+const users = {
     teacher1: {
         username: 'teacher1',
         name: 'Teacher 1',
         email: 'teacher1@example.com',
-        type: 'teacher'
+        role: 'teacher'
     },
     teacher2: {
         username: 'teacher2',
         name: 'Teacher 2',
         email: 'teacher2@example.com',
-        type: 'teacher'
+        role: 'teacher'
     },
     student1: {
         username: 'student1',
         name: 'Student 1',
         email: 'student1@example.com',
-        type: 'student'
+        role: 'student'
     },
     student2: {
         username: 'student2',
         name: 'Student 2',
         email: 'student2@example.com',
-        type: 'student'
+        role: 'student'
+    },
+    admin: {
+        username: 'admin',
+        name: 'Administration',
+        email: 'admin@example.com',
+        role: 'admin'
+    },
+    anonymous: {
+        username: 'anonymous',
+        name: 'Anonymous',
+        email: '',
+        role: 'anonymous'
     }
 };
 
@@ -69,7 +75,7 @@ const initPassport = (): void => {
         new LocalStrategy((username, password, callback) => {
             // We don't check the password. In a real application you'll perform
             // DB access here.
-            const user = userTable[username];
+            const user = users[username];
             if (!user) {
                 callback('User not found in user table');
             } else {
@@ -94,17 +100,12 @@ const expressUserToH5PUser = (user?: {
     username: string;
     name: string;
     email: string;
-    type: 'teacher' | 'student';
+    role: 'anonymous' | 'teacher' | 'student' | 'admin';
 }): IUser => {
     if (user) {
-        return new User(
-            user.username,
-            user.name,
-            user.email,
-            user.type === 'teacher' ? 'teacher' : 'anonymous'
-        );
+        return new ExampleUser(user.username, user.name, user.email, user.role);
     } else {
-        return new User('0', 'Anonymous', '', 'anonymous');
+        return new ExampleUser('anonymous', 'Anonymous', '', 'anonymous');
     }
 };
 
@@ -153,6 +154,8 @@ const start = async (): Promise<void> => {
         new H5P.fsImplementations.JsonStorage(path.resolve('config.json'))
     ).load();
 
+    const permissionSystem = new ExamplePermissionSystem();
+
     // The H5PEditor object is central to all operations of h5p-nodejs-library
     // if you want to user the editor component.
     //
@@ -166,6 +169,7 @@ const start = async (): Promise<void> => {
     const h5pEditor: H5P.H5PEditor = await createH5PEditor(
         config,
         undefined,
+        permissionSystem,
         path.resolve('h5p/libraries'), // the path on the local disc where
         // libraries should be stored)
         path.resolve('h5p/content'), // the path on the local disc where content
@@ -196,25 +200,7 @@ const start = async (): Promise<void> => {
         undefined,
         undefined,
         undefined,
-        {
-            getPermissions: async (contentId, user) => {
-                const foundUser = userTable[user.id];
-                if (!foundUser) {
-                    return [];
-                }
-                if (foundUser.type === 'teacher') {
-                    return [
-                        Permission.Delete,
-                        Permission.Download,
-                        Permission.Edit,
-                        Permission.Embed,
-                        Permission.List,
-                        Permission.View
-                    ];
-                }
-                return [Permission.Embed, Permission.View];
-            }
-        }
+        { permissionSystem }
     );
 
     h5pPlayer.setRenderer((model) => model);
@@ -275,7 +261,7 @@ const start = async (): Promise<void> => {
                     username: string;
                     name: string;
                     email: string;
-                    type: 'teacher' | 'student';
+                    role: 'anonymous' | 'teacher' | 'student' | 'admin';
                 };
             },
             res,
@@ -383,7 +369,10 @@ const start = async (): Promise<void> => {
                 res.status(200).json({ level: 'anonymous' });
             } else {
                 let level: string;
-                if (userTable[(req.user as any)?.id]?.type === 'teacher') {
+                if (
+                    users[(req.user as any)?.id]?.role === 'teacher' ||
+                    users[(req.user as any)?.id]?.role === 'admin'
+                ) {
                     level = 'privileged';
                 } else {
                     level = 'user';
@@ -425,12 +414,14 @@ const start = async (): Promise<void> => {
             await passportSessionPromise(req, {});
             return expressUserToH5PUser(req.user as any);
         },
-        async (user, contentId) => {
-            const userInTable = userTable[user.id];
+        async (user, _contentId) => {
+            const userInTable = users[user.id];
             if (!userInTable) {
                 return undefined;
             }
-            return userInTable.type === 'teacher' ? 'privileged' : 'user';
+            return userInTable.role === 'teacher' || userInTable === 'admin'
+                ? 'privileged'
+                : 'user';
         },
         h5pEditor.contentManager.getContentMetadata.bind(
             h5pEditor.contentManager

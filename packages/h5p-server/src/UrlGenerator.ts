@@ -1,3 +1,5 @@
+import { encode } from 'node:querystring';
+
 import {
     ContentId,
     IFullLibraryName,
@@ -85,22 +87,44 @@ export default class UrlGenerator implements IUrlGenerator {
         );
     }
 
-    public contentUserData = (user: IUser, contextId?: string): string => {
+    public contentUserData = (
+        user: IUser,
+        contextId?: string,
+        asUserId?: string,
+        options?: { readonly?: boolean }
+    ): string => {
+        const queries: any = {};
+        if (contextId) {
+            queries.contextId = contextId;
+        }
+        if (asUserId) {
+            queries.asUserId = asUserId;
+        }
+        if (options?.readonly) {
+            queries.ignorePost = 'yes';
+        }
+
         if (
             this.csrfProtection?.queryParamGenerator &&
             this.csrfProtection?.protectContentUserData
         ) {
             const qs = this.csrfProtection.queryParamGenerator(user);
+            if (qs.name) {
+                queries[qs.name] = qs.value;
+            }
+            const queryString = encode(queries);
             return `${this.config.baseUrl}${
                 this.config.contentUserDataUrl
-            }/:contentId/:dataType/:subContentId?${qs.name}=${qs.value}${
-                contextId ? `&contextId=${contextId}` : ''
+            }/:contentId/:dataType/:subContentId${
+                queryString ? `?${queryString}` : ''
             }`;
         }
+
+        const queryString = encode(queries);
         return `${this.config.baseUrl}${
             this.config.contentUserDataUrl
         }/:contentId/:dataType/:subContentId${
-            contextId ? `?contextId=${contextId}` : ''
+            queryString ? `?${queryString}` : ''
         }`;
     };
 

@@ -8,7 +8,6 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
-import { Permission, H5PConfig } from '@lumieducation/h5p-server';
 
 import User from './User';
 import initS3 from '../src/initS3';
@@ -171,15 +170,5 @@ describe('S3TemporaryFileStorage', () => {
         await expect(
             storage.saveFile('/bin/bash', undefined, stubUser, new Date())
         ).rejects.toThrowError('illegal-filename');
-    });
-
-    it('rejects write operations for unprivileged users', async () => {
-        storage = new S3TemporaryFileStorage(s3, {
-            s3Bucket: bucketName,
-            getPermissions: async () => [Permission.View]
-        });
-        await expect(
-            storage.saveFile('123', undefined, new User(), new Date())
-        ).rejects.toThrowError('s3-temporary-storage:missing-write-permission');
     });
 });

@@ -13,6 +13,7 @@ import { ContentId, ILibraryName, IUser } from '../src/types';
 import ContentStorer from '../src/ContentStorer';
 
 import User from './User';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 
 async function createContentScanner(
     file: string,
@@ -30,7 +31,8 @@ async function createContentScanner(
     await fsExtra.ensureDir(libraryDir);
 
     const contentManager = new ContentManager(
-        new FileContentStorage(contentDir)
+        new FileContentStorage(contentDir),
+        new LaissezFairePermissionSystem()
     );
     const libraryManager = new LibraryManager(
         new FileLibraryStorage(libraryDir)
@@ -40,6 +42,7 @@ async function createContentScanner(
     const packageImporter = new PackageImporter(
         libraryManager,
         new H5PConfig(null),
+        new LaissezFairePermissionSystem(),
         contentManager,
         new ContentStorer(contentManager, libraryManager, undefined)
     );
@@ -82,7 +85,6 @@ describe('ContentScanner', () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const user = new User();
-                user.canUpdateAndInstallLibraries = true;
 
                 // initialize content manager
                 const { contentScanner, contentManager, contentId } =
@@ -117,7 +119,6 @@ describe('ContentScanner', () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const user = new User();
-                user.canUpdateAndInstallLibraries = true;
 
                 const { contentScanner, contentId, contentManager } =
                     await createContentScanner(

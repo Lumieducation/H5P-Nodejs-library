@@ -60,5 +60,18 @@
     "content-hub-download-error": "Si è verificato un errore durante la connessione all'H5P Content Hub. Per favore riprova più tardi.",
     "install-missing-libraries": "Impossibile caricare il contenuto poiché le seguenti librerie non sono installate su questo sistema: {{libraries}}",
     "install-library-lock-timeout": "Non è stato possibile installare la libreria {{ubername}} , perché le stesse librerie vengono installate da un'altra posizione (ha atteso {{limit}} ms per il blocco della libreria).",
-    "install-library-lock-max-time-exceeded": "Non è stato possibile installare la libreria {{ubername}} {{limit}} ms consentito."
+    "install-library-lock-max-time-exceeded": "Non è stato possibile installare la libreria {{ubername}} {{limit}} ms consentito.",
+    "content-missing-create-permission": "Non sei autorizzato a creare nuovi contenuti.",
+    "content-missing-delete-permission": "Non sei autorizzato a eliminare questo contenuto.",
+    "content-missing-edit-permission": "Non sei autorizzato a modificare questo contenuto.",
+    "content-missing-list-permission": "Non è consentito elencare tutti i contenuti.",
+    "content-missing-view-permission": "Non sei autorizzato a visualizzare questo contenuto.",
+    "finished-data-missing-delete-permission": "Non sei autorizzato a cancellare questi dati finiti.",
+    "finished-data-missing-edit-permission": "Non sei autorizzato a modificare questi dati finiti.",
+    "temporary-file-missing-delete-permission": "Non sei autorizzato a eliminare questo file temporaneo.",
+    "temporary-file-missing-view-permission": "Non sei autorizzato a visualizzare questo file temporaneo.",
+    "temporary-file-missing-write-permission": "Non sei autorizzato a creare un file temporaneo.",
+    "user-state-missing-delete-permission": "Non sei autorizzato a eliminare questo stato utente.",
+    "user-state-missing-edit-permission": "Non sei autorizzato a modificare questo stato utente.",
+    "user-state-missing-view-permission": "Non sei autorizzato a visualizzare questo stato utente."
 }

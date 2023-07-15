@@ -5,10 +5,6 @@
     "filename-too-long": "Il nome del file è troppo lungo: {{filename}}",
     "illegal-filename": "Il nome del file {{filename}} non è consentito.",
     "listing-content-error": "Si è verificato un errore durante il recupero dell'elenco degli oggetti contenuto",
-    "missing-delete-permission": "Non disponi dell'autorizzazione per eliminare questo oggetto contenuto.",
-    "missing-list-content-permission": "Non si dispone dell'autorizzazione per elencare gli oggetti contenuto.",
-    "missing-view-permission": "Non disponi dell'autorizzazione per visualizzare questo oggetto contenuto.",
-    "missing-write-permission": "Non disponi dell'autorizzazione per modificare questo oggetto contenuto.",
     "mongo-add-update-error": "Si è verificato un errore durante l'aggiunta o l'aggiornamento del contenuto nel database.",
     "mongo-replace-error": "Si è verificato un errore durante l'aggiornamento del contenuto nel database.",
     "s3-upload-error": "Si è verificato un errore durante il caricamento del file {{filename}} su S3."

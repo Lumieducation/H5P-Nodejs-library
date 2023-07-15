@@ -36,13 +36,34 @@ export default function (
                     contextId:
                         typeof req.query.contextId === 'string'
                             ? req.query.contextId
+                            : undefined,
+                    // You can impersonate other users to view their content
+                    // state by setting the query parameter asUserId.
+                    // Example:
+                    // `/h5p/play/XXXX?asUserId=YYY`
+                    asUserId:
+                        typeof req.query.asUserId === 'string'
+                            ? req.query.asUserId
+                            : undefined,
+                    // You can disabling saving of the user state, but still
+                    // display it by setting the query parameter
+                    // `readOnlyState` to `yes`. This is useful if you want
+                    // to review other users' states by setting `asUserId`
+                    // and don't want to change their state.
+                    // Example:
+                    // `/h5p/play/XXXX?readOnlyState=yes`
+                    readOnlyState:
+                        typeof req.query.readOnlyState === 'string'
+                            ? req.query.readOnlyState === 'yes'
                             : undefined
                 }
             );
-            res.send(content);
-            res.status(200).end();
+            res.status(200).send(content);
         } catch (error) {
-            res.status(500).end(error.message);
+            console.error(error);
+            res.status(error.httpStatusCode ? error.httpStatusCode : 500).send(
+                error.message
+            );
         }
     });
 
@@ -61,19 +82,19 @@ export default function (
                 req.user
             )) as H5P.IEditorModel;
             if (!req.params.contentId || req.params.contentId === 'undefined') {
-                res.send(editorModel);
+                res.status(200).send(editorModel);
             } else {
                 const content = await h5pEditor.getContent(
-                    req.params.contentId
+                    req.params.contentId,
+                    req.user
                 );
-                res.send({
+                res.status(200).send({
                     ...editorModel,
                     library: content.library,
                     metadata: content.params.metadata,
                     params: content.params.params
                 });
             }
-            res.status(200).end();
         }
     );
 
@@ -85,7 +106,7 @@ export default function (
             !req.body.library ||
             !req.user
         ) {
-            res.status(400).send('Malformed request').end();
+            res.status(400).send('Malformed request');
             return;
         }
         const { id: contentId, metadata } =
@@ -97,8 +118,7 @@ export default function (
                 req.user
             );
 
-        res.send(JSON.stringify({ contentId, metadata }));
-        res.status(200).end();
+        res.status(200).json({ contentId, metadata });
     });
 
     router.patch('/:contentId', async (req: IRequestWithUser, res) => {
@@ -109,7 +129,7 @@ export default function (
             !req.body.library ||
             !req.user
         ) {
-            res.status(400).send('Malformed request').end();
+            res.status(400).send('Malformed request');
             return;
         }
         const { id: contentId, metadata } =
@@ -121,38 +141,51 @@ export default function (
                 req.user
             );
 
-        res.send(JSON.stringify({ contentId, metadata }));
-        res.status(200).end();
+        res.status(200).json({ contentId, metadata });
     });
 
     router.delete('/:contentId', async (req: IRequestWithUser, res) => {
         try {
             await h5pEditor.deleteContent(req.params.contentId, req.user);
         } catch (error) {
-            res.send(
-                `Error deleting content with id ${req.params.contentId}: ${error.message}`
-            );
-            res.status(500).end();
-            return;
+            console.error(error);
+
+            return res
+                .status(500)
+                .send(
+                    `Error deleting content with id ${req.params.contentId}: ${error.message}`
+                );
         }
 
-        res.send(`Content ${req.params.contentId} successfully deleted.`);
-        res.status(200).end();
+        res.status(200).send(
+            `Content ${req.params.contentId} successfully deleted.`
+        );
     });
 
     router.get('/', async (req: IRequestWithUser, res) => {
-        // TODO: check access permissions
-
-        const contentIds = await h5pEditor.contentManager.listContent();
-        const contentObjects = await Promise.all(
-            contentIds.map(async (id) => ({
-                content: await h5pEditor.contentManager.getContentMetadata(
-                    id,
-                    req.user
-                ),
-                id
-            }))
-        );
+        let contentObjects;
+        try {
+            const contentIds = await h5pEditor.contentManager.listContent(
+                req.user
+            );
+            contentObjects = await Promise.all(
+                contentIds.map(async (id) => ({
+                    content: await h5pEditor.contentManager.getContentMetadata(
+                        id,
+                        req.user
+                    ),
+                    id
+                }))
+            );
+        } catch (error) {
+            if (error instanceof H5P.H5pError) {
+                return res
+                    .status(error.httpStatusCode)
+                    .send(`${error.message}`);
+            } else {
+                return res.status(500).send(`Unknown error: ${error.message}`);
+            }
+        }
 
         res.status(200).send(
             contentObjects.map((o) => ({

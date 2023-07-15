@@ -102,6 +102,7 @@ describe('ContentUserData endpoint adapter', () => {
             false,
             true,
             user,
+            undefined,
             undefined
         );
         expect(res.status).toBe(200);
@@ -129,7 +130,8 @@ describe('ContentUserData endpoint adapter', () => {
             false,
             true,
             user,
-            'cid1'
+            'cid1',
+            undefined
         );
         expect(res.status).toBe(200);
     });
@@ -150,6 +152,7 @@ describe('ContentUserData endpoint adapter', () => {
             dataType,
             subContentId,
             user,
+            undefined,
             undefined
         );
         expect(res.status).toBe(200);
@@ -170,7 +173,14 @@ describe('ContentUserData endpoint adapter', () => {
 
         expect(
             mockContentUserDataManager.getContentUserData
-        ).toHaveBeenCalledWith(contentId, dataType, subContentId, user, 'cid1');
+        ).toHaveBeenCalledWith(
+            contentId,
+            dataType,
+            subContentId,
+            user,
+            'cid1',
+            undefined
+        );
         expect(res.status).toBe(200);
         expect(res.body).toEqual({
             data: mockReturnData.userState,

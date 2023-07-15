@@ -1,4 +1,4 @@
-import { ContentId, IUser } from '../../src/types';
+import { ContentId } from '../../src/types';
 
 let mockData;
 const mock = jest.fn().mockImplementation(() => {
@@ -26,15 +26,15 @@ const mock = jest.fn().mockImplementation(() => {
         setMockData: (m) => (mockData = m),
         getContentUserDataByContentIdAndUser: jest
             .fn()
-            .mockImplementation((contentId: ContentId, user: IUser) => {
+            .mockImplementation((contentId: ContentId, userId: string) => {
                 return (
                     mockData || [
                         {
                             contentId,
-                            userId: user.id,
+                            userId: userId,
                             dataType: 'state',
                             subContentId: '0',
-                            userState: `${contentId}-${user.id}`,
+                            userState: `${contentId}-${userId}`,
                             preload: true
                         }
                     ]

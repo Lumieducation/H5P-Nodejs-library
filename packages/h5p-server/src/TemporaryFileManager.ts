@@ -2,8 +2,16 @@ import { ReadStream } from 'fs';
 import { Readable } from 'stream';
 
 import Logger from './helpers/Logger';
-import { IH5PConfig, ITemporaryFileStorage, IUser } from './types';
+import {
+    IFileStats,
+    IH5PConfig,
+    IPermissionSystem,
+    ITemporaryFileStorage,
+    IUser,
+    TemporaryFilePermission
+} from './types';
 import FilenameGenerator from './helpers/FilenameGenerator';
+import H5pError from './helpers/H5pError';
 
 const log = new Logger('TemporaryFileManager');
 
@@ -16,7 +24,8 @@ export default class TemporaryFileManager {
      */
     constructor(
         private storage: ITemporaryFileStorage,
-        private config: IH5PConfig
+        private config: IH5PConfig,
+        private permissionSystem: IPermissionSystem
     ) {
         log.info('initialize');
     }
@@ -35,6 +44,23 @@ export default class TemporaryFileManager {
         dataStream: ReadStream,
         user: IUser
     ): Promise<string> {
+        if (
+            !(await this.permissionSystem.checkForTemporaryFile(
+                user,
+                TemporaryFilePermission.Create,
+                undefined
+            ))
+        ) {
+            log.error(
+                `User tried upload file to temporary storage without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:temporary-file-missing-write-permission',
+                {},
+                403
+            );
+        }
+
         log.info(`Storing temporary file ${filename}`);
         const uniqueFilename = await this.generateUniqueName(filename, user);
         log.debug(`Assigned unique filename ${uniqueFilename}`);
@@ -86,6 +112,24 @@ export default class TemporaryFileManager {
      */
     public async deleteFile(filename: string, user: IUser): Promise<void> {
         if (await this.storage.fileExists(filename, user)) {
+            if (
+                user !== null &&
+                !(await this.permissionSystem.checkForTemporaryFile(
+                    user,
+                    TemporaryFilePermission.Delete,
+                    filename
+                ))
+            ) {
+                log.error(
+                    `User tried to delete a file from a temporary storage without proper permissions.`
+                );
+                throw new H5pError(
+                    'h5p-server:temporary-file-missing-delete-permission',
+                    {},
+                    403
+                );
+            }
+
             await this.storage.deleteFile(filename, user.id);
         }
     }
@@ -116,8 +160,57 @@ export default class TemporaryFileManager {
         rangeStart?: number,
         rangeEnd?: number
     ): Promise<Readable> {
+        if (
+            !(await this.permissionSystem.checkForTemporaryFile(
+                user,
+                TemporaryFilePermission.View,
+                filename
+            ))
+        ) {
+            log.error(
+                `User tried to display a file from a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:temporary-file-missing-delete-permission',
+                {},
+                403
+            );
+        }
+
         log.info(`Getting temporary file ${filename}`);
+
         return this.storage.getFileStream(filename, user, rangeStart, rangeEnd);
+    }
+
+    /**
+     * Returns a information about a temporary file.
+     * Throws an exception if the file does not exist.
+     * @param filename the relative path inside the library
+     * @param user the user who wants to access the file
+     * @returns the file stats
+     */
+    public async getFileStats(
+        filename: string,
+        user: IUser
+    ): Promise<IFileStats> {
+        if (
+            !(await this.permissionSystem.checkForTemporaryFile(
+                user,
+                TemporaryFilePermission.View,
+                filename
+            ))
+        ) {
+            log.error(
+                `User tried to get stats of a content object without proper permissions.`
+            );
+            throw new H5pError(
+                'h5p-server:temporary-file-missing-view-permission',
+                {},
+                403
+            );
+        }
+
+        return this.storage.getFileStats(filename, user);
     }
 
     /**
@@ -129,6 +222,7 @@ export default class TemporaryFileManager {
      * @param user the user who is saving the file
      * @returns the unique filename
      */
+
     protected async generateUniqueName(
         filename: string,
         user: IUser

@@ -4,7 +4,6 @@ import {
     ITemporaryFileStorage,
     IUser,
     ITemporaryFile,
-    Permission,
     IH5PConfig,
     IFileStats,
     H5pError,
@@ -31,19 +30,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     constructor(
         private s3: AWS.S3,
         private options: {
-            /**
-             * This function is called to determine whether a user has access
-             * rights to a file stored in temporary storage. Returns a list
-             * of all permissions the user has on this file.
-             *
-             * Note: The Permissions enumeration is also used for content and
-             * includes more values than necessary for temporary storage. Only
-             * the values 'Edit', 'View' and 'Delete' are used in this class.
-             */
-            getPermissions?: (
-                userId: string,
-                filename?: string
-            ) => Promise<Permission[]>;
             /**
              * These characters will be removed from files that are saved to S3.
              * There is a very strict default list that basically only leaves
@@ -90,28 +76,13 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * @param filename the file to delete
      * @param userId the user ID of the user who wants to delete the file
      */
-    public async deleteFile(filename: string, userId: string): Promise<void> {
+    public async deleteFile(filename: string, _ownerId: string): Promise<void> {
         log.debug(`Deleting file "${filename}" from temporary storage.`);
         validateFilename(filename);
 
         if (!filename) {
             log.error(`Filename empty!`);
             throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
-        }
-
-        if (
-            !(await this.getUserPermissions(userId, filename)).includes(
-                Permission.Delete
-            )
-        ) {
-            log.error(
-                `User tried to delete a file from a temporary storage without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-delete-permission',
-                {},
-                403
-            );
         }
 
         try {
@@ -138,7 +109,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * @param filename the file to check
      * @param user the user who wants to access the file
      */
-    public async fileExists(filename: string, user: IUser): Promise<boolean> {
+    public async fileExists(filename: string, _user: IUser): Promise<boolean> {
         log.debug(`Checking if file ${filename} exists in temporary storage.`);
         validateFilename(filename);
 
@@ -179,24 +150,9 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      */
     public async getFileStats(
         filename: string,
-        user: IUser
+        _user: IUser
     ): Promise<IFileStats> {
         validateFilename(filename);
-
-        if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.View
-            )
-        ) {
-            log.error(
-                `User tried to get stats of a content object without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
 
         try {
             const head = await this.s3
@@ -237,21 +193,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
             throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
         }
 
-        if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.View
-            )
-        ) {
-            log.error(
-                `User tried to display a file from a content object without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-view-permission',
-                {},
-                403
-            );
-        }
-
         return this.s3
             .getObject({
                 Bucket: this.options?.s3Bucket,
@@ -262,31 +203,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                         : undefined
             })
             .createReadStream();
-    }
-
-    /**
-     * Checks if a user has access rights on file in temporary storage.
-     * @param userId
-     * @param filename
-     * @returns the list of permissions the user has on the file.
-     */
-    public async getUserPermissions(
-        userId: string,
-        filename?: string
-    ): Promise<Permission[]> {
-        log.debug(
-            `Getting temporary storage permissions for userId ${userId}.`
-        );
-        if (this.options?.getPermissions) {
-            log.debug(
-                `Using function passed in through constructor to get permissions.`
-            );
-            return this.options.getPermissions(userId, filename);
-        }
-        log.debug(
-            `No permission function set in constructor. Allowing everything.`
-        );
-        return [Permission.Delete, Permission.Edit, Permission.View];
     }
 
     /**
@@ -337,21 +253,6 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         if (!filename) {
             log.error(`Filename empty!`);
             throw new H5pError('illegal-filename', {}, 400);
-        }
-
-        if (
-            !(await this.getUserPermissions(user.id, filename)).includes(
-                Permission.Edit
-            )
-        ) {
-            log.error(
-                `User tried upload file to temporary storage without proper permissions.`
-            );
-            throw new H5pError(
-                's3-temporary-storage:missing-write-permission',
-                {},
-                403
-            );
         }
 
         try {

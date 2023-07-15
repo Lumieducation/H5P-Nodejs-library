@@ -8,7 +8,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
-import { IContentMetadata, Permission } from '@lumieducation/h5p-server';
+import { IContentMetadata } from '@lumieducation/h5p-server';
 
 import MongoS3ContentStorage from '../src/MongoS3ContentStorage';
 import User from './User';
@@ -404,18 +404,6 @@ describe('MongoS3ContentStorage', () => {
         await expect(
             storage.addFile(contentId, '/bin/bash', undefined, stubUser)
         ).rejects.toThrowError('illegal-filename');
-    });
-
-    it('rejects write operations for unprivileged users', async () => {
-        storage = new MongoS3ContentStorage(s3, mongoCollection, {
-            s3Bucket: bucketName,
-            getPermissions: async () => [Permission.View]
-        });
-        await expect(
-            storage.addContent(stubMetadata, stubParameters, new User())
-        ).rejects.toThrowError(
-            'mongo-s3-content-storage:missing-write-permission'
-        );
     });
 
     describe('getUsage', () => {

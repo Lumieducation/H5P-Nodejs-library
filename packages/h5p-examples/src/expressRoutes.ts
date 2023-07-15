@@ -46,6 +46,25 @@ export default function (
                         contextId:
                             typeof req.query.contextId === 'string'
                                 ? req.query.contextId
+                                : undefined,
+                        // You can impersonate other users to view their content
+                        // state by setting the query parameter asUserId.
+                        // Example:
+                        // `/h5p/play/XXXX?asUserId=YYY`
+                        asUserId:
+                            typeof req.query.asUserId === 'string'
+                                ? req.query.asUserId
+                                : undefined,
+                        // You can disabling saving of the user state, but still
+                        // display it by setting the query parameter
+                        // `readOnlyState` to `yes`. This is useful if you want
+                        // to review other users' states by setting `asUserId`
+                        // and don't want to change their state.
+                        // Example:
+                        // `/h5p/play/XXXX?readOnlyState=yes`
+                        readOnlyState:
+                            typeof req.query.readOnlyState === 'string'
+                                ? req.query.readOnlyState === 'yes'
                                 : undefined
                     }
                 );

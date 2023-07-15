@@ -5,10 +5,6 @@
     "filename-too-long": "El nom del fitxer és massa llarg: {{filename}}",
     "illegal-filename": "No es permet el nom de fitxer {{filename}}",
     "listing-content-error": "S'ha produït un error en obtenir la llista d'objectes de contingut",
-    "missing-delete-permission": "No teniu permís per suprimir aquest objecte de contingut.",
-    "missing-list-content-permission": "No teniu permís per llistar objectes de contingut.",
-    "missing-view-permission": "No teniu permís per veure aquest objecte de contingut.",
-    "missing-write-permission": "No teniu permís per canviar aquest objecte de contingut.",
     "mongo-add-update-error": "S'ha produït un error en afegir o actualitzar contingut a la base de dades.",
     "mongo-replace-error": "S'ha produït un error en actualitzar el contingut de la base de dades.",
     "s3-upload-error": "S'ha produït un error en penjar el fitxer {{filename}} a S3."

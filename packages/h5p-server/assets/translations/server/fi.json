@@ -60,5 +60,18 @@
     "content-hub-download-error": "H5P-sisältökeskukseen yhdistämisessä tapahtui virhe. Yritä uudelleen myöhemmin.",
     "install-missing-libraries": "Sisällön lataaminen epäonnistui, koska seuraavia kirjastoja ei ole asennettu tähän järjestelmään: {{libraries}}",
     "install-library-lock-timeout": "Kirjastoa {{ubername}} ei voitu asentaa, koska samoja kirjastoja asennetaan toisesta paikasta (odotti {{limit}} ms lukitusta kirjastoon).",
-    "install-library-lock-max-time-exceeded": "Kirjastoa {{ubername}} ei voitu asentaa, koska se kesti kauemmin kuin sallittu {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Kirjastoa {{ubername}} ei voitu asentaa, koska se kesti kauemmin kuin sallittu {{limit}} ms.",
+    "content-missing-create-permission": "Et saa luoda uutta sisältöä.",
+    "content-missing-delete-permission": "Sinulla ei ole lupaa poistaa tätä sisältöä.",
+    "content-missing-edit-permission": "Sinulla ei ole lupaa muokata tätä sisältöä.",
+    "content-missing-list-permission": "Et saa listata kaikkea sisältöä.",
+    "content-missing-view-permission": "Sinulla ei ole lupaa tarkastella tätä sisältöä.",
+    "finished-data-missing-delete-permission": "Sinulla ei ole lupaa poistaa näitä valmiita tietoja.",
+    "finished-data-missing-edit-permission": "Sinulla ei ole lupaa muokata näitä valmiita tietoja.",
+    "temporary-file-missing-delete-permission": "Sinulla ei ole lupaa poistaa tätä väliaikaista tiedostoa.",
+    "temporary-file-missing-view-permission": "Sinulla ei ole lupaa tarkastella tätä väliaikaista tiedostoa.",
+    "temporary-file-missing-write-permission": "Sinulla ei ole lupaa luoda väliaikaista tiedostoa.",
+    "user-state-missing-delete-permission": "Sinulla ei ole oikeutta poistaa tätä käyttäjän tilaa.",
+    "user-state-missing-edit-permission": "Sinulla ei ole lupaa muokata tätä käyttäjän tilaa.",
+    "user-state-missing-view-permission": "Sinulla ei ole lupaa tarkastella tätä käyttäjän tilaa."
 }

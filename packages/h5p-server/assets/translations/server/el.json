@@ -60,5 +60,18 @@
     "content-hub-download-error": "Παρουσιάστηκε σφάλμα κατά τη σύνδεση στο H5P Content Hub. Παρακαλώ προσπάθησε ξανά αργότερα.",
     "install-missing-libraries": "Δεν ήταν δυνατή η φόρτωση του περιεχομένου καθώς οι ακόλουθες βιβλιοθήκες δεν είναι εγκατεστημένες σε αυτό το σύστημα: {{libraries}}",
     "install-library-lock-timeout": "Δεν {{ubername}} , επειδή οι ίδιες βιβλιοθήκες εγκαθίστανται από άλλο μέρος (περιμέναμε {{limit}} ms για να κλειδωθεί στη βιβλιοθήκη).",
-    "install-library-lock-max-time-exceeded": "Δεν {{ubername}} , επειδή χρειάστηκε περισσότερος χρόνος από το επιτρεπόμενο {{limit}} ms."
+    "install-library-lock-max-time-exceeded": "Δεν {{ubername}} , επειδή χρειάστηκε περισσότερος χρόνος από το επιτρεπόμενο {{limit}} ms.",
+    "content-missing-create-permission": "Δεν επιτρέπεται να δημιουργείτε νέο περιεχόμενο.",
+    "content-missing-delete-permission": "Δεν επιτρέπεται να διαγράψετε αυτό το περιεχόμενο.",
+    "content-missing-edit-permission": "Δεν επιτρέπεται να επεξεργαστείτε αυτό το περιεχόμενο.",
+    "content-missing-list-permission": "Δεν επιτρέπεται να καταχωρίσετε όλο το περιεχόμενο.",
+    "content-missing-view-permission": "Δεν επιτρέπεται να δείτε αυτό το περιεχόμενο.",
+    "finished-data-missing-delete-permission": "Δεν επιτρέπεται να διαγράψετε αυτά τα ολοκληρωμένα δεδομένα.",
+    "finished-data-missing-edit-permission": "Δεν επιτρέπεται να επεξεργαστείτε αυτά τα ολοκληρωμένα δεδομένα.",
+    "temporary-file-missing-delete-permission": "Δεν επιτρέπεται να διαγράψετε αυτό το προσωρινό αρχείο.",
+    "temporary-file-missing-view-permission": "Δεν επιτρέπεται να δείτε αυτό το προσωρινό αρχείο.",
+    "temporary-file-missing-write-permission": "Δεν επιτρέπεται να δημιουργήσετε ένα προσωρινό αρχείο.",
+    "user-state-missing-delete-permission": "Δεν επιτρέπεται να διαγράψετε αυτήν την κατάσταση χρήστη.",
+    "user-state-missing-edit-permission": "Δεν επιτρέπεται να επεξεργαστείτε αυτήν την κατάσταση χρήστη.",
+    "user-state-missing-view-permission": "Δεν επιτρέπεται να δείτε αυτήν την κατάσταση χρήστη."
 }
