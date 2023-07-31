@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-shared-state-server",
-    "version": "9.2.1",
+    "version": "9.2.2",
     "description": "A component providing server-side support for shared states with ShareDB",
     "main": "build/SharedStateServer.js",
     "types": "build/SharedStateServer.d.ts",
