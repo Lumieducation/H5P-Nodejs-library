@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.2...v9.3.0) (2023-07-31)
+
+### Features
+
+-   content user data with context ([#3011](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3011)) ([798975e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/798975eb94a2ac99244401e21b1f852f529c7131))
+
 ## [9.2.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.1...v9.2.2) (2023-06-11)
 
 **Note:** Version bump only for package @lumieducation/h5p-express
