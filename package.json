@@ -92,7 +92,7 @@
         "@typescript-eslint/eslint-plugin": "5.62.0",
         "@typescript-eslint/parser": "5.62.0",
         "axios": "1.4.0",
-        "commitlint": "17.7.0",
+        "commitlint": "17.7.1",
         "concurrently": "8.2.0",
         "eslint": "8.46.0",
         "eslint-config-airbnb": "19.0.4",
