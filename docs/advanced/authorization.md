@@ -18,5 +18,5 @@ your controllers. That means you can add any arbitrary date to it, like roles.
 
 ## Acknowledgement
 
-The development of this feature was kindly funded by PHWE Systeme GmbH und Co.
+The development of this feature was kindly funded by PHYWE Systeme GmbH und Co.
 KG (https://www.phywe.de/).
