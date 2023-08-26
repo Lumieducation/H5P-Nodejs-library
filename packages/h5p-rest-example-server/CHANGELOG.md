@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.2...v9.3.0) (2023-07-31)
+
+### Bug Fixes
+
+-   **deps:** update dependency i18next-fs-backend to v2.1.5 ([b4ae81d](https://github.com/Lumieducation/H5P-Nodejs-library/commit/b4ae81d12c4e43dfc1ac8cccfd3e207222578f9f))
+-   **deps:** update dependency i18next-http-middleware to v3.3.2 ([8ef03b0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/8ef03b037a0fae484258b5346313374b3f3a05c4))
+
+### Features
+
+-   content user data with context ([#3011](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3011)) ([798975e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/798975eb94a2ac99244401e21b1f852f529c7131))
+
 ## [9.2.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.1...v9.2.2) (2023-06-11)
 
 ### Bug Fixes

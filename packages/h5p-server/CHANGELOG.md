@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [9.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.2...v9.3.0) (2023-07-31)
+
+### Bug Fixes
+
+-   **deps:** update dependency sanitize-html to v2.11.0 ([da8627b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/da8627b63151d6b20590616d57c589fa2836734f))
+
+### Features
+
+-   content user data with context ([#3011](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3011)) ([798975e](https://github.com/Lumieducation/H5P-Nodejs-library/commit/798975eb94a2ac99244401e21b1f852f529c7131))
+
 ## [9.2.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.0...v9.2.1) (2023-05-31)
 
 ### Bug Fixes
