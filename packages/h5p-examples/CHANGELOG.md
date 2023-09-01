@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.3.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.0...v9.3.1) (2023-09-01)
+
+### Bug Fixes
+
+-   **deps:** update dependency mongodb to v4.17.0 ([0b23c2b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/0b23c2be3b7f41d7708ccec71ec97a41905352bf))
+-   **deps:** update dependency mongodb to v4.17.1 ([7f78017](https://github.com/Lumieducation/H5P-Nodejs-library/commit/7f7801753e4c470a356f8a9c9997707f2548dacf))
+-   **deps:** update font awesome to v6.4.2 ([e15f164](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e15f1641013a7316439eeebd70792d211a0b4cf9))
+
 # [9.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.2...v9.3.0) (2023-07-31)
 
 ### Bug Fixes

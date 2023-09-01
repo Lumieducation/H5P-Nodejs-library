@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.3.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.0...v9.3.1) (2023-09-01)
+
+### Bug Fixes
+
+-   **deps:** update dependency axios to v1.5.0 ([82b5d59](https://github.com/Lumieducation/H5P-Nodejs-library/commit/82b5d5954984b2a66d233beb41d9446778b03fba))
+
 # [9.3.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.2.2...v9.3.0) (2023-07-31)
 
 ### Bug Fixes
