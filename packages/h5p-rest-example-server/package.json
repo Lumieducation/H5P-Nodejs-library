@@ -37,7 +37,7 @@
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
-        "@types/cors": "2.8.13",
+        "@types/cors": "2.8.14",
         "@types/csurf": "1.11.2",
         "@types/express": "4.17.17",
         "@types/express-session": "1.17.7",
