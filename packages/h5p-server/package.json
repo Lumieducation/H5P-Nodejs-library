@@ -80,7 +80,7 @@
         "@types/stream-buffers": "3.0.4",
         "@types/yauzl-promise": "2.1.1",
         "@types/yazl": "2.4.2",
-        "axios-mock-adapter": "1.21.5",
+        "axios-mock-adapter": "1.22.0",
         "mockdate": "3.0.5",
         "promise-parallel-throttle": "3.3.0",
         "stream-mock": "2.0.5"
