@@ -74,7 +74,7 @@
         "@types/async-lock": "1.4.0",
         "@types/fs-extra": "11.0.2",
         "@types/jest": "29.5.5",
-        "@types/jsonpath": "0.2.0",
+        "@types/jsonpath": "0.2.1",
         "@types/mime-types": "2.1.1",
         "@types/sanitize-html": "2.9.0",
         "@types/stream-buffers": "3.0.4",
