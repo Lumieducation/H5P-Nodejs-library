@@ -116,6 +116,7 @@ export default class H5PConfig implements IH5PConfig {
      */
     public async load(): Promise<H5PConfig> {
         await this.loadSettingFromStorage('baseUrl');
+        await this.loadSettingFromStorage('contentFilesUrlPlayerOverride');
         await this.loadSettingFromStorage('contentHubEnabled');
         await this.loadSettingFromStorage('contentHubMetadataRefreshInterval');
         await this.loadSettingFromStorage('contentTypeCacheRefreshInterval');
@@ -146,6 +147,7 @@ export default class H5PConfig implements IH5PConfig {
      * Saves all changeable settings to storage. (Should be called when a setting was changed.)
      */
     public async save(): Promise<void> {
+        await this.saveSettingToStorage('contentFilesUrlPlayerOverride');
         await this.saveSettingToStorage('contentHubEnabled');
         await this.saveSettingToStorage('contentHubMetadataRefreshInterval');
         await this.saveSettingToStorage('contentTypeCacheRefreshInterval');
