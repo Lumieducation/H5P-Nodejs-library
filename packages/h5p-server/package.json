@@ -75,7 +75,7 @@
         "@types/fs-extra": "11.0.2",
         "@types/jest": "29.5.5",
         "@types/jsonpath": "0.2.1",
-        "@types/mime-types": "2.1.1",
+        "@types/mime-types": "2.1.2",
         "@types/sanitize-html": "2.9.1",
         "@types/stream-buffers": "3.0.5",
         "@types/yauzl-promise": "2.1.2",
