@@ -76,7 +76,7 @@
         "@types/jest": "29.5.5",
         "@types/jsonpath": "0.2.1",
         "@types/mime-types": "2.1.2",
-        "@types/sanitize-html": "2.9.1",
+        "@types/sanitize-html": "2.9.2",
         "@types/stream-buffers": "3.0.5",
         "@types/yauzl-promise": "2.1.2",
         "@types/yazl": "2.4.3",
