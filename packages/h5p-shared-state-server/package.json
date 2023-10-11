@@ -22,7 +22,7 @@
     },
     "devDependencies": {
         "@types/sharedb": "3.3.3",
-        "@types/ws": "8.5.6"
+        "@types/ws": "8.5.7"
     },
     "publishConfig": {
         "access": "public"
