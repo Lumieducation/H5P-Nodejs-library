@@ -31,6 +31,6 @@
     },
     "devDependencies": {
         "@lumieducation/h5p-server": "^9.3.2",
-        "@types/resize-observer-browser": "0.1.8"
+        "@types/resize-observer-browser": "0.1.9"
     }
 }
