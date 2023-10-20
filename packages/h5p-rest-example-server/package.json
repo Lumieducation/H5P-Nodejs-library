@@ -42,7 +42,7 @@
         "@types/express-session": "1.17.9",
         "@types/express": "4.17.20",
         "@types/passport-local": "1.0.37",
-        "@types/passport": "1.0.13",
+        "@types/passport": "1.0.14",
         "ts-node": "10.9.1",
         "typescript": "5.2.2"
     }
