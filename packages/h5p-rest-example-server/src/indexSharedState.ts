@@ -181,11 +181,11 @@ const start = async (): Promise<void> => {
         path.resolve('h5p/user-data'),
         (key, language) => translationFunction(key, { lng: language }),
         {
-            contentWasDeleted: (contentId) => {
-                return sharedStateServer.deleteState(contentId);
+            contentWasDeleted: async (contentId) => {
+                await sharedStateServer.deleteState(contentId);
             },
-            contentWasUpdated: (contentId) => {
-                return sharedStateServer.deleteState(contentId);
+            contentWasUpdated: async (contentId) => {
+                await sharedStateServer.deleteState(contentId);
             }
         }
     );
