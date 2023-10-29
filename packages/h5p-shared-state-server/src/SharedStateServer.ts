@@ -86,6 +86,11 @@ export default class SharedStateServer {
 
             // We authenticate with a callback
             const user = await this.requestToUserCallback(request);
+            if (!user) {
+                ws.close();
+                return;
+            }
+
             (request as any).user = user;
 
             const stream = new WebSocketJSONStream(ws);
@@ -109,8 +114,10 @@ export default class SharedStateServer {
      * system. This will delete the state from the system (and also notify users
      * who are currently connected)
      * @param contentId
+     * @returns true if deleted correctly
+     * @throws errors if something went wrong
      */
-    public deleteState = async (contentId: string): Promise<void> => {
+    public deleteState = async (contentId: string): Promise<boolean> => {
         log('Deleting shared user state for contentId %s', contentId);
         const connection = this.backend.connect();
         const doc = connection.get('h5p', contentId);
@@ -120,8 +127,13 @@ export default class SharedStateServer {
         await promisify(doc.fetch).bind(doc)();
         try {
             await promisify(doc.del).bind(doc)({});
-        } catch (error) {
+        } catch (error: any) {
+            if (error.code === 'ERR_DOC_DOES_NOT_EXIST') {
+                return true;
+            }
+
             console.error(error);
+            throw error;
         }
 
         // TODO: delete state in DB storage once implemented

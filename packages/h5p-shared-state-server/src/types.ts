@@ -1,3 +1,5 @@
+import type { IncomingMessage } from 'http';
+
 import type {
     ContentId,
     ContentParameters,
@@ -56,7 +58,7 @@ export type GetLibraryFileAsJsonFunction = (
     libraryName: ILibraryName,
     filename: string
 ) => Promise<any>;
-export type RequestToUserFunction = (req: any) => Promise<IUser>;
+export type RequestToUserFunction = (req: IncomingMessage) => Promise<IUser>;
 export type GetPermissionForUserFunction = (
     user: IUser,
     contentId: string
