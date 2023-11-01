@@ -18,6 +18,8 @@ export default class ValidatorRepository {
             snapshot?: ValidateFunction | null;
             opLogicCheck?: any | null;
             snapshotLogicCheck?: any | null;
+            presence?: ValidateFunction | null;
+            presenceLogicCheck?: any | null;
         };
     } = {};
 
@@ -72,7 +74,7 @@ export default class ValidatorRepository {
             );
             validator = this.ajv.compile(schemaJson);
         } catch (error) {
-            console.error('Error while getting op schema:', error);
+            console.error('Error while getting snapshot schema:', error);
             this.validatorCache[ubername].snapshot = null;
             return null;
         }
@@ -84,7 +86,37 @@ export default class ValidatorRepository {
     }
 
     /**
-     * Gets the logic check structure for ops
+     * Gets the validator function for the op schema.
+     * @param libraryName
+     */
+    public async getPresenceSchemaValidator(
+        libraryName: ILibraryName
+    ): Promise<ValidateFunction> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.presence !== undefined) {
+            return this.validatorCache[ubername].presence;
+        }
+        let validator: ValidateFunction<unknown>;
+        try {
+            const schemaJson = await this.getLibraryFileAsJson(
+                libraryName,
+                'presenceSchema.json'
+            );
+            validator = this.ajv.compile(schemaJson);
+        } catch (error) {
+            console.error('Error while getting presence schema:', error);
+            this.validatorCache[ubername].presence = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].presence = validator;
+        return validator;
+    }
+
+    /**
+     * Gets the logic check structure for presence
      * @param libraryName
      * @returns the logical structure; note that even if the structure is typed
      * at the moment, is not validated when read from storage, so it is possible
@@ -104,7 +136,7 @@ export default class ValidatorRepository {
                 'opLogicCheck.json'
             );
         } catch (error) {
-            console.error('Error while getting op schema:', error);
+            console.error('Error while getting op logic check:', error);
             this.validatorCache[ubername].opLogicCheck = null;
             return null;
         }
@@ -136,7 +168,7 @@ export default class ValidatorRepository {
                 'snapshotLogicCheck.json'
             );
         } catch (error) {
-            console.error('Error while getting op schema:', error);
+            console.error('Error while getting snapshot logic check:', error);
             this.validatorCache[ubername].snapshotLogicCheck = null;
             return null;
         }
@@ -144,6 +176,38 @@ export default class ValidatorRepository {
             this.validatorCache[ubername] = {};
         }
         this.validatorCache[ubername].snapshotLogicCheck = logicCheck;
+        return logicCheck;
+    }
+
+    /**
+     * Gets the logic check structure for presence
+     * @param libraryName
+     * @returns the logical structure; note that even if the structure is typed
+     * at the moment, is not validated when read from storage, so it is possible
+     * that a malformed file in a library does not conform to the types
+     */
+    public async getPresenceLogicCheck(
+        libraryName: ILibraryName
+    ): Promise<(ILogicCheck | ILogicalOperator)[]> {
+        const ubername = LibraryName.toUberName(libraryName);
+        if (this.validatorCache[ubername]?.presenceLogicCheck !== undefined) {
+            return this.validatorCache[ubername].presenceLogicCheck;
+        }
+        let logicCheck: any;
+        try {
+            logicCheck = await this.getLibraryFileAsJson(
+                libraryName,
+                'presenceLogicCheck.json'
+            );
+        } catch (error) {
+            console.error('Error while getting presence logic check:', error);
+            this.validatorCache[ubername].presenceLogicCheck = null;
+            return null;
+        }
+        if (!this.validatorCache[ubername]) {
+            this.validatorCache[ubername] = {};
+        }
+        this.validatorCache[ubername].presenceLogicCheck = logicCheck;
         return logicCheck;
     }
 }

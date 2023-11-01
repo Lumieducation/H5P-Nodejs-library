@@ -25,10 +25,15 @@ export default (
         getContentParameters: GetContentParametersFunction
     ) =>
     async (
-        context: ShareDB.middleware.SubmitContext,
+        context:
+            | ShareDB.middleware.SubmitContext
+            | ShareDB.middleware.PresenceContext,
         next: (err?: any) => void
     ): Promise<void> => {
-        const contentId = context.id;
+        const contentId =
+            (context as ShareDB.middleware.SubmitContext).id ??
+            (context as ShareDB.middleware.PresenceContext).presence.ch;
+        log('%O', context);
         const agent = context.agent.custom as ISharedStateAgent;
         const user = agent.user as IUser;
 

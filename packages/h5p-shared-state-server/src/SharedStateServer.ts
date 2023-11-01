@@ -20,6 +20,8 @@ import validateOpSchema from './middleware/validateOpSchema';
 import performOpLogicChecks from './middleware/performOpLogicChecks';
 import validateCommitSchema from './middleware/validateCommitSchema';
 import performCommitLogicChecks from './middleware/performCommitLogicChecks';
+import validatePresenceSchema from './middleware/validatePresenceSchema';
+import performPresenceLogicChecks from './middleware/performPresenceLogicChecks';
 
 const log = debug('h5p:SharedStateServer:SharedStateServer');
 
@@ -143,7 +145,7 @@ export default class SharedStateServer {
      * Adds all the required middleware to a new ShareDB object
      */
     private setupShareDBMiddleware(): void {
-        this.backend = new ShareDB();
+        this.backend = new ShareDB({ presence: true });
         this.backend.use('connect', injectUser);
 
         // "Submit" is the earliest point at which we can check individual
@@ -157,6 +159,27 @@ export default class SharedStateServer {
                 this.getContentParameters
             )
         );
+
+        this.backend.use(
+            'receivePresence',
+            checkPermissionsAndInjectContentContext(
+                this.getPermissionForUser,
+                this.getLibraryMetadata,
+                this.getContentMetadata,
+                this.getContentParameters
+            )
+        );
+
+        this.backend.use(
+            'receivePresence',
+            validatePresenceSchema(this.validatorRepository)
+        );
+
+        this.backend.use(
+            'receivePresence',
+            performPresenceLogicChecks(this.validatorRepository)
+        );
+
         this.backend.use('submit', validateOpSchema(this.validatorRepository));
 
         // We use 'apply' for the op logic checks as we have access to the old
