@@ -363,7 +363,7 @@ const start = async (): Promise<void> => {
      */
     app.get(
         '/auth-data/:contentId',
-        cors({ credentials: true, origin: 'http://localhost:3000' }),
+        cors({ credentials: true, origin: 'http://localhost:3000' }), // TODO: put into config
         (req: express.Request<{ contentId: string }>, res) => {
             if (!req.user) {
                 res.status(200).json({ level: 'anonymous' });

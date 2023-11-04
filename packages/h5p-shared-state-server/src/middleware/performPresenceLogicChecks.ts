@@ -29,7 +29,7 @@ export default (validatorRepository: ValidatorRepository) =>
             if (
                 !checkLogic(
                     {
-                        presence: context.presence,
+                        presence: context.presence.p,
                         params: agent.params,
                         context: {
                             user: agent.user,
