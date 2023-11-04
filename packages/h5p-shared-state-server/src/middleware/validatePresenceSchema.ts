@@ -28,12 +28,14 @@ export default (validatorRepository: ValidatorRepository) =>
 
         log('context %O', context);
 
-        if (context.presence && agent.libraryMetadata.state?.presenceSchema) {
+        if (
+            context.presence?.p &&
+            agent.libraryMetadata.state?.presenceSchema
+        ) {
             const presenceSchemaValidator =
                 await validatorRepository.getPresenceSchemaValidator(
                     agent.libraryMetadata
                 );
-            console.log(context.presence);
             if (!presenceSchemaValidator(context.presence.p)) {
                 log("Rejecting change as presence doesn't conform to schema");
                 log('Error log: %O', presenceSchemaValidator.errors);

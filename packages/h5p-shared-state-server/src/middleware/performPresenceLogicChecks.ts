@@ -19,7 +19,7 @@ export default (validatorRepository: ValidatorRepository) =>
         }
 
         if (
-            context.presence &&
+            context.presence?.p &&
             agent.libraryMetadata.state?.presenceLogicChecks
         ) {
             const presenceLogicCheck =
