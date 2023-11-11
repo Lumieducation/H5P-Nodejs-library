@@ -58,6 +58,10 @@ export type GetLibraryFileAsJsonFunction = (
     libraryName: ILibraryName,
     filename: string
 ) => Promise<any>;
+export type GetLibraryFileAsStringFunction = (
+    libraryName: ILibraryName,
+    filename: string
+) => Promise<string>;
 export type RequestToUserFunction = (req: IncomingMessage) => Promise<IUser>;
 export type GetPermissionForUserFunction = (
     user: IUser,

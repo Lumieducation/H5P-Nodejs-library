@@ -404,6 +404,9 @@ const start = async (): Promise<void> => {
         h5pEditor.libraryManager.libraryStorage.getFileAsJson.bind(
             h5pEditor.libraryManager.libraryStorage
         ),
+        h5pEditor.libraryManager.libraryStorage.getFileAsString.bind(
+            h5pEditor.libraryManager.libraryStorage
+        ),
         async (req: express.Request) => {
             // We get the raw request that was upgraded to the websocket from
             // SharedStateServer and have to get the user for it from the

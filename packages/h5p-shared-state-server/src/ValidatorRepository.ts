@@ -1,7 +1,10 @@
 import { ILibraryName, LibraryName } from '@lumieducation/h5p-server';
 import Ajv, { ValidateFunction } from 'ajv/dist/2020';
+import YAML from 'yaml';
+
 import {
     GetLibraryFileAsJsonFunction,
+    GetLibraryFileAsStringFunction,
     ILogicalOperator,
     ILogicCheck
 } from './types';
@@ -10,7 +13,10 @@ import {
  * Keeps track of validation functions and structures and caches them in memory.
  */
 export default class ValidatorRepository {
-    constructor(private getLibraryFileAsJson: GetLibraryFileAsJsonFunction) {}
+    constructor(
+        private getLibraryFileAsJson: GetLibraryFileAsJsonFunction,
+        private getLibraryFileAsString: GetLibraryFileAsStringFunction
+    ) {}
 
     private validatorCache: {
         [ubername: string]: {
@@ -38,11 +44,24 @@ export default class ValidatorRepository {
         }
         let validator: ValidateFunction<unknown>;
         try {
-            const schemaJson = await this.getLibraryFileAsJson(
-                libraryName,
-                'opSchema.json'
-            );
-            validator = this.ajv.compile(schemaJson);
+            let schema: any;
+            try {
+                schema = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'opSchema.json'
+                );
+            } catch (error) {
+                try {
+                    const schemaString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'opSchema.yaml'
+                    );
+                    schema = YAML.parse(schemaString);
+                } catch {
+                    throw error;
+                }
+            }
+            validator = this.ajv.compile(schema);
         } catch (error) {
             console.error('Error while getting op schema:', error);
             this.validatorCache[ubername].op = null;
@@ -68,11 +87,24 @@ export default class ValidatorRepository {
         }
         let validator: ValidateFunction<unknown>;
         try {
-            const schemaJson = await this.getLibraryFileAsJson(
-                libraryName,
-                'snapshotSchema.json'
-            );
-            validator = this.ajv.compile(schemaJson);
+            let schema: any;
+            try {
+                schema = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'snapshotSchema.json'
+                );
+            } catch (error) {
+                try {
+                    const schemaString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'snapshotSchema.yaml'
+                    );
+                    schema = YAML.parse(schemaString);
+                } catch {
+                    throw error;
+                }
+            }
+            validator = this.ajv.compile(schema);
         } catch (error) {
             console.error('Error while getting snapshot schema:', error);
             this.validatorCache[ubername].snapshot = null;
@@ -98,11 +130,24 @@ export default class ValidatorRepository {
         }
         let validator: ValidateFunction<unknown>;
         try {
-            const schemaJson = await this.getLibraryFileAsJson(
-                libraryName,
-                'presenceSchema.json'
-            );
-            validator = this.ajv.compile(schemaJson);
+            let schema: any;
+            try {
+                schema = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'presenceSchema.json'
+                );
+            } catch (error) {
+                try {
+                    const schemaString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'presenceSchema.yaml'
+                    );
+                    schema = YAML.parse(schemaString);
+                } catch {
+                    throw error;
+                }
+            }
+            validator = this.ajv.compile(schema);
         } catch (error) {
             console.error('Error while getting presence schema:', error);
             this.validatorCache[ubername].presence = null;
@@ -131,10 +176,22 @@ export default class ValidatorRepository {
         }
         let logicCheck: any;
         try {
-            logicCheck = await this.getLibraryFileAsJson(
-                libraryName,
-                'opLogicCheck.json'
-            );
+            try {
+                logicCheck = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'opLogicCheck.json'
+                );
+            } catch (error) {
+                try {
+                    const logicCheckString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'opLogicCheck.yaml'
+                    );
+                    logicCheck = YAML.parse(logicCheckString);
+                } catch {
+                    throw error;
+                }
+            }
         } catch (error) {
             console.error('Error while getting op logic check:', error);
             this.validatorCache[ubername].opLogicCheck = null;
@@ -163,10 +220,22 @@ export default class ValidatorRepository {
         }
         let logicCheck: any;
         try {
-            logicCheck = await this.getLibraryFileAsJson(
-                libraryName,
-                'snapshotLogicCheck.json'
-            );
+            try {
+                logicCheck = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'snapshotLogicCheck.json'
+                );
+            } catch (error) {
+                try {
+                    const logicCheckString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'snapshotLogicCheck.yaml'
+                    );
+                    logicCheck = YAML.parse(logicCheckString);
+                } catch {
+                    throw error;
+                }
+            }
         } catch (error) {
             console.error('Error while getting snapshot logic check:', error);
             this.validatorCache[ubername].snapshotLogicCheck = null;
@@ -195,10 +264,22 @@ export default class ValidatorRepository {
         }
         let logicCheck: any;
         try {
-            logicCheck = await this.getLibraryFileAsJson(
-                libraryName,
-                'presenceLogicCheck.json'
-            );
+            try {
+                logicCheck = await this.getLibraryFileAsJson(
+                    libraryName,
+                    'presenceLogicCheck.json'
+                );
+            } catch (error) {
+                try {
+                    const logicCheckString = await this.getLibraryFileAsString(
+                        libraryName,
+                        'presenceLogicCheck.yaml'
+                    );
+                    logicCheck = YAML.parse(logicCheckString);
+                } catch {
+                    throw error;
+                }
+            }
         } catch (error) {
             console.error('Error while getting presence logic check:', error);
             this.validatorCache[ubername].presenceLogicCheck = null;

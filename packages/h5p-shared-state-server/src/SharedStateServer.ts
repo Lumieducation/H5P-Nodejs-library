@@ -11,6 +11,7 @@ import {
     GetContentMetadataFunction,
     GetContentParametersFunction,
     GetLibraryFileAsJsonFunction,
+    GetLibraryFileAsStringFunction,
     GetLibraryMetadataFunction,
     GetPermissionForUserFunction,
     RequestToUserFunction
@@ -56,6 +57,7 @@ export default class SharedStateServer {
         httpServer: http.Server,
         private getLibraryMetadata: GetLibraryMetadataFunction,
         getLibraryFileAsJson: GetLibraryFileAsJsonFunction,
+        getLibraryFileAsString: GetLibraryFileAsStringFunction,
         private requestToUserCallback: RequestToUserFunction,
         private getPermissionForUser: GetPermissionForUserFunction,
         private getContentMetadata: GetContentMetadataFunction,
@@ -74,7 +76,8 @@ export default class SharedStateServer {
         }
 
         this.validatorRepository = new ValidatorRepository(
-            getLibraryFileAsJson
+            getLibraryFileAsJson,
+            getLibraryFileAsString
         );
         this.setupShareDBMiddleware();
 
