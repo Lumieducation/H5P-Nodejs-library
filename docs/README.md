@@ -91,12 +91,10 @@ the [LICENSE](/LICENSE) file for details
 
 ## Support
 
-This work obtained financial support for development from the German
-BMBF-sponsored research project "CARO - Care Reflection Online" (FKN:
-01PD15012).
+This work obtained financial support for development from the German BMBF-sponsored research project "lea.online" (FKN: W-143600).
 
 Read more about them at the following websites:
 
-* CARO - [https://blogs.uni-bremen.de/caroprojekt/](https://blogs.uni-bremen.de/caroprojekt/)
+* lea.online - [https://blogs.uni-bremen.de/leaonline](https://blogs.uni-bremen.de/leaonline)
 * University of Bremen - [https://www.uni-bremen.de/en.html](https://www.uni-bremen.de/en.html)
 * BMBF - [https://www.bmbf.de/en/index.html](https://www.bmbf.de/en/index.html)
