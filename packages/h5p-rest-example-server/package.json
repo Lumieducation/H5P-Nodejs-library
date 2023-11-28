@@ -32,7 +32,7 @@
         "i18next": "22.5.1",
         "i18next-fs-backend": "2.3.0",
         "i18next-http-middleware": "3.5.0",
-        "passport": "0.6.0",
+        "passport": "0.7.0",
         "passport-local": "1.0.0",
         "tmp-promise": "3.0.3"
     },
