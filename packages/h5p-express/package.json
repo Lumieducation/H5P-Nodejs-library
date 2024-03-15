@@ -52,13 +52,13 @@
         "@types/express-fileupload": "1.4.4",
         "@types/express-serve-static-core": "4.17.43",
         "@types/express": "4.17.21",
-        "@types/supertest": "2.0.16",
+        "@types/supertest": "6.0.2",
         "axios-mock-adapter": "1.22.0",
         "axios": "1.6.8",
         "body-parser": "1.20.2",
         "express-fileupload": "1.4.3",
         "fs-extra": "11.2.0",
-        "supertest": "6.3.3",
+        "supertest": "6.3.4",
         "tmp-promise": "3.0.3"
     }
 }
