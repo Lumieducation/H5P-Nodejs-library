@@ -21,7 +21,7 @@
         "@types/jest": "29.5.12",
         "@types/node": "18.19.24",
         "@types/react-dom": "18.2.22",
-        "@types/react": "18.2.66",
+        "@types/react": "18.2.67",
         "react-scripts": "5.0.1"
     },
     "scripts": {
