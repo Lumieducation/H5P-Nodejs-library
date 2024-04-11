@@ -16,7 +16,7 @@
     "devDependencies": {
         "@lumieducation/h5p-server": "^9.3.2",
         "@testing-library/jest-dom": "5.17.0",
-        "@testing-library/react": "14.2.1",
+        "@testing-library/react": "14.3.1",
         "@testing-library/user-event": "14.5.2",
         "@types/jest": "29.5.12",
         "@types/node": "18.19.25",
