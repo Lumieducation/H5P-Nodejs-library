@@ -66,12 +66,12 @@ export default class LibraryManager {
         private alterLibrarySemantics?: (
             library: ILibraryName,
             semantics: ISemanticsEntry[]
-        ) => ISemanticsEntry[],
+        ) => Promise<ISemanticsEntry[]>,
         private alterLibraryLanguageFile?: (
             library: ILibraryName,
             languageFile: ILanguageFileEntry[],
             language: string
-        ) => ILanguageFileEntry[],
+        ) => Promise<ILanguageFileEntry[]>,
         translationFunction?: ITranslationFunction,
         lockProvider?: ILockProvider,
         private config?: {

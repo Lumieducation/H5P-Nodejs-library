@@ -1,0 +1,16 @@
+{
+    "H5P.Column 1.10 || <=1.16": [
+        {
+            "op": "add",
+            "path": "$[0].field.fields[0]",
+            "name": "content",
+            "library": "H5P.ImageSequencing 1.0 || <= 1.1"
+        },
+        {
+            "op": "add",
+            "path": "$[0].field.fields[0]",
+            "name": "content",
+            "library": "H5P.SortParagraphs 0.11"
+        }
+    ]
+}

@@ -2209,7 +2209,7 @@ export interface IH5PEditorOptions {
             library: ILibraryName,
             languageFile: ILanguageFileEntry[],
             language: string
-        ) => ILanguageFileEntry[];
+        ) => Promise<ILanguageFileEntry[]>;
         /**
          * This hook is called when the editor retrieves the semantics of a
          * library. You can change the semantics in the hook, e.g. by adding or
@@ -2226,7 +2226,7 @@ export interface IH5PEditorOptions {
         alterLibrarySemantics?: (
             library: ILibraryName,
             semantics: ISemanticsEntry[]
-        ) => ISemanticsEntry[];
+        ) => Promise<ISemanticsEntry[]>;
         /**
          * Lists of JavaScript and CSS files that should always be appended to
          * the list of core editor files.

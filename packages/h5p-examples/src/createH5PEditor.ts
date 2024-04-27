@@ -3,11 +3,17 @@ import redisStore from 'cache-manager-redis-store';
 import ioredis from 'ioredis';
 import debug from 'debug';
 import type { Db } from 'mongodb';
+import { readJSON } from 'fs-extra';
+import { resolve } from 'path';
+import satisfies from 'version-range';
+import jp from 'jsonpath';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
+import { ISemanticsEntry } from '@lumieducation/h5p-server';
+import { LibraryName } from '@lumieducation/h5p-server';
 
 let mongoDb;
 async function getMongoDb(): Promise<Db> {
@@ -210,7 +216,114 @@ export default async function createH5PEditor(
         {
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
-            lockProvider: lock
+            lockProvider: lock,
+            customization: {
+                alterLibrarySemantics: async (library, semantics) => {
+                    const alterLibraries: {
+                        [key: string]: {
+                            op: 'add';
+                            path: string;
+                            name: string;
+                            library: string;
+                        }[];
+                    } = await readJSON(resolve('alter-libraries.json'));
+
+                    const currentVersion = `${library.majorVersion}.${library.minorVersion}`;
+
+                    const alterationKey = Object.keys(alterLibraries).find(
+                        (a) => {
+                            const match = a.match(/^([^\s]+) (.+)$/);
+                            if (match.length != 3) {
+                                console.error(
+                                    'invalid alteration library name: ',
+                                    a
+                                );
+                                return false;
+                            }
+                            if (match[1] !== library.machineName) {
+                                return false;
+                            }
+                            return satisfies(currentVersion, match[2]);
+                        }
+                    );
+
+                    if (!alterationKey) {
+                        return semantics;
+                    }
+
+                    const alterations = alterLibraries[alterationKey];
+                    for (const alteration of alterations) {
+                        let libraryObj;
+                        try {
+                            libraryObj = jp.query(semantics, alteration.path);
+                        } catch (error) {
+                            console.error(
+                                'Error while trying to find library semantic entry with JSON string',
+                                alteration.path
+                            );
+                            return semantics;
+                        }
+                        if (libraryObj.length == 0) {
+                            return semantics;
+                        }
+                        const lib: ISemanticsEntry = libraryObj[0];
+                        if (lib.name !== alteration.name) {
+                            console.error(
+                                'semantic entry at',
+                                alteration.path,
+                                ' in library ',
+                                H5P.LibraryName.toUberName(library),
+                                " doesn't have the expected name",
+                                lib.name
+                            );
+                            return semantics;
+                        }
+                        if (
+                            lib.type !== 'library' ||
+                            !Array.isArray(lib.options)
+                        ) {
+                            console.error(
+                                'semantic entry at',
+                                alteration.path,
+                                ' in library ',
+                                H5P.LibraryName.toUberName(library),
+                                ' is malformed.'
+                            );
+                            return semantics;
+                        }
+                        if (alteration.op === 'add') {
+                            const [total, addLibMachineName, addLibVersion] =
+                                alteration.library.match(/^([^\s]+) (.+)$/);
+                            const libs =
+                                // eslint-disable-next-line no-await-in-loop
+                                (
+                                    await libraryStorage.getInstalledLibraryNames(
+                                        addLibMachineName
+                                    )
+                                ).sort(
+                                    (a, b) =>
+                                        a.majorVersion - b.majorVersion ||
+                                        a.minorVersion - b.minorVersion
+                                );
+                            const libraryToUse = libs.find((l) =>
+                                satisfies(
+                                    `${l.majorVersion}.${l.minorVersion}`,
+                                    addLibVersion
+                                )
+                            );
+                            if (!libraryToUse) {
+                                return semantics;
+                            }
+                            lib.options.push(
+                                LibraryName.toUberName(libraryToUse, {
+                                    useWhitespace: true
+                                })
+                            );
+                        }
+                    }
+                    return semantics;
+                }
+            }
         },
         contentUserDataStorage
     );
