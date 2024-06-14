@@ -34,7 +34,7 @@ export default class H5PConfig implements IH5PConfig {
         'json png jpg jpeg gif bmp tif tiff svg eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt gltf glb';
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
-        minor: 24
+        minor: 26
     };
     public coreUrl: string = '/core';
     public customization: {
