@@ -7,7 +7,7 @@ export default (
     contentId: string
 ): string =>
     `
-<!doctype html>
+<!DOCTYPE html>
 <html class="h5p-iframe">
     <head>
         <meta charset="utf-8">                    

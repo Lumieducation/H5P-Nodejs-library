@@ -1,5 +1,5 @@
 //eslint-disable-next-line import/no-extraneous-dependencies
-import puppeteer from 'puppeteer';
+import puppeteer, { ElementHandle } from 'puppeteer';
 
 // On 4th Oct 2020, the Puppeteer types didn't include waitForTimeout, so we
 // added it manually. Can be removed when
@@ -104,9 +104,9 @@ export async function uploadSave(file: string): Promise<void> {
     await contentFrame.focus('#upload');
     await contentFrame.click('#upload');
     await contentFrame.waitForSelector(".input-wrapper input[type='file']");
-    const uploadHandle = await contentFrame.$(
+    const uploadHandle = (await contentFrame.$(
         ".input-wrapper input[type='file']"
-    );
+    )) as ElementHandle<HTMLInputElement>;
     await uploadHandle.uploadFile(file);
     await contentFrame.waitForSelector('button.use-button');
     await contentFrame.focus('button.use-button');

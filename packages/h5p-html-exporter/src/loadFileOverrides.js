@@ -16,7 +16,7 @@
             return (
                 furtherH5PInlineResources[
                     this.libraryInfo.versionedNameNoSpaces + '/' + filePath
-                ] || filePath
+                ] || this.libraryInfo.versionedNameNoSpaces + '/' + filePath
             );
         };
         return ContentType;
@@ -95,4 +95,14 @@
             this.setAttribute('src', value);
         }
     });
+
+    const realFetch = fetch;
+    fetch = (...args) => {
+        if (args.length == 1 && typeof args[0] === 'string') {
+            if (furtherH5PInlineResources[args[0]]) {
+                return fetch(furtherH5PInlineResources[args[0]]);
+            }
+        }
+        return realFetch(...args);
+    };
 })();
