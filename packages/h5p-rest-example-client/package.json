@@ -4,8 +4,8 @@
     "private": true,
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.4.0",
-        "@fortawesome/free-solid-svg-icons": "6.5.1",
-        "@fortawesome/react-fontawesome": "0.2.0",
+        "@fortawesome/free-solid-svg-icons": "6.5.2",
+        "@fortawesome/react-fontawesome": "0.2.2",
         "@lumieducation/h5p-react": "^9.3.2",
         "bootstrap": "5.3.3",
         "http-proxy-middleware": "2.0.6",
