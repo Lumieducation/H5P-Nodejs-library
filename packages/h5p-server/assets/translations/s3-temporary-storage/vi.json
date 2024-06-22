@@ -1,0 +1,5 @@
+{
+    "deleting-file-error": "Có lỗi xảy ra khi xóa tệp này.",
+    "file-not-found": "Tệp không tồn tại.",
+    "s3-upload-error": "Có lỗi khi tải tệp tạm lên S3."
+}

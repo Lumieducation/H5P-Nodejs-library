@@ -1,0 +1,18 @@
+{
+    "add-file-content-not-found": "Không thể thêm tệp {{filename}} vào nội dung với id {{id}}: Nội dung không tồn tại.",
+    "add-library-file-not-installed": "Không thể thêm {{filename}} vào thư viện {{libraryName}} vì thư viện chưa được cài đặt.",
+    "clear-library-not-found": "Không thể xóa thư viện {{libraryName}} vì thư viện chưa được cài đặt.",
+    "delete-content-file-not-found": "Không thể xóa tệp {{filename}}: Tệp không tồn tại.",
+    "delete-content-not-found": "Không thể xóa nội dung: Nội dung không tồn tại.",
+    "error-creating-content": "Không thể tạo nội dung.",
+    "error-generating-content-id": "Không thể tạo id cho nội dung mới.",
+    "error-generating-unique-temporary-filename": "Không thể xác định tên tệp duy nhất cho {{name}}",
+    "error-updating-metadata": "Không thể cập nhật metadata bổ sung của thư viện {{library}}. Lỗi: {{error}}",
+    "get-library-metadata-not-installed": "Không thể lấy metadata cho thư viện {{libraryName}} vì thư viện chưa được cài đặt.",
+    "illegal-absolute-filename": "Đường dẫn tuyệt đối trong tên tệp không được phép: {{filename}} là không hợp lệ",
+    "illegal-relative-filename": "Đường dẫn tương đối trong tên tệp không được phép: {{filename}} là không hợp lệ",
+    "install-library-already-installed": "Thư viện {{libraryName}} đã được cài đặt.",
+    "remove-library-library-missing": "Thư viện {{libraryName}} không được cài đặt trên hệ thống.",
+    "temporary-file-not-found": "Tệp {{filename}} không thể truy cập cho người dùng {{userId}} hoặc không tồn tại.",
+    "update-library-library-missing": "Thư viện {{libraryName}} không thể cập nhật vì nó chưa được cài đặt."
+}
