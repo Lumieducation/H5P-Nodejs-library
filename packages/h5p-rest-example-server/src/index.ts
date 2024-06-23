@@ -27,34 +27,10 @@ import ExamplePermissionSystem from './ExamplePermissionSystem';
 let tmpDir: DirectoryResult;
 
 const userTable = {
-    teacher1: {
-        username: 'teacher1',
-        name: 'Teacher 1',
-        email: 'teacher1@example.com',
-        role: 'teacher'
-    },
-    teacher2: {
-        username: 'teacher2',
-        name: 'Teacher 2',
-        email: 'teacher2@example.com',
-        role: 'teacher'
-    },
-    student1: {
-        username: 'student1',
-        name: 'Student 1',
-        email: 'student1@example.com',
-        role: 'student'
-    },
-    student2: {
-        username: 'student2',
-        name: 'Student 2',
-        email: 'student2@example.com',
-        role: 'student'
-    },
     admin: {
         username: 'admin',
         name: 'Administration',
-        email: 'admin@example.com',
+        email: 'admin@lms.mschool.edu.vn',
         role: 'admin'
     },
     anonymous: {
@@ -72,7 +48,26 @@ const initPassport = (): void => {
             // DB access here.
             const user = userTable[username];
             if (!user) {
-                callback('User not found in user table');
+                console.log(username);
+                if (username.includes('student')){
+                    const studentUser = {
+                        username,
+                        name: username,
+                        email: username + '@lms.mschool.edu.vn',
+                        role: 'student'
+                    };
+                    callback(null, studentUser);
+                }
+                else if (username.includes('teacher')){
+                    const teacherUser = {
+                        username,
+                        name: username,
+                        email: username + '@lms.mschool.edu.vn',
+                        role: 'teacher'
+                    };
+                    callback(null, teacherUser);
+                }
+                else callback('Tài khoản không tồn tại');
             } else {
                 callback(null, user);
             }
