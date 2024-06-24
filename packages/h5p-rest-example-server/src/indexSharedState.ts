@@ -357,7 +357,7 @@ const start = async (): Promise<void> => {
                 res.status(200).json({ level: 'anonymous' });
             } else {
                 let level: string;
-                const user = await UserM.findById(req.user.id);
+                const user = await UserM.findOne({ username: (req.user as any)?.username });
                 if (
                   user?.role === 'teacher' ||
                   user?.role === 'admin'
