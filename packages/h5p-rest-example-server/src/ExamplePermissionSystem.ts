@@ -42,10 +42,8 @@ export default class ExamplePermissionSystem
                 case UserDataPermission.ListStates:
                 case UserDataPermission.ViewState:
                 case UserDataPermission.ViewFinished:
-                    if (affectedUserId === actingUser.id) {
-                        return true;
-                    }
-                    return false;
+                    return affectedUserId === actingUser.id;
+
                 default:
                     return false;
             }
@@ -95,10 +93,8 @@ export default class ExamplePermissionSystem
         permission: TemporaryFilePermission,
         filename?: string
     ): Promise<boolean> {
-        if (!user || !user.role || user.role === 'anonymous') {
-            return false;
-        }
-        return true;
+        return !(!user || !user.role || user.role === 'anonymous');
+
     }
 
     async checkForGeneralAction(

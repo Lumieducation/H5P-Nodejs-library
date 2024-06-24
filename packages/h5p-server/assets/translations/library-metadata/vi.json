@@ -1,0 +1,63 @@
+{
+    "H5P_Image": {
+        "title": "Hình ảnh"
+    },
+    "H5P_ContinuousText": {
+        "title": "Văn bản liên tục"
+    },
+    "H5P_FreeTextQuestion": {
+        "title": "Câu hỏi tự do"
+    },
+    "H5P_GoToScene": {
+        "title": "Đi đến cảnh"
+    },
+    "H5P_GoToQuestion": {
+        "title": "Đi đến câu hỏi"
+    },
+    "H5P_GoalsPage": {
+        "title": "Trang mục tiêu"
+    },
+    "H5P_GoalsAssessmentPage": {
+        "title": "Trang đánh giá mục tiêu"
+    },
+    "H5P_StandardPage": {
+        "title": "Trang chuẩn"
+    },
+    "H5P_DocumentExportPage": {
+        "title": "Trang xuất tài liệu"
+    },
+    "H5P_Link": {
+        "title": "Liên kết"
+    },
+    "H5P_Nil": { "title": "Nhãn" },
+    "H5P_IVHotspot": {
+        "title": "Điểm nóng điều hướng"
+    },
+    "H5P_OpenEndedQuestion": {
+        "title": "Câu hỏi mở"
+    },
+    "H5P_Shape": {
+        "title": "Hình dạng"
+    },
+    "H5P_Summary": {
+        "title": "Tóm tắt"
+    },
+    "H5P_Table": {
+        "title": "Bảng"
+    },
+    "H5P_Text": {
+        "title": "Văn bản"
+    },
+    "H5P_Video": {
+        "title": "Video"
+    },
+    "H5P_AdvancedText": {
+        "title": "Văn bản nâng cao"
+    },
+    "H5P_SimpleMultiChoice": {
+        "title": "Lựa chọn đơn giản"
+    },
+    "H5P_BranchingQuestion": {
+        "title": "Câu hỏi nhánh"
+    }
+}

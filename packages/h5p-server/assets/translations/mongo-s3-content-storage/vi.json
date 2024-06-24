@@ -1,0 +1,11 @@
+{
+    "content-not-found": "Nội dung bạn đang cố truy cập không tồn tại.",
+    "deleting-content-error": "Có lỗi xảy ra khi xóa đối tượng nội dung.",
+    "deleting-file-error": "Có lỗi xảy ra khi xóa tệp {{filename}} khỏi đối tượng nội dung.",
+    "filename-too-long": "Tên tệp quá dài: {{filename}}",
+    "illegal-filename": "Tên tệp {{filename}} không được phép.",
+    "listing-content-error": "Có lỗi xảy ra khi lấy danh sách các đối tượng nội dung",
+    "mongo-add-update-error": "Có lỗi xảy ra khi thêm hoặc cập nhật nội dung trong cơ sở dữ liệu.",
+    "mongo-replace-error": "Có lỗi xảy ra khi cập nhật nội dung trong cơ sở dữ liệu.",
+    "s3-upload-error": "Có lỗi xảy ra khi tải tệp {{filename}} lên S3."
+}
