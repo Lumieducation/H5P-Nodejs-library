@@ -15,7 +15,7 @@ import {
 export default function (
     h5pEditor: H5P.H5PEditor,
     h5pPlayer: H5P.H5PPlayer,
-    languageOverride: string | 'auto' = 'auto'
+    languageOverride: string | 'auto' = 'vi'
 ): express.Router {
     const router = express.Router();
 
