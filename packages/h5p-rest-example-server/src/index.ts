@@ -23,62 +23,48 @@ import ExampleUser from './ExampleUser';
 import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 import ExamplePermissionSystem from './ExamplePermissionSystem';
+import connectDB from './database';
+import UserM, { IUserModel } from './models/userModel';
 
 let tmpDir: DirectoryResult;
 
-const userTable = {
-    admin: {
-        username: 'admin',
-        name: 'Administration',
-        email: 'admin@lms.mschool.edu.vn',
-        role: 'admin'
-    },
-    anonymous: {
-        username: 'anonymous',
-        name: 'Anonymous',
-        email: '',
-        role: 'anonymous'
-    }
-};
+connectDB();
 
 const initPassport = (): void => {
     passport.use(
-        new LocalStrategy((username, password, callback) => {
-            // We don't check the password. In a real application you'll perform
-            // DB access here.
-            const user = userTable[username];
-            if (!user) {
-                console.log(username);
-                if (username.includes('student')){
-                    const studentUser = {
-                        username,
+        new LocalStrategy(async (username, password, callback) => {
+            try {
+                console.log('username', username);
+                console.log('password', password);
+                let user: IUserModel | null = await UserM.findOne({ username });
+                if (!user) {
+                    // Tạo mới user nếu không tồn tại
+                    user = new UserM({
+                        username: username,
                         name: username,
-                        email: username + '@lms.mschool.edu.vn',
-                        role: 'student'
-                    };
-                    callback(null, studentUser);
+                        email: `${username}@example.com`,
+                        role: (password === 'admin') ? 'admin' : 'student'
+                    }) as any;
+                    await user.save();
                 }
-                else if (username.includes('teacher')){
-                    const teacherUser = {
-                        username,
-                        name: username,
-                        email: username + '@lms.mschool.edu.vn',
-                        role: 'teacher'
-                    };
-                    callback(null, teacherUser);
-                }
-                else callback('Tài khoản không tồn tại');
-            } else {
                 callback(null, user);
+            } catch (err) {
+                callback(err);
             }
         })
     );
-    passport.serializeUser((user, done): void => {
-        done(null, user);
+
+    passport.serializeUser((user: IUserModel, done: any): void => {
+        done(null, user.id);
     });
 
-    passport.deserializeUser((user, done): void => {
-        done(null, user);
+    passport.deserializeUser(async (id: string, done: any) => {
+        try {
+            const user = await UserM.findById(id);
+            done(null, user);
+        } catch (err) {
+            done(err);
+        }
     });
 };
 
@@ -354,18 +340,26 @@ const start = async (): Promise<void> => {
             // a CSRF token.
             ignoreMethods: ['POST']
         }),
-        function (
+        async function (
             req: express.Request & {
                 user: { username: string; email: string; name: string };
             },
             res: express.Response
-        ): void {
-            res.status(200).json({
-                username: req.user.username,
-                email: req.user.email,
-                name: req.user.name,
-                csrfToken: req.csrfToken()
-            });
+        ) {
+            try {
+                const user = await UserM.findOne({ username: req.user.username });
+                if (!user) {
+                    return res.status(400).json({ message: 'User not found' });
+                }
+                res.status(200).json({
+                    username: user.username,
+                    email: user.email,
+                    name: user.name,
+                    csrfToken: req.csrfToken(),
+                });
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
         }
     );
 

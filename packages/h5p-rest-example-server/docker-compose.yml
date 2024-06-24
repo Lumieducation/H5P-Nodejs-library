@@ -1,0 +1,24 @@
+version: '3.6'
+
+services:
+    mongo:
+        image: mongo:4.4
+        restart: always
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=h5pnodejs
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongodb_data:/data/db
+        networks:
+            - h5p-net
+networks:
+    h5p-net:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.231.1.0/24
+                  gateway: 172.231.1.1
+volumes:
+    mongodb_data:

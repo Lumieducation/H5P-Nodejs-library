@@ -27,68 +27,49 @@ import createH5PEditor from './createH5PEditor';
 import { displayIps, clearTempFiles } from './utils';
 import { IUser } from '@lumieducation/h5p-server';
 import ExamplePermissionSystem from './ExamplePermissionSystem';
+import UserM, {IUserModel} from "./models/userModel";
+import csurf from "csurf";
+import connectDB from "./database";
 
 let tmpDir: DirectoryResult;
 let sharedStateServer: SharedStateServer;
 
-const users = {
-    teacher1: {
-        username: 'teacher1',
-        name: 'Teacher 1',
-        email: 'teacher1@example.com',
-        role: 'teacher'
-    },
-    teacher2: {
-        username: 'teacher2',
-        name: 'Teacher 2',
-        email: 'teacher2@example.com',
-        role: 'teacher'
-    },
-    student1: {
-        username: 'student1',
-        name: 'Student 1',
-        email: 'student1@example.com',
-        role: 'student'
-    },
-    student2: {
-        username: 'student2',
-        name: 'Student 2',
-        email: 'student2@example.com',
-        role: 'student'
-    },
-    admin: {
-        username: 'admin',
-        name: 'Administration',
-        email: 'admin@example.com',
-        role: 'admin'
-    },
-    anonymous: {
-        username: 'anonymous',
-        name: 'Anonymous',
-        email: '',
-        role: 'anonymous'
-    }
-};
+connectDB();
 
 const initPassport = (): void => {
     passport.use(
-        new LocalStrategy((username, password, callback) => {
-            // We don't check the password. In a real application you'll perform
-            // DB access here.
-            const user = users[username];
-            if (!user) {
-                callback('User not found in user table');
-            } else {
-                callback(null, user);
-            }
-        })
+      new LocalStrategy(async (username, _password, callback) => {
+          try {
+              let user: IUserModel | null = await UserM.findOne({ username });
+              if (!user) {
+                  // Tạo mới user nếu không tồn tại
+                  user = new UserM({
+                      username: username,
+                      name: username,
+                      email: `${username}@example.com`,
+                      role: 'student'
+                  }) as any;
+                  await user.save();
+              }
+              // Bạn có thể thêm logic kiểm tra mật khẩu tại đây nếu cần
+              callback(null, user);
+          } catch (err) {
+              callback(err);
+          }
+      })
     );
-    passport.serializeUser((user, done): void => {
-        done(null, user);
+
+    passport.serializeUser((user: IUserModel, done): void => {
+        done(null, user.id);
     });
 
-    passport.deserializeUser((user, done): void => {
-        done(null, user);
+    passport.deserializeUser(async (id, done) => {
+        try {
+            const user = await UserM.findById(id);
+            done(null, user);
+        } catch (err) {
+            done(err);
+        }
     });
 };
 
@@ -329,22 +310,29 @@ const start = async (): Promise<void> => {
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in
     // the session
     app.post(
-        '/login',
-        passport.authenticate('local', {
-            failWithError: true
-        }),
-        function (
-            req: express.Request & {
-                user: { username: string; email: string; name: string };
-            },
-            res: express.Response
-        ): void {
-            res.status(200).json({
-                username: req.user.username,
-                email: req.user.email,
-                name: req.user.name
-            });
-        }
+      '/login',
+      passport.authenticate('local', {
+          failWithError: true,
+      }),
+      csurf({
+          ignoreMethods: ['POST'],
+      }),
+      async function (req: any, res: any): Promise<void> {
+          try {
+              const user = await UserM.findById(req.user.id);
+              if (!user) {
+                  return res.status(400).json({ message: 'User not found' });
+              }
+              res.status(200).json({
+                  username: user.username,
+                  email: user.email,
+                  name: user.name,
+                  csrfToken: req.csrfToken(),
+              });
+          } catch (err) {
+              res.status(500).json({ message: err.message });
+          }
+      }
     );
 
     app.post('/logout', (req, res) => {
@@ -364,14 +352,15 @@ const start = async (): Promise<void> => {
     app.get(
         '/auth-data/:contentId',
         cors({ credentials: true, origin: 'http://localhost:3000' }),
-        (req: express.Request<{ contentId: string }>, res) => {
+        async (req: express.Request<{ contentId: string }>, res) => {
             if (!req.user) {
                 res.status(200).json({ level: 'anonymous' });
             } else {
                 let level: string;
+                const user = await UserM.findById(req.user.id);
                 if (
-                    users[(req.user as any)?.id]?.role === 'teacher' ||
-                    users[(req.user as any)?.id]?.role === 'admin'
+                  user?.role === 'teacher' ||
+                  user?.role === 'admin'
                 ) {
                     level = 'privileged';
                 } else {
@@ -415,11 +404,11 @@ const start = async (): Promise<void> => {
             return expressUserToH5PUser(req.user as any);
         },
         async (user, _contentId) => {
-            const userInTable = users[user.id];
+            const userInTable = await UserM.findById(user.id);
             if (!userInTable) {
                 return undefined;
             }
-            return userInTable.role === 'teacher' || userInTable === 'admin'
+            return userInTable.role === 'teacher' || userInTable.role === 'admin'
                 ? 'privileged'
                 : 'user';
         },
