@@ -30,7 +30,7 @@
         "express-session": "1.18.0",
         "fs-extra": "11.2.0",
         "i18next": "22.5.1",
-        "i18next-fs-backend": "2.3.1",
+        "i18next-fs-backend": "2.3.2",
         "i18next-http-middleware": "3.6.0",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
