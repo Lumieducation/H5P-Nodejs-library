@@ -160,10 +160,13 @@ export default class SemanticsEnforcer {
                     'td',
                     'th',
                     'colgroup',
+                    'col',
                     'thead',
                     'tbody',
                     'tfoot',
-                    'caption'
+                    'caption',
+                    'figure',
+                    'figcaption'
                 ];
             }
             if (allowedTags.includes('strong')) {
@@ -201,17 +204,17 @@ export default class SemanticsEnforcer {
                     allowedStyles['font-size'] = [/^[0-9.]+(em|px|%)$/i];
                 }
                 if (semantics.font.family) {
-                    allowedStyles['font-family'] = [/^[-a-z0-9," ]+$/i];
+                    allowedStyles['font-family'] = [/^[-a-z0-9,\'&; ]+$/i];
                 }
                 if (semantics.font.color) {
                     // eslint-disable-next-line @typescript-eslint/dot-notation
                     allowedStyles['color'] = [
-                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\)|hsla?\([0-9,.% ]+\)) *;?$/i
                     ];
                 }
                 if (semantics.font.background) {
                     allowedStyles['background-color'] = [
-                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                        /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\)|hsla?\([0-9,.% ]+\)) *;?$/i
                     ];
                 }
                 if (semantics.font.spacing) {
@@ -225,19 +228,27 @@ export default class SemanticsEnforcer {
 
             const tableCellStyle = allowedTags.includes('table')
                 ? {
-                      'white-space': [/^(nowrap)|(normal)|(pre)$/i],
-                      'text-align': [/^(center|left|right|justify)$/i],
-                      'vertical-align': [
-                          /^(baseline)|(text-top)|(text-bottom)|(sub)|(super)$/i
+                      border: [
+                          /^[0-9.]+(em|px|%|) *(none|solid|dotted|dashed|double|groove|ridge|inset|outset) *(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\)|hsla?\([0-9,.% ]+\))$/i
                       ],
-                      height: [/^[0-9.]+(em|px|%)$/i],
-                      width: [/^[0-9.]+(em|px|%)$/i],
-                      'background-color': [
-                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
+                      'border-style': [
+                          /^(none|solid|dotted|dashed|double|groove|ridge|inset|outset)$/i
                       ],
+                      'border-width': [/^[0-9.]+(em|px|%)$/i],
                       'border-color': [
-                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\))$/i
-                      ]
+                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\)|hsla?\([0-9,.% ]+\))$/i
+                      ],
+                      'vertical-align': [/^(middle|top|bottom)$/i],
+                      padding: [/^[0-9.]+(em|px|%|)$/i],
+                      width: [/^[0-9.]+(em|px|%)$/i],
+                      height: [/^[0-9.]+(em|px|%)$/i],
+                      float: [/(right|left|none)/i],
+                      'border-collapse': [/^collapse$/i],
+                      'background-color': [
+                          /^(#[a-f0-9]{3}[a-f0-9]{3}?|rgba?\([0-9, ]+\)|hsla?\([0-9,.% ]+\))$/i
+                      ],
+                      'white-space': [/^(nowrap)|(normal)|(pre)$/i],
+                      'text-align': [/^(center|left|right|justify)$/i]
                   }
                 : undefined;
 
@@ -261,14 +272,14 @@ export default class SemanticsEnforcer {
                 },
                 allowedStyles: {
                     '*': allowedStyles,
-                    table: allowedTags.includes('table')
-                        ? {
-                              height: [/^[0-9.]+(em|px|%)$/i],
-                              width: [/^[0-9.]+(em|px|%)$/i]
-                          }
-                        : undefined,
+                    table: tableCellStyle,
                     td: tableCellStyle,
-                    th: tableCellStyle
+                    th: tableCellStyle,
+                    colgroup: tableCellStyle,
+                    col: tableCellStyle,
+                    caption: tableCellStyle,
+                    figure: tableCellStyle,
+                    figcaption: tableCellStyle
                 }
             });
         }
