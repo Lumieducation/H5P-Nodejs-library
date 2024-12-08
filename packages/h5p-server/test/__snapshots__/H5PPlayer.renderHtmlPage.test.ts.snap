@@ -6,19 +6,22 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
 <head>
     <meta charset="utf-8">
    
-    <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=1.24-master"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=1.24-master"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=1.24-master"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-tooltip.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-table.css?version=1.27.0"/>
     <link rel="stylesheet" href="/test.css"/>
-    <script src="/h5p/core/js/jquery.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-event-dispatcher.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-x-api-event.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-x-api.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-content-type.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-action-bar.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/request-queue.js?version=1.24-master"></script>
+    <script src="/h5p/core/js/jquery.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-event-dispatcher.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-x-api-event.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-x-api.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-content-type.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-action-bar.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/request-queue.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-tooltip.js?version=1.27.0"></script>
     <script src="/test.js"></script>
 
     <script>
@@ -53,21 +56,24 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
   },
   "core": {
     "scripts": [
-      "/h5p/core/js/jquery.js?version=1.24-master",
-      "/h5p/core/js/h5p.js?version=1.24-master",
-      "/h5p/core/js/h5p-event-dispatcher.js?version=1.24-master",
-      "/h5p/core/js/h5p-x-api-event.js?version=1.24-master",
-      "/h5p/core/js/h5p-x-api.js?version=1.24-master",
-      "/h5p/core/js/h5p-content-type.js?version=1.24-master",
-      "/h5p/core/js/h5p-confirmation-dialog.js?version=1.24-master",
-      "/h5p/core/js/h5p-action-bar.js?version=1.24-master",
-      "/h5p/core/js/request-queue.js?version=1.24-master",
+      "/h5p/core/js/jquery.js?version=1.27.0",
+      "/h5p/core/js/h5p.js?version=1.27.0",
+      "/h5p/core/js/h5p-event-dispatcher.js?version=1.27.0",
+      "/h5p/core/js/h5p-x-api-event.js?version=1.27.0",
+      "/h5p/core/js/h5p-x-api.js?version=1.27.0",
+      "/h5p/core/js/h5p-content-type.js?version=1.27.0",
+      "/h5p/core/js/h5p-confirmation-dialog.js?version=1.27.0",
+      "/h5p/core/js/h5p-action-bar.js?version=1.27.0",
+      "/h5p/core/js/request-queue.js?version=1.27.0",
+      "/h5p/core/js/h5p-tooltip.js?version=1.27.0",
       "/test.js"
     ],
     "styles": [
-      "/h5p/core/styles/h5p.css?version=1.24-master",
-      "/h5p/core/styles/h5p-confirmation-dialog.css?version=1.24-master",
-      "/h5p/core/styles/h5p-core-button.css?version=1.24-master",
+      "/h5p/core/styles/h5p.css?version=1.27.0",
+      "/h5p/core/styles/h5p-confirmation-dialog.css?version=1.27.0",
+      "/h5p/core/styles/h5p-core-button.css?version=1.27.0",
+      "/h5p/core/styles/h5p-tooltip.css?version=1.27.0",
+      "/h5p/core/styles/h5p-table.css?version=1.27.0",
       "/test.css"
     ]
   },
@@ -236,7 +242,14 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
       "emailAddressDescription": "The email address will be used by H5P to reach out to the publisher in case of any issues with the content or in case the publisher needs to recover their account. It will not be published or shared with any third parties",
       "copyrightWarning": "Copyrighted material cannot be shared in the H5P Content Hub. If the content is licensed with a OER friendly license like Creative Commons, please choose the appropriate license. If not this content cannot be shared.",
       "keywordsExits": "Keywords already exists!",
-      "someKeywordsExits": "Some of these keywords already exist"
+      "someKeywordsExits": "Some of these keywords already exist",
+      "width": "width",
+      "height": "height",
+      "rotateLeft": "Rotate Left",
+      "rotateRight": "Rotate Right",
+      "cropImage": "Crop Image",
+      "confirmCrop": "Confirm Crop",
+      "cancelCrop": "Cancel Crop"
     }
   },
   "postUserStatistics": true,
@@ -265,18 +278,21 @@ exports[`Rendering the HTML page uses default renderer and integration values 1`
 <head>
     <meta charset="utf-8">
    
-    <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=1.24-master"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=1.24-master"/>
-    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=1.24-master"/>
-    <script src="/h5p/core/js/jquery.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-event-dispatcher.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-x-api-event.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-x-api.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-content-type.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/h5p-action-bar.js?version=1.24-master"></script>
-    <script src="/h5p/core/js/request-queue.js?version=1.24-master"></script>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-confirmation-dialog.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-core-button.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-tooltip.css?version=1.27.0"/>
+    <link rel="stylesheet" href="/h5p/core/styles/h5p-table.css?version=1.27.0"/>
+    <script src="/h5p/core/js/jquery.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-event-dispatcher.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-x-api-event.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-x-api.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-content-type.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-confirmation-dialog.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-action-bar.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/request-queue.js?version=1.27.0"></script>
+    <script src="/h5p/core/js/h5p-tooltip.js?version=1.27.0"></script>
 
     <script>
         window.H5PIntegration = {
@@ -310,20 +326,23 @@ exports[`Rendering the HTML page uses default renderer and integration values 1`
   },
   "core": {
     "scripts": [
-      "/h5p/core/js/jquery.js?version=1.24-master",
-      "/h5p/core/js/h5p.js?version=1.24-master",
-      "/h5p/core/js/h5p-event-dispatcher.js?version=1.24-master",
-      "/h5p/core/js/h5p-x-api-event.js?version=1.24-master",
-      "/h5p/core/js/h5p-x-api.js?version=1.24-master",
-      "/h5p/core/js/h5p-content-type.js?version=1.24-master",
-      "/h5p/core/js/h5p-confirmation-dialog.js?version=1.24-master",
-      "/h5p/core/js/h5p-action-bar.js?version=1.24-master",
-      "/h5p/core/js/request-queue.js?version=1.24-master"
+      "/h5p/core/js/jquery.js?version=1.27.0",
+      "/h5p/core/js/h5p.js?version=1.27.0",
+      "/h5p/core/js/h5p-event-dispatcher.js?version=1.27.0",
+      "/h5p/core/js/h5p-x-api-event.js?version=1.27.0",
+      "/h5p/core/js/h5p-x-api.js?version=1.27.0",
+      "/h5p/core/js/h5p-content-type.js?version=1.27.0",
+      "/h5p/core/js/h5p-confirmation-dialog.js?version=1.27.0",
+      "/h5p/core/js/h5p-action-bar.js?version=1.27.0",
+      "/h5p/core/js/request-queue.js?version=1.27.0",
+      "/h5p/core/js/h5p-tooltip.js?version=1.27.0"
     ],
     "styles": [
-      "/h5p/core/styles/h5p.css?version=1.24-master",
-      "/h5p/core/styles/h5p-confirmation-dialog.css?version=1.24-master",
-      "/h5p/core/styles/h5p-core-button.css?version=1.24-master"
+      "/h5p/core/styles/h5p.css?version=1.27.0",
+      "/h5p/core/styles/h5p-confirmation-dialog.css?version=1.27.0",
+      "/h5p/core/styles/h5p-core-button.css?version=1.27.0",
+      "/h5p/core/styles/h5p-tooltip.css?version=1.27.0",
+      "/h5p/core/styles/h5p-table.css?version=1.27.0"
     ]
   },
   "l10n": {
@@ -491,7 +510,14 @@ exports[`Rendering the HTML page uses default renderer and integration values 1`
       "emailAddressDescription": "The email address will be used by H5P to reach out to the publisher in case of any issues with the content or in case the publisher needs to recover their account. It will not be published or shared with any third parties",
       "copyrightWarning": "Copyrighted material cannot be shared in the H5P Content Hub. If the content is licensed with a OER friendly license like Creative Commons, please choose the appropriate license. If not this content cannot be shared.",
       "keywordsExits": "Keywords already exists!",
-      "someKeywordsExits": "Some of these keywords already exist"
+      "someKeywordsExits": "Some of these keywords already exist",
+      "width": "width",
+      "height": "height",
+      "rotateLeft": "Rotate Left",
+      "rotateRight": "Rotate Right",
+      "cropImage": "Crop Image",
+      "confirmCrop": "Confirm Crop",
+      "cancelCrop": "Cancel Crop"
     }
   },
   "postUserStatistics": true,
