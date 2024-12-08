@@ -162,5 +162,12 @@
     "emailAddressDescription": "The email address will be used by H5P to reach out to the publisher in case of any issues with the content or in case the publisher needs to recover their account. It will not be published or shared with any third parties",
     "copyrightWarning": "Copyrighted material cannot be shared in the H5P Content Hub. If the content is licensed with a OER friendly license like Creative Commons, please choose the appropriate license. If not this content cannot be shared.",
     "keywordsExits": "Keywords already exists!",
-    "someKeywordsExits": "Some of these keywords already exist"
+    "someKeywordsExits": "Some of these keywords already exist",
+    "width": "width",
+    "height": "height",
+    "rotateLeft": "Rotate Left",
+    "rotateRight": "Rotate Right",
+    "cropImage": "Crop Image",
+    "confirmCrop": "Confirm Crop",
+    "cancelCrop": "Cancel Crop"
 }

@@ -14,7 +14,7 @@
             "scripts/h5peditor-editor.js",
             "scripts/h5peditor.js",
             "language/en.js",
-            "scripts/h5p-hub-client.js",                        
+            "scripts/h5p-hub-client.js",
             "scripts/h5peditor-semantic-structure.js",
             "scripts/h5peditor-library-selector.js",
             "scripts/h5peditor-fullscreen-bar.js",
@@ -64,7 +64,7 @@
             "styles/h5p-core-button.css"
         ],
         "editor": [
-            "libs/darkroom.css",
+            "libs/cropper.css",
             "styles/css/h5p-hub-client.css",
             "styles/css/fonts.css",
             "styles/css/application.css",

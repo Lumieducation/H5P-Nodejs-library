@@ -162,5 +162,12 @@
     "emailAddressDescription": "client:emailAddressDescription",
     "copyrightWarning": "client:copyrightWarning",
     "keywordsExits": "client:keywordsExits",
-    "someKeywordsExits": "client:someKeywordsExits"
+    "someKeywordsExits": "client:someKeywordsExits",
+    "width": "client:width",
+    "height": "client:height",
+    "rotateLeft": "client:rotateLeft",
+    "rotateRight": "client:rotateRight",
+    "cropImage": "client:cropImage",
+    "confirmCrop": "client:confirmCrop",
+    "cancelCrop": "client:cancelCrop"
 }
