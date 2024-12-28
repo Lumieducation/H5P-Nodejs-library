@@ -429,10 +429,14 @@ export default class HtmlExporter {
                     licenseText + text.replace(/<\/script>/g, '<\\/script>');
             })
         );
-        const scripts = model.scripts
+        const scripts: string[] = model.scripts
             .map((script) => texts[script])
             .concat(additionalScripts);
-        return uglifyJs.minify(scripts, { output: { comments: 'some' } }).code;
+
+        return uglifyJs.minify(scripts, {
+            output: { comments: 'some' },
+            module: false
+        }).code;
     }
 
     /**
@@ -744,7 +748,6 @@ export default class HtmlExporter {
             }
 
             const usedFiles = new LibrariesFilesList();
-            // eslint-disable-next-line prefer-const
             let [scriptsBundle, stylesBundle] = await Promise.all([
                 this.getScriptBundle(
                     model,
