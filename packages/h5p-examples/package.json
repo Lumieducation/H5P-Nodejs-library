@@ -14,7 +14,8 @@
         "test:e2e": "start-server-and-test start http://localhost:8080 test:e2e:tests",
         "test:server+upload": "start-server-and-test start http://localhost:8080 test:upload",
         "test:upload": "npx ts-node test/e2e/customUpload.ts ${H5P_FILES} ${ERROR_FILE}",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "postinstall": "mkdir -p public && cp ../../node_modules/requirejs/require.js ./public/require.js && cp -R ../../node_modules/bootstrap/dist/css/bootstrap.min.css ./public/bootstrap.min.css && cp -R ../../node_modules/@fortawesome/fontawesome-free ./public/ && cp -R ../../node_modules/react ./public/ && cp -R ../../node_modules/react-dom ./public/"
     },
     "author": "",
     "license": "ISC",

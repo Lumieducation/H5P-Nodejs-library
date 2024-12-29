@@ -128,7 +128,7 @@ const start = async (): Promise<void> => {
             backend: {
                 loadPath: path.join(
                     __dirname,
-                    '../node_modules/@lumieducation/h5p-server/build/assets/translations/{{ns}}/{{lng}}.json'
+                    '../../../node_modules/@lumieducation/h5p-server/build/assets/translations/{{ns}}/{{lng}}.json'
                 )
             },
             debug: process.env.DEBUG && process.env.DEBUG.includes('i18n'),

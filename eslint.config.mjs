@@ -21,7 +21,8 @@ export default [
             '**/node_modules/',
             '**/*.d.ts',
             '**/*.config.js',
-            'packages/h5p-html-exporter/src/**/*.js',]
+            'packages/h5p-html-exporter/src/**/*.js',
+            'packages/h5p-examples/public']
     },
     { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
     pluginJs.configs.recommended,
