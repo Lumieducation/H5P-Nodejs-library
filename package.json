@@ -95,15 +95,11 @@
         "commitlint": "17.8.1",
         "concurrently": "8.2.2",
         "eslint": "8.57.1",
-        "eslint-config-airbnb": "19.0.4",
         "eslint-config-airbnb-typescript": "17.1.0",
         "eslint-config-prettier": "9.1.0",
         "eslint-plugin-import": "2.30.0",
-        "eslint-plugin-jsx-a11y": "6.10.2",
-        "eslint-plugin-prefer-arrow": "1.2.3",
         "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-react": "7.35.0",
-        "eslint-plugin-react-hooks": "4.6.2",
         "husky": "8.0.3",
         "jest": "29.7.0",
         "json-autotranslate": "1.14.5",
@@ -117,7 +113,7 @@
         "typescript": "5.5.4"
     },
     "engines": {
-        "node": ">=15.0.0",
+        "node": ">=20.0.0",
         "npm": ">=7.0.0"
     }
 }
