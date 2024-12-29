@@ -19,9 +19,9 @@ export default function render(
         <html>
         <head>
             <meta charset="utf-8">
-            <script src="/node_modules/requirejs/require.js"></script>
-            <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
-            <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+            <script src="/require.js"></script>
+            <link rel="stylesheet" href="/bootstrap.min.css">
+            <link rel="stylesheet" href="/fontawesome-free/css/all.min.css">
             <title>H5P NodeJs Demo</title>
         </head>
         <body>
@@ -94,8 +94,8 @@ export default function render(
                 requirejs.config({
                     baseUrl: "assets/js",
                     paths: {
-                        react: '/node_modules/react/umd/react.development',
-                        "react-dom": '/node_modules/react-dom/umd/react-dom.development'
+                        react: '/react/umd/react.development',
+                        "react-dom": '/react-dom/umd/react-dom.development'
                     }
                 });
                 requirejs([

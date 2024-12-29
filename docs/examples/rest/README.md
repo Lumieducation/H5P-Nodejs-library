@@ -23,8 +23,7 @@ application are provided by which package:
 ## Trying it out
 
 1. Clone the repository
-2. Run `npm install` **in the root**. This will install all dependencies of the example packages and internally link the packages inside the monorepo with
-   symlinks (lerna).
+2. Run `npm install` **in the root**. This will install all dependencies of the example packages and internally link the packages inside the monorepo.
 3. Run `npm start` for the server. (Must be up and running before you start the client!)
 4. Run `npm start` for the client (**the server must still be running**).
 5. A browser should open on http://localhost:3000. If there is an error, you have to reload the the page, as the server might not be fully initialized yet.

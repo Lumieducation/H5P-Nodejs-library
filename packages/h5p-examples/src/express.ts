@@ -45,7 +45,7 @@ const start = async (): Promise<void> => {
             backend: {
                 loadPath: path.join(
                     __dirname,
-                    '../node_modules/@lumieducation/h5p-server/build/assets/translations/{{ns}}/{{lng}}.json'
+                    '../../../node_modules/@lumieducation/h5p-server/build/assets/translations/{{ns}}/{{lng}}.json'
                 )
             },
             debug: process.env.DEBUG && process.env.DEBUG.includes('i18n'),
@@ -230,12 +230,8 @@ const start = async (): Promise<void> => {
 
     server.use('/client', express.static(path.join(__dirname, 'client')));
 
-    // We only include the whole node_modules directory for convenience. Don't
-    // do this in a production app.
-    server.use(
-        '/node_modules',
-        express.static(path.join(__dirname, '../node_modules'))
-    );
+    // Serve static files
+    server.use('/', express.static(path.join(__dirname, '../public')));
 
     // Remove temporary directory on shutdown
     if (useTempUploads) {
