@@ -27,7 +27,7 @@
         "csurf": "1.11.0",
         "express": "4.21.2",
         "express-fileupload": "1.5.1",
-        "express-session": "1.18.0",
+        "express-session": "1.18.1",
         "fs-extra": "11.2.0",
         "i18next": "22.5.1",
         "i18next-fs-backend": "2.6.0",
@@ -39,7 +39,7 @@
     "devDependencies": {
         "@types/cors": "2.8.17",
         "@types/csurf": "1.11.5",
-        "@types/express-session": "1.18.0",
+        "@types/express-session": "1.18.1",
         "@types/express": "4.17.21",
         "@types/passport-local": "1.0.38",
         "@types/passport": "1.0.17",
