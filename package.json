@@ -94,7 +94,7 @@
         "axios": "1.7.5",
         "commitlint": "17.8.1",
         "concurrently": "8.2.2",
-        "eslint": "^8.57.1",
+        "eslint": "^9.0.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-react": "^7.35.0",
         "globals": "^15.14.0",
