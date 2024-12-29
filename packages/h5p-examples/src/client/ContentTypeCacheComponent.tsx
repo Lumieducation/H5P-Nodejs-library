@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import ContentTypeCacheService from './ContentTypeCacheService.js';
 
@@ -27,10 +26,6 @@ export default class ContentTypeCacheComponent extends React.Component<{
             props.endpointUrl
         );
     }
-
-    static propTypes = {
-        endpointUrl: PropTypes.string.isRequired
-    };
 
     public state: {
         lastCacheUpdate: Date;

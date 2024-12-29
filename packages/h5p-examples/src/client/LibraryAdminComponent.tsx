@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // We reference the build directory (which contains a .d.ts file) to avoid
 // including the whole server part of the library in the build of the client.
@@ -38,10 +37,6 @@ export default class LibraryAdmin extends React.Component<{
             props.endpointUrl
         );
     }
-
-    static propTypes = {
-        endpointUrl: PropTypes.string.isRequired
-    };
 
     public state: {
         isUploading: boolean;
