@@ -1,6 +1,4 @@
 import { AxiosInstance } from 'axios';
-import * as merge from 'merge';
-import * as qs from 'qs';
 import { machineIdSync } from 'node-machine-id';
 
 import H5pError from './helpers/H5pError';
@@ -91,16 +89,23 @@ export default class ContentTypeCache {
         await this.registerOrGetUuid();
         let formData = this.compileRegistrationData();
         if (this.config.sendUsageStatistics) {
-            formData = merge.recursive(
-                true,
-                formData,
-                this.compileUsageStatistics()
-            );
+            formData = {
+                ...formData,
+                ...this.compileUsageStatistics()
+            };
         }
+
+        const params = new URLSearchParams();
+        for (const field in formData) {
+            params.set(field, formData[field].toString());
+        }
+        const queryStringedFormData = params.toString();
+
         const response = await this.httpClient.post(
             this.config.hubContentTypesEndpoint,
-            qs.stringify(formData)
+            queryStringedFormData
         );
+
         if (response.status !== 200) {
             throw new H5pError(
                 'error-communicating-with-hub',
