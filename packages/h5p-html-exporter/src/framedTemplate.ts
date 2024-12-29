@@ -22,7 +22,7 @@ export default (
         if (new URLSearchParams(window.location.search).get('embed') == 'true') {
             H5PIntegration.contents['cid-' + '${contentId}'].displayOptions.embed = false;
         } else {
-            H5PIntegration.contents['cid-' + '${contentId}'].embedCode = '<iframe src=\"' + window.location.protocol + "//" + window.location.host + window.location.pathname + '?embed=true' + '\" width=\":w\" height=\":h\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>';
+            H5PIntegration.contents['cid-' + '${contentId}'].embedCode = '<iframe src="' + window.location.protocol + "//" + window.location.host + window.location.pathname + '?embed=true' + '" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen"></iframe>';
             H5PIntegration.contents['cid-' + '${contentId}'].resizeCode = '';
         }
             

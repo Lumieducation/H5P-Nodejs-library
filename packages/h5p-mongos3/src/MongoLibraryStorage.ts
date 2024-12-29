@@ -30,7 +30,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @param mongodb a MongoDB collection (read- and writable)
      * @param options options
      */
-    constructor(private mongodb: MongoDB.Collection, private options?: {}) {
+    constructor(
+        private mongodb: MongoDB.Collection,
+        private options?: unknown
+    ) {
         log.info('initialize');
     }
 

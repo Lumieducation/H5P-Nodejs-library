@@ -204,7 +204,7 @@ export default class SemanticsEnforcer {
                     allowedStyles['font-size'] = [/^[0-9.]+(em|px|%)$/i];
                 }
                 if (semantics.font.family) {
-                    allowedStyles['font-family'] = [/^[-a-z0-9,\'&; ]+$/i];
+                    allowedStyles['font-family'] = [/^[-a-z0-9,'&; ]+$/i];
                 }
                 if (semantics.font.color) {
                     // eslint-disable-next-line @typescript-eslint/dot-notation

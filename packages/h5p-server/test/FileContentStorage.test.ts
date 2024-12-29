@@ -50,7 +50,6 @@ describe('FileContentStorage (repository that saves content objects to a local d
         await withDir(
             async ({ path: tempDirPath }) => {
                 const storage = new FileContentStorage(tempDirPath);
-                const filename = 'test.png';
                 const user = new User();
 
                 const id = await storage.addContent(

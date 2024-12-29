@@ -544,7 +544,7 @@ export default class H5PAjaxEndpoint {
                         language
                     )
                 );
-            case 'files':
+            case 'files': {
                 if (!('field' in body)) {
                     throw new H5pError(
                         'malformed-request',
@@ -574,7 +574,8 @@ export default class H5PAjaxEndpoint {
                     filesFile,
                     user
                 );
-            case 'filter':
+            }
+            case 'filter': {
                 if (!('libraryParameters' in body)) {
                     throw new H5pError(
                         'malformed-request',
@@ -631,7 +632,8 @@ export default class H5PAjaxEndpoint {
                     metadata: unfiltered.metadata,
                     params: filteredParams
                 });
-            case 'library-install':
+            }
+            case 'library-install': {
                 if (!id || !user) {
                     throw new H5pError(
                         'malformed-request',
@@ -663,8 +665,8 @@ export default class H5PAjaxEndpoint {
                           )
                         : undefined
                 );
-
-            case 'library-upload':
+            }
+            case 'library-upload': {
                 if (!libraryUploadFile.name.endsWith('.h5p')) {
                     throw new H5pError('missing-h5p-extension', {}, 400);
                 }
@@ -700,7 +702,8 @@ export default class H5PAjaxEndpoint {
                           )
                         : undefined
                 );
-            case 'get-content':
+            }
+            case 'get-content': {
                 const {
                     installedLibraries: installedLibraries2,
                     metadata: metadata2,
@@ -730,6 +733,7 @@ export default class H5PAjaxEndpoint {
                           )
                         : undefined
                 );
+            }
             default:
                 throw new H5pError(
                     'malformed-request',

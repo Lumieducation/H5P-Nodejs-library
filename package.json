@@ -23,9 +23,8 @@
         "format:check": "npx prettier --check \"packages/*/{src,test,examples}/**/*.{ts,tsx}\"",
         "format": "npx prettier --write \"packages/*/{src,test,examples}/**/*.{ts,tsx}\"",
         "lint:docs": "remark -u validate-links ./docs --frail --quiet",
-        "lint:main": "eslint -c .eslintrc.js --ext .ts packages --quiet",
-        "lint:rest-client": "npm run lint --prefix packages/h5p-rest-example-client",
-        "lint": "concurrently \"npm:lint:main\" \"npm:lint:rest-client\" \"npm:lint:docs\"",
+        "lint:main": "eslint . --quiet",
+        "lint": "concurrently \"npm:lint:main\" \"npm:lint:docs\"",
         "localize": "./localize.sh",
         "postinstall": "npx lerna bootstrap && concurrently \"npm run build\" \"npm run download:content-type-cache && npm run download:h5p\"",
         "pre-commit": "concurrently \"npm:lint\" \"npm:format\"",
@@ -88,22 +87,17 @@
     ],
     "devDependencies": {
         "@commitlint/config-conventional": "17.8.1",
+        "@eslint/js": "^9.17.0",
         "@types/jest": "29.5.14",
         "@typescript-eslint/eslint-plugin": "5.62.0",
         "@typescript-eslint/parser": "5.62.0",
         "axios": "1.7.5",
         "commitlint": "17.8.1",
         "concurrently": "8.2.2",
-        "eslint": "8.57.1",
-        "eslint-config-airbnb": "19.0.4",
-        "eslint-config-airbnb-typescript": "17.1.0",
-        "eslint-config-prettier": "9.1.0",
-        "eslint-plugin-import": "2.30.0",
-        "eslint-plugin-jsx-a11y": "6.10.2",
-        "eslint-plugin-prefer-arrow": "1.2.3",
-        "eslint-plugin-prettier": "4.2.1",
-        "eslint-plugin-react": "7.35.0",
-        "eslint-plugin-react-hooks": "4.6.2",
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-react": "^7.35.0",
+        "globals": "^15.14.0",
         "husky": "8.0.3",
         "jest": "29.7.0",
         "json-autotranslate": "1.14.5",
@@ -114,10 +108,11 @@
         "ts-jest": "29.2.5",
         "ts-node": "10.9.2",
         "typedoc": "0.26.6",
-        "typescript": "5.5.4"
+        "typescript": "5.5.4",
+        "typescript-eslint": "^8.18.2"
     },
     "engines": {
-        "node": ">=15.0.0",
+        "node": ">=20.0.0",
         "npm": ">=7.0.0"
     }
 }

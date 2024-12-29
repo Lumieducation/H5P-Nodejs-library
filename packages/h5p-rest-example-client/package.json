@@ -30,7 +30,7 @@
         "eject": "react-scripts eject",
         "start": "react-scripts start",
         "test": "react-scripts test",
-        "lint": "npx eslint -c .eslintrc.js --ext .ts src --quiet"
+        "lint": "npx eslint . --quiet"
     },
     "browserslist": {
         "production": [

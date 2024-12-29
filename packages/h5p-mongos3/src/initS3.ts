@@ -11,7 +11,7 @@ import AWS from 'aws-sdk';
  * @returns the S3 client
  */
 export default (options?: AWS.S3.ClientConfiguration): AWS.S3 => {
-    const optionsWithOverrides = { ...options } ?? {};
+    const optionsWithOverrides = options ? { ...options } : {};
 
     // add overrides to configuration values that are set through environment
     // variables

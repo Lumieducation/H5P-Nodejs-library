@@ -9,7 +9,7 @@ const yesNo = (value: undefined | boolean | 0 | 1) =>
         <span className="fa fa-times text-danger"></span>
     );
 
-export default (props: {
+const LibraryDetailsComponent = (props: {
     details?: IInstalledLibrary & {
         dependentsCount: number;
         instancesAsDependencyCount: number;
@@ -108,3 +108,4 @@ export default (props: {
         )}
     </div>
 );
+export default LibraryDetailsComponent;

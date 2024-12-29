@@ -25,53 +25,6 @@ export default class Login extends React.Component<
         this.state = {};
     }
 
-    private login = (username) => {
-        fetch('/login', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json, text/plain, */*',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: username,
-                password: username
-            })
-        })
-            .then(async (res) => {
-                if (res.status === 200) {
-                    const loginData = await res.json();
-                    this.setState({
-                        ...this.state,
-                        loginData,
-                        loginMessage: undefined
-                    });
-                    if (loginData.csrfToken) {
-                        this.props.contentService.setCsrfToken(
-                            loginData.csrfToken
-                        );
-                    }
-                    this.props.onLoggedIn();
-                } else {
-                    this.setState({
-                        ...this.state,
-                        loginData: undefined,
-                        loginMessage: await res.text()
-                    });
-                    this.props.contentService.setCsrfToken(undefined);
-                    this.props.onLoggedOut();
-                }
-            })
-            .catch((reason) => {
-                this.setState({
-                    ...this.state,
-                    loginData: undefined,
-                    loginMessage: reason
-                });
-                this.props.contentService.setCsrfToken(undefined);
-                this.props.onLoggedOut();
-            });
-    };
-
     logout = () => {
         fetch('/logout', {
             method: 'POST',
@@ -150,4 +103,51 @@ export default class Login extends React.Component<
             </React.Fragment>
         );
     }
+
+    private login = (username) => {
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: username
+            })
+        })
+            .then(async (res) => {
+                if (res.status === 200) {
+                    const loginData = await res.json();
+                    this.setState({
+                        ...this.state,
+                        loginData,
+                        loginMessage: undefined
+                    });
+                    if (loginData.csrfToken) {
+                        this.props.contentService.setCsrfToken(
+                            loginData.csrfToken
+                        );
+                    }
+                    this.props.onLoggedIn();
+                } else {
+                    this.setState({
+                        ...this.state,
+                        loginData: undefined,
+                        loginMessage: await res.text()
+                    });
+                    this.props.contentService.setCsrfToken(undefined);
+                    this.props.onLoggedOut();
+                }
+            })
+            .catch((reason) => {
+                this.setState({
+                    ...this.state,
+                    loginData: undefined,
+                    loginMessage: reason
+                });
+                this.props.contentService.setCsrfToken(undefined);
+                this.props.onLoggedOut();
+            });
+    };
 }

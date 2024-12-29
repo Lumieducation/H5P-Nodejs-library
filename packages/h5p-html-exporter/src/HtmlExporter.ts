@@ -748,6 +748,7 @@ export default class HtmlExporter {
             }
 
             const usedFiles = new LibrariesFilesList();
+            // eslint-disable-next-line prefer-const
             let [scriptsBundle, stylesBundle] = await Promise.all([
                 this.getScriptBundle(
                     model,

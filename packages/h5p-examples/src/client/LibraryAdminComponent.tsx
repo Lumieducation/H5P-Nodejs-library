@@ -19,7 +19,9 @@ import {
  * It uses Bootstrap 4 to layout the component. You can override or replace the
  * render() method to customize looks.
  */
-export default class LibraryAdmin extends React.Component {
+export default class LibraryAdmin extends React.Component<{
+    endpointUrl: string;
+}> {
     /**
      * @param endpointUrl the URL of the REST library administration endpoint.
      */

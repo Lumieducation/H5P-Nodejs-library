@@ -14,7 +14,7 @@ describe('MongoContentUserDataStorage', () => {
     let testId: string;
     let counter = 0;
     let storage: MongoContentUserDataStorage;
-    let getStorage = (): IContentUserDataStorage => storage;
+    const getStorage = (): IContentUserDataStorage => storage;
 
     beforeAll(async () => {
         testId = new ObjectId().toHexString();
