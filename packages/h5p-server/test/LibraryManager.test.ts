@@ -452,6 +452,7 @@ describe('basic file library manager functionality', () => {
                 await expect(Promise.all(promises)).rejects.toThrowError(
                     'server:install-library-lock-timeout'
                 );
+                await Promise.allSettled(promises);
             },
             { keep: false, unsafeCleanup: true }
         );
