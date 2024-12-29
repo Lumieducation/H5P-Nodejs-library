@@ -44,7 +44,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^9.3.2",
-        "express": "4.20.0"
+        "express": "4.21.2"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
