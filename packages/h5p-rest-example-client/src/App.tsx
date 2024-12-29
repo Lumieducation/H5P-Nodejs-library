@@ -15,13 +15,13 @@ export default class App extends React.Component {
         this.contentService = new ContentService('/h5p');
     }
 
-    private contentService: ContentService;
-
     public state: {
         loggedIn: boolean;
     } = {
         loggedIn: false
     };
+
+    private contentService: ContentService;
 
     render() {
         return (

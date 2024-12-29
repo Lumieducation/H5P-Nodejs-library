@@ -96,7 +96,7 @@ describe('H5PEditor', () => {
 
                 for (let x = 0; x < 10; x++) {
                     // Upload h5p
-                    let fileBuffer = await fsExtra.readFile(currentFilename);
+                    const fileBuffer = await fsExtra.readFile(currentFilename);
                     const { metadata, parameters } =
                         await h5pEditor.uploadPackage(fileBuffer, user);
 

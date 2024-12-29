@@ -13,6 +13,7 @@ declare global {
     /**
      * Enables type checks for JSX.
      */
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
             'h5p-editor': {

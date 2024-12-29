@@ -84,7 +84,7 @@ export class ContentFileScanner extends ContentScanner {
                 );
                 switch (semantics.type) {
                     case 'file':
-                    case 'image':
+                    case 'image': {
                         log.debug(`found ${semantics.type} element`);
                         const element = this.pushIfDefined(
                             results,
@@ -111,6 +111,7 @@ export class ContentFileScanner extends ContentScanner {
                             }
                         }
                         return true; // returning true aborts further recursion
+                    }
                     case 'video':
                     case 'audio':
                         if (Array.isArray(params)) {

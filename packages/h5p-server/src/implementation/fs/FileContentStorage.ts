@@ -123,6 +123,7 @@ export default class FileContentStorage implements IContentStorage {
         id?: ContentId
     ): Promise<ContentId> {
         if (id === undefined || id === null) {
+            // eslint-disable-next-line no-param-reassign
             id = await this.createContentId();
         }
         try {
@@ -142,7 +143,10 @@ export default class FileContentStorage implements IContentStorage {
                 path.join(this.getContentPath(), id.toString())
             );
             throw new H5pError(
-                'storage-file-implementations:error-creating-content'
+                'storage-file-implementations:error-creating-content',
+                {},
+                500,
+                error.message
             );
         }
         return id;

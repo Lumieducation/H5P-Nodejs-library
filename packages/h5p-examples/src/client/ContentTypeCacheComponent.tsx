@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import ContentTypeCacheService from './ContentTypeCacheService.js';
 
@@ -9,14 +10,15 @@ import ContentTypeCacheService from './ContentTypeCacheService.js';
  * It uses Bootstrap 4 to layout the component. You can override or replace the
  * render() method to customize looks.
  */
-export default class ContentTypeCacheComponent extends React.Component {
+export default class ContentTypeCacheComponent extends React.Component<{
+    endpointUrl: string;
+}> {
     /**
      * @param endpointurl the URL of the REST content type cache administration
      * endpoint
      */
     constructor(props: { endpointUrl: string }) {
         super(props);
-
         this.state = {
             lastCacheUpdate: undefined,
             updatingCache: null
@@ -25,6 +27,10 @@ export default class ContentTypeCacheComponent extends React.Component {
             props.endpointUrl
         );
     }
+
+    static propTypes = {
+        endpointUrl: PropTypes.string.isRequired
+    };
 
     public state: {
         lastCacheUpdate: Date;

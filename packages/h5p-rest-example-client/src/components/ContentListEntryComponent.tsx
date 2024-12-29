@@ -523,8 +523,8 @@ export default class ContentListEntryComponent extends React.Component<{
                             <Form.Text muted>
                                 You switch whose user state you want to display
                                 here. The example permission system only allows
-                                displaying others' user states to teachers and
-                                administrators.
+                                displaying others&apos; user states to teachers
+                                and administrators.
                             </Form.Text>
                         </div>
                     </Modal.Body>

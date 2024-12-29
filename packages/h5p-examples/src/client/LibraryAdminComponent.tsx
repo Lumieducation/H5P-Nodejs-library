@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // We reference the build directory (which contains a .d.ts file) to avoid
 // including the whole server part of the library in the build of the client.
@@ -19,7 +20,9 @@ import {
  * It uses Bootstrap 4 to layout the component. You can override or replace the
  * render() method to customize looks.
  */
-export default class LibraryAdmin extends React.Component {
+export default class LibraryAdmin extends React.Component<{
+    endpointUrl: string;
+}> {
     /**
      * @param endpointUrl the URL of the REST library administration endpoint.
      */
@@ -35,6 +38,10 @@ export default class LibraryAdmin extends React.Component {
             props.endpointUrl
         );
     }
+
+    static propTypes = {
+        endpointUrl: PropTypes.string.isRequired
+    };
 
     public state: {
         isUploading: boolean;

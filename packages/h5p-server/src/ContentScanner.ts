@@ -156,7 +156,7 @@ export class ContentScanner {
         }
 
         switch (elementSemantics.type) {
-            case 'library':
+            case 'library': {
                 // If an element contains another library, we have to retrieve
                 // the exact name, and the nested content parameters.
                 if (elementParams.library === undefined) {
@@ -180,6 +180,7 @@ export class ContentScanner {
                     { doNotAddNameToJsonPath: false }
                 );
                 break;
+            }
             case 'group':
                 // groups contain several semantic entries, each with their own
                 // parameters.
@@ -194,7 +195,7 @@ export class ContentScanner {
                     );
                 }
                 break;
-            case 'list':
+            case 'list': {
                 // lists contain one semantic entry, but several content
                 // elements
                 let counter = 0;
@@ -214,6 +215,7 @@ export class ContentScanner {
                     counter += 1;
                 }
                 break;
+            }
             default:
                 break;
         }

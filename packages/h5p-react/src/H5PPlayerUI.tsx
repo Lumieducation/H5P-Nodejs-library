@@ -14,6 +14,7 @@ import type { IPlayerModel } from '@lumieducation/h5p-server';
 defineElements('h5p-player');
 
 declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
             'h5p-player': {
