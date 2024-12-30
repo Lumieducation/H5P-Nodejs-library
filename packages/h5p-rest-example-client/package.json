@@ -8,7 +8,7 @@
         "@fortawesome/react-fontawesome": "0.2.2",
         "@lumieducation/h5p-react": "^9.3.2",
         "bootstrap": "5.3.3",
-        "http-proxy-middleware": "2.0.7",
+        "http-proxy-middleware": "3.0.3",
         "react": "18.3.1",
         "react-bootstrap": "2.10.7",
         "react-dom": "18.3.1"
