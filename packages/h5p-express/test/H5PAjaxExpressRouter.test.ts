@@ -370,7 +370,7 @@ describe('Express Ajax endpoint adapter', () => {
     });
 
     describe('tests requiring uploaded files', () => {
-        let mockApp: supertest.SuperTest<supertest.Test>;
+        let mockApp;
         let uploadResult: any;
         beforeEach(async () => {
             mockApp = supertest(app);
