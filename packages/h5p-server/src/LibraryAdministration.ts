@@ -33,9 +33,8 @@ export default class LibraryAdministration {
         const libraryName = await this.checkLibrary(ubername);
 
         // Check if library can be safely deleted
-        const usage = await this.contentManager.contentStorage.getUsage(
-            libraryName
-        );
+        const usage =
+            await this.contentManager.contentStorage.getUsage(libraryName);
         const dependentsCount =
             await this.libraryManager.libraryStorage.getDependentsCount(
                 libraryName
@@ -70,9 +69,8 @@ export default class LibraryAdministration {
                 log.debug(
                     `Getting usage data of ${LibraryName.toUberName(metadata)}`
                 );
-                const usage = await this.contentManager.contentStorage.getUsage(
-                    metadata
-                );
+                const usage =
+                    await this.contentManager.contentStorage.getUsage(metadata);
                 const dependentsCount =
                     dependents[LibraryName.toUberName(metadata)] ?? 0;
                 return {

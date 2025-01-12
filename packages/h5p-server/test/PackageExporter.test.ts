@@ -73,9 +73,8 @@ export function importAndExportPackage(
                         writeStream.on('close', async () => {
                             expect(whenStreamClosed).toBeCalled();
 
-                            const oldZipFile = await yauzlPromise.open(
-                                packagePath
-                            );
+                            const oldZipFile =
+                                await yauzlPromise.open(packagePath);
                             const oldEntries = (await oldZipFile.readEntries())
                                 .map((e) => e.fileName)
                                 .sort();

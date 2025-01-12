@@ -28,7 +28,7 @@ export default function (
                     req.params.contentId,
                     req.user,
                     languageOverride === 'auto'
-                        ? req.language ?? 'en'
+                        ? (req.language ?? 'en')
                         : languageOverride,
                     {
                         showCopyButton: true,
@@ -82,7 +82,7 @@ export default function (
             const page = await h5pEditor.render(
                 req.params.contentId,
                 languageOverride === 'auto'
-                    ? req.language ?? 'en'
+                    ? (req.language ?? 'en')
                     : languageOverride,
                 req.user
             );
@@ -110,7 +110,7 @@ export default function (
             const page = await h5pEditor.render(
                 undefined,
                 languageOverride === 'auto'
-                    ? req.language ?? 'en'
+                    ? (req.language ?? 'en')
                     : languageOverride,
                 req.user
             );

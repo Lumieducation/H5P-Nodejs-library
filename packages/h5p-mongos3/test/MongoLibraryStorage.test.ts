@@ -136,9 +136,8 @@ describe('MongoS3LibraryStorage', () => {
                 minorVersion: 2
             }
         ]);
-        const libraryNames2 = await storage.getInstalledLibraryNames(
-            'H5P.Example1'
-        );
+        const libraryNames2 =
+            await storage.getInstalledLibraryNames('H5P.Example1');
         expect(libraryNames2).toMatchObject([
             {
                 machineName: 'H5P.Example1',
@@ -151,9 +150,8 @@ describe('MongoS3LibraryStorage', () => {
                 minorVersion: 2
             }
         ]);
-        const libraryNames3 = await storage.getInstalledLibraryNames(
-            'H5P.Example2'
-        );
+        const libraryNames3 =
+            await storage.getInstalledLibraryNames('H5P.Example2');
         expect(libraryNames3).toMatchObject([
             {
                 machineName: 'H5P.Example2',
