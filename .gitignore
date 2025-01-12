@@ -23,6 +23,7 @@ test/data/hub-content/*
 test/data/content-type-cache/real-content-types.json
 test/data/hub-content-extracted/*
 packages/h5p-html-exporter/test/data/content/*
+packages/h5p-examples/public
 google_translate.json
 .json-autotranslate-cache
 
