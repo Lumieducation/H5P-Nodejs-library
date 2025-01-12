@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import * as puppeteer from 'puppeteer';
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
