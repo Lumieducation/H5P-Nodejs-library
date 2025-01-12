@@ -13,7 +13,10 @@ export default class ContentHub {
      * @param config The configuration to use.
      * @param storage The storage object.
      */
-    constructor(private config: IH5PConfig, private storage: IKeyValueStorage) {
+    constructor(
+        private config: IH5PConfig,
+        private storage: IKeyValueStorage
+    ) {
         log.info(`initialize`);
         this.httpClient = HttpClient(config);
     }

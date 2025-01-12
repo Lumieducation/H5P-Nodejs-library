@@ -45,11 +45,11 @@ describe('Loading dependencies', () => {
                         ],
                         preloadedJs: [{ path: 'foo1.js' }, { path: 'foo2.js' }]
                     }
-                }[
+                })[
                     libName.machineName +
                         libName.majorVersion +
                         libName.minorVersion
-                ])
+                ]
         };
         return new H5PPlayer(
             mockLibraryStorage,
@@ -311,11 +311,11 @@ describe('Loading dependencies', () => {
                         ],
                         preloadedJs: [{ path: 'foo.js' }]
                     }
-                }[
+                })[
                     libName.machineName +
                         libName.majorVersion +
                         libName.minorVersion
-                ])
+                ]
         };
 
         return new H5PPlayer(
@@ -403,11 +403,11 @@ describe('Loading dependencies', () => {
                         ],
                         preloadedJs: [{ path: 'foo.js' }]
                     }
-                }[
+                })[
                     libName.machineName +
                         libName.majorVersion +
                         libName.minorVersion
-                ])
+                ]
         };
 
         return new H5PPlayer(
@@ -495,11 +495,11 @@ describe('Loading dependencies', () => {
                         ],
                         preloadedJs: [{ path: 'foo.js' }]
                     }
-                }[
+                })[
                     libName.machineName +
                         libName.majorVersion +
                         libName.minorVersion
-                ])
+                ]
         };
         const config = new H5PConfig(undefined, {
             baseUrl: '/baseUrl',

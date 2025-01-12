@@ -404,9 +404,8 @@ export default class LibraryManager {
                         let oldVersion: IFullLibraryName;
                         if (
                             // eslint-disable-next-line no-cond-assign
-                            (oldVersion = await this.isPatchedLibrary(
-                                newLibraryMetadata
-                            ))
+                            (oldVersion =
+                                await this.isPatchedLibrary(newLibraryMetadata))
                         ) {
                             // Update the library if it is only a patch of an existing library
                             await this.updateLibrary(
@@ -608,9 +607,8 @@ export default class LibraryManager {
             log.debug('Listing all installed libraries.');
         }
 
-        let libraries = await this.libraryStorage.getInstalledLibraryNames(
-            machineName
-        );
+        let libraries =
+            await this.libraryStorage.getInstalledLibraryNames(machineName);
         libraries = (
             await Promise.all(
                 libraries.map(async (libName) => {
@@ -646,9 +644,8 @@ export default class LibraryManager {
                     library
                 )}`
             );
-            const installedLanguages = await this.libraryStorage.getLanguages(
-                library
-            );
+            const installedLanguages =
+                await this.libraryStorage.getLanguages(library);
             // always include English as its the language of the semantics file
             if (!installedLanguages.includes('en')) {
                 installedLanguages.push('en');

@@ -69,8 +69,8 @@ export default class LibraryName implements ILibraryName {
             options.useHyphen && options.useWhitespace
                 ? /^([\w.]+)[-\s](\d+)\.(\d+)$/i
                 : options.useHyphen
-                ? /^([\w.]+)-(\d+)\.(\d+)$/i
-                : /^([\w.]+)\s(\d+)\.(\d+)$/i;
+                  ? /^([\w.]+)-(\d+)\.(\d+)$/i
+                  : /^([\w.]+)\s(\d+)\.(\d+)$/i;
 
         const result = nameRegex.exec(ubername);
 

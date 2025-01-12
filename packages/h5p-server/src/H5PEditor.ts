@@ -1078,9 +1078,8 @@ export default class H5PEditor {
     ): Promise<IContentMetadata> {
         log.info(`generating h5p.json`);
 
-        const mainLibraryMetadata = await this.libraryManager.getLibrary(
-            mainLibrary
-        );
+        const mainLibraryMetadata =
+            await this.libraryManager.getLibrary(mainLibrary);
         const newMetadata: IContentMetadata = new ContentMetadata(
             metadata,
             { mainLibrary: mainLibraryMetadata.machineName },
