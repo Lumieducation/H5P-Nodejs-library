@@ -28,7 +28,7 @@
         "localize": "./localize.sh",
         "postinstall": "npx lerna bootstrap && concurrently \"npm run build\" \"npm run download:content-type-cache && npm run download:h5p\"",
         "pre-commit": "concurrently \"npm:lint\" \"npm:format\"",
-        "prepare": "husky install",
+        "prepare": "husky",
         "publish:h5p-express": "cd packages/h5p-express && npm publish",
         "publish:h5p-html-exporter": "cd packages/h5p-html-exporter && npm publish",
         "publish:h5p-mongos3": "cd packages/h5p-mongos3 && npm publish",

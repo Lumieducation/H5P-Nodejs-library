@@ -17,6 +17,7 @@ export default [
             '**/test/data/',
             'scripts/',
             'packages/h5p-examples/h5p/',
+            'packages/h5p-examples/public/',
             'packages/h5p-rest-example-server/h5p/',
             '**/node_modules/',
             '**/*.d.ts',
