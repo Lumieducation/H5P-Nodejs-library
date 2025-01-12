@@ -270,7 +270,7 @@ export default class PackageExporter {
 
     /**
      * Scans the parameters of the piece of content and looks for paths that are
-     * longed than the specified max length. If this happens the filenames are
+     * longer than the specified max length. If this happens the filenames are
      * shortened in the parameters and the substitution is returned in the
      * substitution list
      * @param parameters the parameters to scan; IMPORTANT: The parameters are
