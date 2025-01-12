@@ -1,7 +1,7 @@
 import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
-import yauzlPromise from 'yauzl-promise';
+import yauzl from 'yauzl-promise';
 
 import ContentManager from '../src/ContentManager';
 import H5PConfig from '../src/implementation/H5PConfig';
@@ -73,17 +73,16 @@ export function importAndExportPackage(
                         writeStream.on('close', async () => {
                             expect(whenStreamClosed).toBeCalled();
 
-                            const oldZipFile =
-                                await yauzlPromise.open(packagePath);
+                            const oldZipFile = await yauzl.open(packagePath);
                             const oldEntries = (await oldZipFile.readEntries())
-                                .map((e) => e.fileName)
+                                .map((e) => e.filename)
                                 .sort();
 
-                            const newZipFile = await yauzlPromise.open(
+                            const newZipFile = await yauzl.open(
                                 fileResult.path
                             );
                             const newEntries = (await newZipFile.readEntries())
-                                .map((e) => e.fileName)
+                                .map((e) => e.filename)
                                 .sort();
 
                             if (exportMaxContentPathLength === 255) {
