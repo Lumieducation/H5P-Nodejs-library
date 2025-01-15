@@ -45,7 +45,7 @@
     "dependencies": {
         "@lumieducation/h5p-server": "^9.3.2",
         "@types/uglify-js": "^3.17.5",
-        "fs-extra": "11.2.0",
+        "fs-extra": "11.3.0",
         "mime-types": "^2.1.35",
         "postcss": "^8.4.23",
         "postcss-clean": "^1.2.2",
