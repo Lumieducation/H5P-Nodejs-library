@@ -2,12 +2,12 @@
     "compilerOptions": {
         "baseUrl": "./",
         "declaration": true,
-        "lib": ["DOM", "ES2017", "ES2016.Array.Include"],
+        "lib": ["DOM", "ES2022", "ES2016.Array.Include"],
         "moduleResolution": "node",
         "noImplicitAny": false,
         "removeComments": false,
         "sourceMap": true,
-        "target": "ES2017",
+        "target": "ES2022",
         "allowSyntheticDefaultImports": true
     },
     "exclude": ["node_modules"],

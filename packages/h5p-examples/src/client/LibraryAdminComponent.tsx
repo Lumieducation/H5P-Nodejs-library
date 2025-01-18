@@ -19,9 +19,19 @@ import {
  * It uses Bootstrap 4 to layout the component. You can override or replace the
  * render() method to customize looks.
  */
-export default class LibraryAdmin extends React.Component<{
-    endpointUrl: string;
-}> {
+export default class LibraryAdmin extends React.Component<
+    {
+        endpointUrl: string;
+    },
+    {
+        isUploading: boolean;
+        libraries: ILibraryViewModel[];
+        message: {
+            text: string;
+            type: 'primary' | 'success' | 'danger';
+        };
+    }
+> {
     /**
      * @param endpointUrl the URL of the REST library administration endpoint.
      */
@@ -37,15 +47,6 @@ export default class LibraryAdmin extends React.Component<{
             props.endpointUrl
         );
     }
-
-    public state: {
-        isUploading: boolean;
-        libraries: ILibraryViewModel[];
-        message: {
-            text: string;
-            type: 'primary' | 'success' | 'danger';
-        };
-    };
 
     protected librariesService: LibraryAdministrationService;
 
