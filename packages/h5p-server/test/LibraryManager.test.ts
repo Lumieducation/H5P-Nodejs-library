@@ -25,9 +25,8 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
-        const libraryObject = await libManager.listInstalledLibraries(
-            'H5P.Example3'
-        );
+        const libraryObject =
+            await libManager.listInstalledLibraries('H5P.Example3');
         expect(Object.keys(libraryObject).length).toEqual(1);
     });
 
@@ -36,9 +35,8 @@ describe('basic file library manager functionality', () => {
             new FileLibraryStorage(`${__dirname}/../../../test/data/libraries`)
         );
 
-        const libraryObject = await libManager.listInstalledLibraries(
-            'H5P.Example1'
-        );
+        const libraryObject =
+            await libManager.listInstalledLibraries('H5P.Example1');
         expect(
             await libManager.isPatchedLibrary(libraryObject['H5P.Example1'][0])
         ).toBeUndefined();

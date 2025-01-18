@@ -10,7 +10,10 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
      * @param cache the cache backend, if left undefined, an in-memory cache is
      * created.
      */
-    constructor(private prefix: string, private cache?: Cache) {
+    constructor(
+        private prefix: string,
+        private cache?: Cache
+    ) {
         if (!this.cache) {
             this.cache = caching({
                 store: 'memory',

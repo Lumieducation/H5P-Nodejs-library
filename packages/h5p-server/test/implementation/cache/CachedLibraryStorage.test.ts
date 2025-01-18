@@ -89,10 +89,10 @@ describe('CachedLibraryStorage', () => {
         const uncachedStorage = new FileLibraryStorage(
             options?.useTemporaryDirectory
                 ? tempDir.path
-                : options?.directory ??
+                : (options?.directory ??
                   path.resolve(
                       `${__dirname}/../../../../../test/data/libraries`
-                  )
+                  ))
         );
         const cachedStorage = new CachedLibraryStorage(
             uncachedStorage,

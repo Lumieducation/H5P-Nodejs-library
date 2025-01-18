@@ -1,5 +1,5 @@
-import { customAlphabet } from 'nanoid';
 import upath from 'upath';
+import crypto from 'node:crypto';
 
 import Logger from './Logger';
 import H5pError from './H5pError';
@@ -8,8 +8,21 @@ const log = new Logger('FilenameGenerator');
 
 const idCharacters =
     '1234567890abcdefghjiklmnoprstuvwxyABCDEFGHJIKLMNOPRSTUVWYXZ';
-const nanoid = customAlphabet(idCharacters, 8);
 const idRegex = new RegExp(`^[${idCharacters}]+$`);
+
+/**
+ * Generates an ID of with the alphabet in idCharacters, e.g. aB34aAxy
+ * @param size
+ * @returns
+ */
+function generateId(size = 8) {
+    const array = new Uint8Array(size);
+    crypto.getRandomValues(array);
+    return Array.from(
+        array,
+        (byte) => idCharacters[byte % idCharacters.length]
+    ).join('');
+}
 
 /**
  * Generates a unique filename. Removes short-ids that were added to filenames
@@ -43,7 +56,7 @@ export default async (
         }${upath.basename(
             actualFilename,
             upath.extname(actualFilename)
-        )}-${nanoid()}${upath.extname(actualFilename)}`;
+        )}-${generateId()}${upath.extname(actualFilename)}`;
         log.debug(`Checking if ${filenameAttempt} already exists`);
         exists = await checkIfFileExists(filenameAttempt);
         attempts += 1;

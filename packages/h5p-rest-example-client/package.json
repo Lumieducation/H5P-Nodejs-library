@@ -8,7 +8,7 @@
         "@fortawesome/react-fontawesome": "0.2.2",
         "@lumieducation/h5p-react": "^9.3.2",
         "bootstrap": "5.3.3",
-        "http-proxy-middleware": "2.0.7",
+        "http-proxy-middleware": "3.0.3",
         "react": "18.3.1",
         "react-bootstrap": "2.10.7",
         "react-dom": "18.3.1"
@@ -16,10 +16,10 @@
     "devDependencies": {
         "@lumieducation/h5p-server": "^9.3.2",
         "@testing-library/jest-dom": "6.6.3",
-        "@testing-library/react": "16.1.0",
-        "@testing-library/user-event": "14.5.2",
+        "@testing-library/react": "16.2.0",
+        "@testing-library/user-event": "14.6.0",
         "@types/jest": "29.5.14",
-        "@types/node": "22.10.2",
+        "@types/node": "22.10.7",
         "@types/react-dom": "18.3.5",
         "@types/react": "18.3.18",
         "react-scripts": "5.0.1"

@@ -34,7 +34,10 @@ export default class CachedLibraryStorage implements ILibraryStorage {
      * used; **IMPORTANT: The default in-memory cache does not with
      * multi-process or multi-machine setups!**
      */
-    constructor(protected storage: ILibraryStorage, protected cache?: Cache) {
+    constructor(
+        protected storage: ILibraryStorage,
+        protected cache?: Cache
+    ) {
         if (!this.cache) {
             this.cache = caching({
                 store: 'memory',

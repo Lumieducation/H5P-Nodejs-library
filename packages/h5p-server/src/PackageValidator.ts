@@ -1,7 +1,7 @@
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import * as path from 'path';
-import * as yauzlPromise from 'yauzl-promise';
+import * as yauzl from 'yauzl-promise';
 import fsExtra from 'fs-extra';
 import upath from 'upath';
 import { getAllFiles } from 'get-all-files';
@@ -104,14 +104,12 @@ export default class PackageValidator {
      * @param file Path to file to open
      * @returns Zip archive object or undefined if zip file cannot be opened.
      */
-    private static async openZipArchive(
-        file: string
-    ): Promise<yauzlPromise.ZipFile> {
+    private static async openZipArchive(file: string): Promise<yauzl.ZipFile> {
         try {
             log.debug(`opening zip archive ${file}`);
             // we await the promise here because we want to catch the error and
             // return undefined
-            return await yauzlPromise.open(file, { lazyEntries: false });
+            return await yauzl.open(file);
         } catch (ignored) {
             log.error(`zip file ${file} could not be opened: ${ignored}`);
             return undefined;
@@ -383,20 +381,20 @@ export default class PackageValidator {
      * @returns The unchanged zip entries
      */
     private fileSizeMustBeWithinLimits = async (
-        zipEntries: yauzlPromise.Entry[],
+        zipEntries: yauzl.Entry[],
         pathPrefix: string,
         error: AggregateH5pError
-    ): Promise<yauzlPromise.Entry[]> => {
+    ): Promise<yauzl.Entry[]> => {
         log.debug(`checking if file sizes exceed limit`);
         let totalFileSize = 0; // in bytes
         if (this.config.maxFileSize) {
             for (const entry of zipEntries) {
                 totalFileSize += entry.uncompressedSize;
                 if (entry.uncompressedSize > this.config.maxFileSize) {
-                    log.error(`file ${entry.fileName} exceeds limit`);
+                    log.error(`file ${entry.filename} exceeds limit`);
                     error.addError(
                         new H5pError('file-size-too-large', {
-                            file: entry.fileName,
+                            file: entry.filename,
                             max: formatBytes(this.config.maxFileSize),
                             used: formatBytes(entry.uncompressedSize)
                         })
