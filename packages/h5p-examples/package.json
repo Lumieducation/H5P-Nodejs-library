@@ -46,7 +46,7 @@
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
-        "@types/express": "4.17.21",
+        "@types/express": "5.0.0",
         "@types/puppeteer": "7.0.4",
         "@types/react": "18.3.18",
         "puppeteer": "17.1.3",
