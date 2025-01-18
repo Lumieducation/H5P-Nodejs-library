@@ -1,4 +1,4 @@
-import { Redis } from 'ioredis';
+import { RedisClient } from 'redis';
 import { lock } from 'simple-redis-mutex';
 
 import { ILockProvider, Logger } from '@lumieducation/h5p-server';
@@ -7,7 +7,7 @@ const log = new Logger('RedisLockProvider');
 
 export default class RedisLockProvider implements ILockProvider {
     constructor(
-        private redis: Redis,
+        private redis: RedisClient,
         private options?: { retryTime?: number }
     ) {
         log.debug('initialize');
@@ -22,9 +22,9 @@ export default class RedisLockProvider implements ILockProvider {
         try {
             log.debug(`Attempting to acquire lock for key ${key}.`);
             unlock = await lock(this.redis, key, {
-                timeoutMillis: options.maxOccupationTime, // confusingly the names are reversed
-                failAfterMillis: options.timeout, // confusingly the names are reversed
-                retryTimeMillis: this.options?.retryTime ?? 5
+                timeout: options.maxOccupationTime, // confusingly the names are reversed
+                failAfter: options.timeout, // confusingly the names are reversed
+                pollingInterval: this.options?.retryTime ?? 5
             });
         } catch (error) {
             if (error.message.startsWith('Lock could not be acquire for')) {

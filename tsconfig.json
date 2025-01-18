@@ -1,5 +1,6 @@
 /** Only used for IDE integration and linting. **/
 {
+    "extends": "./tsconfig.build.json",
     "exclude": ["node_modules", "**.d.ts"],
     "include": [
         "packages/h5p-examples/src/**/*",
@@ -26,18 +27,6 @@
     "compilerOptions": {
         "outDir": "./build-ide",
         "jsx": "react",
-        "module": "commonjs",
-        "target": "ES5",
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
-        "removeComments": false,
-        "noImplicitAny": false,
-        "sourceMap": true,
-        "baseUrl": "./",
-        "resolveJsonModule": true,
-        "declaration": true,
         "paths": {
             "@lumieducation/h5p-examples": ["packages/h5p-examples/src"],
             "@lumieducation/h5p-express": ["packages/h5p-express/src"],

@@ -1,6 +1,6 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
-import ioredis from 'ioredis';
+import { createClient } from '@redis/client';
 import debug from 'debug';
 import type { Db } from 'mongodb';
 
@@ -78,15 +78,23 @@ export default async function createH5PEditor(
         debug('h5p-example')(
             `Using Redis as lock provider (host: ${process.env.LOCK_REDIS_HOST}:${process.env.LOCK_REDIS_PORT}, db: ${process.env.LOCK_REDIS_DB}).`
         );
-        lock = new RedisLockProvider(
-            new ioredis(
-                Number.parseInt(process.env.LOCK_REDIS_PORT),
-                process.env.LOCK_REDIS_HOST,
-                {
-                    db: Number.parseInt(process.env.LOCK_REDIS_DB)
-                }
-            )
-        );
+        const client = createClient({
+            socket: {
+                port: Number.parseInt(process.env.LOCK_REDIS_PORT),
+                host: process.env.LOCK_REDIS_HOST
+            },
+            database: Number.parseInt(process.env.LOCK_REDIS_DB)
+        });
+
+        try {
+            await client.connect();
+        } catch (error) {
+            console.error('Could not connect to redis');
+            console.error(error);
+            throw error;
+        }
+
+        lock = new RedisLockProvider(client);
     } else {
         debug('h5p-example')(`Using simple in-memory lock provider.`);
         lock = new H5P.SimpleLockProvider();
