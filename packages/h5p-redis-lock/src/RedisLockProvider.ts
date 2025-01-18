@@ -1,13 +1,12 @@
-import { RedisClient } from 'redis';
 import { lock } from 'simple-redis-mutex';
-
+import { createClient } from '@redis/client';
 import { ILockProvider, Logger } from '@lumieducation/h5p-server';
 
 const log = new Logger('RedisLockProvider');
 
 export default class RedisLockProvider implements ILockProvider {
     constructor(
-        private redis: RedisClient,
+        private redis: ReturnType<typeof createClient>,
         private options?: { retryTime?: number }
     ) {
         log.debug('initialize');
