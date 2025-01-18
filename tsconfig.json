@@ -27,7 +27,7 @@
         "outDir": "./build-ide",
         "jsx": "react",
         "module": "commonjs",
-        "target": "ES5",
+        "target": "ES2017",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "esModuleInterop": true,

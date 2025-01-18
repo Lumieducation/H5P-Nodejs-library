@@ -5,15 +5,27 @@ multi-process or cluster-mode. The locks are needed to avoid race conditions
 when installing libraries.
 
 ```ts
-import ioredis from 'ioredis-mock';
+import { createClient } from '@redis/client';
 import { H5PEditor, H5PPlayer } from '@lumieducation/h5p-server';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 
-// Create a regular ioredis connection
-const redis = new ioredis(redisPort, redisHost, { db: redisDb });
+// Create a regular redis connection
+const redisClient = createClient({
+    socket: {
+        port,
+        host,
+    },
+    database
+});
+try {
+    await redisClient.connect();
+}
+catch (error) {
+    // handle error
+}
 
 // Create the lock provider
-const lockProvider = new RedisLockProvider(redis);
+const lockProvider = new RedisLockProvider(redisClient);
 
 // Pass it to the editor and player object
 const h5pEditor = new H5PEditor( /*other parameters*/, options: { lockProvider } );
