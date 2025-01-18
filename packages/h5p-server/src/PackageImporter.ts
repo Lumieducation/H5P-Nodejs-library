@@ -2,7 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
-import yauzlPromise from 'yauzl-promise';
+import yauzl from 'yauzl-promise';
 
 import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
@@ -92,26 +92,26 @@ export default class PackageImporter {
         }
     ): Promise<void> {
         log.info(`extracting package ${packagePath} to ${directoryPath}`);
-        const zipFile = await yauzlPromise.open(packagePath);
-        await zipFile.walkEntries(async (entry: yauzlPromise.Entry) => {
-            const basename = path.basename(entry.fileName);
+        const zipFile = await yauzl.open(packagePath);
+        for await (const entry of zipFile) {
+            const basename = path.basename(entry.filename);
             if (
-                !entry.fileName.endsWith('/') &&
+                !entry.filename.endsWith('/') &&
                 !basename.startsWith('.') &&
                 !basename.startsWith('_') &&
-                ((includeContent && entry.fileName.startsWith('content/')) ||
+                ((includeContent && entry.filename.startsWith('content/')) ||
                     (includeLibraries &&
-                        entry.fileName.includes('/') &&
-                        !entry.fileName.startsWith('content/')) ||
-                    (includeMetadata && entry.fileName === 'h5p.json'))
+                        entry.filename.includes('/') &&
+                        !entry.filename.startsWith('content/')) ||
+                    (includeMetadata && entry.filename === 'h5p.json'))
             ) {
                 const readStream = await entry.openReadStream();
-                const writePath = path.join(directoryPath, entry.fileName);
+                const writePath = path.join(directoryPath, entry.filename);
                 await fsExtra.mkdirp(path.dirname(writePath));
                 const writeStream = fsExtra.createWriteStream(writePath);
                 await promisepipe(readStream, writeStream);
             }
-        });
+        }
         await zipFile.close();
     }
 
