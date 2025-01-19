@@ -1,14 +1,17 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { readFile } from 'fs/promises';
 
 import SemanticsLocalizer from '../src/SemanticsLocalizer';
 import SimpleTranslator from '../src/helpers/SimpleTranslator';
 
 describe('SemanticsLocalizer', () => {
     it('localizes copyright semantics', async () => {
-        const translations = await fsExtra.readJson(
-            path.resolve(
-                'packages/h5p-server/assets/translations/copyright-semantics/en.json'
+        const translations = JSON.parse(
+            await readFile(
+                path.resolve(
+                    'packages/h5p-server/assets/translations/copyright-semantics/en.json'
+                ),
+                'utf-8'
             )
         );
 
@@ -17,9 +20,12 @@ describe('SemanticsLocalizer', () => {
         );
 
         const localized = localizer.localize(
-            await fsExtra.readJson(
-                path.resolve(
-                    'packages/h5p-server/assets/defaultCopyrightSemantics.json'
+            JSON.parse(
+                await readFile(
+                    path.resolve(
+                        'packages/h5p-server/assets/defaultCopyrightSemantics.json'
+                    ),
+                    'utf-8'
                 )
             ),
             'en'
@@ -274,9 +280,12 @@ describe('SemanticsLocalizer', () => {
     });
 
     it('localizes metadata semantics', async () => {
-        const translations = await fsExtra.readJson(
-            path.resolve(
-                'packages/h5p-server/assets/translations/metadata-semantics/en.json'
+        const translations = JSON.parse(
+            await readFile(
+                path.resolve(
+                    'packages/h5p-server/assets/translations/metadata-semantics/en.json'
+                ),
+                'utf-8'
             )
         );
 
@@ -285,9 +294,12 @@ describe('SemanticsLocalizer', () => {
         );
 
         const localized = localizer.localize(
-            await fsExtra.readJson(
-                path.resolve(
-                    'packages/h5p-server/assets/defaultMetadataSemantics.json'
+            JSON.parse(
+                await readFile(
+                    path.resolve(
+                        'packages/h5p-server/assets/defaultMetadataSemantics.json'
+                    ),
+                    'utf-8'
                 )
             ),
             'en'

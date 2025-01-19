@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import path from 'path';
-import fsExtra from 'fs-extra';
+import { readFile } from 'fs/promises';
 
 import H5PEditor from '../src/H5PEditor';
 import H5PConfig from '../src/implementation/H5PConfig';
@@ -26,9 +26,12 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -36,9 +39,12 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/1-content-type.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/1-content-type.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -62,9 +68,12 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -72,9 +81,12 @@ describe('H5PEditor: general', () => {
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/1-content-type.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/1-content-type.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );

@@ -2,9 +2,9 @@ import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import * as path from 'path';
 import * as yauzl from 'yauzl-promise';
-import fsExtra from 'fs-extra';
 import upath from 'upath';
 import { getAllFiles } from 'get-all-files';
+import { readdir, readFile } from 'fs/promises';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import H5pError from './helpers/H5pError';
@@ -65,7 +65,7 @@ export default class PackageValidator {
         pathPrefix: string
     ): Promise<string[]> {
         log.verbose(`getting top level directories`);
-        return (await fsExtra.readdir(pathPrefix, { withFileTypes: true }))
+        return (await readdir(pathPrefix, { withFileTypes: true }))
             .filter((dirent) => dirent.isDirectory())
             .map((dirent) => dirent.name);
     }
@@ -447,14 +447,23 @@ export default class PackageValidator {
 
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
-        const h5pJsonSchema = await fsExtra.readJSON(
-            path.join(__dirname, 'schemas/h5p-schema.json')
+        const h5pJsonSchema = JSON.parse(
+            await readFile(
+                path.join(__dirname, 'schemas/h5p-schema.json'),
+                'utf-8'
+            )
         );
-        const libraryNameSchema = await fsExtra.readJSON(
-            path.join(__dirname, 'schemas/library-name-schema.json')
+        const libraryNameSchema = JSON.parse(
+            await readFile(
+                path.join(__dirname, 'schemas/library-name-schema.json'),
+                'utf-8'
+            )
         );
-        const librarySchema = await fsExtra.readJSON(
-            path.join(__dirname, 'schemas/library-schema.json')
+        const librarySchema = JSON.parse(
+            await readFile(
+                path.join(__dirname, 'schemas/library-schema.json'),
+                'utf-8'
+            )
         );
         jsonValidator.addSchema([
             h5pJsonSchema,
@@ -510,7 +519,9 @@ export default class PackageValidator {
                 );
             }
             try {
-                await fsExtra.readJSON(path.join(pathPrefix, file));
+                JSON.parse(
+                    await readFile(path.join(pathPrefix, file), 'utf-8')
+                );
             } catch (jsonParseError) {
                 log.error(`json ${filename} is not parsable`);
                 const err = new H5pError(
@@ -578,7 +589,9 @@ export default class PackageValidator {
             }
             let jsonData;
             try {
-                jsonData = await fsExtra.readJSON(path.join(pathPrefix, file));
+                jsonData = JSON.parse(
+                    await readFile(path.join(pathPrefix, file), 'utf-8')
+                );
             } catch (jsonParseError) {
                 log.error(`${errorIdJsonParse || jsonParseError.message}`);
                 throw error.addError(
@@ -889,7 +902,7 @@ export default class PackageValidator {
     private async tryParseJson(filename: string): Promise<any> {
         log.verbose(`parsing json ${filename}`);
         try {
-            await fsExtra.readJson(filename);
+            JSON.parse(await readFile(filename, 'utf-8'));
         } catch (ignored) {
             log.error(`unable to parse JSON file ${filename}`);
             throw new H5pError('unable-to-parse-package', {

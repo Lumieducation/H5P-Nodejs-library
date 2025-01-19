@@ -1,7 +1,8 @@
-import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
 import yauzl from 'yauzl-promise';
+import { mkdir } from 'fs/promises';
+import { createWriteStream } from 'fs';
 
 import ContentManager from '../src/ContentManager';
 import H5PConfig from '../src/implementation/H5PConfig';
@@ -23,8 +24,8 @@ export function importAndExportPackage(
         async ({ path: tmpDirPath }) => {
             const contentDir = path.join(tmpDirPath, 'content');
             const libraryDir = path.join(tmpDirPath, 'libraries');
-            await fsExtra.ensureDir(contentDir);
-            await fsExtra.ensureDir(libraryDir);
+            await mkdir(contentDir, { recursive: true });
+            await mkdir(libraryDir, { recursive: true });
 
             const user = new User();
 
@@ -59,9 +60,7 @@ export function importAndExportPackage(
 
             await withFile(
                 async (fileResult) => {
-                    const writeStream = fsExtra.createWriteStream(
-                        fileResult.path
-                    );
+                    const writeStream = createWriteStream(fileResult.path);
                     await packageExporter.createPackage(
                         contentId,
                         writeStream,

@@ -1,8 +1,9 @@
 /* eslint-disable no-await-in-loop */
 
-import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir, file, FileResult } from 'tmp-promise';
+import { readFile } from 'fs/promises';
+import { createWriteStream } from 'fs';
 
 import User from './User';
 import { createH5PEditor } from './helpers/H5PEditor';
@@ -16,7 +17,7 @@ describe('H5PEditor', () => {
                 const { h5pEditor } = createH5PEditor(tempDirPath);
                 const user = new User();
 
-                const fileBuffer = fsExtra.readFileSync(
+                const fileBuffer = await readFile(
                     path.resolve('test/data/validator/valid2.h5p')
                 );
                 const { metadata, parameters } = await h5pEditor.uploadPackage(
@@ -60,7 +61,7 @@ describe('H5PEditor', () => {
                     createH5PEditor(tempDirPath);
                 const user = new User();
 
-                const fileBuffer = fsExtra.readFileSync(
+                const fileBuffer = await readFile(
                     path.resolve('test/data/validator/valid2.h5p')
                 );
                 const { parameters } = await h5pEditor.uploadPackage(
@@ -96,7 +97,7 @@ describe('H5PEditor', () => {
 
                 for (let x = 0; x < 10; x++) {
                     // Upload h5p
-                    const fileBuffer = await fsExtra.readFile(currentFilename);
+                    const fileBuffer = await readFile(currentFilename);
                     const { metadata, parameters } =
                         await h5pEditor.uploadPackage(fileBuffer, user);
 
@@ -114,8 +115,7 @@ describe('H5PEditor', () => {
                     // Download h5p
                     tempFile = await file({ keep: false, postfix: '.h5p' });
                     currentFilename = tempFile.path;
-                    const writeStream =
-                        fsExtra.createWriteStream(currentFilename);
+                    const writeStream = createWriteStream(currentFilename);
                     const packageFinishedPromise = new Promise<void>(
                         (resolve) => {
                             writeStream.on('close', () => {
@@ -149,7 +149,7 @@ describe('H5PEditor', () => {
                         createH5PEditor(tempDirPath);
                     const user = new User();
 
-                    const fileBuffer = fsExtra.readFileSync(
+                    const fileBuffer = await readFile(
                         path.resolve('test/data/validator/valid3-3-images.h5p')
                     );
                     const { parameters } = await h5pEditor.uploadPackage(
@@ -197,7 +197,7 @@ describe('H5PEditor', () => {
                     createH5PEditor(tempDirPath);
                 const user = new User();
 
-                const fileBuffer = fsExtra.readFileSync(
+                const fileBuffer = await readFile(
                     path.resolve('test/data/validator/valid3-3-images.h5p')
                 );
                 const { metadata, parameters } = await h5pEditor.uploadPackage(

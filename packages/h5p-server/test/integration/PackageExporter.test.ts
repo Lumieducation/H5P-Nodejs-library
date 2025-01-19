@@ -1,13 +1,13 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { readdir } from 'fs/promises';
 
 import { importAndExportPackage } from '../PackageExporter.test';
 
-describe('PackageExporter (integration tests with examples from H5P Hub)', () => {
+describe('PackageExporter (integration tests with examples from H5P Hub)', async () => {
     const directory = `${path.resolve('')}/test/data/hub-content/`;
     let files;
     try {
-        files = fsExtra.readdirSync(directory);
+        files = readdir(directory);
     } catch {
         throw new Error(
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"

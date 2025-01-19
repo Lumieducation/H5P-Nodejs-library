@@ -1,7 +1,7 @@
 import path from 'path';
 import cacheManager from 'cache-manager';
-import fsExtra from 'fs-extra';
 import { dir, DirectoryResult } from 'tmp-promise';
+import { readFile } from 'fs/promises';
 
 import { ILibraryStorage } from '../../../src/types';
 import CachedLibraryStorage from '../../../src/implementation/cache/CachedLibraryStorage';
@@ -115,9 +115,12 @@ describe('CachedLibraryStorage', () => {
             expect(
                 await cacheCheck(
                     'getLibrary',
-                    await fsExtra.readJSON(
-                        path.resolve(
-                            `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/library.json`
+                    JSON.parse(
+                        await readFile(
+                            path.resolve(
+                                `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/library.json`
+                            ),
+                            'utf-8'
                         )
                     ),
                     undefined,
@@ -135,9 +138,12 @@ describe('CachedLibraryStorage', () => {
             expect(
                 await cacheCheck(
                     'getFileAsJson',
-                    await fsExtra.readJSON(
-                        path.resolve(
-                            `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/semantics.json`
+                    JSON.parse(
+                        await readFile(
+                            path.resolve(
+                                `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/semantics.json`
+                            ),
+                            'utf-8'
                         )
                     ),
                     undefined,
@@ -157,7 +163,7 @@ describe('CachedLibraryStorage', () => {
                 await cacheCheck(
                     'getFileAsString',
                     (
-                        await fsExtra.readFile(
+                        await readFile(
                             path.resolve(
                                 `${__dirname}/../../../../../test/data/libraries/H5P.Example1-1.1/semantics.json`
                             )

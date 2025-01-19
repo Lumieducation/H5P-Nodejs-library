@@ -2,7 +2,7 @@ import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import mockdate from 'mockdate';
 import path from 'path';
-import fsExtra from 'fs-extra';
+import { readFile } from 'fs/promises';
 
 import ContentTypeCache from '../src/ContentTypeCache';
 import H5PConfig from '../src/implementation/H5PConfig';
@@ -24,9 +24,12 @@ describe('registering the site at H5P Hub', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -63,9 +66,12 @@ describe('registering the site at H5P Hub', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -94,9 +100,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -104,9 +113,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -131,9 +143,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -141,9 +156,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -172,9 +190,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -182,9 +203,12 @@ describe('getting H5P Hub content types', () => {
             .onPost(config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );

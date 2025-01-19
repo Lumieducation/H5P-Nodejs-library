@@ -4,9 +4,10 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import fsExtra from 'fs-extra';
 import path from 'path';
 import supertest from 'supertest';
+import { readFile } from 'fs/promises';
+
 import {
     ILibraryAdministrationOverviewItem,
     IUser,
@@ -66,9 +67,12 @@ describe('Express Library Administration endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -76,9 +80,12 @@ describe('Express Library Administration endpoint adapter', () => {
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -108,7 +115,7 @@ describe('Express Library Administration endpoint adapter', () => {
 
         it('should return 200 and a list of installed libraries', async () => {
             // We install the Course Presentation content type.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid1.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
@@ -155,7 +162,7 @@ describe('Express Library Administration endpoint adapter', () => {
     describe('DELETE /libraries/123 endpoint', () => {
         it('should delete unused libraries', async () => {
             // We install the Greeting Card content type.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
@@ -187,7 +194,7 @@ describe('Express Library Administration endpoint adapter', () => {
 
         it('should reject deleting used libraries', async () => {
             // We install the Greeting Card content type and its content.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries, metadata, parameters } =
@@ -227,7 +234,7 @@ describe('Express Library Administration endpoint adapter', () => {
 
         it('should return 200 and details of the installed library', async () => {
             // We install the Greeting Card content type.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
@@ -284,7 +291,7 @@ describe('Express Library Administration endpoint adapter', () => {
 
         it('should detect invalid bodies', async () => {
             // We install the Greeting Card content type.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(
@@ -308,7 +315,7 @@ describe('Express Library Administration endpoint adapter', () => {
 
         it('should return 204 when updating restricted', async () => {
             // We install the Greeting Card content type.
-            const fileBuffer = fsExtra.readFileSync(
+            const fileBuffer = await readFile(
                 path.resolve('test/data/validator/valid2.h5p')
             );
             const { installedLibraries } = await h5pEditor.uploadPackage(

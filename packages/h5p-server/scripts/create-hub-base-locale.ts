@@ -1,12 +1,15 @@
-import fsExtra from 'fs-extra';
+import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 
-const hubData = fsExtra.readJSONSync(
-    path.resolve(
-        path.join(
-            __dirname,
-            '../../../test/data/content-type-cache/real-content-types.json'
-        )
+const hubData = JSON.parse(
+    readFileSync(
+        path.resolve(
+            path.join(
+                __dirname,
+                '../../../test/data/content-type-cache/real-content-types.json'
+            )
+        ),
+        'utf-8'
     )
 );
 
@@ -23,10 +26,7 @@ const reducedHubData = hubData.contentTypes.reduce((prev, ct) => {
     return prev;
 }, {});
 
-fsExtra.writeJSONSync(
+writeFileSync(
     path.resolve(path.join(__dirname, '../assets/translations/hub/en.json')),
-    reducedHubData,
-    {
-        spaces: 4
-    }
+    JSON.stringify(reducedHubData, undefined, 4)
 );

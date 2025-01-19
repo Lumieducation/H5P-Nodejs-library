@@ -1,8 +1,8 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
+import { createReadStream } from 'fs';
 
 import ContentManager from '../src/ContentManager';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
@@ -183,7 +183,7 @@ describe('ContentManager', () => {
                 await contentManager.addContentFile(
                     contentId,
                     'earth.jpg',
-                    fsExtra.createReadStream(
+                    createReadStream(
                         path.resolve(
                             'test/data/sample-content/content/earth.jpg'
                         )

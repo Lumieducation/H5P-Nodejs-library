@@ -6,8 +6,9 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
+import { readFile } from 'fs/promises';
+
 import * as H5P from '@lumieducation/h5p-server';
-import fsExtra from 'fs-extra';
 
 import User from './User';
 import ContentTypeCacheExpressRouter from '../src/ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
@@ -51,12 +52,15 @@ describe('Content Type Cache endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test',
-                        'data',
-                        'content-type-cache',
-                        'registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test',
+                            'data',
+                            'content-type-cache',
+                            'registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -64,12 +68,15 @@ describe('Content Type Cache endpoint adapter', () => {
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test',
-                        'data',
-                        'content-type-cache',
-                        'real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test',
+                            'data',
+                            'content-type-cache',
+                            'real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );

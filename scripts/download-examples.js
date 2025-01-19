@@ -1,5 +1,6 @@
 const axios = require('axios');
-const fs = require('fs-extra');
+const { accessSync, createWriteStream } = require('fs');
+const { readFile, access, mkdir } = require('fs/promises');
 const path = require('path');
 
 /**
@@ -9,14 +10,17 @@ const path = require('path');
  */
 const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
     const machineNames = (
-        await fs.readJSON(contentTypeCacheFilePath)
+        await JSON.parse(await readFile(contentTypeCacheFilePath, 'utf-8'))
     ).contentTypes.map((ct) => ct.id);
 
     console.log(`Found ${machineNames.length} packages.`);
 
     // Create the directory if it doesn't exist
-    if (!(await fs.pathExists(directoryPath))) {
-        await fs.mkdir(directoryPath);
+    try {
+        await access(directoryPath);
+    }
+    catch {
+        await mkdir(directoryPath, { recursive: true });
     }
 
     // Counts how many downloads have been finished
@@ -27,18 +31,18 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
         machineNames
             .filter((machineName) => machineName !== 'H5P.IFrameEmbed') // IFrameEmbed is broken and is deprecated
             .filter((machineName) => {
-                if (
-                    fs.pathExistsSync(
+                try {
+                    accessSync(
                         path.join(directoryPath, `${machineName}.h5p`)
-                    )
-                ) {
-                    downloadsFinished += 1;
-                    console.log(
-                        `${downloadsFinished}/${machineNames.length} ${machineName}.h5p has already been downloaded. Skipping!`
                     );
-                    return false;
+                } catch {
+                    return true;
                 }
-                return true;
+                downloadsFinished += 1;
+                console.log(
+                    `${downloadsFinished}/${machineNames.length} ${machineName}.h5p has already been downloaded. Skipping!`
+                );
+                return false;
             })
             .map((contentType) =>
                 axios.default
@@ -47,7 +51,7 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
                     })
                     .then((response) => {
                         return new Promise((resolve) => {
-                            const file = fs.createWriteStream(
+                            const file = createWriteStream(
                                 `${directoryPath}/${contentType}.h5p`
                             );
                             file.on('finish', () => {

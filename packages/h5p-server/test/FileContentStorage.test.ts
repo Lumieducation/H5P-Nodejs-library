@@ -1,6 +1,6 @@
-import fsExtra from 'fs-extra';
 import { Readable } from 'stream';
 import { withDir } from 'tmp-promise';
+import { readdir } from 'fs/promises';
 
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import { IContentMetadata } from '../src/types';
@@ -77,9 +77,9 @@ describe('FileContentStorage (repository that saves content objects to a local d
                     {},
                     user
                 );
-                expect((await fsExtra.readdir(tempDirPath)).length).toEqual(1);
+                expect((await readdir(tempDirPath)).length).toEqual(1);
                 await storage.deleteContent(id, user);
-                expect((await fsExtra.readdir(tempDirPath)).length).toEqual(0);
+                expect((await readdir(tempDirPath)).length).toEqual(0);
             },
             { keep: false, unsafeCleanup: true }
         );

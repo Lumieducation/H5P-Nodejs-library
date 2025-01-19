@@ -1,7 +1,8 @@
-import * as fsExtra from 'fs-extra';
 import jsonpath from 'jsonpath';
 import * as path from 'path';
 import { dir, DirectoryResult } from 'tmp-promise';
+import { readdirSync } from 'fs';
+import { mkdir, readdir } from 'fs/promises';
 
 import { ContentFileScanner } from '../../src/ContentFileScanner';
 import ContentManager from '../../src/ContentManager';
@@ -18,12 +19,12 @@ import User from '../User';
 
 import { getContentDetails } from '../ContentScanner.test';
 
-describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
+describe('ContentFileScanner (integration test with H5P Hub examples)', async () => {
     // scan all Hub examples for their file references and compare to directory contents
     const directory = path.resolve('test/data/hub-content/');
     let h5pPackages;
     try {
-        h5pPackages = fsExtra.readdirSync(directory);
+        h5pPackages = readdir(directory);
     } catch {
         throw new Error(
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
@@ -49,8 +50,8 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
         // create required dependencies
         const contentDir = path.join(tmpDirPath, 'content');
         const libraryDir = path.join(tmpDirPath, 'libraries');
-        await fsExtra.ensureDir(contentDir);
-        await fsExtra.ensureDir(libraryDir);
+        await mkdir(contentDir, { recursive: true });
+        await mkdir(libraryDir, { recursive: true });
 
         contentManager = new ContentManager(
             new FileContentStorage(contentDir),

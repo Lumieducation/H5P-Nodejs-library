@@ -1,5 +1,15 @@
-import { ReadStream } from 'fs';
-import fsExtra from 'fs-extra';
+import { createReadStream, createWriteStream, ReadStream } from 'fs';
+import {
+    access,
+    mkdir,
+    readdir,
+    readFile,
+    rm,
+    rmdir,
+    stat,
+    writeFile
+} from 'fs/promises';
+
 import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
@@ -44,7 +54,7 @@ export default class DirectoryTemporaryFileStorage
             maxPathLength?: number;
         }
     ) {
-        fsExtra.ensureDirSync(directory);
+        mkdir(directory, { recursive: true });
         this.maxFileLength =
             (options?.maxPathLength ?? 255) - (directory.length + 1) - 40;
         // we subtract 40 for the contentId (12), the unique id attached to the
@@ -67,8 +77,8 @@ export default class DirectoryTemporaryFileStorage
         }
         checkFilename(ownerId);
         const filePath = this.getAbsoluteFilePath(ownerId, filename);
-        await fsExtra.remove(filePath);
-        await fsExtra.remove(`${filePath}.metadata`);
+        await rm(filePath);
+        await rm(`${filePath}.metadata`);
 
         const userDirectoryPath = this.getAbsoluteUserDirectoryPath(ownerId);
         const fileDirectoryPath = path.dirname(filePath);
@@ -82,7 +92,12 @@ export default class DirectoryTemporaryFileStorage
         checkFilename(filename);
         checkFilename(user.id);
         const filePath = this.getAbsoluteFilePath(user.id, filename);
-        return fsExtra.pathExists(filePath);
+        try {
+            await access(filePath);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     public async getFileStats(
@@ -100,7 +115,7 @@ export default class DirectoryTemporaryFileStorage
             );
         }
         const filePath = this.getAbsoluteFilePath(user.id, filename);
-        return fsExtra.stat(filePath);
+        return stat(filePath);
     }
 
     public async getFileStream(
@@ -112,14 +127,16 @@ export default class DirectoryTemporaryFileStorage
         checkFilename(filename);
         checkFilename(user.id);
         const filePath = this.getAbsoluteFilePath(user.id, filename);
-        if (!(await fsExtra.pathExists(filePath))) {
+        try {
+            await access(filePath);
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:temporary-file-not-found',
                 { filename, userId: user.id },
                 404
             );
         }
-        return fsExtra.createReadStream(filePath, {
+        return createReadStream(filePath, {
             start: rangeStart,
             end: rangeEnd
         });
@@ -129,7 +146,7 @@ export default class DirectoryTemporaryFileStorage
         if (user) {
             checkFilename(user.id);
         }
-        const users = user ? [user.id] : await fsExtra.readdir(this.directory);
+        const users = user ? [user.id] : await readdir(this.directory);
         return (
             await Promise.all(
                 users.map(async (u) => {
@@ -172,14 +189,19 @@ export default class DirectoryTemporaryFileStorage
         checkFilename(filename);
         checkFilename(user.id);
 
-        await fsExtra.ensureDir(this.getAbsoluteUserDirectoryPath(user.id));
-        const filePath = this.getAbsoluteFilePath(user.id, filename);
-        await fsExtra.ensureDir(path.dirname(filePath));
-        const writeStream = fsExtra.createWriteStream(filePath);
-        await promisepipe(dataStream, writeStream);
-        await fsExtra.writeJSON(`${filePath}.metadata`, {
-            expiresAt: expirationTime.getTime()
+        await mkdir(this.getAbsoluteUserDirectoryPath(user.id), {
+            recursive: true
         });
+        const filePath = this.getAbsoluteFilePath(user.id, filename);
+        await mkdir(path.dirname(filePath), { recursive: true });
+        const writeStream = createWriteStream(filePath);
+        await promisepipe(dataStream, writeStream);
+        await writeFile(
+            `${filePath}.metadata`,
+            JSON.stringify({
+                expiresAt: expirationTime.getTime()
+            })
+        );
         return {
             expiresAt: expirationTime,
             filename,
@@ -188,9 +210,9 @@ export default class DirectoryTemporaryFileStorage
     }
 
     private async deleteEmptyDirectory(directory: string): Promise<void> {
-        const files = await fsExtra.readdir(directory);
+        const files = await readdir(directory);
         if (files.length === 0) {
-            await fsExtra.rmdir(directory);
+            await rmdir(directory);
         }
     }
 
@@ -206,8 +228,11 @@ export default class DirectoryTemporaryFileStorage
         filename: string,
         userId: string
     ): Promise<ITemporaryFile> {
-        const metadata = await fsExtra.readJSON(
-            `${this.getAbsoluteFilePath(userId, filename)}.metadata`
+        const metadata = JSON.parse(
+            await readFile(
+                `${this.getAbsoluteFilePath(userId, filename)}.metadata`,
+                'utf-8'
+            )
         );
         return {
             expiresAt: new Date(metadata.expiresAt),

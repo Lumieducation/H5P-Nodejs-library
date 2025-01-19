@@ -1,5 +1,5 @@
 import { dir } from 'tmp-promise';
-import fsExtra from 'fs-extra';
+import { rm } from 'fs/promises';
 
 import PackageImporter from '../../src/PackageImporter';
 import PackageValidator from '../../src/PackageValidator';
@@ -38,6 +38,6 @@ export async function validatePackage(
         throw error;
     } finally {
         // clean up temporary files in any case
-        await fsExtra.remove(tempDirPath);
+        await rm(tempDirPath, { recursive: true, force: true });
     }
 }

@@ -4,8 +4,9 @@
 
 import AWS from 'aws-sdk';
 import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { readFile, stat } from 'fs/promises';
+import { createReadStream } from 'fs';
 
 import { ILibraryMetadata, streamToString } from '@lumieducation/h5p-server';
 import MongoS3LibraryStorage from '../src/MongoS3LibraryStorage';
@@ -32,9 +33,9 @@ describe('MongoS3LibraryStorage', () => {
     const installMetadata = async (
         filename: string
     ): Promise<ILibraryMetadata> => {
-        const metadata = (await fsExtra.readJSON(
-            path.resolve(filename)
-        )) as ILibraryMetadata;
+        const metadata = JSON.parse(
+            await readFile(path.resolve(filename), 'utf-8')
+        ) as ILibraryMetadata;
         await storage.addLibrary(metadata, false);
         return metadata;
     };
@@ -101,8 +102,11 @@ describe('MongoS3LibraryStorage', () => {
                 minorVersion: 1
             })
         ).resolves.toBe(false);
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         const installed = await storage.addLibrary(metadata, false);
         expect(installed).toBeDefined();
@@ -121,8 +125,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('does not install the same library metadata twice', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         await expect(
             storage.addLibrary(metadata, false)
@@ -131,9 +138,12 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('lists installed libraries', async () => {
-        const metadata = (await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
-        )) as ILibraryMetadata;
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
+        ) as ILibraryMetadata;
         await storage.addLibrary(metadata, false);
         const metadata2 = { ...metadata, machineName: 'H5P.Example2' };
         await storage.addLibrary(metadata2, false);
@@ -188,8 +198,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('gets the metadata', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         await storage.addLibrary(metadata, false);
         const retrievedMetadata = await storage.getLibrary({
@@ -204,8 +217,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('gets the metadata and its stats as a file (simulates GET on library.json) ', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
 
         await storage.addLibrary(metadata, false);
@@ -231,8 +247,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('update additional metadata', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         await storage.addLibrary(metadata, false);
         const updateResult1 = await storage.updateAdditionalMetadata(
@@ -284,8 +303,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('updates metadata', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         await storage.addLibrary(metadata, false);
         const metadata2: ILibraryMetadata = {
@@ -303,8 +325,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('lists addons', async () => {
-        const metadata: ILibraryMetadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata: ILibraryMetadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         metadata.addTo = {
             content: {
@@ -318,8 +343,11 @@ describe('MongoS3LibraryStorage', () => {
             }
         };
         await storage.addLibrary(metadata, false);
-        const metadata2: ILibraryMetadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example3-2.1/library.json`
+        const metadata2: ILibraryMetadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example3-2.1/library.json`,
+                'utf-8'
+            )
         );
         await storage.addLibrary(metadata2, false);
         const addons = await storage.listAddons();
@@ -332,8 +360,11 @@ describe('MongoS3LibraryStorage', () => {
     });
 
     it('deletes libraries', async () => {
-        const metadata = await fsExtra.readJSON(
-            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`
+        const metadata = JSON.parse(
+            await readFile(
+                `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/library.json`,
+                'utf-8'
+            )
         );
         await storage.addLibrary(metadata, false);
         await storage.deleteLibrary({
@@ -419,12 +450,12 @@ describe('MongoS3LibraryStorage', () => {
         await storage.addFile(
             example1Name,
             'semantics.json',
-            fsExtra.createReadStream(fileOnDisk)
+            createReadStream(fileOnDisk)
         );
         await storage.addFile(
             example1Name,
             'language/.en.json',
-            fsExtra.createReadStream(
+            createReadStream(
                 `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/language/.en.json`
             )
         );
@@ -435,11 +466,11 @@ describe('MongoS3LibraryStorage', () => {
         ).resolves.toEqual(true);
         await expect(
             storage.getFileAsString(example1Name, 'semantics.json')
-        ).resolves.toEqual(await fsExtra.readFile(fileOnDisk, 'utf8'));
+        ).resolves.toEqual(await readFile(fileOnDisk, 'utf8'));
         await expect(
             storage.getFileAsJson(example1Name, 'semantics.json')
-        ).resolves.toEqual(await fsExtra.readJSON(fileOnDisk));
-        const realStats = await fsExtra.stat(fileOnDisk);
+        ).resolves.toEqual(JSON.parse(await readFile(fileOnDisk, 'utf-8')));
+        const realStats = await stat(fileOnDisk);
         await expect(
             storage.getFileStats(example1Name, 'semantics.json')
         ).resolves.toMatchObject({ size: realStats.size });
@@ -460,14 +491,14 @@ describe('MongoS3LibraryStorage', () => {
         await storage.addFile(
             example1Name,
             'language/.en.json',
-            fsExtra.createReadStream(
+            createReadStream(
                 `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/language/.en.json`
             )
         );
         await storage.addFile(
             example1Name,
             'language/de.json',
-            fsExtra.createReadStream(
+            createReadStream(
                 `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/language/de.json`
             )
         );
@@ -487,12 +518,12 @@ describe('MongoS3LibraryStorage', () => {
         await storage.addFile(
             example1Name,
             'semantics.json',
-            fsExtra.createReadStream(fileOnDisk)
+            createReadStream(fileOnDisk)
         );
         await storage.addFile(
             example1Name,
             'language/.en.json',
-            fsExtra.createReadStream(
+            createReadStream(
                 `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1/language/.en.json`
             )
         );
