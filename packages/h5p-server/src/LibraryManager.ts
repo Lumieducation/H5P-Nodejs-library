@@ -1,7 +1,8 @@
 import { Readable } from 'stream';
-import fsExtra from 'fs-extra';
 import { getAllFiles } from 'get-all-files';
 import upath from 'upath';
+import { readFile } from 'fs/promises';
+import { createReadStream } from 'fs';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -385,8 +386,8 @@ export default class LibraryManager {
         restricted: boolean = false
     ): Promise<ILibraryInstallResult> {
         log.info(`installing from directory ${directory}`);
-        const newLibraryMetadata: ILibraryMetadata = await fsExtra.readJSON(
-            `${directory}/library.json`
+        const newLibraryMetadata: ILibraryMetadata = JSON.parse(
+            await readFile(`${directory}/library.json`, 'utf-8')
         );
         const newVersion = {
             machineName: newLibraryMetadata.machineName,
@@ -764,8 +765,7 @@ export default class LibraryManager {
                 if (fileLocalPath === 'library.json') {
                     return Promise.resolve(true);
                 }
-                const readStream: Readable =
-                    fsExtra.createReadStream(fileFullPath);
+                const readStream: Readable = createReadStream(fileFullPath);
                 return this.libraryStorage.addFile(
                     libraryInfo,
                     upath.toUnix(fileLocalPath),

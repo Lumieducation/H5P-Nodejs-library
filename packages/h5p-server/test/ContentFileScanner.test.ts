@@ -1,7 +1,7 @@
-import * as fsExtra from 'fs-extra';
 import jsonpath from 'jsonpath';
 import * as path from 'path';
 import { withDir } from 'tmp-promise';
+import { mkdir } from 'fs/promises';
 
 import { ContentFileScanner } from '../src/ContentFileScanner';
 import ContentManager from '../src/ContentManager';
@@ -30,8 +30,8 @@ describe('ContentFileScanner', () => {
         // create required dependencies
         const contentDir = path.join(tmpDirPath, 'content');
         const libraryDir = path.join(tmpDirPath, 'libraries');
-        await fsExtra.ensureDir(contentDir);
-        await fsExtra.ensureDir(libraryDir);
+        await mkdir(contentDir, { recursive: true });
+        await mkdir(libraryDir, { recursive: true });
 
         const contentManager = new ContentManager(
             new FileContentStorage(contentDir),

@@ -1,5 +1,5 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
+import { copyFile, rm } from 'fs/promises';
 
 import H5PConfig from '../src/implementation/H5PConfig';
 import JsonStorage from '../src/implementation/fs/JsonStorage';
@@ -24,9 +24,9 @@ describe('JSON storage of configuration', () => {
         const file = path.resolve(
             'packages/h5p-server/test/data/configuration/temp.json'
         );
-        await fs.remove(file);
+        await rm(file, { force: true });
         try {
-            await fs.copyFile(
+            await copyFile(
                 path.resolve(
                     'packages/h5p-server/test/data/configuration/valid-config.json'
                 ),
@@ -40,7 +40,7 @@ describe('JSON storage of configuration', () => {
                 storage2.load('hubRegistrationEndpoint')
             ).resolves.toBe('XXX');
         } finally {
-            await fs.remove(path.resolve(file));
+            await rm(path.resolve(file));
         }
     });
 });

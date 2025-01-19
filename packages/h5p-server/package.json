@@ -52,7 +52,6 @@
         "cache-manager": "^4.0.0",
         "debug": "^4.3.4",
         "flat": "^5.0.2",
-        "fs-extra": "^11.1.1",
         "get-all-files": "^5.0.0",
         "https-proxy-agent": "^5.0.1",
         "image-size": "^1.0.2",
@@ -69,7 +68,6 @@
     },
     "devDependencies": {
         "@types/async-lock": "1.4.2",
-        "@types/fs-extra": "11.0.4",
         "@types/jest": "29.5.14",
         "@types/jsonpath": "0.2.4",
         "@types/mime-types": "2.1.4",

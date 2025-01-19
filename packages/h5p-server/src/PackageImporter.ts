@@ -1,8 +1,9 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { dir } from 'tmp-promise';
 import yauzl from 'yauzl-promise';
+import { mkdir, readdir, readFile, rm } from 'fs/promises';
+import { createWriteStream } from 'fs';
 
 import ContentManager from './ContentManager';
 import ContentStorer from './ContentStorer';
@@ -107,8 +108,8 @@ export default class PackageImporter {
             ) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.filename);
-                await fsExtra.mkdirp(path.dirname(writePath));
-                const writeStream = fsExtra.createWriteStream(writePath);
+                await mkdir(path.dirname(writePath), { recursive: true });
+                const writeStream = createWriteStream(writePath);
                 await promisepipe(readStream, writeStream);
             }
         }
@@ -281,7 +282,7 @@ export default class PackageImporter {
                     copyMode === ContentCopyModes.Temporary,
                 installLibraries
             );
-            const dirContent = await fsExtra.readdir(tempDirPath);
+            const dirContent = await readdir(tempDirPath);
 
             // install all libraries
             if (installLibraries) {
@@ -313,8 +314,8 @@ export default class PackageImporter {
                 copyMode === ContentCopyModes.Install ||
                 copyMode === ContentCopyModes.Temporary
             ) {
-                metadata = await fsExtra.readJSON(
-                    path.join(tempDirPath, 'h5p.json')
+                metadata = JSON.parse(
+                    await readFile(path.join(tempDirPath, 'h5p.json'), 'utf-8')
                 );
 
                 // Check if all libraries needed for the content are installed.
@@ -376,7 +377,7 @@ export default class PackageImporter {
             throw error;
         } finally {
             // clean up temporary files in any case
-            await fsExtra.remove(tempDirPath);
+            await rm(tempDirPath, { recursive: true, force: true });
         }
 
         return {

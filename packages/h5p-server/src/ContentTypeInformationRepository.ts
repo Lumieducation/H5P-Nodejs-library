@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
-import * as fsExtra from 'fs-extra';
 import promisepipe from 'promisepipe';
 import { withFile } from 'tmp-promise';
+import { createWriteStream } from 'fs';
 
 import ContentTypeCache from './ContentTypeCache';
 import H5pError from './helpers/H5pError';
@@ -151,7 +151,7 @@ export default class ContentTypeInformationRepository {
         // withFile is supposed to clean up the temporary file after it has been used
         await withFile(
             async ({ path: tempPackagePath }) => {
-                const writeStream = fsExtra.createWriteStream(tempPackagePath);
+                const writeStream = createWriteStream(tempPackagePath);
                 try {
                     await promisepipe(response.data, writeStream);
                 } catch (error) {

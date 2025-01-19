@@ -1,8 +1,8 @@
-import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
+import { mkdir } from 'fs/promises';
 
 import ContentManager from '../src/ContentManager';
 import H5PConfig from '../src/implementation/H5PConfig';
@@ -12,7 +12,7 @@ import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
 import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
-import { IUser, ContentPermission, GeneralPermission } from '../src/types';
+import { IUser, GeneralPermission } from '../src/types';
 
 import User from './User';
 
@@ -21,7 +21,7 @@ describe('package importer', () => {
         await withDir(
             async ({ path: tmpDirPath }) => {
                 const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fsExtra.ensureDir(libraryDir);
+                await mkdir(libraryDir, { recursive: true });
 
                 const libraryManager = new LibraryManager(
                     new FileLibraryStorage(libraryDir)
@@ -69,8 +69,8 @@ describe('package importer', () => {
             async ({ path: tmpDirPath }) => {
                 const contentDir = path.join(tmpDirPath, 'content');
                 const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fsExtra.ensureDir(contentDir);
-                await fsExtra.ensureDir(libraryDir);
+                await mkdir(contentDir, { recursive: true });
+                await mkdir(libraryDir, { recursive: true });
 
                 const user = new User();
 
@@ -142,8 +142,8 @@ describe('package importer', () => {
             async ({ path: tmpDirPath }) => {
                 const contentDir = path.join(tmpDirPath, 'content');
                 const libraryDir = path.join(tmpDirPath, 'libraries');
-                await fsExtra.ensureDir(contentDir);
-                await fsExtra.ensureDir(libraryDir);
+                await mkdir(contentDir, { recursive: true });
+                await mkdir(libraryDir, { recursive: true });
 
                 const user = new User();
 

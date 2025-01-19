@@ -5,13 +5,13 @@
  * h5p-server!).
  */
 
-import fsExtra from 'fs-extra';
+import { readdirSync, writeFileSync } from 'fs';
 import path from 'path';
 
-const languages = fsExtra.readdirSync(
+const languages = readdirSync(
     path.resolve('../h5p-examples/h5p/editor/language')
 );
-fsExtra.writeJsonSync(
+writeFileSync(
     path.resolve('assets/editorLanguages.json'),
-    languages.map((l) => l.replace('.js', ''))
+    JSON.stringify(languages.map((l) => l.replace('.js', '')))
 );

@@ -1,6 +1,7 @@
 import path from 'path';
-import fs from 'fs-extra';
 import { getAllFiles } from 'get-all-files';
+import { readFile, rm, writeFile } from 'fs/promises';
+import { existsSync, mkdirSync } from 'fs';
 
 import {
     ContentId,
@@ -23,9 +24,9 @@ export default class FileContentUserDataStorage
     implements IContentUserDataStorage
 {
     constructor(protected directory: string) {
-        if (!fs.pathExistsSync(directory)) {
+        if (!existsSync(directory)) {
             log.debug('Creating directory', directory);
-            fs.mkdirpSync(directory);
+            mkdirSync(directory, { recursive: true });
         }
     }
 
@@ -39,7 +40,7 @@ export default class FileContentUserDataStorage
         const file = this.getUserDataFilePath(contentId);
         let dataList: IContentUserData[];
         try {
-            dataList = await fs.readJSON(file);
+            dataList = JSON.parse(await readFile(file, 'utf-8'));
         } catch (error) {
             log.error(
                 'getContentUserData',
@@ -83,7 +84,7 @@ export default class FileContentUserDataStorage
             }
             let data: IContentUserData[];
             try {
-                data = await fs.readJSON(file);
+                data = JSON.parse(await readFile(file, 'utf-8'));
             } catch (error) {
                 log.error(
                     'getContentUserDataByUser',
@@ -119,7 +120,7 @@ export default class FileContentUserDataStorage
         const filename = this.getUserDataFilePath(userData.contentId);
         let oldData: IContentUserData[];
         try {
-            oldData = await fs.readJSON(filename);
+            oldData = JSON.parse(await readFile(filename, 'utf-8'));
         } catch (error) {
             log.debug(
                 'createOrUpdateContentUserData',
@@ -145,7 +146,7 @@ export default class FileContentUserDataStorage
 
         newUserData.push(userData);
         try {
-            await fs.writeJSON(filename, newUserData);
+            await writeFile(filename, JSON.stringify(newUserData));
         } catch (error) {
             log.error(
                 'createOrUpdateContentUserData',
@@ -163,7 +164,7 @@ export default class FileContentUserDataStorage
         const filename = this.getUserDataFilePath(contentId);
         let oldData: IContentUserData[];
         try {
-            oldData = await fs.readJSON(filename);
+            oldData = JSON.parse(await readFile(filename, 'utf-8'));
         } catch (error) {
             log.debug(
                 'deleteInvalidatedContentUserData',
@@ -182,7 +183,7 @@ export default class FileContentUserDataStorage
         );
 
         try {
-            await fs.writeJSON(filename, newUserData);
+            await writeFile(filename, JSON.stringify(newUserData));
         } catch (error) {
             log.error(
                 'deleteInvalidatedContentUserData',
@@ -202,7 +203,7 @@ export default class FileContentUserDataStorage
             }
             let data: IContentUserData[];
             try {
-                data = await fs.readJSON(file);
+                data = JSON.parse(await readFile(file, 'utf-8'));
             } catch (error) {
                 log.error(
                     'deleteAllContentUserDataByUser',
@@ -227,7 +228,7 @@ export default class FileContentUserDataStorage
             }
             if (newData) {
                 try {
-                    await fs.writeJson(file, newData);
+                    await writeFile(file, JSON.stringify(newData));
                 } catch (error) {
                     log.error(
                         'deleteAllContentUserDataByUser',
@@ -246,7 +247,7 @@ export default class FileContentUserDataStorage
     ): Promise<void> {
         const file = this.getUserDataFilePath(contentId);
         try {
-            await fs.unlink(file);
+            await rm(file, { recursive: true, force: true });
         } catch (error) {
             log.error(
                 'deleteAllContentUserDataByContentId',
@@ -266,7 +267,7 @@ export default class FileContentUserDataStorage
         const file = this.getUserDataFilePath(contentId);
         let dataList: IContentUserData[];
         try {
-            dataList = await fs.readJSON(file);
+            dataList = JSON.parse(await readFile(file, 'utf-8'));
         } catch (error) {
             log.error(
                 'getContentUserDataByContentIdAndUser',
@@ -298,7 +299,7 @@ export default class FileContentUserDataStorage
         const filename = this.getFinishedFilePath(finishedData.contentId);
         let oldData: IFinishedUserData[];
         try {
-            oldData = await fs.readJSON(filename);
+            oldData = JSON.parse(await readFile(filename, 'utf-8'));
         } catch (error) {
             log.debug(
                 'createOrUpdateFinishedData',
@@ -319,7 +320,7 @@ export default class FileContentUserDataStorage
         newData.push(finishedData);
 
         try {
-            await fs.writeJSON(filename, newData);
+            await writeFile(filename, JSON.stringify(newData));
         } catch (error) {
             log.error(
                 'createOrUpdateFinishedData',
@@ -337,7 +338,7 @@ export default class FileContentUserDataStorage
         const file = this.getFinishedFilePath(contentId);
         let finishedList: IFinishedUserData[];
         try {
-            finishedList = await fs.readJSON(file);
+            finishedList = JSON.parse(await readFile(file, 'utf-8'));
         } catch (error) {
             log.error(
                 'getFinishedDataByContentId',
@@ -368,7 +369,7 @@ export default class FileContentUserDataStorage
             }
             let data: IFinishedUserData[];
             try {
-                data = await fs.readJSON(file);
+                data = JSON.parse(await readFile(file, 'utf-8'));
             } catch (error) {
                 log.error(
                     'getFinishedDataByUser',
@@ -403,7 +404,7 @@ export default class FileContentUserDataStorage
     ): Promise<void> {
         const file = this.getFinishedFilePath(contentId);
         try {
-            await fs.unlink(file);
+            await rm(file, { recursive: true, force: true });
         } catch (error) {
             log.error(
                 'deleteFinishedDataByContentId',
@@ -423,7 +424,7 @@ export default class FileContentUserDataStorage
             }
             let data: IFinishedUserData[];
             try {
-                data = await fs.readJSON(file);
+                data = JSON.parse(await readFile(file, 'utf-8'));
             } catch (error) {
                 log.error(
                     'deleteFinishedDataByUser',
@@ -448,7 +449,7 @@ export default class FileContentUserDataStorage
             }
             if (newData) {
                 try {
-                    await fs.writeJson(file, newData);
+                    await writeFile(file, JSON.stringify(newData));
                 } catch (error) {
                     log.error(
                         'deleteFinishedDataByUser',

@@ -1,8 +1,9 @@
 import puppeteer from 'puppeteer';
-import * as fsExtra from 'fs-extra';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
 import promisePipe from 'promisepipe';
+import { mkdir, writeFile } from 'fs/promises';
+import { createWriteStream, readdirSync } from 'fs';
 
 import ContentManager from '../../h5p-server/src/ContentManager';
 import ContentStorer from '../../h5p-server/src/ContentStorer';
@@ -28,8 +29,8 @@ async function importAndExportHtml(
         async ({ path: tmpDirPath }) => {
             const contentDir = path.join(tmpDirPath, 'content');
             const libraryDir = path.join(tmpDirPath, 'libraries');
-            await fsExtra.ensureDir(contentDir);
-            await fsExtra.ensureDir(libraryDir);
+            await mkdir(contentDir, { recursive: true });
+            await mkdir(libraryDir, { recursive: true });
 
             const user = new User();
 
@@ -70,7 +71,7 @@ async function importAndExportHtml(
                 );
                 await withFile(
                     async (result) => {
-                        await fsExtra.writeFile(result.path, exportedHtml);
+                        await writeFile(result.path, exportedHtml);
                         await page.goto(`file://${result.path}`, {
                             waitUntil: ['networkidle0', 'load'],
                             timeout: 30000
@@ -90,8 +91,8 @@ async function importAndExportHtml(
                     );
                 await withDir(
                     async (result) => {
-                        await fsExtra.mkdirp(result.path);
-                        await fsExtra.writeFile(
+                        await mkdir(result.path, { recursive: true });
+                        await writeFile(
                             path.join(result.path, `${contentId}.html`),
                             res.html
                         );
@@ -102,11 +103,10 @@ async function importAndExportHtml(
                                     contentId.toString(),
                                     f
                                 );
-                                await fsExtra.mkdirp(
-                                    path.dirname(tempFilePath)
-                                );
-                                const writer =
-                                    fsExtra.createWriteStream(tempFilePath);
+                                await mkdir(path.dirname(tempFilePath), {
+                                    recursive: true
+                                });
+                                const writer = createWriteStream(tempFilePath);
                                 const readable =
                                     await contentStorage.getFileStream(
                                         contentId,
@@ -194,7 +194,7 @@ describe('HtmlExporter', () => {
     );
     let files;
     try {
-        files = fsExtra.readdirSync(directory);
+        files = readdirSync(directory);
     } catch {
         throw new Error(
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
@@ -222,8 +222,8 @@ describe('HtmlExporter template', () => {
         const tmpDirPath = path.join(__dirname, 'data');
         const contentDir = path.join(tmpDirPath, 'content');
         const libraryDir = path.join(tmpDirPath, 'libraries');
-        await fsExtra.ensureDir(contentDir);
-        await fsExtra.ensureDir(libraryDir);
+        await mkdir(contentDir, { recursive: true });
+        await mkdir(libraryDir, { recursive: true });
 
         const user = new User();
 
