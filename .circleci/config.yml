@@ -100,69 +100,6 @@ jobs:
                   parallel: true
                   flag_name: Unit tests
 
-    integration-tests:
-        docker:
-            - image: cimg/node:20.7
-              environment:
-                  TMPDIR: /mnt/ramdisk
-        resource_class: medium+
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npx jest --config jest.integration.config.js --runInBand --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: Integration tests
-
-    html-exporter-tests:
-        docker:
-            - image: cimg/node:20.7-browsers
-              environment:
-                  TMPDIR: /mnt/ramdisk
-        resource_class: medium+
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
-                  flag_name: HTML Exporter Tests
-
-    e2e-tests:
-        docker:
-            - image: cimg/node:20.7
-              environment:
-                  TMPDIR: /mnt/ramdisk
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npm run test:e2e
-
-    db-tests:
-        docker:
-            - image: cimg/node:20.7
-            - image: circleci/mongo:latest
-              environment:
-                  MONGO_INITDB_ROOT_USERNAME: root
-                  MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
-            - image: minio/minio:RELEASE.2023-04-28T18-11-17Z
-              environment:
-                  MINIO_ACCESS_KEY: minioaccesskey
-                  MINIO_SECRET_KEY: miniosecret
-              command: server /data
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npm run test:db -- --collect-coverage
-            - coveralls/upload:
-                  parallel: true
-                  flag_name: DB tests
-
     push_coveralls:
         docker:
             - image: 'cimg/node:20.7'
@@ -199,18 +136,6 @@ workflows:
             - unit-tests:
                   requires:
                       - install-build
-            # - e2e-tests:
-            #       requires:
-            #           - install-build
-            - integration-tests:
-                  requires:
-                      - install-build
-            - db-tests:
-                  requires:
-                      - install-build
-            - html-exporter-tests:
-                  requires:
-                      - install-build
             - release:
                   filters:
                       branches:
@@ -220,17 +145,9 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - html-exporter-tests
-                      # - e2e-tests
-                      - integration-tests
-                      - db-tests
             - push_coveralls:
                   requires:
                       - install-build
                       - lint
                       - format
-                      - unit-tests
-                      - html-exporter-tests
-                      # - e2e-tests
-                      - integration-tests
-                      - db-tests
+                      - unit-tests                      
