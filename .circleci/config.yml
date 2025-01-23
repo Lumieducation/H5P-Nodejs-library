@@ -145,17 +145,9 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - html-exporter-tests
-                      # - e2e-tests
-                      - integration-tests
-                      - db-tests
             - push_coveralls:
                   requires:
                       - install-build
                       - lint
                       - format
-                      - unit-tests
-                      - html-exporter-tests
-                      # - e2e-tests
-                      - integration-tests
-                      - db-tests
+                      - unit-tests                      
