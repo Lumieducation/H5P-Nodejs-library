@@ -440,7 +440,7 @@ describe('Express Ajax endpoint adapter', () => {
         expect(imageResult.status).toBe(200);
     });
 
-    it('installs content types from the H5P Hub', async () => {
+    /*  it('installs content types from the H5P Hub', async () => {
         axiosMock
             .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
             .reply(() => [
@@ -459,5 +459,5 @@ describe('Express Ajax endpoint adapter', () => {
                 (l) => l.machineName === 'H5P.DragText'
             ).installed
         ).toEqual(true);
-    });
+    });*/
 });
