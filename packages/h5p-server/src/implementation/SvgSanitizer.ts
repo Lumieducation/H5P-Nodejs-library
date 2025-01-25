@@ -21,15 +21,16 @@ export default class SvgSanitizer implements IFileMalwareScanner {
             return { result: MalwareScanResult.NotScanned };
         }
         const data = await readFile(file, 'utf8');
+        console.log(data);
 
         const sanitizedFile = DOMPurify.sanitize(data, {
-            USE_PROFILES: { svg: true },
-            WHOLE_DOCUMENT: true
+            USE_PROFILES: { svg: true }
         });
+        console.log(sanitizedFile);
 
         if (
-            sanitizedFile.replaceAll(/[\n\s]/, '') ===
-            data.replaceAll(/[\n\s]/, '')
+            sanitizedFile.replaceAll(/[\n\s]/g, '') ===
+            data.replaceAll(/[\n\s]/g, '')
         ) {
             return { result: MalwareScanResult.Clean };
         } else {
