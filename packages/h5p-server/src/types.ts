@@ -2451,3 +2451,26 @@ export interface ILockProvider {
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T>;
 }
+
+export enum MalwareScanResult {
+    MalwareFound,
+    Clean,
+    NotScanned
+}
+
+export interface IFileMalwareScanner {
+    /** The name of the scanner, e.g. ClamAV */
+    readonly name: string;
+
+    /** Scans a file for malware and returns whether it contains malware. If the
+     * scanner is capable of sanitizing the file, it can return a path to the
+     * clean file and indicate this with wasSanitized. */
+    scan(
+        file: string,
+        mimetype: string
+    ): Promise<{
+        result: MalwareScanResult;
+        wasSanitized?: boolean;
+        sanitizedFile?: string;
+    }>;
+}

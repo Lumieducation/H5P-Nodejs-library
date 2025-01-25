@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   id="svg2"
+   sodipodi:docname="circle.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <script>alert("XSS Test");</script>
+  <script>alert(document.cookie);</script>
+  <circle
+     style="fill:#666666;stroke:#808080;stroke-width:4.40315;stop-color:#000000"
+     id="path233"
+     cx="98.428535"
+     cy="68.415733"
+     r="54.194405" />
+</svg>
