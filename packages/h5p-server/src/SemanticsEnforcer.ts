@@ -282,6 +282,8 @@ export default class SemanticsEnforcer {
                     figcaption: tableCellStyle
                 }
             });
+        } else {
+            newText = sanitizeHtml(newText);
         }
 
         // Check if string has the required length
