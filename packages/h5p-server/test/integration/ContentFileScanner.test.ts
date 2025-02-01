@@ -19,12 +19,12 @@ import User from '../User';
 
 import { getContentDetails } from '../ContentScanner.test';
 
-describe('ContentFileScanner (integration test with H5P Hub examples)', async () => {
+describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
     // scan all Hub examples for their file references and compare to directory contents
     const directory = path.resolve('test/data/hub-content/');
     let h5pPackages;
     try {
-        h5pPackages = readdir(directory);
+        h5pPackages = readdirSync(directory);
     } catch {
         throw new Error(
             "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
