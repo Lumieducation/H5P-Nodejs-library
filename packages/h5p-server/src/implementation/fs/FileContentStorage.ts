@@ -1,9 +1,9 @@
-import { ReadStream } from 'fs';
+import { createReadStream, createWriteStream, mkdirSync, ReadStream } from 'fs';
 import { Stream } from 'stream';
-import fsExtra from 'fs-extra';
 import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import { access, mkdir, readdir, rm, stat, writeFile } from 'fs/promises';
 
 import { streamToString } from '../../helpers/StreamHelpers';
 import {
@@ -35,7 +35,12 @@ export default class FileContentStorage implements IContentStorage {
             id = FileContentStorage.getRandomInt(1, 2 ** 32);
             counter += 1;
             const p = path.join(this.getContentPath(), id.toString());
-            exists = await fsExtra.pathExists(p);
+            try {
+                await access(p);
+                exists = true;
+            } catch {
+                exists = false;
+            }
         } while (exists && counter < 5); // try 5x and give up then
         if (exists) {
             throw new H5pError(
@@ -75,7 +80,7 @@ export default class FileContentStorage implements IContentStorage {
             maxPathLength?: number;
         }
     ) {
-        fsExtra.ensureDirSync(contentPath);
+        mkdirSync(contentPath, { recursive: true });
         this.maxFileLength =
             (options?.maxPathLength ?? 255) - (contentPath.length + 1) - 23;
         // we subtract 23 for the contentId (12), unique ids appended to
@@ -127,21 +132,22 @@ export default class FileContentStorage implements IContentStorage {
             id = await this.createContentId();
         }
         try {
-            await fsExtra.ensureDir(
-                path.join(this.getContentPath(), id.toString())
-            );
-            await fsExtra.writeJSON(
+            await mkdir(path.join(this.getContentPath(), id.toString()), {
+                recursive: true
+            });
+            await writeFile(
                 path.join(this.getContentPath(), id.toString(), 'h5p.json'),
-                metadata
+                JSON.stringify(metadata)
             );
-            await fsExtra.writeJSON(
+            await writeFile(
                 path.join(this.getContentPath(), id.toString(), 'content.json'),
-                content
+                JSON.stringify(content)
             );
         } catch (error) {
-            await fsExtra.remove(
-                path.join(this.getContentPath(), id.toString())
-            );
+            await rm(path.join(this.getContentPath(), id.toString()), {
+                recursive: true,
+                force: true
+            });
             throw new H5pError(
                 'storage-file-implementations:error-creating-content',
                 {},
@@ -168,11 +174,9 @@ export default class FileContentStorage implements IContentStorage {
         user: IUser
     ): Promise<void> {
         checkFilename(filename);
-        if (
-            !(await fsExtra.pathExists(
-                path.join(this.getContentPath(), id.toString())
-            ))
-        ) {
+        try {
+            await access(path.join(this.getContentPath(), id.toString()));
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:add-file-content-not-found',
                 { filename, id },
@@ -185,8 +189,8 @@ export default class FileContentStorage implements IContentStorage {
             id.toString(),
             filename
         );
-        await fsExtra.ensureDir(path.dirname(fullPath));
-        const writeStream = fsExtra.createWriteStream(fullPath);
+        await mkdir(path.dirname(fullPath), { recursive: true });
+        const writeStream = createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
     }
 
@@ -196,9 +200,14 @@ export default class FileContentStorage implements IContentStorage {
      * @returns true if the piece of content exists
      */
     public async contentExists(contentId: ContentId): Promise<boolean> {
-        return fsExtra.pathExists(
-            path.join(this.getContentPath(), contentId.toString())
-        );
+        try {
+            await access(
+                path.join(this.getContentPath(), contentId.toString())
+            );
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -209,11 +218,9 @@ export default class FileContentStorage implements IContentStorage {
      * @returns
      */
     public async deleteContent(id: ContentId, user?: IUser): Promise<void> {
-        if (
-            !(await fsExtra.pathExists(
-                path.join(this.getContentPath(), id.toString())
-            ))
-        ) {
+        try {
+            await access(path.join(this.getContentPath(), id.toString()));
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:delete-content-not-found',
                 {},
@@ -221,7 +228,10 @@ export default class FileContentStorage implements IContentStorage {
             );
         }
 
-        await fsExtra.remove(path.join(this.getContentPath(), id.toString()));
+        await rm(path.join(this.getContentPath(), id.toString()), {
+            recursive: true,
+            force: true
+        });
     }
 
     /**
@@ -239,14 +249,16 @@ export default class FileContentStorage implements IContentStorage {
             contentId.toString(),
             filename
         );
-        if (!(await fsExtra.pathExists(absolutePath))) {
+        try {
+            await access(absolutePath);
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:delete-content-file-not-found',
                 { filename },
                 404
             );
         }
-        await fsExtra.remove(absolutePath);
+        await rm(absolutePath);
     }
 
     /**
@@ -261,9 +273,18 @@ export default class FileContentStorage implements IContentStorage {
     ): Promise<boolean> {
         checkFilename(filename);
         if (contentId !== undefined) {
-            return fsExtra.pathExists(
-                path.join(this.getContentPath(), contentId.toString(), filename)
-            );
+            try {
+                await access(
+                    path.join(
+                        this.getContentPath(),
+                        contentId.toString(),
+                        filename
+                    )
+                );
+                return true;
+            } catch {
+                return false;
+            }
         }
         return false;
     }
@@ -288,9 +309,7 @@ export default class FileContentStorage implements IContentStorage {
                 404
             );
         }
-        return fsExtra.stat(
-            path.join(this.getContentPath(), id.toString(), filename)
-        );
+        return stat(path.join(this.getContentPath(), id.toString(), filename));
     }
 
     /**
@@ -319,7 +338,7 @@ export default class FileContentStorage implements IContentStorage {
                 404
             );
         }
-        return fsExtra.createReadStream(
+        return createReadStream(
             path.join(this.getContentPath(), id.toString(), filename),
             {
                 start: rangeStart,
@@ -402,18 +421,18 @@ export default class FileContentStorage implements IContentStorage {
      * @returns a list of contentIds
      */
     public async listContent(user?: IUser): Promise<ContentId[]> {
-        const directories = await fsExtra.readdir(this.getContentPath());
+        const directories = await readdir(this.getContentPath());
         return (
             await Promise.all(
                 directories.map(async (dir) => {
-                    if (
-                        !(await fsExtra.pathExists(
+                    try {
+                        await access(
                             path.join(this.getContentPath(), dir, 'h5p.json')
-                        ))
-                    ) {
+                        );
+                        return dir;
+                    } catch {
                         return '';
                     }
-                    return dir;
                 })
             )
         ).filter((content) => content !== '');

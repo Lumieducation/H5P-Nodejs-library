@@ -4,10 +4,12 @@
 
 import AWS from 'aws-sdk';
 import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
-import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
+import { createReadStream } from 'fs';
+import { stat } from 'fs/promises';
+
 import { IContentMetadata } from '@lumieducation/h5p-server';
 
 import MongoS3ContentStorage from '../src/MongoS3ContentStorage';
@@ -211,14 +213,14 @@ describe('MongoS3ContentStorage', () => {
         await storage.addFile(
             contentId,
             filename,
-            fsExtra.createReadStream(stubJsonPath),
+            createReadStream(stubJsonPath),
             stubUser
         );
         await expect(storage.fileExists(contentId, filename)).resolves.toEqual(
             true
         );
 
-        const fsStats = await fsExtra.stat(stubJsonPath);
+        const fsStats = await stat(stubJsonPath);
         const s3Stats = await storage.getFileStats(
             contentId,
             filename,
@@ -287,7 +289,7 @@ describe('MongoS3ContentStorage', () => {
         await storage.addFile(
             contentId,
             filename,
-            fsExtra.createReadStream(stubImagePath),
+            createReadStream(stubImagePath),
             stubUser
         );
         await expect(
@@ -331,7 +333,7 @@ describe('MongoS3ContentStorage', () => {
         await storage.addFile(
             contentId,
             filename,
-            fsExtra.createReadStream(stubImagePath),
+            createReadStream(stubImagePath),
             stubUser
         );
         await expect(

@@ -3,8 +3,8 @@
  * too often. Run this script to update the content type cache mockup. Expect necessary changes in the tests if the hub content changes.
  */
 
-import * as fsExtra from 'fs-extra';
 import * as path from 'path';
+import { writeFile } from 'fs/promises';
 
 import ContentTypeCache from '../packages/h5p-server/src/ContentTypeCache';
 import H5PConfig from '../packages/h5p-server/src/implementation/H5PConfig';
@@ -25,10 +25,11 @@ const start = async () => {
         return;
     }
 
-    const contentTypes: any = await contentTypeCache.downloadContentTypesFromHub();
-    await fsExtra.writeJSON(
+    const contentTypes: any =
+        await contentTypeCache.downloadContentTypesFromHub();
+    await writeFile(
         path.resolve('test/data/content-type-cache/real-content-types.json'),
-        { contentTypes }
+        JSON.stringify({ contentTypes })
     );
     console.log(
         'Wrote current content type cache to test/content-type-cache/real-content-types.json'

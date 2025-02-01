@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 
-import fsExtra from 'fs-extra';
 import path from 'path';
 import { withDir } from 'tmp-promise';
+import { readdir, readFile } from 'fs/promises';
 
 import { createH5PEditor } from '../helpers/H5PEditor';
 
@@ -15,16 +15,14 @@ describe('H5PEditor.saveH5P()', () => {
             async ({ path: tempDirPath }) => {
                 const user = new User();
                 const contentPath = path.resolve(`test/data/hub-content`);
-                const contentTypes = await fsExtra.readdir(contentPath);
+                const contentTypes = await readdir(contentPath);
 
                 const { h5pEditor } = createH5PEditor(tempDirPath);
 
                 for (const contentType of contentTypes) {
                     const { metadata, parameters } =
                         await h5pEditor.uploadPackage(
-                            await fsExtra.readFile(
-                                path.join(contentPath, contentType)
-                            ),
+                            await readFile(path.join(contentPath, contentType)),
                             user
                         );
 

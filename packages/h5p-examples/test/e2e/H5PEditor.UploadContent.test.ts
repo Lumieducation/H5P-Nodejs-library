@@ -1,5 +1,5 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { readdirSync } from 'fs';
 
 import * as uploadHelpers from './helpers/upload';
 
@@ -15,8 +15,7 @@ describe('e2e test: upload content and save', () => {
         await uploadHelpers.afterAll();
     });
 
-    for (const file of fsExtra
-        .readdirSync(examplesPath)
+    for (const file of readdirSync(examplesPath)
         // We ignore H5P.Audio as the requests for the OGG file is never
         // resolved in some cases See #553 for more details.
         .filter((f) => f !== 'H5P.Audio.h5p')) {

@@ -1,14 +1,13 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { createWriteStream } from 'fs';
+import { readdir } from 'fs/promises';
 import { performance } from 'perf_hooks';
 
 import * as uploadHelpers from './helpers/upload';
 
 const host = 'http://localhost:8080';
 
-const errorFileStream = fsExtra.createWriteStream(
-    path.resolve(process.argv[3])
-);
+const errorFileStream = createWriteStream(path.resolve(process.argv[3]));
 
 async function logFailed(file: string, cause: string): Promise<void> {
     console.error(`❌ ${file} failed: ${cause})`);
@@ -26,8 +25,7 @@ async function main(): Promise<void> {
     });
 
     try {
-        for (const file of fsExtra
-            .readdirSync(examplesPath)
+        for (const file of (await readdir(examplesPath))
             // We ignore H5P.Audio as the requests for the OGG file is never
             // resolved in some cases See #553 for more details.
             .filter((f) => f.endsWith('.h5p'))) {

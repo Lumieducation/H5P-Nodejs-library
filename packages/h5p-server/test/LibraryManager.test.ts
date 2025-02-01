@@ -1,5 +1,5 @@
-import fsExtra from 'fs-extra';
 import { withDir } from 'tmp-promise';
+import { readdir } from 'fs/promises';
 
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InstalledLibrary from '../src/InstalledLibrary';
@@ -15,8 +15,7 @@ describe('basic file library manager functionality', () => {
 
         const libraryObject = await libManager.listInstalledLibraries();
         expect(Object.keys(libraryObject).length).toEqual(
-            (await fsExtra.readdir(`${__dirname}/../../../test/data/libraries`))
-                .length
+            (await readdir(`${__dirname}/../../../test/data/libraries`)).length
         );
     });
 
@@ -71,7 +70,7 @@ describe('basic file library manager functionality', () => {
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
                 // make sure there is no trace of the library left
-                expect(await fsExtra.readdir(tempDirPath)).toEqual([]);
+                expect(await readdir(tempDirPath)).toEqual([]);
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -270,7 +269,7 @@ describe('basic file library manager functionality', () => {
                 expect(installedLibraries['H5P.Example1']).toEqual(undefined);
 
                 // make sure there is no trace of the library left
-                expect(await fsExtra.readdir(tempDirPath)).toEqual([]);
+                expect(await readdir(tempDirPath)).toEqual([]);
             },
             { keep: false, unsafeCleanup: true }
         );

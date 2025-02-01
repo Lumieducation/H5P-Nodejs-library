@@ -1,8 +1,9 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir, withFile } from 'tmp-promise';
+import { readFile, stat } from 'fs/promises';
+import { createWriteStream } from 'fs';
 
 import LibraryName from '../src/LibraryName';
 import {
@@ -131,7 +132,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -142,7 +143,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.jpg',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -181,7 +182,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -192,7 +193,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.JPG',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -276,7 +277,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -287,7 +288,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.jpg',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -396,7 +397,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -407,7 +408,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.jpg',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -482,7 +483,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -493,7 +494,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.jpg',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -575,7 +576,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const fileBuffer = fsExtra.readFileSync(originalPath);
+                const fileBuffer = await readFile(originalPath);
                 const { path: savedFilePath } = await h5pEditor.saveContentFile(
                     undefined,
                     {
@@ -586,7 +587,7 @@ describe('H5PEditor', () => {
                         data: fileBuffer,
                         mimetype: 'image/jpeg',
                         name: 'earth.jpg',
-                        size: fsExtra.statSync(originalPath).size
+                        size: (await stat(originalPath)).size
                     },
                     user
                 );
@@ -782,8 +783,7 @@ describe('H5PEditor', () => {
                 // export to H5P package in a temporary file
                 await withFile(
                     async ({ path: h5pFilePath }) => {
-                        const writeStream =
-                            fsExtra.createWriteStream(h5pFilePath);
+                        const writeStream = createWriteStream(h5pFilePath);
                         const packageFinishedPromise = new Promise<void>(
                             (resolve) => {
                                 writeStream.on('close', () => {

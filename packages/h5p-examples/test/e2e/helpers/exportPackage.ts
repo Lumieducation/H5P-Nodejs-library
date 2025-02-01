@@ -1,5 +1,5 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
+import { access, mkdir, readdir, rename, rm } from 'fs/promises';
 
 import PackageImporter from '@lumieducation/h5p-server/src/PackageImporter';
 import Logger from '@lumieducation/h5p-server/src/helpers/Logger';
@@ -35,11 +35,11 @@ export default async function (
         path.extname(h5pPackagePath)
     );
     if (options?.clearDirs) {
-        await fsExtra.remove(librariesPath);
-        await fsExtra.remove(contentPath);
+        await rm(librariesPath, { recursive: true, force: true });
+        await rm(contentPath, { recursive: true, force: true });
     }
-    await fsExtra.ensureDir(librariesPath);
-    await fsExtra.ensureDir(contentPath);
+    await mkdir(librariesPath, { recursive: true });
+    await mkdir(contentPath, { recursive: true });
 
     await PackageImporter.extractPackage(h5pPackagePath, librariesPath, {
         includeContent: false,
@@ -53,19 +53,20 @@ export default async function (
         includeMetadata: true
     });
     const realContentPath = path.join(contentPackageRoot, 'content');
-    if (await fsExtra.pathExists(realContentPath)) {
-        for (const file of await fsExtra.readdir(realContentPath)) {
-            await fsExtra.move(
-                path.join(realContentPath, file),
-                path.join(contentPackageRoot, file),
-                { overwrite: true }
-            );
-        }
-        await fsExtra.remove(realContentPath);
-    } else {
+    try {
+        await access(realContentPath);
+    } catch {
         log.error(
             `Error when extracting content from ${h5pPackagePath}. No content directory.`
         );
+        return contentId;
     }
+    for (const file of await readdir(realContentPath)) {
+        await rename(
+            path.join(realContentPath, file),
+            path.join(contentPackageRoot, file)
+        );
+    }
+    await rm(realContentPath, { recursive: true, force: true });
     return contentId;
 }

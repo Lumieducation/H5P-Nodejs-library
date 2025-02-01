@@ -1,6 +1,6 @@
 import os from 'os';
 import { Request } from 'express';
-import fsExtra from 'fs-extra';
+import { rm } from 'fs/promises';
 
 /**
  * Displays links to the server at all available IP addresses.
@@ -38,7 +38,10 @@ export async function clearTempFiles(
         Object.keys(req.files).map((file) =>
             req.files[file].tempFilePath !== undefined &&
             req.files[file].tempFilePath !== ''
-                ? fsExtra.remove(req.files[file].tempFilePath)
+                ? rm(req.files[file].tempFilePath, {
+                      recursive: true,
+                      force: true
+                  })
                 : Promise.resolve()
         )
     );

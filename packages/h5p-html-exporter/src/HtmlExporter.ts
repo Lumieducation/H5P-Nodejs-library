@@ -1,4 +1,3 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
 import postCss, { CssSyntaxError } from 'postcss';
 import postCssUrl from 'postcss-url';
@@ -7,6 +6,10 @@ import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import uglifyJs from 'uglify-js';
 import postCssSafeParser from 'postcss-safe-parser';
+import { readFileSync } from 'fs';
+import upath from 'upath';
+import { readFile } from 'fs/promises';
+
 import {
     ContentId,
     IContentStorage,
@@ -23,7 +26,6 @@ import {
     IIntegration,
     ITranslationFunction
 } from '@lumieducation/h5p-server';
-import upath from 'upath';
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
@@ -37,7 +39,7 @@ import minimalTemplate from './minimalTemplate';
  * can't be modified that way.
  */
 const getLibraryFilePathOverrideScript = uglifyJs.minify(
-    fsExtra.readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
+    readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
         encoding: 'utf8'
     })
 ).code;
@@ -346,7 +348,7 @@ export default class HtmlExporter {
                 );
                 return {
                     text: (
-                        await fsExtra.readFile(
+                        await readFile(
                             path.resolve(this.coreFilePath, filenameWithoutDir)
                         )
                     ).toString(),
@@ -362,7 +364,7 @@ export default class HtmlExporter {
                 );
                 return {
                     text: (
-                        await fsExtra.readFile(
+                        await readFile(
                             path.resolve(
                                 this.editorFilePath,
                                 filenameWithoutDir
@@ -871,7 +873,7 @@ export default class HtmlExporter {
                 const basePath = editor
                     ? path.join(this.editorFilePath, 'styles')
                     : path.join(this.coreFilePath, 'styles');
-                return `data:${mimetype};base64,${await fsExtra.readFile(
+                return `data:${mimetype};base64,${await readFile(
                     path.resolve(basePath, asset.relativePath),
                     'base64'
                 )}`;
