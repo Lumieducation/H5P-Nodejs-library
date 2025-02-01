@@ -314,6 +314,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<IFileStats> {
+        checkFilename(filename);
         if (
             !(await this.fileExists(library, filename)) ||
             this.isIgnored(filename)
@@ -341,6 +342,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<Readable> {
+        checkFilename(filename);
         if (
             !(await this.fileExists(library, filename)) ||
             this.isIgnored(filename)

@@ -1,6 +1,11 @@
 import H5pError from '../../helpers/H5pError';
 import { generalizedSanitizeFilename } from '../utils';
 
+/**
+ * Checks for unsafe characters in a filename. Throws an error if any are found.
+ * Allows paths with sub-directories, as they are needed in H5P.
+ * @param filename
+ */
 export function checkFilename(filename: string): void {
     if (/\.\.\//.test(filename)) {
         throw new H5pError(
@@ -9,9 +14,19 @@ export function checkFilename(filename: string): void {
             400
         );
     }
+
     if (filename.startsWith('/')) {
         throw new H5pError(
             'storage-file-implementations:illegal-absolute-filename',
+            { filename },
+            400
+        );
+    }
+
+    const unsafeCharactersRegex = /[<>:"|?*]/;
+    if (unsafeCharactersRegex.test(filename)) {
+        throw new H5pError(
+            'storage-file-implementations:illegal-character',
             { filename },
             400
         );
