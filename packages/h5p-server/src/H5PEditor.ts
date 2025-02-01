@@ -36,11 +36,13 @@ import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
+    FileSanitizerResult,
     IAssets,
     IContentMetadata,
     IContentStorage,
     IContentUserDataStorage,
     IEditorModel,
+    IFileSanitizer,
     IH5PConfig,
     IH5PEditorOptions,
     IHubInfo,
@@ -187,6 +189,9 @@ export default class H5PEditor {
                 this.config.customization.global?.editor.styles
             );
         }
+
+        this.fileSanitizers = this.options?.fileSanitizers || [];
+
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
         const saveMetadataJsonSchema = fsExtra.readJSONSync(
@@ -222,6 +227,7 @@ export default class H5PEditor {
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
     private semanticsLocalizer: SemanticsLocalizer;
+    private fileSanitizers: IFileSanitizer[];
 
     /**
      * Generates cache buster strings that are used by the JavaScript client in
@@ -633,6 +639,22 @@ export default class H5PEditor {
             (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
         ) {
             throw new H5pError('upload-validation-error', {}, 400);
+        }
+
+        for (const sanitizer of this.fileSanitizers) {
+            try {
+                const result = await sanitizer.scan(file.name, file.mimetype);
+                if (result == FileSanitizerResult.Sanitized) {
+                    log.debug(
+                        'Sanitized file',
+                        file.name,
+                        'with sanitizer',
+                        sanitizer.name
+                    );
+                }
+            } catch {
+                throw new H5pError('upload-validation-error', {}, 400);
+            }
         }
 
         try {

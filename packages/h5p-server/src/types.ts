@@ -2271,6 +2271,12 @@ export interface IH5PEditorOptions {
     lockProvider?: ILockProvider;
 
     /**
+     * A list of file sanitizers that are executed for content files in order of
+     * the array when a file or package is uploaded.
+     */
+    fileSanitizers?: IFileSanitizer[];
+
+    /**
      * Hooks allow you to react to things happening in the library.
      */
     hooks?: {
@@ -2450,4 +2456,36 @@ export interface ILockProvider {
         callback: () => Promise<T>,
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T>;
+}
+
+export enum MalwareScanResult {
+    MalwareFound,
+    Clean,
+    NotScanned
+}
+
+export interface IFileMalwareScanner {
+    /** The name of the scanner, e.g. ClamAV */
+    readonly name: string;
+
+    /** Scans a file for malware and returns whether it contains malware. */
+    scan(file: string, mimetype: string): Promise<MalwareScanResult>;
+}
+
+export enum FileSanitizerResult {
+    Sanitized,
+    NotSanitized,
+    Ignored
+}
+
+export interface IFileSanitizer {
+    /** The name of the scanner, e.g. SVG Sanitizer */
+    readonly name: string;
+
+    /** Scans a file for malware and returns whether it contains malware. If the
+     * scanner is capable of sanitizing the file, it can return a path to the
+     * clean file and indicate this with wasSanitized. The original file is
+     * expected to be replaced by the sanitized file., so there is no new path
+     * to the sanitized file.*/
+    scan(file: string, mimetype: string): Promise<FileSanitizerResult>;
 }

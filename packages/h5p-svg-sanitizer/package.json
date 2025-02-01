@@ -1,0 +1,38 @@
+{
+    "name": "@lumieducation/h5p-svg-sanitizer",
+    "version": "9.3.2",
+    "description": "Cleans potentially malicious SVGs",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
+    },
+    "type": "module",
+    "scripts": {
+        "build:watch": "npx tsc -w -p ./tsconfig.build.json",
+        "build": "npx tsc -p ./tsconfig.build.json",
+        "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
+        "test:watch": "jest --watch",
+        "test": "jest --runInBand --forceExit"
+    },
+    "release": {
+        "branch": "master"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        }
+    ],
+    "dependencies": {
+        "@lumieducation/h5p-server": "^9.3.2",
+        "dompurify": "^3.2.3",
+        "jsdom": "^26.0.0"
+    },
+    "main": "./build/SvgSanitizer.js",
+    "types": "./build/SvgSanitizer.d.ts",
+    "devDependencies": {
+        "@types/jsdom": "^21.1.7",
+        "tmp-promise": "^3.0.3"
+    }
+}
