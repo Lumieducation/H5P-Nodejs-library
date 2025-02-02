@@ -2478,8 +2478,18 @@ export enum FileSanitizerResult {
     Ignored
 }
 
+/**
+ * An interface for a file sanitizer that can sanitize files that can
+ * potentially contain dangerous elements. In contrast to a malware scanner, a
+ * sanitizer can remove potentially dangerous parts of the file and keep the
+ * rest usable. It never rejects files because of its contents, but simply
+ * removes dangerous parts. Due to the nature how sanitizers work, they
+ * typically always change something in the file, even if it is just removing
+ * whitespaces. That's why there is no reliable way to determine if a file was
+ * really dangerous or not and nothing is reported to the user.
+ */
 export interface IFileSanitizer {
-    /** The name of the scanner, e.g. SVG Sanitizer */
+    /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
     readonly name: string;
 
     /** Scans a file for malware and returns whether it contains malware. If the
@@ -2487,5 +2497,5 @@ export interface IFileSanitizer {
      * clean file and indicate this with wasSanitized. The original file is
      * expected to be replaced by the sanitized file., so there is no new path
      * to the sanitized file.*/
-    scan(file: string, mimetype: string): Promise<FileSanitizerResult>;
+    sanitize(file: string): Promise<FileSanitizerResult>;
 }

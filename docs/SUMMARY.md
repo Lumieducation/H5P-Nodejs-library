@@ -28,6 +28,7 @@
   - [h5p-webcomponents](packages/h5p-webcomponents.md)
   - [h5p-react](packages/h5p-react.md)
   - [h5p-redis-lock](packages/h5p-redis-lock.md)
+  - [h5p-svg-sanitizer](packages/h5p-svg-sanitizer.md)
 - Development
   * [Getting started](development/getting-started.md)
   * [Testing & code quality](development/testing-quality.md)

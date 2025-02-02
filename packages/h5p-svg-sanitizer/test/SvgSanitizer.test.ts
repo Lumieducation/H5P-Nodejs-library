@@ -15,10 +15,7 @@ describe('SvgSanitizer', () => {
                 await writeFile(path, svg);
                 const dom1 = new JSDOM(svg, { contentType: 'image/svg+xml' });
 
-                const result = await new SvgSanitizer().scan(
-                    path,
-                    'image/svg+xml'
-                );
+                const result = await new SvgSanitizer().sanitize(path);
                 expect(result).toBe(FileSanitizerResult.Sanitized);
                 const svg2 = await readFile(path, 'utf-8');
                 const dom2 = new JSDOM(svg2, { contentType: 'image/svg+xml' });
@@ -44,10 +41,7 @@ describe('SvgSanitizer', () => {
                     contentType: 'image/svg+xml'
                 });
 
-                const result = await new SvgSanitizer().scan(
-                    path,
-                    'image/svg+xml'
-                );
+                const result = await new SvgSanitizer().sanitize(path);
                 expect(result).toBe(FileSanitizerResult.Sanitized);
 
                 const sanitizedSvg = await readFile(path, 'utf-8');

@@ -157,7 +157,10 @@ export default class H5PEditor {
         this.contentStorer = new ContentStorer(
             this.contentManager,
             this.libraryManager,
-            this.temporaryFileManager
+            this.temporaryFileManager,
+            {
+                fileSanitizers: this.options?.fileSanitizers
+            }
         );
         this.packageImporter = new PackageImporter(
             this.libraryManager,
@@ -190,7 +193,7 @@ export default class H5PEditor {
             );
         }
 
-        this.fileSanitizers = this.options?.fileSanitizers || [];
+        this.fileSanitizers = this.options?.fileSanitizers ?? [];
 
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
@@ -643,7 +646,9 @@ export default class H5PEditor {
 
         for (const sanitizer of this.fileSanitizers) {
             try {
-                const result = await sanitizer.scan(file.name, file.mimetype);
+                // Must be run in sequence and can't be parallelized.
+                // eslint-disable-next-line no-await-in-loop
+                const result = await sanitizer.sanitize(file.name);
                 if (result == FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
