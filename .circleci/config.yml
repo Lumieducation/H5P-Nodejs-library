@@ -122,13 +122,13 @@ jobs:
                   TMPDIR: /mnt/ramdisk
             - image: clamav/clamav:1.4
         resource_class: medium+
+        environment:
+            CLAMDSCAN_HOST: localhost
+            CLAMDSCAN_PORT: 3310
         steps:
             - checkout
             - attach_workspace:
                   at: .
-            - environment:
-                  CLAMDSCAN_HOST: localhost
-                  CLAMDSCAN_PORT: 3310
             - run: npm run test:h5p-clamav-scanner
             - coveralls/upload:
                   parallel: true
