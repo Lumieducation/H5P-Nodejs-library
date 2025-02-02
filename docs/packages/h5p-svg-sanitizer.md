@@ -62,7 +62,7 @@ package might not be right for you.
 
 ## Testing whether SVGs are correctly sanitized
 
-Get the [`SVG XSS injection demo file`](/test/data/sanitizer/xss-svg.h5p) from
+Get the [`SVG XSS injection demo file`](/packages/h5p-svg-sanitizer/test/xss-svg.h5p) from
 the repo, upload it to your system and save. You should see a simple H5P Blanks
 activity with the image of a gray circle. Copy the URL of the image, paste it
 into your browser's address bar and load it. You should now _NOT_ see a popup

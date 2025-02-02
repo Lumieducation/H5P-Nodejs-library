@@ -24,8 +24,12 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^9.3.2"
+        "@lumieducation/h5p-server": "^9.3.2",
+        "clamscan": "^2.4.0"
     },
     "main": "./build/ClamAVScanner.js",
-    "types": "./build/ClamAVScanner.d.ts"
+    "types": "./build/ClamAVScanner.d.ts",
+    "devDependencies": {
+        "@types/clamscan": "^2.4.0"
+    }
 }

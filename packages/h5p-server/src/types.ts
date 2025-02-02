@@ -2469,7 +2469,9 @@ export interface IFileMalwareScanner {
     readonly name: string;
 
     /** Scans a file for malware and returns whether it contains malware. */
-    scan(file: string, mimetype: string): Promise<MalwareScanResult>;
+    scan(
+        file: string
+    ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
 export enum FileSanitizerResult {
