@@ -120,11 +120,10 @@ jobs:
             - image: cimg/node:22.13.1
               environment:
                   TMPDIR: /mnt/ramdisk
+                  CLAMDSCAN_HOST: localhost
+                  CLAMDSCAN_PORT: 3310
             - image: clamav/clamav:1.4
         resource_class: medium+
-        environment:
-            CLAMDSCAN_HOST: localhost
-            CLAMDSCAN_PORT: 3310
         steps:
             - checkout
             - attach_workspace:
