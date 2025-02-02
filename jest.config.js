@@ -109,6 +109,7 @@ module.exports = {
         '<rootDir>/packages/h5p-server/test',
         '<rootDir>/packages/h5p-shared-state-server/test',
         '<rootDir>/packages/h5p-svg-sanitizer/test',
+        '<rootDir>/packages/h5p-clamav-scanner/test',
     ],
 
     // Allows you to use a custom runner instead of Jest's default test runner

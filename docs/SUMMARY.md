@@ -29,6 +29,7 @@
   - [h5p-react](packages/h5p-react.md)
   - [h5p-redis-lock](packages/h5p-redis-lock.md)
   - [h5p-svg-sanitizer](packages/h5p-svg-sanitizer.md)
+  - [h5p-clamav-scanner](packages/h5p-clamav-scanner.md)
 - Development
   * [Getting started](development/getting-started.md)
   * [Testing & code quality](development/testing-quality.md)

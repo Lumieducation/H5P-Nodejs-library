@@ -23,6 +23,8 @@
         "packages/h5p-shared-state-server/test/**/*",
         "packages/h5p-svg-sanitizer/src/**/*",
         "packages/h5p-svg-sanitizer/test/**/*",
+        "packages/h5p-clamav-scanner/src/**/*",
+        "packages/h5p-clamav-scanner/test/**/*",
         "packages/h5p-webcomponents/src/**/*",
         "packages/h5p-webcomponents/test/**/*"
     ],
@@ -53,6 +55,9 @@
             ],
             "@lumieducation/h5p-svg-sanitizer": [
                 "packages/h5p-svg-sanitizer/src"
+            ],
+            "@lumieducation/h5p-clamav-scanner": [
+                "packages/h5p-clamav-scanner/src"
             ]
         }
     }
