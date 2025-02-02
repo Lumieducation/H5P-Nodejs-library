@@ -2492,10 +2492,7 @@ export interface IFileSanitizer {
     /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
     readonly name: string;
 
-    /** Scans a file for malware and returns whether it contains malware. If the
-     * scanner is capable of sanitizing the file, it can return a path to the
-     * clean file and indicate this with wasSanitized. The original file is
-     * expected to be replaced by the sanitized file., so there is no new path
-     * to the sanitized file.*/
+    /** Sanitizes files. The original file is expected to be replaced by the
+     * sanitized file, so there is no new path to the sanitized file.*/
     sanitize(file: string): Promise<FileSanitizerResult>;
 }
