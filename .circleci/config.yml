@@ -115,6 +115,25 @@ jobs:
                   parallel: true
                   flag_name: Integration tests
 
+    clamav-tests:
+        docker:
+            - image: cimg/node:22.13.1
+              environment:
+                  TMPDIR: /mnt/ramdisk
+            - image: clamav/clamav:1.4
+        resource_class: medium+
+        steps:
+            - checkout
+            - attach_workspace:
+                  at: .
+            - environment:
+                  CLAMDSCAN_HOST: localhost
+                  CLAMDSCAN_PORT: 3310
+            - run: npm run test:h5p-clamav-scanner
+            - coveralls/upload:
+                  parallel: true
+                  flag_name: ClamAV Scanner tests
+
     html-exporter-tests:
         docker:
             - image: cimg/node:22.13.1-browsers
@@ -208,6 +227,9 @@ workflows:
             - db-tests:
                   requires:
                       - install-build
+            - clamav-tests:
+                  requires:
+                      - install-build
             - html-exporter-tests:
                   requires:
                       - install-build
@@ -220,7 +242,8 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - html-exporter-tests
+                      - clamav-tests
+                      - html-exporter-tests                      
                       # - e2e-tests
                       - integration-tests
                       - db-tests
@@ -230,6 +253,7 @@ workflows:
                       - lint
                       - format
                       - unit-tests
+                      - clamav-tests
                       - html-exporter-tests
                       # - e2e-tests
                       - integration-tests

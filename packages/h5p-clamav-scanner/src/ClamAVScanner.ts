@@ -41,8 +41,18 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     public static async create(
         clamavOptions?: NodeClam.Options
     ): Promise<ClamAVScanner> {
+        const envVarOptions = ClamAVScanner.getEnvVarOptions();
         const clamScan = await new NodeClam().init({
             ...(clamavOptions ?? {}),
+            clamscan: {
+                ...(clamavOptions?.clamscan ?? {}),
+                ...(envVarOptions?.clamscan ?? {})
+            },
+            clamdscan: {
+                ...(clamavOptions?.clamdscan ?? {}),
+                ...(envVarOptions?.clamdscan ?? {})
+            },
+            preference: clamavOptions?.preference || envVarOptions?.preference,
             removeInfected: false,
             quarantineInfected: false,
             scanRecursively: false
@@ -52,6 +62,81 @@ export default class ClamAVScanner implements IFileMalwareScanner {
             await clamScan.getVersion()
         );
         return new ClamAVScanner(clamScan);
+    }
+
+    /**
+     * Gets the ClamAV options from environment variables (CLAMSCAN_* and
+     * CLAMDSCAN_*).
+     */
+    private static getEnvVarOptions(): Partial<NodeClam.Options> {
+        const clamscanPath = process.env.CLAMSCAN_PATH;
+        const clamscanDb = process.env.CLAMSCAN_DB;
+        const clamscanScanArchives =
+            process.env.CLAMSCAN_SCAN_ARCHIVES === 'true';
+        const clamscanActive = process.env.CLAMSCAN_ACTIVE === 'true';
+
+        const clamdscanSocket = process.env.CLAMDSCAN_SOCKET;
+        const clamdscanHost = process.env.CLAMDSCAN_HOST;
+        const clamdscanPort = process.env.CLAMDSCAN_PORT
+            ? Number.parseInt(process.env.CLAMDSCAN_PORT, 10)
+            : undefined;
+        const clamdscanTimeout = process.env.CLAMDSCAN_TIMEOUT
+            ? Number.parseInt(process.env.CLAMDSCAN_TIMEOUT, 10)
+            : undefined;
+        const clamdscanLocalFallback =
+            process.env.CLAMDSCAN_LOCAL_FALLBACK === 'true';
+        const clamdscanPath = process.env.CLAMDSCAN_PATH;
+        const clamdscanConfigFile = process.env.CLAMDSCAN_CONFIG_FILE;
+        const clamdscanMultiscan = process.env.CLAMDSCAN_MULTISCAN === 'true';
+        const clamdscanReloadDb = process.env.CLAMDSCAN_RELOAD_DB === 'true';
+        const clamdscanActive = process.env.CLAMDSCAN_ACTIVE === 'true';
+        const clamdscanBypassTest =
+            process.env.CLAMDSCAN_BYPASS_TEST === 'true';
+
+        const clamscanPreference = process.env.CLAMSCAN_PREFERENCE;
+
+        return {
+            clamscan:
+                clamscanPath ||
+                clamscanDb ||
+                clamscanScanArchives ||
+                clamscanActive
+                    ? {
+                          path: clamscanPath,
+                          db: clamscanDb,
+                          scanArchives: clamscanScanArchives,
+                          active: clamdscanActive
+                      }
+                    : undefined,
+            clamdscan:
+                clamdscanSocket ||
+                clamdscanHost ||
+                clamdscanPort ||
+                clamdscanTimeout ||
+                clamdscanLocalFallback ||
+                clamdscanPath ||
+                clamdscanConfigFile ||
+                clamdscanMultiscan ||
+                clamdscanReloadDb ||
+                clamdscanActive ||
+                clamdscanBypassTest
+                    ? {
+                          socket: clamdscanSocket,
+                          host: clamdscanHost,
+                          port: clamdscanPort,
+                          timeout: clamdscanTimeout,
+                          localFallback: clamdscanLocalFallback,
+                          path: clamdscanPath,
+                          configFile: clamdscanConfigFile,
+                          multiscan: clamdscanMultiscan,
+                          reloadDb: clamdscanReloadDb,
+                          active: clamdscanActive,
+                          bypassTest: clamdscanBypassTest
+                      }
+                    : undefined,
+
+            preference: clamscanPreference
+        };
     }
 
     async scan(
