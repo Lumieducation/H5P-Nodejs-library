@@ -130,6 +130,7 @@ jobs:
                   at: .
             - run: |
                 timeout 60 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3310
+                sleep 20
                 npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
