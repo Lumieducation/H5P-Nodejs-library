@@ -128,7 +128,9 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
+            - run: |
+                timeout 60 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3310
+                npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: ClamAV Scanner tests

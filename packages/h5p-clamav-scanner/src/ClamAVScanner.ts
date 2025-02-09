@@ -51,7 +51,6 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         // undefined values. We need to add them by setting them one-by-one
         // manually.
         const options: NodeClam.Options = {
-            ...(clamavOptions ?? {}),
             removeInfected: false,
             quarantineInfected: false,
             scanRecursively: false
@@ -59,6 +58,13 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         if (clamavOptions?.preference || envVarOptions?.preference) {
             options.preference =
                 clamavOptions?.preference || envVarOptions?.preference;
+        }
+        if (clamavOptions?.debugMode || envVarOptions?.debugMode) {
+            options.debugMode =
+                clamavOptions?.debugMode || envVarOptions?.debugMode;
+        }
+        if (clamavOptions?.scanLog || envVarOptions?.scanLog) {
+            options.scanLog = clamavOptions?.scanLog || envVarOptions?.scanLog;
         }
         if (clamavOptions?.clamscan || envVarOptions?.clamscan) {
             options.clamscan = {
@@ -86,12 +92,19 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      * CLAMDSCAN_*).
      */
     private static getEnvVarOptions(): Partial<NodeClam.Options> {
+        // general configuration
+        const scanLog = process.env.CLAMSCAN_SCAN_LOG;
+        const debugMode = process.env.CLAMSCAN_DEBUG_MODE === 'true';
+        const preference = process.env.CLAMSCAN_PREFERENCE;
+
+        // configuration for clamscan (binary)
         const clamscanPath = process.env.CLAMSCAN_PATH;
         const clamscanDb = process.env.CLAMSCAN_DB;
         const clamscanScanArchives =
             process.env.CLAMSCAN_SCAN_ARCHIVES === 'true';
         const clamscanActive = process.env.CLAMSCAN_ACTIVE === 'true';
 
+        // configuration for clamdscan (daemon with UNIX socket / TCP)
         const clamdscanSocket = process.env.CLAMDSCAN_SOCKET;
         const clamdscanHost = process.env.CLAMDSCAN_HOST;
         const clamdscanPort = process.env.CLAMDSCAN_PORT
@@ -110,9 +123,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         const clamdscanBypassTest =
             process.env.CLAMDSCAN_BYPASS_TEST === 'true';
 
-        const clamscanPreference = process.env.CLAMSCAN_PREFERENCE;
-
-        return {
+        const scanLogOptions: NodeClam.Options = {
             clamscan:
                 clamscanPath ||
                 clamscanDb ||
@@ -151,9 +162,12 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                           bypassTest: clamdscanBypassTest
                       }
                     : undefined,
-
-            preference: clamscanPreference
+            preference,
+            debugMode,
+            scanLog
         };
+
+        return scanLogOptions;
     }
 
     async scan(
