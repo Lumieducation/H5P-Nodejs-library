@@ -78,6 +78,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                 ...envVarOptions?.clamdscan
             };
         }
+        console.log(options);
 
         const clamScan = await new NodeClam().init(options);
         log.debug(
