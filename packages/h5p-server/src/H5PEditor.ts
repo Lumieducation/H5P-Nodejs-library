@@ -42,6 +42,7 @@ import {
     IContentStorage,
     IContentUserDataStorage,
     IEditorModel,
+    IFileMalwareScanner,
     IFileSanitizer,
     IH5PConfig,
     IH5PEditorOptions,
@@ -194,6 +195,7 @@ export default class H5PEditor {
         }
 
         this.fileSanitizers = this.options?.fileSanitizers ?? [];
+        this.malwareScanners = this.options?.malwareScanners ?? [];
 
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
@@ -231,6 +233,7 @@ export default class H5PEditor {
     private renderer: (model: IEditorModel) => string | any;
     private semanticsLocalizer: SemanticsLocalizer;
     private fileSanitizers: IFileSanitizer[];
+    private malwareScanners: IFileMalwareScanner[];
 
     /**
      * Generates cache buster strings that are used by the JavaScript client in

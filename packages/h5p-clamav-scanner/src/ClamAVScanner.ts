@@ -6,7 +6,8 @@ import {
     MalwareScanResult,
     Logger
 } from '@lumieducation/h5p-server';
-import { removeUndefinedAttributes } from './helpers';
+
+import { removeUndefinedAttributesAndEmptyObjects } from './helpers';
 
 const log = new Logger('ClamAVScanner');
 
@@ -14,9 +15,8 @@ const log = new Logger('ClamAVScanner');
  * A light wrapper calling the ClamAV scanner to scan files for malware. It
  * utilizes the `clamscan` package.
  *
- * Note: You need to have a running ClamAV daemon on your system to use this and
- * you must update ClamAVs virus definitions regularly yourself from outside
- * this class.
+ * Note: You need to have a ClamAV running somewhere to use this and you must
+ * update ClamAVs virus definitions regularly yourself from outside this class.
  */
 export default class ClamAVScanner implements IFileMalwareScanner {
     /**
@@ -51,17 +51,20 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         // is a direct property of the object — even if the value is null or
         // undefined."), we have to remove undefined properties from the
         // options.
-        const options: NodeClam.Options = removeUndefinedAttributes(
-            merge(
-                {
-                    removeInfected: false,
-                    quarantineInfected: false,
-                    scanRecursively: false
-                },
-                clamavOptions ?? {},
-                envVarOptions ?? {}
-            )
-        );
+        const options: NodeClam.Options =
+            removeUndefinedAttributesAndEmptyObjects(
+                merge(
+                    {
+                        removeInfected: false,
+                        quarantineInfected: false,
+                        scanRecursively: false
+                    },
+                    clamavOptions ?? {},
+                    envVarOptions ?? {}
+                )
+            );
+
+        log.debug('Initializing ClamAV scanner with options:', options);
 
         const clamScan = await new NodeClam().init(options);
         log.debug(
@@ -73,7 +76,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
 
     /**
      * Gets the ClamAV options from environment variables (CLAMSCAN_* and
-     * CLAMDSCAN_*).
+     * CLAMDSCAN_*). See the docs for what the options do.
      */
     private static getEnvVarOptions(): Partial<NodeClam.Options> {
         // general configuration

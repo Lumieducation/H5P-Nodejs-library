@@ -2277,6 +2277,12 @@ export interface IH5PEditorOptions {
     fileSanitizers?: IFileSanitizer[];
 
     /**
+     * A list of file malware scanners that are executed for content files in
+     * order of the array when a file or package is uploaded.
+     */
+    malwareScanners?: IFileMalwareScanner[];
+
+    /**
      * Hooks allow you to react to things happening in the library.
      */
     hooks?: {
