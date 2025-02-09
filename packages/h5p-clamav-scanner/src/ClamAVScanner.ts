@@ -42,21 +42,38 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         clamavOptions?: NodeClam.Options
     ): Promise<ClamAVScanner> {
         const envVarOptions = ClamAVScanner.getEnvVarOptions();
-        const clamScan = await new NodeClam().init({
+
+        // Because of how the clamscan package checks for the presence of the
+        // properties in the options object (Object.prototype.hasOwnProperty:
+        // "The hasOwnProperty() method returns true if the specified property
+        // is a direct property of the object — even if the value is null or
+        // undefined."), we can't add them with destructuring or setting
+        // undefined values. We need to add them by setting them one-by-one
+        // manually.
+        const options: NodeClam.Options = {
             ...(clamavOptions ?? {}),
-            clamscan: {
-                ...(clamavOptions?.clamscan ?? {}),
-                ...(envVarOptions?.clamscan ?? {})
-            },
-            clamdscan: {
-                ...(clamavOptions?.clamdscan ?? {}),
-                ...(envVarOptions?.clamdscan ?? {})
-            },
-            preference: clamavOptions?.preference || envVarOptions?.preference,
             removeInfected: false,
             quarantineInfected: false,
             scanRecursively: false
-        });
+        };
+        if (clamavOptions?.preference || envVarOptions?.preference) {
+            options.preference =
+                clamavOptions?.preference || envVarOptions?.preference;
+        }
+        if (clamavOptions?.clamscan || envVarOptions?.clamscan) {
+            options.clamscan = {
+                ...clamavOptions?.clamscan,
+                ...envVarOptions?.clamscan
+            };
+        }
+        if (clamavOptions?.clamdscan || envVarOptions?.clamdscan) {
+            options.clamdscan = {
+                ...clamavOptions?.clamdscan,
+                ...envVarOptions?.clamdscan
+            };
+        }
+
+        const clamScan = await new NodeClam().init(options);
         log.debug(
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()

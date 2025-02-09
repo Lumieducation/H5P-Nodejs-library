@@ -128,7 +128,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:h5p-clamav-scanner
+            - run: npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: ClamAV Scanner tests
