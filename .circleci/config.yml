@@ -120,6 +120,7 @@ jobs:
             - image: cimg/node:22.13.1
               environment:
                   TMPDIR: /mnt/ramdisk
+                  CLAMSCAN_PREFERENCE: clamdscan
                   CLAMDSCAN_HOST: localhost
                   CLAMDSCAN_PORT: 3310
                   CLAMSCAN_DEBUG_MODE: true
