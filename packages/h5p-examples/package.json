@@ -21,6 +21,7 @@
     "license": "ISC",
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.0",
+        "@lumieducation/h5p-clamav-scanner": "^9.3.2",
         "@lumieducation/h5p-express": "^9.3.2",
         "@lumieducation/h5p-html-exporter": "^9.3.2",
         "@lumieducation/h5p-mongos3": "^9.3.2",

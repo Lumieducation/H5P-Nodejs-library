@@ -9,6 +9,7 @@ import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import RedisLockProvider from '@lumieducation/h5p-redis-lock';
 import { ILockProvider } from '@lumieducation/h5p-server';
 import SvgSanitizer from '@lumieducation/h5p-svg-sanitizer';
+import ClamAVScanner from '@lumieducation/h5p-clamav-scanner';
 
 let mongoDb;
 async function getMongoDb(): Promise<Db> {
@@ -221,7 +222,10 @@ export default async function createH5PEditor(
             enableLibraryNameLocalization: true,
             lockProvider: lock,
             // We've allowed SVGs in config.json, so we need to sanitize SVGs
-            fileSanitizers: [new SvgSanitizer()]
+            fileSanitizers: [new SvgSanitizer()],
+            malwareScanners: process.env.CLAMSCAN_ENABLED
+                ? [await ClamAVScanner.create()]
+                : []
         },
         contentUserDataStorage
     );

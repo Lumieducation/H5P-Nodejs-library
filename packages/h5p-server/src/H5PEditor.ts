@@ -7,6 +7,7 @@ import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import { rm } from 'fs/promises';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
@@ -60,7 +61,8 @@ import {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUrlGenerator,
-    IUser
+    IUser,
+    MalwareScanResult
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
@@ -160,7 +162,8 @@ export default class H5PEditor {
             this.libraryManager,
             this.temporaryFileManager,
             {
-                fileSanitizers: this.options?.fileSanitizers
+                fileSanitizers: this.options?.fileSanitizers,
+                malwareScanners: this.options?.malwareScanners
             }
         );
         this.packageImporter = new PackageImporter(
@@ -647,11 +650,38 @@ export default class H5PEditor {
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
+        // Scan for malware
+        const malwareScanResults = await Promise.all(
+            this.malwareScanners.map(async (scanner) => {
+                return {
+                    ...(await scanner.scan(file.tempFilePath)),
+                    scannerName: scanner.name
+                };
+            })
+        );
+        const positiveMalwareScanResults = malwareScanResults.filter(
+            (result) => result.result === MalwareScanResult.MalwareFound
+        );
+        if (positiveMalwareScanResults.length > 0) {
+            for (const result of positiveMalwareScanResults) {
+                log.info(
+                    `Malware found in file ${file.name} by scanner ${result.scannerName}: ${result.viruses}. Rejecting file.`
+                );
+            }
+            // Remove the file from the temporary storage to make sure it can't
+            // be accessed anymore
+            await rm(file.tempFilePath, { force: true });
+
+            // TODO: log to audit log
+            throw new H5pError('upload-malware-found', {}, 400);
+        }
+
+        // Sanitize the file if possible
         for (const sanitizer of this.fileSanitizers) {
             try {
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(file.name);
+                const result = await sanitizer.sanitize(file.tempFilePath);
                 if (result == FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',

@@ -2,6 +2,7 @@ import fsExtra from 'fs-extra';
 import path from 'path';
 import { getAllFiles } from 'get-all-files';
 import { Stream } from 'stream';
+import { rm } from 'fs/promises';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
@@ -13,9 +14,11 @@ import {
     ContentParameters,
     FileSanitizerResult,
     IContentMetadata,
+    IFileMalwareScanner,
     IFileSanitizer,
     ILibraryName,
-    IUser
+    IUser,
+    MalwareScanResult
 } from './types';
 import generateFilename from './helpers/FilenameGenerator';
 import SemanticsEnforcer from './SemanticsEnforcer';
@@ -38,15 +41,18 @@ export default class ContentStorer {
              * the array when a file or package is uploaded.
              */
             fileSanitizers?: IFileSanitizer[];
+            malwareScanners?: IFileMalwareScanner[];
         }
     ) {
         log.debug('Initializing');
         this.contentFileScanner = new ContentFileScanner(libraryManager);
         this.semanticsEnforcer = new SemanticsEnforcer(libraryManager);
         this.fileSanitizers = options?.fileSanitizers ?? [];
+        this.malwareScanners = options?.malwareScanners ?? [];
     }
 
     private fileSanitizers!: IFileSanitizer[];
+    private malwareScanners!: IFileMalwareScanner[];
     private contentFileScanner: ContentFileScanner;
     private semanticsEnforcer: SemanticsEnforcer;
 
@@ -204,6 +210,25 @@ export default class ContentStorer {
         try {
             await Promise.all(
                 otherContentFiles.map(async (file: string) => {
+                    try {
+                        this.scanForMalware(file);
+                    } catch (error: unknown) {
+                        if (
+                            error instanceof H5pError &&
+                            error.errorId === 'upload-malware-found'
+                        ) {
+                            try {
+                                // The file will be removed later anyway, but to
+                                // be sure we remove it here.
+                                await rm(file, { force: true });
+                            } catch (error) {
+                                log.error(
+                                    `Could not delete file ${file} with malware: ${error}. Whole package will be deleted anyway.`
+                                );
+                            }
+                        }
+                        throw error;
+                    }
                     await this.sanitizeFile(file);
                     const readStream: Stream = fsExtra.createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
@@ -275,6 +300,31 @@ export default class ContentStorer {
                 continue;
             }
 
+            // Check for malware
+            try {
+                this.scanForMalware(filepath);
+            } catch (error: unknown) {
+                if (
+                    error instanceof H5pError &&
+                    error.errorId === 'upload-malware-found'
+                ) {
+                    try {
+                        // The file will be removed later anyway, but to be sure
+                        // we remove it here, too
+                        await rm(filepath, { force: true });
+                    } catch (error) {
+                        log.error(
+                            `Could not delete file ${filepath} with malware: ${error}. Whole upload will be rejected anyway.`
+                        );
+                    }
+                }
+                // We throw the error to stop the upload process. Files of the
+                // content that were already added to the temporary storage
+                // won't be directly deleted, but will be deleted by the garbage
+                // collector.
+                throw error;
+            }
+
             // We sanitize the file before copying it to temporary storage. This
             // prevents possible malicious code from being injected into
             // content.
@@ -323,6 +373,29 @@ export default class ContentStorer {
             } catch {
                 throw new H5pError('upload-validation-error', {}, 400);
             }
+        }
+    }
+
+    private async scanForMalware(filepath: string) {
+        const malwareScanResults = await Promise.all(
+            this.malwareScanners.map(async (scanner) => {
+                return {
+                    ...(await scanner.scan(filepath)),
+                    scannerName: scanner.name
+                };
+            })
+        );
+        const positiveMalwareScanResults = malwareScanResults.filter(
+            (result) => result.result === MalwareScanResult.MalwareFound
+        );
+        if (positiveMalwareScanResults.length > 0) {
+            for (const result of positiveMalwareScanResults) {
+                log.info(
+                    `Malware found in file ${filepath} by scanner ${result.scannerName}: ${result.viruses}.`
+                );
+            }
+            // TODO: log to audit log
+            throw new H5pError('upload-malware-found', {}, 400);
         }
     }
 
