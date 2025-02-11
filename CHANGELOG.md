@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [9.3.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.2...v9.3.3) (2025-02-11)
+
+### Bug Fixes
+
+-   **h5p-server:** added sanization of text strings without formatting ([#3894](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3894)) ([e94e6e0](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e94e6e09b2a94c343893368efca27fc0c485b7db))
+
 ## [9.3.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.1...v9.3.2) (2023-09-20)
 
 **Note:** Version bump only for package @lumieducation/h5p-monorepo
