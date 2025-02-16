@@ -211,7 +211,7 @@ export default class ContentStorer {
             await Promise.all(
                 otherContentFiles.map(async (file: string) => {
                     try {
-                        this.scanForMalware(file);
+                        await this.scanForMalware(file);
                     } catch (error: unknown) {
                         if (
                             error instanceof H5pError &&
@@ -302,13 +302,14 @@ export default class ContentStorer {
 
             // Check for malware
             try {
-                this.scanForMalware(filepath);
+                await this.scanForMalware(filepath);
             } catch (error: unknown) {
                 if (
                     error instanceof H5pError &&
                     error.errorId === 'upload-malware-found'
                 ) {
                     try {
+                        log.debug('Deleting file with malware:', filepath);
                         // The file will be removed later anyway, but to be sure
                         // we remove it here, too
                         await rm(filepath, { force: true });
