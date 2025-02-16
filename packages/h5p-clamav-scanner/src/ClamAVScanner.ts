@@ -147,6 +147,12 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         file: string
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
         try {
+            log.debug(
+                'Scanning uploaded file',
+                file,
+                'with malware scanner',
+                this.name
+            );
             const result = await this.scanner.isInfected(file);
             if (result.isInfected) {
                 const viruses = result.viruses.join(',');

@@ -1,2 +1,2 @@
-support RAM uploads and temporary file uploads
-add tests for upload functionality
+add sanitization and malware scanner to REST example
+add docs for sanitization and malware scanner

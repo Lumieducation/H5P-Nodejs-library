@@ -93,3 +93,24 @@ To use `clamdscan` with UNIX socket or TCP:
 - **CLAMDSCAN_CONFIG_FILE**: Specify config file if it's in an unusual place
 - **CLAMDSCAN_MULTISCAN**: Scan using all available cores
 - **CLAMDSCAN_RELOAD_DB**: If true, will re-load the DB on every call (slow)
+
+## Example
+
+The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
+can be configured to use the ClamAV scanner class. Start the example like this:
+
+```sh
+TEMP_UPLOADS=true CLAMSCAN_ENABLED=true npm start
+```
+
+Note:
+
+- The `CLAMSCAN_ENABLED` environment variable is part of the example code and
+won't work if you don't add specific support for it. It triggers the creation of
+a `ClamAVScanner` instance. You can use the other environment variables to
+configure the `ClamAVScanner` instance as needed.
+- Malware scanning only works of you pass uploaded content files to
+`H5PEditor.saveContentFile` as temporary files, not as in-memory streams. That's
+why we enable temporary files for uploads with TEMP_UPLOADS. The environment
+variable TEMP_UPLOADS is part of the example code and won't work in your custom
+implementation, if you don't add explicit support for it.

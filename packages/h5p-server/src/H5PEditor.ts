@@ -650,6 +650,16 @@ export default class H5PEditor {
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
+        if (
+            (this.malwareScanners.length > 0 ||
+                this.fileSanitizers.length > 0) &&
+            !file.tempFilePath
+        ) {
+            throw new Error(
+                "Inconsistent setup of file upload middleware and malware/sanitization: You've set up a malware scanner and/or file sanitizer and have configured your file upload middleware to stream data to H5PEditor.saveContentFile. If you want to use malware scanners or file sanitization you must use temporary files!"
+            );
+        }
+
         // Scan for malware
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
