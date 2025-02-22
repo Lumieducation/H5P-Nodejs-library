@@ -35,7 +35,7 @@ export default class ContentStorer {
         private contentManager: ContentManager,
         libraryManager: LibraryManager,
         private temporaryFileManager: TemporaryFileManager,
-        private options?: {
+        options?: {
             /**
              * A list of file sanitizers that are executed for content files in order of
              * the array when a file or package is uploaded.

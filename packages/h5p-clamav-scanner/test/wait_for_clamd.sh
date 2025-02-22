@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# This script waits for clamd to become ready by sending the PING command to clamd.
+# This script waits for clamd to become ready by sending the PING command to
+# clamd. Can be configured with the  CLAMSCAN_HOST and CLAMDSCAN_PORT
+# environment variables.
 
-# Use environment variables CLAMDSCAN_HOST and CLAMDSCAN_PORT, with fallback values
+# Use environment variables CLAMDSCAN_HOST and CLAMDSCAN_PORT, with fallback
+# values
 CLAMD_HOST="${CLAMDSCAN_HOST:-127.0.0.1}"
 CLAMD_PORT="${CLAMDSCAN_PORT:-3310}"
 MAX_ATTEMPTS=30

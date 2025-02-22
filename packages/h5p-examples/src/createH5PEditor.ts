@@ -223,6 +223,8 @@ export default async function createH5PEditor(
             lockProvider: lock,
             // We've allowed SVGs in config.json, so we need to sanitize SVGs
             fileSanitizers: [new SvgSanitizer()],
+            // You might not want to use ClamAV or opt out of using a virus
+            // scanner.
             malwareScanners:
                 process.env.CLAMSCAN_ENABLED === 'true'
                     ? [await ClamAVScanner.create()]

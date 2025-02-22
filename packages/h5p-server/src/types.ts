@@ -2470,6 +2470,11 @@ export enum MalwareScanResult {
     NotScanned
 }
 
+/**
+ * An interface for malware scanners. See the
+ * [documentation](/docs/advanced/security.md) for details on how to use this
+ * class.
+ */
 export interface IFileMalwareScanner {
     /** The name of the scanner, e.g. ClamAV */
     readonly name: string;
