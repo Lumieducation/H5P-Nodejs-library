@@ -9,7 +9,7 @@ import path from 'path';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
-import csurf from 'csurf';
+import csurf from '@dr.pogodin/csurf';
 
 import {
     h5pAjaxExpressRouter,

@@ -206,3 +206,44 @@ an error message explaining that the malware scanner has found something
   file](https://www.eicar.org/download-anti-malware-testfile/); upload this
   image as a media file anywhere in the H5P editor; you should see an error
   message explaining that the malware scanner has found something
+
+## CSRF
+
+The H5P core library performs XHR calls with a session based on cookies, which
+are vulnerable to cross site request forgery attacks, if you don't use CSRF
+protection.
+
+### CSRF tokens
+
+You can add CSRF tokens to the URLs of XHR calls by enabling it in the
+`UrlGenerator`'s constructor:
+
+```ts
+const urlGenerator = new UrlGenerator(
+    h5pConfig,
+    {
+        protectAjax: true,
+        protectContentUserData: true,
+        protectSetFinished: true,
+        queryParamGenerator: (user: IUser) => ({
+            name: 'query_parameter_name';
+            value: 'a_generated_csrf_token';
+        })
+    }
+);
+```
+
+All URLs of vulnerable endpoints will then contain the token, e.g.
+`https://example.org/h5p/some_api_call?query_parameter_name=a_generated_csrf_token`.
+While using tokens in URLs is not ideal, as the tokens will be leaked in logs,
+proxies (if you don't use TLS) and potentially Referrer Headers, there is no
+alternative as the H5P core doesn't support using headers.
+
+You can must then use a CSRF protection middleware to check for the token and reject
+calls that don't contain it. The REST example contains a demonstration how to
+wire everything up when using CSRF tokens.
+
+### More modern CSRF protection
+
+You should consider using Cookie settings like `SameSite=Strict` and/or restrict
+API access to trusted origins with CORS.
