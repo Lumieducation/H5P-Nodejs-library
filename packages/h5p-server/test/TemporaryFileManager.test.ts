@@ -1,9 +1,9 @@
-import fsExtra from 'fs-extra';
 import mockdate from 'mockdate';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { WritableStreamBuffer } from 'stream-buffers';
 import { withDir } from 'tmp-promise';
+import { createReadStream } from 'fs';
 
 import H5PConfig from '../src/implementation/H5PConfig';
 import DirectoryTemporaryFileStorage from '../src/implementation/fs/DirectoryTemporaryFileStorage';
@@ -27,7 +27,7 @@ describe('TemporaryFileManager', () => {
                 );
                 const newFilename = await tmpManager.addFile(
                     'real-content-types.json',
-                    fsExtra.createReadStream(
+                    createReadStream(
                         path.resolve(
                             'test/data/content-type-cache/real-content-types.json'
                         )
@@ -68,7 +68,7 @@ describe('TemporaryFileManager', () => {
                 );
                 const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',
-                    fsExtra.createReadStream(
+                    createReadStream(
                         path.resolve(
                             'test/data/content-type-cache/real-content-types.json'
                         )
@@ -77,7 +77,7 @@ describe('TemporaryFileManager', () => {
                 );
                 const newFilename2 = await tmpManager.addFile(
                     'real-content-types.json',
-                    fsExtra.createReadStream(
+                    createReadStream(
                         path.resolve(
                             'test/data/content-type-cache/real-content-types.json'
                         )
@@ -106,7 +106,7 @@ describe('TemporaryFileManager', () => {
                     // add files that will expire
                     const expiringFilename1 = await tmpManager.addFile(
                         'dir/expiring.json',
-                        fsExtra.createReadStream(
+                        createReadStream(
                             path.resolve(
                                 'test/data/content-type-cache/real-content-types.json'
                             )
@@ -115,7 +115,7 @@ describe('TemporaryFileManager', () => {
                     );
                     const expiringFilename2 = await tmpManager.addFile(
                         'expiring.json',
-                        fsExtra.createReadStream(
+                        createReadStream(
                             path.resolve(
                                 'test/data/content-type-cache/real-content-types.json'
                             )
@@ -129,7 +129,7 @@ describe('TemporaryFileManager', () => {
                     // add second file that won't expire
                     const nonExpiringFilename = await tmpManager.addFile(
                         'dir/non-expiring.json',
-                        fsExtra.createReadStream(
+                        createReadStream(
                             path.resolve(
                                 'test/data/content-type-cache/real-content-types.json'
                             )
@@ -182,7 +182,7 @@ describe('TemporaryFileManager', () => {
                 );
                 const newFilename1 = await tmpManager.addFile(
                     'real-content-types.json',
-                    fsExtra.createReadStream(
+                    createReadStream(
                         path.resolve(
                             'test/data/content-type-cache/real-content-types.json'
                         )

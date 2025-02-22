@@ -11,6 +11,7 @@
     "get-library-metadata-not-installed": "Can't get metadata for library {{libraryName}} because the library has not been installed.",
     "illegal-absolute-filename": "Absolute paths in filenames are not allowed: {{filename}} is illegal",
     "illegal-relative-filename": "Relative paths in filenames are not allowed: {{filename}} is illegal",
+    "illegal-character": "There is an invalid character in the filename: {{filename}}",
     "install-library-already-installed": "Library {{libraryName}} has already been installed.",
     "remove-library-library-missing": "Library {{libraryName}} is not installed on the system.",
     "temporary-file-not-found": "The file {{filename}} is not accessible for user {{userId}} or does not exist.",

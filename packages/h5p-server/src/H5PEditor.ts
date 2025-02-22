@@ -2,12 +2,12 @@ import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
-import fsExtra from 'fs-extra';
 import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { rm } from 'fs/promises';
+import { createReadStream, createWriteStream, readFileSync } from 'fs';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
@@ -202,11 +202,17 @@ export default class H5PEditor {
 
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
-        const saveMetadataJsonSchema = fsExtra.readJSONSync(
-            path.join(__dirname, 'schemas/save-metadata.json')
+        const saveMetadataJsonSchema = JSON.parse(
+            readFileSync(
+                path.join(__dirname, 'schemas/save-metadata.json'),
+                'utf-8'
+            )
         );
-        const libraryNameSchema = fsExtra.readJSONSync(
-            path.join(__dirname, 'schemas/library-name-schema.json')
+        const libraryNameSchema = JSON.parse(
+            readFileSync(
+                path.join(__dirname, 'schemas/library-name-schema.json'),
+                'utf-8'
+            )
         );
         jsonValidator.addSchema([saveMetadataJsonSchema, libraryNameSchema]);
         this.contentMetadataValidator = jsonValidator.compile(
@@ -759,7 +765,7 @@ export default class H5PEditor {
             dataStream = new PassThrough();
             dataStream.end(file.data);
         } else if (file.tempFilePath) {
-            dataStream = fsExtra.createReadStream(file.tempFilePath);
+            dataStream = createReadStream(file.tempFilePath);
         } else {
             throw new Error(
                 'Either file.data or file.tempFilePath must be used!'
@@ -1008,7 +1014,7 @@ export default class H5PEditor {
             try {
                 const dataStream = new PassThrough();
                 dataStream.end(dataOrPath);
-                const writeStream = fsExtra.createWriteStream(filename);
+                const writeStream = createWriteStream(filename);
                 try {
                     await promisepipe(dataStream, writeStream);
                 } catch (error) {

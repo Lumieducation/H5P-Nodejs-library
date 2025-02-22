@@ -4,10 +4,11 @@
 
 import AWS from 'aws-sdk';
 import { ObjectId } from 'mongodb';
-import fsExtra from 'fs-extra';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
+import { createReadStream } from 'fs';
+import { stat } from 'fs/promises';
 
 import User from './User';
 import initS3 from '../src/initS3';
@@ -62,7 +63,7 @@ describe('S3TemporaryFileStorage', () => {
         );
         await storage.saveFile(
             filename,
-            fsExtra.createReadStream(stubImagePath),
+            createReadStream(stubImagePath),
             stubUser,
             new Date()
         );
@@ -70,7 +71,7 @@ describe('S3TemporaryFileStorage', () => {
             true
         );
 
-        const fsStats = await fsExtra.stat(stubImagePath);
+        const fsStats = await stat(stubImagePath);
         const s3Stats = await storage.getFileStats(filename, stubUser);
         expect(s3Stats.size).toEqual(fsStats.size);
 
@@ -98,7 +99,7 @@ describe('S3TemporaryFileStorage', () => {
 
         await storage.saveFile(
             filename,
-            fsExtra.createReadStream(stubImagePath),
+            createReadStream(stubImagePath),
             stubUser,
             new Date()
         );

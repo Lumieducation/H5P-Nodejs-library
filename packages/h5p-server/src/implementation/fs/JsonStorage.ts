@@ -1,4 +1,5 @@
-import * as fsExtra from 'fs-extra';
+import { readFileSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
 
 import InMemoryStorage from '../InMemoryStorage';
 
@@ -18,7 +19,7 @@ export default class JsonStorage extends InMemoryStorage {
 
         if (file) {
             this.file = file;
-            this.storage = fsExtra.readJSONSync(file);
+            this.storage = JSON.parse(readFileSync(file, 'utf-8'));
         }
     }
 
@@ -43,7 +44,7 @@ export default class JsonStorage extends InMemoryStorage {
      */
     public async save(key: string, value: any): Promise<any> {
         const returnValue = await super.save(key, value);
-        await fsExtra.writeJSON(this.file, this.storage);
+        await writeFile(this.file, JSON.stringify(this.storage));
         return returnValue;
     }
 
@@ -52,7 +53,7 @@ export default class JsonStorage extends InMemoryStorage {
      * @param file Path to the JSON file (must be read- and writeable)
      */
     private async initialize(file: string): Promise<void> {
-        this.storage = await fsExtra.readJSON(file);
+        this.storage = await JSON.parse(await readFile(file, 'utf-8'));
         this.file = file;
     }
 }

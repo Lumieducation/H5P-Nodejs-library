@@ -1,8 +1,8 @@
-import fsExtra from 'fs-extra';
 import path from 'path';
 import { getAllFiles } from 'get-all-files';
 import { Stream } from 'stream';
-import { rm } from 'fs/promises';
+import { rm, access, readFile } from 'fs/promises';
+import { createReadStream } from 'fs';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import ContentManager from './ContentManager';
@@ -188,8 +188,11 @@ export default class ContentStorer {
     ): Promise<{ id: ContentId; metadata: IContentMetadata; parameters: any }> {
         log.info(`copying content from directory ${packageDirectory}`);
         const packageDirectoryLength = packageDirectory.length + 1;
-        const parameters: ContentParameters = await fsExtra.readJSON(
-            path.join(packageDirectory, 'content', 'content.json')
+        const parameters: ContentParameters = JSON.parse(
+            await readFile(
+                path.join(packageDirectory, 'content', 'content.json'),
+                'utf-8'
+            )
         );
         const otherContentFiles: string[] = (
             await getAllFiles(path.join(packageDirectory, 'content')).toArray()
@@ -230,7 +233,7 @@ export default class ContentStorer {
                         throw error;
                     }
                     await this.sanitizeFile(file);
-                    const readStream: Stream = fsExtra.createReadStream(file);
+                    const readStream: Stream = createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
                     log.debug(`adding ${file} to ${packageDirectory}`);
                     return this.contentManager.addContentFile(
@@ -261,8 +264,11 @@ export default class ContentStorer {
         packageDirectory: string,
         user: IUser
     ): Promise<{ metadata: IContentMetadata; parameters: any }> {
-        const parameters: ContentParameters = await fsExtra.readJSON(
-            path.join(packageDirectory, 'content', 'content.json')
+        const parameters: ContentParameters = JSON.parse(
+            await readFile(
+                path.join(packageDirectory, 'content', 'content.json'),
+                'utf-8'
+            )
         );
 
         const fileReferencesInParams =
@@ -288,7 +294,9 @@ export default class ContentStorer {
             // If the file referenced in the parameters isn't included in the
             // package, we first check if the path is actually a URL and if not,
             // we delete the reference.
-            if (!(await fsExtra.pathExists(filepath))) {
+            try {
+                await access(filepath);
+            } catch {
                 if (
                     !this.isUrl(
                         reference.context.params.path,
@@ -331,7 +339,7 @@ export default class ContentStorer {
             // content.
             await this.sanitizeFile(filepath);
 
-            const readStream = fsExtra.createReadStream(filepath);
+            const readStream = createReadStream(filepath);
             newFilename = await this.temporaryFileManager.addFile(
                 reference.filePath,
                 readStream,

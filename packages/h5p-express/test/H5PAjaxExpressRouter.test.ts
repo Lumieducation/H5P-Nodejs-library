@@ -6,7 +6,9 @@ import fileUpload from 'express-fileupload';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
-import fsExtra from 'fs-extra';
+import { readFile } from 'fs/promises';
+import { createReadStream } from 'fs';
+
 import * as H5P from '@lumieducation/h5p-server';
 
 import User from './User';
@@ -55,9 +57,12 @@ describe('Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubRegistrationEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/registration.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -65,9 +70,12 @@ describe('Express Ajax endpoint adapter', () => {
             .onPost(h5pEditor.config.hubContentTypesEndpoint)
             .reply(
                 200,
-                fsExtra.readJSONSync(
-                    path.resolve(
-                        'test/data/content-type-cache/real-content-types.json'
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/real-content-types.json'
+                        ),
+                        'utf-8'
                     )
                 )
             );
@@ -426,13 +434,19 @@ describe('Express Ajax endpoint adapter', () => {
             .post(`/ajax?action=filter`)
             .send({
                 libraryParameters: JSON.stringify({
-                    params: await fsExtra.readJson(
-                        path.resolve(
-                            'test/data/sample-content/content/content.json'
+                    params: JSON.parse(
+                        await readFile(
+                            path.resolve(
+                                'test/data/sample-content/content/content.json'
+                            ),
+                            'utf-8'
                         )
                     ),
-                    metadata: await fsExtra.readJson(
-                        path.resolve('test/data/sample-content/h5p.json')
+                    metadata: JSON.parse(
+                        await readFile(
+                            path.resolve('test/data/sample-content/h5p.json'),
+                            'utf-8'
+                        )
                     ),
                     library: 'H5P.GreetingCard 1.0'
                 })
@@ -445,7 +459,7 @@ describe('Express Ajax endpoint adapter', () => {
             .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
             .reply(() => [
                 200,
-                fsExtra.createReadStream(
+                createReadStream(
                     path.resolve('test/data/example-packages/H5P.DragText.h5p')
                 )
             ]);

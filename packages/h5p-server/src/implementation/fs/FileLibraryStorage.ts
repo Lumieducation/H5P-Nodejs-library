@@ -1,9 +1,10 @@
 import { Readable } from 'stream';
-import fsExtra from 'fs-extra';
 import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import upath from 'upath';
+import { createReadStream, createWriteStream, mkdirSync } from 'fs';
+import { access, mkdir, readdir, rm, stat, writeFile } from 'fs/promises';
 
 import { checkFilename } from './filenameUtils';
 import {
@@ -18,7 +19,6 @@ import { streamToString } from '../../helpers/StreamHelpers';
 import H5pError from '../../helpers/H5pError';
 import InstalledLibrary from '../../InstalledLibrary';
 import LibraryName from '../../LibraryName';
-
 /**
  * Stores libraries in a directory.
  */
@@ -67,7 +67,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @param librariesDirectory The path of the directory in the file system at which libraries are stored.
      */
     constructor(protected librariesDirectory: string) {
-        fsExtra.ensureDirSync(librariesDirectory);
+        mkdirSync(librariesDirectory, { recursive: true });
     }
 
     /**
@@ -93,8 +93,8 @@ export default class FileLibraryStorage implements ILibraryStorage {
         }
 
         const fullPath = this.getFilePath(library, filename);
-        await fsExtra.ensureDir(path.dirname(fullPath));
-        const writeStream = fsExtra.createWriteStream(fullPath);
+        await mkdir(path.dirname(fullPath), { recursive: true });
+        const writeStream = createWriteStream(fullPath);
         await promisepipe(stream, writeStream);
 
         return true;
@@ -120,23 +120,27 @@ export default class FileLibraryStorage implements ILibraryStorage {
         );
 
         const libPath = this.getDirectoryPath(library);
-        if (await fsExtra.pathExists(libPath)) {
+        try {
+            await access(libPath);
             throw new H5pError(
                 'storage-file-implementations:install-library-already-installed',
                 {
                     libraryName: LibraryName.toUberName(library)
                 }
             );
+        } catch {
+            // Do nothing
         }
+
         try {
-            await fsExtra.ensureDir(libPath);
-            await fsExtra.writeJSON(
+            await mkdir(libPath, { recursive: true });
+            await writeFile(
                 this.getFilePath(library, 'library.json'),
-                libraryMetadata
+                JSON.stringify(libraryMetadata)
             );
             return library;
         } catch (error) {
-            await fsExtra.remove(libPath);
+            await rm(libPath, { recursive: true, force: true });
             throw error;
         }
     }
@@ -156,12 +160,15 @@ export default class FileLibraryStorage implements ILibraryStorage {
             );
         }
         const fullLibraryPath = this.getDirectoryPath(library);
-        const directoryEntries = (
-            await fsExtra.readdir(fullLibraryPath)
-        ).filter((entry) => entry !== 'library.json');
+        const directoryEntries = (await readdir(fullLibraryPath)).filter(
+            (entry) => entry !== 'library.json'
+        );
         await Promise.all(
             directoryEntries.map((entry) =>
-                fsExtra.remove(this.getFilePath(library, entry))
+                rm(this.getFilePath(library, entry), {
+                    recursive: true,
+                    force: true
+                })
             )
         );
     }
@@ -174,14 +181,16 @@ export default class FileLibraryStorage implements ILibraryStorage {
      */
     public async deleteLibrary(library: ILibraryName): Promise<void> {
         const libPath = this.getDirectoryPath(library);
-        if (!(await fsExtra.pathExists(libPath))) {
+        try {
+            await access(libPath);
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:remove-library-library-missing',
                 { libraryName: LibraryName.toUberName(library) },
                 404
             );
         }
-        await fsExtra.remove(libPath);
+        await rm(libPath, { recursive: true, force: true });
     }
 
     /**
@@ -199,7 +208,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
             return false;
         }
 
-        return fsExtra.pathExists(this.getFilePath(library, filename));
+        try {
+            await access(this.getFilePath(library, filename));
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -300,6 +314,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<IFileStats> {
+        checkFilename(filename);
         if (
             !(await this.fileExists(library, filename)) ||
             this.isIgnored(filename)
@@ -313,7 +328,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 404
             );
         }
-        return fsExtra.stat(this.getFilePath(library, filename));
+        return stat(this.getFilePath(library, filename));
     }
 
     /**
@@ -327,6 +342,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         library: ILibraryName,
         filename: string
     ): Promise<Readable> {
+        checkFilename(filename);
         if (
             !(await this.fileExists(library, filename)) ||
             this.isIgnored(filename)
@@ -340,7 +356,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 404
             );
         }
-        return fsExtra.createReadStream(this.getFilePath(library, filename));
+        return createReadStream(this.getFilePath(library, filename));
     }
 
     /**
@@ -354,9 +370,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         machineName?: string
     ): Promise<ILibraryName[]> {
         const nameRegex = /^([\w.]+)-(\d+)\.(\d+)$/i;
-        const libraryDirectories = await fsExtra.readdir(
-            this.getLibrariesDirectory()
-        );
+        const libraryDirectories = await readdir(this.getLibrariesDirectory());
         return libraryDirectories
             .filter((name) => nameRegex.test(name))
             .map((name) => LibraryName.fromUberName(name))
@@ -369,9 +383,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguages(library: ILibraryName): Promise<string[]> {
-        const files = await fsExtra.readdir(
-            this.getFilePath(library, 'language')
-        );
+        const files = await readdir(this.getFilePath(library, 'language'));
         return files
             .filter((file) => path.extname(file) === '.json')
             .map((file) => path.basename(file, '.json'));
@@ -405,7 +417,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
      * @returns true if installed, false if not
      */
     public async isInstalled(library: ILibraryName): Promise<boolean> {
-        return fsExtra.pathExists(this.getFilePath(library, 'library.json'));
+        try {
+            await access(this.getFilePath(library, 'library.json'));
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -468,9 +485,9 @@ export default class FileLibraryStorage implements ILibraryStorage {
         }
 
         try {
-            await fsExtra.writeJSON(
+            await writeFile(
                 this.getFilePath(library, 'library.json'),
-                metadata
+                JSON.stringify(metadata)
             );
             return true;
         } catch (error) {
@@ -498,16 +515,18 @@ export default class FileLibraryStorage implements ILibraryStorage {
         libraryMetadata: ILibraryMetadata
     ): Promise<IInstalledLibrary> {
         const libPath = this.getDirectoryPath(libraryMetadata);
-        if (!(await fsExtra.pathExists(libPath))) {
+        try {
+            await access(libPath);
+        } catch {
             throw new H5pError(
                 'storage-file-implementations:update-library-library-missing',
                 { libraryName: LibraryName.toUberName(libraryMetadata) },
                 404
             );
         }
-        await fsExtra.writeJSON(
+        await writeFile(
             this.getFilePath(libraryMetadata, 'library.json'),
-            libraryMetadata
+            JSON.stringify(libraryMetadata)
         );
         const newLibrary = InstalledLibrary.fromMetadata(libraryMetadata);
         return newLibrary;
