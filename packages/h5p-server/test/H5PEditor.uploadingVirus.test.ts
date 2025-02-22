@@ -1,5 +1,5 @@
 import path from 'path';
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import { withDir } from 'tmp-promise';
 
 import User from './User';
@@ -68,6 +68,48 @@ describe('H5PEditor: uploading viruses', () => {
                         user
                     )
                 ).rejects.toThrow('upload-malware-found');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('uses all provided virus scanners', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockScanner1 = new MockMalwareScanner();
+                const mockScanner2 = new MockMalwareScanner();
+
+                const scannerSpy1 = jest.spyOn(mockScanner1, 'scan');
+                const scannerSpy2 = jest.spyOn(mockScanner2, 'scan');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockScanner1, mockScanner2]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        mimetype: 'image/jpeg',
+                        name: 'earth.JPG',
+                        tempFilePath: originalPath,
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result
+                expect(scannerSpy1).toHaveBeenCalled();
+                expect(scannerSpy2).toHaveBeenCalled();
             },
             { keep: false, unsafeCleanup: true }
         );

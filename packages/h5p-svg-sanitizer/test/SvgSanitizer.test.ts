@@ -62,4 +62,16 @@ describe('SvgSanitizer', () => {
             { postfix: '.svg', keep: false }
         );
     });
+
+    it('ignores files other than SVG', async () => {
+        await tmp.withFile(
+            async ({ path }) => {
+                await writeFile(path, 'some text');
+
+                const result = await new SvgSanitizer().sanitize(path);
+                expect(result).toBe(FileSanitizerResult.Ignored);
+            },
+            { postfix: '.txt', keep: false }
+        );
+    });
 });
