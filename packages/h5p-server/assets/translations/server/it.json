@@ -73,5 +73,6 @@
     "temporary-file-missing-write-permission": "Non sei autorizzato a creare un file temporaneo.",
     "user-state-missing-delete-permission": "Non sei autorizzato a eliminare questo stato utente.",
     "user-state-missing-edit-permission": "Non sei autorizzato a modificare questo stato utente.",
-    "user-state-missing-view-permission": "Non sei autorizzato a visualizzare questo stato utente."
+    "user-state-missing-view-permission": "Non sei autorizzato a visualizzare questo stato utente.",
+    "upload-malware-found": "Il file che hai caricato conteneva malware ed è stato rifiutato."
 }

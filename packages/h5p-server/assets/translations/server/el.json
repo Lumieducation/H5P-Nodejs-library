@@ -73,5 +73,6 @@
     "temporary-file-missing-write-permission": "Δεν επιτρέπεται να δημιουργήσετε ένα προσωρινό αρχείο.",
     "user-state-missing-delete-permission": "Δεν επιτρέπεται να διαγράψετε αυτήν την κατάσταση χρήστη.",
     "user-state-missing-edit-permission": "Δεν επιτρέπεται να επεξεργαστείτε αυτήν την κατάσταση χρήστη.",
-    "user-state-missing-view-permission": "Δεν επιτρέπεται να δείτε αυτήν την κατάσταση χρήστη."
+    "user-state-missing-view-permission": "Δεν επιτρέπεται να δείτε αυτήν την κατάσταση χρήστη.",
+    "upload-malware-found": "Το αρχείο που ανεβάσατε περιείχε κακόβουλο λογισμικό και απορρίφθηκε."
 }
