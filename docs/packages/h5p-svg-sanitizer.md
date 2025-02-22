@@ -54,17 +54,14 @@ Now there is protection against XSS in SVGs in these cases:
 ## Example
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
-already use the SVG sanitizer. Start the example like this:
-
-```sh
-TEMP_UPLOADS=true npm start
-```
+already use the SVG sanitizer.
 
 **Note:** File sanitization only works of you pass uploaded content files to
 `H5PEditor.saveContentFile` as temporary files, not as in-memory streams. That's
-why we enable temporary files for uploads with TEMP_UPLOADS. The environment
-variable TEMP_UPLOADS is part of the example code and won't work in your custom
-implementation, if you don't add explicit support for it.
+why we temporary file uploads are enable by default in the example. This can be
+disabled by setting the environment variable `TEMP_UPLOADS` to `false`. The
+environment variable `TEMP_UPLOADS` is part of the example code and won't work
+in your custom implementation, if you don't add explicit support for it.
 
 ## Caveats
 

@@ -27,7 +27,7 @@ import { displayIps, clearTempFiles } from './utils';
 let tmpDir: DirectoryResult;
 
 const start = async (): Promise<void> => {
-    const useTempUploads = process.env.TEMP_UPLOADS === 'true';
+    const useTempUploads = process.env.TEMP_UPLOADS != 'false';
     if (useTempUploads) {
         tmpDir = await dir({ keep: false, unsafeCleanup: true });
     }

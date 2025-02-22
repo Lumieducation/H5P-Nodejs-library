@@ -100,7 +100,7 @@ The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 can be configured to use the ClamAV scanner class. Start the example like this:
 
 ```sh
-TEMP_UPLOADS=true CLAMSCAN_ENABLED=true npm start
+CLAMSCAN_ENABLED=true npm start
 ```
 
 Note:
@@ -110,7 +110,8 @@ won't work if you don't add specific support for it. It triggers the creation of
 a `ClamAVScanner` instance. You can use the other environment variables to
 configure the `ClamAVScanner` instance as needed.
 - Malware scanning only works of you pass uploaded content files to
-`H5PEditor.saveContentFile` as temporary files, not as in-memory streams. That's
-why we enable temporary files for uploads with TEMP_UPLOADS. The environment
+`H5PEditor.saveContentFile` as temporary files, not as in-memory streams.
+Temporary file uploads are used by default, in the example (and could be
+disabled with the environment variable TEMP_UPLOADS=false). The environment
 variable TEMP_UPLOADS is part of the example code and won't work in your custom
 implementation, if you don't add explicit support for it.
