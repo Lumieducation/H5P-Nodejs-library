@@ -362,6 +362,8 @@ const start = async (): Promise<void> => {
         function (
             req: express.Request & {
                 user: { username: string; email: string; name: string };
+            } & {
+                csrfToken: () => string;
             },
             res: express.Response
         ): void {
