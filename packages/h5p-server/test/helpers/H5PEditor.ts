@@ -13,10 +13,12 @@ import DirectoryTemporaryFileStorage from '../../src/implementation/fs/Directory
 import FileContentStorage from '../../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../../src/implementation/fs/FileLibraryStorage';
 import InMemoryStorage from '../../src/implementation/InMemoryStorage';
+import { IH5PEditorOptions } from '../../src/types';
 
 export function createH5PEditor(
     tempPath: string,
-    configOverrides?: Partial<IH5PConfig>
+    configOverrides?: Partial<IH5PConfig>,
+    options?: IH5PEditorOptions
 ): {
     config: IH5PConfig;
     contentStorage: IContentStorage;
@@ -47,7 +49,10 @@ export function createH5PEditor(
         config,
         libraryStorage,
         contentStorage,
-        temporaryStorage
+        temporaryStorage,
+        undefined,
+        undefined,
+        options
     );
 
     return {

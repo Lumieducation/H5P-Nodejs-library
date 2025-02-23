@@ -73,5 +73,6 @@
     "temporary-file-missing-write-permission": "Teil ei ole lubatud ajutist faili luua.",
     "user-state-missing-delete-permission": "Teil ei ole lubatud seda kasutaja olekut kustutada.",
     "user-state-missing-edit-permission": "Teil ei ole lubatud seda kasutaja olekut muuta.",
-    "user-state-missing-view-permission": "Teil ei ole lubatud seda kasutaja olekut vaadata."
+    "user-state-missing-view-permission": "Teil ei ole lubatud seda kasutaja olekut vaadata.",
+    "upload-malware-found": "Teie üleslaaditud fail sisaldas pahavara ja see lükati tagasi."
 }

@@ -73,5 +73,6 @@
     "temporary-file-missing-write-permission": "Vous n'êtes pas autorisé à créer un fichier temporaire.",
     "user-state-missing-delete-permission": "Vous n'êtes pas autorisé à supprimer cet état utilisateur.",
     "user-state-missing-edit-permission": "Vous n'êtes pas autorisé à modifier cet état utilisateur.",
-    "user-state-missing-view-permission": "Vous n'êtes pas autorisé à afficher cet état d'utilisateur."
+    "user-state-missing-view-permission": "Vous n'êtes pas autorisé à afficher cet état d'utilisateur.",
+    "upload-malware-found": "Le fichier que vous avez téléchargé contenait des logiciels malveillants et a été rejeté."
 }

@@ -7,10 +7,13 @@ import { createWriteStream } from 'fs';
 
 import LibraryName from '../src/LibraryName';
 import {
+    FileSanitizerResult,
     IContentMetadata,
     IContentStorage,
     IEditorModel,
+    IFileSanitizer,
     IH5PConfig,
+    IH5PEditorOptions,
     IKeyValueStorage,
     ILibraryFileUrlResolver,
     ILibraryStorage,
@@ -29,7 +32,8 @@ describe('H5PEditor', () => {
     const mockContentUserDataStorage = new MockContentUserDataStorage();
     function createH5PEditor(
         tempPath: string,
-        options?: { withUrlGenerator?: boolean }
+        options?: { withUrlGenerator?: boolean },
+        editorOptions?: IH5PEditorOptions
     ): {
         config: IH5PConfig;
         contentStorage: IContentStorage;
@@ -71,7 +75,7 @@ describe('H5PEditor', () => {
                       })
                   })
                 : undefined,
-            undefined,
+            editorOptions,
             mockContentUserDataStorage
         );
 
@@ -200,6 +204,94 @@ describe('H5PEditor', () => {
 
                 expect(savedFilePath).toBeDefined();
                 expect(savedFilePath.endsWith('#tmp')).toBeTruthy();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('sanitizes uploaded files when configured to do so', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockSanitizer: IFileSanitizer = {
+                    name: 'Mock sanitizer',
+                    sanitize: async () => FileSanitizerResult.Sanitized
+                };
+                const sanitizeSpy = jest.spyOn(mockSanitizer, 'sanitize');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    fileSanitizers: [mockSanitizer]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        mimetype: 'image/jpeg',
+                        name: 'earth.JPG',
+                        tempFilePath: originalPath,
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result
+                expect(sanitizeSpy).toHaveBeenCalledWith(originalPath);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('checks if all sanitizers are called', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockSanitizer1: IFileSanitizer = {
+                    name: 'Mock sanitizer 1',
+                    sanitize: async () => FileSanitizerResult.Sanitized
+                };
+                const mockSanitizer2: IFileSanitizer = {
+                    name: 'Mock sanitizer 2',
+                    sanitize: async () => FileSanitizerResult.Sanitized
+                };
+                const sanitizeSpy1 = jest.spyOn(mockSanitizer1, 'sanitize');
+                const sanitizeSpy2 = jest.spyOn(mockSanitizer2, 'sanitize');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    fileSanitizers: [mockSanitizer1, mockSanitizer2]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        mimetype: 'image/jpeg',
+                        name: 'earth.JPG',
+                        tempFilePath: originalPath,
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result
+                expect(sanitizeSpy1).toHaveBeenCalled();
+                expect(sanitizeSpy2).toHaveBeenCalled();
             },
             { keep: false, unsafeCleanup: true }
         );

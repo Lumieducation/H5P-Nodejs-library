@@ -6,6 +6,7 @@ import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
+import { rm } from 'fs/promises';
 import { createReadStream, createWriteStream, readFileSync } from 'fs';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
@@ -36,11 +37,14 @@ import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
+    FileSanitizerResult,
     IAssets,
     IContentMetadata,
     IContentStorage,
     IContentUserDataStorage,
     IEditorModel,
+    IFileMalwareScanner,
+    IFileSanitizer,
     IH5PConfig,
     IH5PEditorOptions,
     IHubInfo,
@@ -57,7 +61,8 @@ import {
     ITemporaryFileStorage,
     ITranslationFunction,
     IUrlGenerator,
-    IUser
+    IUser,
+    MalwareScanResult
 } from './types';
 import UrlGenerator from './UrlGenerator';
 import SemanticsLocalizer from './SemanticsLocalizer';
@@ -155,7 +160,11 @@ export default class H5PEditor {
         this.contentStorer = new ContentStorer(
             this.contentManager,
             this.libraryManager,
-            this.temporaryFileManager
+            this.temporaryFileManager,
+            {
+                fileSanitizers: this.options?.fileSanitizers,
+                malwareScanners: this.options?.malwareScanners
+            }
         );
         this.packageImporter = new PackageImporter(
             this.libraryManager,
@@ -187,6 +196,10 @@ export default class H5PEditor {
                 this.config.customization.global?.editor.styles
             );
         }
+
+        this.fileSanitizers = this.options?.fileSanitizers ?? [];
+        this.malwareScanners = this.options?.malwareScanners ?? [];
+
         const jsonValidator = new Ajv();
         ajvKeywords(jsonValidator, 'regexp');
         const saveMetadataJsonSchema = JSON.parse(
@@ -228,6 +241,8 @@ export default class H5PEditor {
     private packageExporter: PackageExporter;
     private renderer: (model: IEditorModel) => string | any;
     private semanticsLocalizer: SemanticsLocalizer;
+    private fileSanitizers: IFileSanitizer[];
+    private malwareScanners: IFileMalwareScanner[];
 
     /**
      * Generates cache buster strings that are used by the JavaScript client in
@@ -639,6 +654,61 @@ export default class H5PEditor {
             (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
         ) {
             throw new H5pError('upload-validation-error', {}, 400);
+        }
+
+        if (
+            (this.malwareScanners.length > 0 ||
+                this.fileSanitizers.length > 0) &&
+            !file.tempFilePath
+        ) {
+            throw new Error(
+                "Inconsistent setup of file upload middleware and malware/sanitization: You've set up a malware scanner and/or file sanitizer and have configured your file upload middleware to stream data to H5PEditor.saveContentFile. If you want to use malware scanners or file sanitization you must use temporary files!"
+            );
+        }
+
+        // Scan for malware
+        const malwareScanResults = await Promise.all(
+            this.malwareScanners.map(async (scanner) => {
+                return {
+                    ...(await scanner.scan(file.tempFilePath)),
+                    scannerName: scanner.name
+                };
+            })
+        );
+        const positiveMalwareScanResults = malwareScanResults.filter(
+            (result) => result.result === MalwareScanResult.MalwareFound
+        );
+        if (positiveMalwareScanResults.length > 0) {
+            for (const result of positiveMalwareScanResults) {
+                log.info(
+                    `Malware found in file ${file.name} by scanner ${result.scannerName}: ${result.viruses}. Rejecting file.`
+                );
+            }
+            // Remove the file from the temporary storage to make sure it can't
+            // be accessed anymore
+            await rm(file.tempFilePath, { force: true });
+
+            // TODO: log to audit log
+            throw new H5pError('upload-malware-found', {}, 400);
+        }
+
+        // Sanitize the file if possible
+        for (const sanitizer of this.fileSanitizers) {
+            try {
+                // Must be run in sequence and can't be parallelized.
+                // eslint-disable-next-line no-await-in-loop
+                const result = await sanitizer.sanitize(file.tempFilePath);
+                if (result == FileSanitizerResult.Sanitized) {
+                    log.debug(
+                        'Sanitized file',
+                        file.name,
+                        'with sanitizer',
+                        sanitizer.name
+                    );
+                }
+            } catch {
+                throw new H5pError('upload-validation-error', {}, 400);
+            }
         }
 
         try {

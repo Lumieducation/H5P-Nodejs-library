@@ -9,7 +9,7 @@ import path from 'path';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
-import csurf from 'csurf';
+import csurf from '@dr.pogodin/csurf';
 
 import {
     h5pAjaxExpressRouter,
@@ -93,7 +93,7 @@ const addCsrfTokenToUser = (req, res, next): void => {
 };
 
 const start = async (): Promise<void> => {
-    const useTempUploads = process.env.TEMP_UPLOADS === 'true';
+    const useTempUploads = process.env.TEMP_UPLOADS != 'false';
     if (useTempUploads) {
         tmpDir = await dir({ keep: false, unsafeCleanup: true });
     }
@@ -362,6 +362,8 @@ const start = async (): Promise<void> => {
         function (
             req: express.Request & {
                 user: { username: string; email: string; name: string };
+            } & {
+                csrfToken: () => string;
             },
             res: express.Response
         ): void {

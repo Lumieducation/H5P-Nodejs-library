@@ -12,7 +12,12 @@ import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
 import ContentStorer from '../src/ContentStorer';
 import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
-import { IUser, GeneralPermission } from '../src/types';
+import {
+    IUser,
+    GeneralPermission,
+    IFileMalwareScanner,
+    MalwareScanResult
+} from '../src/types';
 
 import User from './User';
 
@@ -180,6 +185,70 @@ describe('package importer', () => {
                         user
                     )
                 ).rejects.toThrow('install-missing-libraries');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects content with virus', async () => {
+        await withDir(
+            async ({ path: tmpDirPath }) => {
+                // prepare
+                const contentDir = path.join(tmpDirPath, 'content');
+                const libraryDir = path.join(tmpDirPath, 'libraries');
+                await mkdir(contentDir, { recursive: true });
+                await mkdir(libraryDir, { recursive: true });
+
+                const user = new User();
+
+                const contentManager = new ContentManager(
+                    new FileContentStorage(contentDir),
+                    new LaissezFairePermissionSystem()
+                );
+                const libraryManager = new LibraryManager(
+                    new FileLibraryStorage(libraryDir)
+                );
+                const mockMalwareScanner: IFileMalwareScanner = {
+                    name: 'Mock malware scanner',
+                    scan: async (file) => {
+                        if (file.includes('eicar')) {
+                            return {
+                                result: MalwareScanResult.MalwareFound,
+                                viruses: 'EICAR test virus'
+                            };
+                        }
+                        return { result: MalwareScanResult.Clean };
+                    }
+                };
+                const malwareScannerSpy = jest.spyOn(
+                    mockMalwareScanner,
+                    'scan'
+                );
+                const packageImporter = new PackageImporter(
+                    libraryManager,
+                    new H5PConfig(null),
+                    new LaissezFairePermissionSystem(),
+                    contentManager,
+                    new ContentStorer(
+                        contentManager,
+                        libraryManager,
+                        undefined,
+                        {
+                            malwareScanners: [mockMalwareScanner]
+                        }
+                    )
+                );
+                // act + assert
+                await expect(
+                    packageImporter.addPackageLibrariesAndContent(
+                        path.resolve('test/data/validator/h5p-with-virus.h5p'),
+                        user
+                    )
+                ).rejects.toThrow('upload-malware-found');
+
+                expect(malwareScannerSpy).toHaveBeenCalled();
+                const addedContent = await contentManager.listContent();
+                expect(addedContent.length).toBe(0);
             },
             { keep: false, unsafeCleanup: true }
         );

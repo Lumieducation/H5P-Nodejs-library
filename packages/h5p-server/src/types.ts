@@ -1198,7 +1198,7 @@ export interface IPermissionSystem<TUser extends IUser = IUser> {
 export type ContentParameters = any;
 
 /**
- * This is an entry in the semantics of a library. The semantics define who content parameters
+ * This is an entry in the semantics of a library. The semantics define how content parameters
  * must look like.
  *
  * Note: Attributes can only be used by specific semantic types. See https://h5p.org/semantics
@@ -2271,6 +2271,18 @@ export interface IH5PEditorOptions {
     lockProvider?: ILockProvider;
 
     /**
+     * A list of file sanitizers that are executed for content files in order of
+     * the array when a file or package is uploaded.
+     */
+    fileSanitizers?: IFileSanitizer[];
+
+    /**
+     * A list of file malware scanners that are executed for content files in
+     * order of the array when a file or package is uploaded.
+     */
+    malwareScanners?: IFileMalwareScanner[];
+
+    /**
      * Hooks allow you to react to things happening in the library.
      */
     hooks?: {
@@ -2450,4 +2462,50 @@ export interface ILockProvider {
         callback: () => Promise<T>,
         options: { timeout: number; maxOccupationTime: number }
     ): Promise<T>;
+}
+
+export enum MalwareScanResult {
+    MalwareFound,
+    Clean,
+    NotScanned
+}
+
+/**
+ * An interface for malware scanners. See the
+ * [documentation](/docs/advanced/security.md) for details on how to use this
+ * class.
+ */
+export interface IFileMalwareScanner {
+    /** The name of the scanner, e.g. ClamAV */
+    readonly name: string;
+
+    /** Scans a file for malware and returns whether it contains malware. */
+    scan(
+        file: string
+    ): Promise<{ result: MalwareScanResult; viruses?: string }>;
+}
+
+export enum FileSanitizerResult {
+    Sanitized,
+    NotSanitized,
+    Ignored
+}
+
+/**
+ * An interface for a file sanitizer that can sanitize files that can
+ * potentially contain dangerous elements. In contrast to a malware scanner, a
+ * sanitizer can remove potentially dangerous parts of the file and keep the
+ * rest usable. It never rejects files because of its contents, but simply
+ * removes dangerous parts. Due to the nature how sanitizers work, they
+ * typically always change something in the file, even if it is just removing
+ * whitespaces. That's why there is no reliable way to determine if a file was
+ * really dangerous or not and nothing is reported to the user.
+ */
+export interface IFileSanitizer {
+    /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
+    readonly name: string;
+
+    /** Sanitizes files. The original file is expected to be replaced by the
+     * sanitized file, so there is no new path to the sanitized file.*/
+    sanitize(file: string): Promise<FileSanitizerResult>;
 }

@@ -73,5 +73,6 @@
     "temporary-file-missing-write-permission": "Нямате право да създавате временен файл.",
     "user-state-missing-delete-permission": "Нямате право да изтриете това потребителско състояние.",
     "user-state-missing-edit-permission": "Нямате право да редактирате това потребителско състояние.",
-    "user-state-missing-view-permission": "Нямате право да преглеждате това потребителско състояние."
+    "user-state-missing-view-permission": "Нямате право да преглеждате това потребителско състояние.",
+    "upload-malware-found": "Файлът, който качихте, съдържаше зловреден софтуер и беше отхвърлен."
 }

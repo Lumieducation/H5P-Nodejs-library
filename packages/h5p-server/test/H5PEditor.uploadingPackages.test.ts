@@ -2,13 +2,15 @@
 
 import path from 'path';
 import { withDir, file, FileResult } from 'tmp-promise';
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 import { createWriteStream } from 'fs';
 
 import User from './User';
 import { createH5PEditor } from './helpers/H5PEditor';
 
 import { ContentMetadata } from '../src/ContentMetadata';
+import { FileSanitizerResult, IFileSanitizer } from '../src/types';
+import { streamToString } from '../src';
 
 describe('H5PEditor', () => {
     it('returns metadata and parameters of package uploads', async () => {
@@ -78,6 +80,64 @@ describe('H5PEditor', () => {
                         user
                     )
                 ).resolves.toEqual(true);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('sanitizes files in uploaded package', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // prepare
+                const sanitizer1: IFileSanitizer = {
+                    name: 'Mock file sanitizer 1',
+                    sanitize: async () => FileSanitizerResult.Ignored
+                };
+                const sanitizer2: IFileSanitizer = {
+                    name: 'Mock file sanitizer 2',
+                    sanitize: async (file) => {
+                        if (file.endsWith('.jpg')) {
+                            // replace the file contents with 'sanitized' to
+                            // mimmick sanitization
+                            await writeFile(file, 'sanitized', 'utf8');
+                            return FileSanitizerResult.Sanitized;
+                        }
+                        return FileSanitizerResult.Ignored;
+                    }
+                };
+                const spy1 = jest.spyOn(sanitizer1, 'sanitize');
+                const spy2 = jest.spyOn(sanitizer2, 'sanitize');
+
+                const { h5pEditor, temporaryStorage } = createH5PEditor(
+                    tempDirPath,
+                    {},
+                    { fileSanitizers: [sanitizer1, sanitizer2] }
+                );
+                const user = new User();
+
+                const fileBuffer = await readFile(
+                    path.resolve('test/data/validator/valid2.h5p')
+                );
+
+                // execute
+                const { parameters } = await h5pEditor.uploadPackage(
+                    fileBuffer,
+                    user
+                );
+
+                // assert
+                const stream = await temporaryStorage.getFileStream(
+                    parameters.image.path.substr(
+                        0,
+                        parameters.image.path.length - 4
+                    ),
+                    user
+                );
+                const sanitizedFileContents = await streamToString(stream);
+                expect(sanitizedFileContents).toEqual('sanitized');
+
+                expect(spy1).toHaveBeenCalled();
+                expect(spy2).toHaveBeenCalled();
             },
             { keep: false, unsafeCleanup: true }
         );

@@ -105,9 +105,10 @@ module.exports = {
     // A list of paths to directories that Jest should use to search for files in
     roots: [
         '<rootDir>/packages/h5p-express/test',
-        '<rootDir>/packages/h5p-server/test',
         '<rootDir>/packages/h5p-html-exporter/test',
-        '<rootDir>/packages/h5p-shared-state-server/test'
+        '<rootDir>/packages/h5p-server/test',
+        '<rootDir>/packages/h5p-shared-state-server/test',
+        '<rootDir>/packages/h5p-svg-sanitizer/test'
     ],
 
     // Allows you to use a custom runner instead of Jest's default test runner

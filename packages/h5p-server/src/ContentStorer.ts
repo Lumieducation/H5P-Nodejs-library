@@ -1,7 +1,7 @@
 import path from 'path';
 import { getAllFiles } from 'get-all-files';
 import { Stream } from 'stream';
-import { access, readFile } from 'fs/promises';
+import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
@@ -12,12 +12,17 @@ import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
+    FileSanitizerResult,
     IContentMetadata,
+    IFileMalwareScanner,
+    IFileSanitizer,
     ILibraryName,
-    IUser
+    IUser,
+    MalwareScanResult
 } from './types';
 import generateFilename from './helpers/FilenameGenerator';
 import SemanticsEnforcer from './SemanticsEnforcer';
+import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentStorer');
 
@@ -29,12 +34,25 @@ export default class ContentStorer {
     constructor(
         private contentManager: ContentManager,
         libraryManager: LibraryManager,
-        private temporaryFileManager: TemporaryFileManager
+        private temporaryFileManager: TemporaryFileManager,
+        options?: {
+            /**
+             * A list of file sanitizers that are executed for content files in order of
+             * the array when a file or package is uploaded.
+             */
+            fileSanitizers?: IFileSanitizer[];
+            malwareScanners?: IFileMalwareScanner[];
+        }
     ) {
+        log.debug('Initializing');
         this.contentFileScanner = new ContentFileScanner(libraryManager);
         this.semanticsEnforcer = new SemanticsEnforcer(libraryManager);
+        this.fileSanitizers = options?.fileSanitizers ?? [];
+        this.malwareScanners = options?.malwareScanners ?? [];
     }
 
+    private fileSanitizers!: IFileSanitizer[];
+    private malwareScanners!: IFileMalwareScanner[];
     private contentFileScanner: ContentFileScanner;
     private semanticsEnforcer: SemanticsEnforcer;
 
@@ -194,7 +212,27 @@ export default class ContentStorer {
         const contentPathLength = contentPath.length + 1;
         try {
             await Promise.all(
-                otherContentFiles.map((file: string) => {
+                otherContentFiles.map(async (file: string) => {
+                    try {
+                        await this.scanForMalware(file);
+                    } catch (error: unknown) {
+                        if (
+                            error instanceof H5pError &&
+                            error.errorId === 'upload-malware-found'
+                        ) {
+                            try {
+                                // The file will be removed later anyway, but to
+                                // be sure we remove it here.
+                                await rm(file, { force: true });
+                            } catch (error) {
+                                log.error(
+                                    `Could not delete file ${file} with malware: ${error}. Whole package will be deleted anyway.`
+                                );
+                            }
+                        }
+                        throw error;
+                    }
+                    await this.sanitizeFile(file);
                     const readStream: Stream = createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
                     log.debug(`adding ${file} to ${packageDirectory}`);
@@ -269,6 +307,38 @@ export default class ContentStorer {
                 }
                 continue;
             }
+
+            // Check for malware
+            try {
+                await this.scanForMalware(filepath);
+            } catch (error: unknown) {
+                if (
+                    error instanceof H5pError &&
+                    error.errorId === 'upload-malware-found'
+                ) {
+                    try {
+                        log.debug('Deleting file with malware:', filepath);
+                        // The file will be removed later anyway, but to be sure
+                        // we remove it here, too
+                        await rm(filepath, { force: true });
+                    } catch (error) {
+                        log.error(
+                            `Could not delete file ${filepath} with malware: ${error}. Whole upload will be rejected anyway.`
+                        );
+                    }
+                }
+                // We throw the error to stop the upload process. Files of the
+                // content that were already added to the temporary storage
+                // won't be directly deleted, but will be deleted by the garbage
+                // collector.
+                throw error;
+            }
+
+            // We sanitize the file before copying it to temporary storage. This
+            // prevents possible malicious code from being injected into
+            // content.
+            await this.sanitizeFile(filepath);
+
             const readStream = createReadStream(filepath);
             newFilename = await this.temporaryFileManager.addFile(
                 reference.filePath,
@@ -279,6 +349,63 @@ export default class ContentStorer {
             filePathToNewFilenameMap.set(filepath, newFilename);
         }
         return { metadata, parameters };
+    }
+
+    /**
+     * Sanitizes potentially dangerous content from the file at the path using
+     * the sanitizers provided in the options. Only does something if the
+     * implementation provides sanitizers
+     * @param filepath
+     * @throws H5pError if the file could not be sanitized or there was some
+     * kind of error
+     */
+    private async sanitizeFile(filepath: string) {
+        for (const sanitizer of this.fileSanitizers) {
+            try {
+                log.debug(
+                    'Sanitizing file',
+                    filepath,
+                    'with sanitizer',
+                    sanitizer.name
+                );
+                // Must be run in sequence and can't be parallelized.
+                // eslint-disable-next-line no-await-in-loop
+                const result = await sanitizer.sanitize(filepath);
+                if (result === FileSanitizerResult.Sanitized) {
+                    log.debug(
+                        'Sanitized file',
+                        filepath,
+                        'with sanitizer',
+                        sanitizer.name
+                    );
+                }
+            } catch {
+                throw new H5pError('upload-validation-error', {}, 400);
+            }
+        }
+    }
+
+    private async scanForMalware(filepath: string) {
+        const malwareScanResults = await Promise.all(
+            this.malwareScanners.map(async (scanner) => {
+                return {
+                    ...(await scanner.scan(filepath)),
+                    scannerName: scanner.name
+                };
+            })
+        );
+        const positiveMalwareScanResults = malwareScanResults.filter(
+            (result) => result.result === MalwareScanResult.MalwareFound
+        );
+        if (positiveMalwareScanResults.length > 0) {
+            for (const result of positiveMalwareScanResults) {
+                log.info(
+                    `Malware found in file ${filepath} by scanner ${result.scannerName}: ${result.viruses}.`
+                );
+            }
+            // TODO: log to audit log
+            throw new H5pError('upload-malware-found', {}, 400);
+        }
     }
 
     /**
@@ -412,7 +539,7 @@ export default class ContentStorer {
                 try {
                     if (readable !== undefined) {
                         log.debug(
-                            `Adding temporary file ${fileToCopy} to content id ${contentId}`
+                            `Adding temporary file ${fileToCopy.filePath} to content id ${contentId}`
                         );
                         await this.contentManager.addContentFile(
                             contentId,
