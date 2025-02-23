@@ -1198,7 +1198,7 @@ export interface IPermissionSystem<TUser extends IUser = IUser> {
 export type ContentParameters = any;
 
 /**
- * This is an entry in the semantics of a library. The semantics define who content parameters
+ * This is an entry in the semantics of a library. The semantics define how content parameters
  * must look like.
  *
  * Note: Attributes can only be used by specific semantic types. See https://h5p.org/semantics
