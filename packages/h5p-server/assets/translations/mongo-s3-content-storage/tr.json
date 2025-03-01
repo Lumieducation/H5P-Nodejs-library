@@ -7,5 +7,6 @@
     "listing-content-error": "İçerik nesnelerinin listesi alınırken bir hata oluştu",
     "mongo-add-update-error": "Veritabanına içerik eklenirken veya güncellenirken bir hata oluştu.",
     "mongo-replace-error": "Veritabanındaki içerik güncellenirken bir hata oluştu.",
-    "s3-upload-error": "{{filename}} dosyasını S3'e yüklerken bir hata oluştu."
+    "s3-upload-error": "{{filename}} dosyasını S3'e yüklerken bir hata oluştu.",
+    "install-library-already-installed": "{{ubername}} kütüphanesi zaten kurulu ve tekrar kurulamaz."
 }

@@ -33,6 +33,20 @@
             },
             "outputCapture": "std",
             "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug with mongo/S3 library storage + mongo/s3 content storage",
+            "program": "${workspaceFolder}/packages/h5p-examples/build/express.js",
+            "runtimeArgs": ["-r", "source-map-support/register"],
+            "env": {
+                "DEBUG": "h5p*",
+                "LOG_LEVEL": "debug",
+                "DOTENV_CONFIG_PATH": "${workspaceFolder}/packages/h5p-examples/mongos3+mongos3.env"
+            },
+            "outputCapture": "std",
+            "console": "integratedTerminal"
         }
     ]
 }
