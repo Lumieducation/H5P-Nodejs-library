@@ -2,7 +2,8 @@ import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
-import imageSize from 'image-size';
+import { imageSize } from 'image-size';
+import { imageSizeFromFile } from 'image-size/fromFile';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
@@ -643,9 +644,10 @@ export default class H5PEditor {
 
         try {
             if (file.mimetype.startsWith('image/')) {
-                imageDimensions = imageSize(
-                    file.data?.length > 0 ? file.data : file.tempFilePath
-                );
+                imageDimensions =
+                    file.data?.length > 0
+                        ? imageSize(file.data)
+                        : await imageSizeFromFile(file.tempFilePath);
             }
         } catch (error) {
             // A caught error means that the file format is not supported by

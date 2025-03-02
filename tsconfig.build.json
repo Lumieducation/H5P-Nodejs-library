@@ -12,6 +12,9 @@
         "baseUrl": "./",
         "resolveJsonModule": true,
         "declaration": true,
+        "paths": {
+            "image-size/fromFile": ["node_modules/image-size/dist/fromFile.cjs"]
+        }
     },
     "exclude": ["node_modules"]
 }
