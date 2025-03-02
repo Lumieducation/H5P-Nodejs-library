@@ -8,7 +8,7 @@ After installation, you can run the tests with
 npm run test
 npm run test:integration
 npm run test:e2e
-npm run test:db # (require running MongoDB server)
+npm run test:h5p-mongos3 # (require running MongoDB server)
 ```
 
 You can run the e2e tests with h5p packages on your local system like this:

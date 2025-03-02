@@ -1,3 +1,6 @@
+import { S3, DeleteObjectsCommand } from '@aws-sdk/client-s3';
+import crypto from 'crypto';
+
 import { H5pError, Logger, utils } from '@lumieducation/h5p-server';
 
 const { generalizedSanitizeFilename } = utils;
@@ -59,4 +62,71 @@ export function sanitizeFilename(
         invalidCharactersRegExp ?? /[^A-Za-z0-9\-._!()@/]/g,
         maxFileLength
     );
+}
+
+/**
+ * Deletes a list of objects from the S3 bucket. We can't use the normal
+ * S3.deleteObjects function as it doesn't generate the MD5 hash needed by S3.
+ * @param keys a list of keys to delete
+ * @param bucket
+ * @param s3
+ * @param keyResolver
+ */
+export async function deleteObjects(
+    keys: string[],
+    bucket: string,
+    s3: S3
+): Promise<void> {
+    // S3 batch deletes only work with 1000 files at a time, so we
+    // might have to do this in several requests.
+
+    const errors = [];
+
+    while (keys.length > 0) {
+        const nextFiles = keys.splice(0, 1000);
+        if (nextFiles.length > 0) {
+            log.debug(
+                `Batch deleting ${nextFiles.length} file(s) in S3 storage.`
+            );
+            const deleteParams = {
+                Bucket: bucket,
+                Delete: {
+                    Objects: nextFiles.map((key) => ({
+                        Key: key
+                    }))
+                }
+            };
+            log.debug('Delete params:', JSON.stringify(deleteParams));
+            const deletePayload = JSON.stringify(deleteParams.Delete);
+            const md5Hash = crypto
+                .createHash('md5')
+                .update(deletePayload)
+                .digest('base64');
+            const command = new DeleteObjectsCommand(deleteParams);
+            command.middlewareStack.add(
+                (next) => async (args) => {
+                    (args.request as any).headers['Content-MD5'] = md5Hash;
+                    return next(args);
+                },
+                {
+                    step: 'build'
+                }
+            );
+            try {
+                const response = await s3.send(command);
+                log.debug('Deleted files in S3 storage.', response);
+            } catch (error) {
+                log.error(
+                    `There was an error while deleting files in S3 storage. The delete operation will continue.\nError:`,
+                    error
+                );
+                errors.push(error);
+            }
+        }
+    }
+    if (errors.length > 0) {
+        throw new Error(
+            `Errors while deleting files in S3 storage: ${errors.map((e) => e.message).join(', ')}`
+        );
+    }
 }

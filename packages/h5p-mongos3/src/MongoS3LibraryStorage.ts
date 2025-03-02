@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 
 import MongoDB, { DeleteResult, InsertOneResult, UpdateResult } from 'mongodb';
-import AWS from 'aws-sdk';
+import { Upload } from '@aws-sdk/lib-storage';
+import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import * as path from 'path';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { ReadableStreamBuffer } from 'stream-buffers';
 import {
     IAdditionalLibraryMetadata,
@@ -20,7 +20,7 @@ import {
     Logger
 } from '@lumieducation/h5p-server';
 
-import { validateFilename } from './S3Utils';
+import { deleteObjects, validateFilename } from './S3Utils';
 
 const log = new Logger('MongoS3LibraryStorage');
 
@@ -32,8 +32,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @param options options
      */
     constructor(
-        private s3: AWS.S3,
-        private mongodb: MongoDB.Collection,
+        private s3: S3,
+        private mongodb: MongoDB.Collection<{
+            ubername: string;
+            metadata: ILibraryMetadata;
+            additionalMetadata: Partial<IAdditionalLibraryMetadata>;
+        }>,
         private options: {
             /**
              * These characters will be removed from files that are saved to S3.
@@ -51,7 +55,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
-            s3Acl?: string;
+            s3Acl?: ObjectCannedACL;
             /**
              * The bucket to upload to and download from. (required)
              */
@@ -89,15 +93,23 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     ): Promise<boolean> {
         validateFilename(filename, this.options?.invalidCharactersRegexp);
 
+        log.debug(
+            'Uploading file to S3 storage. Filename:',
+            filename,
+            'Bucket:',
+            this.options.s3Bucket
+        );
         try {
-            await this.s3
-                .upload({
+            await new Upload({
+                client: this.s3,
+
+                params: {
                     ACL: this.options.s3Acl ?? 'private',
                     Body: readStream,
                     Bucket: this.options.s3Bucket,
                     Key: this.getS3Key(library, filename)
-                })
-                .promise();
+                }
+            }).done();
         } catch (error) {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
@@ -127,10 +139,36 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         restricted: boolean
     ): Promise<IInstalledLibrary> {
         const ubername = LibraryName.toUberName(libraryData);
-        let result: InsertOneResult<any>;
+        try {
+            if (
+                await this.mongodb.findOne({
+                    ubername
+                })
+            ) {
+                throw new H5pError(
+                    'mongo-library-storage:install-library-already-installed',
+                    { ubername }
+                );
+            }
+        } catch (error) {
+            log.error(
+                'Error adding library to MongoDB: Library',
+                ubername,
+                'already installed.'
+            );
+            if (error instanceof H5pError) {
+                throw error;
+            }
+            log.error(`Error adding library to MongoDB: ${error.message}`);
+            throw new H5pError('mongo-library-storage:error-adding-metadata', {
+                details: error.message
+            });
+        }
+
+        let result: InsertOneResult<never>;
         try {
             result = await this.mongodb.insertOne({
-                _id: ubername as any,
+                ubername,
                 metadata: libraryData,
                 additionalMetadata: { restricted }
             });
@@ -162,34 +200,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const filesToDelete = await this.listFiles(library, {
             withMetadata: false
         });
-        // S3 batch deletes only work with 1000 files at a time, so we
-        // might have to do this in several requests.
         try {
-            while (filesToDelete.length > 0) {
-                const next1000Files = filesToDelete.splice(0, 1000);
-                if (next1000Files.length > 0) {
-                    log.debug(
-                        `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
-                    );
-                    const deleteFilesRes = await this.s3
-                        .deleteObjects({
-                            Bucket: this.options.s3Bucket,
-                            Delete: {
-                                Objects: next1000Files.map((f) => ({
-                                    Key: this.getS3Key(library, f)
-                                }))
-                            }
-                        })
-                        .promise();
-                    if (deleteFilesRes.Errors.length > 0) {
-                        log.error(
-                            `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
-                                (e) => `${e.Key}: ${e.Code} - ${e.Message}`
-                            ).join('\n')}`
-                        );
-                    }
-                }
-            }
+            await deleteObjects(
+                filesToDelete.map((f) => this.getS3Key(library, f)),
+                this.options.s3Bucket,
+                this.s3
+            );
         } catch (error) {
             log.error(
                 `There was an error while clearing the files: ${error.message}`
@@ -204,6 +220,11 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      */
     public async createIndexes(): Promise<void> {
         await this.mongodb.createIndexes([
+            {
+                key: {
+                    ubername: 1
+                }
+            },
             {
                 key: {
                     'metadata.machineName': 1
@@ -231,7 +252,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         let result: DeleteResult;
         try {
             result = await this.mongodb.deleteOne({
-                _id: LibraryName.toUberName(library)
+                ubername: LibraryName.toUberName(library)
             });
         } catch (error) {
             throw new H5pError('mongo-s3-library-storage:error-deleting', {
@@ -261,12 +282,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         validateFilename(filename, this.options?.invalidCharactersRegexp);
 
         try {
-            await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, filename)
-                })
-                .promise();
+            await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: this.getS3Key(library, filename)
+            });
         } catch (error) {
             log.debug(
                 `File ${filename} does not exist in ${LibraryName.toUberName(
@@ -304,12 +323,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         [ubername: string]: number;
     }> {
         let libraryDeps: {
-            dynamicDependencies: ILibraryName[];
-            editorDependencies: ILibraryName[];
+            dynamicDependencies?: ILibraryName[];
+            editorDependencies?: ILibraryName[];
             machineName: string;
             majorVersion: number;
             minorVersion: number;
-            preloadedDependencies: ILibraryName[];
+            preloadedDependencies?: ILibraryName[];
             ubername: string;
         }[];
         try {
@@ -318,7 +337,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                     {},
                     {
                         projection: {
-                            _id: 1,
+                            ubername: 1,
                             'metadata.machineName': 1,
                             'metadata.majorVersion': 1,
                             'metadata.minorVersion': 1,
@@ -328,7 +347,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                         }
                     }
                 )
-                .map((d) => ({ ...d.metadata, ubername: d._id }))
+                .map((d) => ({ ...d.metadata, ubername: d.ubername }))
                 .toArray();
         } catch (error) {
             throw new H5pError(
@@ -438,12 +457,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         }
 
         try {
-            const head = await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, file)
-                })
-                .promise();
+            const head = await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: this.getS3Key(library, file)
+            });
             return { size: head.ContentLength, birthtime: head.LastModified };
         } catch (error) {
             throw new H5pError(
@@ -476,12 +493,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             return readable;
         }
 
-        return this.s3
-            .getObject({
+        return (
+            await this.s3.getObject({
                 Bucket: this.options.s3Bucket,
                 Key: this.getS3Key(library, file)
             })
-            .createReadStream();
+        ).Body as Readable;
     }
 
     /**
@@ -503,7 +520,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                     : {},
                 {
                     projection: {
-                        _id: 1
+                        ubername: 1
                     }
                 }
             );
@@ -511,10 +528,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             return list
                 .map((e) => {
                     try {
-                        return LibraryName.fromUberName(e._id as any);
+                        return LibraryName.fromUberName(e.ubername);
                     } catch {
                         log.error(
-                            `invalid ubername pattern in library storage id: ${e._id}. Ignoring...`
+                            `invalid ubername pattern in library storage id: ${e.ubername}. Ignoring...`
                         );
                         return undefined;
                     }
@@ -537,17 +554,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const prefix = this.getS3Key(library, 'language');
         let files: string[] = [];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+            let ret;
             do {
                 log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
+                ret = await this.s3.listObjectsV2({
+                    Bucket: this.options.s3Bucket,
+                    Prefix: prefix,
+                    ContinuationToken: ret?.NextContinuationToken,
+                    MaxKeys: 1000
+                });
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );
@@ -577,7 +592,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
 
         try {
             result = await this.mongodb.findOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 { projection: { metadata: 1, additionalMetadata: 1 } }
             );
         } catch (error) {
@@ -605,8 +620,8 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      */
     public async isInstalled(library: ILibraryName): Promise<boolean> {
         const found = await this.mongodb.findOne(
-            { _id: LibraryName.toUberName(library) },
-            { projection: { _id: 1 } }
+            { ubername: LibraryName.toUberName(library) },
+            { projection: { ubername: 1 } }
         );
         return !!found;
     }
@@ -655,17 +670,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const prefix = this.getS3Key(library, '');
         let files: string[] = [];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+            let ret;
             do {
                 log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
+                ret = await this.s3.listObjectsV2({
+                    Bucket: this.options.s3Bucket,
+                    Prefix: prefix,
+                    ContinuationToken: ret?.NextContinuationToken,
+                    MaxKeys: 1000
+                });
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );
@@ -705,7 +718,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 { $set: { additionalMetadata } }
             );
         } catch (error) {
@@ -742,7 +755,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
-                { _id: ubername },
+                { ubername: ubername },
                 { $set: { metadata: libraryMetadata } }
             );
         } catch (error) {
@@ -767,7 +780,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         try {
             additionalMetadata =
                 await this.mongodb.findOne<IAdditionalLibraryMetadata>(
-                    { _id: ubername },
+                    { ubername: ubername },
                     { projection: { additionalMetadata: 1 } }
                 );
         } catch (error) {
@@ -779,6 +792,25 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             ...libraryMetadata,
             ...(additionalMetadata ?? {})
         });
+    }
+
+    /**
+     * Migrates the DB schema from one version to another. You need to call
+     * this, when you first deploy the new version.
+     * @param from the old major version of @lumieducation/h5p-mongos3
+     * @param to the new major version of @lumieducation/h5p-mongos3
+     */
+    public async migrate(from: number, to: number): Promise<void> {
+        if (from === 9 && to === 10) {
+            await this.mongodb.updateMany({}, [
+                {
+                    $set: {
+                        ubername: '$_id'
+                    }
+                }
+            ]);
+            await this.createIndexes();
+        }
     }
 
     /**
@@ -797,7 +829,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
 
         try {
             result = await this.mongodb.findOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 {
                     projection: {
                         metadata: 1
@@ -805,7 +837,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                 }
             );
         } catch (error) {
-            console.log(error);
+            log.error(error);
             throw new H5pError(
                 'mongo-library-storage:error-getting-library-metadata',
                 { ubername: LibraryName.toUberName(library) }

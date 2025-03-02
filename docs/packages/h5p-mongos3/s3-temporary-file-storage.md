@@ -38,11 +38,13 @@ Initialize the storage implementation like this:
 ```typescript
 const temporaryStorage = new S3TemporaryFileStorage(
     initS3({
-        accessKeyId: 's3accesskey', // optional if env. variable is set
-        secretAccessKey: 's3accesssecret', // optional if env. variable is set
+        credentials: {
+            accessKeyId: 's3accesskey', // optional if env. variable is set
+            secretAccessKey: 's3accesssecret' // optional if env. variable is set
+        },
         endpoint: 'http://127.0.0.1:9000', // optional if env. variable is set
-        s3ForcePathStyle: true,
-        signatureVersion: 'v4'
+        region: 'us-east-1' // optional if env. variable is set
+        forcePathStyle: true
     }),
     { s3Bucket: 'h5ptemporarybucket' }
 );

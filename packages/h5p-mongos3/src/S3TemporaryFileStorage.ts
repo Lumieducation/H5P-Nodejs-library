@@ -1,4 +1,7 @@
 import { Readable } from 'stream';
+import { Upload } from '@aws-sdk/lib-storage';
+import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
+import { ReadStream } from 'fs';
 
 import {
     ITemporaryFileStorage,
@@ -9,7 +12,7 @@ import {
     H5pError,
     Logger
 } from '@lumieducation/h5p-server';
-import { ReadStream } from 'fs';
+
 import { validateFilename, sanitizeFilename } from './S3Utils';
 
 const log = new Logger('S3TemporaryFileStorage');
@@ -28,7 +31,7 @@ const log = new Logger('S3TemporaryFileStorage');
  */
 export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     constructor(
-        private s3: AWS.S3,
+        private s3: S3,
         private options: {
             /**
              * These characters will be removed from files that are saved to S3.
@@ -47,7 +50,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
              * The ACL to use for uploaded content files. Defaults to private.
              * See the S3 documentation for possible values.
              */
-            s3Acl?: string;
+            s3Acl?: ObjectCannedACL;
             /**
              * The bucket to upload to and download from. (required)
              */
@@ -86,12 +89,10 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         }
 
         try {
-            await this.s3
-                .deleteObject({
-                    Bucket: this.options?.s3Bucket,
-                    Key: filename
-                })
-                .promise();
+            await this.s3.deleteObject({
+                Bucket: this.options?.s3Bucket,
+                Key: filename
+            });
         } catch (error) {
             log.error(
                 `Error while deleting a file from S3 storage: ${error.message}`
@@ -125,12 +126,10 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         // to problems when determining unique filenames.)
 
         try {
-            await this.s3
-                .headObject({
-                    Bucket: this.options?.s3Bucket,
-                    Key: filename
-                })
-                .promise();
+            await this.s3.headObject({
+                Bucket: this.options?.s3Bucket,
+                Key: filename
+            });
         } catch (error) {
             log.debug(
                 `File "${filename}" does not exist in temporary storage.`
@@ -155,12 +154,10 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         validateFilename(filename);
 
         try {
-            const head = await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: filename
-                })
-                .promise();
+            const head = await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: filename
+            });
             return { size: head.ContentLength, birthtime: head.LastModified };
         } catch (error) {
             throw new H5pError('file-not-found', {}, 404);
@@ -193,8 +190,8 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
             throw new H5pError('s3-temporary-storage:file-not-found', {}, 404);
         }
 
-        return this.s3
-            .getObject({
+        return (
+            await this.s3.getObject({
                 Bucket: this.options?.s3Bucket,
                 Key: filename,
                 Range:
@@ -202,7 +199,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                         ? `bytes=${rangeStart}-${rangeEnd}`
                         : undefined
             })
-            .createReadStream();
+        ).Body as Readable;
     }
 
     /**
@@ -256,8 +253,10 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         }
 
         try {
-            await this.s3
-                .upload({
+            await new Upload({
+                client: this.s3,
+
+                params: {
                     ACL: this.options?.s3Acl ?? 'private',
                     Body: dataStream,
                     Bucket: this.options?.s3Bucket,
@@ -265,8 +264,8 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                     Metadata: {
                         creator: user.id
                     }
-                })
-                .promise();
+                }
+            }).done();
             return {
                 filename,
                 ownedByUserId: user.id,
@@ -310,11 +309,10 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
 
         let expirationNeedsToBeSet = false;
         try {
-            const lifecycleConfiguration = await this.s3
-                .getBucketLifecycleConfiguration({
+            const lifecycleConfiguration =
+                await this.s3.getBucketLifecycleConfiguration({
                     Bucket: this.options.s3Bucket
-                })
-                .promise();
+                });
             if (
                 !lifecycleConfiguration.Rules.some(
                     (rule) =>
@@ -340,24 +338,22 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
         if (expirationNeedsToBeSet) {
             log.debug(`Creating new lifecycle configuration for bucket.`);
             try {
-                await this.s3
-                    .putBucketLifecycleConfiguration({
-                        Bucket: this.options.s3Bucket,
-                        LifecycleConfiguration: {
-                            Rules: [
-                                {
-                                    Filter: { Prefix: '' },
-                                    Status: 'Enabled',
-                                    Expiration: {
-                                        Days: roundToNearestDay(
-                                            config.temporaryFileLifetime
-                                        )
-                                    }
+                await this.s3.putBucketLifecycleConfiguration({
+                    Bucket: this.options.s3Bucket,
+                    LifecycleConfiguration: {
+                        Rules: [
+                            {
+                                Filter: { Prefix: '' },
+                                Status: 'Enabled',
+                                Expiration: {
+                                    Days: roundToNearestDay(
+                                        config.temporaryFileLifetime
+                                    )
                                 }
-                            ]
-                        }
-                    })
-                    .promise();
+                            }
+                        ]
+                    }
+                });
             } catch (error) {
                 log.error(
                     `Could not set new lifecycle configuration: ${error.message}`

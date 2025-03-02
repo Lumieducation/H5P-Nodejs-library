@@ -7,5 +7,6 @@
     "listing-content-error": "Pri pridobivanju seznama predmetov vsebine je prišlo do napake",
     "mongo-add-update-error": "Pri dodajanju ali posodabljanju vsebine v zbirki podatkov je prišlo do napake.",
     "mongo-replace-error": "Pri posodabljanju vsebine v bazi je prišlo do napake.",
-    "s3-upload-error": "{{filename}} na S3 je prišlo do napake."
+    "s3-upload-error": "{{filename}} na S3 je prišlo do napake.",
+    "install-library-already-installed": "Knjižnica {{ubername}} je že nameščena in je ni mogoče znova namestiti."
 }

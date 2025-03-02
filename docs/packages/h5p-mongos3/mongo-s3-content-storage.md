@@ -37,11 +37,13 @@ Initialize the storage implementation like this:
 ```typescript
 const storage = new MongoS3ContentStorage(
     initS3({
-        accessKeyId: 's3accesskey', // optional if env. variable is set
-        secretAccessKey: 's3accesssecret', // optional if env. variable is set
+        credentials: {
+            accessKeyId: 's3accesskey', // optional if env. variable is set
+            secretAccessKey: 's3accesssecret' // optional if env. variable is set
+        },                    
         endpoint: 'http://127.0.0.1:9000', // optional if env. variable is set
-        s3ForcePathStyle: true,
-        signatureVersion: 'v4'
+        region: 'us-east-1', // optional if env. variable is set,
+        forcePathStyle: true
     }),
     ( await initMongo(
             'mongodb://127.0.0.1:27017', // optional if env. variable is set
@@ -148,7 +150,7 @@ There are automated tests in
 However, these tests will not be called automatically when you run `npm run
 test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute
-the tests call `npm run test:db`.
+the tests call `npm run test:h5p-mongos3`.
 
 To quickly get a functioning MongoDB and S3 instance, you can use the [Docker
 Compose file in the scripts directory](/scripts/mongo-s3-docker-compose.yml)
