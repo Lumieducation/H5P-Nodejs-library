@@ -31,7 +31,17 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @param options options
      */
     constructor(
-        private mongodb: MongoDB.Collection,
+        private mongodb: MongoDB.Collection<{
+            ubername: string;
+            metadata: ILibraryMetadata;
+            additionalMetadata: Partial<IAdditionalLibraryMetadata>;
+            files: {
+                data: Binary;
+                filename: string;
+                lastModified: number;
+                size: number;
+            }[];
+        }>,
         private options?: unknown
     ) {
         log.info('initialize');
@@ -58,7 +68,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             result = await this.mongodb.updateOne(
                 {
-                    _id: LibraryName.toUberName(library)
+                    ubername: LibraryName.toUberName(library)
                 },
                 {
                     $push: {
@@ -113,8 +123,33 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         const ubername = LibraryName.toUberName(libraryData);
         let result: InsertOneResult<any>;
         try {
+            if (
+                await this.mongodb.findOne({
+                    ubername
+                })
+            ) {
+                throw new H5pError(
+                    'mongo-library-storage:install-library-already-installed',
+                    { ubername }
+                );
+            }
+        } catch (error) {
+            log.error(
+                'Error adding library to MongoDB: Library',
+                ubername,
+                'already installed.'
+            );
+            if (error instanceof H5pError) {
+                throw error;
+            }
+            log.error(`Error adding library to MongoDB: ${error.message}`);
+            throw new H5pError('mongo-library-storage:error-adding-metadata', {
+                details: error.message
+            });
+        }
+        try {
             result = await this.mongodb.insertOne({
-                _id: ubername as any,
+                ubername,
                 metadata: libraryData,
                 additionalMetadata: { restricted },
                 files: []
@@ -141,7 +176,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             result = await this.mongodb.updateOne(
                 {
-                    _id: LibraryName.toUberName(library)
+                    ubername: LibraryName.toUberName(library)
                 },
                 {
                     $set: {
@@ -179,7 +214,12 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         await this.mongodb.createIndexes([
             {
                 key: {
-                    _id: 1,
+                    ubername: 1
+                }
+            },
+            {
+                key: {
+                    ubername: 1,
                     'files.filename': 1
                 }
             },
@@ -205,7 +245,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         let result: DeleteResult;
         try {
             result = await this.mongodb.deleteOne({
-                _id: LibraryName.toUberName(library)
+                ubername: LibraryName.toUberName(library)
             });
         } catch (error) {
             throw new H5pError('mongo-library-storage:error-deleting', {
@@ -237,10 +277,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             const found = await this.mongodb.findOne(
                 {
-                    _id: LibraryName.toUberName(library),
+                    ubername: LibraryName.toUberName(library),
                     'files.filename': filename
                 },
-                { projection: { _id: 1 } }
+                { projection: { ubername: 1 } }
             );
             return !!found;
         } catch (error) {
@@ -279,12 +319,12 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         [ubername: string]: number;
     }> {
         let libraryDeps: {
-            dynamicDependencies: ILibraryName[];
-            editorDependencies: ILibraryName[];
+            dynamicDependencies?: ILibraryName[];
+            editorDependencies?: ILibraryName[];
             machineName: string;
             majorVersion: number;
             minorVersion: number;
-            preloadedDependencies: ILibraryName[];
+            preloadedDependencies?: ILibraryName[];
             ubername: string;
         }[];
         try {
@@ -293,7 +333,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                     {},
                     {
                         projection: {
-                            _id: 1,
+                            ubername: 1,
                             'metadata.machineName': 1,
                             'metadata.majorVersion': 1,
                             'metadata.minorVersion': 1,
@@ -303,7 +343,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                         }
                     }
                 )
-                .map((d) => ({ ...d.metadata, ubername: d._id }))
+                .map((d) => ({ ...d.metadata, ubername: d.ubername }))
                 .toArray();
         } catch (error) {
             throw new H5pError(
@@ -412,16 +452,16 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             return { size: metadata.length, birthtime: new Date() };
         }
 
-        let fileStats: any;
+        let fileStats;
         try {
             fileStats = await this.mongodb.findOne(
                 {
-                    _id: LibraryName.toUberName(library),
+                    ubername: LibraryName.toUberName(library),
                     'files.filename': file
                 },
                 {
                     projection: {
-                        _id: 1,
+                        ubername: 1,
                         files: {
                             $elemMatch: { filename: file }
                         }
@@ -467,12 +507,12 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             fileData = await this.mongodb.findOne(
                 {
-                    _id: LibraryName.toUberName(library),
+                    ubername: LibraryName.toUberName(library),
                     'files.filename': file
                 },
                 {
                     projection: {
-                        _id: 1,
+                        ubername: 1,
                         files: { $elemMatch: { filename: file } }
                     }
                 }
@@ -510,7 +550,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             );
         } else {
             const readable = new ReadableStreamBuffer();
-            readable.put((fileData.files[0].data as Binary).buffer);
+            readable.put(fileData.files[0].data.buffer);
             readable.stop();
             return readable;
         }
@@ -535,7 +575,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                     : {},
                 {
                     projection: {
-                        _id: 1
+                        ubername: 1
                     }
                 }
             );
@@ -543,10 +583,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             return list
                 .map((e) => {
                     try {
-                        return LibraryName.fromUberName(e._id as any);
+                        return LibraryName.fromUberName(e.ubername);
                     } catch {
                         log.error(
-                            `invalid ubername pattern in library storage id: ${e._id}. Ignoring...`
+                            `invalid ubername pattern in library storage id: ${e.ubername}. Ignoring...`
                         );
                         return undefined;
                     }
@@ -573,7 +613,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 .aggregate([
                     {
                         $match: {
-                            _id: LibraryName.toUberName(library)
+                            ubername: LibraryName.toUberName(library)
                         }
                     },
                     {
@@ -593,7 +633,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                     },
                     {
                         $project: {
-                            _id: 1,
+                            ubername: 1,
                             files: {
                                 filename: 1
                             }
@@ -641,7 +681,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
 
         try {
             result = await this.mongodb.findOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 {
                     projection: {
                         metadata: 1,
@@ -681,8 +721,8 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      */
     public async isInstalled(library: ILibraryName): Promise<boolean> {
         const found = await this.mongodb.findOne(
-            { _id: LibraryName.toUberName(library) },
-            { projection: { _id: 1 } }
+            { ubername: LibraryName.toUberName(library) },
+            { projection: { ubername: 1 } }
         );
         return !!found;
     }
@@ -727,11 +767,11 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         try {
             result = await this.mongodb.findOne(
                 {
-                    _id: LibraryName.toUberName(library)
+                    ubername: LibraryName.toUberName(library)
                 },
                 {
                     projection: {
-                        _id: 1,
+                        ubername: 1,
                         files: {
                             filename: 1
                         }
@@ -789,7 +829,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 { $set: { additionalMetadata } }
             );
         } catch (error) {
@@ -827,7 +867,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
         let result: UpdateResult;
         try {
             result = await this.mongodb.updateOne(
-                { _id: ubername },
+                { ubername },
                 { $set: { metadata: libraryMetadata } }
             );
         } catch (error) {
@@ -848,12 +888,14 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 `Library ${ubername} not updated as metadata has remained the same.`
             );
         }
-        let additionalMetadata: IAdditionalLibraryMetadata;
+        let additionalMetadata: Partial<IAdditionalLibraryMetadata>;
         try {
-            additionalMetadata = (await this.mongodb.findOne(
-                { _id: ubername },
-                { projection: { additionalMetadata: 1 } }
-            )) as any;
+            additionalMetadata = (
+                await this.mongodb.findOne(
+                    { ubername },
+                    { projection: { additionalMetadata: 1 } }
+                )
+            ).additionalMetadata;
         } catch (error) {
             log.warn(
                 `Could not get additional metadata for library ${ubername}`
@@ -863,6 +905,25 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             ...libraryMetadata,
             ...(additionalMetadata ?? {})
         });
+    }
+
+    /**
+     * Migrates the DB schema from one version to another. You need to call
+     * this, when you first deploy the new version.
+     * @param from the old major version of @lumieducation/h5p-mongos3
+     * @param to the new major version of @lumieducation/h5p-mongos3
+     */
+    public async migrate(from: number, to: number): Promise<void> {
+        if (from === 9 && to === 10) {
+            await this.mongodb.updateMany({}, [
+                {
+                    $set: {
+                        ubername: '$_id'
+                    }
+                }
+            ]);
+            await this.createIndexes();
+        }
     }
 
     /**
@@ -881,7 +942,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
 
         try {
             result = await this.mongodb.findOne(
-                { _id: LibraryName.toUberName(library) },
+                { ubername: LibraryName.toUberName(library) },
                 {
                     projection: {
                         metadata: 1
@@ -889,7 +950,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 }
             );
         } catch (error) {
-            console.log(error);
+            log.error(error);
             throw new H5pError(
                 'mongo-library-storage:error-getting-library-metadata',
                 { ubername: LibraryName.toUberName(library) }

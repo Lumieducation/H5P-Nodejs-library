@@ -7,5 +7,6 @@
     "listing-content-error": "获取内容对象列表时出错",
     "mongo-add-update-error": "在数据库中添加或更新内容时出错。",
     "mongo-replace-error": "更新数据库中的内容时出错。",
-    "s3-upload-error": "将文件{{filename}}上载到S3时出错。"
+    "s3-upload-error": "将文件{{filename}}上载到S3时出错。",
+    "install-library-already-installed": "库{{ubername}}已安装，无法再次安装。"
 }

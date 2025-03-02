@@ -7,5 +7,6 @@
     "listing-content-error": "Er is een fout opgetreden bij het ophalen van de lijst met inhoudsobjecten",
     "mongo-add-update-error": "Er is een fout opgetreden bij het toevoegen of bijwerken van inhoud in de database.",
     "mongo-replace-error": "Er is een fout opgetreden bij het bijwerken van inhoud in de database.",
-    "s3-upload-error": "Er is een fout opgetreden bij het uploaden van het bestand {{filename}} naar S3."
+    "s3-upload-error": "Er is een fout opgetreden bij het uploaden van het bestand {{filename}} naar S3.",
+    "install-library-already-installed": "Bibliotheek {{ubername}} is al geïnstalleerd en kan niet opnieuw worden geïnstalleerd."
 }

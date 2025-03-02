@@ -7,5 +7,6 @@
     "listing-content-error": "S'ha produït un error en obtenir la llista d'objectes de contingut",
     "mongo-add-update-error": "S'ha produït un error en afegir o actualitzar contingut a la base de dades.",
     "mongo-replace-error": "S'ha produït un error en actualitzar el contingut de la base de dades.",
-    "s3-upload-error": "S'ha produït un error en penjar el fitxer {{filename}} a S3."
+    "s3-upload-error": "S'ha produït un error en penjar el fitxer {{filename}} a S3.",
+    "install-library-already-installed": "La biblioteca {{ubername}} ja està instal·lada i no es pot tornar a instal·lar."
 }

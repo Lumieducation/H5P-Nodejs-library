@@ -7,5 +7,6 @@
     "listing-content-error": "Produciuse un erro ao obter a lista de obxectos de contido",
     "mongo-add-update-error": "Produciuse un erro ao engadir ou actualizar contido na base de datos.",
     "mongo-replace-error": "Produciuse un erro ao actualizar o contido da base de datos.",
-    "s3-upload-error": "Produciuse un erro ao enviar o ficheiro {{filename}} a S3."
+    "s3-upload-error": "Produciuse un erro ao enviar o ficheiro {{filename}} a S3.",
+    "install-library-already-installed": "A biblioteca {{ubername}} xa está instalada e non se pode instalar de novo."
 }

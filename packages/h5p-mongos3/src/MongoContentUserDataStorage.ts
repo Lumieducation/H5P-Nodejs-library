@@ -24,8 +24,8 @@ export default class MongoContentUserDataStorage
      * @param finishedCollection a MongoDB collection (read- and writable)
      */
     constructor(
-        private userDataCollection: MongoDB.Collection,
-        private finishedCollection: MongoDB.Collection
+        private userDataCollection: MongoDB.Collection<IContentUserData>,
+        private finishedCollection: MongoDB.Collection<IFinishedUserData>
     ) {
         log.info('initialize');
     }

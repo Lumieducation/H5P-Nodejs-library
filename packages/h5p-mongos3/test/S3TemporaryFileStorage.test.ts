@@ -1,5 +1,5 @@
 // Note: This test will be ignored by normal test runners. You must execute
-// npm run test:db to run it!
+// npm run test:h5p-mongos3 to run it!
 // It requires a running S3 instance!
 
 import { S3 } from '@aws-sdk/client-s3';

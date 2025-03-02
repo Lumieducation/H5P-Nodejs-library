@@ -7,5 +7,6 @@
     "listing-content-error": "콘텐츠 개체 목록을 가져 오는 동안 오류가 발생했습니다.",
     "mongo-add-update-error": "데이터베이스에서 콘텐츠를 추가하거나 업데이트하는 동안 오류가 발생했습니다.",
     "mongo-replace-error": "데이터베이스의 콘텐츠를 업데이트하는 동안 오류가 발생했습니다.",
-    "s3-upload-error": "{{filename}} 파일을 S3에 업로드하는 동안 오류가 발생했습니다."
+    "s3-upload-error": "{{filename}} 파일을 S3에 업로드하는 동안 오류가 발생했습니다.",
+    "install-library-already-installed": "라이브러리 {{ubername}} 이미 설치되어 있으므로 다시 설치할 수 없습니다."
 }
