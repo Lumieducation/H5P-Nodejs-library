@@ -7,5 +7,6 @@
     "listing-content-error": "Akats bat izan da eduki objektuen zerrenda eskuratzean",
     "mongo-add-update-error": "Errore bat gertatu da datu basean edukia gehitzean edo eguneratzean.",
     "mongo-replace-error": "Errore bat gertatu da datu-baseko edukia eguneratzean.",
-    "s3-upload-error": "Errorea gertatu da {{filename}} fitxategia S3ra kargatzean."
+    "s3-upload-error": "Errorea gertatu da {{filename}} fitxategia S3ra kargatzean.",
+    "install-library-already-installed": "{{ubername}} liburutegia instalatuta dago jada eta ezin da berriro instalatu."
 }

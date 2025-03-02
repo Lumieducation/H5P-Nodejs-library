@@ -7,5 +7,6 @@
     "listing-content-error": "Sisuobjektide loendi hankimisel ilmnes viga",
     "mongo-add-update-error": "Andmebaasi sisu lisamisel või värskendamisel tekkis viga.",
     "mongo-replace-error": "Andmebaasi sisu värskendamisel ilmnes viga.",
-    "s3-upload-error": "{{filename}} S3 üleslaadimisel ilmnes viga."
+    "s3-upload-error": "{{filename}} S3 üleslaadimisel ilmnes viga.",
+    "install-library-already-installed": "Teek {{ubername}} on juba installitud ja seda ei saa uuesti installida."
 }

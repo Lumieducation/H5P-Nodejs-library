@@ -148,7 +148,7 @@ There are automated tests in
 However, these tests will not be called automatically when you run `npm run
 test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute
-the tests call `npm run test:db`.
+the tests call `npm run test:h5p-mongos3`.
 
 To quickly get a functioning MongoDB and S3 instance, you can use the [Docker
 Compose file in the scripts directory](/scripts/mongo-s3-docker-compose.yml)

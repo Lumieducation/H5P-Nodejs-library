@@ -34,7 +34,11 @@ export default class MongoS3ContentStorage implements IContentStorage {
      */
     constructor(
         private s3: AWS.S3,
-        private mongodb: MongoDB.Collection,
+        private mongodb: MongoDB.Collection<{
+            metadata: IContentMetadata;
+            parameters: any;
+            creator: string;
+        }>,
         private options: {
             /**
              * These characters will be removed from files that are saved to S3.
@@ -129,7 +133,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 { _id: new ObjectId(contentId) },
                 {
                     metadata,
-                    _id: new ObjectId(contentId),
                     parameters: content,
                     creator: user.id
                 },

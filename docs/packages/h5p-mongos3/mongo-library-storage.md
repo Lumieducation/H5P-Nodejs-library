@@ -16,7 +16,7 @@ load on your MongoDB server.
 
 The implementation depends on this NPM package:
 
-* mongodb
+- mongodb
 
 **You must add it manually to your application using `npm install mongodb`!**
 
@@ -37,7 +37,7 @@ const { MongoLibraryStorage, initMongo } = require('@lumieduation/h5p-mongos3');
 Initialize the storage implementation like this:
 
 ```typescript
-const storage = new MongoLibraryStorage(    
+const storage = new MongoLibraryStorage(
     (
         await initMongo(
             'mongodb://127.0.0.1:27017', // optional if env. variable is set
@@ -45,7 +45,7 @@ const storage = new MongoLibraryStorage(
             'root', // optional if env. variable is set
             'h5pnodejs' // optional if env. variable is set
         )
-    ).collection('h5p'),    
+    ).collection('h5p')
 );
 await storage.createIndexes();
 ```
@@ -55,14 +55,14 @@ MongoDB checks if indexes already exist before it creates new ones.
 
 ### Notes
 
-* The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
-* You can pass credentials and other configuration values to `initMongo` through the function parameters. Alternatively you can use these environment variables instead of using the function parameters:
-  * MONGODB_URL
-  * MONGODB_DB
-  * MONGODB_USER
-  * MONGODB_PASSWORD
-* You can change the MongoDB collection name `h5p` to any name you want. If the collection doesn't exist yet, it will be automatically created.
-* To achieve greater configurability, you can decide not to use `initMongo` and instantiate the required clients yourself.
+- The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
+- You can pass credentials and other configuration values to `initMongo` through the function parameters. Alternatively you can use these environment variables instead of using the function parameters:
+    - MONGODB_URL
+    - MONGODB_DB
+    - MONGODB_USER
+    - MONGODB_PASSWORD
+- You can change the MongoDB collection name `h5p` to any name you want. If the collection doesn't exist yet, it will be automatically created.
+- To achieve greater configurability, you can decide not to use `initMongo` and instantiate the required clients yourself.
 
 ## Using MongoLibraryStorage in the example
 
@@ -70,14 +70,31 @@ The [example Express application](/packages/h5p-examples/src/express.ts) can be
 configured to use the MongoDB library storage by setting the environment variables
 from above and these additional variables:
 
-* LIBRARYSTORAGE=mongo
-* LIBRARY_MONGO_COLLECTION
+- LIBRARYSTORAGE=mongo
+- LIBRARY_MONGO_COLLECTION
 
 An example call would be:
 
 ```bash
 MONGODB_URL="mongodb://127.0.0.1:27017" MONGODB_DB=testdb1 MONGODB_USER=root MONGODB_PASSWORD=h5pnodejs LIBRARYSTORAGE=mongo LIBRARY_MONGO_COLLECTION=h5p npm start
 ```
+
+## Migrations
+
+The method `MongoLibraryStorage.migrate` can be called when you move to a new
+major version of MongoLibraryStorage:
+
+```ts
+await storage.migrate(/*from major version*/ 9, /*to major version*/ 10);
+```
+
+Calling this method will migrate the MongoDB collection data. Note that there is
+no versioning of the MongoDB collection inside MongoDB. It's your job to decide
+when to call the migration!
+
+### Currently supported migrations
+
+- v9 to v10: Introduces new field ubername that has the same value as \_id
 
 ## Developing and testing
 
@@ -86,7 +103,7 @@ There are automated tests in
 However, these tests will not be called automatically when you run `npm run
 test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute
-the tests call `npm run test:db`.
+the tests call `npm run test:h5p-mongos3`.
 
 To quickly get a functioning MongoDB instance, you can use the [Docker
 Compose file in the scripts directory](/scripts/mongo-s3-docker-compose.yml)

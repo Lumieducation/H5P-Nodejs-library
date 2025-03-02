@@ -7,5 +7,6 @@
     "listing-content-error": "Es ist ein Fehler beim Auflisten der Inhalte aufgetreten.",
     "mongo-add-update-error": "Es ist ein Fehler beim Hinzufügen oder Aktualisieren des Inhalts in der Datenbank aufgetreten.",
     "mongo-replace-error": "Es ist ein Fehler beim Aktualisieren des Inhalts in der Datenbank aufgetreten.",
-    "s3-upload-error": "Es ist ein Fehler beim Hochladen der Datei {{filename}} nach S3 aufgetreten."
+    "s3-upload-error": "Es ist ein Fehler beim Hochladen der Datei {{filename}} nach S3 aufgetreten.",
+    "install-library-already-installed": "Die Bibliothek {{ubername}} ist bereits installiert und kann nicht erneut installiert werden."
 }
