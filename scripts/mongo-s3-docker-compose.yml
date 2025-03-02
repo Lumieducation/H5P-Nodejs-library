@@ -32,7 +32,7 @@ services:
         ports:
             - 9000:9000
             - 9001:9001
-        command: ['server', '/data']
+        command: ['server', '/data', '--console-address', ':9001']
         environment:
             MINIO_ACCESS_KEY: minioaccesskey
             MINIO_SECRET_KEY: miniosecret
