@@ -1,5 +1,7 @@
 import { S3 } from '@aws-sdk/client-s3';
 
+import { deleteObjects } from '../src/S3Utils';
+
 export async function emptyAndDeleteBucket(
     s3: S3,
     bucketname: string
@@ -18,12 +20,11 @@ export async function emptyAndDeleteBucket(
             ContinuationToken: ret?.NextContinuationToken
         });
         if (ret.Contents?.length > 0) {
-            await s3.deleteObjects({
-                Bucket: bucketname,
-                Delete: {
-                    Objects: ret.Contents.map((c) => ({ Key: c.Key }))
-                }
-            });
+            await deleteObjects(
+                ret.Contents.map((c) => c.Key),
+                bucketname,
+                s3
+            );
         }
     } while (ret.IsTruncated);
     await s3.deleteBucket({ Bucket: bucketname });

@@ -15,7 +15,8 @@ import {
     H5pError,
     Logger
 } from '@lumieducation/h5p-server';
-import { validateFilename, sanitizeFilename } from './S3Utils';
+
+import { validateFilename, sanitizeFilename, deleteObjects } from './S3Utils';
 
 const log = new Logger('MongoS3ContentStorage');
 
@@ -242,35 +243,15 @@ export default class MongoS3ContentStorage implements IContentStorage {
             log.debug(
                 `${filesToDelete.length} files in S3 storage must be deleted.`
             );
-            // S3 batch deletes only work with 1000 files at a time, so we
-            // might have to do this in several requests.
-            while (filesToDelete.length > 0) {
-                const next1000Files = filesToDelete.splice(0, 1000);
-                if (next1000Files.length > 0) {
-                    log.debug(
-                        `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
-                    );
-                    // eslint-disable-next-line no-await-in-loop
-                    const deleteFilesRes = await this.s3.deleteObjects({
-                        Bucket: this.options.s3Bucket,
-                        Delete: {
-                            Objects: next1000Files.map((f) => ({
-                                Key: MongoS3ContentStorage.getS3Key(
-                                    contentId,
-                                    f
-                                )
-                            }))
-                        }
-                    });
-                    if (deleteFilesRes.Errors.length > 0) {
-                        log.error(
-                            `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
-                                (e) => `${e.Key}: ${e.Code} - ${e.Message}`
-                            ).join('\n')}`
-                        );
-                    }
-                }
-            }
+
+            await deleteObjects(
+                filesToDelete.map((f) =>
+                    MongoS3ContentStorage.getS3Key(contentId, f)
+                ),
+                this.options.s3Bucket,
+                this.s3
+            );
+
             if (
                 (await this.mongodb.deleteOne({ _id: new ObjectId(contentId) }))
                     .deletedCount !== 1

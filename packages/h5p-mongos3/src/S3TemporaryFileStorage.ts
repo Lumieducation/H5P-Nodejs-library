@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 import { Upload } from '@aws-sdk/lib-storage';
 import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
+import { ReadStream } from 'fs';
 
 import {
     ITemporaryFileStorage,
@@ -11,7 +12,7 @@ import {
     H5pError,
     Logger
 } from '@lumieducation/h5p-server';
-import { ReadStream } from 'fs';
+
 import { validateFilename, sanitizeFilename } from './S3Utils';
 
 const log = new Logger('S3TemporaryFileStorage');

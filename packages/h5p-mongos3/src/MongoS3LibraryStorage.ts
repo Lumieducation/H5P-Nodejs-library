@@ -20,7 +20,7 @@ import {
     Logger
 } from '@lumieducation/h5p-server';
 
-import { validateFilename } from './S3Utils';
+import { deleteObjects, validateFilename } from './S3Utils';
 
 const log = new Logger('MongoS3LibraryStorage');
 
@@ -164,32 +164,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const filesToDelete = await this.listFiles(library, {
             withMetadata: false
         });
-        // S3 batch deletes only work with 1000 files at a time, so we
-        // might have to do this in several requests.
         try {
-            while (filesToDelete.length > 0) {
-                const next1000Files = filesToDelete.splice(0, 1000);
-                if (next1000Files.length > 0) {
-                    log.debug(
-                        `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
-                    );
-                    const deleteFilesRes = await this.s3.deleteObjects({
-                        Bucket: this.options.s3Bucket,
-                        Delete: {
-                            Objects: next1000Files.map((f) => ({
-                                Key: this.getS3Key(library, f)
-                            }))
-                        }
-                    });
-                    if (deleteFilesRes.Errors.length > 0) {
-                        log.error(
-                            `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
-                                (e) => `${e.Key}: ${e.Code} - ${e.Message}`
-                            ).join('\n')}`
-                        );
-                    }
-                }
-            }
+            await deleteObjects(
+                filesToDelete.map((f) => this.getS3Key(library, f)),
+                this.options.s3Bucket,
+                this.s3
+            );
         } catch (error) {
             log.error(
                 `There was an error while clearing the files: ${error.message}`
