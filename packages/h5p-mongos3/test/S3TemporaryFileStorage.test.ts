@@ -34,8 +34,8 @@ describe('S3TemporaryFileStorage', () => {
                 secretAccessKey: 'miniosecret'
             },
             endpoint: 'http://localhost:9000',
-            forcePathStyle: true,
-            region: 'us-east-1'
+            region: 'us-east-1',
+            forcePathStyle: true
         });
     });
 

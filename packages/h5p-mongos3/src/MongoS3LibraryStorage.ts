@@ -89,6 +89,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     ): Promise<boolean> {
         validateFilename(filename, this.options?.invalidCharactersRegexp);
 
+        log.debug(
+            'Uploading file to S3 storage. Filename:',
+            filename,
+            'Bucket:',
+            this.options.s3Bucket
+        );
         try {
             await new Upload({
                 client: this.s3,
