@@ -2,7 +2,7 @@
 // npm run test:db to run it!
 // It requires a running MongoDB and S3 instance!
 
-import AWS from 'aws-sdk';
+import { S3 } from '@aws-sdk/client-s3';
 import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
 import path from 'path';
 import { readFile, stat } from 'fs/promises';
@@ -17,7 +17,7 @@ describe('MongoS3LibraryStorage', () => {
     let mongo: Db;
     let mongoClient: MongoClient;
     let mongoCollection: Collection<any>;
-    let s3: AWS.S3;
+    let s3: S3;
     let bucketName: string;
     let collectionName: string;
     let counter = 0;
@@ -43,11 +43,13 @@ describe('MongoS3LibraryStorage', () => {
     beforeAll(async () => {
         testId = new ObjectId().toHexString();
         s3 = initS3({
-            accessKeyId: 'minioaccesskey',
-            secretAccessKey: 'miniosecret',
+            credentials: {
+                accessKeyId: 'minioaccesskey',
+                secretAccessKey: 'miniosecret'
+            },
             endpoint: 'http://localhost:9000',
-            s3ForcePathStyle: true,
-            signatureVersion: 'v4'
+            forcePathStyle: true,
+            region: 'us-east-1'
         });
         mongoClient = await MongoClient.connect('mongodb://localhost:27017', {
             auth: {
@@ -63,11 +65,9 @@ describe('MongoS3LibraryStorage', () => {
         counter += 1;
         bucketName = `${testId}bucketlib${counter}`;
         await emptyAndDeleteBucket(s3, bucketName);
-        await s3
-            .createBucket({
-                Bucket: bucketName
-            })
-            .promise();
+        await s3.createBucket({
+            Bucket: bucketName
+        });
         collectionName = `${testId}collectionlib${counter}`;
         try {
             await mongo.dropCollection(collectionName);

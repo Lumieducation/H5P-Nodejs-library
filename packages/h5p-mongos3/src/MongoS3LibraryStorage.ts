@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 
 import MongoDB, { DeleteResult, InsertOneResult, UpdateResult } from 'mongodb';
-import AWS from 'aws-sdk';
+import { Upload } from '@aws-sdk/lib-storage';
+import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import * as path from 'path';
-import { PromiseResult } from 'aws-sdk/lib/request';
 import { ReadableStreamBuffer } from 'stream-buffers';
 import {
     IAdditionalLibraryMetadata,
@@ -32,7 +32,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * @param options options
      */
     constructor(
-        private s3: AWS.S3,
+        private s3: S3,
         private mongodb: MongoDB.Collection,
         private options: {
             /**
@@ -51,7 +51,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
-            s3Acl?: string;
+            s3Acl?: ObjectCannedACL;
             /**
              * The bucket to upload to and download from. (required)
              */
@@ -90,14 +90,16 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         validateFilename(filename, this.options?.invalidCharactersRegexp);
 
         try {
-            await this.s3
-                .upload({
+            await new Upload({
+                client: this.s3,
+
+                params: {
                     ACL: this.options.s3Acl ?? 'private',
                     Body: readStream,
                     Bucket: this.options.s3Bucket,
                     Key: this.getS3Key(library, filename)
-                })
-                .promise();
+                }
+            }).done();
         } catch (error) {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
@@ -171,16 +173,14 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
                     log.debug(
                         `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
                     );
-                    const deleteFilesRes = await this.s3
-                        .deleteObjects({
-                            Bucket: this.options.s3Bucket,
-                            Delete: {
-                                Objects: next1000Files.map((f) => ({
-                                    Key: this.getS3Key(library, f)
-                                }))
-                            }
-                        })
-                        .promise();
+                    const deleteFilesRes = await this.s3.deleteObjects({
+                        Bucket: this.options.s3Bucket,
+                        Delete: {
+                            Objects: next1000Files.map((f) => ({
+                                Key: this.getS3Key(library, f)
+                            }))
+                        }
+                    });
                     if (deleteFilesRes.Errors.length > 0) {
                         log.error(
                             `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
@@ -261,12 +261,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         validateFilename(filename, this.options?.invalidCharactersRegexp);
 
         try {
-            await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, filename)
-                })
-                .promise();
+            await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: this.getS3Key(library, filename)
+            });
         } catch (error) {
             log.debug(
                 `File ${filename} does not exist in ${LibraryName.toUberName(
@@ -438,12 +436,10 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         }
 
         try {
-            const head = await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: this.getS3Key(library, file)
-                })
-                .promise();
+            const head = await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: this.getS3Key(library, file)
+            });
             return { size: head.ContentLength, birthtime: head.LastModified };
         } catch (error) {
             throw new H5pError(
@@ -476,12 +472,12 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
             return readable;
         }
 
-        return this.s3
-            .getObject({
+        return (
+            await this.s3.getObject({
                 Bucket: this.options.s3Bucket,
                 Key: this.getS3Key(library, file)
             })
-            .createReadStream();
+        ).Body as Readable;
     }
 
     /**
@@ -537,17 +533,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const prefix = this.getS3Key(library, 'language');
         let files: string[] = [];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+            let ret;
             do {
                 log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
+                ret = await this.s3.listObjectsV2({
+                    Bucket: this.options.s3Bucket,
+                    Prefix: prefix,
+                    ContinuationToken: ret?.NextContinuationToken,
+                    MaxKeys: 1000
+                });
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );
@@ -655,17 +649,15 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
         const prefix = this.getS3Key(library, '');
         let files: string[] = [];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+            let ret;
             do {
                 log.debug(`Requesting list from S3 storage.`);
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
+                ret = await this.s3.listObjectsV2({
+                    Bucket: this.options.s3Bucket,
+                    Prefix: prefix,
+                    ContinuationToken: ret?.NextContinuationToken,
+                    MaxKeys: 1000
+                });
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );
