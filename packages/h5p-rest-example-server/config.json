@@ -2,6 +2,7 @@
     "fetchingDisabled": 0,
     "baseUrl": "/h5p",
     "uuid": "8de62c47-f335-42f6-909d-2d8f4b7fb7f5",
+    "contentWhitelist": "svg json png jpg jpeg gif bmp tif tiff eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt gltf glb",
     "siteType": "local",
     "sendUsageStatistics": false,
     "hubRegistrationEndpoint": "https://api.h5p.org/v1/sites",

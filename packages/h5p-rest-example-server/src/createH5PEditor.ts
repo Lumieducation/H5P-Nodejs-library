@@ -4,6 +4,8 @@ import redisStore from 'cache-manager-redis-store';
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
 import { IContentMetadata, IUser } from '@lumieducation/h5p-server';
+import SvgSanitizer from '@lumieducation/h5p-svg-sanitizer';
+import ClamAVScanner from '@lumieducation/h5p-clamav-scanner';
 
 /**
  * Create a H5PEditor object.
@@ -126,7 +128,15 @@ export default async function createH5PEditor(
             enableHubLocalization: true,
             enableLibraryNameLocalization: true,
             hooks,
-            permissionSystem
+            permissionSystem,
+            // We've allowed SVGs in config.json, so we need to sanitize SVGs
+            fileSanitizers: [new SvgSanitizer()],
+            // You might not want to use ClamAV or opt out of using a virus
+            // scanner.
+            malwareScanners:
+                process.env.CLAMSCAN_ENABLED === 'true'
+                    ? [await ClamAVScanner.create()]
+                    : []
         },
         contentUserDataStorage
     );

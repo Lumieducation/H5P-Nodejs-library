@@ -71,6 +71,7 @@
     "updated-libraries_one": "Updated {{count}} old library.",
     "upload-package-failed-tmp": "Could not save uploaded package to temporary file.",
     "upload-validation-error": "The file you've uploaded is invalid.",
+    "upload-malware-found": "The file you've uploaded contained malware and was rejected.",
     "user-state-missing-delete-permission": "You are not allowed to delete this user state.",
     "user-state-missing-edit-permission": "You are not allowed to edit this user state.",
     "user-state-missing-view-permission": "You are not allowed to view this user state."

@@ -26,7 +26,8 @@ the cache must be a single point of truth and work across all processes.
 ## config
 
 An object holding all configuration parameters as properties. It must implement
-the `IH5PConfig` interface. You can use the sample implementation in [`/packages/h5p-server/src/implementation/H5PConfig.ts`](/packages/h5p-server/src/implementation/H5PConfig.ts).
+the `IH5PConfig` interface. You can use the sample implementation in
+[`/packages/h5p-server/src/implementation/H5PConfig.ts`](/packages/h5p-server/src/implementation/H5PConfig.ts).
 
 ## libraryStorage
 
@@ -34,7 +35,8 @@ The `libraryStorage` provides information about installed libraries and installs
 them. It must implement the `ILibraryStorage` interface.
 
 If you store all library information as files in folders under `./h5p/libraries`
-you can use the sample implementation in [`/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts`](/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts):
+you can use the sample implementation in
+[`/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts`](/packages/h5p-server/src/implementation/fs/FileLibraryStorage.ts):
 
 ```javascript
 const libraryStorage = new FileLibraryStorage(`h5p/libraries`);
