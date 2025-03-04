@@ -117,7 +117,7 @@ jobs:
 
     clamav-tests:
         docker:
-            - image: cimg/node:22.13.1
+            - image: cimg/node:22.14.0
               environment:
                   TMPDIR: /mnt/ramdisk
                   CLAMDSCAN_HOST: localhost
