@@ -92,10 +92,7 @@ export default async function createH5PEditor(
         process.env.CONTENTSTORAGE !== 'mongos3'
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(
-                  dbImplementations.initS3({
-                      s3ForcePathStyle: true,
-                      signatureVersion: 'v4'
-                  }),
+                  dbImplementations.initS3({ forcePathStyle: true }),
                   (await dbImplementations.initMongo()).collection(
                       process.env.CONTENT_MONGO_COLLECTION
                   ),
@@ -111,10 +108,7 @@ export default async function createH5PEditor(
               ),
         process.env.TEMPORARYSTORAGE === 's3'
             ? new dbImplementations.S3TemporaryFileStorage(
-                  dbImplementations.initS3({
-                      s3ForcePathStyle: true,
-                      signatureVersion: 'v4'
-                  }),
+                  dbImplementations.initS3({ forcePathStyle: true }),
                   {
                       s3Bucket: process.env.TEMPORARY_AWS_S3_BUCKET,
                       maxKeyLength: process.env.AWS_S3_MAX_FILE_LENGTH

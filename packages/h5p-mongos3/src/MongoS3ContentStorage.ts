@@ -2,8 +2,8 @@
 
 import MongoDB, { ObjectId } from 'mongodb';
 import { Stream, Readable } from 'stream';
-import AWS from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
+import { Upload } from '@aws-sdk/lib-storage';
+import { ObjectCannedACL, S3 } from '@aws-sdk/client-s3';
 
 import {
     ContentId,
@@ -15,7 +15,8 @@ import {
     H5pError,
     Logger
 } from '@lumieducation/h5p-server';
-import { validateFilename, sanitizeFilename } from './S3Utils';
+
+import { validateFilename, sanitizeFilename, deleteObjects } from './S3Utils';
 
 const log = new Logger('MongoS3ContentStorage');
 
@@ -33,8 +34,12 @@ export default class MongoS3ContentStorage implements IContentStorage {
      * @param options options
      */
     constructor(
-        private s3: AWS.S3,
-        private mongodb: MongoDB.Collection,
+        private s3: S3,
+        private mongodb: MongoDB.Collection<{
+            metadata: IContentMetadata;
+            parameters: any;
+            creator: string;
+        }>,
         private options: {
             /**
              * These characters will be removed from files that are saved to S3.
@@ -52,7 +57,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
             /**
              * The ACL to use for uploaded content files. Defaults to private.
              */
-            s3Acl?: string;
+            s3Acl?: ObjectCannedACL;
             /**
              * The bucket to upload to and download from. (required)
              */
@@ -129,7 +134,6 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 { _id: new ObjectId(contentId) },
                 {
                     metadata,
-                    _id: new ObjectId(contentId),
                     parameters: content,
                     creator: user.id
                 },
@@ -179,17 +183,19 @@ export default class MongoS3ContentStorage implements IContentStorage {
         validateFilename(filename);
 
         try {
-            await this.s3
-                .upload({
+            await new Upload({
+                client: this.s3,
+
+                params: {
                     ACL: this.options.s3Acl ?? 'private',
-                    Body: stream,
+                    Body: stream as Readable,
                     Bucket: this.options.s3Bucket,
                     Key: MongoS3ContentStorage.getS3Key(contentId, filename),
                     Metadata: {
                         owner: user.id
                     }
-                })
-                .promise();
+                }
+            }).done();
         } catch (error) {
             log.error(
                 `Error while uploading file "${filename}" to S3 storage: ${error.message}`
@@ -240,37 +246,15 @@ export default class MongoS3ContentStorage implements IContentStorage {
             log.debug(
                 `${filesToDelete.length} files in S3 storage must be deleted.`
             );
-            // S3 batch deletes only work with 1000 files at a time, so we
-            // might have to do this in several requests.
-            while (filesToDelete.length > 0) {
-                const next1000Files = filesToDelete.splice(0, 1000);
-                if (next1000Files.length > 0) {
-                    log.debug(
-                        `Batch deleting ${next1000Files.length} file(s) in S3 storage.`
-                    );
-                    // eslint-disable-next-line no-await-in-loop
-                    const deleteFilesRes = await this.s3
-                        .deleteObjects({
-                            Bucket: this.options.s3Bucket,
-                            Delete: {
-                                Objects: next1000Files.map((f) => ({
-                                    Key: MongoS3ContentStorage.getS3Key(
-                                        contentId,
-                                        f
-                                    )
-                                }))
-                            }
-                        })
-                        .promise();
-                    if (deleteFilesRes.Errors.length > 0) {
-                        log.error(
-                            `There were errors while deleting files in S3 storage. The delete operation will continue.\nErrors:${deleteFilesRes.Errors.map(
-                                (e) => `${e.Key}: ${e.Code} - ${e.Message}`
-                            ).join('\n')}`
-                        );
-                    }
-                }
-            }
+
+            await deleteObjects(
+                filesToDelete.map((f) =>
+                    MongoS3ContentStorage.getS3Key(contentId, f)
+                ),
+                this.options.s3Bucket,
+                this.s3
+            );
+
             if (
                 (await this.mongodb.deleteOne({ _id: new ObjectId(contentId) }))
                     .deletedCount !== 1
@@ -303,12 +287,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
             `Deleting file "${filename}" from content with id ${contentId}.`
         );
         try {
-            await this.s3
-                .deleteObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: MongoS3ContentStorage.getS3Key(contentId, filename)
-                })
-                .promise();
+            await this.s3.deleteObject({
+                Bucket: this.options.s3Bucket,
+                Key: MongoS3ContentStorage.getS3Key(contentId, filename)
+            });
         } catch (error) {
             log.error(
                 `Error while deleting a file from S3 storage: ${error.message}`
@@ -346,12 +328,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
         }
 
         try {
-            await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: MongoS3ContentStorage.getS3Key(contentId, filename)
-                })
-                .promise();
+            await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: MongoS3ContentStorage.getS3Key(contentId, filename)
+            });
         } catch (error) {
             log.debug(`File ${filename} does not exist in ${contentId}.`);
             return false;
@@ -376,12 +356,10 @@ export default class MongoS3ContentStorage implements IContentStorage {
         validateFilename(filename);
 
         try {
-            const head = await this.s3
-                .headObject({
-                    Bucket: this.options.s3Bucket,
-                    Key: MongoS3ContentStorage.getS3Key(contentId, filename)
-                })
-                .promise();
+            const head = await this.s3.headObject({
+                Bucket: this.options.s3Bucket,
+                Key: MongoS3ContentStorage.getS3Key(contentId, filename)
+            });
             return { size: head.ContentLength, birthtime: head.LastModified };
         } catch (error) {
             throw new H5pError(
@@ -424,8 +402,8 @@ export default class MongoS3ContentStorage implements IContentStorage {
             );
         }
 
-        return this.s3
-            .getObject({
+        return (
+            await this.s3.getObject({
                 Bucket: this.options.s3Bucket,
                 Key: MongoS3ContentStorage.getS3Key(contentId, filename),
                 Range:
@@ -433,7 +411,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                         ? `bytes=${rangeStart}-${rangeEnd}`
                         : undefined
             })
-            .createReadStream();
+        ).Body as Readable;
     }
 
     public async getMetadata(
@@ -579,18 +557,16 @@ export default class MongoS3ContentStorage implements IContentStorage {
         const prefix = MongoS3ContentStorage.getS3Key(contentId, '');
         let files: string[] = [];
         try {
-            let ret: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+            let ret;
             do {
                 log.debug(`Requesting list from S3 storage.`);
                 // eslint-disable-next-line no-await-in-loop
-                ret = await this.s3
-                    .listObjectsV2({
-                        Bucket: this.options.s3Bucket,
-                        Prefix: prefix,
-                        ContinuationToken: ret?.NextContinuationToken,
-                        MaxKeys: 1000
-                    })
-                    .promise();
+                ret = await this.s3.listObjectsV2({
+                    Bucket: this.options.s3Bucket,
+                    Prefix: prefix,
+                    ContinuationToken: ret?.NextContinuationToken,
+                    MaxKeys: 1000
+                });
                 files = files.concat(
                     ret.Contents.map((c) => c.Key.substr(prefix.length))
                 );

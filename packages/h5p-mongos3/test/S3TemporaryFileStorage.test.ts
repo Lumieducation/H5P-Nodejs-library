@@ -1,8 +1,8 @@
 // Note: This test will be ignored by normal test runners. You must execute
-// npm run test:db to run it!
+// npm run test:h5p-mongos3 to run it!
 // It requires a running S3 instance!
 
-import AWS from 'aws-sdk';
+import { S3 } from '@aws-sdk/client-s3';
 import { ObjectId } from 'mongodb';
 import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
@@ -20,7 +20,7 @@ describe('S3TemporaryFileStorage', () => {
     const stubImagePath = path.resolve(
         'test/data/sample-content/content/earth.jpg'
     );
-    let s3: AWS.S3;
+    let s3: S3;
     let bucketName: string;
     let counter = 0;
     let testId: string;
@@ -29,12 +29,13 @@ describe('S3TemporaryFileStorage', () => {
     beforeAll(async () => {
         testId = new ObjectId().toHexString();
         s3 = initS3({
-            accessKeyId: 'minioaccesskey',
-            secretAccessKey: 'miniosecret',
+            credentials: {
+                accessKeyId: 'minioaccesskey',
+                secretAccessKey: 'miniosecret'
+            },
             endpoint: 'http://localhost:9000',
-            s3ForcePathStyle: true,
-            signatureVersion: 'v4',
-            correctClockSkew: true
+            region: 'us-east-1',
+            forcePathStyle: true
         });
     });
 
@@ -42,11 +43,9 @@ describe('S3TemporaryFileStorage', () => {
         counter += 1;
         bucketName = `${testId}bucket${counter}`;
         await emptyAndDeleteBucket(s3, bucketName);
-        await s3
-            .createBucket({
-                Bucket: bucketName
-            })
-            .promise();
+        await s3.createBucket({
+            Bucket: bucketName
+        });
         storage = new S3TemporaryFileStorage(s3, {
             s3Bucket: bucketName
         });
@@ -89,12 +88,10 @@ describe('S3TemporaryFileStorage', () => {
     it('deletes added files from S3', async () => {
         const filename = 'testfile1.jpg';
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: filename
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
         ).rejects.toThrow();
 
         await storage.saveFile(
@@ -105,12 +102,10 @@ describe('S3TemporaryFileStorage', () => {
         );
 
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: filename
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
         ).resolves.toBeDefined();
 
         await storage.deleteFile(filename, stubUser.id);
@@ -118,12 +113,10 @@ describe('S3TemporaryFileStorage', () => {
             false
         );
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: filename
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: filename
+            })
         ).rejects.toThrow();
     });
 

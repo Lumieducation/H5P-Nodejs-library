@@ -120,8 +120,7 @@ export default async function createH5PEditor(
         const mongoS3LibraryStorage =
             new dbImplementations.MongoS3LibraryStorage(
                 dbImplementations.initS3({
-                    s3ForcePathStyle: true,
-                    signatureVersion: 'v4'
+                    forcePathStyle: true
                 }),
                 (await getMongoDb()).collection(
                     process.env.LIBRARY_MONGO_COLLECTION
@@ -180,8 +179,7 @@ export default async function createH5PEditor(
             ? new H5P.fsImplementations.FileContentStorage(localContentPath)
             : new dbImplementations.MongoS3ContentStorage(
                   dbImplementations.initS3({
-                      s3ForcePathStyle: true,
-                      signatureVersion: 'v4'
+                      forcePathStyle: true
                   }),
                   (await getMongoDb()).collection(
                       process.env.CONTENT_MONGO_COLLECTION
@@ -199,8 +197,7 @@ export default async function createH5PEditor(
         process.env.TEMPORARYSTORAGE === 's3'
             ? new dbImplementations.S3TemporaryFileStorage(
                   dbImplementations.initS3({
-                      s3ForcePathStyle: true,
-                      signatureVersion: 'v4'
+                      forcePathStyle: true
                   }),
                   {
                       s3Bucket: process.env.TEMPORARY_AWS_S3_BUCKET,

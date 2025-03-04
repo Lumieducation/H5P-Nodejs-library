@@ -179,7 +179,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:db -- --collect-coverage
+            - run: npm run test:h5p-mongos3 -- --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: DB tests

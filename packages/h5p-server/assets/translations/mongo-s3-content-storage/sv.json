@@ -7,5 +7,6 @@
     "listing-content-error": "Det uppstod ett fel när listan över innehållsobjekt hämtades",
     "mongo-add-update-error": "Det uppstod ett fel när du lade till eller uppdaterade innehåll i databasen.",
     "mongo-replace-error": "Det uppstod ett fel när innehållet i databasen uppdaterades.",
-    "s3-upload-error": "Det uppstod ett fel när filen {{filename}} till S3 överfördes."
+    "s3-upload-error": "Det uppstod ett fel när filen {{filename}} till S3 överfördes.",
+    "install-library-already-installed": "Biblioteket {{ubername}} är redan installerat och kan inte installeras igen."
 }

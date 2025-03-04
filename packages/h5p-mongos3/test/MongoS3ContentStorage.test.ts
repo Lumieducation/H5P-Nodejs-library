@@ -1,8 +1,8 @@
 // Note: This test will be ignored by normal test runners. You must execute
-// npm run test:db to run it!
+// npm run test:h5p-mongos3 to run it!
 // It requires a running MongoDB and S3 instance!
 
-import AWS from 'aws-sdk';
+import { S3 } from '@aws-sdk/client-s3';
 import { Db, Collection, MongoClient, ObjectId } from 'mongodb';
 import path from 'path';
 import { BufferWritableMock, BufferReadableMock } from 'stream-mock';
@@ -48,7 +48,7 @@ describe('MongoS3ContentStorage', () => {
     let mongo: Db;
     let mongoClient: MongoClient;
     let mongoCollection: Collection<any>;
-    let s3: AWS.S3;
+    let s3: S3;
     let bucketName: string;
     let collectionName: string;
     let counter = 0;
@@ -58,11 +58,13 @@ describe('MongoS3ContentStorage', () => {
     beforeAll(async () => {
         testId = new ObjectId().toHexString();
         s3 = initS3({
-            accessKeyId: 'minioaccesskey',
-            secretAccessKey: 'miniosecret',
+            credentials: {
+                accessKeyId: 'minioaccesskey',
+                secretAccessKey: 'miniosecret'
+            },
             endpoint: 'http://localhost:9000',
-            s3ForcePathStyle: true,
-            signatureVersion: 'v4'
+            region: 'us-east-1',
+            forcePathStyle: true
         });
         mongoClient = await MongoClient.connect('mongodb://localhost:27017', {
             auth: {
@@ -78,11 +80,9 @@ describe('MongoS3ContentStorage', () => {
         counter += 1;
         bucketName = `${testId}bucket${counter}`;
         await emptyAndDeleteBucket(s3, bucketName);
-        await s3
-            .createBucket({
-                Bucket: bucketName
-            })
-            .promise();
+        await s3.createBucket({
+            Bucket: bucketName
+        });
         collectionName = `${testId}collection${counter}`;
         try {
             await mongo.dropCollection(collectionName);
@@ -278,12 +278,10 @@ describe('MongoS3ContentStorage', () => {
         );
         const filename = 'testfile1.jpg';
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).rejects.toThrow();
 
         await storage.addFile(
@@ -293,12 +291,10 @@ describe('MongoS3ContentStorage', () => {
             stubUser
         );
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).resolves.toBeDefined();
 
         await storage.deleteFile(contentId, filename, stubUser);
@@ -306,12 +302,10 @@ describe('MongoS3ContentStorage', () => {
             false
         );
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).rejects.toThrow();
     });
 
@@ -323,12 +317,10 @@ describe('MongoS3ContentStorage', () => {
         );
         const filename = 'testfile1.jpg';
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).rejects.toThrow();
         await storage.addFile(
             contentId,
@@ -337,22 +329,18 @@ describe('MongoS3ContentStorage', () => {
             stubUser
         );
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).resolves.toBeDefined();
 
         await storage.deleteContent(contentId);
         await expect(
-            s3
-                .headObject({
-                    Bucket: bucketName,
-                    Key: `${contentId}/${filename}`
-                })
-                .promise()
+            s3.headObject({
+                Bucket: bucketName,
+                Key: `${contentId}/${filename}`
+            })
         ).rejects.toThrow();
     });
 

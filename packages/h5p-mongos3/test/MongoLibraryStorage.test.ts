@@ -1,5 +1,5 @@
 // Note: This test will be ignored by normal test runners. You must execute
-// npm run test:db to run it!
+// npm run test:h5p-mongos3 to run it!
 // It requires a running MongoDB and S3 instance!
 
 import { Db, MongoClient, Collection, ObjectId } from 'mongodb';
@@ -614,5 +614,68 @@ describe('MongoS3LibraryStorage', () => {
         await expect(storage.clearFiles(example1Name)).rejects.toThrowError(
             'mongo-library-storage:library-not-found'
         );
+    });
+
+    it('migrates v9 schema to v10 schema', async () => {
+        await mongoCollection.insertOne({
+            _id: 'H5P.GreetingCard-1.0',
+            metadata: {
+                title: 'Greeting Card',
+                description: 'Displays a greeting card',
+                majorVersion: 1,
+                minorVersion: 0,
+                patchVersion: 6,
+                runnable: 1,
+                author: 'Joubel AS',
+                license: 'MIT',
+                machineName: 'H5P.GreetingCard',
+                preloadedJs: [
+                    {
+                        path: 'greetingcard.js'
+                    }
+                ],
+                preloadedCss: [
+                    {
+                        path: 'greetingcard.css'
+                    }
+                ]
+            },
+            additionalMetadata: {
+                restricted: false
+            },
+            files: [
+                {
+                    filename: 'greetingcard.css',
+                    lastModified: 1740857565338,
+                    size: 358
+                },
+                {
+                    filename: 'greetingcard.js',
+                    lastModified: 1740857565339,
+                    size: 1253
+                },
+                {
+                    filename: 'semantics.json',
+                    lastModified: 1740857565340,
+                    size: 381
+                }
+            ]
+        });
+
+        await storage.migrate(9, 10);
+
+        await expect(
+            mongoCollection.findOne({
+                ubername: 'H5P.GreetingCard-1.0'
+            })
+        ).resolves.toBeTruthy();
+
+        await expect(
+            storage.isInstalled({
+                machineName: 'H5P.GreetingCard',
+                majorVersion: 1,
+                minorVersion: 0
+            })
+        ).resolves.toBe(true);
     });
 });

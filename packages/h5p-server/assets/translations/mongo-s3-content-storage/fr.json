@@ -7,5 +7,6 @@
     "listing-content-error": "Une erreur s'est produite lors de l'obtention de la liste des objets de contenu",
     "mongo-add-update-error": "Une erreur s'est produite lors de l'ajout ou de la mise à jour du contenu dans la base de données.",
     "mongo-replace-error": "Une erreur s'est produite lors de la mise à jour du contenu de la base de données.",
-    "s3-upload-error": "Une erreur s'est produite lors du téléchargement du fichier {{filename}} vers S3."
+    "s3-upload-error": "Une erreur s'est produite lors du téléchargement du fichier {{filename}} vers S3.",
+    "install-library-already-installed": "La bibliothèque {{ubername}} est déjà installée et ne peut pas être réinstallée."
 }
