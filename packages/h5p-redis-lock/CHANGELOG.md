@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.0.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.2...v10.0.0) (2025-03-05)
+
+### Bug Fixes
+
+- **deps:** update dependency ioredis to v5.4.1 ([060e58b](https://github.com/Lumieducation/H5P-Nodejs-library/commit/060e58be4666698ac4aa1ffc4f4b02506d528bb6))
+- **deps:** update dependency ioredis to v5.4.2 ([aadbcad](https://github.com/Lumieducation/H5P-Nodejs-library/commit/aadbcadf73a3ecfa075faeb0d0b94c221f7157e1))
+- **deps:** update dependency redis to v4 ([#3881](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3881)) ([1ea57a2](https://github.com/Lumieducation/H5P-Nodejs-library/commit/1ea57a20ac1255809d84f70bbb4e853dc8ebf326))
+- **deps:** update dependency simple-redis-mutex to v1.4.0 ([ab3f837](https://github.com/Lumieducation/H5P-Nodejs-library/commit/ab3f8378304479ae49ffbedabcd9b4e37f730521))
+- **deps:** update dependency simple-redis-mutex to v2 ([#3822](https://github.com/Lumieducation/H5P-Nodejs-library/issues/3822)) ([535df73](https://github.com/Lumieducation/H5P-Nodejs-library/commit/535df73e4ecb988d78c139f5a1e9f7d391351453))
+
+### BREAKING CHANGES
+
+- **deps:** packaged build files are now ES2022, h5p-redis-lock now uses redis instead of ioredis
+
 ## [9.3.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.1...v9.3.2) (2023-09-20)
 
 **Note:** Version bump only for package @lumieducation/h5p-redis-lock
@@ -23,7 +37,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **deps:** update dependency simple-redis-mutex to v1.3.1 ([5d44618](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5d446180197a822d8c0e32e5c03377e42957468c))
+- **deps:** update dependency simple-redis-mutex to v1.3.1 ([5d44618](https://github.com/Lumieducation/H5P-Nodejs-library/commit/5d446180197a822d8c0e32e5c03377e42957468c))
 
 # [9.2.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.1.2...v9.2.0) (2022-06-14)
 
@@ -45,7 +59,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
+- **deps:** update dependency dotenv to v16 ([#2083](https://github.com/Lumieducation/H5P-Nodejs-library/issues/2083)) ([2a1ef79](https://github.com/Lumieducation/H5P-Nodejs-library/commit/2a1ef7901adb6900430c86b12be04ae2b8acb60b))
 
 ## [9.0.9](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.8...v9.0.9) (2022-02-18)
 
@@ -59,7 +73,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **deps:** update dependency aws-sdk to v2.1034.0 ([515b851](https://github.com/Lumieducation/H5P-Nodejs-library/commit/515b851177e584b068a075788f4041493b8c7d72))
+- **deps:** update dependency aws-sdk to v2.1034.0 ([515b851](https://github.com/Lumieducation/H5P-Nodejs-library/commit/515b851177e584b068a075788f4041493b8c7d72))
 
 ## [9.0.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.0.4...v9.0.5) (2021-11-22)
 
@@ -69,4 +83,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
--   **h5p-server:** fix library install race conditions ([#1871](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1871)) ([9286cc6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9286cc67990851b9cc404960680247302aaecd0d))
+- **h5p-server:** fix library install race conditions ([#1871](https://github.com/Lumieducation/H5P-Nodejs-library/issues/1871)) ([9286cc6](https://github.com/Lumieducation/H5P-Nodejs-library/commit/9286cc67990851b9cc404960680247302aaecd0d))
