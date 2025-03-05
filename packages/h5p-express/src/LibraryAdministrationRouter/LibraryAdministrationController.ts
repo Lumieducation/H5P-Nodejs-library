@@ -120,12 +120,12 @@ export default class LibraryAdministrationExpressController {
         },
         res: express.Response<{ installed: number; updated: number }>
     ): Promise<void> => {
-        if (!req.files?.file?.data) {
+        if (!req.files?.file?.data && !req.files?.file?.tempFilePath) {
             throw new H5pError('malformed-request', {}, 400);
         }
 
         const { installedLibraries } = await this.h5pEditor.uploadPackage(
-            req.files.file.tempFilePath ?? req.files.file.data,
+            req.files.file.tempFilePath || req.files.file.data,
             undefined,
             {
                 onlyInstallLibraries: true
