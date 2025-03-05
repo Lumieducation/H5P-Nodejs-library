@@ -14,5 +14,6 @@
     "install-library-already-installed": "Библиотека {{libraryName}} вече е инсталирана.",
     "remove-library-library-missing": "Библиотека {{libraryName}} не е инсталирана в системата.",
     "temporary-file-not-found": "Файлът {{filename}} не е достъпен за потребител {{userId}} или не съществува.",
-    "update-library-library-missing": "Библиотека {{libraryName}} не може да бъде актуализирана, тъй като все още не е инсталирана."
+    "update-library-library-missing": "Библиотека {{libraryName}} не може да бъде актуализирана, тъй като все още не е инсталирана.",
+    "illegal-character": "Има невалиден знак в името на файла: {{filename}}"
 }

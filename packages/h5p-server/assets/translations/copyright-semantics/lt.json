@@ -19,5 +19,16 @@
     "attribution-sharealike": "Priskyrimas - ShareAlike",
     "attribution-noderivs": "Priskyrimas-NoDerivs",
     "attribution-noncommercial": "Priskyrimas - Nekomercinis",
-    "attribution-noncommercial-sharealike": "Priskirti - Nemokomercinis - ShareAlike"
+    "attribution-noncommercial-sharealike": "Priskirti - Nemokomercinis - ShareAlike",
+    "attribution-noncommercial-noderivs": "Attribution-NonCommercial-NoDerivs",
+    "general-public-license": "Bendroji viešoji licencija",
+    "gpl-version-3": "3 versija",
+    "gpl-version-2": "2 versija",
+    "gpl-version-1": "1 versija",
+    "public-domain": "Viešasis domenas",
+    "pd-no-version": "-",
+    "CC0-1-0-universal": "CC0 1.0 Universalus",
+    "public-domain-mark": "Viešojo domeno ženklas",
+    "copyright": "Autorių teisės",
+    "license-version": "Licencijos versija"
 }

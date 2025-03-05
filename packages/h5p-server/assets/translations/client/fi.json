@@ -162,5 +162,12 @@
     "emailAddressDescription": "H5P käyttää sähköpostiosoitetta ottaakseen yhteyttä julkaisijaan, jos sisältöön liittyy ongelmia tai jos julkaisijan on palautettava tilinsä. Sitä ei julkaista eikä jaeta kolmansille osapuolille",
     "copyrightWarning": "Tekijänoikeudella suojattua materiaalia ei voi jakaa H5P-sisältökeskuksessa. Jos sisältö on lisensoitu OER-ystävällisellä lisenssillä, kuten Creative Commons, valitse sopiva lisenssi. Jos ei, tätä sisältöä ei voida jakaa.",
     "keywordsExits": "Avainsanat ovat jo olemassa!",
-    "someKeywordsExits": "Jotkut näistä avainsanoista ovat jo olemassa"
+    "someKeywordsExits": "Jotkut näistä avainsanoista ovat jo olemassa",
+    "width": "leveys",
+    "height": "korkeus",
+    "rotateLeft": "Kierrä vasemmalle",
+    "rotateRight": "Kierrä oikealle",
+    "cropImage": "Rajaa kuva",
+    "confirmCrop": "Vahvista Rajaa",
+    "cancelCrop": "Peruuta rajaus"
 }

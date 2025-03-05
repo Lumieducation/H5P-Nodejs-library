@@ -14,5 +14,6 @@
     "install-library-already-installed": "라이브러리 {{libraryName}} 이 이미 설치되었습니다.",
     "remove-library-library-missing": "라이브러리 {{libraryName}} 이 시스템에 설치되어 있지 않습니다.",
     "temporary-file-not-found": "{{userId}} 이 파일 {{filename}} 에 액세스 할 수 없거나 존재하지 않습니다.",
-    "update-library-library-missing": "라이브러리 {{libraryName}} 은 아직 설치되지 않았으므로 업데이트 할 수 없습니다."
+    "update-library-library-missing": "라이브러리 {{libraryName}} 은 아직 설치되지 않았으므로 업데이트 할 수 없습니다.",
+    "illegal-character": "파일 이름에 잘못된 문자가 있습니다: {{filename}}"
 }

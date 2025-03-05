@@ -162,5 +162,12 @@
     "emailAddressDescription": "Helbide elektronikoa H5P-k erabiliko du argitaletxearengana edukiarekin arazoren bat izanez gero edo argitaletxeak kontua berreskuratu behar badu. Ez da hirugarrenekin argitaratuko edo partekatuko",
     "copyrightWarning": "Copyrighta duen materiala ezin da H5P eduki zentroan partekatu. Edukia Creative Commons bezalako OER lagunarteko lizentziarekin lizentzia badago, aukeratu dagokion lizentzia. Bestela, ezin da eduki hau partekatu.",
     "keywordsExits": "Hitz gakoak lehendik daude!",
-    "someKeywordsExits": "Gako-hitz horietako batzuk lehendik daude"
+    "someKeywordsExits": "Gako-hitz horietako batzuk lehendik daude",
+    "width": "zabalera",
+    "height": "altuera",
+    "rotateLeft": "Biratu ezkerrera",
+    "rotateRight": "Biratu eskuinera",
+    "cropImage": "Moztu Irudia",
+    "confirmCrop": "Berretsi Moztu",
+    "cancelCrop": "Utzi mozketa"
 }

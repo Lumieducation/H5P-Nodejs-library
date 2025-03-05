@@ -162,5 +162,12 @@
     "registrationFailedDescription": "Non foi posíbel crear unha conta neste momento. Algo foi mal. Ténteo de novo.",
     "ageDescription": "O público destinatario deste contido. Formatos de entrada posíbeis separados por vírgulas: «1,34-45,-50,59-».",
     "contactPersonDescription": "H5P porase en contacto coa persoa indicada no caso de que se produza calquera problema co contido compartido polo editor. Non se farán público nin se compartirán con terceiros nin o nome da persoa de contacto nin ningunha outra información",
-    "emailAddressDescription": "O enderezo de correco electrónico será utilizado por H5P para se pór en contacto co editor no caso de que se produzan problemas co contido ou no caso de que o editor preciso recuperar a súa conta. Non será publicado nin compartido con terceiros"
+    "emailAddressDescription": "O enderezo de correco electrónico será utilizado por H5P para se pór en contacto co editor no caso de que se produzan problemas co contido ou no caso de que o editor preciso recuperar a súa conta. Non será publicado nin compartido con terceiros",
+    "width": "ancho",
+    "height": "altura",
+    "rotateLeft": "Xirar á esquerda",
+    "rotateRight": "Xirar á dereita",
+    "cropImage": "Recortar imaxe",
+    "confirmCrop": "Confirmar o recorte",
+    "cancelCrop": "Cancelar o recorte"
 }

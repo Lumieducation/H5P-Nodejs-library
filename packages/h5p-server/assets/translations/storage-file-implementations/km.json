@@ -14,5 +14,6 @@
     "install-library-already-installed": "បណ្ណាល័យ {{libraryName}} ត្រូវបានតំឡើងរួចហើយ។",
     "remove-library-library-missing": "បណ្ណាល័យ {{libraryName}} មិនត្រូវបានតំឡើងនៅលើប្រព័ន្ធទេ។",
     "temporary-file-not-found": "ឯកសារ {{filename}} មិនអាចចូលប្រើបានសម្រាប់អ្នកប្រើប្រាស់ {{userId}} ឬមិនមាន។",
-    "update-library-library-missing": "បណ្ណាល័យ {{libraryName}} មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេព្រោះវាមិនទាន់បានតំឡើងនៅឡើយ។"
+    "update-library-library-missing": "បណ្ណាល័យ {{libraryName}} មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេព្រោះវាមិនទាន់បានតំឡើងនៅឡើយ។",
+    "illegal-character": "មានតួអក្សរមិនត្រឹមត្រូវនៅក្នុងឈ្មោះឯកសារ៖ {{filename}}"
 }

@@ -162,5 +162,12 @@
     "emailAddressDescription": "이메일 주소는 H5P가 콘텐츠에 문제가 있거나 게시자가 계정을 복구해야하는 경우 게시자에게 연락하는 데 사용됩니다. 제 3 자에게 공개되거나 공유되지 않습니다.",
     "copyrightWarning": "저작권이있는 자료는 H5P 콘텐츠 허브에서 공유 할 수 없습니다. 콘텐츠가 Creative Commons와 같은 OER 친화적 라이선스로 라이선스가 부여 된 경우 적절한 라이선스를 선택하십시오. 그렇지 않으면이 콘텐츠를 공유 할 수 없습니다.",
     "keywordsExits": "키워드가 이미 존재합니다!",
-    "someKeywordsExits": "이 키워드 중 일부는 이미 존재합니다."
+    "someKeywordsExits": "이 키워드 중 일부는 이미 존재합니다.",
+    "width": "너비",
+    "height": "키",
+    "rotateLeft": "왼쪽으로 회전",
+    "rotateRight": "오른쪽으로 회전",
+    "cropImage": "이미지 자르기",
+    "confirmCrop": "자르기 확인",
+    "cancelCrop": "자르기 취소"
 }

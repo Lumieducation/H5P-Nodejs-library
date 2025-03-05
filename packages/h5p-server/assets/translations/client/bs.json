@@ -162,5 +162,12 @@
     "emailAddressDescription": "H5P će e-adresu koristiti za kontaktiranje izdavača u slučaju bilo kakvih problema sa sadržajem ili u slučaju da izdavač treba oporaviti svoj račun. Neće biti objavljen niti podijeljen sa bilo kojom trećom stranom",
     "copyrightWarning": "Materijal zaštićen autorskim pravima ne može se dijeliti u H5P Content Hub. Ako je sadržaj licenciran s OER-ovom licencom poput Creative Commons, odaberite odgovarajuću licencu. Ako ne, ovaj sadržaj se ne može dijeliti.",
     "keywordsExits": "Ključne riječi već postoje!",
-    "someKeywordsExits": "Neke od ovih ključnih riječi već postoje"
+    "someKeywordsExits": "Neke od ovih ključnih riječi već postoje",
+    "width": "širina",
+    "height": "visina",
+    "rotateLeft": "Rotirajte ulijevo",
+    "rotateRight": "Rotate Right",
+    "cropImage": "Izrežite sliku",
+    "confirmCrop": "Potvrdite Obrezivanje",
+    "cancelCrop": "Otkaži Crop"
 }

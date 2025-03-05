@@ -14,5 +14,6 @@
     "install-library-already-installed": "Knihovna {{libraryName}} již byla nainstalována.",
     "remove-library-library-missing": "Knihovna {{libraryName}} není v systému nainstalována.",
     "temporary-file-not-found": "Soubor {{filename}} není pro uživatele {{userId}} přístupný nebo neexistuje.",
-    "update-library-library-missing": "Knihovnu {{libraryName}} nelze aktualizovat, protože ještě nebyla nainstalována."
+    "update-library-library-missing": "Knihovnu {{libraryName}} nelze aktualizovat, protože ještě nebyla nainstalována.",
+    "illegal-character": "V názvu souboru je neplatný znak: {{filename}}"
 }

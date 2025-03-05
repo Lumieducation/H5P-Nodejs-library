@@ -14,5 +14,6 @@
     "install-library-already-installed": "Teek {{libraryName}} on juba installitud.",
     "remove-library-library-missing": "Teeki {{libraryName}} pole süsteemi installitud.",
     "temporary-file-not-found": "Failile {{filename}} pole kasutajale {{userId}} juurdepääs või seda pole olemas.",
-    "update-library-library-missing": "Teeki {{libraryName}} ei saa värskendada, kuna seda pole veel installitud."
+    "update-library-library-missing": "Teeki {{libraryName}} ei saa värskendada, kuna seda pole veel installitud.",
+    "illegal-character": "Failinimes on vale märk: {{filename}}"
 }
