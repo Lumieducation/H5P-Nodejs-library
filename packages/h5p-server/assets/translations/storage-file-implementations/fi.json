@@ -14,5 +14,6 @@
     "install-library-already-installed": "Kirjasto {{libraryName}} on jo asennettu.",
     "remove-library-library-missing": "Kirjastoa {{libraryName}} ei ole asennettu järjestelmään.",
     "temporary-file-not-found": "Tiedosto {{filename}} ei ole käyttäjän {{userId}} tai sitä ei ole olemassa.",
-    "update-library-library-missing": "Kirjastoa {{libraryName}} ei voi päivittää, koska sitä ei ole vielä asennettu."
+    "update-library-library-missing": "Kirjastoa {{libraryName}} ei voi päivittää, koska sitä ei ole vielä asennettu.",
+    "illegal-character": "Tiedostonimessä on virheellinen merkki: {{filename}}"
 }

@@ -162,5 +162,12 @@
     "emailAddressDescription": "H5P kasutab e-posti aadressi kirjastaja poole pöördumiseks sisuga seotud probleemide korral või juhul, kui avaldajal on vaja oma konto taastada. Seda ei avaldata ega jagata kolmandate isikutega",
     "copyrightWarning": "Autoriõigusega kaitstud materjali ei saa H5P sisukeskuses jagada. Kui sisul on litsents OER-sõbraliku litsentsiga, näiteks Creative Commons, valige sobiv litsents. Kui ei, ei saa seda sisu jagada.",
     "keywordsExits": "Märksõnad on juba olemas!",
-    "someKeywordsExits": "Mõned neist märksõnadest on juba olemas"
+    "someKeywordsExits": "Mõned neist märksõnadest on juba olemas",
+    "width": "laius",
+    "height": "kõrgus",
+    "rotateLeft": "Pööra vasakule",
+    "rotateRight": "Pööra paremale",
+    "cropImage": "Kärbi pilti",
+    "confirmCrop": "Kinnitage kärpimine",
+    "cancelCrop": "Tühista kärpimine"
 }

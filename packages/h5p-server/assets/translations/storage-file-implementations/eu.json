@@ -14,5 +14,6 @@
     "install-library-already-installed": "{{libraryName}} liburutegia dagoeneko instalatuta dago.",
     "remove-library-library-missing": "{{libraryName}} liburutegia ez dago sisteman instalatuta.",
     "temporary-file-not-found": "{{filename}} fitxategia ez dago erabilgarri {{userId}} erabiltzailearentzat edo ez dago.",
-    "update-library-library-missing": "{{libraryName}} liburutegia ezin da eguneratu oraindik instalatuta ez dagoelako."
+    "update-library-library-missing": "{{libraryName}} liburutegia ezin da eguneratu oraindik instalatuta ez dagoelako.",
+    "illegal-character": "Karaktere baliogabe bat dago fitxategi-izenean: {{filename}}"
 }

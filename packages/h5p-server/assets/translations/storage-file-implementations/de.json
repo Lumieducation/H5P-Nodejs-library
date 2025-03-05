@@ -14,5 +14,6 @@
     "install-library-already-installed": "Die Bibliothek {{libraryName}} ist bereits installiert.",
     "remove-library-library-missing": "Die Bibliothek {{libraryName}} ist nicht auf diesem System installiert.",
     "temporary-file-not-found": "Die Datei {{filename}} kann vom Nutzer {{userId}} nicht zugegriffen werden oder existiert nicht.",
-    "update-library-library-missing": "Die Bibliothek {{libraryName}} kann nicht aktualisiert werden, da sie noch nicht installiert wurde."
+    "update-library-library-missing": "Die Bibliothek {{libraryName}} kann nicht aktualisiert werden, da sie noch nicht installiert wurde.",
+    "illegal-character": "Der Dateiname enthält ein ungültiges Zeichen: {{filename}}"
 }

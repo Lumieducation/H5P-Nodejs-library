@@ -162,5 +162,12 @@
     "emailAddressDescription": "O endereço de e-mail será usado pelo H5P para entrar em contato com o editor em caso de problemas com o conteúdo ou no caso de o editor precisar recuperar sua conta. Não será publicado ou compartilhado com terceiros",
     "copyrightWarning": "Material protegido por direitos autorais não pode ser compartilhado no H5P Content Hub. Se o conteúdo for licenciado com uma licença amigável de REA, como Creative Commons, escolha a licença apropriada. Caso contrário, este conteúdo não pode ser compartilhado.",
     "keywordsExits": "Palavras-chave já existem!",
-    "someKeywordsExits": "Algumas dessas palavras-chave já existem"
+    "someKeywordsExits": "Algumas dessas palavras-chave já existem",
+    "width": "largura",
+    "height": "altura",
+    "rotateLeft": "Girar para a esquerda",
+    "rotateRight": "Girar para a direita",
+    "cropImage": "Cortar imagem",
+    "confirmCrop": "Confirmar corte",
+    "cancelCrop": "Cancelar corte"
 }

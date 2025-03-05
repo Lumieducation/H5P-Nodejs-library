@@ -14,5 +14,6 @@
     "install-library-already-installed": "Biblioteka {{libraryName}} je već instalirana.",
     "remove-library-library-missing": "Biblioteka {{libraryName}} nije instalirana na sistemu.",
     "temporary-file-not-found": "Datoteka {{filename}} nije dostupna za korisnika {{userId}} ili ne postoji.",
-    "update-library-library-missing": "Biblioteka {{libraryName}} se ne može ažurirati jer još nije instalirana."
+    "update-library-library-missing": "Biblioteka {{libraryName}} se ne može ažurirati jer još nije instalirana.",
+    "illegal-character": "U nazivu datoteke postoji nevažeći znak: {{filename}}"
 }

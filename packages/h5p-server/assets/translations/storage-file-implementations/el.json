@@ -14,5 +14,6 @@
     "install-library-already-installed": "Η βιβλιοθήκη {{libraryName}} έχει ήδη εγκατασταθεί.",
     "remove-library-library-missing": "Η βιβλιοθήκη {{libraryName}} δεν είναι εγκατεστημένη στο σύστημα.",
     "temporary-file-not-found": "Το αρχείο {{filename}} δεν είναι προσβάσιμο για τον χρήστη {{userId}} ή δεν υπάρχει.",
-    "update-library-library-missing": "Δεν είναι δυνατή η ενημέρωση της βιβλιοθήκης {{libraryName}}"
+    "update-library-library-missing": "Δεν είναι δυνατή η ενημέρωση της βιβλιοθήκης {{libraryName}}",
+    "illegal-character": "Υπάρχει ένας μη έγκυρος χαρακτήρας στο όνομα αρχείου: {{filename}}"
 }

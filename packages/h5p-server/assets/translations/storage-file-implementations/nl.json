@@ -14,5 +14,6 @@
     "install-library-already-installed": "Bibliotheek {{libraryName}} is al geïnstalleerd.",
     "remove-library-library-missing": "Bibliotheek {{libraryName}} is niet op het systeem geïnstalleerd.",
     "temporary-file-not-found": "Het bestand {{filename}} is niet toegankelijk voor gebruiker {{userId}} of bestaat niet.",
-    "update-library-library-missing": "Bibliotheek {{libraryName}} kan niet worden bijgewerkt omdat deze nog niet is geïnstalleerd."
+    "update-library-library-missing": "Bibliotheek {{libraryName}} kan niet worden bijgewerkt omdat deze nog niet is geïnstalleerd.",
+    "illegal-character": "Er staat een ongeldig teken in de bestandsnaam: {{filename}}"
 }

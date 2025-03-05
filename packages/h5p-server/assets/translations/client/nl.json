@@ -162,5 +162,12 @@
     "emailAddressDescription": "Het e-mailadres wordt door H5P gebruikt om contact op te nemen met de uitgever in geval van problemen met de inhoud of als de uitgever zijn account moet herstellen. Het zal niet worden gepubliceerd of gedeeld met derden",
     "copyrightWarning": "Auteursrechtelijk beschermd materiaal kan niet worden gedeeld in de H5P Content Hub. Als de inhoud is gelicentieerd met een OER-vriendelijke licentie zoals Creative Commons, kies dan de juiste licentie. Zo niet, dan kan deze inhoud niet worden gedeeld.",
     "keywordsExits": "Trefwoorden bestaan al!",
-    "someKeywordsExits": "Sommige van deze sleutelwoorden bestaan al"
+    "someKeywordsExits": "Sommige van deze sleutelwoorden bestaan al",
+    "width": "breedte",
+    "height": "hoogte",
+    "rotateLeft": "Linksom draaien",
+    "rotateRight": "Rechtsom draaien",
+    "cropImage": "Afbeelding bijsnijden",
+    "confirmCrop": "Bevestig gewas",
+    "cancelCrop": "Annuleren Bijsnijden"
 }

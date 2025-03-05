@@ -14,5 +14,6 @@
     "install-library-already-installed": "{{libraryName}} kütüphanesi zaten kurulmuş.",
     "remove-library-library-missing": "{{libraryName}} kütüphanesi sistemde yüklü değil.",
     "temporary-file-not-found": "{{filename}} dosyasına {{userId}} kullanıcısı erişemiyor veya mevcut değil.",
-    "update-library-library-missing": "{{libraryName}} kütüphanesi henüz kurulmadığı için güncellenemiyor."
+    "update-library-library-missing": "{{libraryName}} kütüphanesi henüz kurulmadığı için güncellenemiyor.",
+    "illegal-character": "Dosya adında geçersiz bir karakter var: {{filename}}"
 }

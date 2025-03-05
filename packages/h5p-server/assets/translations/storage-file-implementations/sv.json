@@ -14,5 +14,6 @@
     "install-library-already-installed": "Bibliotek {{libraryName}} har redan installerats.",
     "remove-library-library-missing": "Bibliotek {{libraryName}} är inte installerat på systemet.",
     "temporary-file-not-found": "Filen {{filename}} är inte tillgänglig för användare {{userId}} eller finns inte.",
-    "update-library-library-missing": "Bibliotek {{libraryName}} kan inte uppdateras eftersom det inte har installerats ännu."
+    "update-library-library-missing": "Bibliotek {{libraryName}} kan inte uppdateras eftersom det inte har installerats ännu.",
+    "illegal-character": "Det finns ett ogiltigt tecken i filnamnet: {{filename}}"
 }

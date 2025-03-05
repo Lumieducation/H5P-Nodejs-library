@@ -162,5 +162,12 @@
     "emailAddressDescription": "如果内容有任何问题或发布者需要恢复其帐户，H5P将使用该电子邮件地址与发布者联系。它不会被发布或与任何第三方共享",
     "copyrightWarning": "受版权保护的材料不能在H5P内容中心中共享。如果内容是通过OER友好许可（如Creative Commons）许可的，请选择适当的许可。如果不是，则无法共享此内容。",
     "keywordsExits": "关键字已经存在！",
-    "someKeywordsExits": "其中一些关键字已经存在"
+    "someKeywordsExits": "其中一些关键字已经存在",
+    "width": "宽度",
+    "height": "高度",
+    "rotateLeft": "向左旋转",
+    "rotateRight": "向右旋转",
+    "cropImage": "裁剪图片",
+    "confirmCrop": "确认裁剪",
+    "cancelCrop": "取消裁剪"
 }

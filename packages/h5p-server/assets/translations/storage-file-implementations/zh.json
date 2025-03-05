@@ -14,5 +14,6 @@
     "install-library-already-installed": "库{{libraryName}}已安装。",
     "remove-library-library-missing": "系统上未安装库{{libraryName}}。",
     "temporary-file-not-found": "{{userId}}无法访问文件{{filename}}或文件0不存在。",
-    "update-library-library-missing": "库{{libraryName}}尚未安装，因此无法更新。"
+    "update-library-library-missing": "库{{libraryName}}尚未安装，因此无法更新。",
+    "illegal-character": "文件名中有一个无效字符： {{filename}}"
 }

@@ -14,5 +14,6 @@
     "install-library-already-installed": "Библиотека {{libraryName}} уже установлена.",
     "remove-library-library-missing": "Библиотека {{libraryName}} не установлена в системе.",
     "temporary-file-not-found": "Файл {{filename}} недоступен для пользователя {{userId}} или не существует.",
-    "update-library-library-missing": "Библиотеку {{libraryName}} нельзя обновить, так как она еще не установлена."
+    "update-library-library-missing": "Библиотеку {{libraryName}} нельзя обновить, так как она еще не установлена.",
+    "illegal-character": "В имени файла содержится недопустимый символ: {{filename}}"
 }

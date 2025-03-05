@@ -14,5 +14,6 @@
     "install-library-already-installed": "Knjižnica {{libraryName}} je že nameščena.",
     "remove-library-library-missing": "Knjižnica {{libraryName}} ni nameščena v sistemu.",
     "temporary-file-not-found": "Datoteka {{filename}} ni dostopna za uporabnika {{userId}} ali ne obstaja.",
-    "update-library-library-missing": "Knjižnice {{libraryName}} ni mogoče posodobiti, ker še ni nameščena."
+    "update-library-library-missing": "Knjižnice {{libraryName}} ni mogoče posodobiti, ker še ni nameščena.",
+    "illegal-character": "V imenu datoteke je neveljaven znak: {{filename}}"
 }

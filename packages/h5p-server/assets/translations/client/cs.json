@@ -162,5 +162,12 @@
     "emailAddressDescription": "E-mailovou adresu použije H5P k kontaktování vydavatele v případě jakýchkoli problémů s obsahem nebo v případě, že vydavatel potřebuje obnovit svůj účet. Nebude zveřejněn ani sdílen s žádnými třetími stranami",
     "copyrightWarning": "Materiál chráněný autorskými právy nelze sdílet v H5P Content Hub. Pokud je obsah licencován licencí vhodnou pro OER, jako je Creative Commons, vyberte příslušnou licenci. Pokud ne, nelze tento obsah sdílet.",
     "keywordsExits": "Klíčová slova již existují!",
-    "someKeywordsExits": "Některá z těchto klíčových slov již existují"
+    "someKeywordsExits": "Některá z těchto klíčových slov již existují",
+    "width": "šířka",
+    "height": "výška",
+    "rotateLeft": "Otočit doleva",
+    "rotateRight": "Otočit doprava",
+    "cropImage": "Oříznout obrázek",
+    "confirmCrop": "Potvrďte oříznutí",
+    "cancelCrop": "Zrušit oříznutí"
 }

@@ -14,5 +14,6 @@
     "install-library-already-installed": "La biblioteca {{libraryName}} ja està instal·lada.",
     "remove-library-library-missing": "La biblioteca {{libraryName}} no està instal·lada al sistema.",
     "temporary-file-not-found": "El fitxer {{filename}} no és accessible per a l'usuari {{userId}} o no existeix.",
-    "update-library-library-missing": "La biblioteca {{libraryName}} no es pot actualitzar perquè encara no s'ha instal·lat."
+    "update-library-library-missing": "La biblioteca {{libraryName}} no es pot actualitzar perquè encara no s'ha instal·lat.",
+    "illegal-character": "Hi ha un caràcter no vàlid al nom del fitxer: {{filename}}"
 }

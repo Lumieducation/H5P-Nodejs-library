@@ -162,5 +162,12 @@
     "contactPersonDescription": "Ja radīsies problēmas ar izdevēja kopīgoto saturu, H5P sazināsies ar kontaktpersonu. Kontaktpersonas vārds vai cita informācija netiks publicēta vai kopīgota ar trešajām personām",
     "keywordsExits": "Atslēgvārdi jau pastāv!",
     "someKeywordsExits": "Daži no šiem atslēgvārdiem jau pastāv",
-    "copyrightWarning": "Ar autortiesībām aizsargātu materiālu nevar kopīgot H5P satura centrā. Ja saturs ir licencēts ar OER (avērtie izglītības resursi) draudzīgu licenci, piemēram, Creative Commons, lūdzu, izvēlieties atbilstošo licenci. Ja nē, šo saturu nevar kopīgot."
+    "copyrightWarning": "Ar autortiesībām aizsargātu materiālu nevar kopīgot H5P satura centrā. Ja saturs ir licencēts ar OER (avērtie izglītības resursi) draudzīgu licenci, piemēram, Creative Commons, lūdzu, izvēlieties atbilstošo licenci. Ja nē, šo saturu nevar kopīgot.",
+    "width": "platums",
+    "height": "augstums",
+    "rotateLeft": "Pagriezt pa kreisi",
+    "rotateRight": "Pagriezt pa labi",
+    "cropImage": "Apgriezt attēlu",
+    "confirmCrop": "Apstipriniet Apgriezt",
+    "cancelCrop": "Atcelt apgriešanu"
 }

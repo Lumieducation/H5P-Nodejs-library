@@ -14,5 +14,6 @@
     "install-library-already-installed": "ライブラリ{{libraryName}}はすでにインストールされています。",
     "remove-library-library-missing": "ライブラリ{{libraryName}}がシステムにインストールされていません。",
     "temporary-file-not-found": "ファイル{{filename}}は、ユーザー{{userId}}アクセスできないか、存在しません。",
-    "update-library-library-missing": "ライブラリ{{libraryName}}はまだインストールされていないため、更新できません。"
+    "update-library-library-missing": "ライブラリ{{libraryName}}はまだインストールされていないため、更新できません。",
+    "illegal-character": "ファイル名に無効な文字が含まれています: {{filename}}"
 }

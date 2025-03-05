@@ -162,5 +162,12 @@
     "emailAddressDescription": "Die E-Mail-Adresse wird von H5P verwendet, um den Herausgeber zu kontaktieren, falls Probleme mit dem Inhalt auftreten oder wenn der Herausgeber sein Konto wiederherstellen muss. Es wird nicht veröffentlicht oder an Dritte weitergegeben",
     "copyrightWarning": "Urheberrechtlich geschütztes Material kann nicht im H5P Content Hub freigegeben werden. Wenn der Inhalt mit einer für OER geeigneten Lizenz wie Creative Commons lizenziert ist, wählen bitte die entsprechende Lizenz aus. Wenn nicht, kann dieser Inhalt nicht geteilt werden.",
     "keywordsExits": "Schlüsselwörter existieren bereits!",
-    "someKeywordsExits": "Einige dieser Schlüsselwörter sind bereits vorhanden"
+    "someKeywordsExits": "Einige dieser Schlüsselwörter sind bereits vorhanden",
+    "width": "Breite",
+    "height": "Höhe",
+    "rotateLeft": "Nach links drehen",
+    "rotateRight": "Nach rechts drehen",
+    "cropImage": "Bild zuschneiden",
+    "confirmCrop": "Zuschneiden bestätigen",
+    "cancelCrop": "Zuschneiden abbrechen"
 }
