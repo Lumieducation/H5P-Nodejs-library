@@ -110,10 +110,11 @@ export default class LibraryAdministrationExpressController {
         req: express.Request & {
             files: {
                 file: {
-                    data: Buffer;
+                    data?: Buffer;
                     mimetype: string;
                     name: string;
                     size: number;
+                    tempFilePath?: string;
                 };
             };
         },
@@ -124,7 +125,7 @@ export default class LibraryAdministrationExpressController {
         }
 
         const { installedLibraries } = await this.h5pEditor.uploadPackage(
-            req.files.file.data,
+            req.files.file.tempFilePath ?? req.files.file.data,
             undefined,
             {
                 onlyInstallLibraries: true
