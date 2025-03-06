@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.0...v10.0.1) (2025-03-06)
+
+### Bug Fixes
+
+- **h5p-server:** fixed missing build artifacts in NPM package ([dccbf9a](https://github.com/Lumieducation/H5P-Nodejs-library/commit/dccbf9af805eaeb61866852462049e5fba05c24c))
+
 # [10.0.0](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v9.3.2...v10.0.0) (2025-03-05)
 
 ### Bug Fixes
