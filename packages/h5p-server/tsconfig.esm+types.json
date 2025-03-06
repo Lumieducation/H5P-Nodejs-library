@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "outDir": "./build/esm",
+        "module": "ES2022",
+        "declaration": true,
+        "declarationDir": "./build/types"
+    },
+    "include": ["src/**/*.ts"]
+}
