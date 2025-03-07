@@ -34,5 +34,9 @@
     "types": "./build/RedisLockProvider.d.ts",
     "devDependencies": {
         "tmp-promise": "3.0.3"
-    }
+    },
+    "files": [
+        "build",
+        "CHANGELOG.md"
+    ]
 }

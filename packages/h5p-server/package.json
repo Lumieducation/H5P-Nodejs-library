@@ -86,7 +86,6 @@
         "build/",
         "CHANGELOG.md",
         "LICENSE",
-        "README.md",
-        "package.json"
+        "README.md"
     ]
 }

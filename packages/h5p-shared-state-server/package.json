@@ -26,5 +26,10 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "files": [
+        "build",
+        "CHANGELOG.md",
+        "README.md"
+    ]
 }

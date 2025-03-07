@@ -24,5 +24,11 @@
     "devDependencies": {
         "@lumieducation/h5p-server": "^10.0.0",
         "@types/react": "18.3.18"
-    }
+    },
+    "files": [
+        "build",
+        "CHANGELOG.md",
+        "LICENSE",
+        "README.md"
+    ]
 }

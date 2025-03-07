@@ -32,5 +32,11 @@
     "devDependencies": {
         "@lumieducation/h5p-server": "^10.0.0",
         "@types/resize-observer-browser": "0.1.11"
-    }
+    },
+    "files": [
+        "build",
+        "CHANGELOG.md",
+        "LICENSE",
+        "README.md"
+    ]
 }
