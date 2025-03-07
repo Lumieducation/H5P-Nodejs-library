@@ -93,7 +93,7 @@
         "@types/jest": "29.5.14",
         "@typescript-eslint/eslint-plugin": "8.26.0",
         "@typescript-eslint/parser": "8.26.0",
-        "axios": "1.8.1",
+        "axios": "1.8.2",
         "commitlint": "19.8.0",
         "concurrently": "9.1.2",
         "eslint": "^8.57.1",
