@@ -38,6 +38,8 @@ jobs:
                   root: .
                   paths:
                       - node_modules
+                      - packages/h5p-clamav-scanner/build
+                      - packages/h5p-clamav-scanner/node_modules
                       - packages/h5p-examples/build
                       - packages/h5p-examples/h5p
                       - packages/h5p-examples/node_modules
@@ -60,6 +62,8 @@ jobs:
                       - packages/h5p-server/node_modules
                       - packages/h5p-shared-state-server/build
                       - packages/h5p-shared-state-server/node_modules
+                      - packages/h5p-svg-sanitizer/build
+                      - packages/h5p-svg-sanitizer/node_modules
                       - packages/h5p-webcomponents/build
                       - packages/h5p-webcomponents/node_modules
                       - test/data/content-type-cache/real-content-types.json
