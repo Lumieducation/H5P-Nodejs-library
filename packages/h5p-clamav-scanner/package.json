@@ -32,5 +32,9 @@
     "types": "./build/ClamAVScanner.d.ts",
     "devDependencies": {
         "@types/clamscan": "^2.4.0"
-    }
+    },
+    "files": [
+        "build",
+        "CHANGELOG.md"
+    ]
 }
