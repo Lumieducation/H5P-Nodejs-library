@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.3...v10.0.4) (2025-03-08)
+
+### Bug Fixes
+
+- ci pipeline now passes through build artifacts for new packages ([e788deb](https://github.com/Lumieducation/H5P-Nodejs-library/commit/e788debdfa4d347a9b30d410ac48cbf9c52345d2))
+
 ## [10.0.3](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.2...v10.0.3) (2025-03-08)
 
 ### Bug Fixes

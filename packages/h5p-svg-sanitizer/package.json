@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-svg-sanitizer",
-    "version": "10.0.3",
+    "version": "10.0.4",
     "description": "Cleans potentially malicious SVGs",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -24,7 +24,7 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^10.0.3",
+        "@lumieducation/h5p-server": "^10.0.4",
         "dompurify": "^3.2.3",
         "jsdom": "^26.0.0"
     },

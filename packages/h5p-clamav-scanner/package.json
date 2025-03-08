@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-clamav-scanner",
-    "version": "10.0.3",
+    "version": "10.0.4",
     "description": "Checks files for malicious content using ClamAV",
     "license": "GPL-3.0-or-later",
     "repository": {
@@ -24,7 +24,7 @@
         }
     ],
     "dependencies": {
-        "@lumieducation/h5p-server": "^10.0.3",
+        "@lumieducation/h5p-server": "^10.0.4",
         "clamscan": "^2.4.0",
         "ts-deepmerge": "^7.0.2"
     },
