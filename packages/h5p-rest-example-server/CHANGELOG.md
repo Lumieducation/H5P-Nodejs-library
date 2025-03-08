@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.2](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.1...v10.0.2) (2025-03-07)
+
+**Note:** Version bump only for package @lumieducation/h5p-rest-example-server
+
 ## [10.0.1](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.0...v10.0.1) (2025-03-06)
 
 **Note:** Version bump only for package @lumieducation/h5p-rest-example-server
