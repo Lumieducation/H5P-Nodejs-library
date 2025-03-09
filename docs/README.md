@@ -1,6 +1,6 @@
 # H5P-Nodejs-library
 
-[![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=master)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=master)
+[![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=release)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=release)
 
 This library provides everything needed to create custom H5P servers running on
 NodeJS. It is written in TypeScript and fully typed, which makes it much easier
@@ -15,15 +15,10 @@ terminology. The implementation is responsible for exposing HTTP endpoints,
 persisting data and calling maintenance functions. **This library is not an
 out-of-the-box solution to get a standalone H5P server.**
 
-**Check out the [GitBook documentation](https://docs.lumi.education) for details
-on how to use this library**.
-
-Please note that even if most functionality of H5P works, **there are parts
-which haven't been implemented yet or which might be faulty.** This is
-particularly true for security concerns. For a more comprehensive list of what
-works and what doesn't, check out [the documentation page on the current status
-of the project](/docs/development/status.md). The interfaces have reached some
-level of stability, but might still change in future major releases.
+Please note that even if most functionality of H5P works fine and the library is
+used by several high-volume projects, there are still some things that could be
+added or improved. Check out the [status page of the
+project](/docs/development/status.md) for details.
 
 ## Packages
 

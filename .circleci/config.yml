@@ -95,6 +95,7 @@ jobs:
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
+                  COVERALLS_FLAG_NAME: h5p-server
         steps:
             - checkout
             - attach_workspace:
@@ -109,6 +110,7 @@ jobs:
             - image: cimg/node:22.14.0
               environment:
                   TMPDIR: /mnt/ramdisk
+                  COVERALLS_FLAG_NAME: h5p-server
         resource_class: medium+
         steps:
             - checkout
@@ -127,6 +129,7 @@ jobs:
                   CLAMDSCAN_HOST: localhost
                   CLAMDSCAN_PORT: 3310
                   CLAMSCAN_DEBUG_MODE: true
+                  COVERALLS_FLAG_NAME: h5p-clamav-scanner
             - image: clamav/clamav:1.4
         resource_class: medium+
         steps:
@@ -145,6 +148,7 @@ jobs:
             - image: cimg/node:22.14.0-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
+                  COVERALLS_FLAG_NAME: h5p-html-exporter
         resource_class: medium+
         steps:
             - checkout
@@ -170,6 +174,8 @@ jobs:
     db-tests:
         docker:
             - image: cimg/node:22.14.0
+              environment:                    
+                  COVERALLS_FLAG_NAME: h5p-mongos3
             - image: circleci/mongo:latest
               environment:
                   MONGO_INITDB_ROOT_USERNAME: root
