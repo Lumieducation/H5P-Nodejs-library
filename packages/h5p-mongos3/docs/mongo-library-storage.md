@@ -28,12 +28,6 @@ You must import the storage implementation:
 import { MongoLibraryStorage, initMongo } from '@lumieducation/h5p-mongos3';
 ```
 
-or in classic JS style:
-
-```javascript
-const { MongoLibraryStorage, initMongo } = require('@lumieduation/h5p-mongos3');
-```
-
 Initialize the storage implementation like this:
 
 ```typescript

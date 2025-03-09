@@ -26,12 +26,6 @@ You must import the storage implementation via a submodule:
 import { MongoS3ContentStorage, initS3, initMongo } from '@lumieducation/h5p-mongos3';
 ```
 
-or in classic JS style:
-
-```javascript
-const { MongoS3ContentStorage, initS3, initMongo } = require('@lumieduation/h5p-mongos3');
-```
-
 Initialize the storage implementation like this:
 
 ```typescript

@@ -3,6 +3,7 @@
 There are a few ways in which the performance of `@lumieducation/h5p-server` can
 be improved:
 
+- [Performance optimizations for production use](#performance-optimizations-for-production-use)
   - [Caching library storage](#caching-library-storage)
   - [Serving the library files from a different system](#serving-the-library-files-from-a-different-system)
   - [Horizontal scaling](#horizontal-scaling)
@@ -29,7 +30,6 @@ This is how you use the storage:
 
 ```javascript
 import * as H5P from '@lumieducation/h5p-server';
-// const H5P = require('@lumieducation/h5p-server'); // old-style require alternative
 
 const cachedStorage = new H5P.cacheImplementations.CachedLibraryStorage(
     new H5P.fsImplementations.FileLibraryStorage(localLibraryPath)

@@ -18,7 +18,7 @@ you wish so._
 After installation, you can import the library in a JavaScript file with
 
 ```javascript
-const H5P = require('@lumieducation/h5p-server');
+import * as H5P from '@lumieducation/h5p-server';
 ```
 
 and instantiate the editor with

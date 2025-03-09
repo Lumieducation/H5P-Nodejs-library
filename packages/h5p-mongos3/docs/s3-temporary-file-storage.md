@@ -27,12 +27,6 @@ You must import the storage implementation via a submodule:
 import { S3TemporaryFileStorage, initS3 } from '@lumieducation/h5p-mongos3';
 ```
 
-or in classic JS style:
-
-```javascript
-const { S3TemporaryFileStorage, initS3 }  = require('@lumieducation/h5p-mongos3');
-```
-
 Initialize the storage implementation like this:
 
 ```typescript

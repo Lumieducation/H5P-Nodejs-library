@@ -32,16 +32,6 @@ import {
 } from '@lumieducation/h5p-mongos3';
 ```
 
-or in classic JS style:
-
-```javascript
-const {
-    MongoS3LibraryStorage,
-    initS3,
-    initMongo
-} = require('@lumieduation/h5p-mongos3');
-```
-
 Initialize the storage implementation like this:
 
 ```typescript

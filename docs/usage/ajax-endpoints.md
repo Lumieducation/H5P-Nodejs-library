@@ -19,12 +19,6 @@ Import the Express adapter router like this:
 import h5pAjaxExpressRouter from '@lumieducation/h5p-express';
 ```
 
-or in classic JS style:
-
-```javascript
-const h5pAjaxExpressRouter = require('@lumieducation/h5p-express');
-```
-
 Then add the router to your Express app like this
 
 ```javascript
