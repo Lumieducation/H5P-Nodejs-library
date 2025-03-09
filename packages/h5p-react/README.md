@@ -306,3 +306,14 @@ case.
 ### showCopyright
 
 Shows the copyright information in a window overlaying the H5P content.
+
+## Funding
+
+This work obtained financial support for development from the German
+BMBF-sponsored research project "lea.online" (FKN: W-143600).
+
+Read more about them at the following websites:
+
+- lea.online - [https://blogs.uni-bremen.de/leaonline](https://blogs.uni-bremen.de/leaonline)
+- University of Bremen - [https://www.uni-bremen.de/en.html](https://www.uni-bremen.de/en.html)
+- BMBF - [https://www.bmbf.de/en/index.html](https://www.bmbf.de/en/index.html)
