@@ -12,8 +12,8 @@ tracking and xAPI tracking indepedently.
 If you want to capture all xAPI statements, which allows you to have very
 detailed tracking, you either have to inject your own xAPI capturing JavaScript
 or use the xAPI capabilities of the `H5PPlayerComponent` in the [webcomponent
-package](../packages/h5p-webcomponents.md)) (or the corresponding functionality
-in the [React package](../packages/h5p-react.md)).
+package](../../packages/h5p-webcomponents/README.md) (or the corresponding functionality
+in the [React package](../../packages/h5p-react/README.md)).
 
 ## How it works
 

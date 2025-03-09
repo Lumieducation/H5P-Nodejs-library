@@ -85,8 +85,8 @@ when listing content objects. They should only be used for development and
 testing purposes or in very small deployments.
 
 It is advised to use the
-[MongoS3ContentStorage](/docs/packages/h5p-mongos3/mongo-s3-content-storage.md)
+[MongoS3ContentStorage](/packages/h5p-mongos3/docs/mongo-s3-content-storage.md)
 and
-[S3TemporaryFileStorage](/docs/packages/h5p-mongos3/s3-temporary-file-storage.md)
+[S3TemporaryFileStorage](/packages/h5p-mongos3/docs/s3-temporary-file-storage.md)
 classes of the h5p-mongos3 package. You can also write your own custom content
 storage and temporary file storage classes for other databases.

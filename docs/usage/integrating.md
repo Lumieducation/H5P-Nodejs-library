@@ -143,8 +143,8 @@ The interfaces that can be implemented are:
 There are already default implementations that you can use:
 
 * The implementations in the `fs` folder store all data in the local file system and are only for demonstration purposes and not suitable to be used in a multi-user environment and not optimized for speed. You might be able to use them in a cluster setup by using a network storage.
-* There is an implementation of the content storage for MongoDB and S3-compatible storage systems. Check out more information [in the documentation page](/docs/packages/h5p-mongos3/mongo-s3-content-storage.md).
-* There is an implementation of the temporary file storage for S3-compatible storage systems. Check out more information [in the documentation page](/docs/packages/h5p-mongos3/s3-temporary-file-storage.md).
+* There is an implementation of the content storage for MongoDB and S3-compatible storage systems. Check out more information [in the documentation page](/packages/h5p-mongos3/docs/mongo-s3-content-storage.md).
+* There is an implementation of the temporary file storage for S3-compatible storage systems. Check out more information [in the documentation page](/packages/h5p-mongos3/docs/s3-temporary-file-storage.md).
 * There is an implementation of the library file storage for MongoDB and S3-compatible storage systems.
 
 ## Calling maintenance functions regularly

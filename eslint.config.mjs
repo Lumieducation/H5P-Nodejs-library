@@ -11,6 +11,7 @@ export default [
     },
     {
         ignores: [
+            'typedoc/',
             '**/build/',
             '**/build-ide/',
             '**/coverage/',

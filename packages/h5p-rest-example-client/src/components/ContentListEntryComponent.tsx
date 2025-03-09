@@ -32,14 +32,31 @@ import { H5PEditorUI, H5PPlayerUI } from '@lumieducation/h5p-react';
 import { IContentListEntry, IContentService } from '../services/ContentService';
 import './ContentListEntryComponent.css';
 
-export default class ContentListEntryComponent extends React.Component<{
-    contentService: IContentService;
-    data: IContentListEntry;
-    onDelete: (content: IContentListEntry) => void;
-    onDiscard: (content: IContentListEntry) => void;
-    onSaved: (data: IContentListEntry) => void;
-    generateDownloadLink: (contentId: string) => string;
-}> {
+export default class ContentListEntryComponent extends React.Component<
+    {
+        contentService: IContentService;
+        data: IContentListEntry;
+        onDelete: (content: IContentListEntry) => void;
+        onDiscard: (content: IContentListEntry) => void;
+        onSaved: (data: IContentListEntry) => void;
+        generateDownloadLink: (contentId: string) => string;
+    },
+    {
+        asUserId?: string;
+        contextId?: string;
+        editing: boolean;
+        loading: boolean;
+        playing: boolean;
+        readOnlyState: boolean;
+        saved: boolean;
+        saveError: boolean;
+        saveErrorMessage: string;
+        saving: boolean;
+        showAsUserIdModal: boolean;
+        showContextIdModal: boolean;
+        showingCustomCopyright: boolean;
+    }
+> {
     constructor(props: {
         contentService: IContentService;
         data: IContentListEntry;
@@ -68,22 +85,6 @@ export default class ContentListEntryComponent extends React.Component<{
         this.contextIdInput = React.createRef();
         this.asUserIdSelect = React.createRef();
     }
-
-    public state: {
-        asUserId?: string;
-        contextId?: string;
-        editing: boolean;
-        loading: boolean;
-        playing: boolean;
-        readOnlyState: boolean;
-        saved: boolean;
-        saveError: boolean;
-        saveErrorMessage: string;
-        saving: boolean;
-        showAsUserIdModal: boolean;
-        showContextIdModal: boolean;
-        showingCustomCopyright: boolean;
-    };
 
     private h5pPlayer: React.RefObject<H5PPlayerUI>;
     private h5pEditor: React.RefObject<H5PEditorUI>;

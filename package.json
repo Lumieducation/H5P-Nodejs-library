@@ -56,8 +56,7 @@
         "test:watch:h5p-express": "npm run test:watch --workspace=packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --workspace=packages/h5p-mongos3",
         "test:watch": "jest --watch --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "typedoc": "NODE_OPTIONS='--max-old-space-size=8096' npx typedoc"
+        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}"
     },
     "release": {
         "branch": "release"
