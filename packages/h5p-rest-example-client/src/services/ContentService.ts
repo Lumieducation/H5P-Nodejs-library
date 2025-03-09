@@ -6,7 +6,7 @@ import type {
 
 export interface IContentListEntry {
     contentId: string;
-    mainLibrary: string;
+    mainLibrary?: string;
     title: string;
     originalNewKey?: string;
 }
