@@ -16,6 +16,7 @@ windows) as a command shell (otherwise scripts won't run).
 git clone https://github.com/lumieducation/h5p-nodejs-library
 cd h5p-nodejs-library
 npm install
+npm run setup
 ```
 
 This will install all dependencies in all packages, linking all

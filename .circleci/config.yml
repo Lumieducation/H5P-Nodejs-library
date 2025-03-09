@@ -15,6 +15,7 @@ jobs:
             - restore_cache:
                   key: h5p-core-cache2-{{ checksum "scripts/install.sh" }}
             - run: npm ci
+            - run: npm run setup
             - restore_cache:
                   key: h5p-examples-cache-{{ checksum "test/data/content-type-cache/real-content-types.json" }}
             - run: |
