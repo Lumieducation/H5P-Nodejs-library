@@ -1,4 +1,8 @@
-# SVG sanitizer package
+# @lumieducation/h5p-svg-sanitizer
+
+This package implements
+[`@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server)'s
+`IFileSanitizer` interface with a SVG sanitizer.
 
 ## Background
 

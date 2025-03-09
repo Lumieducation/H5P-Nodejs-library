@@ -1,10 +1,11 @@
-# Virus scanner using ClamAV
+# @lumieducation/h5p-clamav-scanner
 
 This package implements the `IFileMalwareScanner` malware scanning interface of
-the @lumieducation/h5p-server package by calling a
-[ClamAV](https://www.clamav.net/) scanner. ClamAV can be either installed on the
-host, called through a UNIX socket or a TCP socket. The package is a light
-wrapper around the NPM package
+the
+[`@lumieducation/h5p-server`](https://www.npmjs.com/package/@lumieducation/h5p-server)
+package by calling a [ClamAV](https://www.clamav.net/) scanner. ClamAV can be
+either installed on the host, called through a UNIX socket or a TCP socket. The
+package is a light wrapper around the NPM package
 [clamscan](https://www.npmjs.com/package/clamscan).
 
 ## ClamAV's security level
