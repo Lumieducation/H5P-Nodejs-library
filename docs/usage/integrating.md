@@ -1,3 +1,8 @@
+---
+title: Integrating the core library
+group: Documents
+category: Guides
+---
 # Using @lumieducation/h5p-server to create your own H5P server application
 
 ## Installation

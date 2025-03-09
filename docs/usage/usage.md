@@ -1,3 +1,14 @@
+---
+title: Usage
+group: Documents
+category: Guides
+children:
+    - ./architecture.md
+    - ./integrating.md
+    - ./ajax-endpoints.md
+    - ./h5p-editor-constructor.md    
+    - ../examples/rest/README.md
+---
 # Basic usage
 
 To find out what this library provides for you and what you must implement on

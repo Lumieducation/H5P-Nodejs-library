@@ -3,7 +3,7 @@
 - [Basic usage](usage/usage.md)
   - [Architecture](usage/architecture.md)  
   - [Integrating the core library](usage/integrating.md)
-  - [H5P Ajax Endpoints](usage/ajax-endpoints.md)
+  - [Handling Ajax requests](usage/ajax-endpoints.md)
   - [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
   - [REST Example](examples/rest/README.md)
 - Advanced usage

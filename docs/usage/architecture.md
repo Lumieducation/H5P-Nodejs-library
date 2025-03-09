@@ -1,3 +1,8 @@
+---
+title: Architecture
+group: Documents
+category: Guides
+---
 # Architecture
 
 ## General overview

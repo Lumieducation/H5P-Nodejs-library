@@ -1,3 +1,8 @@
+---
+title: Constructing H5PEditor
+group: Documents
+category: Guides
+---
 # Constructing a H5PEditor object
 
 There are two ways of creating a H5PEditor object:

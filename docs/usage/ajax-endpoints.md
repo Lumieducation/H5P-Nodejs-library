@@ -1,3 +1,8 @@
+---
+title: Handling AJAX requests
+group: Documents
+category: Guides
+---
 # Handling AJAX requests
 
 There are two ways of handling AJAX requests: You can use the out-of-the-box
