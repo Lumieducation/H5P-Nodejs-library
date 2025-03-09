@@ -1,3 +1,8 @@
+---
+title: Running in a cluster
+group: Documents
+category: Advice
+---
 # Running the example in cluster mode
 
 The example can (mostly) be run in cluster mode to scale h5p horizontally.

@@ -1,3 +1,8 @@
+---
+title: Localization
+group: Documents
+category: Features
+---
 # Localization
 
 ## Localizing the player

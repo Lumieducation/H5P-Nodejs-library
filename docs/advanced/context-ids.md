@@ -1,3 +1,8 @@
+---
+title: Multiple user states per object
+group: Documents
+category: Features
+---
 # Multiple content states per object
 
 You can save multiple user states (= the data a learner entered, e.g. the

@@ -1,3 +1,8 @@
+---
+title: Authorization
+group: Documents
+category: Features
+---
 # Authorization
 
 Many actions users perform in the H5P system need authorization. By default the

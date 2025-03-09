@@ -1,3 +1,8 @@
+---
+title: Security
+group: Documents
+category: Advice
+---
 # Security
 
 ## Restricting library installation

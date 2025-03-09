@@ -1,3 +1,8 @@
+---
+title: Testing & Code quality
+group: Documents
+category: Contributing
+---
 # Testing and code quality
 
 ## Running Tests

@@ -1,3 +1,8 @@
+---
+title: Customization
+group: Documents
+category: Features
+---
 # Customization
 
 An application using @lumieducation/h5p-server can customize the way H5P behaves in

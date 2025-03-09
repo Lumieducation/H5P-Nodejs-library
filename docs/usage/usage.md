@@ -1,5 +1,5 @@
 ---
-title: Usage
+title: Basic usage
 group: Documents
 category: Guides
 children:

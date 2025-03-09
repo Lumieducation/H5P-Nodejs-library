@@ -1,4 +1,9 @@
-# Getting Started
+---
+title: Getting started with contributing
+group: Documents
+category: Contributing
+---
+# Getting started with contributing
 
 ## Prerequisites
 

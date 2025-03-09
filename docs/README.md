@@ -2,8 +2,6 @@
 title: Overview
 group: Documents
 category: Guides
-children:
-    - ./usage/usage.md
 ---
 # H5P-Nodejs-library
 

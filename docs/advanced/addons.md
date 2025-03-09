@@ -1,3 +1,8 @@
+---
+title: Addons
+group: Documents
+category: Features
+---
 # Addons
 
 Addons are H5P libraries that can be added to the H5P Editor or to certain H5P

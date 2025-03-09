@@ -1,4 +1,9 @@
-# Completion tracking
+---
+title: Basic Completion tracking
+group: Documents
+category: Features
+---
+# Basic completion tracking
 
 The H5P client is capable of sending a message to the server when the user has
 completed a content object. This includes the time when this occured, how long

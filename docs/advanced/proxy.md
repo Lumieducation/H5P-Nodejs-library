@@ -1,3 +1,8 @@
+---
+title: Forward proxy support
+group: Documents
+category: Features
+---
 # Forward proxy support
 
 @lumieducation/h5p-server has to make outgoing HTTPS requests to contact the H5P

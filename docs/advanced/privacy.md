@@ -1,3 +1,8 @@
+---
+title: Privacy
+group: Documents
+category: Advice
+---
 # Privacy when using @lumieducation/h5p-server as part of your application
 
 You can use the following information to make sure you comply with your local

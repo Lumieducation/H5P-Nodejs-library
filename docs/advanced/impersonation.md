@@ -1,3 +1,8 @@
+---
+title: Impersonating users
+group: Documents
+category: Features
+---
 # Impersonating users
 
 It is possible to impersonate users when viewing a H5P object. This means that

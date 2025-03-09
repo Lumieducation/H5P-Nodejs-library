@@ -1,3 +1,8 @@
+---
+title: H5P core updates
+group: Documents
+category: Contributing
+---
 # Updating the H5P Core
 
 ## Introduction

@@ -1,3 +1,9 @@
+---
+title: Project status
+group: Documents
+category: Contributing
+---
+
 # Status of h5p-nodejs-library
 
 The library is at a stage in which the major functionality of the H5P editor and

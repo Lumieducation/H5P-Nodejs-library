@@ -1,3 +1,8 @@
+---
+title: Performance optimizations
+group: Documents
+category: Advice
+---
 # Performance optimizations for production use
 
 There are a few ways in which the performance of `@lumieducation/h5p-server` can

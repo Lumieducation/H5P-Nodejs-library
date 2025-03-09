@@ -1,3 +1,8 @@
+---
+title: User content state
+group: Documents
+category: Features
+---
 # User content state
 
 The H5P client is capable of saving the current state of the user so that the
