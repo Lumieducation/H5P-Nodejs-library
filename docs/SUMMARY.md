@@ -27,7 +27,7 @@
     * [Mongo Library Storage](packages/h5p-mongos3/mongo-library-storage.md)
     * [Mongo/S3 Library Storage](packages/h5p-mongos3/mongo-s3-library-storage.md)
   - [h5p-webcomponents](packages/h5p-webcomponents.md)
-  - [h5p-react](packages/h5p-react.md)
+  - [h5p-react](../packages/h5p-react/README.md)
   - [h5p-redis-lock](packages/h5p-redis-lock.md)
   - [h5p-svg-sanitizer](packages/h5p-svg-sanitizer.md)
   - [h5p-clamav-scanner](packages/h5p-clamav-scanner.md)
