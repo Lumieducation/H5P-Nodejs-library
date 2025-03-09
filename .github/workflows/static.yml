@@ -36,6 +36,7 @@ jobs:
               with:
                   node-version: 22
             - run: npm ci
+            - run: npm run build
             - run: npx typedoc
             - name: Setup Pages
               uses: actions/configure-pages@v5
