@@ -1,8 +1,7 @@
 # @lumieducation/h5p-mongo-s3
 
 This package contains several storage classes that are meant to be used in a
-server using
-[@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server):
+server using {@link "@lumieducation/h5p-server"}:
 
 - [Mongo + S3 content storage](./docs/mongo-s3-library-storage.md)
 - [S3 temporary file storage](./docs/s3-temporary-file-storage.md)

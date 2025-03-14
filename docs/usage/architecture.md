@@ -46,4 +46,4 @@ using Express (and server-side rendering) in the `/packages/h5p-examples`
 folder. There is also a more advanced SPA example in the
 `/packages/h5p-rest-example-server` and `/packages/h5p-rest-example-client`
 folders. Check out the documentation on it
-[here](/docs/examples/rest/README.md).
+[here](../examples/rest/README.md).

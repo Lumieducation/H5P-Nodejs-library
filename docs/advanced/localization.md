@@ -42,8 +42,9 @@ shows where this must be done:
 | 5. H5P Hub | When constructing `H5PEditor` set the option `enableHubLocalization` to true and load the namespace `hub` in your localization system. Call `H5PEditor.getContentTypeCache()` with a language or make sure that `req.language` is set in the GET AJAX route when using `h5p-express`. |
 | 6. library selector | When constructing `H5PEditor` set the option `enableLibraryNameLocalization` to true and load the namespace `library-metadata` in your localization system. Call `H5PEditor.getLibraryOverview()` with a language or make sure that `req.language` is set in the POST AJAX route when using `h5p-express`. |
 
-The [Express example](/packages/h5p-examples/src/express.ts) demonstrates how to
-do 1,2 and 3. The [Express adapter for the Ajax endpoints](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts)
+The [Express example](../../packages/h5p-examples/src/express.ts) demonstrates
+how to do 1,2 and 3. The [Express adapter for the Ajax
+endpoints](../../packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts)
 already implements 4 but requires the `t(...)` function to be added to the `req`
 object.
 

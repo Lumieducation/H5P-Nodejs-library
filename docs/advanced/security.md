@@ -101,7 +101,7 @@ Note: Sanitization only works if you pass uploaded content files to
 
 There's an SVG sanitizer that removes unsafe parts of SVGs in the
 [`@lumieducation/h5p-svg-sanitizer`
-package](/packages/h5p-svg-sanitizer/README.md).
+package](../../packages/h5p-svg-sanitizer/README.md).
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 already use this sanitizer.
@@ -186,7 +186,7 @@ Note: Malware scanning only works if you pass uploaded content files to
 
 There's a example scanner using ClamAV in the
 [`@lumieducation/h5p-clamav-scanner`
-package](/packages/h5p-clamav-scanner/README.md).
+package](../../packages/h5p-clamav-scanner/README.md).
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 can be configured to use it (see the package's docs for how to use it).

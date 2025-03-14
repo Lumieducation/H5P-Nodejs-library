@@ -3,6 +3,7 @@ title: Running in a cluster
 group: Documents
 category: Advice
 ---
+
 # Running the example in cluster mode
 
 The example can (mostly) be run in cluster mode to scale h5p horizontally.
@@ -14,8 +15,8 @@ purposes.) All other components support scaling across several instances.
 
 You'll need:
 
-* Docker
-* Docker Compose
+- Docker
+- Docker Compose
 
 You can access the application by calling
 [http://localhost:8080](http://localhost:8080) from your browser.
@@ -55,7 +56,7 @@ docker-compose down -v
 ## How it works
 
 The `docker-compose.yml` file configures a setup in which there are several
-services that make @lumieducation/h5p-server work in cluster mode:
+services that make {@link "@lumieducation/h5p-server} work in cluster mode:
 
 - Minio (provides S3 storage backend for content, temporary and library files)
 - MongoDB (provides database backend for content and library metadata)

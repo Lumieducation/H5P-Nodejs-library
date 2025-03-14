@@ -17,4 +17,4 @@ children:
     - ./proxy.md
     - ./security.md
 ---
-# Advanced aspects of using @lumieducation packages
+# Advanced usage

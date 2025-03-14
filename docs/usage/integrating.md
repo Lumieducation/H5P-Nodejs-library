@@ -76,21 +76,21 @@ required to display an H5P editor instead of HTML markup. If you return this
 data to the browser as a response to an Ajax call, you can also create Single
 Page Applications that don't rely on server-side rendering.
 
-See [the documentation page on constructing a `H5PEditor` object](/docs/usage/h5p-editor-constructor.md)
-for more details on how to instantiate the editor in a more customized way.
+See [the documentation page on constructing a `H5PEditor`
+object](./h5p-editor-constructor.md) for more details on how to instantiate the
+editor in a more customized way.
 
-You can create
-[`H5PPlayer`](/packages/h5p-server/src/H5PPlayer.ts)
-objects in a similar way and use them in a similar fashion.
+You can create {@link @lumieducation/h5p-server!H5PPlayer} objects in a similar
+way and use them in a similar fashion.
 
 ## Handling AJAX Requests made by the core H5P client
 
 The H5P client (running in the browser) sends many AJAX requests to the server
-(this application). While this library provides you with everything required
-to process the requests in the backend, your implementation must still serve the
+(this application). While this library provides you with everything required to
+process the requests in the backend, your implementation must still serve the
 requests to these endpoints. There is an Express adapter that you can use
-out-of-the box for this purpose. Check out the [documentation on endpoints](/docs/usage/ajax-endpoints.md)
-for details.
+out-of-the box for this purpose. Check out the [documentation on
+endpoints](./ajax-endpoints.md) for details.
 
 ## Serving static H5P core files for the client
 
@@ -147,18 +147,33 @@ The interfaces that can be implemented are:
 
 There are already default implementations that you can use:
 
-* The implementations in the `fs` folder store all data in the local file system and are only for demonstration purposes and not suitable to be used in a multi-user environment and not optimized for speed. You might be able to use them in a cluster setup by using a network storage.
-* There is an implementation of the content storage for MongoDB and S3-compatible storage systems. Check out more information [in the documentation page](/packages/h5p-mongos3/docs/mongo-s3-content-storage.md).
-* There is an implementation of the temporary file storage for S3-compatible storage systems. Check out more information [in the documentation page](/packages/h5p-mongos3/docs/s3-temporary-file-storage.md).
-* There is an implementation of the library file storage for MongoDB and S3-compatible storage systems.
+* The implementations in the `fs` folder store all data in the local file system
+  and are only for demonstration purposes and not suitable to be used in a
+  multi-user environment and not optimized for speed. You might be able to use
+  them in a cluster setup by using a network storage.
+* There is an implementation of the content storage for MongoDB and
+  S3-compatible storage systems. Check out more information [in the
+  documentation
+  page](../../packages/h5p-mongos3/docs/mongo-s3-content-storage.md).
+* There is an implementation of the temporary file storage for S3-compatible
+  storage systems. Check out more information [in the documentation
+  page](../../packages/h5p-mongos3/docs/s3-temporary-file-storage.md).
+* There is an implementation of the library file storage for MongoDB and
+  S3-compatible storage systems.
 
 ## Calling maintenance functions regularly
 
 The implementation needs to call several function regularly (comparable to a
 cronjob):
 
-* Call `H5PEditor.temporaryFileManager.cleanUp()` every 5 minutes. This checks which temporary files have expired and deletes them if necessary. It is important to do this, as temporary files are **not** automatically deleted when a piece of content is saved.
-* Call `H5PEditor.contentTypeCache.updateIfNecessary()` every 12 hours. This will download information about the available content types from the H5P Hub. If you don't do this, users won't be shown new content types or updates to existing content types when they become available.
+* Call `H5PEditor.temporaryFileManager.cleanUp()` every 5 minutes. This checks
+  which temporary files have expired and deletes them if necessary. It is
+  important to do this, as temporary files are **not** automatically deleted
+  when a piece of content is saved.
+* Call `H5PEditor.contentTypeCache.updateIfNecessary()` every 12 hours. This
+  will download information about the available content types from the H5P Hub.
+  If you don't do this, users won't be shown new content types or updates to
+  existing content types when they become available.
 
 ## Handling errors
 
@@ -195,6 +210,6 @@ customization](../advanced/customization.md) for more details.
 ## Compliance and privacy
 
 To conform with local law, you probably have to compile a privacy declaration
-for your application. You can check out the [documentation page on privacy](/docs/advanced/privacy.md)
+for your application. You can check out the [documentation page on privacy](../advanced/privacy.md)
 to find out what this library does with your users' personal data.
 
