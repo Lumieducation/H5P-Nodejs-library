@@ -1,7 +1,6 @@
 ---
 title: MongoS3ContentStorage
 group: Documents
-category: Implementations
 ---
 
 # Content storage

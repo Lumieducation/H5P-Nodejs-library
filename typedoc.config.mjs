@@ -16,15 +16,21 @@ const config = {
     projectDocuments: [
         'docs/README.md',
         'docs/usage/usage.md',
+        'docs/examples/examples.md',
         'docs/advanced/advanced.md',
         'docs/development/development.md'
     ],
-    categoryOrder: ['Guides', 'Contributing', 'Packages'],
+    categoryOrder: ['Guides', 'Examples', 'Contributing', 'API'],
     out: 'typedoc',
     disableSources: true,
     excludePrivate: true,
-    defaultCategory: 'Packages',
-    name: 'H5P NodeJS Library'
+    defaultCategory: 'API',
+    name: 'H5P NodeJS Library',
+    navigationLinks:
+    {
+        'GitHub': 'https://github.com/lumieducation/h5p-nodejs-library'
+    }
+
 };
 
 export default config;

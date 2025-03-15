@@ -1,7 +1,6 @@
 ---
 title: MongoS3LibraryStorage
 group: Documents
-category: Implementations
 ---
 
 # MongoDB + S3 library storage

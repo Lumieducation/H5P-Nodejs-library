@@ -3,6 +3,7 @@ title: Getting started with contributing
 group: Documents
 category: Contributing
 ---
+
 # Getting started with contributing
 
 ## Prerequisites
@@ -35,13 +36,13 @@ workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces) monorepo. A
 monorepo is one repository for several packages, which can be found in the
 `packages/` folder. Each subfolder is its own package, published via
 [npm](https://www.npmjs.com). Packages are mostly self contained except for the
-following cases:  
+following cases:
 
-* NPM modules needed for every package are located in the root `package.json`
+- NPM modules needed for every package are located in the root `package.json`
   and `node_module` folder. For example, the [jest](https://jestjs.io) testing
   framework and `typescript` are used in every package - therefore these are
   made accessible in every package.
-* data used for unit and integration tests that are required by more than one
+- data used for unit and integration tests that are required by more than one
   package are located in `test/data`. Data used for only single packages is
   located in the respective `package/<name>/test/data` folder.
 
@@ -64,3 +65,23 @@ npm start
 ```
 
 and open http://localhost:8080 in your browser.
+
+## Debugging
+
+The library emits log messages with
+[debug](https://www.npmjs.com/package/debug). To see those messages you have to
+set the environment variable `DEBUG` to `h5p:*`. There are several log levels.
+By default you'll only see the messages sent with the level `info`. To get the
+verbose log, set the environment variable `LOG_LEVEL` to debug (mind the
+capitalization).
+
+Example (for Linux):
+
+```bash
+DEBUG=h5p:* LOG_LEVEL=debug node script.js
+```
+
+## Other scripts
+
+Check out the many other npm scripts in [package.json](/package.json) for other
+development functionality.

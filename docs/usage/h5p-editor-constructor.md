@@ -13,19 +13,20 @@ There are two ways of creating a H5PEditor object:
   You can use the function if you're just getting started. Later on, you'll
   want to construct the editor with custom implementations of the data storage
   services. Check out the JSDoc of the function for details how to use it.
-- You can construct it manually by calling `new H5P.H5PEditor(...)`. The
-  constructor arguments are used to provide data storage services and
-  settings. You can find the interfaces referenced in the Typedocs of the
-  {link "@lumieducation/h5p-server"} module.
+- You can construct it manually by calling {@link
+  @lumieducation/h5p-server!H5PEditor.constructor | new H5P.H5PEditor(...)}. The
+  constructor arguments are used to provide data storage services and settings.
+  You can find the interfaces referenced in the API documentation of the {@link
+  "@lumieducation/h5p-server"} module.
 
 Explanation of the arguments of the constructor:
 
 ## cache
 
-The `cache` object is used by the {@link
-@lumieducation/h5p-server!ContentTypeCache} to persist information about content
-types. It might be also used for other functionality in the future. It must be
-able to store arbitrary nested objects and must implement the interface {@link
+The `cache` object is used by {@link @lumieducation/h5p-server!ContentTypeCache}
+to persist information about content types. It might be also used for other
+functionality in the future. It must be able to store arbitrary nested objects
+and must implement the interface {@link
 @lumieducation/h5p-server!IKeyValueStorage}. If used in a multi-machine or
 multi-process setup, the cache must be a single point of truth and work across
 all processes.
@@ -94,9 +95,10 @@ makes sure that only users who have created a file can access it later.
 ## translationCallback (optional)
 
 If you want to localize certain aspects of the editor, you must pass in a
-function that returns translated strings for certain keys. This function in turn
-can call another translation library to perform the localization. We suggest
-using [i18next](https://www.npmjs.com/package/i18next) as the keys
+function of type {@link @lumieducation/h5p-server!ITranslationFunction} that
+returns translated strings for certain keys. This function in turn can call
+another translation library to perform the localization. We suggest using
+[i18next](https://www.npmjs.com/package/i18next) as the keys
 @lumieducation/h5p-server uses follow the conventions of i18next. You can still
 choose any translation library you like.
 
@@ -115,12 +117,11 @@ details.
 ## urlGenerator (optional)
 
 if you need to overwrite the logic to create the urls per request you can pass a
-custom url generator. It is possible to inherit from UrlGenerator and overwrite
-the `baseUrl` function if needed.The url generator can also be used to add CSRF
-tokens to POST URLs.
-
-See the third-party [H5PServer](https://github.com/BoBiene/H5PServer) project
-for an implementation sample using the urlGenerator.
+custom url generator of type {@link @lumieducation/h5p-server!IUrlGenerator}. It
+is possible to inherit from the default {@link
+@lumieducation/h5p-server!UrlGenerator} and overwrite the {@link
+@lumieducation/h5p-server!UrlGenerator.baseUrl | baseUrl} function if needed.The
+url generator can also be used to add CSRF tokens to POST URLs.
 
 ## options (optional)
 

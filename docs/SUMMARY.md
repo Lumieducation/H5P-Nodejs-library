@@ -5,6 +5,7 @@
   - [Integrating the core library](usage/integrating.md)
   - [Handling Ajax requests](usage/ajax-endpoints.md)
   - [Constructing H5PEditor](usage/h5p-editor-constructor.md)  
+- Examples
   - [REST Example](examples/rest/README.md)
 - Advanced usage
   - [Authorization](advanced/authorization.md)

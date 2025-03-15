@@ -1,7 +1,6 @@
 ---
 title: S3TemporaryFileStorage
 group: Documents
-category: Implementations
 ---
 
 # S3 Temporary file storage

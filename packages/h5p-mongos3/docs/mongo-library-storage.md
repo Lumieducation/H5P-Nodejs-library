@@ -1,7 +1,6 @@
 ---
 title: MongoLibraryStorage
 group: Documents
-category: Implementations
 ---
 
 # Pure MongoDB library storage

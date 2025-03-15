@@ -23,25 +23,25 @@ out-of-the-box solution to get a standalone H5P server.**
 
 Please note that even if most functionality of H5P works fine and the library is
 used by several high-volume projects, there are still some things that could be
-added or improved. Check out the [status page of the
-project](./development/status.md) for details.
+added or improved. Check out the [status page of the project](./development/status.md) 
+for details.
 
 ## Packages
 
 The main Git repository is a monorepo that contains several packages, which can
 be installed through NPM. The packages are meant to be combined.
 
-| Package name                                                                      | Functionality                                                                                           | used in  |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------- |
-| {@link "@lumieducation/h5p-server"}                                               | the core package to run H5P in NodeJS                                                                   | backend  |
-| {@link "@lumieducation/h5p-express"}                                              | routes and controllers for Express                                                                      | backend  |
-| [@lumieducation/h5p-webcomponents](../packages/h5p-webcomponents/README.md)       | native web components to display the H5P player and editor in the browser                               | frontend |
-| [@lumieducation/h5p-react](../packages/h5p-react/README.md)                       | React components with the same functionality as the native web components                               | frontend |
-| [@lumieducation/h5p-mongos3](../packages/h5p-mongos3/README.md)                   | storage classes for MongoDB and S3                                                                      | backend  |
-| [@lumieducation/h5p-redis-lock](../packages/h5p-redis-lock/README.md)             | storage class for locks with Redis                                                                      | backend  |
-| {@link "@lumieducation/h5p-html-exporter"}                                        | an optional component that can create bundled HTML files for exporting                                  | backend  |
-| [**@lumieducation/h5p-svg-sanitizer**](../packages/h5p-svg-sanitizer/README.md)   | an optional package that protects against XSS attack in SVGs if you want to enable SVG in content files | backend  |
-| [**@lumieducation/h5p-clamav-scanner**](../packages/h5p-clamav-scanner/README.md) | an optional package that checks file uploads for viruses                                                | backend  |
+| Package name                                | Functionality                                                                                           | used in  |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------- |
+| {@link "@lumieducation/h5p-server"}         | the core package to run H5P in NodeJS                                                                   | backend  |
+| {@link "@lumieducation/h5p-express"}        | routes and controllers for Express                                                                      | backend  |
+| {@link "@lumieducation/h5p-webcomponents"}  | native web components to display the H5P player and editor in the browser                               | frontend |
+| {@link "@lumieducation/h5p-react"}          | React components with the same functionality as the native web components                               | frontend |
+| {@link "@lumieducation/h5p-mongos3"}        | storage classes for MongoDB and S3                                                                      | backend  |
+| {@link "@lumieducation/h5p-redis-lock"}     | storage class for locks with Redis                                                                      | backend  |
+| {@link "@lumieducation/h5p-html-exporter"}  | an optional component that can create bundled HTML files for exporting                                  | backend  |
+| {@link "@lumieducation/h5p-svg-sanitizer"}  | an optional package that protects against XSS attack in SVGs if you want to enable SVG in content files | backend  |
+| {@link "@lumieducation/h5p-clamav-scanner"} | an optional package that checks file uploads for viruses                                                | backend  |
 
 ## Examples
 
@@ -71,8 +71,7 @@ browser.
 
 Lumi tries to improve education wherever it is possible by providing a software
 that connects teachers with their students. Every help is appreciated and
-welcome. Feel free to create pull requests. Check out the [documentation pages
-for developers](./development/getting-started.md) to get started.
+welcome. Feel free to create pull requests. Check out the [documentation pages for developers](./development/getting-started.md) to get started.
 
 This project has adopted the code of conduct defined by the Contributor
 Covenant. It can be read in full [here](../code-of-conduct.md).
@@ -90,7 +89,7 @@ see the [tags on this repository](https://github.com/Lumieducation/Lumi/tags).
 ## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE v3 License - see
-the [LICENSE](/LICENSE) file for details
+the [LICENSE](../LICENSE) file for details
 
 ## Support
 

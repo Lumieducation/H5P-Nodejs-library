@@ -2,9 +2,9 @@
 const config = {
     entryPoints: ["./src/index.ts"],
     projectDocuments: [
-        "README.md",
         "docs/*.md"
     ],
+    alwaysCreateEntryPointModule: false,
     out: "doc",
 };
 

@@ -69,7 +69,7 @@ editor. There are two ways to enable it:
 ## Customizing addon behavior
 
 Addons can be configured by setting the property `libraryConfig` of your
-configuration implementation of {@link @lumieducation/h5p-server!IH5PConfig}.
+configuration implementation of {@link @lumieducation/h5p-server!IH5PConfig | IH5PConfig}.
 The property is a complex object with H5P library machine names as keys. The
 object is sent to the H5P client (run in the browser) as part of the
 H5PIntegration object and can be accessed in a H5P library by calling

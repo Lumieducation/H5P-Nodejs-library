@@ -3,15 +3,19 @@ title: Forward proxy support
 group: Documents
 category: Features
 ---
+
 # Forward proxy support
 
-@lumieducation/h5p-server has to make outgoing HTTPS requests to contact the H5P
-Hub. If your network requires the use of a forward proxy to reach the Internet,
-you must configure @lumieducation/h5p-server to use it for the HTTPS requests.
+{@link "@lumieducation/h5p-server"} has to make outgoing HTTPS requests to
+contact the H5P Hub. If your network requires the use of a forward proxy to
+reach the Internet, you must configure the used classes to use it for the HTTPS
+requests.
 
 There are two ways of enabling the proxy:
 
-1. Set the `proxy` property in IH5PConfig like this:
+1. Set the `proxy` property in {@link @lumieducation/h5p-server!IH5PConfig} like
+   this:
+
     ```json
     {
         "proxy": {
@@ -24,8 +28,8 @@ There are two ways of enabling the proxy:
 
 2. Set the HTTPS_PROXY environment variable like this:
 
-    ``HTTPS_PROXY=http://10.1.2.3:8080``
+    `HTTPS_PROXY=http://10.1.2.3:8080`
     or
-    ``HTTPS_PROXY=https://10.1.2.3:8080``
+    `HTTPS_PROXY=https://10.1.2.3:8080`
 
     (depending on whether your proxy can be accessed with https).

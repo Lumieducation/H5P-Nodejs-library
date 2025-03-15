@@ -3,6 +3,7 @@ title: Security
 group: Documents
 category: Advice
 ---
+
 # Security
 
 ## Restricting library installation
@@ -14,8 +15,7 @@ and SVG files, which are run in the user's browser, H5P basically deliberately
 allows Cross-Site-Scripting to some users.
 
 You must make sure that only trustworthy administrators can install and update
-H5P content types and libraries by setting up a restrictive [permission
-system](./authorization.md)!
+H5P content types and libraries by setting up a restrictive [permission system](authorization.md)!
 
 In addition, you must make sure that all H5P packages that are uploaded by
 administrators only contain safe and trustworthy H5P libraries! Never upload H5P
@@ -48,12 +48,14 @@ contents and don't alter files.
 File sanitizers are used for these user uploads:
 
 - uploaded individual (media) files inside the H5P editor (e.g. images) (calls
-  to `H5PEditor.saveContentFile`)
+  to {@link @lumieducation/h5p-server!H5PEditor.saveContentFile})
 - the contents (= media files in `content` directory) of uploaded H5P packages
-  (calls to `ContentStorage.copyFromDirectoryToTemporary` or
-  `H5PEditor.uploadPackage`)
+  (calls to {@link
+  @lumieducation/h5p-server!ContentStorer.copyFromDirectoryToTemporary} or
+  {@link @lumieducation/h5p-server!H5PEditor.uploadPackage})
 - the contents (= media files in `content` directory) of H5P packages directly
-  stored with `ContentStorage.saveContentFile` (deprecated method!)
+  stored with {@link @lumieducation/h5p-server!ContentStorer.copyFromDirectoryToStorage}
+  (deprecated method!)
 
 Library files are not sanitized, as library files always contain JavaScript.
 This means there's no need to filter them, as libraries are a potential security
@@ -70,12 +72,13 @@ const h5pEditor = new H5PEditor(
     // ... regular configuration ...
     // Add the sanitizers to the options parameter
     {
-        fileSanitizers: [ sanitizer1, sanitizer2 ]
+        fileSanitizers: [sanitizer1, sanitizer2]
     }
 );
 ```
 
-The sanitizers must implement this interface:
+The sanitizers must implement the interface {@link
+@lumieducation/h5p-server!IFileSanitizer}:
 
 ```ts
 interface IFileSanitizer {
@@ -94,14 +97,14 @@ enum FileSanitizerResult {
 }
 ```
 
-Note: Sanitization only works if you pass uploaded content files to
-`H5PEditor.saveContentFile` as temporary files, not as in-memory streams!
+Note: Sanitization only works if you pass uploaded content files to {@link
+@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
+in-memory streams!
 
 ### Existing file sanitizers
 
-There's an SVG sanitizer that removes unsafe parts of SVGs in the
-[`@lumieducation/h5p-svg-sanitizer`
-package](../../packages/h5p-svg-sanitizer/README.md).
+There's an SVG sanitizer that removes unsafe parts of SVGs in {@link
+"@lumieducation/h5p-svg-sanitizer".
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 already use this sanitizer.
@@ -132,12 +135,15 @@ if the scan was not positive.
 Malware scanners are used for these user uploads:
 
 - uploaded individual (media) files inside the H5P editor (e.g. images) (calls
-  to `H5PEditor.saveContentFile`)
+  to {@link @lumieducation/h5p-server!H5PEditor.saveContentFile})
 - the contents (= media files in `content` directory) of uploaded H5P packages
-  (calls to `ContentStorage.copyFromDirectoryToTemporary` or
-  `H5PEditor.uploadPackage`)
+  (calls to {@link
+  @lumieducation/h5p-server!ContentStorer.copyFromDirectoryToTemporary} or
+  {@link @lumieducation/h5p-server!H5PEditor.uploadPackage})
 - the contents (= media files in `content` directory) of H5P packages directly
-  stored with `ContentStorage.saveContentFile` (deprecated method!)
+  stored with {@link
+  @lumieducation/h5p-server!ContentStorer.copyFromDirectoryToStorage}
+  (deprecated method!)
 
 Library files are not scanned, as library files always contain JavaScript. This
 means there's no need to filter them, as libraries are a potential security risk
@@ -154,12 +160,13 @@ const h5pEditor = new H5PEditor(
     // ... regular configuration ...
     // Add the sanitizers to the options parameter
     {
-        malwareScanners: [ scanner1, scanner2 ]
+        malwareScanners: [scanner1, scanner2]
     }
 );
 ```
 
-The sanitizers must implement this interface:
+The sanitizers must implement the interface {@link
+@lumieducation/h5p-server!IFileMalewareScanner}:
 
 ```ts
 interface IFileMalwareScanner {
@@ -179,14 +186,14 @@ enum MalwareScanResult {
 }
 ```
 
-Note: Malware scanning only works if you pass uploaded content files to
-`H5PEditor.saveContentFile` as temporary files, not as in-memory streams!
+Note: Malware scanning only works if you pass uploaded content files to {@link
+@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
+in-memory streams!
 
 ### Existing malware scanners
 
-There's a example scanner using ClamAV in the
-[`@lumieducation/h5p-clamav-scanner`
-package](../../packages/h5p-clamav-scanner/README.md).
+There's a example scanner using ClamAV in {@link
+"@lumieducation/h5p-clamav-scanner"}.
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 can be configured to use it (see the package's docs for how to use it).
@@ -201,12 +208,12 @@ scanner is set up correctly. These test files utilize [EICAR test
 files](https://www.eicar.org/download-anti-malware-testfile/), which contain a
 totally harmless special character sequency detected by virus scanner.
 
-- `test/data/validator/h5p-with-virus.h5p`(/test/data/validator/h5p-with-virus.h5p):
-contains an [EICAR test
-file](https://www.eicar.org/download-anti-malware-testfile/) (as an image);
-upload this H5P package through the package upload functionality; you should see
-an error message explaining that the malware scanner has found something
-- `packages/h5p-clamav-scanner/test/eicar.png`(/packages/h5p-clamav-scanner/test/eicar.png):
+- [`test/data/validator/h5p-with-virus.h5p`](/test/data/validator/h5p-with-virus.h5p):
+  contains an [EICAR test
+  file](https://www.eicar.org/download-anti-malware-testfile/) (as an image);
+  upload this H5P package through the package upload functionality; you should see
+  an error message explaining that the malware scanner has found something
+- [`packages/h5p-clamav-scanner/test/eicar.png`](/packages/h5p-clamav-scanner/test/eicar.png):
   is an [EICAR test
   file](https://www.eicar.org/download-anti-malware-testfile/); upload this
   image as a media file anywhere in the H5P editor; you should see an error
@@ -220,8 +227,8 @@ protection.
 
 ### CSRF tokens
 
-You can add CSRF tokens to the URLs of XHR calls by enabling it in the
-`UrlGenerator`'s constructor:
+You can add CSRF tokens to the URLs of XHR calls by enabling it in the {@link
+@lumieducation/h5p-server!UrlGenerator}'s constructor:
 
 ```ts
 const urlGenerator = new UrlGenerator(
