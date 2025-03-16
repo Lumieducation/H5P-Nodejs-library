@@ -56,7 +56,7 @@ docker-compose down -v
 ## How it works
 
 The `docker-compose.yml` file configures a setup in which there are several
-services that make {@link "@lumieducation/h5p-server} work in cluster mode:
+services that make {@link "@lumieducation/h5p-server"} work in cluster mode:
 
 - Minio (provides S3 storage backend for content, temporary and library files)
 - MongoDB (provides database backend for content and library metadata)

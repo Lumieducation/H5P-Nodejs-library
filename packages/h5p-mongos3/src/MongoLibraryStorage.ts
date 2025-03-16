@@ -109,7 +109,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * Adds the metadata of the library to the repository and assigns a new id
      * to the installed library. This id is used later when the library must be
      * referenced somewhere. Throws errors if something goes wrong.
-     * @param libraryMetadata The library metadata object (= content of
+     * @param libraryData The library metadata object (= content of
      * library.json)
      * @param restricted True if the library can only be used be users allowed
      * to install restricted libraries.
@@ -434,10 +434,10 @@ export default class MongoLibraryStorage implements ILibraryStorage {
     }
 
     /**
-     * Returns a information about a library file.
-     * Throws an exception if the file does not exist.
+     * Returns a information about a library file. Throws an exception if the
+     * file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns the file stats
      */
     public async getFileStats(
@@ -495,7 +495,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns a readable stream of the file's contents
      */
     public async getFileStream(

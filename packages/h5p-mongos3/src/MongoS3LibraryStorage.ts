@@ -83,7 +83,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * up the partly installed library.
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
-     * @param stream The stream containing the file content
+     * @param readStream The stream containing the file content
      * @returns true if successful
      */
     public async addFile(
@@ -127,7 +127,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * Adds the metadata of the library to the repository and assigns a new id
      * to the installed library. This id is used later when the library must be
      * referenced somewhere. Throws errors if something goes wrong.
-     * @param libraryMetadata The library metadata object (= content of
+     * @param libraryData The library metadata object (= content of
      * library.json)
      * @param restricted True if the library can only be used be users allowed
      * to install restricted libraries.
@@ -441,7 +441,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns the file stats
      */
     public async getFileStats(
@@ -475,7 +475,7 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns a readable stream of the file's contents
      */
     public async getFileStream(
@@ -659,8 +659,8 @@ export default class MongoS3LibraryStorage implements ILibraryStorage {
     /**
      * Gets a list of all library files that exist for this library.
      * @param library the library name
-     * @param withMetadata true if the 'library.json' file should be included in
-     * the list
+     * @param options set `withMetadata` to `true` if the `library.json` file
+     * should be included in the list
      * @returns all files that exist for the library
      */
     public async listFiles(
