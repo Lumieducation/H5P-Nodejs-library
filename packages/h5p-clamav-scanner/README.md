@@ -19,8 +19,9 @@ So if you aren't able to use another antivirus system, using ClamAV probably is
 still better than nothing.
 
 If you have another anti-virus scanner, you can use the h5p-clamav-scanner
-package as a base for implementing the `IFileMalwareScanner` interface. We're
-interested in pull requests with other implementations!
+package as a base for implementing the {@link
+@lumieducation/h5p-server!IFileMalwareScanner} interface. We're interested in
+pull requests with other implementations!
 
 ## Usage
 
@@ -110,9 +111,9 @@ Note:
 won't work if you don't add specific support for it. It triggers the creation of
 a `ClamAVScanner` instance. You can use the other environment variables to
 configure the `ClamAVScanner` instance as needed.
-- Malware scanning only works of you pass uploaded content files to
-`H5PEditor.saveContentFile` as temporary files, not as in-memory streams.
-Temporary file uploads are used by default, in the example (and could be
-disabled with the environment variable TEMP_UPLOADS=false). The environment
-variable TEMP_UPLOADS is part of the example code and won't work in your custom
-implementation, if you don't add explicit support for it.
+- Malware scanning only works of you pass uploaded content files to {@link
+@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
+in-memory streams. Temporary file uploads are used by default, in the example
+(and could be disabled with the environment variable TEMP_UPLOADS=false). The
+environment variable TEMP_UPLOADS is part of the example code and won't work in
+your custom implementation, if you don't add explicit support for it.

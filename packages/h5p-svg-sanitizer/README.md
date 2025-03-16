@@ -24,7 +24,8 @@ sanitization.
 
 1. Install the `@lumieducation/h5p-svg-sanitizer` package in your application.
 2. Add the sanitizer to the H5P editor object options and add the `svg`
-   extension to the `contentWhitelist` property of the H5P configuration:
+   extension to the {@link @lumieducation/h5p-server!IH5PConfig.contentWhitelist
+   | contentWhitelist property of the H5P configuration}:
 
 ```ts
    const h5pEditor = new H5PEditor(

@@ -94,7 +94,7 @@ then its `contentId` will be `undefined` in `saveContententCallback`, not
 ## Saving content in the editor
 
 To save the user's changes in the editor, you have to execute the component's
-`save()` method (you must get a reference to component by using
+{@link H5PEditorUI.save} method (you must get a reference to component by using
 `React.createRef`):
 
 ```js
@@ -109,8 +109,8 @@ try {
 ```
 
 The component will perform some client-side validation of the entered data and
-call `saveContentCallback` (see below) with all the data needed to save the
-content.
+call {@link H5PEditorUI.saveContentCallback} (see below) with all the data
+needed to save the content.
 
 ## Callbacks
 
@@ -126,15 +126,15 @@ loadContentCallback = async (contentId: string) => Promise<IPlayerModel>;
     like **/
 ```
 
-You have to set `loadContentCallback` to a function that retrieves the necessary
-data from the backend. It returns a promise of data that follows the structure
-of {@link @lumieducation/h5p-server!IPlayerModel}. If there is an error, the
-callback should throw an error object with the error message in the `message`
-property.
+You have to set {@link H5PPlayerUI.loadContentCallback} to a function that
+retrieves the necessary data from the backend. It returns a promise of data that
+follows the structure of {@link @lumieducation/h5p-server!IPlayerModel}. If
+there is an error, the callback should throw an error object with the error
+message in the `message` property.
 
 If you use {@link "@lumieducation/h5p-server"} you will get the necessary
 information by using a renderer that simply returns the player model if you call
-`H5PPlayer.render(...)`:
+{@link @lumieducation/h5p-server!H5PPlayer.render}:
 
 ```ts
 h5pPlayerOnServer.setRenderer((model) => model);
@@ -157,12 +157,13 @@ loadContentCallback = async (contentId?: string) =>
     >;
 ```
 
-This callback is executed when the component needs to load data for a content
-id. The callback must create a request to an endpoint on the server, which
-retrieves all necessary information. The server-side implementation of the
-endpoint using @lumieducation/h5p-server has to combine the results of
-H5PEditor.render(...) and H5PEditor.getContent(...). The render must be set to
-simply return the editor model like this:
+This {@link H5PEditorUI.loadContentCallback | callback} is executed when the
+component needs to load data for a content id. The callback must create a
+request to an endpoint on the server, which retrieves all necessary information.
+The server-side implementation of the endpoint using @lumieducation/h5p-server
+has to combine the results of {@link @lumieducation/h5p-server!H5PEditor.render}
+and {@link @lumieducation/h5p-server!H5PEditor.getContent}. The render must be
+set to simply return the editor model like this:
 
 ```js
 h5pEditorOnServer.setRenderer((model) => model);
@@ -190,18 +191,19 @@ saveContentCallback = async (
 ) => Promise<{ contentId: string; metadata: IContentMetadata }>
 ```
 
-This callback is executed when the editor was told to save its content. You have
-to reach out to the server and persist the changes. When using
-@lumieducation/h5p-server, the server-side endpoint should call
-`H5PEditor.saveOrUpdateContentReturnMetaData(...)` and then return the result to
-the client, which returns the result as the return value of
-`saveContentCallback`.
+This {@link H5PEditorUI.saveContentCallback | callback} is executed when the
+editor was told to save its content. You have to reach out to the server and
+persist the changes. When using @lumieducation/h5p-server, the server-side
+endpoint should call {@link
+@lumieducation/h5p-server!H5PEditor.saveOrUpdateContentReturnMetaData} and then
+return the result to the client, which returns the result as the return value of
+{@link H5PEditorUI.saveContentCallback}.
 
 Note: `contentId` can be `undefined`, if the user is creating new content.
 
 ## Event Handlers
 
-The components emit a few events, to which you cna subscribe using the `on...`
+The components emit a few events, to which you can subscribe using the `on...`
 methods in the props of the components.
 
 ### H5PPlayerUI
@@ -246,8 +248,8 @@ Note: You can also simply catch errors by wrapping the `save()` method in a `try
 
 ## Executing underlying H5P functionality
 
-The H5PPlayerComponent offers properties and methods that can be used to do
-things with the underlying "core" H5P data structures and objects:
+The {@link H5PPlayerComponent} offers properties and methods that can be used to
+do things with the underlying "core" H5P data structures and objects:
 
 ### h5pInstance
 
