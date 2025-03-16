@@ -109,7 +109,7 @@ try {
 ```
 
 The component will perform some client-side validation of the entered data and
-call {@link H5PEditorUI.saveContentCallback} (see below) with all the data
+call `saveContentCallback` (see below) with all the data
 needed to save the content.
 
 ## Callbacks
@@ -126,7 +126,7 @@ loadContentCallback = async (contentId: string) => Promise<IPlayerModel>;
     like **/
 ```
 
-You have to set {@link H5PPlayerUI.loadContentCallback} to a function that
+You have to set `loadContentCallback` to a function that
 retrieves the necessary data from the backend. It returns a promise of data that
 follows the structure of {@link @lumieducation/h5p-server!IPlayerModel}. If
 there is an error, the callback should throw an error object with the error
@@ -157,13 +157,13 @@ loadContentCallback = async (contentId?: string) =>
     >;
 ```
 
-This {@link H5PEditorUI.loadContentCallback | callback} is executed when the
-component needs to load data for a content id. The callback must create a
-request to an endpoint on the server, which retrieves all necessary information.
-The server-side implementation of the endpoint using @lumieducation/h5p-server
-has to combine the results of {@link @lumieducation/h5p-server!H5PEditor.render}
-and {@link @lumieducation/h5p-server!H5PEditor.getContent}. The render must be
-set to simply return the editor model like this:
+This `loadContentCallback is executed when the component needs to load data for
+a content id. The callback must create a request to an endpoint on the server,
+which retrieves all necessary information. The server-side implementation of the
+endpoint using @lumieducation/h5p-server has to combine the results of {@link
+@lumieducation/h5p-server!H5PEditor.render} and {@link
+@lumieducation/h5p-server!H5PEditor.getContent}. The render must be set to
+simply return the editor model like this:
 
 ```js
 h5pEditorOnServer.setRenderer((model) => model);
@@ -191,13 +191,12 @@ saveContentCallback = async (
 ) => Promise<{ contentId: string; metadata: IContentMetadata }>
 ```
 
-This {@link H5PEditorUI.saveContentCallback | callback} is executed when the
-editor was told to save its content. You have to reach out to the server and
-persist the changes. When using @lumieducation/h5p-server, the server-side
-endpoint should call {@link
+`saveContentCallback` is executed when the editor was told to save its content.
+You have to reach out to the server and persist the changes. When using
+@lumieducation/h5p-server, the server-side endpoint should call {@link
 @lumieducation/h5p-server!H5PEditor.saveOrUpdateContentReturnMetaData} and then
 return the result to the client, which returns the result as the return value of
-{@link H5PEditorUI.saveContentCallback}.
+`saveContentCallback`.
 
 Note: `contentId` can be `undefined`, if the user is creating new content.
 
