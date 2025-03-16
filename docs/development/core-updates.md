@@ -30,8 +30,7 @@ to regularly update the references to the core files.
 4. Check if there are new JavaScript files in the core that are required to run
    the editor or the player. Add them to the `H5PPlayer.coreScripts()` or
    `H5PEditor.coreScripts()` methods in the respective files.
-5. Run `npx ts-node
-   packages/h5p-server/scripts/generate-supported-language-list.ts` to update
+5. Run `npx ts-node packages/h5p-server/scripts/generate-supported-language-list.ts` to update
    the list of languages the editor supports.
 6. Run all tests (including test:integration) to check if the everything still
    works as expected. (for example, inserting scripts might break tests)

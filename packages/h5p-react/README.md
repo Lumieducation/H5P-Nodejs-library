@@ -12,9 +12,9 @@ using
 [@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server))**
 that provides endpoints that do these things:
 
--   get the required data about content (one for playing, one for editing)
--   save content created in the editor
--   serve all AJAX endpoints required by the H5P core
+- get the required data about content (one for playing, one for editing)
+- save content created in the editor
+- serve all AJAX endpoints required by the H5P core
 
 It is recommended to checkout the rest example that uses
 @lumieducation/h5p-server to see how the component can be used in an
@@ -121,19 +121,19 @@ You must provide these callbacks in the props for the components to work:
 #### loadContentCallback
 
 ```ts
-loadContentCallback = async (contentId: string) => Promise<IPlayerModel>
+loadContentCallback = async (contentId: string) => Promise<IPlayerModel>;
 /** see types.ts in @lumieducation/h5p-server for details how IPlayerModel looks
     like **/
 ```
 
 You have to set `loadContentCallback` to a function that retrieves the necessary
 data from the backend. It returns a promise of data that follows the structure
-of IPlayerModel in [types.ts](/packages/h5p-server/src/types.ts) in
-@lumieducation/h5p-server. If there is an error, the callback should throw an
-error object with the error message in the `message` property.
+of {@link @lumieducation/h5p-server!IPlayerModel}. If there is an error, the
+callback should throw an error object with the error message in the `message`
+property.
 
-If you use @lumieducation/h5p-server you will get the necessary information by
-using a renderer that simply returns the player model if you call
+If you use {@link "@lumieducation/h5p-server"} you will get the necessary
+information by using a renderer that simply returns the player model if you call
 `H5PPlayer.render(...)`:
 
 ```ts
@@ -147,12 +147,14 @@ const playerModel = await h5pPlayerOnServer.render(contentId, user);
 #### loadContentCallback
 
 ```ts
-loadContentCallback = async (contentId?: string) => Promise<
-    IEditorModel /** see types.ts in @lumieducation/h5p-server for details **/ & {
-        library?: string;
-        metadata?: IContentMetadata;
-        params?: any;
-    }>
+loadContentCallback = async (contentId?: string) =>
+    Promise<
+        IEditorModel /** see types.ts in @lumieducation/h5p-server for details **/ & {
+            library?: string;
+            metadata?: IContentMetadata;
+            params?: any;
+        }
+    >;
 ```
 
 This callback is executed when the component needs to load data for a content
@@ -168,11 +170,11 @@ h5pEditorOnServer.setRenderer((model) => model);
 
 Notes:
 
--   `contentId` can be `undefined` if the editor is used to create new content
--   The library, metadata and params property of the returned object must
-    only be defined if `contentId` is defined.
--   The callback should throw an error with a message in the message property if
-    something goes wrong.
+- `contentId` can be `undefined` if the editor is used to create new content
+- The library, metadata and params property of the returned object must
+  only be defined if `contentId` is defined.
+- The callback should throw an error with a message in the message property if
+  something goes wrong.
 
 #### saveContentCallback
 
@@ -236,8 +238,8 @@ subscribing to this event.
 
 #### onSaveError
 
-This event handler is called when there was an error while saving the content. A more
-detailed message can be found in the `message` paramter.
+This event handler is called when there was an error while saving the content. A
+more detailed message can be found in the `message` paramter.
 
 Note: You can also simply catch errors by wrapping the `save()` method in a `try
 {...} catch {...}` block instead of subscribing to this event.

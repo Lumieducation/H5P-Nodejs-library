@@ -71,7 +71,7 @@ MongoDB checks if indexes already exist before it creates new ones.
 
 ## Using MongoLibraryStorage in the example
 
-The [example Express application](/packages/h5p-examples/src/express.ts) can be
+The [example Express application](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-examples/src/express.ts) can be
 configured to use the MongoDB library storage by setting the environment variables
 from above and these additional variables:
 
@@ -104,7 +104,7 @@ when to call the migration!
 ## Developing and testing
 
 There are automated tests in
-[`/test/implementation/db/MongoLibraryStorage.test.ts`](/packages/h5p-mongos3/test/MongoLibraryStorage.test.ts).
+[`/test/implementation/db/MongoLibraryStorage.test.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-mongos3/test/MongoLibraryStorage.test.ts).
 However, these tests will not be called automatically when you run `npm run
 test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute

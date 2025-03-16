@@ -73,7 +73,7 @@ const temporaryStorage = new S3TemporaryFileStorage(
 
 ## Using S3TemporaryFileStorage in the example
 
-The [example Express application](/packages/h5p-examples/src/express.ts) can be
+The [example Express application](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-examples/src/express.ts) can be
 configured to use the S3 temporary storage by setting the environment variables
 from above and these additional variables:
 

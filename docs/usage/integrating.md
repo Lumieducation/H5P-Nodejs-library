@@ -52,7 +52,7 @@ This object of type {@link @lumieducation/h5p-server!H5PEditor | H5PEditor } is
 that must be called when by the routes of your server. To find out what these
 routes are and how they must call {@link @lumieducation/h5p-server!H5PEditor |
 H5PEditor }, you can either check out the [section on content views in the docs](#creating-content-views)
-or the [Express example project](/packages/h5p-examples/src/expressRoutes.ts).
+or the [Express example project](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-examples/src/expressRoutes.ts).
 
 To render a HTML page (server-side rendering) with the editor inside (= the
 HTML user interface around the actual editor and the editor itself) for a
@@ -69,7 +69,7 @@ To use a custom renderer, change it with
 h5pEditor.setRenderer(model => /** HTML string or object **/);
 ```
 
-Check out the [default editor renderer](/packages/h5p-server/src/renderers/default.ts)
+Check out the [default editor renderer](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-server/src/renderers/default.ts)
 for inspiration or customization possibilities.
 
 You can also use a custom renderer that returns a plain object with the data

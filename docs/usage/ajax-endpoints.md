@@ -94,7 +94,7 @@ different in your setup.
 
 Consult the {@link @lumieducation/h5p-server!H5PAjaxEndpoint | documentation of
 H5PAjaxEndpoint} for details on who to retrieve the required parameters from the
-HTTP requests. You can also look at the [Express Ajax Adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
+HTTP requests. You can also look at the [Express Ajax Adapter](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
 an example.
 
 ## Configuring custom endpoint routes

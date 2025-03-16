@@ -3,8 +3,7 @@ import { Readable, Stream } from 'stream';
 
 /**
  * The content id identifies content objects in storage. The PHP implementation of H5P
- * uses integers for this, we try to use strings. This might change in the future, if it
- * turns out that the H5P editor client doesn't work with string ids.
+ * uses integers for this, we use strings.
  */
 export type ContentId = string;
 

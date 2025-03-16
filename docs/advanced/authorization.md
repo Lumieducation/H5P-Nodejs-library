@@ -18,7 +18,7 @@ authorization.
 
 See the documentation of {@link @lumieducation/h5p-server!IPermissionSystem |
 IPermissionSystem} for and the
-[`ExamplePermissionSystem`](../../packages/h5p-rest-example-server/src/ExamplePermissionSystem.ts)
+[`ExamplePermissionSystem`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-rest-example-server/src/ExamplePermissionSystem.ts)
 for reference how to implement the permission system.
 
 Note that {@link @lumieducation/h5p-server!IPermissionSystem |

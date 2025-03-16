@@ -156,12 +156,12 @@ loadContentCallback = async (contentId: string) => Promise<IPlayerModel>
 
 You have to set `loadContentCallback` to a function that retrieves the necessary
 data from the backend. It returns a promise of data that follows the structure
-of IPlayerModel in [types.ts](/packages/h5p-server/src/types.ts) in
-@lumieducation/h5p-server. If there is an error, the callback should throw an
-error object with the error message in the `message` property.
+of {@link @lumieducation/h5p-server!IPlayerModel}. If there is an error, the
+callback should throw an error object with the error message in the `message`
+property.
 
-If you use @lumieducation/h5p-server you will get the necessary information by using a
-renderer that simply returns the player model if you call
+If you use {@link "@lumieducation/h5p-server"} you will get the necessary
+information by using a renderer that simply returns the player model if you call
 `H5PPlayer.render(...)`:
 
 ```ts

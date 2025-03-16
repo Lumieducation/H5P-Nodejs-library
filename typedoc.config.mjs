@@ -30,7 +30,6 @@ const config = {
     {
         'GitHub': 'https://github.com/lumieducation/h5p-nodejs-library'
     }
-
 };
 
 export default config;
