@@ -25,7 +25,7 @@ declare global {
     }
 }
 
-interface IH5PEditorUIProps {
+export interface IH5PEditorUIProps {
     contentId: string;
     loadContentCallback: (contentId: string) => Promise<
         IEditorModel & {

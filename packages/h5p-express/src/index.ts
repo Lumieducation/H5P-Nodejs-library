@@ -9,7 +9,12 @@ import contentUserDataExpressRouter from './ContentUserDataRouter/ContentUserDat
 import contentTypeCacheExpressRouter from './ContentTypeCacheRouter/ContentTypeCacheExpressRouter';
 import finishedDataExpressRouter from './FinishedDataRouter/FinishedDataExpressRouter';
 
+import type H5PAjaxExpressRouterOptions from './H5PAjaxRouter/H5PAjaxExpressRouterOptions';
+import type LibraryAdministrationExpressRouterOptions from './LibraryAdministrationRouter/LibraryAdministrationExpressRouterOptions';
+
 export {
+    H5PAjaxExpressRouterOptions,
+    LibraryAdministrationExpressRouterOptions,
     IRequestWithLanguage,
     IRequestWithUser,
     IActionRequest,

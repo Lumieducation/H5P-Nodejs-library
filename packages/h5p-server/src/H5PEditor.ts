@@ -977,8 +977,7 @@ export default class H5PEditor {
      * of the file in the local filesystem
      * @param user the user who is uploading the package; optional if
      * onlyInstallLibraries is set to true
-     * @param options (optional) further options:
-     * @param onlyInstallLibraries true if content should be disregarded
+     * @param options.onlyInstallLibraries true if content should be disregarded
      * @returns the content information extracted from the package. The metadata
      * and parameters property will be undefined if onlyInstallLibraries was set
      * to true.

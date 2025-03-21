@@ -28,7 +28,7 @@ declare global {
     }
 }
 
-interface IH5PPlayerUIProps {
+export interface IH5PPlayerUIProps {
     contentId: string;
     contextId?: string;
     asUserId?: string;

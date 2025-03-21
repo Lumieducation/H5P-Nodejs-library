@@ -662,8 +662,7 @@ export interface IFinishedUserData {
 export interface IContentUserDataStorage {
     /**
      * Creates or updates the content user data.
-     * @param contextId an arbitrary value that can be used to save multiple
-     * states for one content - user tuple
+     * @param userData user data
      */
     createOrUpdateContentUserData(userData: IContentUserData): Promise<void>;
 
@@ -694,7 +693,7 @@ export interface IContentUserDataStorage {
      * @param contentId The id of the content to load user data from
      * @param dataType Used by the h5p.js client
      * @param subContentId The id provided by the h5p.js client call
-     * @param user The user who owns this object
+     * @param userId The user who owns this object
      * @param contextId an arbitrary value that can be used to save multiple
      * states for one content - user tuple
      * @returns the data
@@ -710,7 +709,7 @@ export interface IContentUserDataStorage {
     /**
      * Lists all associated contentUserData for a given contentId and user.
      * @param contentId The id of the content to load user data from
-     * @param user The id of the user to load user data from
+     * @param userId The id of the user to load user data from
      * @param contextId an arbitrary value that can be used to save multiple
      * states for one content - user tuple
      * @returns An array of objects containing the dataType, subContentId and
@@ -812,7 +811,7 @@ export interface IContentStorage {
     /**
      * Deletes a content object and all its dependent files from the repository.
      * Throws errors if something goes wrong.
-     * @param id The content id to delete.
+     * @param contentId The content id to delete.
      * @param user The user who wants to delete the content
      */
     deleteContent(contentId: ContentId, user?: IUser): Promise<void>;
@@ -841,8 +840,8 @@ export interface IContentStorage {
     /**
      * Returns information about a content file (e.g. image or video) inside a
      * piece of content.
-     * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get information about
+     * @param contentId the id of the content object that the file is attached to
+     * @param file the filename of the file to get information about
      * @param user the user who wants to retrieve the content file
      * @returns
      */
@@ -855,8 +854,9 @@ export interface IContentStorage {
     /**
      * Returns a readable stream of a content file (e.g. image or video) inside
      * a piece of content
-     * @param id the id of the content object that the file is attached to
-     * @param filename the filename of the file to get; can be a path including
+     * @param contentId the id of the content object that the file is attached
+     * to
+     * @param file the filename of the file to get; can be a path including
      * subdirectories (e.g. 'images/xyz.png')
      * @param user the user who wants to retrieve the content file
      * @param rangeStart (optional) the position in bytes at which the stream
@@ -952,7 +952,7 @@ export interface ILibraryStorage {
      * clean up the partly installed library.
      * @param library The library that is being installed
      * @param filename Filename of the file to add, relative to the library root
-     * @param stream The stream containing the file content
+     * @param readStream The stream containing the file content
      * @returns true if successful
      */
     addFile(
@@ -965,7 +965,7 @@ export interface ILibraryStorage {
      * Adds the metadata of the library to the repository and assigns a new id
      * to the installed library. This dea is used later when the library must be
      * referenced somewhere. Throws errors if something goes wrong.
-     * @param libraryMetadata The library metadata object (= content of
+     * @param libraryData The library metadata object (= content of
      * library.json)
      * @param restricted True if the library can only be used be users allowed
      * to install restricted libraries.
@@ -1035,7 +1035,7 @@ export interface ILibraryStorage {
      * Returns a information about a library file.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns the file stats
      */
     getFileStats(library: ILibraryName, file: string): Promise<IFileStats>;
@@ -1044,7 +1044,7 @@ export interface ILibraryStorage {
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns a readable stream of the file's contents
      */
     getFileStream(library: ILibraryName, file: string): Promise<Readable>;
@@ -2451,8 +2451,8 @@ export interface ILockProvider {
      *
      * @param key the key of the resource to lock
      * @param callback the code which should run once the lock was acquired
-     * @param timeout how long to wait until the lock is acquired
-     * @param maxOccupationTime how long to wait until the code in callback is
+     * @param options.timeout how long to wait until the lock is acquired
+     * @param options.maxOccupationTime how long to wait until the code in callback is
      * finished
      * @throws 'timeout' or 'occupation-time-exceed' errors
      */
