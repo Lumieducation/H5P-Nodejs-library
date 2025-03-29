@@ -32,11 +32,6 @@ import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
-import ContentStorer from './ContentStorer';
-
-import type TemporaryFileManager from './TemporaryFileManager';
-
-export type { TemporaryFileManager };
 
 // Interfaces
 import {
@@ -106,7 +101,6 @@ export {
     AjaxErrorResponse,
     AjaxSuccessResponse,
     ContentFileScanner,
-    ContentStorer,
     ContentTypeCache,
     ContentUserDataManager,
     H5PAjaxEndpoint,
