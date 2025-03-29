@@ -104,7 +104,7 @@ in-memory streams!
 ### Existing file sanitizers
 
 There's an SVG sanitizer that removes unsafe parts of SVGs in {@link
-"@lumieducation/h5p-svg-sanitizer".
+"@lumieducation/h5p-svg-sanitizer"}.
 
 The examples in `packages/h5p-examples` and `packages/h5p-rest-example-server`
 already use this sanitizer.

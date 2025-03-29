@@ -29,6 +29,10 @@ const config = {
     navigationLinks:
     {
         'GitHub': 'https://github.com/lumieducation/h5p-nodejs-library'
+    },
+    plugin: ["typedoc-plugin-missing-exports"],
+    packageOptions: {        
+        excludeExternals: true,
     }
 };
 

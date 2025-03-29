@@ -20,7 +20,7 @@ detailed tracking, you either have to inject your own xAPI capturing JavaScript
 or use the xAPI capabilities of the {@link
 @lumieducation/h5p-webcomponents!H5PPlayerComponent} in {@link
 "@lumieducation/h5p-webcomponents"} (or the corresponding functionality in
-{@link "@lumieducation/h5p-react}).
+{@link "@lumieducation/h5p-react"}).
 
 ## How it works
 
