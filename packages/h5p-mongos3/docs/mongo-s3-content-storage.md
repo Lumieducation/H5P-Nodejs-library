@@ -64,7 +64,7 @@ const storage = new MongoS3ContentStorage(
 
 - The function {@link initS3} creates an S3 client using the `aws-sdk` npm
   package.
-- The function {@link @lumieducation/h5p-server!initMongo} creates a MongoDB
+- The function {@link initMongo} creates a MongoDB
   client using the `mongodb` npm package.
 - You can pass credentials and other configuration values to `initS3` and
   `initMongo` through the function parameters. Alternatively you can use these

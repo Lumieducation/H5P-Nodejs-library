@@ -32,6 +32,7 @@ import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
+import TemporaryFileManager from './TemporaryFileManager';
 
 // Interfaces
 import {
@@ -113,6 +114,7 @@ export {
     LibraryName,
     Logger,
     PackageExporter,
+    TemporaryFileManager,
     streamToString,
     // interfaces
     ContentId,

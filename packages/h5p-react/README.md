@@ -247,8 +247,9 @@ Note: You can also simply catch errors by wrapping the `save()` method in a `try
 
 ## Executing underlying H5P functionality
 
-The {@link H5PPlayerComponent} offers properties and methods that can be used to
-do things with the underlying "core" H5P data structures and objects:
+The {@link @lumieducation/h5p-webcomponents!H5PPlayerComponent} offers
+properties and methods that can be used to do things with the underlying "core"
+H5P data structures and objects:
 
 ### h5pInstance
 

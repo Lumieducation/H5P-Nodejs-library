@@ -71,25 +71,25 @@ export default class PackageImporter {
      * disk
      * @param directoryPath The full path of the directory to which the package
      * should be extracted
-     * @param includeLibraries If true, the library directories inside the
+     * @param options.includeLibraries If true, the library directories inside
+     * the package will be extracted.
+     * @param options.includeContent If true, the content folder inside the
      * package will be extracted.
-     * @param includeContent If true, the content folder inside the package will
-     * be extracted.
-     * @param includeMetadata If true, the h5p.json file inside the package will
-     * be extracted.
+     * @param options.includeMetadata If true, the h5p.json file inside the
+     * package will be extracted.
      * @returns
      */
     public static async extractPackage(
         packagePath: string,
         directoryPath: string,
-        {
-            includeLibraries = false,
-            includeContent = false,
-            includeMetadata = false
-        }: {
+        options: {
             includeContent: boolean;
             includeLibraries: boolean;
             includeMetadata: boolean;
+        } = {
+            includeLibraries: false,
+            includeContent: false,
+            includeMetadata: false
         }
     ): Promise<void> {
         log.info(`extracting package ${packagePath} to ${directoryPath}`);
@@ -100,11 +100,12 @@ export default class PackageImporter {
                 !entry.filename.endsWith('/') &&
                 !basename.startsWith('.') &&
                 !basename.startsWith('_') &&
-                ((includeContent && entry.filename.startsWith('content/')) ||
-                    (includeLibraries &&
+                ((options.includeContent &&
+                    entry.filename.startsWith('content/')) ||
+                    (options.includeLibraries &&
                         entry.filename.includes('/') &&
                         !entry.filename.startsWith('content/')) ||
-                    (includeMetadata && entry.filename === 'h5p.json'))
+                    (options.includeMetadata && entry.filename === 'h5p.json'))
             ) {
                 const readStream = await entry.openReadStream();
                 const writePath = path.join(directoryPath, entry.filename);

@@ -16,19 +16,27 @@ export default class DependencyGetter {
     /**
      * Gets all dependent libraries of the libraries in the list.
      * @param libraries the libraries whose dependencies should be retrieved
-     * @param dynamic include dependencies that are part of the dynamicDependencies property or used in the content
-     * @param editor include dependencies that are listed in editorDependencies
-     * @param preloaded include regular dependencies that are included in preloadedDependencies
-     * @param doNotAdd libraries in this list will not be added to the dependency list
+     * @param options.dynamic include dependencies that are part of the
+     * dynamicDependencies property or used in the content
+     * @param options.editor include dependencies that are listed in
+     * editorDependencies
+     * @param options.preloaded include regular dependencies that are included
+     * in preloadedDependencies
+     * @param doNotAdd libraries in this list will not be added to the
+     * dependency list
      * @returns a list of libraries
      */
     public async getDependentLibraries(
         libraries: ILibraryName[],
-        {
-            dynamic = false,
-            editor = false,
-            preloaded = false
-        }: { dynamic?: boolean; editor?: boolean; preloaded?: boolean },
+        options: {
+            dynamic?: boolean;
+            editor?: boolean;
+            preloaded?: boolean;
+        } = {
+            dynamic: false,
+            editor: false,
+            preloaded: false
+        },
         doNotAdd?: ILibraryName[]
     ): Promise<ILibraryName[]> {
         log.info(
@@ -51,7 +59,11 @@ export default class DependencyGetter {
                         ? Number.parseInt(library.minorVersion, 10)
                         : library.minorVersion
                 ),
-                { preloaded, editor, dynamic },
+                {
+                    preloaded: options?.preloaded,
+                    editor: options?.editor,
+                    dynamic: options?.dynamic
+                },
                 dependencies,
                 doNotAdd
             );

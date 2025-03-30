@@ -91,7 +91,7 @@ TEMPORARYSTORAGE=s3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=minio
 By default the storage implementation allows all users read access to all files
 and every use can create new temporary files! It is very possible that this is
 not something you want! You can add a function to the options object of the
-constructor of {@link S3TemporayStorage} to customize access restrictions:
+constructor of {@link S3TemporaryFileStorage} to customize access restrictions:
 
 ```typescript
     getPermissions: (
