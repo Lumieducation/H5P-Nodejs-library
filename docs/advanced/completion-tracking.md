@@ -46,7 +46,7 @@ or use the xAPI capabilities of the {@link
   class for production is {@link
   @lumieducation/h5p-mongos3!MongoContentUserDataStorage} in the {@link
   "@lumieducation/h5p-mongos3"} package. There's also a {@link
-  @lumieducation/h5p-server!fsImplementations.FileContentUserDataStorageClass}
+  @lumieducation/h5p-server!fsImplementations.FileContentUserDataStorage}
   in the {@link "@lumieducation/h5p-server"} package that you can use for
   development or testing purposes.
 - Pass the implementation of {@link

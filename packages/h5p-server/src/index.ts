@@ -33,6 +33,7 @@ import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 import TemporaryFileManager from './TemporaryFileManager';
+import ContentStorer from './ContentStorer';
 
 // Interfaces
 import {
@@ -102,6 +103,7 @@ export {
     AjaxErrorResponse,
     AjaxSuccessResponse,
     ContentFileScanner,
+    ContentStorer,
     ContentTypeCache,
     ContentUserDataManager,
     H5PAjaxEndpoint,

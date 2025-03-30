@@ -76,7 +76,7 @@ temporary storage instead of the regular content storage.
 The temporary storage must implement the interface {@link
 @lumieducation/h5p-server!ITemporaryFileStorage}. Furthermore, you should
 regularly call {@link
-@lumieducation/h5p-server!H5PEditor.temporaryFileManager.cleanUp} to remove
+@lumieducation/h5p-server!TemporaryFileManager.cleanUp} to remove
 unneeded temporary files (every 5 min).
 
 If you don't have a multi-machine setup you can use the sample implementation in

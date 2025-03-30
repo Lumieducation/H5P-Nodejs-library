@@ -166,7 +166,7 @@ const h5pEditor = new H5PEditor(
 ```
 
 The sanitizers must implement the interface {@link
-@lumieducation/h5p-server!IFileMalewareScanner}:
+@lumieducation/h5p-server!IFileMalwareScanner}:
 
 ```ts
 interface IFileMalwareScanner {

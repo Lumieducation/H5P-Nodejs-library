@@ -173,7 +173,7 @@ The implementation needs to call several function regularly (comparable to a
 cronjob):
 
 - Call {@link @lumieducation/h5p-server!TemporaryFileManager.cleanUp |
-  H5PEditor.temporaryFileManager} every 5 minutes. This checks which temporary
+  TemporaryFileManager.cleanUp} every 5 minutes. This checks which temporary
   files have expired and deletes them if necessary. It is important to do this,
   as temporary files are **not** automatically deleted when a piece of content
   is saved.
