@@ -33,7 +33,22 @@ const config = {
     plugin: ["typedoc-plugin-missing-exports", "typedoc-plugin-rename-defaults"],
     packageOptions: {
         excludeExternals: true,
-    }
+    },
+    highlightLanguages: [
+        // start default languages
+        "bash",
+        "console",
+        "css",
+        "html",
+        "javascript",
+        "json",
+        "jsonc",
+        "json5",
+        "tsx",
+        "typescript",
+        // end default languages
+        "jsx" // jsx is the only additional language that we need
+    ],
 };
 
 export default config;
