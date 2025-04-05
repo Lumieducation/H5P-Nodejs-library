@@ -45,6 +45,6 @@
         "@types/passport": "1.0.17",
         "@types/passport-local": "1.0.38",
         "ts-node": "10.9.2",
-        "typescript": "5.8.2"
+        "typescript": "5.8.3"
     }
 }
