@@ -208,12 +208,12 @@ scanner is set up correctly. These test files utilize [EICAR test
 files](https://www.eicar.org/download-anti-malware-testfile/), which contain a
 totally harmless special character sequency detected by virus scanner.
 
-- [`test/data/validator/h5p-with-virus.h5p`](/test/data/validator/h5p-with-virus.h5p):
+- [`test/data/validator/h5p-with-virus.h5p`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/test/data/validator/h5p-with-virus.h5p):
   contains an [EICAR test
   file](https://www.eicar.org/download-anti-malware-testfile/) (as an image);
   upload this H5P package through the package upload functionality; you should see
   an error message explaining that the malware scanner has found something
-- [`packages/h5p-clamav-scanner/test/eicar.png`](/packages/h5p-clamav-scanner/test/eicar.png):
+- [`packages/h5p-clamav-scanner/test/eicar.png`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-clamav-scanner/test/eicar.png):
   is an [EICAR test
   file](https://www.eicar.org/download-anti-malware-testfile/); upload this
   image as a media file anywhere in the H5P editor; you should see an error

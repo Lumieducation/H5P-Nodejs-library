@@ -110,8 +110,9 @@ test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute
 the tests call `npm run test:h5p-mongos3`.
 
-To quickly get a functioning MongoDB instance, you can use the [Docker
-Compose file in the scripts directory](/scripts/mongo-s3-docker-compose.yml)
+To quickly get a functioning MongoDB instance, you can use the [Docker Compose
+file in the scripts
+directory](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/scripts/mongo-s3-docker-compose.yml)
 like this (you obviously must install
 [Docker](https://docs.docker.com/engine/install/) and [Docker
 Compose](https://docs.docker.com/compose/install/) first):

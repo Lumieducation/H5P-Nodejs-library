@@ -83,5 +83,5 @@ DEBUG=h5p:* LOG_LEVEL=debug node script.js
 
 ## Other scripts
 
-Check out the many other npm scripts in [package.json](/package.json) for other
-development functionality.
+Check out the many other npm scripts in `package.json` for other development
+functionality.

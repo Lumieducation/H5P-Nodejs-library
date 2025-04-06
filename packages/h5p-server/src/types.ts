@@ -2471,8 +2471,8 @@ export enum MalwareScanResult {
 
 /**
  * An interface for malware scanners. See the
- * [documentation](/docs/advanced/security.md) for details on how to use this
- * class.
+ * {@link ../../docs/advanced/security.md | documentation } for details on how
+ * to use this class.
  */
 export interface IFileMalwareScanner {
     /** The name of the scanner, e.g. ClamAV */
