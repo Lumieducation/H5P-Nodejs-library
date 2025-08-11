@@ -109,7 +109,7 @@
         "remark-validate-links": "13.1.0",
         "ts-jest": "29.4.1",
         "ts-node": "10.9.2",
-        "typedoc": "0.28.9",
+        "typedoc": "0.28.10",
         "typescript": "5.9.2",
         "typescript-eslint": "^8.18.2"
     },
