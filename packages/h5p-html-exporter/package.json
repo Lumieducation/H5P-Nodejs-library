@@ -59,7 +59,7 @@
         "@types/postcss-import": "^14.0.0",
         "@types/uglify-js": "^3.17.5",
         "promisepipe": "3.0.0",
-        "puppeteer": "17.1.3",
+        "puppeteer": "24.16.2",
         "tmp-promise": "3.0.3"
     },
     "files": [
