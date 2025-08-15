@@ -5,23 +5,23 @@
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.4.0",
         "@fortawesome/free-solid-svg-icons": "6.7.2",
-        "@fortawesome/react-fontawesome": "0.2.2",
+        "@fortawesome/react-fontawesome": "0.2.3",
         "@lumieducation/h5p-react": "^10.0.4",
-        "bootstrap": "5.3.3",
-        "http-proxy-middleware": "3.0.3",
+        "bootstrap": "5.3.7",
+        "http-proxy-middleware": "3.0.5",
         "react": "18.3.1",
-        "react-bootstrap": "2.10.9",
+        "react-bootstrap": "2.10.10",
         "react-dom": "18.3.1"
     },
     "devDependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "@testing-library/jest-dom": "6.6.3",
-        "@testing-library/react": "16.2.0",
+        "@testing-library/jest-dom": "6.6.4",
+        "@testing-library/react": "16.3.0",
         "@testing-library/user-event": "14.6.1",
         "@types/jest": "29.5.14",
-        "@types/node": "22.13.10",
-        "@types/react": "18.3.18",
-        "@types/react-dom": "18.3.5",
+        "@types/node": "24.2.1",
+        "@types/react": "18.3.23",
+        "@types/react-dom": "18.3.7",
         "react-scripts": "5.0.1"
     },
     "scripts": {

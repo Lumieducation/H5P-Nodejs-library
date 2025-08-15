@@ -28,23 +28,23 @@
         "cache-manager-redis-store": "2.0.0",
         "cors": "2.8.5",
         "express": "4.21.2",
-        "express-fileupload": "1.5.1",
-        "express-session": "1.18.1",
-        "fs-extra": "11.3.0",
-        "i18next": "24.2.2",
+        "express-fileupload": "1.5.2",
+        "express-session": "1.18.2",
+        "fs-extra": "11.3.1",
+        "i18next": "24.2.3",
         "i18next-fs-backend": "2.6.0",
-        "i18next-http-middleware": "3.7.1",
+        "i18next-http-middleware": "3.8.0",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
-        "@types/cors": "2.8.17",
-        "@types/express": "4.17.21",
-        "@types/express-session": "1.18.1",
+        "@types/cors": "2.8.19",
+        "@types/express": "4.17.23",
+        "@types/express-session": "1.18.2",
         "@types/passport": "1.0.17",
         "@types/passport-local": "1.0.38",
         "ts-node": "10.9.2",
-        "typescript": "5.8.2"
+        "typescript": "5.9.2"
     }
 }
