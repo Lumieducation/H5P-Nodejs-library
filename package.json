@@ -88,7 +88,7 @@
     "devDependencies": {
         "@commitlint/config-conventional": "19.8.1",
         "@eslint/js": "^9.17.0",
-        "@types/jest": "29.5.14",
+        "@types/jest": "30.0.0",
         "@typescript-eslint/eslint-plugin": "8.39.1",
         "@typescript-eslint/parser": "8.39.1",
         "axios": "1.11.0",
@@ -99,7 +99,7 @@
         "eslint-plugin-react": "^7.35.0",
         "globals": "^15.14.0",
         "husky": "9.1.7",
-        "jest": "29.7.0",
+        "jest": "30.0.5",
         "json-autotranslate": "1.16.1",
         "lerna": "8.2.3",
         "prettier": "3.6.2",
