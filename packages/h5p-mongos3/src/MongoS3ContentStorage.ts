@@ -343,7 +343,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
     /**
      * Returns information about a content file (e.g. image or video) inside a
      * piece of content.
-     * @param id the id of the content object that the file is attached to
+     * @param contentId the id of the content object that the file is attached to
      * @param filename the filename of the file to get information about
      * @param user the user who wants to retrieve the content file
      * @returns

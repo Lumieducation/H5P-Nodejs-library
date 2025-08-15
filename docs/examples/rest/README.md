@@ -1,3 +1,8 @@
+---
+title: REST Example
+group: Documents
+category: Examples
+---
 # H5P Single Page Application example using a REST API
 
 This repository illustrates how to use the the packages of

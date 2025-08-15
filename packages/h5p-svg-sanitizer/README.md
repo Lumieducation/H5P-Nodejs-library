@@ -1,4 +1,8 @@
-# SVG sanitizer package
+# @lumieducation/h5p-svg-sanitizer
+
+This package implements
+[`@lumieducation/h5p-server`](https://www.npmjs.com/package/@lumieducation/h5p-server)'s
+`IFileSanitizer` interface with a SVG sanitizer.
 
 ## Background
 
@@ -20,7 +24,8 @@ sanitization.
 
 1. Install the `@lumieducation/h5p-svg-sanitizer` package in your application.
 2. Add the sanitizer to the H5P editor object options and add the `svg`
-   extension to the `contentWhitelist` property of the H5P configuration:
+   extension to the {@link @lumieducation/h5p-server!IH5PConfig.contentWhitelist
+   | contentWhitelist property of the H5P configuration}:
 
 ```ts
    const h5pEditor = new H5PEditor(
@@ -77,9 +82,9 @@ package might not be right for you.
 ## Testing whether SVGs are correctly sanitized
 
 Get the [`SVG XSS injection demo
-file`](/packages/h5p-svg-sanitizer/test/xss-svg.h5p) from the repo, upload it to
-your system and save. You should see a simple H5P Blanks activity with the image
-of a gray circle. Copy the URL of the image, paste it into your browser's
-address bar and load it. You should now _NOT_ see a popup message which is
-caused by executing JavaScript code in the SVG. If you see the message,
-something is misconfigured.
+file`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-svg-sanitizer/test/xss-svg.h5p)
+from the repo, upload it to your system and save. You should see a simple H5P
+Blanks activity with the image of a gray circle. Copy the URL of the image,
+paste it into your browser's address bar and load it. You should now _NOT_ see a
+popup message which is caused by executing JavaScript code in the SVG. If you
+see the message, something is misconfigured.

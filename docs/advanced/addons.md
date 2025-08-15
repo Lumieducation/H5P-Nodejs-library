@@ -1,3 +1,8 @@
+---
+title: Addons
+group: Documents
+category: Features
+---
 # Addons
 
 Addons are H5P libraries that can be added to the H5P Editor or to certain H5P
@@ -43,7 +48,7 @@ editor. There are two ways to enable it:
    avoid the server-wide configuration below.
 
 2. Set the configuration property `editorAddons` in your implementation of
-   `IH5PConfig` to something like:
+   {@link @lumieducation/h5p-server!IH5PConfig} to something like:
 
    ```javascript
     {
@@ -64,10 +69,11 @@ editor. There are two ways to enable it:
 ## Customizing addon behavior
 
 Addons can be configured by setting the property `libraryConfig` of your
-configuration implementation of `IH5PConfig`. The property is a complex object
-with H5P library machine names as keys. The object is sent to the H5P client
-(run in the browser) as part of the H5PIntegration object and can be accessed
-in a H5P library by calling `H5P.getLibraryConfig('H5P.MachineName')`.
+configuration implementation of {@link @lumieducation/h5p-server!IH5PConfig | IH5PConfig}.
+The property is a complex object with H5P library machine names as keys. The
+object is sent to the H5P client (run in the browser) as part of the
+H5PIntegration object and can be accessed in a H5P library by calling
+`H5P.getLibraryConfig('H5P.MachineName')`.
 
 Example (shows how to (optionally) configure the [H5P.MathDisplay
 addon](https://h5p.org/mathematical-expressions)):
@@ -107,10 +113,10 @@ as they contain a `library.json` file, but they can't contain `semantics.json`.
 The metadata in `library.json` is mostly the same as the metadata of normal
 libraries, but it contains the property `addTo`, which makes a library to an
 addon. (Check out the comprehensive structure of library metadata in the
-TypeScript interface `ILibraryMetadata` in
-[`/src/types.ts`](/packages/h5p-server/src/types.ts).)
+TypeScript interface {@link @lumieducation/h5p-server!ILibraryMetadata}.)
 
-A library containing the property `addTo` in its metadata will be automatically added to the player (or editor) by the server in certain circumstances:
+A library containing the property `addTo` in its metadata will be automatically
+added to the player (or editor) by the server in certain circumstances:
 
 * Always when loading the editor, if set in the global configuration of the
   server (see above).

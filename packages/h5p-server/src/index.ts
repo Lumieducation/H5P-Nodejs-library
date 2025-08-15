@@ -32,6 +32,8 @@ import ContentUserDataManager from './ContentUserDataManager';
 import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
+import TemporaryFileManager from './TemporaryFileManager';
+import ContentStorer from './ContentStorer';
 
 // Interfaces
 import {
@@ -100,8 +102,8 @@ export {
     AggregateH5pError,
     AjaxErrorResponse,
     AjaxSuccessResponse,
-    streamToString,
     ContentFileScanner,
+    ContentStorer,
     ContentTypeCache,
     ContentUserDataManager,
     H5PAjaxEndpoint,
@@ -114,6 +116,8 @@ export {
     LibraryName,
     Logger,
     PackageExporter,
+    TemporaryFileManager,
+    streamToString,
     // interfaces
     ContentId,
     ContentParameters,

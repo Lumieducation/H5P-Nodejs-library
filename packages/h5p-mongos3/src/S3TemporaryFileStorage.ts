@@ -77,7 +77,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * Deletes the file from temporary storage.
      * Throws errors of something goes wrong.
      * @param filename the file to delete
-     * @param userId the user ID of the user who wants to delete the file
+     * @param _ownerId the user ID of the user who wants to delete the file
      */
     public async deleteFile(filename: string, _ownerId: string): Promise<void> {
         log.debug(`Deleting file "${filename}" from temporary storage.`);
@@ -108,7 +108,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
     /**
      * Checks if a file exists in temporary storage.
      * @param filename the file to check
-     * @param user the user who wants to access the file
+     * @param _user the user who wants to access the file
      */
     public async fileExists(filename: string, _user: IUser): Promise<boolean> {
         log.debug(`Checking if file ${filename} exists in temporary storage.`);
@@ -144,7 +144,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
      * Returns a information about a temporary file.
      * Throws an exception if the file does not exist.
      * @param filename the relative path inside the library
-     * @param user the user who wants to access the file
+     * @param _user the user who wants to access the file
      * @returns the file stats
      */
     public async getFileStats(

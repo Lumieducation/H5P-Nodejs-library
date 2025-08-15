@@ -1,19 +1,24 @@
+---
+title: MongoS3ContentStorage
+group: Documents
+---
+
 # Content storage
 
-There is an implementation of the `IContentStorage` interface that uses MongoDB
-to store the parameters and metadata of content objects and a S3-compatible
-storage system to store files (images, video, audio etc.). You can find it at
-[/packages/h5p-mongos3/src/MongoS3ContentStorage.ts](/packages/h5p-mongos3/src/MongoS3ContentStorage.ts).
+{@link MongoS3ContentStorage} is an implementation of the {@link
+@lumieducation/h5p-server!IContentStorage} interface that uses MongoDB to store
+the parameters and metadata of content objects and a S3-compatible storage
+system to store files (images, video, audio etc.).
 
-**Note:** You must create the S3 bucket manually before it can be used by
-`MongoS3ContentStorage`!
+**Note:** You must create the S3 bucket manually before it can be used by {@link
+MongoS3ContentStorage}!
 
 ## Dependencies
 
 The implementation depends on these npm packages:
 
-* aws-sdk
-* mongodb
+- aws-sdk
+- mongodb
 
 **You must add them manually to your application using `npm install aws-sdk
 mongodb`!**
@@ -23,13 +28,11 @@ mongodb`!**
 You must import the storage implementation via a submodule:
 
 ```typescript
-import { MongoS3ContentStorage, initS3, initMongo } from '@lumieducation/h5p-mongos3';
-```
-
-or in classic JS style:
-
-```javascript
-const { MongoS3ContentStorage, initS3, initMongo } = require('@lumieduation/h5p-mongos3');
+import {
+    MongoS3ContentStorage,
+    initS3,
+    initMongo
+} from '@lumieducation/h5p-mongos3';
 ```
 
 Initialize the storage implementation like this:
@@ -40,12 +43,13 @@ const storage = new MongoS3ContentStorage(
         credentials: {
             accessKeyId: 's3accesskey', // optional if env. variable is set
             secretAccessKey: 's3accesssecret' // optional if env. variable is set
-        },                    
+        },
         endpoint: 'http://127.0.0.1:9000', // optional if env. variable is set
         region: 'us-east-1', // optional if env. variable is set,
         forcePathStyle: true
     }),
-    ( await initMongo(
+    (
+        await initMongo(
             'mongodb://127.0.0.1:27017', // optional if env. variable is set
             'testdb1', // optional if env. variable is set
             'root', // optional if env. variable is set
@@ -58,32 +62,43 @@ const storage = new MongoS3ContentStorage(
 
 ### Notes
 
-* The function [`initS3`](/packages/h5p-mongos3/src/initS3.ts) creates an S3 client using the `aws-sdk` npm package.
-* The function [`initMongo`](/packages/h5p-mongos3/src/initMongo.ts) creates a MongoDB client using the `mongodb` npm package.
-* You can pass credentials and other configuration values to `initS3` and `initMongo` through the function parameters. Alternatively you can use these environment variables instead of using the function parameters:
-  * AWS_ACCESS_KEY_ID
-  * AWS_SECRET_ACCESS_KEY
-  * AWS_S3_ENDPOINT
-  * AWS_REGION
-  * MONGODB_URL
-  * MONGODB_DB
-  * MONGODB_USER
-  * MONGODB_PASSWORD
-* You can change the MongoDB collection name `h5p` to any name you want. If the collection doesn't exist yet, it will be automatically created.
-* You can change the bucket `h5pcontentbucket` to any name you want, but you must specify one. You must create the bucket manually before you can use it.
-* The configuration object passed into `initS3` is passed on to `aws-sdk`, so you can set any custom configuration values you want.
-* To achieve greater configurability, you can decide not to use `initS3` or `initMongo` and instantiate the required clients yourself.
-* While Amazon S3 supports keys with up to 1024 characters, some other S3 systems such as Minio might only support less in certain situations. To cater for these system you can set the option `maxKeyLength` to the value you need. It defaults to 1024.
+- The function {@link initS3} creates an S3 client using the `aws-sdk` npm
+  package.
+- The function {@link initMongo} creates a MongoDB
+  client using the `mongodb` npm package.
+- You can pass credentials and other configuration values to `initS3` and
+  `initMongo` through the function parameters. Alternatively you can use these
+  environment variables instead of using the function parameters:
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_S3_ENDPOINT
+    - AWS_REGION
+    - MONGODB_URL
+    - MONGODB_DB
+    - MONGODB_USER
+    - MONGODB_PASSWORD
+- You can change the MongoDB collection name `h5p` to any name you want. If the
+  collection doesn't exist yet, it will be automatically created.
+- You can change the bucket `h5pcontentbucket` to any name you want, but you
+  must specify one. You must create the bucket manually before you can use it.
+- The configuration object passed into {@link initS3} is passed on to `aws-sdk`,
+  so you can set any custom configuration values you want.
+- To achieve greater configurability, you can decide not to use {@link initS3}
+  or {@link initMongo} and instantiate the required clients yourself.
+- While Amazon S3 supports keys with up to 1024 characters, some other S3
+  systems such as Minio might only support less in certain situations. To cater
+  for these system you can set the option `maxKeyLength` to the value you need.
+  It defaults to 1024.
 
 ## Using MongoS3ContentStorage in the example
 
-The [example Express application](/packages/h5p-examples/src/express.ts) can be
+The [example Express application](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-examples/src/express.ts) can be
 configured to use the MongoDB/S3 storage by setting the environment variables
 from above and these additional variables:
 
-* CONTENTSTORAGE=mongos3
-* CONTENT_MONGO_COLLECTION
-* CONTENT_AWS_S3_BUCKET
+- CONTENTSTORAGE=mongos3
+- CONTENT_MONGO_COLLECTION
+- CONTENT_AWS_S3_BUCKET
 
 An example call would be:
 
@@ -95,14 +110,11 @@ CONTENTSTORAGE=mongos3 AWS_ACCESS_KEY_ID=minioaccesskey AWS_SECRET_ACCESS_KEY=mi
 
 By default the storage implementation allows all users read and write access to
 all data! It is very likely that this is not something you want! You can add a
-function to the options object of the constructor of `MongoS3ContentStorage` to
-customize access restrictions:
+function to the options object of the constructor of {@link
+MongoS3ContentStorage} to customize access restrictions:
 
 ```typescript
-getPermissions = (
-    contentId: ContentId,
-    user: IUser
-) => Promise<Permission[]>;
+getPermissions = (contentId: ContentId, user: IUser) => Promise<Permission[]>;
 ```
 
 The function receives the contentId of the object that is being accessed and the
@@ -146,14 +158,15 @@ contentFilesUrlPlayerOverride = 'https://s3server.com/bucket/{{contentId}}';
 ## Developing and testing
 
 There are automated tests in
-[`/test/implementation/db/MongoS3ContentStorage.test.ts`](/packages/h5p-mongos3/test/MongoS3ContentStorage.test.ts).
+[`/test/implementation/db/MongoS3ContentStorage.test.ts`](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-mongos3/test/MongoS3ContentStorage.test.ts).
 However, these tests will not be called automatically when you run `npm run
 test` or other test calls. The reason is that the tests require a running
 MongoDB and S3 instance and thus need more extensive setup. To manually execute
 the tests call `npm run test:h5p-mongos3`.
 
 To quickly get a functioning MongoDB and S3 instance, you can use the [Docker
-Compose file in the scripts directory](/scripts/mongo-s3-docker-compose.yml)
+Compose file in the scripts
+directory](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/scripts/mongo-s3-docker-compose.yml)
 like this (you obviously must install
 [Docker](https://docs.docker.com/engine/install/) and [Docker
 Compose](https://docs.docker.com/compose/install/) first):

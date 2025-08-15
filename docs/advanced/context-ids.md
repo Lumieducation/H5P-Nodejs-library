@@ -1,3 +1,9 @@
+---
+title: Multiple user states per object
+group: Documents
+category: Features
+---
+
 # Multiple content states per object
 
 You can save multiple user states (= the data a learner entered, e.g. the
@@ -11,7 +17,8 @@ standard H5P PHP server version.
 ## Usage
 
 If you want to use this feature, your implementation has to provide a
-`contextId` in the `H5PPlayer.render` options:
+`contextId` in the {@link @lumieducation/h5p-server!H5PPlayer.render |
+H5PPlayer.render} options:
 
 ```js
 const html = await h5pPlayer.render(
@@ -32,10 +39,10 @@ Multiple contexts wouldn't make sense there.
 ## Creating contextId
 
 `contextId` is an arbitrary string value that you define in your implementing
-system. It is **your** job to keep it unique and to pass it the the `render`
-method. Typically it is associated with some other object in your database
-anyway (e.g. an attempt object), so you will already have a unique id that you
-can use here.
+system. It is **your** job to keep it unique and to pass it the the {@link
+@lumieducation/h5p-server!H5PPlayer.render | render} method. Typically it is
+associated with some other object in your database anyway (e.g. an attempt
+object), so you will already have a unique id that you can use here.
 
 ## Using contextIds with old data
 
@@ -47,13 +54,16 @@ system that didn't use contextIds. You can also have user data that has a
 
 The H5P Player Web Component and React component also support the context id.
 You can set the current context id by setting the attribute/property `contextId`
-to the desired value. Make sure that you implementation of `loadContentCallback`
-accepts `contextId` as the second parameter, that you include it in the request
-to the server and that your server passes the contextId to `H5PPlayer.render`.
+to the desired value. Make sure that you implementation of {@link
+@lumieducation/h5p-webcomponents!H5PPlayerComponent.loadContentCallback} accepts
+`contextId` as the second parameter, that you include it in the request to the
+server and that your server passes the contextId to {@link
+@lumieducation/h5p-server!H5PPlayer.render | H5PPlayer.render}.
 
 ## Storage support
 
-Both the `FileContentUserDataStorage` and `MongoContentUserDataStorage` support
+{@link @lumieducation/h5p-server!fsImplementations.FileContentUserDataStorage}
+and {@link @lumieducation/h5p-mongos3!MongoContentUserDataStorage} support
 context ids.
 
 ## Trying it out in the examples

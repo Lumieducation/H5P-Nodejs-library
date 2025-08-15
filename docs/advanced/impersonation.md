@@ -1,3 +1,9 @@
+---
+title: Impersonating users
+group: Documents
+category: Features
+---
+
 # Impersonating users
 
 It is possible to impersonate users when viewing a H5P object. This means that
@@ -5,20 +11,20 @@ you can display another user's user state instead of your own. This is useful,
 if you want to implement a feature in which teachers can review the work of
 students.
 
-You do this by setting `options.asUserId` of the `H5PPlayer.render` method. Make
-sure that you [authorize users](authorization.md) as required in the permission
-system.
+You do this by setting `options.asUserId` of the {@link
+@lumieducation/h5p-server!H5PPlayer.render} method. Make sure that you
+[authorize users](authorization.md) as required in the permission system.
 
 ## Read-only states
 
 In most cases in which your users impersonate another user, you'll want to
 disable saving the user state for the impersonator. You can do this by setting
-`options.readOnlyState` to true when calling `H5PPlayer.render`. This will do
-the following:
+`options.readOnlyState` to true when calling {@link
+@lumieducation/h5p-server!H5PPlayer.render | H5PPlayer.render}. This will do the following:
 
--   set the save interval to the longest possible value
--   adds the query parameter `ignorePost=yes` to the Ajax route responsible for
-    handling user states
+- set the save interval to the longest possible value
+- adds the query parameter `ignorePost=yes` to the Ajax route responsible for
+  handling user states
 
 The query parameter is necessary, as the H5P core client doesn't support user
 states that are read only. We work around this by ignoring a post calls when the

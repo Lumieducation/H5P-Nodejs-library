@@ -1,3 +1,9 @@
+---
+title: User content state
+group: Documents
+category: Features
+---
+
 # User content state
 
 The H5P client is capable of saving the current state of the user so that the
@@ -6,7 +12,7 @@ into textboxes are the same as when they last left off.
 
 ## How it works
 
-- If state saving is enabled, a timer interval is set in the  H5PIntegration
+- If state saving is enabled, a timer interval is set in the H5PIntegration
   object by the server
 - The H5P core client reads the interval and tells the content type that is
   currently being displayed to persist it's state into a JSON object
@@ -37,37 +43,44 @@ into textboxes are the same as when they last left off.
 
 ## Enabling user state
 
-- Create an instance of `IContentUserDataStorage`. The recommended storage class
-  for production is `MongoContentUserDataStorage` in the
-  `@lumieducation/h5p-mongos3` package. There's also a
-  `FileContentUserDataStorageClass` in the `@lumieducation/h5p-server` package
-  that you can use for development or testing purposes.
-- Pass the implementation of IContentUserDataStorage into the `H5PEditor` and
-  `H5PPlayer` constructor.
-- Set `contentUserStateSaveInterval` in `IH5PConfig` to the interval at which
-  the client should save the state (in milliseconds). The recommended number is
-  `10000`. (To disable the feature, set `contentUserStateSaveInterval` to
-  `false`)
-- If you use `h5pAjaxExpressRouter` from the `@lumieducation/h5p-express`
-  package, then the routes for the AJAX endpoint are automatically created. You
-  can manually turn them on by setting `routeContentUserData` in the options
-  when creating the route.
+- Create an instance of {@link
+  @lumieducation/h5p-server!IContentUserDataStorage}. The recommended storage
+  class for production is {@link
+  @lumieducation/h5p-mongos3!MongoContentUserDataStorage |
+  MongoContentUserDataStorage}. There's also a file-based implementation {@link
+  @lumieducation/h5p-server!fsImplementations.FileContentUserDataStorage} that
+  you can use for development or testing purposes.
+- Pass the implementation of {@link
+  @lumieducation/h5p-server!IContentUserDataStorage | IContentUserDataStorage}
+  into the `H5PEditor` and `H5PPlayer` constructor.
+- Set `contentUserStateSaveInterval` in {@link
+  @lumieducation/h5p-server!IH5PConfig} to the interval at which the client
+  should save the state (in milliseconds). The recommended number is `10000`.
+  (To disable the feature, set `contentUserStateSaveInterval` to `false`)
+- If you use {@link @lumieducation/h5p-express!h5pAjaxExpressRouter}, then the
+  routes for the AJAX endpoint are automatically created. You can manually turn
+  them on by setting `routeContentUserData` in the options when creating the
+  route.
 - If you don't use `h5pAjaxExpressRouter`, you have to route everything
-  manually. First get `ContentUserDataManager` from `H5PEditor` or `H5PPlayer`.
-  Route these endpoints to the functions and return HTTP status code 200 with a
-  JSON object that is based on `AjaxSuccessResponse` with empty payload (Check
-  out the Express Router for details):
+  manually. First get {@link
+  @lumieducation/h5p-server!H5PEditor.contentUserDataManager |
+  contentUserDataManager} from `H5PEditor` or `H5PPlayer`. Route these endpoints
+  to the functions and return HTTP status code 200 with a JSON object that is
+  based on {@link @lumieducation/h5p-server!AjaxSuccessResponse} with empty
+  payload (Check out the Express Router for details):
     - GET {{contentUserDataUrl}}/:contentId/:dataType/:subContentId ->
       `ContentUserDataManager.getContentUserData`
     - POST {{contentUserDataUrl}}/:contentId/:dataType/:subContentId ->
-      `ContentUserDataManager.createOrUpdateContentUserData` 
+      `ContentUserDataManager.createOrUpdateContentUserData`
 
 ## Configuration options
 
 - You can customize the URL at which the AJAX calls are available by setting
-  `contentUserDataUrl` in `IH5PConfig`.
+  {@link @lumieducation/h5p-server!IH5PConfig.contentUserDataUrl |
+  `contentUserDataUrl` in `IH5PConfig`}.
 - You can customize the interval at which content states are saved by setting
-  `contentUserStateSaveInterval` in IH5PConfig. If you set it to false, you can
+  {@link @lumieducation/h5p-server!IH5PConfig.contentUserStateSaveInterval |
+  `contentUserStateSaveInterval` in IH5PConfig}. If you set it to false, you can
   disable the feature.
 
 ## Security considerations

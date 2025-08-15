@@ -1,8 +1,17 @@
 # h5p-redis-lock
 
-This package provides a lock mechanism that can be used if the library runs in
-multi-process or cluster-mode. The locks are needed to avoid race conditions
-when installing libraries.
+This package provides a lock mechanism that can be used if the
+`@lumieducation/server` library runs in multi-process or cluster-mode. The locks
+are needed to avoid race conditions when installing libraries.
+
+## Requirements
+
+**The lock only works in conjunction with a custom H5P server using
+[@lumieducation/h5p-server](https://www.npmjs.com/package/@lumieducation/h5p-server)**.
+Check out the [documentation on the library](https://docs.lumi.education) for
+more details.
+
+## Usage
 
 ```ts
 import { createClient } from '@redis/client';
@@ -32,5 +41,5 @@ const h5pEditor = new H5PEditor( /*other parameters*/, options: { lockProvider }
 const h5pPlayer = new H5PPlayer( /*other parameters*/, options: { lockProvider } );
 ```
 
-It is important to make sure that all instances of H5PEditor use a redis lock
+It is important to make sure that all instances of H5PEditor use a Redis lock
 provider that points to the same database. Otherwise race conditions can happen.

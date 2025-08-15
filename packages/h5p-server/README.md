@@ -26,15 +26,6 @@ the [h5p-nodejs-library monorepo on
 GitHub](https://github.com/lumieducation/h5p-nodejs-library) and are available
 on NPM.
 
-| Package name                      | Functionality                                                             | used in  |
-|-----------------------------------|---------------------------------------------------------------------------|----------|
-| [**@lumieducation/h5p-server**](https://www.npmjs.com/package/@lumieducation/h5p-server)         | the core package to run H5P in NodeJS                                     | backend  |
-| [**@lumieducation/h5p-express**](https://www.npmjs.com/package/@lumieducation/h5p-express)        | routes and controllers for Express                                        | backend  |
-| [**@lumieducation/h5p-webcomponents**](https://www.npmjs.com/package/@lumieducation/h5p-webcomponents)  | native web components to display the H5P player and editor in the browser | frontend |
-| [**@lumieducation/h5p-react**](https://www.npmjs.com/package/@lumieducation/h5p-react)          | React components with the same functionality as the native web components | frontend |
-| [**@lumieducation/h5p-mongos3**](https://www.npmjs.com/package/@lumieducation/h5p-mongos3)        | storage classes for MongoDB and S3                                        | backend  |
-| [**@lumieducation/h5p-html-exporter**](https://www.npmjs.com/package/@lumieducation/h5p-html-exporter)  | an optional component that can create bundled HTML files for exporting    | backend  |
-
 ## Examples
 
 There are two example implementations that illustrate how the packages can be
@@ -51,11 +42,6 @@ We use [SemVer](http://semver.org/) for versioning. The versions of all packages
 of the monorepo are all increased at the same time, so you should always update
 all packages at once. For the versions available, see the [tags on this
 repository](https://github.com/Lumieducation/h5p-nodejs-library/tags).
-
-## License
-
-This project is licensed under the GNU GENERAL PUBLIC LICENSE v3 License - see
-the [LICENSE](/LICENSE) file for details
 
 ## Support
 

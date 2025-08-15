@@ -133,7 +133,6 @@ export class H5PPlayerComponent extends HTMLElement {
     /**
      * Indicates changes to which attributes should trigger calls to
      * attributeChangedCallback.
-     * @memberof H5PPlayerComponent
      */
     static get observedAttributes(): string[] {
         return ['content-id', 'context-id', 'as-user-id', 'read-only-state'];

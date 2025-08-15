@@ -5,9 +5,6 @@ import H5pError from './H5pError';
  * the execution has to be stopped stopped right away.
  */
 export default class AggregateH5pError extends H5pError {
-    /**
-     * @param firstError (optional) the first error
-     */
     constructor(
         errorId: string,
         replacements: { [key: string]: string },

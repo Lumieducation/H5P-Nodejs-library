@@ -8,19 +8,18 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { IContentService, IContentListEntry } from '../services/ContentService';
 import ContentListEntryComponent from './ContentListEntryComponent';
 
-export default class ContentList extends React.Component<{
-    contentService: IContentService;
-}> {
+export default class ContentList extends React.Component<
+    {
+        contentService: IContentService;
+    },
+    { contentList: IContentListEntry[] }
+> {
     constructor(props: { contentService: IContentService }) {
         super(props);
 
         this.state = { contentList: [] };
         this.contentService = props.contentService;
     }
-
-    public state: {
-        contentList: IContentListEntry[];
-    };
 
     protected contentService: IContentService;
     /**

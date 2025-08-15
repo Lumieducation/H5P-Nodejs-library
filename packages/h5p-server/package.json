@@ -85,7 +85,6 @@
     "files": [
         "build/",
         "CHANGELOG.md",
-        "LICENSE",
         "README.md"
     ]
 }

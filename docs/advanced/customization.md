@@ -1,32 +1,40 @@
+---
+title: Customization
+group: Documents
+category: Features
+---
+
 # Customization
 
-An application using @lumieducation/h5p-server can customize the way H5P behaves in
-several ways:
+An application using {@link "@lumieducation/h5p-server"} can customize the way
+H5P behaves in several ways:
 
-* You can **add global custom JavaScript or CSS files to the player and editor
-  by passing their URL to the constructor of `H5PPlayer` or `H5PEditor`.** Use
-  this method if you want to globally customize how H5P looks or behaves to make
-  it fit into your larger application. [See
+- You can **add global custom JavaScript or CSS files to the player and editor
+  by passing their URL to the {@link
+  @lumieducation/h5p-server!H5PPlayer.constructor | constructor of `H5PPlayer`}
+  or {@link @lumieducation/h5p-server!H5PEditor.constructor | constructor of
+  `H5PEditor`}.** Use this method if you want to globally customize how H5P
+  looks or behaves to make it fit into your larger application. [See
   below](#adding-custom-scripts-and-styles-via-constructor-injection) for more
   details.
 
-* You can **add global custom JavaScript or CSS files to the player and editor
+- You can **add global custom JavaScript or CSS files to the player and editor
   by specifying them in the configuration**. Use and document this method if
   you want to allow administrators of an instance of your application to
   customize how H5P looks and feels in their instance. [See
   below](#adding-custom-scripts-and-styles-via-the-configuration) for more
   details.
 
-* You can upload addons. This makes changing how H5P looks and behaves
+- You can upload addons. This makes changing how H5P looks and behaves
   particularly easy, but requires the creation of addons. See the
   [addon documentation page](addons.md) for details.
 
-* You can **alter the scripts and styles used in a single library**. This allows
+- You can **alter the scripts and styles used in a single library**. This allows
   you to change the looks and behavior of a library without forking it. [See
   below](#changing-javascript-and-css-files-of-individual-libraries)
   for more details
 
-* You can **alter the semantics and language files of a single library**. This
+- You can **alter the semantics and language files of a single library**. This
   allows you to change the default editor of libraries without forking the
   library itself. [See
   below](#changing-the-semantics-of-individual-libraries) for
@@ -43,7 +51,9 @@ NodeJs version, but the basic idea is the same!
 ## Adding custom scripts and styles via constructor injection
 
 You can add custom scripts and styles to the player by passing their URLs to the
-options parameter of the constructor of `H5PPlayer` or `H5PEditor`:
+options parameter of the {@link @lumieducation/h5p-server!H5PPlayer.constructor
+| constructor of `H5PPlayer`} or {@link
+@lumieducation/h5p-server!H5PEditor.constructor | constructor of `H5PEditor`}:
 
 ```typescript
 const player = new H5PPlayer(
@@ -148,7 +158,9 @@ changes. This means that they are not passed into URL generator!
 You can change the list of JavaScript and CSS files used by individual libraries
 to modify their looks and behavior. It is possible to add or to remove files
 from the lists. To do this you must pass a hook to the options object of the
-`H5PEditor` or `H5PPlayer` constructor.
+{@link @lumieducation/h5p-server!H5PEditor.constructor | `H5PEditor` constructor
+} or {@link @lumieducation/h5p-server!H5PPlayer.constructor | `H5PPlayer`
+constructor}.
 
 The hook looks like this:
 
@@ -181,7 +193,7 @@ const alterLibraryFilesHook = (
 };
 ```
 
-It is passed to `H5PPlayer` like this:
+It is passed to {@link @lumieducation/h5p-server!H5PPlayer | H5PPlayer} like this:
 
 ```typescript
 const player = new H5PPlayer(
@@ -199,7 +211,7 @@ const player = new H5PPlayer(
 );
 ```
 
-It is passed to `H5PEditor` like this:
+It is passed to {@link @lumieducation/h5p-server!H5PEditor | H5PEditor} like this:
 
 ```typescript
 const editor = new H5PEditor(
@@ -224,9 +236,10 @@ uploading a fork of the library. This allows you to remove or add fields in the
 H5P Editor. You can also change what HTML tags are allowed in the CKEditor, for
 instance. As the structure of the language files (which include all the
 translations) is identical to the semantic structure of the library, you must
-also make sure that the language files are changed as well.
-@lumieducation/h5p-server allows you to pass two hooks in the options of the
-`H5PEditor` constructor to achieve this:
+also make sure that the language files are changed as well. {@link
+"@lumieducation/h5p-server"} allows you to pass two hooks in the options of the
+{@link @lumieducation/h5p-server!H5PEditor.constructor | H5PEditor constructor}
+to achieve this:
 
 ```typescript
 /**
@@ -293,7 +306,8 @@ const alterLibraryLanguageFileHook = (
 };
 ```
 
-Add these hooks to the constructor of `H5PEditor` like this:
+Add these hooks to the {@link @lumieducation/h5p-server!H5PEditor.constructor |
+constructor of `H5PEditor`} like this:
 
 ```typescript
 const editor = new H5PEditor(

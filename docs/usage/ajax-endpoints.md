@@ -1,3 +1,9 @@
+---
+title: Handling AJAX requests
+group: Documents
+category: Guides
+---
+
 # Handling AJAX requests
 
 There are two ways of handling AJAX requests: You can use the out-of-the-box
@@ -9,20 +15,15 @@ or [write your own custom router](#handling-requests-yourself):
 ## Handling requests with the Express adapter
 
 Your implementation must process requests to several endpoints and relay them to
-the H5PEditor or H5PPlayer objects. All Ajax endpoints are already implemented
-in the [Express adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressRouter.ts),
-which you can use like this:
+the {@link @lumieducation/h5p-server!H5PEditor | H5PEditor} or {@link
+@lumieducation/h5p-server!H5PPlayer | H5PPlayer} objects. All Ajax endpoints are
+already implemented in the {@link "@lumieducation/h5p-express"} package, which
+you can use like this:
 
 Import the Express adapter router like this:
 
 ```typescript
 import h5pAjaxExpressRouter from '@lumieducation/h5p-express';
-```
-
-or in classic JS style:
-
-```javascript
-const h5pAjaxExpressRouter = require('@lumieducation/h5p-express');
 ```
 
 Then add the router to your Express app like this
@@ -64,44 +65,44 @@ like this:
 
 The function `t` must return the string for the errorId translated into the
 user's or the content's language. Replacements are added to the localized string
-with curly braces:  It is suggested you use [i18next](https://www.i18next.com/)
+with curly braces: It is suggested you use [i18next](https://www.i18next.com/)
 for localization, but you can use any library, as long as you make sure the
 function t is added to the request object.
 
 ## Handling requests yourself
 
 If you use a different HTTP framework than Express, you can write your own
-adapter. In this case, you must instantiate `H5PAjaxEndpoint` and call its
-methods when your routes are called.
+adapter. In this case, you must instantiate {@link
+@lumieducation/h5p-server!H5PAjaxEndpoint} and call its methods when your routes
+are called.
 
 The table below shows which routes you must implement and which ones can be left
 out. Note that routes of the Type _H5P_ are needed by the H5P client and must be
 implemented in some way. Routes of the type _custom_ are specific to
-@lumieducation/h5p-server. The exact name of the routes can be [configured in
-IH5PConfig](ajax-endpoints.md#configuring-custom-endpoint-routes) and might be
+@lumieducation/h5p-server. The exact name of the routes can be [configured in IH5PConfig](ajax-endpoints.md#configuring-custom-endpoint-routes) and might be
 different in your setup.
 
-| HTTP Verb | Route | method in H5PAjaxEndpoint | Type | Required |
-| :--- | :--- | :--- | :--- | :--- |
-| GET | /ajax | getAjax | H5P | yes |
-| GET | /content | getContentFile | H5P | depends on content storage: files in FileContentStorage can also be served statically |
-| GET | /libraries | getLibraryFile | H5P | depends on library storage: files in FileLibraryStorage can also be served statically |
-| GET | /temp-files | getTemporaryFile | H5P | yes |
-| POST | /ajax | postAjax | H5P | yes |
-| GET | /params | getContentParameters | custom | if you use the default renderer script of the editor |
-| GET | /download | getDownload | custom | no |
+| HTTP Verb | Route       | method in H5PAjaxEndpoint | Type   | Required                                                                              |
+| :-------- | :---------- | :------------------------ | :----- | :------------------------------------------------------------------------------------ |
+| GET       | /ajax       | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getAjax | getAjax} | H5P    | yes                       |
+| GET       | /content    | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getContentFile | getContentFile }| H5P    | depends on content storage: files in FileContentStorage can also be served statically |
+| GET       | /libraries  | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getLibraryFile | getLibraryFile } | H5P    | depends on library storage: files in FileLibraryStorage can also be served statically |
+| GET       | /temp-files | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getTemporaryFile | getTemporaryFile } | H5P    | yes                                                                                   |
+| POST      | /ajax       | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.postAjax | postAjax } | H5P    | yes                                                                                   |
+| GET       | /params     | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getContentParameters | getContentParameters } | custom | if you use the default renderer script of the editor                                  |
+| GET       | /download   | {@link @lumieducation/h5p-server!H5PAjaxEndpoint.getDownload | getDownload } | custom | no                                                                                    |
 
-Consult the [documentation of
-`H5PAjaxEndpoint`](/packages/h5p-server/src/H5PAjaxEndpoint.ts) for details on
-who to retrieve the required parameters from the HTTP requests. You can also
-look at the [Express Ajax Adapter](/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
+Consult the {@link @lumieducation/h5p-server!H5PAjaxEndpoint | documentation of
+H5PAjaxEndpoint} for details on who to retrieve the required parameters from the
+HTTP requests. You can also look at the [Express Ajax Adapter](https://github.com/Lumieducation/H5P-Nodejs-library/blob/release/packages/h5p-express/src/H5PAjaxRouter/H5PAjaxExpressController.ts) as
 an example.
 
 ## Configuring custom endpoint routes
 
-The H5P client (run in the browser by the user) can be configured to use
-custom AJAX request endpoints. These can be configured in the config object. The
-relevant settings (including defaults) are:
+The H5P client (run in the browser by the user) can be configured to use custom
+AJAX request endpoints. These can be configured in the {@link
+@lumieducation/h5p-server!IH5PConfig | IH5PConfig object}. The relevant settings
+(including defaults) are:
 
 ```javascript
 const config = {

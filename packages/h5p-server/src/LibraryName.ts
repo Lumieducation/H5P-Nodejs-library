@@ -37,15 +37,13 @@ export default class LibraryName implements ILibraryName {
     }
 
     /**
-     * Creates a library object from a library name. Also validates the ubername
-     * to protect against attempts to manipulate the server by creating library
-     * names.
+     * Parses the ubername (e.g. "H5P.Example-1.0") and returns a library name
+     * object.
      * @param ubername The library name in a format "H5P.Example-1.0" or
      * "H5P.Example 1.0" (see options)
-     * @param restricted true if the library is restricted
-     * @param useWhitespace true if the parser should accept names like
+     * @param options.useWhitespace true if the parser should accept names like
      * "H5P.Library 1.0"
-     * @param useHyphen true if the parser should accept names like
+     * @param options.useHyphen true if the parser should accept names like
      * "H5P.Library-1.0"
      * @returns undefined if the name could not be parsed
      * @throws H5pError with 400 when the ubername is invalid

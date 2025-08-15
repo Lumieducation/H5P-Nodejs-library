@@ -126,7 +126,7 @@ export default class H5PPlayer {
      * want to use the IContentStorage object passed into the constructor.
      * @param contentId the content id
      * @param actingUser the user who wants to access the content
-     * @param options.ignoreUserPermission (optional) If set to true, the user
+     * @param options.ignoreUserPermissions (optional) If set to true, the user
      * object won't be passed to the storage classes for permission checks. You
      * can use this option if you have already checked the user's permission in
      * a different layer.

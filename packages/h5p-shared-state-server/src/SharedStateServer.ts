@@ -13,6 +13,8 @@ import {
     GetLibraryFileAsJsonFunction,
     GetLibraryMetadataFunction,
     GetPermissionForUserFunction,
+    ILogicalOperator,
+    ILogicCheck,
     RequestToUserFunction
 } from './types';
 import checkPermissionsAndInjectContentContext from './middleware/checkPermissionsAndInjectContentContext';
@@ -178,3 +180,5 @@ export default class SharedStateServer {
         return '/shared-state';
     }
 }
+
+export { ILogicCheck, ILogicalOperator };

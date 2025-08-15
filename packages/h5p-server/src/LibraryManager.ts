@@ -52,8 +52,8 @@ export default class LibraryManager {
      * @param translationFunction (optional) The translation function to use if
      * you want to localize library metadata (titles). If undefined, no
      * localization will be performed.
-     * @param lock (optional) an implementation of a locking mechanism that
-     * prevents race conditions. If this is left undefined a simple
+     * @param lockProvider (optional) an implementation of a locking mechanism
+     * that prevents race conditions. If this is left undefined a simple
      * single-process lock mechanism will be used. If the library is used within
      * a multi-process or cluster setup, it is necessary to pass in a
      * distributed locking implementation.
@@ -108,7 +108,7 @@ export default class LibraryManager {
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns a readable stream of the file's contents
      */
     public async getFileStats(
@@ -127,7 +127,7 @@ export default class LibraryManager {
      * Returns a readable stream of a library file's contents.
      * Throws an exception if the file does not exist.
      * @param library library
-     * @param filename the relative path inside the library
+     * @param file the relative path inside the library
      * @returns a readable stream of the file's contents
      */
     public async getFileStream(
