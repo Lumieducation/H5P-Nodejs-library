@@ -25,7 +25,7 @@
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "body-parser": "1.20.3",
         "cache-manager": "4.1.0",
-        "cache-manager-redis-store": "2.0.0",
+        "cache-manager-redis-store": "3.0.1",
         "cors": "2.8.5",
         "express": "4.21.2",
         "express-fileupload": "1.5.2",
