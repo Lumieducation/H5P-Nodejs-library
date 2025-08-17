@@ -142,6 +142,7 @@ async function importAndExportHtml(
 describe('HtmlExporter', () => {
     beforeAll(async () => {
         browser = await puppeteer.launch({
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
             headless: true,
             args: [
                 '--headless',
