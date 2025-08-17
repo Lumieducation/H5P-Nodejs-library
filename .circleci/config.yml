@@ -151,6 +151,7 @@ jobs:
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-html-exporter
+                  PUPPETEER_EXECUTABLE_PATH : /usr/bin/google-chrome
         resource_class: medium+
         steps:
             - browser-tools/install_chrome
