@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@2.2.5
+    browser-tools: circleci/browser-tools@2.3.0
 
 jobs:
     install-build:
@@ -152,7 +153,7 @@ jobs:
                   COVERALLS_FLAG_NAME: h5p-html-exporter
         resource_class: medium+
         steps:
-            - browser-tools/install chrome
+            - browser-tools/install_chrome
             - checkout
             - attach_workspace:
                   at: .
