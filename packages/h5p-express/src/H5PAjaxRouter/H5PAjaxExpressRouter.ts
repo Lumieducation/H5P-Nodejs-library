@@ -38,7 +38,7 @@ export default function (
     // get library file
     if (undefinedOrTrue(routeOptions.routeGetLibraryFile)) {
         router.get(
-            `${h5pEditor.config.librariesUrl}/:uberName/:file(*)`,
+            `${h5pEditor.config.librariesUrl}/:uberName/*file`,
             catchAndPassOnErrors(
                 h5pController.getLibraryFile,
                 routeOptions.handleErrors
@@ -49,7 +49,7 @@ export default function (
     // get content file
     if (undefinedOrTrue(routeOptions.routeGetContentFile)) {
         router.get(
-            `${h5pEditor.config.contentFilesUrl}/:id/:file(*)`,
+            `${h5pEditor.config.contentFilesUrl}/:id/*file`,
             catchAndPassOnErrors(
                 h5pController.getContentFile,
                 routeOptions.handleErrors
@@ -60,7 +60,7 @@ export default function (
     // get temporary content file
     if (undefinedOrTrue(routeOptions.routeGetTemporaryContentFile)) {
         router.get(
-            `${h5pEditor.config.temporaryFilesUrl}/:file(*)`,
+            `${h5pEditor.config.temporaryFilesUrl}/*file`,
             catchAndPassOnErrors(
                 h5pController.getTemporaryContentFile,
                 routeOptions.handleErrors
