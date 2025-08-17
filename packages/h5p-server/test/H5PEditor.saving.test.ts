@@ -802,7 +802,7 @@ describe('H5PEditor', () => {
                         'abc',
                         user
                     )
-                ).rejects.toThrowError('invalid-main-library-name');
+                ).rejects.toThrow('invalid-main-library-name');
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -830,7 +830,7 @@ describe('H5PEditor', () => {
                         'H5P.GreetingCard 1.0',
                         user
                     )
-                ).rejects.toThrowError('Metadata does not conform to schema.');
+                ).rejects.toThrow('Metadata does not conform to schema.');
             },
             { keep: false, unsafeCleanup: true }
         );

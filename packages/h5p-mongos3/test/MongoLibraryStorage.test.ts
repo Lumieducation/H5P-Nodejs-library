@@ -207,7 +207,7 @@ describe('MongoS3LibraryStorage', () => {
                 majorVersion: 1,
                 minorVersion: 1
             })
-        ).rejects.toThrowError('mongo-library-storage:library-not-found');
+        ).rejects.toThrow('mongo-library-storage:library-not-found');
     });
 
     it('gets the metadata and its stats as a file (simulates GET on library.json) ', async () => {
@@ -293,7 +293,7 @@ describe('MongoS3LibraryStorage', () => {
                     restricted: true
                 }
             )
-        ).rejects.toThrowError('mongo-library-storage:library-not-found');
+        ).rejects.toThrow('mongo-library-storage:library-not-found');
     });
 
     it('does not update additional metadata if library not installed', async () => {
@@ -344,7 +344,7 @@ describe('MongoS3LibraryStorage', () => {
             patchVersion: 2,
             author: 'test'
         };
-        await expect(storage.updateLibrary(metadata)).rejects.toThrowError(
+        await expect(storage.updateLibrary(metadata)).rejects.toThrow(
             'mongo-library-storage:library-not-found'
         );
     });
@@ -413,7 +413,7 @@ describe('MongoS3LibraryStorage', () => {
                 majorVersion: 1,
                 minorVersion: 1
             })
-        ).rejects.toThrowError('mongo-library-storage:library-not-found');
+        ).rejects.toThrow('mongo-library-storage:library-not-found');
     });
 
     it('throws 404 when trying to delete a non-existing library', async () => {
@@ -527,16 +527,16 @@ describe('MongoS3LibraryStorage', () => {
         ).resolves.toEqual(false);
         await expect(
             storage.getFileAsString(example1Name, 'semantics.json')
-        ).rejects.toThrowError('library-file-missing');
+        ).rejects.toThrow('library-file-missing');
         await expect(
             storage.getFileAsJson(example1Name, 'semantics.json')
-        ).rejects.toThrowError('library-file-missing');
+        ).rejects.toThrow('library-file-missing');
         await expect(
             storage.getFileStats(example1Name, 'semantics.json')
-        ).rejects.toThrowError('library-file-missing');
+        ).rejects.toThrow('library-file-missing');
         await expect(
             storage.getFileStream(example1Name, 'semantics.json')
-        ).rejects.toThrowError('library-file-missing');
+        ).rejects.toThrow('library-file-missing');
     });
 
     it('returns the correct list of languages', async () => {
@@ -571,7 +571,7 @@ describe('MongoS3LibraryStorage', () => {
         // Prepare
 
         // Action
-        await expect(storage.getLanguages(example1Name)).rejects.toThrowError(
+        await expect(storage.getLanguages(example1Name)).rejects.toThrow(
             'mongo-library-storage:library-not-found'
         );
     });
@@ -611,7 +611,7 @@ describe('MongoS3LibraryStorage', () => {
         // Prepare
 
         // Action
-        await expect(storage.clearFiles(example1Name)).rejects.toThrowError(
+        await expect(storage.clearFiles(example1Name)).rejects.toThrow(
             'mongo-library-storage:library-not-found'
         );
     });

@@ -70,7 +70,7 @@ export function importAndExportPackage(
                         const whenStreamClosed = jest.fn();
                         writeStream.on('close', whenStreamClosed);
                         writeStream.on('close', async () => {
-                            expect(whenStreamClosed).toBeCalled();
+                            expect(whenStreamClosed).toHaveBeenCalled();
 
                             const oldZipFile = await yauzl.open(packagePath);
                             const oldEntries = (await oldZipFile.readEntries())
