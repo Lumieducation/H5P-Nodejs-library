@@ -280,12 +280,16 @@ describe('Express Library Administration endpoint adapter', () => {
 
     describe('PATCH /libraries/123 endpoint', () => {
         it('should reject invalid ubernames', async () => {
-            const res = await supertest(app).patch('/H5P.GreetingCard');
+            const res = await supertest(app)
+                .patch('/H5P.GreetingCard')
+                .send({ restricted: true });
             expect(res.status).toBe(400);
         });
 
         it('should detect missing libraries', async () => {
-            const res = await supertest(app).patch('/H5P.GreetingCard-1.0');
+            const res = await supertest(app)
+                .patch('/H5P.GreetingCard-1.0')
+                .send({ restricted: true });
             expect(res.status).toBe(404);
         });
 
