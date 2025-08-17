@@ -152,8 +152,7 @@ jobs:
                   COVERALLS_FLAG_NAME: h5p-html-exporter
         resource_class: medium+
         steps:
-            - browser-tools/install_chrome:
-                  timeout: 5m
+            - browser-tools/install chrome
             - checkout
             - attach_workspace:
                   at: .
