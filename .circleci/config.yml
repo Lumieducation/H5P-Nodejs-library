@@ -161,17 +161,6 @@ jobs:
                   coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
                   flag_name: HTML Exporter Tests
 
-    e2e-tests:
-        docker:
-            - image: cimg/node:22.18.0
-              environment:
-                  TMPDIR: /mnt/ramdisk
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npm run test:e2e
-
     db-tests:
         docker:
             - image: cimg/node:22.18.0
@@ -231,9 +220,6 @@ workflows:
             - unit-tests:
                   requires:
                       - install-build
-            # - e2e-tests:
-            #       requires:
-            #           - install-build
             - integration-tests:
                   requires:
                       - install-build
@@ -257,7 +243,6 @@ workflows:
                       - unit-tests
                       - clamav-tests
                       - html-exporter-tests                      
-                      # - e2e-tests
                       - integration-tests
                       - db-tests
             - push_coveralls:
@@ -268,6 +253,5 @@ workflows:
                       - unit-tests
                       - clamav-tests
                       - html-exporter-tests
-                      # - e2e-tests
                       - integration-tests
                       - db-tests
