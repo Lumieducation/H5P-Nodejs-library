@@ -418,7 +418,7 @@ describe('basic file library manager functionality', () => {
                         )
                     );
                 }
-                await expect(Promise.all(promises)).rejects.toThrowError(
+                await expect(Promise.all(promises)).rejects.toThrow(
                     'server:install-library-lock-max-time-exceeded'
                 );
             },
@@ -452,7 +452,7 @@ describe('basic file library manager functionality', () => {
                         )
                     );
                 }
-                await expect(Promise.all(promises)).rejects.toThrowError(
+                await expect(Promise.all(promises)).rejects.toThrow(
                     'server:install-library-lock-timeout'
                 );
                 await Promise.allSettled(promises);
