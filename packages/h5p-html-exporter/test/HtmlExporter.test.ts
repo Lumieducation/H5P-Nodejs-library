@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
 import promisePipe from 'promisepipe';
