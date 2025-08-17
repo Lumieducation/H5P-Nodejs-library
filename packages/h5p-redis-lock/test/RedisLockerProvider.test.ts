@@ -93,7 +93,7 @@ describe('RedisLockerProvider', () => {
                         );
                     }
                 }
-                await expect(Promise.all(promises)).rejects.toThrowError(
+                await expect(Promise.all(promises)).rejects.toThrow(
                     'server:install-library-lock-max-time-exceeded'
                 );
             },

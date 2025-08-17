@@ -127,7 +127,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         expect(
             content.libraries[0].description.startsWith('_translated_')
         ).toBe(true);
-        expect(translationSpy).toBeCalled();
+        expect(translationSpy).toHaveBeenCalled();
     });
 
     it('leaves information from hub as it is if no locale was found', async () => {
@@ -181,7 +181,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
         expect(content.libraries[0].description).toEqual(
             'The description of content type 1'
         );
-        expect(translationSpy).toBeCalled();
+        expect(translationSpy).toHaveBeenCalled();
     });
 
     it("doesn't fail if update wasn't called", async () => {

@@ -468,6 +468,6 @@ describe('H5P.render()', () => {
                 metadataOverride: metadata as any,
                 asUserId: '2'
             })
-        ).rejects.toThrowError('h5p-server:user-state-missing-view-permission');
+        ).rejects.toThrow('h5p-server:user-state-missing-view-permission');
     });
 });

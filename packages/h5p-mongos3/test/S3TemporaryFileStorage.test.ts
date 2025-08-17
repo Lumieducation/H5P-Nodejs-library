@@ -155,14 +155,14 @@ describe('S3TemporaryFileStorage', () => {
                     stubUser,
                     new Date()
                 )
-            ).rejects.toThrowError('illegal-filename');
+            ).rejects.toThrow('illegal-filename');
         }
         await expect(
             storage.saveFile('../../bin/bash', undefined, stubUser, new Date())
-        ).rejects.toThrowError('illegal-filename');
+        ).rejects.toThrow('illegal-filename');
 
         await expect(
             storage.saveFile('/bin/bash', undefined, stubUser, new Date())
-        ).rejects.toThrowError('illegal-filename');
+        ).rejects.toThrow('illegal-filename');
     });
 });

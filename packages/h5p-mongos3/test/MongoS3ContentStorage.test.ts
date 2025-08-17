@@ -122,10 +122,10 @@ describe('MongoS3ContentStorage', () => {
         ).resolves.toEqual(false);
         await expect(
             storage.getParameters(new ObjectId().toHexString())
-        ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
+        ).rejects.toThrow('mongo-s3-content-storage:content-not-found');
         await expect(
             storage.getMetadata(new ObjectId().toHexString())
-        ).rejects.toThrowError('mongo-s3-content-storage:content-not-found');
+        ).rejects.toThrow('mongo-s3-content-storage:content-not-found');
     });
 
     it('stores parameters and metadata and lets you retrieve them', async () => {
@@ -385,15 +385,15 @@ describe('MongoS3ContentStorage', () => {
                     undefined,
                     stubUser
                 )
-            ).rejects.toThrowError('illegal-filename');
+            ).rejects.toThrow('illegal-filename');
         }
         await expect(
             storage.addFile(contentId, '../../bin/bash', undefined, stubUser)
-        ).rejects.toThrowError('illegal-filename');
+        ).rejects.toThrow('illegal-filename');
 
         await expect(
             storage.addFile(contentId, '/bin/bash', undefined, stubUser)
-        ).rejects.toThrowError('illegal-filename');
+        ).rejects.toThrow('illegal-filename');
     });
 
     describe('getUsage', () => {
