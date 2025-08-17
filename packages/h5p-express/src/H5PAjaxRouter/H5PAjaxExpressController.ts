@@ -48,13 +48,13 @@ export default class H5PAjaxExpressController {
         const { mimetype, stream, stats, range } =
             await this.ajaxEndpoint.getContentFile(
                 req.params.id,
-                req.params.file,
+                (req.params.file as unknown as string[]).join('/'),
                 req.user,
                 this.getRange(req)
             );
         if (range) {
             this.pipeStreamToPartialResponse(
-                req.params.file,
+                (req.params.file as unknown as string[]).join('/'),
                 stream,
                 res,
                 stats.size,
@@ -109,7 +109,7 @@ export default class H5PAjaxExpressController {
         const { mimetype, stream, stats } =
             await this.ajaxEndpoint.getLibraryFile(
                 req.params.uberName,
-                req.params.file
+                (req.params.file as unknown as string[]).join('/')
             );
 
         this.pipeStreamToResponse(mimetype, stream, res, stats.size, {
@@ -126,13 +126,13 @@ export default class H5PAjaxExpressController {
     ): Promise<void> => {
         const { mimetype, stream, stats, range } =
             await this.ajaxEndpoint.getTemporaryFile(
-                req.params.file,
+                (req.params.file as unknown as string[]).join('/'),
                 req.user,
                 this.getRange(req)
             );
         if (range) {
             this.pipeStreamToPartialResponse(
-                req.params.file,
+                (req.params.file as unknown as string[]).join('/'),
                 stream,
                 res,
                 stats.size,
