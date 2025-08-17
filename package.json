@@ -42,8 +42,6 @@
         "start:rest:server": "npm run start --workspace=packages/h5p-rest-example-server",
         "start": "npm run start --workspace=packages/h5p-examples",
         "stop:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml down",
-        "test:e2e:tests": "npm run test:e2e:tests --workspace=packages/h5p-examples",
-        "test:e2e": "npm run test:e2e --workspace=packages/h5p-examples",
         "test:h5p-clamav-scanner": "npx jest --config packages/h5p-clamav-scanner/jest.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "test:h5p-mongos3": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
         "test:h5p-redis-lock": "npm test --workspace=packages/h5p-redis-lock",

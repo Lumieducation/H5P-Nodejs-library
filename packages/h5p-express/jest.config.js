@@ -136,7 +136,6 @@ module.exports = {
     testPathIgnorePatterns: [
         '/node_modules/',
         '/test/data',
-        '/test/e2e',
         '/test/integration',
         '/db/'
     ],
