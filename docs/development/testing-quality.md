@@ -13,14 +13,7 @@ After installation, you can run the tests with
 ```bash
 npm run test
 npm run test:integration
-npm run test:e2e
 npm run test:h5p-mongos3 # (require running MongoDB server)
-```
-
-You can run the e2e tests with h5p packages on your local system like this:
-
-```bash
-H5P_FILES=test/data/hub-content ERROR_FILE=errors.txt npm run test:server+upload
 ```
 
 ## Code quality

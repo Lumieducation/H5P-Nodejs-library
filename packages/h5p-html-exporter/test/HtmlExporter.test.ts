@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import { withDir, withFile } from 'tmp-promise';
 import promisePipe from 'promisepipe';
@@ -142,6 +142,7 @@ async function importAndExportHtml(
 describe('HtmlExporter', () => {
     beforeAll(async () => {
         browser = await puppeteer.launch({
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
             headless: true,
             args: [
                 '--headless',

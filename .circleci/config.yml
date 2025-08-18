@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@2.2.5
+    browser-tools: circleci/browser-tools@2.3.0
 
 jobs:
     install-build:
@@ -138,8 +139,8 @@ jobs:
             - attach_workspace:
                   at: .
             - run: |
-                ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
-                npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
+                  ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
+                  npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: ClamAV Scanner tests
@@ -150,8 +151,10 @@ jobs:
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-html-exporter
+                  PUPPETEER_EXECUTABLE_PATH : /usr/bin/google-chrome
         resource_class: medium+
         steps:
+            - browser-tools/install_chrome
             - checkout
             - attach_workspace:
                   at: .
@@ -161,21 +164,10 @@ jobs:
                   coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
                   flag_name: HTML Exporter Tests
 
-    e2e-tests:
-        docker:
-            - image: cimg/node:22.18.0
-              environment:
-                  TMPDIR: /mnt/ramdisk
-        steps:
-            - checkout
-            - attach_workspace:
-                  at: .
-            - run: npm run test:e2e
-
     db-tests:
         docker:
             - image: cimg/node:22.18.0
-              environment:                    
+              environment:
                   COVERALLS_FLAG_NAME: h5p-mongos3
             - image: circleci/mongo:latest
               environment:
@@ -231,9 +223,6 @@ workflows:
             - unit-tests:
                   requires:
                       - install-build
-            # - e2e-tests:
-            #       requires:
-            #           - install-build
             - integration-tests:
                   requires:
                       - install-build
@@ -256,8 +245,7 @@ workflows:
                       - format
                       - unit-tests
                       - clamav-tests
-                      - html-exporter-tests                      
-                      # - e2e-tests
+                      - html-exporter-tests
                       - integration-tests
                       - db-tests
             - push_coveralls:
@@ -268,6 +256,5 @@ workflows:
                       - unit-tests
                       - clamav-tests
                       - html-exporter-tests
-                      # - e2e-tests
                       - integration-tests
                       - db-tests
