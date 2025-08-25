@@ -91,7 +91,7 @@
         "@typescript-eslint/parser": "8.40.0",
         "axios": "1.11.0",
         "commitlint": "19.8.1",
-        "concurrently": "9.2.0",
+        "concurrently": "9.2.1",
         "eslint": "^8.57.1",
         "eslint-config-prettier": "^10.0.0",
         "eslint-plugin-react": "^7.35.0",
