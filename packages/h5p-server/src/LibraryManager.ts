@@ -807,8 +807,6 @@ export default class LibraryManager {
                 log.error(
                     `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms. Reverting installation.`
                 );
-                const libraryName = LibraryName.fromUberName(ubername);
-                await this.libraryStorage.deleteLibrary(libraryName);
                 throw new H5pError(
                     'server:install-library-lock-timeout',
                     {
