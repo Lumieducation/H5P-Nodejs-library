@@ -805,7 +805,7 @@ export default class LibraryManager {
             }
             if (error.message == 'timeout') {
                 log.error(
-                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms. Reverting installation.`
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
                 );
                 throw new H5pError(
                     'server:install-library-lock-timeout',
