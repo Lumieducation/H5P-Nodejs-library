@@ -790,8 +790,10 @@ export default class LibraryManager {
         } catch (error) {
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting the library.`
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
                 );
+                const libraryName = LibraryName.fromUberName(ubername);
+                await this.libraryStorage.deleteLibrary(libraryName);
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
@@ -803,8 +805,10 @@ export default class LibraryManager {
             }
             if (error.message == 'timeout') {
                 log.error(
-                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
+                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms. Reverting installation.`
                 );
+                const libraryName = LibraryName.fromUberName(ubername);
+                await this.libraryStorage.deleteLibrary(libraryName);
                 throw new H5pError(
                     'server:install-library-lock-timeout',
                     {
