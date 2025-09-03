@@ -396,81 +396,32 @@ export default class LibraryManager {
             patchVersion: newLibraryMetadata.patchVersion
         };
 
-        try {
-            return await this.lock.acquire(
-                `install-from-directory:${LibraryName.toUberName(newVersion)}`,
-                async () => {
-                    if (await this.libraryExists(newLibraryMetadata)) {
-                        // Check if library is already installed.
-                        let oldVersion: IFullLibraryName;
-                        if (
-                            // eslint-disable-next-line no-cond-assign
-                            (oldVersion =
-                                await this.isPatchedLibrary(newLibraryMetadata))
-                        ) {
-                            // Update the library if it is only a patch of an existing library
-                            await this.updateLibrary(
-                                newLibraryMetadata,
-                                directory
-                            );
-                            return {
-                                newVersion,
-                                oldVersion,
-                                type: 'patch'
-                            };
-                        }
-                        // Skip installation of library if it has already been installed and
-                        // the library is no patch for it.
-                        return { type: 'none' };
-                    }
-                    // Install the library if it hasn't been installed before (treat
-                    // different major/minor versions the same as a new library)
-                    await this.installLibrary(
-                        directory,
-                        newLibraryMetadata,
-                        restricted
-                    );
-                    return {
-                        newVersion,
-                        type: 'new'
-                    };
-                },
-                {
-                    timeout: this.config.installLibraryLockTimeout,
-                    maxOccupationTime:
-                        this.config.installLibraryLockMaxOccupationTime
-                }
-            );
-        } catch (error) {
-            const ubername = LibraryName.toUberName(newLibraryMetadata);
-            if (error.message == 'occupation-time-exceeded') {
-                log.error(
-                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
-                );
-                throw new H5pError(
-                    'server:install-library-lock-max-time-exceeded',
-                    {
-                        ubername,
-                        limit: this.config.installLibraryLockMaxOccupationTime.toString()
-                    },
-                    500
-                );
+        if (await this.libraryExists(newLibraryMetadata)) {
+            // Check if library is already installed.
+            let oldVersion: IFullLibraryName;
+            if (
+                // eslint-disable-next-line no-cond-assign
+                (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
+            ) {
+                // Update the library if it is only a patch of an existing library
+                await this.updateLibrary(newLibraryMetadata, directory);
+                return {
+                    newVersion,
+                    oldVersion,
+                    type: 'patch'
+                };
             }
-            if (error.message == 'timeout') {
-                log.error(
-                    `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
-                );
-                throw new H5pError(
-                    'server:install-library-lock-timeout',
-                    {
-                        ubername,
-                        limit: this.config.installLibraryLockTimeout.toString()
-                    },
-                    500
-                );
-            }
-            throw error;
+            // Skip installation of library if it has already been installed and
+            // the library is no patch for it.
+            return { type: 'none' };
         }
+        // Install the library if it hasn't been installed before (treat
+        // different major/minor versions the same as a new library)
+        await this.installLibrary(directory, newLibraryMetadata, restricted);
+        return {
+            newVersion,
+            type: 'new'
+        };
     }
 
     /**
