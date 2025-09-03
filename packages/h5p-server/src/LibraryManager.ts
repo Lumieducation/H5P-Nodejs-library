@@ -1,11 +1,14 @@
-import { Readable } from 'stream';
-import { getAllFiles } from 'get-all-files';
-import upath from 'upath';
-import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
+import { getAllFiles } from 'get-all-files';
+import { Readable } from 'stream';
+import upath from 'upath';
 
+import variantEquivalents from '../assets/variantEquivalents.json';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import TranslatorWithFallback from './helpers/TranslatorWithFallback';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
@@ -23,9 +26,6 @@ import {
     ISemanticsEntry,
     ITranslationFunction
 } from './types';
-import TranslatorWithFallback from './helpers/TranslatorWithFallback';
-import SimpleLockProvider from './implementation/SimpleLockProvider';
-import variantEquivalents from '../assets/variantEquivalents.json';
 
 const log = new Logger('LibraryManager');
 
@@ -451,7 +451,7 @@ export default class LibraryManager {
                     'server:install-library-lock-max-time-exceeded',
                     {
                         ubername,
-                        limit: this.config.installLibraryLockTimeout.toString()
+                        limit: this.config.installLibraryLockMaxOccupationTime.toString()
                     },
                     500
                 );
@@ -845,7 +845,7 @@ export default class LibraryManager {
                     'server:install-library-lock-max-time-exceeded',
                     {
                         ubername,
-                        limit: this.config.installLibraryLockTimeout.toString()
+                        limit: this.config.installLibraryLockMaxOccupationTime.toString()
                     },
                     500
                 );
