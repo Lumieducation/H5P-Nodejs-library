@@ -386,9 +386,10 @@ export default class LibraryManager {
         restricted: boolean = false
     ): Promise<ILibraryInstallResult> {
         log.info(`installing from directory ${directory}`);
-        const newLibraryMetadata: ILibraryMetadata = JSON.parse(
-            await readFile(`${directory}/library.json`, 'utf-8')
-        );
+
+        let libraryInstallResult: ILibraryInstallResult = { type: 'none' };
+        const newLibraryMetadata =
+            await this.readLibraryMetadataFromDirectory(directory);
         const newVersion = {
             machineName: newLibraryMetadata.machineName,
             majorVersion: newLibraryMetadata.majorVersion,
@@ -396,32 +397,37 @@ export default class LibraryManager {
             patchVersion: newLibraryMetadata.patchVersion
         };
 
-        if (await this.libraryExists(newLibraryMetadata)) {
+        const libraryExists = await this.libraryExists(newLibraryMetadata);
+        if (libraryExists) {
             // Check if library is already installed.
-            let oldVersion: IFullLibraryName;
-            if (
-                // eslint-disable-next-line no-cond-assign
-                (oldVersion = await this.isPatchedLibrary(newLibraryMetadata))
-            ) {
+            const oldVersion: IFullLibraryName =
+                await this.isPatchedLibrary(newLibraryMetadata);
+            if (oldVersion) {
                 // Update the library if it is only a patch of an existing library
                 await this.updateLibrary(newLibraryMetadata, directory);
-                return {
+
+                libraryInstallResult = {
                     newVersion,
                     oldVersion,
                     type: 'patch'
                 };
             }
-            // Skip installation of library if it has already been installed and
-            // the library is no patch for it.
-            return { type: 'none' };
+        } else {
+            // Install the library if it hasn't been installed before (treat
+            // different major/minor versions the same as a new library)
+            await this.installLibrary(
+                directory,
+                newLibraryMetadata,
+                restricted
+            );
+
+            libraryInstallResult = {
+                newVersion,
+                type: 'new'
+            };
         }
-        // Install the library if it hasn't been installed before (treat
-        // different major/minor versions the same as a new library)
-        await this.installLibrary(directory, newLibraryMetadata, restricted);
-        return {
-            newVersion,
-            type: 'new'
-        };
+
+        return libraryInstallResult;
     }
 
     /**
@@ -884,5 +890,14 @@ export default class LibraryManager {
             });
         }
         return languageFileAsString;
+    }
+
+    private async readLibraryMetadataFromDirectory(
+        directory: string
+    ): Promise<ILibraryMetadata> {
+        const utf8File = await readFile(`${directory}/library.json`, 'utf-8');
+        const metadata: ILibraryMetadata = JSON.parse(utf8File);
+
+        return metadata;
     }
 }
