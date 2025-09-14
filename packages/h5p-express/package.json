@@ -53,7 +53,7 @@
         "@types/express-fileupload": "1.5.1",
         "@types/express-serve-static-core": "5.0.7",
         "@types/supertest": "6.0.3",
-        "axios": "1.11.0",
+        "axios": "1.12.0",
         "axios-mock-adapter": "2.1.0",
         "body-parser": "2.2.0",
         "express-fileupload": "1.5.2",
