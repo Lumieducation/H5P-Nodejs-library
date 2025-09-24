@@ -6,7 +6,7 @@ orbs:
 jobs:
     install-build:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
         resource_class: medium+
         working_directory: /mnt/ramdisk
         steps:
@@ -73,7 +73,7 @@ jobs:
 
     lint:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -83,7 +83,7 @@ jobs:
 
     format:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -93,7 +93,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -109,7 +109,7 @@ jobs:
 
     integration-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-server
@@ -125,7 +125,7 @@ jobs:
 
     clamav-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
               environment:
                   TMPDIR: /mnt/ramdisk
                   CLAMDSCAN_HOST: localhost
@@ -147,7 +147,7 @@ jobs:
 
     html-exporter-tests:
         docker:
-            - image: cimg/node:22.19.0-browsers
+            - image: cimg/node:22.20.0-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-html-exporter
@@ -166,7 +166,7 @@ jobs:
 
     db-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:22.20.0
               environment:
                   COVERALLS_FLAG_NAME: h5p-mongos3
             - image: circleci/mongo:latest
@@ -189,14 +189,14 @@ jobs:
 
     push_coveralls:
         docker:
-            - image: 'cimg/node:22.19.0'
+            - image: 'cimg/node:22.20.0'
         steps:
             - coveralls/upload:
                   parallel_finished: true
 
     release:
         docker:
-            - image: 'cimg/node:22.19.0'
+            - image: 'cimg/node:22.20.0'
         working_directory: /mnt/ramdisk
         steps:
             - checkout
