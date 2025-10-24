@@ -53,7 +53,7 @@
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "@types/stream-buffers": "3.0.7",
+        "@types/stream-buffers": "3.0.8",
         "promisepipe": "3.0.0",
         "stream-mock": "2.0.5"
     },
