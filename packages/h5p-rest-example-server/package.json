@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "@types/cors": "2.8.19",
-        "@types/express": "5.0.4",
+        "@types/express": "5.0.5",
         "@types/express-session": "1.18.2",
         "@types/passport": "1.0.17",
         "@types/passport-local": "1.0.38",
