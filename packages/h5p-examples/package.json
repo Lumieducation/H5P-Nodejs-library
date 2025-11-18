@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@types/express": "5.0.5",
-        "@types/react": "18.3.26",
+        "@types/react": "18.3.27",
         "start-server-and-test": "2.1.2"
     }
 }
