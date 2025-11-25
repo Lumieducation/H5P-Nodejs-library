@@ -1,11 +1,14 @@
-import { Readable } from 'stream';
-import { getAllFiles } from 'get-all-files';
-import upath from 'upath';
-import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
+import { getAllFiles } from 'get-all-files';
+import { Readable } from 'stream';
+import upath from 'upath';
 
+import variantEquivalents from '../assets/variantEquivalents.json';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import TranslatorWithFallback from './helpers/TranslatorWithFallback';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import {
@@ -23,9 +26,6 @@ import {
     ISemanticsEntry,
     ITranslationFunction
 } from './types';
-import TranslatorWithFallback from './helpers/TranslatorWithFallback';
-import SimpleLockProvider from './implementation/SimpleLockProvider';
-import variantEquivalents from '../assets/variantEquivalents.json';
 
 const log = new Logger('LibraryManager');
 
@@ -386,9 +386,9 @@ export default class LibraryManager {
         restricted: boolean = false
     ): Promise<ILibraryInstallResult> {
         log.info(`installing from directory ${directory}`);
-        const newLibraryMetadata: ILibraryMetadata = JSON.parse(
-            await readFile(`${directory}/library.json`, 'utf-8')
-        );
+
+        const newLibraryMetadata =
+            await this.readLibraryMetadataFromDirectory(directory);
         const newVersion = {
             machineName: newLibraryMetadata.machineName,
             majorVersion: newLibraryMetadata.majorVersion,
@@ -400,40 +400,45 @@ export default class LibraryManager {
             return await this.lock.acquire(
                 `install-from-directory:${LibraryName.toUberName(newVersion)}`,
                 async () => {
-                    if (await this.libraryExists(newLibraryMetadata)) {
+                    let libraryInstallResult: ILibraryInstallResult = {
+                        type: 'none'
+                    };
+
+                    const libraryExists =
+                        await this.libraryExists(newLibraryMetadata);
+                    if (libraryExists) {
                         // Check if library is already installed.
-                        let oldVersion: IFullLibraryName;
-                        if (
-                            // eslint-disable-next-line no-cond-assign
-                            (oldVersion =
-                                await this.isPatchedLibrary(newLibraryMetadata))
-                        ) {
+                        const oldVersion =
+                            await this.isPatchedLibrary(newLibraryMetadata);
+                        if (oldVersion) {
                             // Update the library if it is only a patch of an existing library
                             await this.updateLibrary(
                                 newLibraryMetadata,
                                 directory
                             );
-                            return {
+
+                            libraryInstallResult = {
                                 newVersion,
                                 oldVersion,
                                 type: 'patch'
                             };
                         }
-                        // Skip installation of library if it has already been installed and
-                        // the library is no patch for it.
-                        return { type: 'none' };
+                    } else {
+                        // Install the library if it hasn't been installed before (treat
+                        // different major/minor versions the same as a new library)
+                        await this.installLibrary(
+                            directory,
+                            newLibraryMetadata,
+                            restricted
+                        );
+
+                        libraryInstallResult = {
+                            newVersion,
+                            type: 'new'
+                        };
                     }
-                    // Install the library if it hasn't been installed before (treat
-                    // different major/minor versions the same as a new library)
-                    await this.installLibrary(
-                        directory,
-                        newLibraryMetadata,
-                        restricted
-                    );
-                    return {
-                        newVersion,
-                        type: 'new'
-                    };
+
+                    return libraryInstallResult;
                 },
                 {
                     timeout: this.config.installLibraryLockTimeout,
@@ -445,13 +450,15 @@ export default class LibraryManager {
             const ubername = LibraryName.toUberName(newLibraryMetadata);
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
+                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
                 );
+                const libraryName = LibraryName.fromUberName(ubername);
+                await this.libraryStorage.deleteLibrary(libraryName);
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
                         ubername,
-                        limit: this.config.installLibraryLockTimeout.toString()
+                        limit: this.config.installLibraryLockMaxOccupationTime.toString()
                     },
                     500
                 );
@@ -839,13 +846,15 @@ export default class LibraryManager {
         } catch (error) {
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting the library.`
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
                 );
+                const libraryName = LibraryName.fromUberName(ubername);
+                await this.libraryStorage.deleteLibrary(libraryName);
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
                         ubername,
-                        limit: this.config.installLibraryLockTimeout.toString()
+                        limit: this.config.installLibraryLockMaxOccupationTime.toString()
                     },
                     500
                 );
@@ -931,5 +940,14 @@ export default class LibraryManager {
             });
         }
         return languageFileAsString;
+    }
+
+    private async readLibraryMetadataFromDirectory(
+        directory: string
+    ): Promise<ILibraryMetadata> {
+        const utf8File = await readFile(`${directory}/library.json`, 'utf-8');
+        const metadata: ILibraryMetadata = JSON.parse(utf8File);
+
+        return metadata;
     }
 }
