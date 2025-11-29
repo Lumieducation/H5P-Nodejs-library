@@ -107,7 +107,7 @@
         "ts-node": "10.9.2",
         "typedoc-plugin-missing-exports": "^4.0.0",
         "typedoc-plugin-rename-defaults": "^0.7.3",
-        "typedoc": "0.28.14",
+        "typedoc": "0.28.15",
         "typescript-eslint": "^8.18.2",
         "typescript": "5.9.3"
     },
