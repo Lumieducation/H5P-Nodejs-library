@@ -45,7 +45,7 @@
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
-        "@types/express": "5.0.5",
+        "@types/express": "5.0.6",
         "@types/react": "18.3.27",
         "start-server-and-test": "2.1.3"
     }
