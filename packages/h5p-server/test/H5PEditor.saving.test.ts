@@ -1,12 +1,13 @@
+import { createWriteStream } from 'fs';
+import { readFile, stat } from 'fs/promises';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir, withFile } from 'tmp-promise';
-import { readFile, stat } from 'fs/promises';
-import { createWriteStream } from 'fs';
 
 import LibraryName from '../src/LibraryName';
 import {
+    File,
     FileSanitizerResult,
     IContentMetadata,
     IContentStorage,
@@ -20,11 +21,11 @@ import {
     ITemporaryFileStorage
 } from '../src/types';
 
-import User from './User';
 import { fsImplementations, H5PEditor } from '../src';
 import H5PConfig from '../src/implementation/H5PConfig';
 import UrlGenerator from '../src/UrlGenerator';
 import { validatePackage } from './helpers/PackageValidatorHelper';
+import User from './User';
 
 import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 
@@ -226,6 +227,13 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
+                const file: File = {
+                    data: undefined,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.JPG',
+                    tempFilePath: originalPath,
+                    size: (await stat(originalPath)).size
+                };
 
                 // perform action
                 await h5pEditor.saveContentFile(
@@ -234,17 +242,12 @@ describe('H5PEditor', () => {
                         name: 'image',
                         type: 'image'
                     },
-                    {
-                        mimetype: 'image/jpeg',
-                        name: 'earth.JPG',
-                        tempFilePath: originalPath,
-                        size: (await stat(originalPath)).size
-                    },
+                    file,
                     new User()
                 );
 
                 // check result
-                expect(sanitizeSpy).toHaveBeenCalledWith(originalPath);
+                expect(sanitizeSpy).toHaveBeenCalledWith(file);
             },
             { keep: false, unsafeCleanup: true }
         );

@@ -1,12 +1,12 @@
 // Classes
+import ContentTypeCache from './ContentTypeCache';
+import H5PAjaxEndpoint from './H5PAjaxEndpoint';
 import H5PEditor from './H5PEditor';
-import H5pError from './helpers/H5pError';
 import H5PPlayer from './H5PPlayer';
 import InstalledLibrary from './InstalledLibrary';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
-import H5PAjaxEndpoint from './H5PAjaxEndpoint';
-import ContentTypeCache from './ContentTypeCache';
+import H5pError from './helpers/H5pError';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
@@ -15,31 +15,32 @@ import { streamToString } from './helpers/StreamHelpers';
 
 import Logger from './helpers/Logger';
 
+import { ContentFileScanner } from './ContentFileScanner';
+import ContentStorer from './ContentStorer';
+import ContentUserDataManager from './ContentUserDataManager';
+import LibraryManager from './LibraryManager';
+import TemporaryFileManager from './TemporaryFileManager';
+import UrlGenerator from './UrlGenerator';
 import H5PConfig from './implementation/H5PConfig';
+import InMemoryStorage from './implementation/InMemoryStorage';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
+import SimpleLockProvider from './implementation/SimpleLockProvider';
+import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
+import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
 import fs from './implementation/fs';
-import * as utils from './implementation/utils';
 import DirectoryTemporaryFileStorage from './implementation/fs/DirectoryTemporaryFileStorage';
 import FileContentStorage from './implementation/fs/FileContentStorage';
-import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import FileContentUserDataStorage from './implementation/fs/FileContentUserDataStorage';
+import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
-import InMemoryStorage from './implementation/InMemoryStorage';
-import CachedLibraryStorage from './implementation/cache/CachedLibraryStorage';
-import CachedKeyValueStorage from './implementation/cache/CachedKeyValueStorage';
-import { ContentFileScanner } from './ContentFileScanner';
-import LibraryManager from './LibraryManager';
-import ContentUserDataManager from './ContentUserDataManager';
-import UrlGenerator from './UrlGenerator';
-import SimpleLockProvider from './implementation/SimpleLockProvider';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
-import TemporaryFileManager from './TemporaryFileManager';
-import ContentStorer from './ContentStorer';
+import * as utils from './implementation/utils';
 
 // Interfaces
 import {
     ContentId,
     ContentParameters,
     ContentPermission,
+    File,
     FileSanitizerResult,
     GeneralPermission,
     IAdditionalLibraryMetadata,
@@ -102,28 +103,26 @@ export {
     AggregateH5pError,
     AjaxErrorResponse,
     AjaxSuccessResponse,
+    cacheImplementations,
     ContentFileScanner,
-    ContentStorer,
-    ContentTypeCache,
-    ContentUserDataManager,
-    H5PAjaxEndpoint,
-    H5PEditor,
-    H5pError,
-    H5PPlayer,
-    InstalledLibrary,
-    LibraryAdministration,
-    LibraryManager,
-    LibraryName,
-    Logger,
-    PackageExporter,
-    TemporaryFileManager,
-    streamToString,
     // interfaces
     ContentId,
     ContentParameters,
     ContentPermission,
+    ContentStorer,
+    ContentTypeCache,
+    ContentUserDataManager,
+    File,
     FileSanitizerResult,
+    fs,
+    fsImplementations,
     GeneralPermission,
+    H5PAjaxEndpoint,
+    // implementations
+    H5PConfig,
+    H5PEditor,
+    H5pError,
+    H5PPlayer,
     IAdditionalLibraryMetadata,
     IAjaxResponse,
     IContentMetadata,
@@ -148,6 +147,7 @@ export {
     ILibraryStorage,
     ILicenseData,
     ILockProvider,
+    InstalledLibrary,
     IPermissionSystem,
     IPlayerModel,
     IPostContentUserData,
@@ -157,16 +157,18 @@ export {
     ITranslationFunction,
     IUrlGenerator,
     IUser,
-    MalwareScanResult,
-    TemporaryFilePermission,
-    UserDataPermission,
-    // implementations
-    H5PConfig,
     LaissezFairePermissionSystem,
-    fs,
-    utils,
-    fsImplementations,
-    cacheImplementations,
+    LibraryAdministration,
+    LibraryManager,
+    LibraryName,
+    Logger,
+    MalwareScanResult,
+    PackageExporter,
+    SimpleLockProvider,
+    streamToString,
+    TemporaryFileManager,
+    TemporaryFilePermission,
     UrlGenerator,
-    SimpleLockProvider
+    UserDataPermission,
+    utils
 };

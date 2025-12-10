@@ -1,10 +1,16 @@
 import NodeClam from 'clamscan';
+import { mkdtempSync, rmSync, unlinkSync } from 'fs';
+import { writeFile } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { Readable } from 'stream';
 import { merge } from 'ts-deepmerge';
 
 import {
+    File,
     IFileMalwareScanner,
-    MalwareScanResult,
-    Logger
+    Logger,
+    MalwareScanResult
 } from '@lumieducation/h5p-server';
 
 import { removeUndefinedAttributesAndEmptyObjects } from './helpers';
@@ -24,7 +30,10 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      * scanner asynchronously.
      * @param scanner
      */
-    private constructor(private scanner: NodeClam) {
+    private constructor(
+        private scanner: NodeClam,
+        private readonly clamdServiceEnabled: boolean
+    ) {
         log.debug('initialize');
     }
 
@@ -66,12 +75,19 @@ export default class ClamAVScanner implements IFileMalwareScanner {
 
         log.debug('Initializing ClamAV scanner with options:', options);
 
+        const clamdServiceEnabled =
+            !options.clamdscan?.socket &&
+            !options.clamdscan?.port &&
+            !options.clamdscan?.host
+                ? false
+                : true;
+
         const clamScan = await new NodeClam().init(options);
         log.debug(
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()
         );
-        return new ClamAVScanner(clamScan);
+        return new ClamAVScanner(clamScan, clamdServiceEnabled);
     }
 
     /**
@@ -144,25 +160,62 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     }
 
     async scan(
-        file: string
+        file: File
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
         try {
             log.debug(
                 'Scanning uploaded file',
-                file,
+                file.name,
                 'with malware scanner',
                 this.name
             );
-            const result = await this.scanner.isInfected(file);
+
+            let result: NodeClam.Response<{
+                file: string;
+                isInfected: boolean;
+            }>;
+            if (file.data) {
+                if (this.clamdServiceEnabled) {
+                    log.debug('Using stream scan for ClamAV daemon');
+                    const readable = Readable.from(file.data);
+                    result = await this.scanner.scanStream(readable);
+                } else {
+                    log.debug('Using temporary file scan for ClamAV binary');
+                    const tempDir = mkdtempSync(join(tmpdir(), 'clam-av-'));
+                    const tempFilePath = join(tempDir, file.name);
+                    await writeFile(tempFilePath, file.data, 'utf8');
+                    result = await this.scanner.scanFile(tempFilePath);
+                    try {
+                        unlinkSync(tempFilePath);
+                        rmSync(tempDir, { recursive: true });
+                        log.debug(
+                            `Temporary file and directory deleted: ${tempFilePath}`
+                        );
+                    } catch (err) {
+                        log.debug(
+                            `Error deleting temporary file or directory: ${tempFilePath}`,
+                            err
+                        );
+                    }
+                }
+            } else {
+                result = await this.scanner.scanFile(file.tempFilePath);
+            }
+
             if (result.isInfected) {
                 const viruses = result.viruses.join(',');
-                log.info('Uploaded file', file, 'is infected with:', viruses);
+                log.info(
+                    'Uploaded file',
+                    file.name,
+                    'is infected with:',
+                    viruses
+                );
                 return { result: MalwareScanResult.MalwareFound, viruses };
             }
-            log.debug('Uploaded file', file, 'is clean');
+            log.debug('Uploaded file', file.name, 'is clean');
             return { result: MalwareScanResult.Clean };
         } catch (error) {
-            log.error('Error while scanning file', file, error);
+            log.error('Error while scanning file', file.name, error);
             return { result: MalwareScanResult.NotScanned };
         }
     }
