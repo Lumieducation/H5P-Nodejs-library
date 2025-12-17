@@ -33,7 +33,7 @@
         "fs-extra": "11.3.2",
         "i18next": "24.2.3",
         "i18next-fs-backend": "2.6.1",
-        "i18next-http-middleware": "3.9.0",
+        "i18next-http-middleware": "3.9.1",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
         "tmp-promise": "3.0.3"
