@@ -104,6 +104,7 @@ module.exports = {
 
     // A list of paths to directories that Jest should use to search for files in
     roots: [
+        '<rootDir>/packages/h5p-clamav-scanner/test',
         '<rootDir>/packages/h5p-express/test',
         '<rootDir>/packages/h5p-html-exporter/test',
         '<rootDir>/packages/h5p-server/test',
