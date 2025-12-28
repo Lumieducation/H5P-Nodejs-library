@@ -1863,6 +1863,19 @@ export interface IH5PConfig {
      */
     setFinishedEnabled: boolean;
     /**
+     * URL to call as a webhook when a user completes content. If set, a POST
+     * request will be made to this URL with completion data after the completion
+     * is saved. Cookies will be included in the request (credentials: 'include').
+     * This is useful for integrating with external systems that need to be
+     * notified of completion events.
+     */
+    completionWebhookUrl?: string;
+    /**
+     * If true, the completion webhook will be called when a user finishes content.
+     * Requires completionWebhookUrl to be set.
+     */
+    completionWebhookEnabled: boolean;
+    /**
      * Indicates on what kind of network the site is running. Can be "local",
      * "network" or "internet". TODO: This value should not be
      * user-configurable, but has to be determined by the system on startup. (If

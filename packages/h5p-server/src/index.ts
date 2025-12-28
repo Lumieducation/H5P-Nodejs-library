@@ -12,6 +12,7 @@ import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
 import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
 import { streamToString } from './helpers/StreamHelpers';
+import CompletionWebhookService from './helpers/CompletionWebhookService';
 
 import Logger from './helpers/Logger';
 
@@ -118,6 +119,7 @@ export {
     PackageExporter,
     TemporaryFileManager,
     streamToString,
+    CompletionWebhookService,
     // interfaces
     ContentId,
     ContentParameters,
