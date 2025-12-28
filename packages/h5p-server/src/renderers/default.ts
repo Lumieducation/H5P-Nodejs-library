@@ -3,17 +3,65 @@ import { IEditorModel } from '../types';
 export default (model: IEditorModel): string => `<html>
 <head>
 <meta charset="UTF-8">
-<script> window.H5PIntegration = parent.H5PIntegration || ${JSON.stringify(
-    model.integration,
-    null,
-    2
-)}</script>
+<script>
+// Immediately set up H5PIntegration and H5PEditor to prevent cross-origin errors
+// This runs synchronously before any other scripts load
+(function() {
+    'use strict';
+    
+    // Set H5PIntegration - try parent first, but handle cross-origin gracefully
+    var h5pIntegration = null;
+    try {
+        if (parent && parent !== window && parent.H5PIntegration) {
+            h5pIntegration = parent.H5PIntegration;
+        }
+    } catch (e) {
+        // Cross-origin access blocked - will use local integration
+    }
+    
+    // Use parent's integration if available, otherwise use local
+    window.H5PIntegration = h5pIntegration || ${JSON.stringify(
+        model.integration,
+        null,
+        2
+    )};
+    
+    // Ensure H5PEditor exists on window before any scripts load
+    // This is critical - widget scripts will try to set properties on H5PEditor
+    // Initialize as an empty object if it doesn't exist or is invalid
+    if (typeof window.H5PEditor === 'undefined' || 
+        window.H5PEditor === null || 
+        typeof window.H5PEditor !== 'object') {
+        window.H5PEditor = {};
+    }
+})();
+</script>
 ${model.styles
     .map((style) => `<link rel="stylesheet" href="${style}">`)
     .join('\n    ')}
 ${model.scripts
     .map((script) => `<script src="${script}"></script>`)
     .join('\n    ')}
+<script>
+// Post-load script: Ensure H5PIntegration and H5PEditor are still properly set
+// This runs after all external scripts have loaded
+(function() {
+    'use strict';
+    
+    // Ensure H5PIntegration exists
+    if (typeof window.H5PIntegration === 'undefined') {
+        window.H5PIntegration = ${JSON.stringify(model.integration, null, 2)};
+    }
+    
+    // Ensure H5PEditor exists and is an object
+    if (typeof window.H5PEditor === 'undefined') {
+        window.H5PEditor = {};
+    } else if (typeof window.H5PEditor !== 'object' || window.H5PEditor === null) {
+        // If it's not an object, recreate it
+        window.H5PEditor = {};
+    }
+})();
+</script>
 </head>
 <body>
 
@@ -26,6 +74,10 @@ ${model.scripts
     <input id="save-h5p" type="submit" name="submit" value="Create" class="button button-primary button-large">
 </form>
 <script>
+// Ensure H5PEditor is available (it should be set by h5peditor.js, but ensure it exists)
+if (typeof window.H5PEditor === 'undefined') {
+    window.H5PEditor = {};
+}
 var ns = H5PEditor;
 
 (function($) {
