@@ -6,6 +6,7 @@ import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
+import cors from 'cors';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
@@ -201,6 +202,15 @@ const start = async (): Promise<void> => {
 
     // We now set up the Express server in the usual fashion.
     const server = express();
+
+    server.use(express.static(path.resolve('public')));
+
+    server.use(
+        cors({
+            origin: ['http://localhost:4000', 'http://127.0.0.1:4000'],
+            credentials: true
+        })
+    );
 
     server.use(bodyParser.json({ limit: '500mb' }));
     server.use(
