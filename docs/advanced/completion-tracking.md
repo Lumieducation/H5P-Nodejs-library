@@ -75,6 +75,64 @@ or use the xAPI capabilities of the {@link
 - You can enable or disable the feature by setting `setFinishedEnabled` in
   {@link @lumieducation/h5p-server!IH5PConfig | IH5PConfig}.
 
+## Completion webhooks
+
+You can configure the H5P server to call a webhook URL when a user completes
+content. This is useful for integrating with external systems that need to be
+notified of completion events, such as updating user progress in your own
+database.
+
+### How it works
+
+- When a user completes content and the completion data is successfully saved,
+  the server makes a POST request to the configured webhook URL.
+- The webhook request includes cookies from the original request, allowing your
+  webhook endpoint to authenticate the user.
+- The webhook is called asynchronously, so failures won't affect the main
+  completion flow.
+- The webhook payload includes: `contentId`, `userId`, `score`, `maxScore`,
+  `openedTimestamp`, `finishedTimestamp`, and `completionTime`.
+
+### Enabling completion webhooks
+
+1. Set `completionWebhookUrl` in {@link @lumieducation/h5p-server!IH5PConfig | IH5PConfig}
+   to your webhook endpoint URL (e.g., `https://your-app.com/api/h5p/completion`).
+2. Set `completionWebhookEnabled` in {@link @lumieducation/h5p-server!IH5PConfig | IH5PConfig}
+   to `true`.
+3. Implement your webhook endpoint to receive POST requests with the completion
+   data and update your database accordingly.
+
+### Webhook payload format
+
+The webhook receives a JSON POST request with the following structure:
+
+```json
+{
+  "contentId": "123",
+  "userId": "user-456",
+  "score": 8,
+  "maxScore": 10,
+  "openedTimestamp": 1234567890,
+  "finishedTimestamp": 1234567900,
+  "completionTime": 10
+}
+```
+
+### Important considerations
+
+- **Cookies**: Cookies from the original request are forwarded to the webhook,
+  which is useful for authentication. However, if your webhook is on a different
+  domain, you'll need to configure CORS properly and handle authentication
+  differently (e.g., using API keys or tokens in headers).
+- **Error handling**: Webhook failures are logged but don't affect the main
+  completion flow. Your webhook endpoint should return a 2xx status code for
+  successful processing.
+- **Timeout**: Webhook requests have a 5-second timeout. If your webhook takes
+  longer, consider processing it asynchronously on your server.
+- **Iframe context**: When H5P is rendered in an iframe, cookies are still
+  forwarded correctly as long as your webhook endpoint is configured to accept
+  credentials from the iframe's origin.
+
 ## Security considerations
 
 You should implement CSRF tokens when using completion tracking as the POST

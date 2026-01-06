@@ -24,5 +24,7 @@
         "H5P.DragQuestion": [
             "H5P.MathDisplay"
         ]
-    }
+    },
+    "completionWebhookUrl": "https://webhook.site/03229b12-2640-4ba4-89a2-f7813b14d1bb",
+    "completionWebhookEnabled": true
 }

@@ -103,6 +103,8 @@ export default class H5PConfig implements IH5PConfig {
     public sendUsageStatistics: boolean = false;
     public setFinishedUrl: string = '/finishedData';
     public setFinishedEnabled: boolean = true;
+    public completionWebhookUrl?: string;
+    public completionWebhookEnabled: boolean = false;
     public siteType: 'local' | 'network' | 'internet' = 'local';
     public contentUserStateSaveInterval: number | false = 5 * 1000; // the interval to save the contentUserData in milliseconds
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
@@ -138,6 +140,8 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('proxy');
         await this.loadSettingFromStorage('sendUsageStatistics');
         await this.loadSettingFromStorage('setFinishedEnabled');
+        await this.loadSettingFromStorage('completionWebhookUrl');
+        await this.loadSettingFromStorage('completionWebhookEnabled');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
         return this;
@@ -169,6 +173,8 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('proxy');
         await this.saveSettingToStorage('sendUsageStatistics');
         await this.saveSettingToStorage('setFinishedEnabled');
+        await this.saveSettingToStorage('completionWebhookUrl');
+        await this.saveSettingToStorage('completionWebhookEnabled');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
     }

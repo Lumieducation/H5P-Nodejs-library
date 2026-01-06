@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {
     AjaxSuccessResponse,
+    CompletionWebhookService,
     ContentUserDataManager,
     IH5PConfig,
     IPostContentUserData
@@ -42,6 +43,31 @@ export default class FinishedDataController {
             time,
             user
         );
+
+        // Call webhook if enabled and configured
+        if (
+            this.config.completionWebhookEnabled &&
+            this.config.completionWebhookUrl
+        ) {
+            // Call webhook asynchronously - don't wait for it to complete
+            // This ensures webhook failures don't affect the main response
+            CompletionWebhookService.callWebhook(
+                this.config.completionWebhookUrl,
+                {
+                    contentId,
+                    userId: user.id,
+                    score,
+                    maxScore,
+                    openedTimestamp: opened,
+                    finishedTimestamp: finished,
+                    completionTime: time
+                },
+                req.headers.cookie
+            ).catch((error) => {
+                // Error is already logged in the webhook service
+                // Just ensure it doesn't propagate
+            });
+        }
 
         res.status(200).json(new AjaxSuccessResponse(undefined));
     };

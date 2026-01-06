@@ -73,6 +73,15 @@ const start = async (): Promise<void> => {
         )
     ).load();
 
+    // Override webhook configuration from environment variables if set
+    if (process.env.COMPLETION_WEBHOOK_URL) {
+        config.completionWebhookUrl = process.env.COMPLETION_WEBHOOK_URL;
+    }
+    if (process.env.COMPLETION_WEBHOOK_ENABLED !== undefined) {
+        config.completionWebhookEnabled =
+            process.env.COMPLETION_WEBHOOK_ENABLED === 'true';
+    }
+
     // The H5PEditor object is central to all operations of h5p-nodejs-library
     // if you want to user the editor component.
     //
@@ -222,6 +231,18 @@ const start = async (): Promise<void> => {
             `attachment; filename=${req.params.contentId}.html`
         );
         res.status(200).send(html);
+    });
+
+    // Example webhook endpoint for testing completion webhooks
+    // In production, you would configure completionWebhookUrl to point to your own server
+    server.post('/api/h5p/completion', (req, res) => {
+        console.log('=== H5P Completion Webhook Received ===');
+        console.log('Headers:', req.headers);
+        console.log('Cookies:', req.headers.cookie);
+        console.log('Body:', JSON.stringify(req.body, null, 2));
+        console.log('========================================');
+        // Return success response
+        res.status(200).json({ success: true, message: 'Webhook received' });
     });
 
     // The startPageRenderer displays a list of content objects and shows
