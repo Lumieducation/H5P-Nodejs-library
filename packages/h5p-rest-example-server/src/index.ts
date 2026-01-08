@@ -7,8 +7,8 @@ import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
 import path from 'path';
 import cors from 'cors';
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
+// import passport from 'passport';
+// import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
 import csurf from '@dr.pogodin/csurf';
 
@@ -66,27 +66,27 @@ const userTable = {
     }
 };
 
-const initPassport = (): void => {
-    passport.use(
-        new LocalStrategy((username, password, callback) => {
-            // We don't check the password. In a real application you'll perform
-            // DB access here.
-            const user = userTable[username];
-            if (!user) {
-                callback('User not found in user table');
-            } else {
-                callback(null, user);
-            }
-        })
-    );
-    passport.serializeUser((user, done): void => {
-        done(null, user);
-    });
-
-    passport.deserializeUser((user, done): void => {
-        done(null, user);
-    });
-};
+// const initPassport = (): void => {
+//     passport.use(
+//         new LocalStrategy((username, password, callback) => {
+//             // We don't check the password. In a real application you'll perform
+//             // DB access here.
+//             const user = userTable[username];
+//             if (!user) {
+//                 callback('User not found in user table');
+//             } else {
+//                 callback(null, user);
+//             }
+//         })
+//     );
+//     passport.serializeUser((user, done): void => {
+//         done(null, user);
+//     });
+//
+//     passport.deserializeUser((user, done): void => {
+//         done(null, user);
+//     });
+// };
 
 const addCsrfTokenToUser = (req, res, next): void => {
     (req.user as any).csrfToken = req.csrfToken;
@@ -242,9 +242,9 @@ const start = async (): Promise<void> => {
     );
 
     // Initialize passport for login
-    initPassport();
-    server.use(passport.initialize());
-    server.use(passport.session());
+    // initPassport();
+    // server.use(passport.initialize());
+    // server.use(passport.session());
 
     // Initialize CSRF protection. If we add it as middleware, it checks if a
     // token was passed into a state altering route. We pass this token to the
@@ -260,39 +260,49 @@ const start = async (): Promise<void> => {
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    server.use(
-        (
-            req: express.Request & { user: H5P.IUser } & {
-                user: {
-                    username?: string;
-                    name?: string;
-                    email?: string;
-                    role?: 'anonymous' | 'teacher' | 'student' | 'admin';
-                };
-            },
-            res,
-            next
-        ) => {
-            // Maps the user received from passport to the one expected by
-            // h5p-express and h5p-server
-            if (req.user) {
-                req.user = new ExampleUser(
-                    req.user.username,
-                    req.user.name,
-                    req.user.email,
-                    req.user.role
-                );
-            } else {
-                req.user = new ExampleUser(
-                    'anonymous',
-                    'Anonymous',
-                    '',
-                    'anonymous'
-                );
-            }
-            next();
-        }
-    );
+    // server.use(
+    //     (
+    //         req: express.Request & { user: H5P.IUser } & {
+    //             user: {
+    //                 username?: string;
+    //                 name?: string;
+    //                 email?: string;
+    //                 role?: 'anonymous' | 'teacher' | 'student' | 'admin';
+    //             };
+    //         },
+    //         res,
+    //         next
+    //     ) => {
+    //         // Maps the user received from passport to the one expected by
+    //         // h5p-express and h5p-server
+    //         if (req.user) {
+    //             req.user = new ExampleUser(
+    //                 req.user.username,
+    //                 req.user.name,
+    //                 req.user.email,
+    //                 req.user.role
+    //             );
+    //         } else {
+    //             req.user = new ExampleUser(
+    //                 'anonymous',
+    //                 'Anonymous',
+    //                 '',
+    //                 'anonymous'
+    //             );
+    //         }
+    //         next();
+    //     }
+    // );
+    server.use((req: express.Request & { user: H5P.IUser }, res, next) => {
+        // Local dev: always use an admin user without login.
+        req.user = new ExampleUser(
+            'admin',
+            'Local Admin',
+            'admin@example.com',
+            'admin'
+        );
+        next();
+    });
 
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
@@ -358,43 +368,43 @@ const start = async (): Promise<void> => {
 
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in
     // the session
-    server.post(
-        '/login',
-        passport.authenticate('local', {
-            failWithError: true
-        }),
-        csurf({
-            // We need csurf to get the token for the current session, but we
-            // don't want to protect the current route, as the login can't have
-            // a CSRF token.
-            ignoreMethods: ['POST']
-        }),
-        function (
-            req: express.Request & {
-                user: { username: string; email: string; name: string };
-            } & {
-                csrfToken: () => string;
-            },
-            res: express.Response
-        ): void {
-            res.status(200).json({
-                username: req.user.username,
-                email: req.user.email,
-                name: req.user.name,
-                csrfToken: req.csrfToken()
-            });
-        }
-    );
-
-    server.post('/logout', csrfProtection, (req, res) => {
-        req.logout((err) => {
-            if (!err) {
-                res.status(200).send();
-            } else {
-                res.status(500).send(err.message);
-            }
-        });
-    });
+    // server.post(
+    //     '/login',
+    //     passport.authenticate('local', {
+    //         failWithError: true
+    //     }),
+    //     csurf({
+    //         // We need csurf to get the token for the current session, but we
+    //         // don't want to protect the current route, as the login can't have
+    //         // a CSRF token.
+    //         ignoreMethods: ['POST']
+    //     }),
+    //     function (
+    //         req: express.Request & {
+    //             user: { username: string; email: string; name: string };
+    //         } & {
+    //             csrfToken: () => string;
+    //         },
+    //         res: express.Response
+    //     ): void {
+    //         res.status(200).json({
+    //             username: req.user.username,
+    //             email: req.user.email,
+    //             name: req.user.name,
+    //             csrfToken: req.csrfToken()
+    //         });
+    //     }
+    // );
+    //
+    // server.post('/logout', csrfProtection, (req, res) => {
+    //     req.logout((err) => {
+    //         if (!err) {
+    //             res.status(200).send();
+    //         } else {
+    //             res.status(500).send(err.message);
+    //         }
+    //     });
+    // });
 
     const port = process.env.PORT || '8080';
 
