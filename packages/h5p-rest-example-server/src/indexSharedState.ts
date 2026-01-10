@@ -1,5 +1,5 @@
 import { dir, DirectoryResult } from 'tmp-promise';
-import { Strategy as LocalStrategy } from 'passport-local';
+// import { Strategy as LocalStrategy } from 'passport-local';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
@@ -7,10 +7,10 @@ import http from 'http';
 import i18next from 'i18next';
 import i18nextFsBackend from 'i18next-fs-backend';
 import i18nextHttpMiddleware from 'i18next-http-middleware';
-import passport from 'passport';
+// import passport from 'passport';
 import path from 'path';
 import session from 'express-session';
-import { promisify } from 'util';
+// import { promisify } from 'util';
 import cors from 'cors';
 
 import {
@@ -70,44 +70,48 @@ const users = {
     }
 };
 
-const initPassport = (): void => {
-    passport.use(
-        new LocalStrategy((username, password, callback) => {
-            // We don't check the password. In a real application you'll perform
-            // DB access here.
-            const user = users[username];
-            if (!user) {
-                callback('User not found in user table');
-            } else {
-                callback(null, user);
-            }
-        })
-    );
-    passport.serializeUser((user, done): void => {
-        done(null, user);
-    });
+const createLocalDevUser = (): ExampleUser =>
+    // Local dev: always use an admin user without login.
+    new ExampleUser('admin', 'Local Admin', 'admin@example.com', 'admin');
 
-    passport.deserializeUser((user, done): void => {
-        done(null, user);
-    });
-};
+// const initPassport = (): void => {
+//     passport.use(
+//         new LocalStrategy((username, password, callback) => {
+//             // We don't check the password. In a real application you'll perform
+//             // DB access here.
+//             const user = users[username];
+//             if (!user) {
+//                 callback('User not found in user table');
+//             } else {
+//                 callback(null, user);
+//             }
+//         })
+//     );
+//     passport.serializeUser((user, done): void => {
+//         done(null, user);
+//     });
+//
+//     passport.deserializeUser((user, done): void => {
+//         done(null, user);
+//     });
+// };
 
 /**
  * Maps the user received from passport to the one expected by
  * h5p-express and h5p-server
  **/
-const expressUserToH5PUser = (user?: {
-    username: string;
-    name: string;
-    email: string;
-    role: 'anonymous' | 'teacher' | 'student' | 'admin';
-}): IUser => {
-    if (user) {
-        return new ExampleUser(user.username, user.name, user.email, user.role);
-    } else {
-        return new ExampleUser('anonymous', 'Anonymous', '', 'anonymous');
-    }
-};
+// const expressUserToH5PUser = (user?: {
+//     username: string;
+//     name: string;
+//     email: string;
+//     role: 'anonymous' | 'teacher' | 'student' | 'admin';
+// }): IUser => {
+//     if (user) {
+//         return new ExampleUser(user.username, user.name, user.email, user.role);
+//     } else {
+//         return new ExampleUser('anonymous', 'Anonymous', '', 'anonymous');
+//     }
+// };
 
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS !== 'false';
@@ -239,38 +243,42 @@ const start = async (): Promise<void> => {
         saveUninitialized: false
     });
     app.use(sessionParser);
-    const sessionParserPromise = promisify(sessionParser);
+    // const sessionParserPromise = promisify(sessionParser);
 
     // Initialize passport for login
-    initPassport();
-    const passportInitialize = passport.initialize();
-    app.use(passportInitialize);
-    const passportInitializePromise = promisify(passportInitialize);
-
-    const passportSession = passport.session();
-    app.use(passportSession);
-    const passportSessionPromise = promisify(passportSession);
+    // initPassport();
+    // const passportInitialize = passport.initialize();
+    // app.use(passportInitialize);
+    // const passportInitializePromise = promisify(passportInitialize);
+    //
+    // const passportSession = passport.session();
+    // app.use(passportSession);
+    // const passportSessionPromise = promisify(passportSession);
 
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
-    app.use(
-        (
-            req: express.Request & {
-                user?: {
-                    username: string;
-                    name: string;
-                    email: string;
-                    role: 'anonymous' | 'teacher' | 'student' | 'admin';
-                };
-            },
-            res,
-            next
-        ) => {
-            req.user = expressUserToH5PUser(req.user) as any;
-            next();
-        }
-    );
+    // app.use(
+    //     (
+    //         req: express.Request & {
+    //             user?: {
+    //                 username: string;
+    //                 name: string;
+    //                 email: string;
+    //                 role: 'anonymous' | 'teacher' | 'student' | 'admin';
+    //             };
+    //         },
+    //         res,
+    //         next
+    //     ) => {
+    //         req.user = expressUserToH5PUser(req.user) as any;
+    //         next();
+    //     }
+    // );
+    app.use((req: express.Request & { user?: IUser }, res, next) => {
+        req.user = createLocalDevUser();
+        next();
+    });
 
     // The i18nextExpressMiddleware injects the function t(...) into the req
     // object. This function must be there for the Express adapter
@@ -328,34 +336,34 @@ const start = async (): Promise<void> => {
 
     // Simple login endpoint that returns HTTP 200 on auth and sets the user in
     // the session
-    app.post(
-        '/login',
-        passport.authenticate('local', {
-            failWithError: true
-        }),
-        function (
-            req: express.Request & {
-                user: { username: string; email: string; name: string };
-            },
-            res: express.Response
-        ): void {
-            res.status(200).json({
-                username: req.user.username,
-                email: req.user.email,
-                name: req.user.name
-            });
-        }
-    );
-
-    app.post('/logout', (req, res) => {
-        req.logout((err) => {
-            if (!err) {
-                res.status(200).send();
-            } else {
-                res.status(500).send(err.message);
-            }
-        });
-    });
+    // app.post(
+    //     '/login',
+    //     passport.authenticate('local', {
+    //         failWithError: true
+    //     }),
+    //     function (
+    //         req: express.Request & {
+    //             user: { username: string; email: string; name: string };
+    //         },
+    //         res: express.Response
+    //     ): void {
+    //         res.status(200).json({
+    //             username: req.user.username,
+    //             email: req.user.email,
+    //             name: req.user.name
+    //         });
+    //     }
+    // );
+    //
+    // app.post('/logout', (req, res) => {
+    //     req.logout((err) => {
+    //         if (!err) {
+    //             res.status(200).send();
+    //         } else {
+    //             res.status(500).send(err.message);
+    //         }
+    //     });
+    // });
 
     /**
      * The route returns information about the user. It is used by the client to
@@ -404,15 +412,9 @@ const start = async (): Promise<void> => {
         h5pEditor.libraryManager.libraryStorage.getFileAsJson.bind(
             h5pEditor.libraryManager.libraryStorage
         ),
-        async (req: express.Request) => {
-            // We get the raw request that was upgraded to the websocket from
-            // SharedStateServer and have to get the user for it from the
-            // session. As the request hasn't passed through the express
-            // middleware, we have to call the required middleware ourselves.
-            await sessionParserPromise(req, {} as any);
-            await passportInitializePromise(req, {} as any);
-            await passportSessionPromise(req, {});
-            return expressUserToH5PUser(req.user as any);
+        async (_req: express.Request) => {
+            // Local dev: return a fixed user without session/passport.
+            return createLocalDevUser();
         },
         async (user, _contentId) => {
             const userInTable = users[user.id];
