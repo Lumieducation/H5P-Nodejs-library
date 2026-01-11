@@ -419,15 +419,32 @@ export default class HtmlExporter {
             model.scripts.map(async (script) => {
                 const { text, filename, core, editor, library } =
                     await this.getFileAsText(script, usedFiles);
+
+                // Patch echo360.js to prevent uglifyJs from throwing error.
+                let use_patched_file = false;
+                let patched_text;
+                if (filename.includes("echo360.js")) {
+                    use_patched_file = true
+                    patched_text = text.replace("delete previousTickMS", "previousTickMS = undefined");
+                }
+
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
                     editor,
                     library
                 );
+
                 // We must escape </script> tags inside scripts.
-                texts[script] =
-                    licenseText + text.replace(/<\/script>/g, '<\\/script>');
+                if (use_patched_file) {
+                    texts[script] =
+                        licenseText + patched_text.replace(/<\/script>/g, '<\\/script>');
+                }
+                else {
+                    texts[script] =
+                        licenseText + text.replace(/<\/script>/g, '<\\/script>');
+                }
+
             })
         );
         const scripts: string[] = model.scripts
