@@ -10,7 +10,6 @@ import cors from 'cors';
 // import passport from 'passport';
 // import { Strategy as LocalStrategy } from 'passport-local';
 import session from 'express-session';
-import csurf from '@dr.pogodin/csurf';
 
 import {
     h5pAjaxExpressRouter,
@@ -88,11 +87,6 @@ const userTable = {
 //     });
 // };
 
-const addCsrfTokenToUser = (req, res, next): void => {
-    (req.user as any).csrfToken = req.csrfToken;
-    next();
-};
-
 const start = async (): Promise<void> => {
     const useTempUploads = process.env.TEMP_UPLOADS != 'false';
     if (useTempUploads) {
@@ -139,21 +133,13 @@ const start = async (): Promise<void> => {
     ).load();
 
     const urlGenerator = new H5P.UrlGenerator(config, {
-        queryParamGenerator: (user) => {
-            if ((user as any).csrfToken) {
-                return {
-                    name: '_csrf',
-                    value: (user as any).csrfToken()
-                };
-            }
-            return {
-                name: '',
-                value: ''
-            };
-        },
-        protectAjax: true,
-        protectContentUserData: true,
-        protectSetFinished: true
+        queryParamGenerator: () => ({
+            name: '',
+            value: ''
+        }),
+        protectAjax: false,
+        protectContentUserData: false,
+        protectSetFinished: false
     });
 
     const permissionSystem = new ExamplePermissionSystem();
@@ -246,17 +232,6 @@ const start = async (): Promise<void> => {
     // server.use(passport.initialize());
     // server.use(passport.session());
 
-    // Initialize CSRF protection. If we add it as middleware, it checks if a
-    // token was passed into a state altering route. We pass this token to the
-    // client in two ways:
-    //   - Return it as a property of the return data on login (used for the CUD
-    //     routes in the content service)
-    //   - Add the token to the URLs in the H5PIntegration object as a query
-    //     parameter. This is done by passing in a custom UrlGenerator that gets
-    //     the csrfToken from the user object. We put the token into the user
-    //     object in the addCsrfTokenToUser middleware.
-    const csrfProtection = csurf();
-
     // It is important that you inject a user object into the request object!
     // The Express adapter below (H5P.adapters.express) expects the user
     // object to be present in requests.
@@ -315,7 +290,6 @@ const start = async (): Promise<void> => {
     // object, which means we get all of them.
     server.use(
         h5pEditor.config.baseUrl,
-        csrfProtection,
         h5pAjaxExpressRouter(
             h5pEditor,
             path.resolve('h5p/core'), // the path on the local disc where the
@@ -336,11 +310,6 @@ const start = async (): Promise<void> => {
     // - Deleting content
     server.use(
         h5pEditor.config.baseUrl,
-        csrfProtection,
-        // We need to add the token to the user by adding the addCsrfTokenToUser
-        // middleware, so that the UrlGenerator can read it when we generate the
-        // integration object with the URLs that contain the token.
-        addCsrfTokenToUser,
         restExpressRoutes(
             h5pEditor,
             h5pPlayer,
@@ -354,7 +323,6 @@ const start = async (): Promise<void> => {
     // library management functionality.
     server.use(
         `${h5pEditor.config.baseUrl}/libraries`,
-        csrfProtection,
         libraryAdministrationExpressRouter(h5pEditor)
     );
 
@@ -362,7 +330,6 @@ const start = async (): Promise<void> => {
     // the content type cache manually.
     server.use(
         `${h5pEditor.config.baseUrl}/content-type-cache`,
-        csrfProtection,
         contentTypeCacheExpressRouter(h5pEditor.contentTypeCache)
     );
 
