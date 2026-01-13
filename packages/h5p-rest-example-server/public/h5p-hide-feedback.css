@@ -7,3 +7,9 @@
 .h5p-question-visible {
     display: none !important;
 }
+
+.joubel-tip-container,
+.joubel-icon-tip-normal,
+.joubel-tip-container .joubel-tip {
+    display: none !important;
+}
