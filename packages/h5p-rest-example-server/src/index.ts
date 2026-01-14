@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { dir, DirectoryResult } from 'tmp-promise';
 import bodyParser from 'body-parser';
 import express from 'express';

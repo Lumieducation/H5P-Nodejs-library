@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { dir, DirectoryResult } from 'tmp-promise';
 // import { Strategy as LocalStrategy } from 'passport-local';
 import bodyParser from 'body-parser';
