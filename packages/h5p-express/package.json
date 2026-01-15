@@ -44,18 +44,18 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "express": "5.1.0"
+        "express": "5.2.1"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "@types/express": "5.0.3",
+        "@types/express": "5.0.6",
         "@types/express-fileupload": "1.5.1",
-        "@types/express-serve-static-core": "5.0.7",
+        "@types/express-serve-static-core": "5.1.0",
         "@types/supertest": "6.0.3",
-        "axios": "1.11.0",
+        "axios": "1.13.2",
         "axios-mock-adapter": "2.1.0",
-        "body-parser": "2.2.0",
+        "body-parser": "2.2.1",
         "express-fileupload": "1.5.2",
         "supertest": "7.1.4",
         "tmp-promise": "3.0.3"
