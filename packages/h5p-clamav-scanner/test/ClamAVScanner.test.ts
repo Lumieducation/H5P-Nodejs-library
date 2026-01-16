@@ -38,7 +38,7 @@ describe('ClamAVScanner', () => {
             const file = createFileFromFilePath(filePath);
             await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
                 result: MalwareScanResult.MalwareFound,
-                viruses: 'Win.Test.EICAR_HDB-1'
+                viruses: 'Eicar-Test-Signature'
             });
         });
         it("doesn't break if it is set to non-existent file", async () => {
@@ -70,7 +70,7 @@ describe('ClamAVScanner', () => {
             const file = createFileFromFilePath(filePath, data);
             await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
                 result: MalwareScanResult.MalwareFound,
-                viruses: 'Win.Test.EICAR_HDB-1'
+                viruses: 'Eicar-Test-Signature'
             });
         });
         it("doesn't break if it is an empty buffer", async () => {
@@ -85,7 +85,7 @@ describe('ClamAVScanner', () => {
     });
 
     // TODO: These tests require a running ClamAV daemon on localhost:3310
-    describe.skip('scan buffers using ClamAV daemon', () => {
+    describe('scan buffers using ClamAV daemon', () => {
         it('reports "Clean" for uninfected buffers', async () => {
             const clamAVScanner = await ClamAVScanner.create({
                 clamdscan: { host: 'localhost', port: 3310 }
@@ -108,7 +108,7 @@ describe('ClamAVScanner', () => {
             const file = createFileFromFilePath(filePath, data);
             await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
                 result: MalwareScanResult.MalwareFound,
-                viruses: 'Win.Test.EICAR_HDB-1'
+                viruses: 'Eicar-Test-Signature'
             });
         });
         it("doesn't break if it is an empty buffer", async () => {
