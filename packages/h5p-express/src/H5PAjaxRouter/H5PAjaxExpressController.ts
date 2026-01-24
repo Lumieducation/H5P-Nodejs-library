@@ -47,7 +47,7 @@ export default class H5PAjaxExpressController {
     ): Promise<void> => {
         const { mimetype, stream, stats, range } =
             await this.ajaxEndpoint.getContentFile(
-                req.params.id,
+                Array.isArray(req.params.id) ? req.params.id[0] : req.params.id,
                 (req.params.file as unknown as string[]).join('/'),
                 req.user,
                 this.getRange(req)
@@ -74,7 +74,9 @@ export default class H5PAjaxExpressController {
         res: express.Response
     ): Promise<void> => {
         const result = await this.ajaxEndpoint.getContentParameters(
-            req.params.contentId,
+            Array.isArray(req.params.contentId)
+                ? req.params.contentId[0]
+                : req.params.contentId,
             req.user
         );
         res.status(200).json(result);
@@ -93,7 +95,9 @@ export default class H5PAjaxExpressController {
             `attachment; filename=${req.params.contentId}.h5p`
         );
         await this.ajaxEndpoint.getDownload(
-            req.params.contentId,
+            Array.isArray(req.params.contentId)
+                ? req.params.contentId[0]
+                : req.params.contentId,
             req.user,
             res
         );
@@ -108,7 +112,9 @@ export default class H5PAjaxExpressController {
     ): Promise<void> => {
         const { mimetype, stream, stats } =
             await this.ajaxEndpoint.getLibraryFile(
-                req.params.uberName,
+                Array.isArray(req.params.uberName)
+                    ? req.params.uberName[0]
+                    : req.params.uberName,
                 (req.params.file as unknown as string[]).join('/')
             );
 

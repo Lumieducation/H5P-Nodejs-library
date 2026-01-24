@@ -31,7 +31,15 @@ export default class ContentUserDataController {
             return;
         }
 
-        const { contentId, dataType, subContentId } = req.params;
+        const contentId = Array.isArray(req.params.contentId)
+            ? req.params.contentId[0]
+            : req.params.contentId;
+        const dataType = Array.isArray(req.params.dataType)
+            ? req.params.dataType[0]
+            : req.params.dataType;
+        const subContentId = Array.isArray(req.params.subContentId)
+            ? req.params.subContentId[0]
+            : req.params.subContentId;
         const contextId =
             typeof req.query.contextId === 'string'
                 ? req.query.contextId
@@ -70,7 +78,15 @@ export default class ContentUserDataController {
             return;
         }
 
-        const { contentId, dataType, subContentId } = req.params;
+        const contentId = Array.isArray(req.params.contentId)
+            ? req.params.contentId[0]
+            : req.params.contentId;
+        const dataType = Array.isArray(req.params.dataType)
+            ? req.params.dataType[0]
+            : req.params.dataType;
+        const subContentId = Array.isArray(req.params.subContentId)
+            ? req.params.subContentId[0]
+            : req.params.subContentId;
         const contextId =
             typeof req.query.contextId === 'string'
                 ? req.query.contextId
