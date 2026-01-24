@@ -190,7 +190,12 @@ export default class FileLibraryStorage implements ILibraryStorage {
                 404
             );
         }
-        await rm(libPath, { recursive: true, force: true });
+        await rm(libPath, {
+            recursive: true,
+            force: true,
+            maxRetries: 5,
+            retryDelay: 50
+        });
     }
 
     /**
