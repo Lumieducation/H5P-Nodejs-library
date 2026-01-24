@@ -5,6 +5,10 @@ import {
     IRequestWithLanguage
 } from '@lumieducation/h5p-express';
 
+function getContentId(contentId: string | string[]): string {
+    return Array.isArray(contentId) ? contentId[0] : contentId;
+}
+
 /**
  * @param h5pEditor
  * @param h5pPlayer
@@ -22,7 +26,7 @@ export default function (
     router.get(`/:contentId/play`, async (req: IRequestWithUser, res) => {
         try {
             const content = await h5pPlayer.render(
-                req.params.contentId,
+                getContentId(req.params.contentId),
                 req.user,
                 languageOverride === 'auto'
                     ? (req.language ?? 'en')
@@ -70,24 +74,22 @@ export default function (
     router.get(
         '/:contentId/edit',
         async (req: IRequestWithLanguage & { user: H5P.IUser }, res) => {
+            const contentId = Array.isArray(req.params.contentId)
+                ? req.params.contentId[0]
+                : req.params.contentId;
             // This route merges the render and the /ajax/params routes to avoid a
             // second request.
             const editorModel = (await h5pEditor.render(
-                req.params.contentId === 'undefined'
-                    ? undefined
-                    : req.params.contentId,
+                contentId === 'undefined' ? undefined : contentId,
                 languageOverride === 'auto'
                     ? (req.language ?? 'en')
                     : languageOverride,
                 req.user
             )) as H5P.IEditorModel;
-            if (!req.params.contentId || req.params.contentId === 'undefined') {
+            if (!contentId || contentId === 'undefined') {
                 res.status(200).send(editorModel);
             } else {
-                const content = await h5pEditor.getContent(
-                    req.params.contentId,
-                    req.user
-                );
+                const content = await h5pEditor.getContent(contentId, req.user);
                 res.status(200).send({
                     ...editorModel,
                     library: content.library,
@@ -122,6 +124,9 @@ export default function (
     });
 
     router.patch('/:contentId', async (req: IRequestWithUser, res) => {
+        const routeContentId = Array.isArray(req.params.contentId)
+            ? req.params.contentId[0]
+            : req.params.contentId;
         if (
             !req.body.params ||
             !req.body.params.params ||
@@ -134,7 +139,7 @@ export default function (
         }
         const { id: contentId, metadata } =
             await h5pEditor.saveOrUpdateContentReturnMetaData(
-                req.params.contentId.toString(),
+                routeContentId.toString(),
                 req.body.params.params,
                 req.body.params.metadata,
                 req.body.library,
@@ -145,21 +150,22 @@ export default function (
     });
 
     router.delete('/:contentId', async (req: IRequestWithUser, res) => {
+        const contentId = Array.isArray(req.params.contentId)
+            ? req.params.contentId[0]
+            : req.params.contentId;
         try {
-            await h5pEditor.deleteContent(req.params.contentId, req.user);
+            await h5pEditor.deleteContent(contentId, req.user);
         } catch (error) {
             console.error(error);
 
             return res
                 .status(500)
                 .send(
-                    `Error deleting content with id ${req.params.contentId}: ${error.message}`
+                    `Error deleting content with id ${contentId}: ${error.message}`
                 );
         }
 
-        res.status(200).send(
-            `Content ${req.params.contentId} successfully deleted.`
-        );
+        res.status(200).send(`Content ${contentId} successfully deleted.`);
     });
 
     router.get('/', async (req: IRequestWithUser, res) => {
