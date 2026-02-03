@@ -27,6 +27,9 @@
         "global": {
             "player": {
                 "styles": ["/h5p-hide-feedback.css"]
+            },
+            "editor": {
+                "styles": ["/h5p-hide-editor-fields.css"]
             }
         }
     }
