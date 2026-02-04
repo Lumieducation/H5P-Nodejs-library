@@ -1,0 +1,5 @@
+.h5peditor-form .field-name-overallFeedback,
+.h5peditor-form .field-name-behaviour,
+.h5peditor-form .common {
+    display: none !important;
+}
