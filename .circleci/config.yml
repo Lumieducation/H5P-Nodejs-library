@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@2.2.5
-    browser-tools: circleci/browser-tools@2.3.2
+    browser-tools: circleci/browser-tools@2.4.0
 
 jobs:
     install-build:
