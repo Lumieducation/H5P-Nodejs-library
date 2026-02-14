@@ -80,6 +80,33 @@ describe('registering the site at H5P Hub', () => {
         );
         expect(getIdSpy).toHaveBeenCalled();
     });
+
+    it('throws an error if the override local id exceeds 15 characters', async () => {
+        const storage = new InMemoryStorage();
+        const config = new H5PConfig(storage);
+        const cache = new ContentTypeCache(
+            config,
+            storage,
+            () => '1234567890123456' // 16 characters
+        );
+        axiosMock.reset();
+        axiosMock
+            .onPost(config.hubRegistrationEndpoint)
+            .reply(
+                200,
+                JSON.parse(
+                    await readFile(
+                        path.resolve(
+                            'test/data/content-type-cache/registration.json'
+                        ),
+                        'utf-8'
+                    )
+                )
+            );
+        await expect(cache.registerOrGetUuid()).rejects.toThrow(
+            'error-local-id-too-long'
+        );
+    });
 });
 
 describe('getting H5P Hub content types', () => {
