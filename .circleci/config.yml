@@ -132,7 +132,7 @@ jobs:
                   CLAMDSCAN_PORT: 3310
                   CLAMSCAN_DEBUG_MODE: true
                   COVERALLS_FLAG_NAME: h5p-clamav-scanner
-            - image: clamav/clamav:1.5
+            - image: clamav/clamav:1.5.1-25
         resource_class: medium+
         steps:
             - checkout
