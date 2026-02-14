@@ -55,7 +55,7 @@
         "@types/supertest": "6.0.3",
         "axios": "1.13.5",
         "axios-mock-adapter": "2.1.0",
-        "body-parser": "2.2.1",
+        "body-parser": "2.2.2",
         "express-fileupload": "1.5.2",
         "supertest": "7.1.4",
         "tmp-promise": "3.0.3"
