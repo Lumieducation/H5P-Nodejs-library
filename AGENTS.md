@@ -113,6 +113,35 @@ storage/service interfaces; implementations are injected into `H5PEditor`:
 Always program to the interface. Default filesystem implementations live in
 `packages/h5p-server/src/implementation/`.
 
+## Key File Locations
+
+Where to look for common tasks (all paths relative to `packages/`):
+
+**h5p-server (core logic):**
+
+- Content CRUD & saving: `h5p-server/src/H5PEditor.ts`, `h5p-server/src/ContentStorer.ts`, `h5p-server/src/ContentManager.ts`
+- Library management: `h5p-server/src/LibraryManager.ts`
+- Package import/export: `h5p-server/src/PackageImporter.ts`, `h5p-server/src/PackageExporter.ts`
+- Content type hub: `h5p-server/src/ContentTypeCache.ts`, `h5p-server/src/ContentTypeInformationRepository.ts`
+- Player rendering: `h5p-server/src/H5PPlayer.ts`
+- All interfaces & types: `h5p-server/src/types.ts`
+- Default filesystem storage: `h5p-server/src/implementation/fs/`
+- Configuration: `h5p-server/src/implementation/H5PConfig.ts`
+- Translations: `h5p-server/assets/translations/`
+
+**h5p-express (HTTP layer):**
+
+- Express route handlers: `h5p-express/src/`
+
+**Other packages** are small and self-contained; start from their `src/index.ts`.
+
+**Dependency management:**
+
+- Root `package.json` for workspace config and shared devDependencies
+- Each `packages/*/package.json` for per-package dependencies
+- Use `npm ls <pkg>` and `npm outdated` to inspect resolved versions (do not
+  read `package-lock.json` directly)
+
 ## Git Hooks & Commits
 
 Husky runs on every commit/push — code must pass before committing:
