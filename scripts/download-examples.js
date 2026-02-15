@@ -46,7 +46,7 @@ const downloadH5pPackages = async (contentTypeCacheFilePath, directoryPath) => {
             })
             .map((contentType) =>
                 axios.default
-                    .get(`http://hub-api.h5p.org/v1/content-types/${contentType}`, {
+                    .get(`http://api.h5p.org/v1/content-types/${contentType}`, {
                         responseType: 'stream'
                     })
                     .then((response) => {
