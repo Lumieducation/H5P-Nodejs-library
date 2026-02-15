@@ -47,7 +47,7 @@
         "@aws-sdk/lib-storage": "^3.758.0",
         "@lumieducation/h5p-server": "^10.0.4",
         "aws-sdk": "2.1693.0",
-        "mongodb": "6.21.0",
+        "mongodb": "7.1.0",
         "stream-buffers": "^3.0.2"
     },
     "main": "./build/index.js",
