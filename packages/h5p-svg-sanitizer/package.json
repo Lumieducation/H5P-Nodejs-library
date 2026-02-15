@@ -31,7 +31,7 @@
     "main": "./build/SvgSanitizer.js",
     "types": "./build/SvgSanitizer.d.ts",
     "devDependencies": {
-        "@types/jsdom": "^21.1.7",
+        "@types/jsdom": "^27.0.0",
         "tmp-promise": "^3.0.3"
     },
     "files": [
