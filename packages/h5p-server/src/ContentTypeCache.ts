@@ -101,30 +101,23 @@ export default class ContentTypeCache {
         }
         const queryStringedFormData = params.toString();
 
-        const response = await this.httpClient.post(
-            this.config.hubContentTypesEndpoint,
-            queryStringedFormData
-        );
-
-        if (response.status !== 200) {
+        try {
+            const response = await this.httpClient.post(
+                this.config.hubContentTypesEndpoint,
+                queryStringedFormData
+            );
+            return response.data.contentTypes;
+        } catch (error) {
             throw new H5pError(
                 'error-communicating-with-hub',
                 {
-                    statusCode: response.status.toString(),
-                    statusText: response.statusText
+                    statusCode:
+                        error.response?.status?.toString() || 'no response',
+                    statusText: error.message
                 },
                 504
             );
         }
-        if (!response.data) {
-            throw new H5pError(
-                'error-communicating-with-hub-no-status',
-                {},
-                504
-            );
-        }
-
-        return response.data.contentTypes;
     }
 
     /**
@@ -221,27 +214,26 @@ export default class ContentTypeCache {
         if (this.config.uuid && this.config.uuid !== '') {
             return this.config.uuid;
         }
-        const response = await this.httpClient.post(
-            this.config.hubRegistrationEndpoint,
-            this.compileRegistrationData()
-        );
-        if (response.status !== 200) {
+        try {
+            const response = await this.httpClient.post(
+                this.config.hubRegistrationEndpoint,
+                this.compileRegistrationData()
+            );
+            log.debug(`setting uuid to ${response.data.uuid}`);
+            this.config.uuid = response.data.uuid;
+            await this.config.save();
+            return this.config.uuid;
+        } catch (error) {
             throw new H5pError(
                 'error-registering-at-hub',
                 {
-                    statusCode: response.status.toString(),
-                    statusText: response.statusText
+                    statusCode:
+                        error.response?.status?.toString() || 'no response',
+                    statusText: error.message
                 },
                 500
             );
         }
-        if (!response.data || !response.data.uuid) {
-            throw new H5pError('error-registering-at-hub-no-status', {}, 500);
-        }
-        log.debug(`setting uuid to ${response.data.uuid}`);
-        this.config.uuid = response.data.uuid;
-        await this.config.save();
-        return this.config.uuid;
     }
 
     /**
@@ -291,15 +283,28 @@ export default class ContentTypeCache {
 
     /**
      * Creates an identifier for the running instance.
+     * The identifier must not exceed 15 characters.
      * @returns id
      */
     private getLocalId(): string {
+        const maxLength = 15;
         if (this.getLocalIdOverride) {
             log.debug('Getting local ID from override');
-            return this.getLocalIdOverride();
+            const localId = this.getLocalIdOverride();
+            if (localId.length > maxLength) {
+                throw new H5pError(
+                    'error-local-id-too-long',
+                    {
+                        maxLength: maxLength.toString(),
+                        actualLength: localId.length.toString()
+                    },
+                    500
+                );
+            }
+            return localId;
         } else {
             log.debug('Generating local id with node-machine-id');
-            return machineIdSync();
+            return machineIdSync().substring(0, maxLength);
         }
     }
 }

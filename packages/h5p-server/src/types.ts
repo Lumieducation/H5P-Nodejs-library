@@ -1514,8 +1514,8 @@ export interface IRegistrationData {
      */
     h5p_version: string;
     /**
-     * An integer that identifies the site. You can for example use a crc32 hash of the local installation path.
-     * The purpose of the id is unknown.
+     * A string (max 15 characters) that identifies the local installation.
+     * By default a truncated machine-id hash is used.
      */
     local_id: string;
     /**
@@ -2304,6 +2304,9 @@ export interface IH5PEditorOptions {
      * Allows you to inject custom machine ids. This id is sent to the H5P.org
      * Hub server when registering to get a UUID for the local instance or when
      * refreshing the list of available content types.
+     *
+     * The returned string must not exceed 15 characters. An error will be
+     * thrown if it does.
      *
      * By default the server gets an ID for the local machine by calling
      * node-machine-id, so you don't have to use the override. There are cases
