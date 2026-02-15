@@ -22,6 +22,7 @@ import variantEquivalents from '../assets/variantEquivalents.json';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
+import { validateFileContent } from './ContentFileValidator';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
@@ -690,6 +691,11 @@ export default class H5PEditor {
 
             // TODO: log to audit log
             throw new H5pError('upload-malware-found', {}, 400);
+        }
+
+        // Validate that the file content matches the claimed extension
+        if (file.tempFilePath) {
+            await validateFileContent(file.tempFilePath);
         }
 
         // Sanitize the file if possible

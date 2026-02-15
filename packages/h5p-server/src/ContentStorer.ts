@@ -5,6 +5,7 @@ import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
+import { validateFileContent } from './ContentFileValidator';
 import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
@@ -232,6 +233,7 @@ export default class ContentStorer {
                         }
                         throw error;
                     }
+                    await validateFileContent(file);
                     await this.sanitizeFile(file);
                     const readStream: Stream = createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
@@ -333,6 +335,9 @@ export default class ContentStorer {
                 // collector.
                 throw error;
             }
+
+            // Validate that file content matches its claimed extension
+            await validateFileContent(filepath);
 
             // We sanitize the file before copying it to temporary storage. This
             // prevents possible malicious code from being injected into
