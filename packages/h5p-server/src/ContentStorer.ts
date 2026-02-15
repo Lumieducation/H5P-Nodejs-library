@@ -5,7 +5,7 @@ import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
-import { validateFileContent } from './ContentFileValidator';
+import { validateFileContent } from './contentFileValidation';
 import ContentManager from './ContentManager';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';

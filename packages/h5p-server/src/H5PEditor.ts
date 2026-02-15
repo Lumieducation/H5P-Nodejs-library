@@ -22,7 +22,7 @@ import variantEquivalents from '../assets/variantEquivalents.json';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
-import { validateFileContent } from './ContentFileValidator';
+import { validateFileContent } from './contentFileValidation';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';

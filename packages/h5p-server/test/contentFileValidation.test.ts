@@ -2,9 +2,9 @@ import { writeFile, mkdtemp, rm } from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
-import { validateFileContent } from '../src/ContentFileValidator';
+import { validateFileContent } from '../src/contentFileValidation';
 
-describe('ContentFileValidator', () => {
+describe('validateFileContent', () => {
     let tmpDir: string;
 
     beforeEach(async () => {
