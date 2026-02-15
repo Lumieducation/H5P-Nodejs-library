@@ -1,6 +1,7 @@
 import { open } from 'fs/promises';
 import path from 'path';
 import { filetypeextension } from 'magic-bytes.js';
+import { lookup as mimeLookup } from 'mime-types';
 
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
@@ -8,20 +9,14 @@ import Logger from './helpers/Logger';
 const log = new Logger('contentFileValidation');
 
 /**
- * Extensions that magic-bytes.js considers equivalent. For example, mp4 and
- * m4a share the same "ftyp" magic bytes, and webm shares bytes with mkv.
+ * Formats that share magic bytes but have unrelated MIME types, so they
+ * cannot be matched via mime-types lookups. Each group is fully
+ * bidirectional: every extension in a group is equivalent to every other.
  */
-const extensionEquivalents: Record<string, string[]> = {
-    jpg: ['jpeg'],
-    jpeg: ['jpg'],
-    tif: ['tiff'],
-    tiff: ['tif'],
-    mp4: ['m4a'],
-    m4a: ['mp4'],
-    webm: ['mkv', 'mka', 'mks'],
-    png: ['apng'],
-    ogg: ['ogx', 'oga', 'ogv']
-};
+const magicByteEquivalents: string[][] = [
+    ['webm', 'mkv', 'mka', 'mks'],
+    ['png', 'apng']
+];
 
 /**
  * Patterns that indicate dangerous XML/SVG/HTML content which could enable
@@ -96,21 +91,56 @@ export async function validateFileContent(filePath: string): Promise<void> {
 }
 
 /**
- * Checks whether the claimed extension matches any of the detected
- * extensions, taking into account known equivalences between formats
- * that share magic bytes.
+ * Extracts the subtype portion of a MIME type string (e.g. "mp4" from
+ * "video/mp4").
  */
-function extensionMatchesDetected(
+function getMimeSubtype(mimeType: string): string | undefined {
+    const slash = mimeType.indexOf('/');
+    return slash >= 0 ? mimeType.substring(slash + 1) : undefined;
+}
+
+/**
+ * Checks whether the claimed extension matches any of the detected
+ * extensions using three tiers:
+ * 1. Direct match — the claimed extension is in the detected list.
+ * 2. MIME match — mime-types resolves both extensions to the same MIME
+ *    type or to types that share the same subtype (e.g. video/mp4 and
+ *    audio/mp4).
+ * 3. Residual map — a small list of formats that share magic bytes but
+ *    have unrelated MIME types (e.g. webm/mkv, png/apng).
+ */
+export function extensionMatchesDetected(
     claimedExt: string,
     detectedExtensions: string[]
 ): boolean {
+    // Tier 1: direct match
     if (detectedExtensions.includes(claimedExt)) {
         return true;
     }
-    const equivalents = extensionEquivalents[claimedExt];
-    if (equivalents) {
-        return detectedExtensions.some((det) => equivalents.includes(det));
+
+    // Tier 2: MIME type / subtype match
+    const claimedMime = mimeLookup(claimedExt);
+    if (claimedMime) {
+        const claimedSubtype = getMimeSubtype(claimedMime);
+        for (const det of detectedExtensions) {
+            const detMime = mimeLookup(det);
+            if (!detMime) continue;
+            if (detMime === claimedMime) return true;
+            if (claimedSubtype && claimedSubtype === getMimeSubtype(detMime)) {
+                return true;
+            }
+        }
     }
+
+    // Tier 3: residual magic-byte equivalents
+    for (const group of magicByteEquivalents) {
+        if (group.includes(claimedExt)) {
+            if (detectedExtensions.some((det) => group.includes(det))) {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 

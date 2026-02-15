@@ -2,7 +2,10 @@ import { writeFile, mkdtemp, rm } from 'fs/promises';
 import path from 'path';
 import os from 'os';
 
-import { validateFileContent } from '../src/contentFileValidation';
+import {
+    validateFileContent,
+    extensionMatchesDetected
+} from '../src/contentFileValidation';
 
 describe('validateFileContent', () => {
     let tmpDir: string;
@@ -146,5 +149,41 @@ describe('validateFileContent', () => {
         await expect(validateFileContent(filePath)).rejects.toThrow(
             'upload-validation-error'
         );
+    });
+});
+
+describe('extensionMatchesDetected', () => {
+    it('matches direct extension', () => {
+        expect(extensionMatchesDetected('png', ['png'])).toBe(true);
+    });
+
+    it('matches MIME alias (jpg ↔ jpeg)', () => {
+        expect(extensionMatchesDetected('jpg', ['jpeg'])).toBe(true);
+        expect(extensionMatchesDetected('jpeg', ['jpg'])).toBe(true);
+    });
+
+    it('matches MIME subtype (mp4 ↔ m4a)', () => {
+        expect(extensionMatchesDetected('mp4', ['m4a'])).toBe(true);
+        expect(extensionMatchesDetected('m4a', ['mp4'])).toBe(true);
+    });
+
+    it('matches MIME subtype (ogg ↔ ogv)', () => {
+        expect(extensionMatchesDetected('ogg', ['ogv'])).toBe(true);
+        expect(extensionMatchesDetected('ogv', ['ogg'])).toBe(true);
+    });
+
+    it('matches residual equivalents (webm ↔ mkv)', () => {
+        expect(extensionMatchesDetected('webm', ['mkv'])).toBe(true);
+        expect(extensionMatchesDetected('mkv', ['webm'])).toBe(true);
+    });
+
+    it('matches residual equivalents (png ↔ apng)', () => {
+        expect(extensionMatchesDetected('png', ['apng'])).toBe(true);
+        expect(extensionMatchesDetected('apng', ['png'])).toBe(true);
+    });
+
+    it('rejects unrelated extensions', () => {
+        expect(extensionMatchesDetected('png', ['gif'])).toBe(false);
+        expect(extensionMatchesDetected('mp4', ['png'])).toBe(false);
     });
 });
