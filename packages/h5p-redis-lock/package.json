@@ -28,7 +28,7 @@
         "simple-redis-mutex": "^2.0.0"
     },
     "peerDependencies": {
-        "redis": "^4.7.0"
+        "redis": "^4.7.0 || ^5.0.0"
     },
     "main": "./build/RedisLockProvider.js",
     "types": "./build/RedisLockProvider.d.ts",
