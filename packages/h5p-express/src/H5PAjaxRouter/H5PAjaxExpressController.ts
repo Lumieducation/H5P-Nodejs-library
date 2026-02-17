@@ -214,7 +214,8 @@ export default class H5PAjaxExpressController {
         response.writeHead(206, {
             'Content-Type': mimetype,
             'Content-Length': end - start + 1,
-            'Content-Range': `bytes ${start}-${end}/${totalLength}`
+            'Content-Range': `bytes ${start}-${end}/${totalLength}`,
+            'X-Content-Type-Options': 'nosniff'
         });
 
         readStream.on('error', (err) => {
@@ -242,7 +243,8 @@ export default class H5PAjaxExpressController {
             ...(additionalHeaders || {}),
             'Content-Type': mimetype,
             'Content-Length': contentLength,
-            'Accept-Ranges': 'bytes'
+            'Accept-Ranges': 'bytes',
+            'X-Content-Type-Options': 'nosniff'
         });
 
         readStream.on('error', (err) => {
