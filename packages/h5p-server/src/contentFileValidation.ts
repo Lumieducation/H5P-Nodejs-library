@@ -44,12 +44,23 @@ const dangerousTextPatterns = [
  * content does not match its extension
  */
 export async function validateFileContent(filePath: string): Promise<void> {
-    const ext = path.extname(filePath).toLowerCase().replace(/^\./, '');
+    // Validate and normalize the file path to guard against malformed or
+    // relative paths. All callers are expected to pass absolute paths
+    // produced by trusted middleware (e.g. file-upload temp files).
+    if (!filePath || !filePath.trim() || !path.isAbsolute(filePath)) {
+        log.error(
+            `Invalid file path provided to validateFileContent: ${filePath}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+    const resolvedPath = path.resolve(filePath);
+
+    const ext = path.extname(resolvedPath).toLowerCase().replace(/^\./, '');
     if (!ext) {
         return;
     }
 
-    const fileHandle = await open(filePath, 'r');
+    const fileHandle = await open(resolvedPath, 'r');
     try {
         const buffer = Buffer.alloc(1024);
         const { bytesRead } = await fileHandle.read(buffer, 0, 1024, 0);
@@ -76,14 +87,14 @@ export async function validateFileContent(filePath: string): Promise<void> {
                     looksLikeXmlOrHtml(data)
                 ) {
                     log.info(
-                        `File detected as text but contains XML/HTML content. Rejecting file: ${filePath}`
+                        `File detected as text but contains XML/HTML content. Rejecting file: ${resolvedPath}`
                     );
                     throw new H5pError('upload-validation-error', {}, 400);
                 }
                 return;
             }
             log.info(
-                `File content mismatch: ${filePath} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
+                `File content mismatch: ${resolvedPath} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
             );
             throw new H5pError('upload-validation-error', {}, 400);
         }
@@ -94,7 +105,7 @@ export async function validateFileContent(filePath: string): Promise<void> {
         // the claimed extension.
         if (looksLikeXmlOrHtml(data)) {
             log.info(
-                `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${filePath}`
+                `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${resolvedPath}`
             );
             throw new H5pError('upload-validation-error', {}, 400);
         }

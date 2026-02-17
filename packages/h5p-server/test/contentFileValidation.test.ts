@@ -117,6 +117,24 @@ describe('validateFileContent', () => {
         await expect(validateFileContent(filePath)).resolves.toBeUndefined();
     });
 
+    it('rejects an empty string path', async () => {
+        await expect(validateFileContent('')).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('rejects a whitespace-only path', async () => {
+        await expect(validateFileContent('   ')).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('rejects a relative path', async () => {
+        await expect(
+            validateFileContent('relative/path/file.png')
+        ).rejects.toThrow('upload-validation-error');
+    });
+
     it('rejects a PNG-claimed file that is actually a GIF', async () => {
         // GIF87a header
         const gifHeader = Buffer.from([
