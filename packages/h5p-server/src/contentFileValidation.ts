@@ -67,6 +67,19 @@ export async function validateFileContent(filePath: string): Promise<void> {
             // The library detected a file type — check it matches
             // the claimed extension
             if (extensionMatchesDetected(ext, detectedExtensions)) {
+                // Even when the extension matches, text-based detections
+                // (e.g. a BOM causing magic-bytes to return "txt") still
+                // need the dangerous-content check. A UTF-8 BOM followed
+                // by <html>…</html> would otherwise slip through.
+                if (
+                    detectedExtensions.includes('txt') &&
+                    looksLikeXmlOrHtml(data)
+                ) {
+                    log.info(
+                        `File detected as text but contains XML/HTML content. Rejecting file: ${filePath}`
+                    );
+                    throw new H5pError('upload-validation-error', {}, 400);
+                }
                 return;
             }
             log.info(

@@ -31,7 +31,7 @@ export default class H5PConfig implements IH5PConfig {
     public contentHubMetadataRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
     public contentUserDataUrl: string = '/contentUserData';
     public contentWhitelist: string =
-        'json png jpg jpeg gif bmp tif tiff webm mp4 ogg mp3 m4a wav vtt webvtt gltf glb';
+        'json png jpg jpeg gif bmp tif tiff webm mp4 ogg mp3 m4a wav vtt webvtt gltf glb txt';
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
         minor: 27

@@ -150,6 +150,51 @@ describe('validateFileContent', () => {
             'upload-validation-error'
         );
     });
+
+    it('rejects .txt file with UTF-8 BOM followed by HTML', async () => {
+        const filePath = path.join(tmpDir, 'bom.txt');
+        await writeFile(
+            filePath,
+            '\ufeff<html><body><script>alert(1)</script></body></html>'
+        );
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('rejects .txt file with UTF-8 BOM followed by SVG', async () => {
+        const filePath = path.join(tmpDir, 'bom-svg.txt');
+        await writeFile(filePath, '\ufeff<svg onload="alert(1)"></svg>');
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('rejects .txt file with UTF-8 BOM followed by script tag', async () => {
+        const filePath = path.join(tmpDir, 'bom-script.txt');
+        await writeFile(
+            filePath,
+            '\ufeff<script>alert(document.cookie)</script>'
+        );
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('accepts a plain .txt file with UTF-8 BOM', async () => {
+        const filePath = path.join(tmpDir, 'legit-bom.txt');
+        await writeFile(
+            filePath,
+            '\ufeffThis is a perfectly normal text file with a BOM.'
+        );
+        await expect(validateFileContent(filePath)).resolves.toBeUndefined();
+    });
+
+    it('accepts a plain .txt file without BOM', async () => {
+        const filePath = path.join(tmpDir, 'legit.txt');
+        await writeFile(filePath, 'Just a plain text file.');
+        await expect(validateFileContent(filePath)).resolves.toBeUndefined();
+    });
 });
 
 describe('extensionMatchesDetected', () => {
