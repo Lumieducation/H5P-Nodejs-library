@@ -33,7 +33,6 @@ import UrlGenerator from './UrlGenerator';
 import SimpleLockProvider from './implementation/SimpleLockProvider';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 import TemporaryFileManager from './TemporaryFileManager';
-import { validateFileContent } from './contentFileValidation';
 import ContentStorer from './ContentStorer';
 
 // Interfaces
@@ -104,7 +103,6 @@ export {
     AjaxErrorResponse,
     AjaxSuccessResponse,
     ContentFileScanner,
-    validateFileContent,
     ContentStorer,
     ContentTypeCache,
     ContentUserDataManager,
