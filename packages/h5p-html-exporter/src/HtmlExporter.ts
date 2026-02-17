@@ -29,8 +29,12 @@ import {
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
 import LibrariesFilesList from './helpers/LibrariesFilesList';
+import LibraryPatcher from './helpers/LibraryPatcher';
 import framedTemplate from './framedTemplate';
 import minimalTemplate from './minimalTemplate';
+import type { ILibraryFilePatch } from './types';
+
+export type { ILibraryFilePatch } from './types';
 
 /**
  * This script is used to change the default behavior of H5P when it gets
@@ -92,6 +96,15 @@ export default class HtmlExporter {
      * @param editorFilePath the path on the local filesystem at which the H5P
      * editor files can be found. (Should contain the scripts, styles and
      * ckeditor directories).
+     * @param template (optional) a custom template function to generate the
+     * HTML output
+     * @param translationFunction (optional) a translation function for
+     * localizing the H5P player
+     * @param libraryPatches (optional) custom patches to apply to library
+     * files during bundling. Custom patches with the same `machineName` and
+     * `filename` as a built-in patch will override that built-in patch. Set
+     * `disabled: true` on a custom patch to disable a built-in patch without
+     * adding a replacement. See {@link ILibraryFilePatch} for details.
      */
     constructor(
         protected libraryStorage: ILibraryStorage,
@@ -100,7 +113,8 @@ export default class HtmlExporter {
         protected coreFilePath: string,
         protected editorFilePath: string,
         protected template?: IExporterTemplate,
-        translationFunction?: ITranslationFunction
+        translationFunction?: ITranslationFunction,
+        libraryPatches?: ILibraryFilePatch[]
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
@@ -117,10 +131,12 @@ export default class HtmlExporter {
         this.contentFileScanner = new ContentFileScanner(
             new LibraryManager(this.libraryStorage)
         );
+        this.libraryPatcher = new LibraryPatcher(libraryPatches);
     }
 
     private contentFileScanner: ContentFileScanner;
     private coreSuffix: string;
+    private libraryPatcher: LibraryPatcher;
     private defaultAdditionalScripts: string[] = [
         // The H5P core client creates paths to resource files using the
         // hostname of the current URL, so we have to make sure data: URLs
@@ -420,14 +436,13 @@ export default class HtmlExporter {
                 const { text, filename, core, editor, library } =
                     await this.getFileAsText(script, usedFiles);
 
-                // Patch echo360.js to prevent uglifyJs from throwing error.
-                let patched_text = text;
-                if (filename.includes('echo360.js')) {
-                    patched_text = text.replace(
-                        'delete previousTickMS',
-                        'previousTickMS = undefined'
-                    );
-                }
+                // Apply library file patches (e.g. fixes for minification
+                // incompatibilities).
+                const patchedText = this.libraryPatcher.applyPatches(
+                    text,
+                    filename,
+                    library
+                );
 
                 const licenseText = await this.generateLicenseText(
                     filename,
@@ -439,7 +454,7 @@ export default class HtmlExporter {
                 // We must escape </script> tags inside scripts.
                 texts[script] =
                     licenseText +
-                    patched_text.replace(/<\/script>/g, '<\\/script>');
+                    patchedText.replace(/<\/script>/g, '<\\/script>');
             })
         );
         const scripts: string[] = model.scripts
@@ -467,6 +482,14 @@ export default class HtmlExporter {
             model.styles.map(async (style) => {
                 const { text, filename, library, editor, core } =
                     await this.getFileAsText(style, usedFiles);
+
+                // Apply library file patches before PostCSS processing.
+                const patchedText = this.libraryPatcher.applyPatches(
+                    text,
+                    filename,
+                    library
+                );
+
                 const licenseText = await this.generateLicenseText(
                     filename,
                     core,
@@ -567,7 +590,7 @@ export default class HtmlExporter {
 
                     try {
                         processedCss = (
-                            await pCss.process(licenseText + text, {
+                            await pCss.process(licenseText + patchedText, {
                                 from: filename
                             })
                         )?.css;
@@ -576,7 +599,7 @@ export default class HtmlExporter {
                         // failed with the regular one.
                         if (error instanceof CssSyntaxError) {
                             processedCss = (
-                                await pCss.process(licenseText + text, {
+                                await pCss.process(licenseText + patchedText, {
                                     parser: postCssSafeParser,
                                     from: filename
                                 })
