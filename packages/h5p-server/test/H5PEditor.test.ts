@@ -94,9 +94,8 @@ describe('H5PEditor: general', () => {
             .onGet(`${config.hubContentTypesEndpoint}H5P.Example1`)
             .reply(500);
 
-        // we check against the error message as we we've told axios to reply with 500 to requests to the Hub endpoint.
         await expect(
             h5pEditor.installLibraryFromHub('H5P.Example1', new User())
-        ).rejects.toThrow('Request failed with status code 500');
+        ).rejects.toThrow('hub-install-download-failed');
     });
 });

@@ -141,10 +141,16 @@ export default class ContentTypeInformationRepository {
         }
 
         // Download content type package from the Hub
-        const response = await this.httpClient.get(
-            this.config.hubContentTypesEndpoint + machineName,
-            { responseType: 'stream' }
-        );
+        let response;
+        try {
+            response = await this.httpClient.get(
+                this.config.hubContentTypesEndpoint + machineName,
+                { responseType: 'stream' }
+            );
+        } catch (error) {
+            log.error(error);
+            throw new H5pError('hub-install-download-failed', {}, 504);
+        }
 
         let installedLibraries: ILibraryInstallResult[] = [];
 
