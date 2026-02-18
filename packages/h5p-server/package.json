@@ -56,6 +56,7 @@
         "https-proxy-agent": "^7.0.0",
         "image-size": "^1.0.2",
         "jsonpath": "^1.1.1",
+        "magic-bytes.js": "^1.13.0",
         "mime-types": "^2.1.35",
         "node-machine-id": "^1.1.12",
         "promisepipe": "^3.0.0",
