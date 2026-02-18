@@ -32,7 +32,8 @@ export default class LibraryPatcher {
      * - The library's machine name matches.
      * - The library's version falls within the patch's version range
      *   (if specified).
-     * - The resolved filename ends with the patch's filename.
+     * - The resolved filename equals the patch's filename exactly, or ends
+     *   with `/<patch.filename>` (path-segment boundary match).
      *
      * @param patch The patch definition to check.
      * @param filename The resolved filename within the library.
@@ -61,7 +62,10 @@ export default class LibraryPatcher {
             return false;
         }
 
-        return filename.endsWith(patch.filename);
+        return (
+            filename === patch.filename ||
+            filename.endsWith('/' + patch.filename)
+        );
     }
 
     /**
@@ -120,6 +124,10 @@ export default class LibraryPatcher {
         let result = text;
         for (const patch of this.patches) {
             if (!LibraryPatcher.patchApplies(patch, filename, library)) {
+                continue;
+            }
+
+            if (patch.search === undefined || patch.search === null) {
                 continue;
             }
 

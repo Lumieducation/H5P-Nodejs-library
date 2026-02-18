@@ -31,9 +31,9 @@ The following patches are included and applied automatically:
 
 ### Providing a custom patch list
 
-Pass the complete patch list as the last parameter of the `HtmlExporter`
-constructor. When this parameter is omitted, the built-in patches are used
-automatically.
+Pass the complete patch list via the `libraryPatches` option of the
+`HtmlExporter` constructor. When this option is omitted, the built-in patches
+are used automatically.
 
 ```typescript
 import HtmlExporter, {
@@ -47,18 +47,18 @@ const exporter = new HtmlExporter(
     config,
     coreFilePath,
     editorFilePath,
-    undefined, // template
-    undefined, // translationFunction
-    [
-        ...builtInPatches, // keep all built-in patches
-        {
-            machineName: 'H5P.SomeLibrary',
-            filename: 'scripts/main.js',
-            search: 'brokenFunction()',
-            replace: 'fixedFunction()',
-            patchReason: 'Fix broken function call that crashes the export'
-        }
-    ]
+    {
+        libraryPatches: [
+            ...builtInPatches, // keep all built-in patches
+            {
+                machineName: 'H5P.SomeLibrary',
+                filename: 'scripts/main.js',
+                search: 'brokenFunction()',
+                replace: 'fixedFunction()',
+                patchReason: 'Fix broken function call that crashes the export'
+            }
+        ]
+    }
 );
 ```
 
@@ -73,31 +73,31 @@ const exporter = new HtmlExporter(
     config,
     coreFilePath,
     editorFilePath,
-    undefined,
-    undefined,
-    [
-        {
-            machineName: 'H5P.Echo360',
-            filename: 'echo360.js',
-            search: 'delete previousTickMS',
-            replace: '/* custom fix */'
-        }
-    ]
+    {
+        libraryPatches: [
+            {
+                machineName: 'H5P.Echo360',
+                filename: 'echo360.js',
+                search: 'delete previousTickMS',
+                replace: '/* custom fix */'
+            }
+        ]
+    }
 );
 ```
 
 ### Patch options
 
-| Property      | Type                             | Required | Description                                                                                                       |
-| ------------- | -------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
-| `machineName` | `string`                         | Yes      | The H5P library machine name (e.g. `"H5P.Echo360"`).                                                              |
-| `filename`    | `string`                         | Yes      | Filename to match. Uses `endsWith` matching, so `"echo360.js"` matches both `"echo360.js"` and `"js/echo360.js"`. |
-| `search`      | `string \| RegExp`               | Yes      | The pattern to find. Literal strings are matched exactly. RegExp supports flags and capture groups.               |
-| `replace`     | `string`                         | Yes      | The replacement text. Supports `$1`, `$2`, etc. for regex capture groups.                                         |
-| `minVersion`  | `{ majorVersion, minorVersion }` | No       | Minimum library version (inclusive). If omitted, no lower bound.                                                  |
-| `maxVersion`  | `{ majorVersion, minorVersion }` | No       | Maximum library version (inclusive). If omitted, no upper bound (applies to all future versions).                 |
-| `replaceAll`  | `boolean`                        | No       | Replace all occurrences instead of just the first. Default: `false`.                                              |
-| `patchReason` | `string`                         | No       | Human-readable explanation of why the patch exists.                                                               |
+| Property      | Type                             | Required | Description                                                                                                                                                   |
+| ------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `machineName` | `string`                         | Yes      | The H5P library machine name (e.g. `"H5P.Echo360"`).                                                                                                          |
+| `filename`    | `string`                         | Yes      | Filename to match. Matched as an exact path or path-segment suffix, so `"echo360.js"` matches `"echo360.js"` and `"js/echo360.js"` but not `"notecho360.js"`. |
+| `search`      | `string \| RegExp`               | Yes      | The pattern to find. Literal strings are matched exactly. RegExp supports flags and capture groups.                                                           |
+| `replace`     | `string`                         | Yes      | The replacement text. Supports `$1`, `$2`, etc. for regex capture groups.                                                                                     |
+| `minVersion`  | `{ majorVersion, minorVersion }` | No       | Minimum library version (inclusive). If omitted, no lower bound.                                                                                              |
+| `maxVersion`  | `{ majorVersion, minorVersion }` | No       | Maximum library version (inclusive). If omitted, no upper bound (applies to all future versions).                                                             |
+| `replaceAll`  | `boolean`                        | No       | Replace all occurrences instead of just the first. Default: `false`.                                                                                          |
+| `patchReason` | `string`                         | No       | Human-readable explanation of why the patch exists.                                                                                                           |
 
 ### Version ranges
 

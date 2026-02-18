@@ -1,3 +1,31 @@
+import type { ITranslationFunction } from '@lumieducation/h5p-server';
+
+import type { IExporterTemplate } from './HtmlExporter';
+
+/**
+ * Optional configuration for the {@link HtmlExporter} constructor.
+ */
+export interface IHtmlExporterOptions {
+    /**
+     * A custom template function to generate the HTML output.
+     */
+    template?: IExporterTemplate;
+
+    /**
+     * A translation function for localizing the H5P player.
+     */
+    translationFunction?: ITranslationFunction;
+
+    /**
+     * The complete list of patches to apply to library files during bundling.
+     * When omitted, {@link builtInPatches} is used. To keep the built-in
+     * patches and add your own, pass `[...builtInPatches, ...myPatches]`.
+     * To replace the list entirely, pass only your own patches.
+     * See {@link ILibraryFilePatch} for details.
+     */
+    libraryPatches?: ILibraryFilePatch[];
+}
+
 /**
  * Defines a patch to apply to a library file during HTML export bundling.
  *
@@ -54,8 +82,8 @@ export interface ILibraryFilePatch {
 
     /**
      * The filename within the library to patch (e.g. "js/echo360.js").
-     * Matched against the end of the resolved file path using `endsWith`,
-     * so "echo360.js" matches both "echo360.js" and "js/echo360.js".
+     * Matched as an exact path or as a path-segment suffix, so "echo360.js"
+     * matches "echo360.js" and "js/echo360.js" but not "notecho360.js".
      */
     filename: string;
 

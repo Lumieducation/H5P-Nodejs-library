@@ -45,9 +45,15 @@ describe('LibraryPatcher', () => {
         });
     });
 
-    describe('filename matching (endsWith)', () => {
-        it('matches when filename ends with patch filename', () => {
-            const patcher = new LibraryPatcher([
+    describe('filename matching', () => {
+        const lib = {
+            machineName: 'H5P.Test',
+            majorVersion: 1,
+            minorVersion: 0
+        };
+
+        const makePatcher = () =>
+            new LibraryPatcher([
                 {
                     machineName: 'H5P.Test',
                     filename: 'main.js',
@@ -55,46 +61,30 @@ describe('LibraryPatcher', () => {
                     replace: 'bar'
                 }
             ]);
-            const result = patcher.applyPatches('foo', 'scripts/main.js', {
-                machineName: 'H5P.Test',
-                majorVersion: 1,
-                minorVersion: 0
-            });
-            expect(result).toBe('bar');
+
+        it('matches when filename ends with /<patch.filename>', () => {
+            expect(
+                makePatcher().applyPatches('foo', 'scripts/main.js', lib)
+            ).toBe('bar');
         });
 
         it('matches exact filename', () => {
-            const patcher = new LibraryPatcher([
-                {
-                    machineName: 'H5P.Test',
-                    filename: 'main.js',
-                    search: 'foo',
-                    replace: 'bar'
-                }
-            ]);
-            const result = patcher.applyPatches('foo', 'main.js', {
-                machineName: 'H5P.Test',
-                majorVersion: 1,
-                minorVersion: 0
-            });
-            expect(result).toBe('bar');
+            expect(makePatcher().applyPatches('foo', 'main.js', lib)).toBe(
+                'bar'
+            );
         });
 
-        it('does not match when filename does not end with patch filename', () => {
-            const patcher = new LibraryPatcher([
-                {
-                    machineName: 'H5P.Test',
-                    filename: 'main.js',
-                    search: 'foo',
-                    replace: 'bar'
-                }
-            ]);
-            const result = patcher.applyPatches('foo', 'main.js.bak', {
-                machineName: 'H5P.Test',
-                majorVersion: 1,
-                minorVersion: 0
-            });
-            expect(result).toBe('foo');
+        it('does not match when patch filename appears as a suffix but not at a path boundary', () => {
+            // "notmain.js" ends with "main.js" but has no "/" separator
+            expect(makePatcher().applyPatches('foo', 'notmain.js', lib)).toBe(
+                'foo'
+            );
+        });
+
+        it('does not match when filename has a different extension suffix', () => {
+            expect(makePatcher().applyPatches('foo', 'main.js.bak', lib)).toBe(
+                'foo'
+            );
         });
     });
 

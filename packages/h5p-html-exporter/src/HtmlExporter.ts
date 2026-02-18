@@ -23,8 +23,7 @@ import {
     ContentFileScanner,
     LibraryManager,
     streamToString,
-    IIntegration,
-    ITranslationFunction
+    IIntegration
 } from '@lumieducation/h5p-server';
 
 import postCssRemoveRedundantUrls from './helpers/postCssRemoveRedundantFontUrls';
@@ -32,9 +31,9 @@ import LibrariesFilesList from './helpers/LibrariesFilesList';
 import LibraryPatcher from './helpers/LibraryPatcher';
 import framedTemplate from './framedTemplate';
 import minimalTemplate from './minimalTemplate';
-import type { ILibraryFilePatch } from './types';
+import type { IHtmlExporterOptions, ILibraryFilePatch } from './types';
 
-export type { ILibraryFilePatch } from './types';
+export type { IHtmlExporterOptions, ILibraryFilePatch } from './types';
 export { builtInPatches } from './patches/builtInPatches';
 
 /**
@@ -97,15 +96,8 @@ export default class HtmlExporter {
      * @param editorFilePath the path on the local filesystem at which the H5P
      * editor files can be found. (Should contain the scripts, styles and
      * ckeditor directories).
-     * @param template (optional) a custom template function to generate the
-     * HTML output
-     * @param translationFunction (optional) a translation function for
-     * localizing the H5P player
-     * @param libraryPatches (optional) the complete list of patches to apply
-     * to library files during bundling. When omitted, {@link builtInPatches}
-     * is used. To keep the built-in patches and add your own, pass
-     * `[...builtInPatches, ...myPatches]`. To replace the list entirely,
-     * pass only your own patches. See {@link ILibraryFilePatch} for details.
+     * @param options (optional) additional configuration options. See
+     * {@link IHtmlExporterOptions} for details.
      */
     constructor(
         protected libraryStorage: ILibraryStorage,
@@ -113,9 +105,7 @@ export default class HtmlExporter {
         protected config: IH5PConfig,
         protected coreFilePath: string,
         protected editorFilePath: string,
-        protected template?: IExporterTemplate,
-        translationFunction?: ITranslationFunction,
-        libraryPatches?: ILibraryFilePatch[]
+        options?: IHtmlExporterOptions
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
@@ -123,7 +113,7 @@ export default class HtmlExporter {
             this.config,
             undefined,
             undefined,
-            translationFunction
+            options?.translationFunction
         );
         this.coreSuffix = `${this.config.baseUrl + this.config.coreUrl}/`;
         this.editorSuffix = `${
@@ -132,12 +122,14 @@ export default class HtmlExporter {
         this.contentFileScanner = new ContentFileScanner(
             new LibraryManager(this.libraryStorage)
         );
-        this.libraryPatcher = new LibraryPatcher(libraryPatches);
+        this.template = options?.template;
+        this.libraryPatcher = new LibraryPatcher(options?.libraryPatches);
     }
 
     private contentFileScanner: ContentFileScanner;
     private coreSuffix: string;
     private libraryPatcher: LibraryPatcher;
+    private template: IExporterTemplate | undefined;
     private defaultAdditionalScripts: string[] = [
         // The H5P core client creates paths to resource files using the
         // hostname of the current URL, so we have to make sure data: URLs

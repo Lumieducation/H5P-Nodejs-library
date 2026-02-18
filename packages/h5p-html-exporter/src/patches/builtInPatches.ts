@@ -18,12 +18,12 @@ import { ILibraryFilePatch } from '../types';
  *     config,
  *     coreFilePath,
  *     editorFilePath,
- *     undefined,
- *     undefined,
- *     [
- *         ...builtInPatches,            // keep all built-in patches
- *         { machineName: 'H5P.Foo', filename: 'foo.js', search: 'old', replace: 'new' }
- *     ]
+ *     {
+ *         libraryPatches: [
+ *             ...builtInPatches,            // keep all built-in patches
+ *             { machineName: 'H5P.Foo', filename: 'foo.js', search: 'old', replace: 'new' }
+ *         ]
+ *     }
  * );
  *
  * When adding new built-in patches, document the reason clearly in the
