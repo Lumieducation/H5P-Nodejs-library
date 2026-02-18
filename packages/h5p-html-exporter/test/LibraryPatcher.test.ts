@@ -1,4 +1,5 @@
 import LibraryPatcher from '../src/helpers/LibraryPatcher';
+import { builtInPatches } from '../src/patches/builtInPatches';
 
 describe('LibraryPatcher', () => {
     const echo360Library = {
@@ -354,63 +355,9 @@ describe('LibraryPatcher', () => {
         });
     });
 
-    describe('disabled patches', () => {
-        it('does not apply a disabled patch', () => {
-            const patcher = new LibraryPatcher([
-                {
-                    machineName: 'H5P.Test',
-                    filename: 'test.js',
-                    search: 'foo',
-                    replace: 'bar',
-                    disabled: true
-                }
-            ]);
-            expect(
-                patcher.applyPatches('foo', 'test.js', {
-                    machineName: 'H5P.Test',
-                    majorVersion: 1,
-                    minorVersion: 0
-                })
-            ).toBe('foo');
-        });
-
-        it('can disable a built-in patch by providing a disabled custom patch', () => {
-            const patcher = new LibraryPatcher([
-                {
-                    machineName: 'H5P.Echo360',
-                    filename: 'echo360.js',
-                    disabled: true
-                }
-            ]);
-            const input = 'delete previousTickMS';
-            const result = patcher.applyPatches(
-                input,
-                'js/echo360.js',
-                echo360Library
-            );
-            expect(result).toBe(input);
-        });
-    });
-
-    describe('custom patch override behavior', () => {
-        it('custom patch with same machineName + filename overrides built-in', () => {
-            const patcher = new LibraryPatcher([
-                {
-                    machineName: 'H5P.Echo360',
-                    filename: 'echo360.js',
-                    search: 'delete previousTickMS',
-                    replace: '/* custom fix */'
-                }
-            ]);
-            const result = patcher.applyPatches(
-                'delete previousTickMS',
-                'js/echo360.js',
-                echo360Library
-            );
-            expect(result).toBe('/* custom fix */');
-        });
-
-        it('custom patch does not affect unrelated built-in patches', () => {
+    describe('patch list override behavior', () => {
+        it('passing a custom list replaces built-in patches entirely', () => {
+            // Only a custom patch for H5P.Other — built-in echo360 patch is gone
             const patcher = new LibraryPatcher([
                 {
                     machineName: 'H5P.Other',
@@ -419,16 +366,55 @@ describe('LibraryPatcher', () => {
                     replace: 'b'
                 }
             ]);
-            // The built-in echo360 patch should still work
+            // echo360 patch should NOT apply because we replaced the full list
             const result = patcher.applyPatches(
                 'delete previousTickMS',
                 'js/echo360.js',
                 echo360Library
             );
-            expect(result).toBe('previousTickMS = undefined');
+            expect(result).toBe('delete previousTickMS');
         });
 
-        it('multiple custom patches can target the same library', () => {
+        it('spreading builtInPatches preserves built-ins alongside custom patches', () => {
+            const patcher = new LibraryPatcher([
+                ...builtInPatches,
+                {
+                    machineName: 'H5P.Other',
+                    filename: 'other.js',
+                    search: 'a',
+                    replace: 'b'
+                }
+            ]);
+            // Built-in echo360 patch still applies
+            expect(
+                patcher.applyPatches(
+                    'delete previousTickMS',
+                    'js/echo360.js',
+                    echo360Library
+                )
+            ).toBe('previousTickMS = undefined');
+            // Custom patch also applies
+            expect(
+                patcher.applyPatches('a', 'other.js', {
+                    machineName: 'H5P.Other',
+                    majorVersion: 1,
+                    minorVersion: 0
+                })
+            ).toBe('b');
+        });
+
+        it('passing only builtInPatches reproduces default behavior', () => {
+            const patcher = new LibraryPatcher([...builtInPatches]);
+            expect(
+                patcher.applyPatches(
+                    'delete previousTickMS',
+                    'js/echo360.js',
+                    echo360Library
+                )
+            ).toBe('previousTickMS = undefined');
+        });
+
+        it('multiple patches can target the same library', () => {
             const patcher = new LibraryPatcher([
                 {
                     machineName: 'H5P.Test',
@@ -494,8 +480,8 @@ describe('LibraryPatcher', () => {
         });
     });
 
-    describe('no patches configured', () => {
-        it('returns text unchanged when no custom patches and file does not match built-in', () => {
+    describe('default and empty patch lists', () => {
+        it('returns text unchanged when file does not match any built-in patch', () => {
             const patcher = new LibraryPatcher();
             expect(
                 patcher.applyPatches('some content', 'unrelated.js', {
@@ -506,7 +492,7 @@ describe('LibraryPatcher', () => {
             ).toBe('some content');
         });
 
-        it('returns text unchanged when custom patches array is empty', () => {
+        it('returns text unchanged when patch list is empty', () => {
             const patcher = new LibraryPatcher([]);
             expect(
                 patcher.applyPatches(
@@ -514,7 +500,7 @@ describe('LibraryPatcher', () => {
                     'js/echo360.js',
                     echo360Library
                 )
-            ).toBe('previousTickMS = undefined');
+            ).toBe('delete previousTickMS');
         });
     });
 });

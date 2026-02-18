@@ -29,14 +29,6 @@
  *     replace: 'fixedCall()',
  *     patchReason: 'Fix broken function call in versions 1.0 through 2.5'
  * };
- *
- * @example
- * // Disabling a built-in patch
- * const patch: ILibraryFilePatch = {
- *     machineName: 'H5P.Echo360',
- *     filename: 'echo360.js',
- *     disabled: true
- * };
  */
 export interface ILibraryFilePatch {
     /**
@@ -69,19 +61,18 @@ export interface ILibraryFilePatch {
 
     /**
      * The search string or regex pattern to find in the file content.
-     * Required unless {@link disabled} is `true`.
      *
      * - When a string, performs a literal match.
      * - When a RegExp, performs a regex match. Use the `g` flag or set
      *   {@link replaceAll} to `true` to replace all occurrences.
      */
-    search?: string | RegExp;
+    search: string | RegExp;
 
     /**
      * The replacement string. Supports `$1`, `$2`, etc. for regex capture
-     * groups. Required unless {@link disabled} is `true`.
+     * groups.
      */
-    replace?: string;
+    replace: string;
 
     /**
      * If `true`, replaces all occurrences of `search` in the file.
@@ -89,16 +80,6 @@ export interface ILibraryFilePatch {
      * @default false
      */
     replaceAll?: boolean;
-
-    /**
-     * If `true`, this patch definition is not applied. This is useful for
-     * disabling a built-in patch: provide a custom patch with the same
-     * `machineName` and `filename` and set `disabled: true`. The custom
-     * patch will override the built-in one through the per-file merge
-     * strategy, effectively removing it.
-     * @default false
-     */
-    disabled?: boolean;
 
     /**
      * An optional human-readable description of why this patch exists.

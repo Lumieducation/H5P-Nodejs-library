@@ -35,6 +35,7 @@ import minimalTemplate from './minimalTemplate';
 import type { ILibraryFilePatch } from './types';
 
 export type { ILibraryFilePatch } from './types';
+export { builtInPatches } from './patches/builtInPatches';
 
 /**
  * This script is used to change the default behavior of H5P when it gets
@@ -100,11 +101,11 @@ export default class HtmlExporter {
      * HTML output
      * @param translationFunction (optional) a translation function for
      * localizing the H5P player
-     * @param libraryPatches (optional) custom patches to apply to library
-     * files during bundling. Custom patches with the same `machineName` and
-     * `filename` as a built-in patch will override that built-in patch. Set
-     * `disabled: true` on a custom patch to disable a built-in patch without
-     * adding a replacement. See {@link ILibraryFilePatch} for details.
+     * @param libraryPatches (optional) the complete list of patches to apply
+     * to library files during bundling. When omitted, {@link builtInPatches}
+     * is used. To keep the built-in patches and add your own, pass
+     * `[...builtInPatches, ...myPatches]`. To replace the list entirely,
+     * pass only your own patches. See {@link ILibraryFilePatch} for details.
      */
     constructor(
         protected libraryStorage: ILibraryStorage,

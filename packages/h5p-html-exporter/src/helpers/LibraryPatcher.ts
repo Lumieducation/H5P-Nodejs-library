@@ -1,71 +1,34 @@
 import { ILibraryName } from '@lumieducation/h5p-server';
 
 import { ILibraryFilePatch } from '../types';
-import builtInPatches from '../patches/builtInPatches';
+import { builtInPatches } from '../patches/builtInPatches';
 
 /**
  * Applies text patches to library files during HTML export bundling.
  *
- * The patcher holds a merged list of built-in and custom patches. Built-in
- * patches ship with the package and fix known incompatibilities (e.g. the
- * echo360.js strict-mode issue). Custom patches can be provided by the
- * implementor to fix additional issues or to override/disable built-in patches.
- *
- * **Merge strategy:** A custom patch with the same `machineName` and
- * `filename` as a built-in patch replaces that built-in patch entirely.
- * All other built-in patches remain active. This allows implementors to
- * override or disable specific patches without losing the rest.
+ * The patcher holds a list of patches and applies all matching ones to each
+ * library file. By default the built-in patch list is used. Pass a custom
+ * list to the constructor to replace it entirely — spread {@link builtInPatches}
+ * into your array if you want to keep the built-in patches alongside your own.
  */
 export default class LibraryPatcher {
     /**
-     * Creates a new LibraryPatcher with the merged set of built-in and custom
-     * patches.
+     * Creates a new LibraryPatcher.
      *
-     * @param customPatches Optional patches provided by the implementor.
-     *   A custom patch whose `machineName` and `filename` match a built-in
-     *   patch replaces that built-in patch. Set `disabled: true` on a custom
-     *   patch to effectively remove a built-in patch without adding a
-     *   replacement.
+     * @param patches The complete list of patches to apply. When omitted,
+     *   {@link builtInPatches} is used. To add custom patches on top of the
+     *   built-ins, pass `[...builtInPatches, ...myPatches]`.
      */
-    constructor(customPatches?: ILibraryFilePatch[]) {
-        this.patches = LibraryPatcher.mergePatches(
-            builtInPatches,
-            customPatches ?? []
-        );
+    constructor(patches?: ILibraryFilePatch[]) {
+        this.patches = patches ?? builtInPatches;
     }
 
     private patches: ILibraryFilePatch[];
 
     /**
-     * Merges built-in patches with custom patches. For each built-in patch,
-     * if a custom patch targets the same `machineName` and `filename`, the
-     * built-in patch is dropped. All custom patches (including overrides and
-     * additions) are then appended.
-     *
-     * @param builtIn The built-in patch definitions.
-     * @param custom The custom patch definitions from the implementor.
-     * @returns The merged patch list.
-     */
-    private static mergePatches(
-        builtIn: ILibraryFilePatch[],
-        custom: ILibraryFilePatch[]
-    ): ILibraryFilePatch[] {
-        const survivingBuiltIn = builtIn.filter(
-            (bp) =>
-                !custom.some(
-                    (cp) =>
-                        cp.machineName === bp.machineName &&
-                        cp.filename === bp.filename
-                )
-        );
-        return [...survivingBuiltIn, ...custom];
-    }
-
-    /**
      * Determines whether a patch should be applied to a given file.
      *
      * A patch applies when all of the following are true:
-     * - The patch is not disabled.
      * - The library's machine name matches.
      * - The library's version falls within the patch's version range
      *   (if specified).
@@ -81,10 +44,6 @@ export default class LibraryPatcher {
         filename: string,
         library: ILibraryName
     ): boolean {
-        if (patch.disabled) {
-            return false;
-        }
-
         if (patch.machineName !== library.machineName) {
             return false;
         }

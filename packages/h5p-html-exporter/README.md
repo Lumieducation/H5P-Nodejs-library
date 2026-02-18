@@ -29,25 +29,17 @@ The following patches are included and applied automatically:
 | ------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | `H5P.Echo360` | `echo360.js` | Replaces `delete previousTickMS` with `previousTickMS = undefined` to prevent uglifyJs from throwing an error in strict mode. |
 
-### Adding custom patches
+### Providing a custom patch list
 
-Pass an array of `ILibraryFilePatch` objects as the last parameter of the
-`HtmlExporter` constructor:
+Pass the complete patch list as the last parameter of the `HtmlExporter`
+constructor. When this parameter is omitted, the built-in patches are used
+automatically.
 
 ```typescript
 import HtmlExporter, {
-    ILibraryFilePatch
+    ILibraryFilePatch,
+    builtInPatches
 } from '@lumieducation/h5p-html-exporter';
-
-const customPatches: ILibraryFilePatch[] = [
-    {
-        machineName: 'H5P.SomeLibrary',
-        filename: 'scripts/main.js',
-        search: 'brokenFunction()',
-        replace: 'fixedFunction()',
-        patchReason: 'Fix broken function call that crashes the export'
-    }
-];
 
 const exporter = new HtmlExporter(
     libraryStorage,
@@ -57,7 +49,40 @@ const exporter = new HtmlExporter(
     editorFilePath,
     undefined, // template
     undefined, // translationFunction
-    customPatches
+    [
+        ...builtInPatches, // keep all built-in patches
+        {
+            machineName: 'H5P.SomeLibrary',
+            filename: 'scripts/main.js',
+            search: 'brokenFunction()',
+            replace: 'fixedFunction()',
+            patchReason: 'Fix broken function call that crashes the export'
+        }
+    ]
+);
+```
+
+Because you control the full list, you can also replace or drop built-in
+patches by simply not including them:
+
+```typescript
+// Only apply your own patch — built-in patches are not used
+const exporter = new HtmlExporter(
+    libraryStorage,
+    contentStorage,
+    config,
+    coreFilePath,
+    editorFilePath,
+    undefined,
+    undefined,
+    [
+        {
+            machineName: 'H5P.Echo360',
+            filename: 'echo360.js',
+            search: 'delete previousTickMS',
+            replace: '/* custom fix */'
+        }
+    ]
 );
 ```
 
@@ -67,15 +92,12 @@ const exporter = new HtmlExporter(
 | ------------- | -------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `machineName` | `string`                         | Yes      | The H5P library machine name (e.g. `"H5P.Echo360"`).                                                              |
 | `filename`    | `string`                         | Yes      | Filename to match. Uses `endsWith` matching, so `"echo360.js"` matches both `"echo360.js"` and `"js/echo360.js"`. |
-| `search`      | `string \| RegExp`               | No\*     | The pattern to find. Literal strings are matched exactly. RegExp supports flags and capture groups.               |
-| `replace`     | `string`                         | No\*     | The replacement text. Supports `$1`, `$2`, etc. for regex capture groups.                                         |
+| `search`      | `string \| RegExp`               | Yes      | The pattern to find. Literal strings are matched exactly. RegExp supports flags and capture groups.               |
+| `replace`     | `string`                         | Yes      | The replacement text. Supports `$1`, `$2`, etc. for regex capture groups.                                         |
 | `minVersion`  | `{ majorVersion, minorVersion }` | No       | Minimum library version (inclusive). If omitted, no lower bound.                                                  |
 | `maxVersion`  | `{ majorVersion, minorVersion }` | No       | Maximum library version (inclusive). If omitted, no upper bound (applies to all future versions).                 |
 | `replaceAll`  | `boolean`                        | No       | Replace all occurrences instead of just the first. Default: `false`.                                              |
-| `disabled`    | `boolean`                        | No       | If `true`, the patch is not applied. Useful for disabling built-in patches.                                       |
 | `patchReason` | `string`                         | No       | Human-readable explanation of why the patch exists.                                                               |
-
-\* `search` and `replace` are required unless `disabled` is `true`.
 
 ### Version ranges
 
@@ -103,39 +125,6 @@ are patching around.
     search: 'old',
     replace: 'new'
 }
-```
-
-### Overriding built-in patches
-
-A custom patch with the same `machineName` and `filename` as a built-in patch
-**replaces** that built-in patch. All other built-in patches remain active.
-
-```typescript
-// Replace the built-in echo360 patch with a custom one
-const customPatches: ILibraryFilePatch[] = [
-    {
-        machineName: 'H5P.Echo360',
-        filename: 'echo360.js',
-        search: 'delete previousTickMS',
-        replace: '/* custom fix applied */',
-        patchReason: 'Custom handling of the echo360 strict mode issue'
-    }
-];
-```
-
-### Disabling built-in patches
-
-To disable a built-in patch without adding a replacement, provide a custom
-patch with the same `machineName` and `filename` and set `disabled: true`:
-
-```typescript
-const customPatches: ILibraryFilePatch[] = [
-    {
-        machineName: 'H5P.Echo360',
-        filename: 'echo360.js',
-        disabled: true
-    }
-];
 ```
 
 ## Support
