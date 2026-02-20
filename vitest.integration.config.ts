@@ -7,6 +7,11 @@ export default defineConfig({
         testTimeout: Number(process.env.TEST_TIMEOUT) || 45000,
         clearMocks: true,
         include: ['**/test/integration/**/*.test.ts'],
-        exclude: ['**/node_modules/**']
+        exclude: ['**/node_modules/**'],
+        coverage: {
+            provider: 'v8',
+            reporter: ['lcov', 'text'],
+            reportsDirectory: './coverage'
+        }
     }
 });

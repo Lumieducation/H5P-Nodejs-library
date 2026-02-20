@@ -12,6 +12,11 @@ export default defineConfig({
             '**/node_modules/**',
             '**/test/data/**',
             '**/test/integration/**'
-        ]
+        ],
+        coverage: {
+            provider: 'v8',
+            reporter: ['lcov', 'text'],
+            reportsDirectory: './coverage'
+        }
     }
 });

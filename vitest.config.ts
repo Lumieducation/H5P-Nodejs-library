@@ -18,6 +18,11 @@ export default defineConfig({
             '**/h5p-html-exporter/**',
             '**/h5p-examples/**',
             '**/integration/**'
-        ]
+        ],
+        coverage: {
+            provider: 'v8',
+            reporter: ['lcov', 'text'],
+            reportsDirectory: './coverage'
+        }
     }
 });

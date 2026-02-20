@@ -102,7 +102,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --runInBand --collect-coverage
+            - run: npx vitest run --config vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: Unit tests
@@ -118,7 +118,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --config jest.integration.config.js --runInBand --collect-coverage
+            - run: npx vitest run --config vitest.integration.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: Integration tests
@@ -140,9 +140,10 @@ jobs:
                   at: .
             - run: |
                   ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
-                  npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
+                  npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
+                  coverage_file: ./packages/h5p-clamav-scanner/coverage/lcov.info
                   flag_name: ClamAV Scanner tests
 
     html-exporter-tests:
@@ -151,14 +152,14 @@ jobs:
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-html-exporter
-                  PUPPETEER_EXECUTABLE_PATH : /usr/bin/google-chrome
+                  PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         resource_class: medium+
         steps:
             - browser-tools/install_chrome
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
+            - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
@@ -182,7 +183,7 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:h5p-mongos3 -- --collect-coverage
+            - run: npm run test:h5p-mongos3 -- --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: DB tests
