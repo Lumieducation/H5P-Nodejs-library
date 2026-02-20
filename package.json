@@ -97,7 +97,7 @@
         "eslint-plugin-react": "^7.35.0",
         "globals": "^17.0.0",
         "husky": "9.1.7",
-        "jest": "30.0.5",
+        "jest": "30.2.0",
         "json-autotranslate": "1.16.1",
         "lerna": "9.0.4",
         "prettier": "3.6.2",
