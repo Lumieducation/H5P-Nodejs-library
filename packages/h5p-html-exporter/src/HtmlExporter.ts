@@ -4,7 +4,7 @@ import postCssUrl from 'postcss-url';
 import postCssImport from 'postcss-import';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
-import uglifyJs from 'uglify-js';
+import { transformSync, transform } from 'esbuild';
 import postCssSafeParser from 'postcss-safe-parser';
 import { readFileSync } from 'fs';
 import upath from 'upath';
@@ -38,17 +38,19 @@ import minimalTemplate from './minimalTemplate';
  * are some libraries (the H5P.SoundJS library used by single choice set) that
  * can't be modified that way.
  */
-const getLibraryFilePathOverrideScript = uglifyJs.minify(
+const getLibraryFilePathOverrideScript = transformSync(
     readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
         encoding: 'utf8'
-    })
+    }),
+    { minify: true, loader: 'js' }
 ).code;
 
-const getContentPathOverrideScript = uglifyJs.minify(
+const getContentPathOverrideScript = transformSync(
     `H5P.getPath = function (path, contentId) {
         return path;
     };
-    `
+    `,
+    { minify: true, loader: 'js' }
 ).code;
 
 export type IExporterTemplate = (
@@ -57,6 +59,17 @@ export type IExporterTemplate = (
     stylesBundle: string,
     contentId: string
 ) => string;
+
+/**
+ * Cached result of the library bundle generation (scripts, styles, and unused
+ * library files). This is the most expensive part of the export process and
+ * can be reused across exports that share the same library dependencies.
+ */
+interface ICachedBundle {
+    scriptsBundle: string;
+    stylesBundle: string;
+    unusedFiles: { [filename: string]: string };
+}
 
 /**
  * Creates standalone HTML packages that can be used to display H5P in a browser
@@ -79,7 +92,7 @@ export type IExporterTemplate = (
  * full license text).
  *
  * (important!) You need to install these NPM packages for the exporter to work:
- * postcss, postcss-clean, postcss-url, postcss-safe-parser, uglify-js
+ * postcss, postcss-clean, postcss-url, postcss-safe-parser, esbuild
  */
 
 export default class HtmlExporter {
@@ -92,6 +105,16 @@ export default class HtmlExporter {
      * @param editorFilePath the path on the local filesystem at which the H5P
      * editor files can be found. (Should contain the scripts, styles and
      * ckeditor directories).
+     * @param template an optional custom template function
+     * @param translationFunction an optional translation function
+     * @param options optional configuration
+     * @param options.bundleCache an optional shared Map to cache library
+     * bundles across multiple HtmlExporter instances. This is useful when
+     * exporting multiple content items that share the same library
+     * dependencies: the expensive JS minification, CSS processing, and
+     * base64 encoding of library files will only be done once per unique
+     * set of dependencies. The cache is automatically invalidated when
+     * library patch versions change.
      */
     constructor(
         protected libraryStorage: ILibraryStorage,
@@ -100,7 +123,10 @@ export default class HtmlExporter {
         protected coreFilePath: string,
         protected editorFilePath: string,
         protected template?: IExporterTemplate,
-        translationFunction?: ITranslationFunction
+        translationFunction?: ITranslationFunction,
+        options?: {
+            bundleCache?: Map<string, ICachedBundle>;
+        }
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
@@ -117,8 +143,10 @@ export default class HtmlExporter {
         this.contentFileScanner = new ContentFileScanner(
             new LibraryManager(this.libraryStorage)
         );
+        this.bundleCache = options?.bundleCache ?? new Map();
     }
 
+    private bundleCache: Map<string, ICachedBundle>;
     private contentFileScanner: ContentFileScanner;
     private coreSuffix: string;
     private defaultAdditionalScripts: string[] = [
@@ -240,6 +268,35 @@ export default class HtmlExporter {
     }
 
     /**
+     * Clears the bundle cache. Call this after installing, updating, or
+     * removing libraries to ensure stale bundles are not served.
+     */
+    public clearCache(): void {
+        this.bundleCache.clear();
+    }
+
+    /**
+     * Generates a cache key for the library bundle. The key includes all
+     * script/style URLs and the patch versions of all dependencies, so that
+     * the cache is automatically invalidated when a library is upgraded.
+     * @param model the player model
+     * @returns a string key uniquely identifying the library bundle
+     */
+    private async getBundleCacheKey(model: IPlayerModel): Promise<string> {
+        const patchVersions = await Promise.all(
+            model.dependencies.map(async (dep) => {
+                const lib = await this.libraryStorage.getLibrary(dep);
+                return `${lib.machineName}-${lib.majorVersion}.${lib.minorVersion}.${lib.patchVersion}`;
+            })
+        );
+        return JSON.stringify({
+            scripts: model.scripts,
+            styles: model.styles,
+            versions: patchVersions.sort()
+        });
+    }
+
+    /**
      * Finds all files in the content's parameters and returns them. Also
      * appends the prefix if necessary. Note: This method has a mutating effect
      * on model!
@@ -281,7 +338,7 @@ export default class HtmlExporter {
      * @param editor
      * @param library
      * @returns a multi-line comment with the license information. The comment
-     * is marked as important and includes @license so that uglify-js and
+     * is marked as important and includes @license so that esbuild and
      * postcss-clean leave it in.
      */
     private async generateLicenseText(
@@ -434,10 +491,13 @@ export default class HtmlExporter {
             .map((script) => texts[script])
             .concat(additionalScripts);
 
-        return uglifyJs.minify(scripts, {
-            output: { comments: 'some' },
-            module: false
-        }).code;
+        return (
+            await transform(scripts.join('\n'), {
+                minify: true,
+                legalComments: 'inline',
+                loader: 'js'
+            })
+        ).code;
     }
 
     /**
@@ -746,26 +806,48 @@ export default class HtmlExporter {
                 throw new Error('Library mode "files" not supported yet.');
             }
 
-            const usedFiles = new LibrariesFilesList();
-            // eslint-disable-next-line prefer-const
-            let [scriptsBundle, stylesBundle] = await Promise.all([
-                this.getScriptBundle(
-                    model,
-                    usedFiles,
-                    this.defaultAdditionalScripts
-                ),
-                this.getStylesBundle(model, usedFiles),
-                mode?.contentResources === 'inline'
-                    ? this.internalizeContentResources(model)
-                    : undefined
-            ]);
+            const cacheKey = await this.getBundleCacheKey(model);
+            const cached = this.bundleCache.get(cacheKey);
 
-            // Look for files in the libraries which haven't been included in the
-            // bundle so far.
-            const unusedFiles = await this.getUnusedLibraryFiles(
-                model.dependencies,
-                usedFiles
-            );
+            let scriptsBundle: string;
+            let stylesBundle: string;
+            let unusedFiles: { [filename: string]: string };
+
+            if (cached) {
+                scriptsBundle = cached.scriptsBundle;
+                stylesBundle = cached.stylesBundle;
+                unusedFiles = cached.unusedFiles;
+                if (mode?.contentResources === 'inline') {
+                    await this.internalizeContentResources(model);
+                }
+            } else {
+                const usedFiles = new LibrariesFilesList();
+                [scriptsBundle, stylesBundle] = await Promise.all([
+                    this.getScriptBundle(
+                        model,
+                        usedFiles,
+                        this.defaultAdditionalScripts
+                    ),
+                    this.getStylesBundle(model, usedFiles),
+                    mode?.contentResources === 'inline'
+                        ? this.internalizeContentResources(model)
+                        : undefined
+                ]);
+
+                // Look for files in the libraries which haven't been included
+                // in the bundle so far.
+                unusedFiles = await this.getUnusedLibraryFiles(
+                    model.dependencies,
+                    usedFiles
+                );
+
+                this.bundleCache.set(cacheKey, {
+                    scriptsBundle,
+                    stylesBundle,
+                    unusedFiles
+                });
+            }
+
             // If there are files in the directory of a library that haven't been
             // included in the bundle yet, we add those as base64 encoded variables
             // and rewire H5P.ContentType.getLibraryFilePath to return these files
