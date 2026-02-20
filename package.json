@@ -42,18 +42,18 @@
         "start:rest:server": "npm run start --workspace=packages/h5p-rest-example-server",
         "start": "npm run start --workspace=packages/h5p-examples",
         "stop:dbs": "docker-compose -f scripts/mongo-s3-docker-compose.yml down",
-        "test:h5p-clamav-scanner": "npx jest --config packages/h5p-clamav-scanner/jest.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "test:h5p-mongos3": "npx jest --config jest.db.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
+        "test:h5p-clamav-scanner": "vitest run --config packages/h5p-clamav-scanner/vitest.config.ts",
+        "test:h5p-mongos3": "vitest run --config vitest.db.config.ts",
         "test:h5p-redis-lock": "npm test --workspace=packages/h5p-redis-lock",
-        "test:h5p-shared-state-server": "jest packages/h5p-shared-state-server/test",
-        "test:html-exporter": "jest --config packages/h5p-html-exporter/jest.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "test:integration": "npx jest --config jest.integration.config.js --maxWorkers=${BUILD_WORKERS-`nproc`}",
+        "test:h5p-shared-state-server": "vitest run --config vitest.config.ts -- packages/h5p-shared-state-server/test",
+        "test:html-exporter": "vitest run --config packages/h5p-html-exporter/vitest.config.ts",
+        "test:integration": "vitest run --config vitest.integration.config.ts",
         "test:server+upload": "npm run test:server+upload --workspace=packages/h5p-server",
         "test:upload": "npm run test:upload --workspace=packages/h5p-server",
         "test:watch:h5p-express": "npm run test:watch --workspace=packages/h5p-express",
         "test:watch:h5p-mongos3": "npm run test:watch --workspace=packages/h5p-mongos3",
-        "test:watch": "jest --watch --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}",
-        "test": "jest --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test:watch": "vitest --config vitest.config.ts",
+        "test": "vitest run --config vitest.config.ts"
     },
     "release": {
         "branch": "release"
@@ -86,7 +86,6 @@
     "devDependencies": {
         "@commitlint/config-conventional": "20.4.1",
         "@eslint/js": "^9.17.0",
-        "@types/jest": "30.0.0",
         "@typescript-eslint/eslint-plugin": "8.56.0",
         "@typescript-eslint/parser": "8.56.0",
         "axios": "1.13.5",
@@ -97,19 +96,18 @@
         "eslint-plugin-react": "^7.35.0",
         "globals": "^17.0.0",
         "husky": "9.1.7",
-        "jest": "30.0.5",
         "json-autotranslate": "1.16.1",
         "lerna": "9.0.4",
         "prettier": "3.6.2",
         "remark-cli": "12.0.1",
         "remark-validate-links": "13.1.0",
-        "ts-jest": "29.4.6",
         "ts-node": "10.9.2",
+        "typedoc": "0.28.17",
         "typedoc-plugin-missing-exports": "^4.0.0",
         "typedoc-plugin-rename-defaults": "^0.7.3",
-        "typedoc": "0.28.17",
+        "typescript": "5.9.3",
         "typescript-eslint": "^8.18.2",
-        "typescript": "5.9.3"
+        "vitest": "^4.0.18"
     },
     "engines": {
         "node": ">=20.0.0",

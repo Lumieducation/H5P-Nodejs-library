@@ -105,8 +105,8 @@ describe('H5PEditor', () => {
                         return FileSanitizerResult.Ignored;
                     }
                 };
-                const spy1 = jest.spyOn(sanitizer1, 'sanitize');
-                const spy2 = jest.spyOn(sanitizer2, 'sanitize');
+                const spy1 = vi.spyOn(sanitizer1, 'sanitize');
+                const spy2 = vi.spyOn(sanitizer2, 'sanitize');
 
                 const { h5pEditor, temporaryStorage } = createH5PEditor(
                     tempDirPath,

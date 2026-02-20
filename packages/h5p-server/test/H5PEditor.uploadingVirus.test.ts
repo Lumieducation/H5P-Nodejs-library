@@ -80,8 +80,8 @@ describe('H5PEditor: uploading viruses', () => {
                 const mockScanner1 = new MockMalwareScanner();
                 const mockScanner2 = new MockMalwareScanner();
 
-                const scannerSpy1 = jest.spyOn(mockScanner1, 'scan');
-                const scannerSpy2 = jest.spyOn(mockScanner2, 'scan');
+                const scannerSpy1 = vi.spyOn(mockScanner1, 'scan');
+                const scannerSpy2 = vi.spyOn(mockScanner2, 'scan');
 
                 const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
                     malwareScanners: [mockScanner1, mockScanner2]

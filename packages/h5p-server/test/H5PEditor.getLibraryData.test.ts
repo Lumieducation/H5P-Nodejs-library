@@ -290,9 +290,9 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('loads the language', () => {
-        const getLanguage = jest.fn(() =>
+        const getLanguage = vi.fn(() =>
             Promise.resolve("{arbitrary: 'languageObject'}")
-        ) as jest.Mocked<any>;
+        ) as any;
 
         const h5pEditor = new H5PEditor(
             null,
@@ -370,9 +370,9 @@ describe('aggregating data from library folders for the editor', () => {
     });
 
     it('lists all available languages', () => {
-        const listLanguages = jest.fn(() =>
+        const listLanguages = vi.fn(() =>
             Promise.resolve(['array', 'with', 'languages'])
-        ) as jest.Mock<any>;
+        ) as any;
 
         const h5pEditor = new H5PEditor(
             null,

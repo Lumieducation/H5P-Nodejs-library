@@ -168,7 +168,7 @@ describe('H5PEditor', () => {
                 expect(returnedStream).toBeDefined();
 
                 const mockWriteStream1 = new BufferWritableMock();
-                const onFinish1 = jest.fn();
+                const onFinish1 = vi.fn();
                 mockWriteStream1.on('finish', onFinish1);
                 await promisepipe(returnedStream, mockWriteStream1);
                 expect(onFinish1).toHaveBeenCalled();
@@ -217,7 +217,7 @@ describe('H5PEditor', () => {
                     name: 'Mock sanitizer',
                     sanitize: async () => FileSanitizerResult.Sanitized
                 };
-                const sanitizeSpy = jest.spyOn(mockSanitizer, 'sanitize');
+                const sanitizeSpy = vi.spyOn(mockSanitizer, 'sanitize');
 
                 const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
                     fileSanitizers: [mockSanitizer]
@@ -262,8 +262,8 @@ describe('H5PEditor', () => {
                     name: 'Mock sanitizer 2',
                     sanitize: async () => FileSanitizerResult.Sanitized
                 };
-                const sanitizeSpy1 = jest.spyOn(mockSanitizer1, 'sanitize');
-                const sanitizeSpy2 = jest.spyOn(mockSanitizer2, 'sanitize');
+                const sanitizeSpy1 = vi.spyOn(mockSanitizer1, 'sanitize');
+                const sanitizeSpy2 = vi.spyOn(mockSanitizer2, 'sanitize');
 
                 const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
                     fileSanitizers: [mockSanitizer1, mockSanitizer2]

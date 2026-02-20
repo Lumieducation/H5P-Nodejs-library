@@ -59,7 +59,7 @@ describe('registering the site at H5P Hub', () => {
     it("get ids from external if there's an override", async () => {
         const storage = new InMemoryStorage();
         const config = new H5PConfig(storage);
-        const getIdSpy = jest.fn(() => 'overriden id');
+        const getIdSpy = vi.fn(() => 'overriden id');
         const cache = new ContentTypeCache(config, storage, getIdSpy);
         axiosMock.reset();
         axiosMock

@@ -91,10 +91,8 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 const storage = new FileContentStorage(tempDirPath);
                 await expect(
                     storage.deleteContent('1', new User())
-                ).rejects.toEqual(
-                    new Error(
-                        'storage-file-implementations:delete-content-not-found'
-                    )
+                ).rejects.toThrow(
+                    'storage-file-implementations:delete-content-not-found'
                 );
             },
             { keep: false, unsafeCleanup: true }
