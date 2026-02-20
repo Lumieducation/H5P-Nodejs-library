@@ -81,18 +81,16 @@ npm run format                # Prettier fix
 
 Build `h5p-server` first — everything else depends on it.
 
-**Running tests for a single file:** The root `jest.config.js` configures
-ts-jest. Individual packages do **not** have their own jest config (except
-h5p-mongos3, h5p-express, etc.). Always run jest from the **repo root**:
+**Running tests for a single file:** The root `vitest.config.ts` configures
+Vitest. Always run vitest from the **repo root**:
 
 ```bash
-npx jest contentFileValidation         # Match test files by name
-npx jest packages/h5p-server/test/Foo  # Match by path prefix
+npx vitest run contentFileValidation         # Match test files by name
+npx vitest run packages/h5p-server/test/Foo  # Match by path prefix
 ```
 
-Do **not** `cd` into a package directory and run `npx jest` there — the
-package-level `npm test` script works, but bare `npx jest` will fail because
-there is no local jest config with the ts-jest transform.
+Individual packages have their own `vitest.config.ts` for CI, but running
+from the root with a file name filter is the simplest approach.
 
 ## Code Style
 
