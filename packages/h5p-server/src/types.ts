@@ -1500,12 +1500,12 @@ export interface IKeyValueStorage {
  */
 export interface IRegistrationData {
     /**
-     * The core API version that the site supports (e.g. 1.24). Unknown if the hub only reports back content
-     * types that work for this core version.
+     * The core API version that the site supports (e.g. 1.24). The hub reports back all content types nevertheless, the
+     * core API version is not required to be provided.
      */
     core_api_version: string;
     /**
-     * Purpose unknown.
+     * An indicator of whether the H5P Hub is disabled for the H5P integration or not. Probably used for statistics.
      */
     disabled: 0 | 1;
     /**
@@ -1515,15 +1515,16 @@ export interface IRegistrationData {
     h5p_version: string;
     /**
      * A string (max 15 characters) that identifies the local installation.
-     * By default a truncated machine-id hash is used.
+     * By default a truncated machine-id hash is used. Originally a CRC32 hash based on the path that H5P core files are
+     * served from.
      */
     local_id: string;
     /**
-     * The name of the H5P implementation.
+     * The name of the platform that the H5P integration runs on.
      */
     platform_name: string;
     /**
-     * The version of the H5P implementation.
+     * The version of the H5P integration.
      */
     platform_version: string;
     /**
@@ -1534,7 +1535,8 @@ export interface IRegistrationData {
     /**
      * The unique id that is used to re-identify this site at the Hub later.
      * Can be '' when the site is doing the registration for the first time.
-     * Later it should be the value that is received back from the H5P Hub.
+     * Later it should be the value that is received back from the H5P Hub,
+     * even though it is not evaluated so far.
      */
     uuid: string;
 }
