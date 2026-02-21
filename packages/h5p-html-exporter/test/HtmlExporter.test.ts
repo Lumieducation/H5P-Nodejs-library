@@ -260,12 +260,14 @@ describe('HtmlExporter template', () => {
             config,
             path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
             path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`),
-            (
-                integration: IIntegration,
-                scriptsBundle: string,
-                stylesBundle: string,
-                contentId2: string
-            ) => `${contentId2}`
+            {
+                template: (
+                    integration: IIntegration,
+                    scriptsBundle: string,
+                    stylesBundle: string,
+                    contentId2: string
+                ) => `${contentId2}`
+            }
         );
 
         const exportedHtml = await htmlExporter.createSingleBundle(
