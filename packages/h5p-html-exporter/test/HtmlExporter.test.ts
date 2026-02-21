@@ -45,7 +45,6 @@ describe('HtmlExporter', () => {
     let sharedContentStorage: FileContentStorage;
     let sharedContentManager: ContentManager;
     let sharedConfig: H5PConfig;
-    let sharedBundleCache: Map<string, any>;
     let sharedUser: User;
     let sharedPackageImporter: PackageImporter;
     let sharedHtmlExporter: HtmlExporter;
@@ -69,7 +68,6 @@ describe('HtmlExporter', () => {
         );
 
         sharedConfig = new H5PConfig(null);
-        sharedBundleCache = new Map();
         sharedUser = new User();
 
         sharedPackageImporter = new PackageImporter(
@@ -89,10 +87,7 @@ describe('HtmlExporter', () => {
             sharedContentStorage,
             sharedConfig,
             corePath,
-            editorPath,
-            undefined,
-            undefined,
-            { bundleCache: sharedBundleCache }
+            editorPath
         );
 
         // Launch browser

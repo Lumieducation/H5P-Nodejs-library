@@ -61,17 +61,6 @@ export type IExporterTemplate = (
 ) => string;
 
 /**
- * Cached result of the library bundle generation (scripts, styles, and unused
- * library files). This is the most expensive part of the export process and
- * can be reused across exports that share the same library dependencies.
- */
-interface ICachedBundle {
-    scriptsBundle: string;
-    stylesBundle: string;
-    unusedFiles: { [filename: string]: string };
-}
-
-/**
  * Creates standalone HTML packages that can be used to display H5P in a browser
  * without having to use the full H5P server backend.
  *
@@ -107,14 +96,6 @@ export default class HtmlExporter {
      * ckeditor directories).
      * @param template an optional custom template function
      * @param translationFunction an optional translation function
-     * @param options optional configuration
-     * @param options.bundleCache an optional shared Map to cache library
-     * bundles across multiple HtmlExporter instances. This is useful when
-     * exporting multiple content items that share the same library
-     * dependencies: the expensive JS minification, CSS processing, and
-     * base64 encoding of library files will only be done once per unique
-     * set of dependencies. The cache is automatically invalidated when
-     * library patch versions change.
      */
     constructor(
         protected libraryStorage: ILibraryStorage,
@@ -123,10 +104,7 @@ export default class HtmlExporter {
         protected coreFilePath: string,
         protected editorFilePath: string,
         protected template?: IExporterTemplate,
-        translationFunction?: ITranslationFunction,
-        options?: {
-            bundleCache?: Map<string, ICachedBundle>;
-        }
+        translationFunction?: ITranslationFunction
     ) {
         this.player = new H5PPlayer(
             this.libraryStorage,
@@ -143,10 +121,8 @@ export default class HtmlExporter {
         this.contentFileScanner = new ContentFileScanner(
             new LibraryManager(this.libraryStorage)
         );
-        this.bundleCache = options?.bundleCache ?? new Map();
     }
 
-    private bundleCache: Map<string, ICachedBundle>;
     private contentFileScanner: ContentFileScanner;
     private coreSuffix: string;
     private defaultAdditionalScripts: string[] = [
@@ -265,35 +241,6 @@ export default class HtmlExporter {
                 }
             )
         ).html;
-    }
-
-    /**
-     * Clears the bundle cache. Call this after installing, updating, or
-     * removing libraries to ensure stale bundles are not served.
-     */
-    public clearCache(): void {
-        this.bundleCache.clear();
-    }
-
-    /**
-     * Generates a cache key for the library bundle. The key includes all
-     * script/style URLs and the patch versions of all dependencies, so that
-     * the cache is automatically invalidated when a library is upgraded.
-     * @param model the player model
-     * @returns a string key uniquely identifying the library bundle
-     */
-    private async getBundleCacheKey(model: IPlayerModel): Promise<string> {
-        const patchVersions = await Promise.all(
-            model.dependencies.map(async (dep) => {
-                const lib = await this.libraryStorage.getLibrary(dep);
-                return `${lib.machineName}-${lib.majorVersion}.${lib.minorVersion}.${lib.patchVersion}`;
-            })
-        );
-        return JSON.stringify({
-            scripts: model.scripts,
-            styles: model.styles,
-            versions: patchVersions.sort()
-        });
     }
 
     /**
@@ -806,47 +753,26 @@ export default class HtmlExporter {
                 throw new Error('Library mode "files" not supported yet.');
             }
 
-            const cacheKey = await this.getBundleCacheKey(model);
-            const cached = this.bundleCache.get(cacheKey);
+            const usedFiles = new LibrariesFilesList();
+            // eslint-disable-next-line prefer-const
+            let [scriptsBundle, stylesBundle] = await Promise.all([
+                this.getScriptBundle(
+                    model,
+                    usedFiles,
+                    this.defaultAdditionalScripts
+                ),
+                this.getStylesBundle(model, usedFiles),
+                mode?.contentResources === 'inline'
+                    ? this.internalizeContentResources(model)
+                    : undefined
+            ]);
 
-            let scriptsBundle: string;
-            let stylesBundle: string;
-            let unusedFiles: { [filename: string]: string };
-
-            if (cached) {
-                scriptsBundle = cached.scriptsBundle;
-                stylesBundle = cached.stylesBundle;
-                unusedFiles = cached.unusedFiles;
-                if (mode?.contentResources === 'inline') {
-                    await this.internalizeContentResources(model);
-                }
-            } else {
-                const usedFiles = new LibrariesFilesList();
-                [scriptsBundle, stylesBundle] = await Promise.all([
-                    this.getScriptBundle(
-                        model,
-                        usedFiles,
-                        this.defaultAdditionalScripts
-                    ),
-                    this.getStylesBundle(model, usedFiles),
-                    mode?.contentResources === 'inline'
-                        ? this.internalizeContentResources(model)
-                        : undefined
-                ]);
-
-                // Look for files in the libraries which haven't been included
-                // in the bundle so far.
-                unusedFiles = await this.getUnusedLibraryFiles(
-                    model.dependencies,
-                    usedFiles
-                );
-
-                this.bundleCache.set(cacheKey, {
-                    scriptsBundle,
-                    stylesBundle,
-                    unusedFiles
-                });
-            }
+            // Look for files in the libraries which haven't been included in the
+            // bundle so far.
+            const unusedFiles = await this.getUnusedLibraryFiles(
+                model.dependencies,
+                usedFiles
+            );
 
             // If there are files in the directory of a library that haven't been
             // included in the bundle yet, we add those as base64 encoded variables
