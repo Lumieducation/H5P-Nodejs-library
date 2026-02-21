@@ -41,8 +41,14 @@ describe('HtmlExporter', () => {
     let sharedLibraryDir: string;
     let sharedLibraryStorage: FileLibraryStorage;
     let sharedLibraryManager: LibraryManager;
+    let sharedContentDir: string;
+    let sharedContentStorage: FileContentStorage;
+    let sharedContentManager: ContentManager;
     let sharedConfig: H5PConfig;
     let sharedBundleCache: Map<string, any>;
+    let sharedUser: User;
+    let sharedPackageImporter: PackageImporter;
+    let sharedHtmlExporter: HtmlExporter;
 
     beforeAll(async () => {
         // Create shared library directory to speed things up
@@ -51,8 +57,43 @@ describe('HtmlExporter', () => {
 
         sharedLibraryStorage = new FileLibraryStorage(sharedLibraryDir);
         sharedLibraryManager = new LibraryManager(sharedLibraryStorage);
+
+        // Create shared content directory to speed things up
+        const contentDir = await dir({ unsafeCleanup: true });
+        sharedContentDir = contentDir.path;
+
+        sharedContentStorage = new FileContentStorage(sharedContentDir);
+        sharedContentManager = new ContentManager(
+            sharedContentStorage,
+            new LaissezFairePermissionSystem()
+        );
+
         sharedConfig = new H5PConfig(null);
         sharedBundleCache = new Map();
+        sharedUser = new User();
+
+        sharedPackageImporter = new PackageImporter(
+            sharedLibraryManager,
+            sharedConfig,
+            new LaissezFairePermissionSystem(),
+            sharedContentManager,
+            new ContentStorer(
+                sharedContentManager,
+                sharedLibraryManager,
+                undefined
+            )
+        );
+
+        sharedHtmlExporter = new HtmlExporter(
+            sharedLibraryStorage,
+            sharedContentStorage,
+            sharedConfig,
+            corePath,
+            editorPath,
+            undefined,
+            undefined,
+            { bundleCache: sharedBundleCache }
+        );
 
         // Launch browser
         browser = await puppeteer.launch({
@@ -103,129 +144,87 @@ describe('HtmlExporter', () => {
         await page.close();
         await browser.close();
         await rm(sharedLibraryDir, { recursive: true, force: true });
+        await rm(sharedContentDir, { recursive: true, force: true });
     });
 
     async function importAndExportHtml(
         packagePath: string,
         mode: 'singleBundle' | 'externalContentResources'
     ): Promise<void> {
-        await withDir(
-            async ({ path: tmpDirPath }) => {
-                const contentDir = path.join(tmpDirPath, 'content');
-                await mkdir(contentDir, { recursive: true });
-
-                const user = new User();
-
-                const contentStorage = new FileContentStorage(contentDir);
-                const contentManager = new ContentManager(
-                    contentStorage,
-                    new LaissezFairePermissionSystem()
-                );
-
-                const packageImporter = new PackageImporter(
-                    sharedLibraryManager,
-                    sharedConfig,
-                    new LaissezFairePermissionSystem(),
-                    contentManager,
-                    new ContentStorer(
-                        contentManager,
-                        sharedLibraryManager,
-                        undefined
-                    )
-                );
-
-                const htmlExporter = new HtmlExporter(
-                    sharedLibraryStorage,
-                    contentStorage,
-                    sharedConfig,
-                    corePath,
-                    editorPath,
-                    undefined,
-                    undefined,
-                    { bundleCache: sharedBundleCache }
-                );
-
-                const contentId = (
-                    await packageImporter.addPackageLibrariesAndContent(
-                        packagePath,
-                        user
-                    )
-                ).id;
-                if (mode === 'singleBundle') {
-                    const exportedHtml = await htmlExporter.createSingleBundle(
-                        contentId,
-                        user
-                    );
-                    await withFile(
-                        async (result) => {
-                            await writeFile(result.path, exportedHtml);
-                            await page.goto(`file://${result.path}`, {
-                                waitUntil: ['load'],
-                                timeout: 30000
-                            });
-                        },
-                        {
-                            keep: false,
-                            postfix: '.html'
-                        }
-                    );
-                } else if (mode === 'externalContentResources') {
-                    const res =
-                        await htmlExporter.createBundleWithExternalContentResources(
-                            contentId,
-                            user,
-                            contentId.toString()
-                        );
-                    await withDir(
-                        async (result) => {
-                            await mkdir(result.path, { recursive: true });
-                            await writeFile(
-                                path.join(result.path, `${contentId}.html`),
-                                res.html
-                            );
-                            for (const f of res.contentFiles) {
-                                try {
-                                    const tempFilePath = path.join(
-                                        result.path,
-                                        contentId.toString(),
-                                        f
-                                    );
-                                    await mkdir(path.dirname(tempFilePath), {
-                                        recursive: true
-                                    });
-                                    const writer =
-                                        createWriteStream(tempFilePath);
-                                    const readable =
-                                        await contentStorage.getFileStream(
-                                            contentId,
-                                            f,
-                                            user
-                                        );
-                                    await promisePipe(readable, writer);
-                                    writer.close();
-                                } catch {
-                                    // We silently ignore errors here as there is
-                                    // some example content with invalid file
-                                    // references.
-                                }
-                            }
-                            await page.goto(
-                                `file://${result.path}/${contentId}.html`,
-                                {
-                                    waitUntil: ['load'],
-                                    timeout: 30000
-                                }
-                            );
-                        },
-                        {
-                            keep: false,
-                            unsafeCleanup: true
-                        }
-                    );
+        const contentId = (
+            await sharedPackageImporter.addPackageLibrariesAndContent(
+                packagePath,
+                sharedUser
+            )
+        ).id;
+        if (mode === 'singleBundle') {
+            const exportedHtml = await sharedHtmlExporter.createSingleBundle(
+                contentId,
+                sharedUser
+            );
+            await withFile(
+                async (result) => {
+                    await writeFile(result.path, exportedHtml);
+                    await page.goto(`file://${result.path}`, {
+                        waitUntil: ['load'],
+                        timeout: 30000
+                    });
+                },
+                {
+                    keep: false,
+                    postfix: '.html'
                 }
-            },
-            { keep: false, unsafeCleanup: true }
-        );
+            );
+        } else if (mode === 'externalContentResources') {
+            const res =
+                await sharedHtmlExporter.createBundleWithExternalContentResources(
+                    contentId,
+                    sharedUser,
+                    contentId.toString()
+                );
+            await withDir(
+                async (result) => {
+                    await mkdir(result.path, { recursive: true });
+                    await writeFile(
+                        path.join(result.path, `${contentId}.html`),
+                        res.html
+                    );
+                    for (const f of res.contentFiles) {
+                        try {
+                            const tempFilePath = path.join(
+                                result.path,
+                                contentId.toString(),
+                                f
+                            );
+                            await mkdir(path.dirname(tempFilePath), {
+                                recursive: true
+                            });
+                            const writer = createWriteStream(tempFilePath);
+                            const readable =
+                                await sharedContentStorage.getFileStream(
+                                    contentId,
+                                    f,
+                                    sharedUser
+                                );
+                            await promisePipe(readable, writer);
+                            writer.close();
+                        } catch {
+                            // We silently ignore errors here as there is
+                            // some example content with invalid file
+                            // references.
+                        }
+                    }
+                    await page.goto(`file://${result.path}/${contentId}.html`, {
+                        waitUntil: ['load'],
+                        timeout: 30000
+                    });
+                },
+                {
+                    keep: false,
+                    unsafeCleanup: true
+                }
+            );
+        }
     }
 
     for (const file of h5pFiles) {
