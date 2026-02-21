@@ -45,7 +45,7 @@ describe('HtmlExporter', () => {
     let sharedBundleCache: Map<string, any>;
 
     beforeAll(async () => {
-        // Create shared library directory and pre-install all libraries
+        // Create shared library directory to speed things up
         const libDir = await dir({ unsafeCleanup: true });
         sharedLibraryDir = libDir.path;
 
@@ -53,34 +53,6 @@ describe('HtmlExporter', () => {
         sharedLibraryManager = new LibraryManager(sharedLibraryStorage);
         sharedConfig = new H5PConfig(null);
         sharedBundleCache = new Map();
-
-        // Pre-install libraries from all .h5p packages into shared storage.
-        // installLibrariesFromPackage only installs libraries (no content),
-        // and LibraryManager.installFromDirectory skips already-installed
-        // libraries, so calling this for every package is safe and efficient.
-        const user = new User();
-        for (const file of h5pFiles) {
-            const tmpContentDir = await dir({ unsafeCleanup: true });
-            try {
-                const cs = new FileContentStorage(tmpContentDir.path);
-                const cm = new ContentManager(
-                    cs,
-                    new LaissezFairePermissionSystem()
-                );
-                const pi = new PackageImporter(
-                    sharedLibraryManager,
-                    sharedConfig,
-                    new LaissezFairePermissionSystem(),
-                    cm,
-                    new ContentStorer(cm, sharedLibraryManager, undefined)
-                );
-                await pi.installLibrariesFromPackage(
-                    path.join(hubContentDirectory, file)
-                );
-            } finally {
-                await tmpContentDir.cleanup();
-            }
-        }
 
         // Launch browser
         browser = await puppeteer.launch({
