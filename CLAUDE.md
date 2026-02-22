@@ -153,6 +153,12 @@ Where to look for common tasks (all paths relative to `packages/`):
 - Use `npm ls <pkg>` and `npm outdated` to inspect resolved versions (do not
   read `package-lock.json` directly)
 
+## CI Pipeline (CircleCI)
+
+CI runs on CircleCI (`.circleci/config.yml`), not GitHub Actions. Always check
+this file when analyzing CI — do not assume GitHub Actions.
+
+
 ## Git Hooks & Commits
 
 Husky runs on every commit/push — code must pass before committing:
