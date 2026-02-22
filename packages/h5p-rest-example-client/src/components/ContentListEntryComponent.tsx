@@ -79,11 +79,14 @@ export default class ContentListEntryComponent extends React.Component<
             showAsUserIdModal: false,
             readOnlyState: false
         };
-        this.h5pEditor = React.createRef();
-        this.saveButton = React.createRef();
-        this.h5pPlayer = React.createRef();
-        this.contextIdInput = React.createRef();
-        this.asUserIdSelect = React.createRef();
+        this.h5pEditor = React.createRef() as React.RefObject<H5PEditorUI>;
+        this.saveButton =
+            React.createRef() as React.RefObject<HTMLButtonElement>;
+        this.h5pPlayer = React.createRef() as React.RefObject<H5PPlayerUI>;
+        this.contextIdInput =
+            React.createRef() as React.RefObject<HTMLInputElement>;
+        this.asUserIdSelect =
+            React.createRef() as React.RefObject<HTMLSelectElement>;
     }
 
     private h5pPlayer: React.RefObject<H5PPlayerUI>;
