@@ -8,39 +8,24 @@
         "@fortawesome/react-fontawesome": "0.2.6",
         "@lumieducation/h5p-react": "^10.0.4",
         "bootstrap": "5.3.8",
-        "http-proxy-middleware": "3.0.5",
         "react": "18.3.1",
         "react-bootstrap": "2.10.10",
         "react-dom": "18.3.1"
     },
     "devDependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "@testing-library/react": "16.3.2",
-        "@testing-library/user-event": "14.6.1",
         "@types/node": "24.10.13",
         "@types/react": "18.3.28",
         "@types/react-dom": "18.3.7",
-        "react-scripts": "5.0.1"
+        "@vitejs/plugin-react": "^4.7.0",
+        "rollup": "^4.59.0",
+        "vite": "^6.4.1"
     },
     "scripts": {
-        "build": "react-scripts build",
+        "build": "vite build",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "eject": "react-scripts eject",
-        "start": "react-scripts start",
-        "test": "react-scripts test",
+        "start": "vite",
+        "preview": "vite preview",
         "lint": "npx eslint . --quiet"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "proxy": "http://127.0.0.1:8080"
+    }
 }
