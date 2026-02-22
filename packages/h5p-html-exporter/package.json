@@ -44,7 +44,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "esbuild": "^0.25.0",
+        "esbuild": "^0.27.0",
         "mime-types": "^3.0.0",
         "postcss": "^8.4.23",
         "postcss-clean": "^1.2.2",
