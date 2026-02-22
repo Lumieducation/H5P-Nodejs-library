@@ -150,14 +150,14 @@ export default function (
             );
         } catch (error) {
             res.send(
-                `Error deleting content with id ${req.params.contentId}: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
+                `Error deleting content: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
             );
             res.status(500).end();
             return;
         }
 
         res.send(
-            `Content ${req.params.contentId} successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
+            `Content successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
         );
         res.status(200).end();
     });
