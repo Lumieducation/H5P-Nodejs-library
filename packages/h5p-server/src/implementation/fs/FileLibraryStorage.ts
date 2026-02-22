@@ -2,7 +2,6 @@ import { Readable } from 'stream';
 import { getAllFiles } from 'get-all-files';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import upath from 'upath';
 import { createReadStream, createWriteStream, mkdirSync } from 'fs';
 import { access, mkdir, readdir, rm, stat, writeFile } from 'fs/promises';
 
@@ -451,7 +450,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
         return (await getAllFiles(libPath).toArray())
             .map((p) => p.substr(libPathLength))
             .filter((p) => !this.isIgnored(p))
-            .map((p) => upath.toUnix(p))
+            .map((p) => p.replace(/\\/g, '/'))
             .sort();
     }
 

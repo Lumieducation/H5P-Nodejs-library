@@ -1,4 +1,4 @@
-import upath from 'upath';
+import path from 'path';
 import crypto from 'node:crypto';
 
 import Logger from './Logger';
@@ -49,14 +49,14 @@ export default async (
     let filenameAttempt = '';
     let exists = false;
     actualFilename = sanitize(actualFilename);
-    const dirname = upath.dirname(actualFilename);
+    const dirname = path.posix.dirname(actualFilename);
     do {
         filenameAttempt = `${
             dirname && dirname !== '.' ? `${dirname}/` : ''
-        }${upath.basename(
+        }${path.posix.basename(
             actualFilename,
-            upath.extname(actualFilename)
-        )}-${generateId()}${upath.extname(actualFilename)}`;
+            path.posix.extname(actualFilename)
+        )}-${generateId()}${path.posix.extname(actualFilename)}`;
         log.debug(`Checking if ${filenameAttempt} already exists`);
         exists = await checkIfFileExists(filenameAttempt);
         attempts += 1;

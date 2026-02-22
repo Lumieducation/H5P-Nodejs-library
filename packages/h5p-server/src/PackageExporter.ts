@@ -1,6 +1,5 @@
 import { Writable, Readable } from 'stream';
 import yazl from 'yazl';
-import upath from 'upath';
 
 import DependencyGetter from './DependencyGetter';
 import H5pError from './helpers/H5pError';
@@ -156,7 +155,8 @@ export default class PackageExporter {
                     user
                 ),
                 `content/${
-                    pathSubstitutions[upath.toUnix(contentFile)] ?? contentFile
+                    pathSubstitutions[contentFile.replace(/\\/g, '/')] ??
+                    contentFile
                 }`
             );
         }
