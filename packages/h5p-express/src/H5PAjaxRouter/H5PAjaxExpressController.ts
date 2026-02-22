@@ -47,7 +47,7 @@ export default class H5PAjaxExpressController {
     ): Promise<void> => {
         const { mimetype, stream, stats, range } =
             await this.ajaxEndpoint.getContentFile(
-                req.params.id,
+                req.params.id as string,
                 (req.params.file as unknown as string[]).join('/'),
                 req.user,
                 this.getRange(req)
@@ -74,7 +74,7 @@ export default class H5PAjaxExpressController {
         res: express.Response
     ): Promise<void> => {
         const result = await this.ajaxEndpoint.getContentParameters(
-            req.params.contentId,
+            req.params.contentId as string,
             req.user
         );
         res.status(200).json(result);
@@ -90,10 +90,10 @@ export default class H5PAjaxExpressController {
         // set filename for the package with .h5p extension
         res.setHeader(
             'Content-disposition',
-            `attachment; filename=${req.params.contentId}.h5p`
+            `attachment; filename=${req.params.contentId as string}.h5p`
         );
         await this.ajaxEndpoint.getDownload(
-            req.params.contentId,
+            req.params.contentId as string,
             req.user,
             res
         );
@@ -108,7 +108,7 @@ export default class H5PAjaxExpressController {
     ): Promise<void> => {
         const { mimetype, stream, stats } =
             await this.ajaxEndpoint.getLibraryFile(
-                req.params.uberName,
+                req.params.uberName as string,
                 (req.params.file as unknown as string[]).join('/')
             );
 

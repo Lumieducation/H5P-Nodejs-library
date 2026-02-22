@@ -57,7 +57,7 @@
         "image-size": "^1.0.2",
         "jsonpath": "^1.1.1",
         "magic-bytes.js": "^1.13.0",
-        "mime-types": "^2.1.35",
+        "mime-types": "^3.0.0",
         "node-machine-id": "^1.1.12",
         "promisepipe": "^3.0.0",
         "sanitize-html": "^2.10.0",
@@ -70,7 +70,7 @@
     "devDependencies": {
         "@types/async-lock": "1.4.2",
         "@types/jsonpath": "0.2.4",
-        "@types/mime-types": "2.1.4",
+        "@types/mime-types": "3.0.1",
         "@types/sanitize-html": "2.16.0",
         "@types/stream-buffers": "3.0.8",
         "@types/yauzl-promise": "4.0.1",
