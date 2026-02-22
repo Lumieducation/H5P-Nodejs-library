@@ -113,7 +113,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         await cache.updateIfNecessary();
 
-        const translationSpy = jest.fn(
+        const translationSpy = vi.fn(
             (name, language) => `_translated_${name.replace('.', '#')}`
         );
         const repository = new ContentTypeInformationRepository(
@@ -167,7 +167,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
 
         await cache.updateIfNecessary();
 
-        const translationSpy = jest.fn((key: string, language) =>
+        const translationSpy = vi.fn((key: string, language) =>
             key.substr(key.indexOf(':') + 1)
         );
         const repository = new ContentTypeInformationRepository(

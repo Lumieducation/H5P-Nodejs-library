@@ -39,7 +39,7 @@ monorepo is one repository for several packages, which can be found in the
 following cases:
 
 - NPM modules needed for every package are located in the root `package.json`
-  and `node_module` folder. For example, the [jest](https://jestjs.io) testing
+  and `node_module` folder. For example, the [vitest](https://vitest.dev) testing
   framework and `typescript` are used in every package - therefore these are
   made accessible in every package.
 - data used for unit and integration tests that are required by more than one

@@ -8,7 +8,8 @@
         "removeComments": false,
         "sourceMap": true,
         "target": "ES2022",
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true
     },
     "exclude": ["node_modules"],
     "include": ["src/**/*.ts", "src/**/*.tsx"]

@@ -25,7 +25,7 @@ export default function (
         async (req: IRequestWithUser, res) => {
             try {
                 const h5pPage = await h5pPlayer.render(
-                    req.params.contentId,
+                    req.params.contentId as string,
                     req.user,
                     languageOverride === 'auto'
                         ? (req.language ?? 'en')
@@ -80,7 +80,7 @@ export default function (
         '/edit/:contentId',
         async (req: IRequestWithLanguage & IRequestWithUser, res) => {
             const page = await h5pEditor.render(
-                req.params.contentId,
+                req.params.contentId as string,
                 languageOverride === 'auto'
                     ? (req.language ?? 'en')
                     : languageOverride,
@@ -144,17 +144,20 @@ export default function (
 
     router.get('/delete/:contentId', async (req: IRequestWithUser, res) => {
         try {
-            await h5pEditor.deleteContent(req.params.contentId, req.user);
+            await h5pEditor.deleteContent(
+                req.params.contentId as string,
+                req.user
+            );
         } catch (error) {
             res.send(
-                `Error deleting content with id ${req.params.contentId}: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
+                `Error deleting content: ${error.message}<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
             );
             res.status(500).end();
             return;
         }
 
         res.send(
-            `Content ${req.params.contentId} successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
+            `Content successfully deleted.<br/><a href="javascript:window.location=document.referrer">Go Back</a>`
         );
         res.status(200).end();
     });

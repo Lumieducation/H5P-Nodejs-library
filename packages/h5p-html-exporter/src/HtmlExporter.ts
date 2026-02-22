@@ -4,7 +4,7 @@ import postCssUrl from 'postcss-url';
 import postCssImport from 'postcss-import';
 import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
-import uglifyJs from 'uglify-js';
+import { transformSync, transform } from 'esbuild';
 import postCssSafeParser from 'postcss-safe-parser';
 import { readFileSync } from 'fs';
 import upath from 'upath';
@@ -38,17 +38,19 @@ import minimalTemplate from './minimalTemplate';
  * are some libraries (the H5P.SoundJS library used by single choice set) that
  * can't be modified that way.
  */
-const getLibraryFilePathOverrideScript = uglifyJs.minify(
+const getLibraryFilePathOverrideScript = transformSync(
     readFileSync(path.join(__dirname, 'loadFileOverrides.js'), {
         encoding: 'utf8'
-    })
+    }),
+    { minify: true, loader: 'js' }
 ).code;
 
-const getContentPathOverrideScript = uglifyJs.minify(
+const getContentPathOverrideScript = transformSync(
     `H5P.getPath = function (path, contentId) {
         return path;
     };
-    `
+    `,
+    { minify: true, loader: 'js' }
 ).code;
 
 export type IExporterTemplate = (
@@ -79,7 +81,7 @@ export type IExporterTemplate = (
  * full license text).
  *
  * (important!) You need to install these NPM packages for the exporter to work:
- * postcss, postcss-clean, postcss-url, postcss-safe-parser, uglify-js
+ * postcss, postcss-clean, postcss-url, postcss-safe-parser, esbuild
  */
 
 export default class HtmlExporter {
@@ -92,6 +94,8 @@ export default class HtmlExporter {
      * @param editorFilePath the path on the local filesystem at which the H5P
      * editor files can be found. (Should contain the scripts, styles and
      * ckeditor directories).
+     * @param template an optional custom template function
+     * @param translationFunction an optional translation function
      */
     constructor(
         protected libraryStorage: ILibraryStorage,
@@ -281,7 +285,7 @@ export default class HtmlExporter {
      * @param editor
      * @param library
      * @returns a multi-line comment with the license information. The comment
-     * is marked as important and includes @license so that uglify-js and
+     * is marked as important and includes @license so that esbuild and
      * postcss-clean leave it in.
      */
     private async generateLicenseText(
@@ -434,10 +438,13 @@ export default class HtmlExporter {
             .map((script) => texts[script])
             .concat(additionalScripts);
 
-        return uglifyJs.minify(scripts, {
-            output: { comments: 'some' },
-            module: false
-        }).code;
+        return (
+            await transform(scripts.join('\n'), {
+                minify: true,
+                legalComments: 'inline',
+                loader: 'js'
+            })
+        ).code;
     }
 
     /**
@@ -766,6 +773,7 @@ export default class HtmlExporter {
                 model.dependencies,
                 usedFiles
             );
+
             // If there are files in the directory of a library that haven't been
             // included in the bundle yet, we add those as base64 encoded variables
             // and rewire H5P.ContentType.getLibraryFilePath to return these files

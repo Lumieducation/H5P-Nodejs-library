@@ -133,7 +133,7 @@ describe('package importer', () => {
 
                 // Check if image can be read
                 const mockWriteStream = new BufferWritableMock();
-                const onFinish = jest.fn();
+                const onFinish = vi.fn();
                 mockWriteStream.on('finish', onFinish);
                 await promisepipe(fileStream, mockWriteStream);
                 expect(onFinish).toHaveBeenCalled();
@@ -220,10 +220,7 @@ describe('package importer', () => {
                         return { result: MalwareScanResult.Clean };
                     }
                 };
-                const malwareScannerSpy = jest.spyOn(
-                    mockMalwareScanner,
-                    'scan'
-                );
+                const malwareScannerSpy = vi.spyOn(mockMalwareScanner, 'scan');
                 const packageImporter = new PackageImporter(
                     libraryManager,
                     new H5PConfig(null),

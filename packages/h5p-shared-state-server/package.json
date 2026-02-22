@@ -7,7 +7,7 @@
     "scripts": {
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "tsc -p ./tsconfig.build.json",
-        "test": "jest"
+        "test": "vitest run --config vitest.config.ts"
     },
     "author": "S. Rettig",
     "license": "GPL-3.0",

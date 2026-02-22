@@ -12,6 +12,7 @@
         "baseUrl": "./",
         "resolveJsonModule": true,
         "declaration": true,
+        "skipLibCheck": true
     },
     "exclude": ["node_modules"]
 }
