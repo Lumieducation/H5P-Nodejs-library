@@ -178,7 +178,7 @@ describe('FileContentStorage (repository that saves content objects to a local d
                 ).rejects.toThrow(
                     'storage-file-implementations:illegal-relative-filename'
                 );
-                expect(
+                await expect(
                     storage.getFileStream(id, '../file1.txt', user)
                 ).rejects.toThrow(
                     'storage-file-implementations:illegal-relative-filename'

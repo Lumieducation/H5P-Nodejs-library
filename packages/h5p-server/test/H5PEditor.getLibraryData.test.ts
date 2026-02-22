@@ -583,7 +583,7 @@ describe('aggregating data from library folders for the editor', () => {
                     null
                 );
 
-                expect(
+                await expect(
                     h5pEditor.getLibraryData('Foo', '1', '2')
                 ).rejects.toThrow('library-not-found');
             },
