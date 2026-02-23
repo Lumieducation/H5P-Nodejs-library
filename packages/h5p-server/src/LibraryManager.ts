@@ -396,49 +396,61 @@ export default class LibraryManager {
             patchVersion: newLibraryMetadata.patchVersion
         };
 
+        // Cooperative cancellation: the callback checks this signal at safe
+        // points and cleans up when aborted. This prevents race conditions
+        // when maxOccupationTime is exceeded.
+        const abortController = new AbortController();
+        let callbackFinished = false;
+
         try {
             return await this.lock.acquire(
                 `install-from-directory:${LibraryName.toUberName(newVersion)}`,
                 async () => {
-                    let libraryInstallResult: ILibraryInstallResult = {
-                        type: 'none'
-                    };
+                    try {
+                        let libraryInstallResult: ILibraryInstallResult = {
+                            type: 'none'
+                        };
 
-                    const libraryExists =
-                        await this.libraryExists(newLibraryMetadata);
-                    if (libraryExists) {
-                        // Check if library is already installed.
-                        const oldVersion =
-                            await this.isPatchedLibrary(newLibraryMetadata);
-                        if (oldVersion) {
-                            // Update the library if it is only a patch of an existing library
-                            await this.updateLibrary(
+                        const libraryExists =
+                            await this.libraryExists(newLibraryMetadata);
+                        if (libraryExists) {
+                            // Check if library is already installed.
+                            const oldVersion =
+                                await this.isPatchedLibrary(newLibraryMetadata);
+                            if (oldVersion) {
+                                // Update the library if it is only a patch of an existing library
+                                await this.updateLibrary(
+                                    newLibraryMetadata,
+                                    directory,
+                                    abortController.signal
+                                );
+
+                                libraryInstallResult = {
+                                    newVersion,
+                                    oldVersion,
+                                    type: 'patch'
+                                };
+                            }
+                        } else {
+                            // Install the library if it hasn't been installed before (treat
+                            // different major/minor versions the same as a new library)
+                            await this.installLibrary(
+                                directory,
                                 newLibraryMetadata,
-                                directory
+                                restricted,
+                                abortController.signal
                             );
 
                             libraryInstallResult = {
                                 newVersion,
-                                oldVersion,
-                                type: 'patch'
+                                type: 'new'
                             };
                         }
-                    } else {
-                        // Install the library if it hasn't been installed before (treat
-                        // different major/minor versions the same as a new library)
-                        await this.installLibrary(
-                            directory,
-                            newLibraryMetadata,
-                            restricted
-                        );
 
-                        libraryInstallResult = {
-                            newVersion,
-                            type: 'new'
-                        };
+                        return libraryInstallResult;
+                    } finally {
+                        callbackFinished = true;
                     }
-
-                    return libraryInstallResult;
                 },
                 {
                     timeout: this.config.installLibraryLockTimeout,
@@ -449,17 +461,28 @@ export default class LibraryManager {
         } catch (error) {
             const ubername = LibraryName.toUberName(newLibraryMetadata);
             if (error.message == 'occupation-time-exceeded') {
-                log.error(
-                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting library.`
-                );
-                const libraryName = LibraryName.fromUberName(ubername);
-                try {
-                    await this.libraryStorage.deleteLibrary(libraryName);
-                } catch (error) {
+                // Signal the callback to abort and clean up
+                abortController.abort();
+
+                // Wait for the callback to finish (with a safety timeout)
+                const waitStart = Date.now();
+                const maxWaitTime = 30000; // 30 seconds max wait
+                while (
+                    !callbackFinished &&
+                    Date.now() - waitStart < maxWaitTime
+                ) {
+                    await new Promise((resolve) => setTimeout(resolve, 100));
+                }
+
+                if (!callbackFinished) {
                     log.error(
-                        `Failed to delete library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
+                        `The callback for library ${ubername} did not finish within ${maxWaitTime}ms after abort signal. Manual cleanup may be required.`
                     );
                 }
+
+                log.error(
+                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
+                );
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
@@ -796,13 +819,15 @@ export default class LibraryManager {
      * @param libraryMetadata the library metadata
      * @param restricted true if the library can only be installed with a
      * special permission
+     * @param abortSignal optional signal for cooperative cancellation
      * @returns the library object (containing - among others - the id of the
      * newly installed library)
      */
     private async installLibrary(
         fromDirectory: string,
         libraryMetadata: ILibraryMetadata,
-        restricted: boolean
+        restricted: boolean,
+        abortSignal?: AbortSignal
     ): Promise<IInstalledLibrary> {
         log.info(
             `installing library ${LibraryName.toUberName(
@@ -816,24 +841,52 @@ export default class LibraryManager {
             return await this.lock.acquire(
                 `install-library:${ubername}`,
                 async () => {
+                    // Check before starting
+                    await this.checkAbortAndCleanupDuringInstallLibrary(
+                        ubername,
+                        libraryMetadata,
+                        false,
+                        abortSignal
+                    );
+
                     const newLibraryInfo = await this.libraryStorage.addLibrary(
                         libraryMetadata,
                         restricted
                     );
 
                     try {
+                        // Check after adding library metadata
+                        await this.checkAbortAndCleanupDuringInstallLibrary(
+                            ubername,
+                            libraryMetadata,
+                            true,
+                            abortSignal
+                        );
+
                         await this.copyLibraryFiles(
                             fromDirectory,
                             newLibraryInfo
                         );
+
+                        // Check after copying files
+                        await this.checkAbortAndCleanupDuringInstallLibrary(
+                            ubername,
+                            libraryMetadata,
+                            true,
+                            abortSignal
+                        );
+
                         await this.checkConsistency(libraryMetadata);
                     } catch (error) {
-                        log.error(
-                            `There was a consistency error when installing library ${ubername}. Reverting installation.`
-                        );
-                        await this.libraryStorage.deleteLibrary(
-                            libraryMetadata
-                        );
+                        // Don't log/cleanup twice if it was an abort
+                        if (error.message !== 'aborted') {
+                            log.error(
+                                `There was a consistency error when installing library ${ubername}. Reverting installation.`
+                            );
+                            await this.libraryStorage.deleteLibrary(
+                                libraryMetadata
+                            );
+                        }
                         throw error;
                     }
                     log.debug(
@@ -850,18 +903,16 @@ export default class LibraryManager {
                 }
             );
         } catch (error) {
+            // If aborted, just re-throw - cleanup was handled inside the callback
+            if (error.message === 'aborted') {
+                throw error;
+            }
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting library.`
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
                 );
-                const libraryName = LibraryName.fromUberName(ubername);
-                try {
-                    await this.libraryStorage.deleteLibrary(libraryName);
-                } catch (error) {
-                    log.error(
-                        `Failed to delete library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
-                    );
-                }
+                // Note: We don't delete here anymore - the callback handles
+                // its own cleanup when it detects the abort signal
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
@@ -889,39 +940,130 @@ export default class LibraryManager {
     }
 
     /**
+     * Helper to check abort signal and clean up if aborted during library installation.
+     * @param ubername the ubername of the library
+     * @param libraryMetadata the library metadata
+     * @param shouldDeleteLibrary whether to delete the library if aborted
+     * @param abortSignal optional signal for cooperative cancellation
+     */
+    private async checkAbortAndCleanupDuringInstallLibrary(
+        ubername: string,
+        libraryMetadata: ILibraryMetadata,
+        shouldDeleteLibrary: boolean,
+        abortSignal?: AbortSignal
+    ): Promise<void> {
+        if (abortSignal?.aborted) {
+            log.info(
+                `Installation of library ${ubername} was aborted. Cleaning up.`
+            );
+            if (shouldDeleteLibrary) {
+                try {
+                    await this.libraryStorage.deleteLibrary(libraryMetadata);
+                } catch (cleanupError) {
+                    log.error(
+                        `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
+                    );
+                }
+            }
+            throw new Error('aborted');
+        }
+    }
+
+    /**
      * Updates the library to a new version. REMOVES THE LIBRARY IF THERE IS AN
      * ERROR!!!
+     * @param libraryMetadata the library metadata (library.json)
      * @param filesDirectory the path of the directory containing the library
      * files to update to
-     * @param library the library object
-     * @param newLibraryMetadata the library metadata (library.json)
+     * @param abortSignal optional signal for cooperative cancellation
      */
     private async updateLibrary(
-        newLibraryMetadata: ILibraryMetadata,
-        filesDirectory: string
+        libraryMetadata: ILibraryMetadata,
+        filesDirectory: string,
+        abortSignal?: AbortSignal
     ): Promise<any> {
+        const ubername = LibraryName.toUberName(libraryMetadata);
+
         try {
+            // Check before starting
+            await this.checkAbortAndCleanupDuringUpdateLibrary(
+                ubername,
+                libraryMetadata,
+                abortSignal
+            );
+
             log.info(
                 `updating library ${LibraryName.toUberName(
-                    newLibraryMetadata
+                    libraryMetadata
                 )} in ${filesDirectory}`
             );
-            await this.libraryStorage.updateLibrary(newLibraryMetadata);
+            await this.libraryStorage.updateLibrary(libraryMetadata);
+
+            // Check after updating metadata
+            await this.checkAbortAndCleanupDuringUpdateLibrary(
+                ubername,
+                libraryMetadata,
+                abortSignal
+            );
+
             log.info(
                 `clearing library ${LibraryName.toUberName(
-                    newLibraryMetadata
+                    libraryMetadata
                 )} from files`
             );
-            await this.libraryStorage.clearFiles(newLibraryMetadata);
-            await this.copyLibraryFiles(filesDirectory, newLibraryMetadata);
-            await this.checkConsistency(newLibraryMetadata);
-        } catch (error) {
-            log.error(error);
-            log.info(
-                `removing library ${LibraryName.toUberName(newLibraryMetadata)}`
+            await this.libraryStorage.clearFiles(libraryMetadata);
+
+            // Check after clearing files
+            await this.checkAbortAndCleanupDuringUpdateLibrary(
+                ubername,
+                libraryMetadata,
+                abortSignal
             );
-            await this.libraryStorage.deleteLibrary(newLibraryMetadata);
+
+            await this.copyLibraryFiles(filesDirectory, libraryMetadata);
+
+            // Check after copying files
+            await this.checkAbortAndCleanupDuringUpdateLibrary(
+                ubername,
+                libraryMetadata,
+                abortSignal
+            );
+
+            await this.checkConsistency(libraryMetadata);
+        } catch (error) {
+            // Don't log/cleanup twice if it was an abort
+            if (error.message !== 'aborted') {
+                log.error(error);
+                log.info(
+                    `removing library ${LibraryName.toUberName(libraryMetadata)}`
+                );
+                await this.libraryStorage.deleteLibrary(libraryMetadata);
+            }
             throw error;
+        }
+    }
+
+    /**
+     * Helper to check abort signal and clean up if aborted during library update.
+     * @param ubername the ubername of the library
+     * @param libraryMetadata the library metadata
+     * @param abortSignal optional signal for cooperative cancellation
+     */
+    private async checkAbortAndCleanupDuringUpdateLibrary(
+        ubername: string,
+        libraryMetadata: ILibraryMetadata,
+        abortSignal?: AbortSignal
+    ): Promise<void> {
+        if (abortSignal?.aborted) {
+            log.info(`Update of library ${ubername} was aborted. Cleaning up.`);
+            try {
+                await this.libraryStorage.deleteLibrary(libraryMetadata);
+            } catch (cleanupError) {
+                log.error(
+                    `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
+                );
+            }
+            throw new Error('aborted');
         }
     }
 
