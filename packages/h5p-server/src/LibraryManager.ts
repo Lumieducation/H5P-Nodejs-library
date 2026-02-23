@@ -453,7 +453,13 @@ export default class LibraryManager {
                     `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
                 );
                 const libraryName = LibraryName.fromUberName(ubername);
-                await this.libraryStorage.deleteLibrary(libraryName);
+                try {
+                    await this.libraryStorage.deleteLibrary(libraryName);
+                } catch (error) {
+                    log.error(
+                        `Failed to revert installation of library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
+                    );
+                }
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
@@ -849,7 +855,13 @@ export default class LibraryManager {
                     `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
                 );
                 const libraryName = LibraryName.fromUberName(ubername);
-                await this.libraryStorage.deleteLibrary(libraryName);
+                try {
+                    await this.libraryStorage.deleteLibrary(libraryName);
+                } catch (error) {
+                    log.error(
+                        `Failed to revert installation of library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
+                    );
+                }
                 throw new H5pError(
                     'server:install-library-lock-max-time-exceeded',
                     {
