@@ -26,12 +26,12 @@
     "dependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
         "dompurify": "^3.2.3",
-        "jsdom": "^26.0.0"
+        "jsdom": "^28.0.0"
     },
     "main": "./build/SvgSanitizer.js",
     "types": "./build/SvgSanitizer.d.ts",
     "devDependencies": {
-        "@types/jsdom": "^27.0.0",
+        "@types/jsdom": "^28.0.0",
         "tmp-promise": "^3.0.3"
     },
     "files": [
