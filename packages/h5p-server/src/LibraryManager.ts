@@ -57,6 +57,7 @@ export default class LibraryManager {
      * single-process lock mechanism will be used. If the library is used within
      * a multi-process or cluster setup, it is necessary to pass in a
      * distributed locking implementation.
+     * @param config (optional) configuration for the library installation lock.
      */
     constructor(
         public libraryStorage: ILibraryStorage,
@@ -320,7 +321,7 @@ export default class LibraryManager {
 
     /**
      * Returns the content of semantics.json for the specified library.
-     * @param library
+     * @param library the library for which the semantics should be retrieved
      * @returns the content of semantics.json
      */
     public async getSemantics(
@@ -377,6 +378,8 @@ export default class LibraryManager {
      * installed.
      * @param directory The path to the temporary directory that contains the
      * library files (the root directory that includes library.json)
+     * @param restricted true if the library can only be installed with a special
+     * permission
      * @returns a structure telling if a library was newly installed, updated or
      * nothing happened (e.g. because there already is a newer patch version
      * installed).
@@ -387,13 +390,13 @@ export default class LibraryManager {
     ): Promise<ILibraryInstallResult> {
         log.info(`installing from directory ${directory}`);
 
-        const newLibraryMetadata =
+        const libraryMetadata =
             await this.readLibraryMetadataFromDirectory(directory);
         const newVersion = {
-            machineName: newLibraryMetadata.machineName,
-            majorVersion: newLibraryMetadata.majorVersion,
-            minorVersion: newLibraryMetadata.minorVersion,
-            patchVersion: newLibraryMetadata.patchVersion
+            machineName: libraryMetadata.machineName,
+            majorVersion: libraryMetadata.majorVersion,
+            minorVersion: libraryMetadata.minorVersion,
+            patchVersion: libraryMetadata.patchVersion
         };
 
         // Cooperative cancellation: the callback checks this signal at safe
@@ -412,15 +415,15 @@ export default class LibraryManager {
                         };
 
                         const libraryExists =
-                            await this.libraryExists(newLibraryMetadata);
+                            await this.libraryExists(libraryMetadata);
                         if (libraryExists) {
                             // Check if library is already installed.
                             const oldVersion =
-                                await this.isPatchedLibrary(newLibraryMetadata);
+                                await this.isPatchedLibrary(libraryMetadata);
                             if (oldVersion) {
                                 // Update the library if it is only a patch of an existing library
                                 await this.updateLibrary(
-                                    newLibraryMetadata,
+                                    libraryMetadata,
                                     directory,
                                     abortController.signal
                                 );
@@ -436,7 +439,7 @@ export default class LibraryManager {
                             // different major/minor versions the same as a new library)
                             await this.installLibrary(
                                 directory,
-                                newLibraryMetadata,
+                                libraryMetadata,
                                 restricted,
                                 abortController.signal
                             );
@@ -459,7 +462,7 @@ export default class LibraryManager {
                 }
             );
         } catch (error) {
-            const ubername = LibraryName.toUberName(newLibraryMetadata);
+            const ubername = LibraryName.toUberName(libraryMetadata);
             if (error.message == 'occupation-time-exceeded') {
                 // Signal the callback to abort and clean up
                 abortController.abort();
@@ -560,9 +563,8 @@ export default class LibraryManager {
     /**
      * Check if the library contains a file
      * @param library The library to check
-     * @param filename
-     * @return {Promise<boolean>} true if file exists in library, false
-     * otherwise
+     * @param filename the path of the file to check for
+     * @return true if file exists in library, false otherwise
      */
     public async libraryFileExists(
         library: ILibraryName,
@@ -671,7 +673,7 @@ export default class LibraryManager {
 
     /**
      * Gets a list of translations that exist for this library.
-     * @param library
+     * @param library the library for which the languages should be listed
      * @returns the language codes for translations of this library
      */
     public async listLanguages(library: ILibraryName): Promise<string[]> {
@@ -785,7 +787,6 @@ export default class LibraryManager {
      * storage. Throws errors if something went wrong.
      * @param fromDirectory The directory to copy from
      * @param libraryInfo the library object
-     * @returns
      */
     private async copyLibraryFiles(
         fromDirectory: string,
@@ -815,11 +816,10 @@ export default class LibraryManager {
      * Installs a library and rolls back changes if the library installation
      * failed. Throws errors if something went wrong.
      * @param fromDirectory the local directory to install from
-     * @param libraryInfo the library object
      * @param libraryMetadata the library metadata
      * @param restricted true if the library can only be installed with a
      * special permission
-     * @param abortSignal optional signal for cooperative cancellation
+     * @param abortSignal (optional) signal for cooperative cancellation
      * @returns the library object (containing - among others - the id of the
      * newly installed library)
      */
@@ -849,7 +849,7 @@ export default class LibraryManager {
                         abortSignal
                     );
 
-                    const newLibraryInfo = await this.libraryStorage.addLibrary(
+                    const libraryInfo = await this.libraryStorage.addLibrary(
                         libraryMetadata,
                         restricted
                     );
@@ -863,10 +863,7 @@ export default class LibraryManager {
                             abortSignal
                         );
 
-                        await this.copyLibraryFiles(
-                            fromDirectory,
-                            newLibraryInfo
-                        );
+                        await this.copyLibraryFiles(fromDirectory, libraryInfo);
 
                         // Check after copying files
                         await this.checkAbortAndCleanupDuringInstallLibrary(
@@ -894,7 +891,7 @@ export default class LibraryManager {
                             libraryMetadata
                         )} successfully installed.`
                     );
-                    return newLibraryInfo;
+                    return libraryInfo;
                 },
                 {
                     timeout: this.config.installLibraryLockTimeout,
@@ -944,7 +941,7 @@ export default class LibraryManager {
      * @param ubername the ubername of the library
      * @param libraryMetadata the library metadata
      * @param shouldDeleteLibrary whether to delete the library if aborted
-     * @param abortSignal optional signal for cooperative cancellation
+     * @param abortSignal (optional) signal for cooperative cancellation
      */
     private async checkAbortAndCleanupDuringInstallLibrary(
         ubername: string,
@@ -975,13 +972,13 @@ export default class LibraryManager {
      * @param libraryMetadata the library metadata (library.json)
      * @param filesDirectory the path of the directory containing the library
      * files to update to
-     * @param abortSignal optional signal for cooperative cancellation
+     * @param abortSignal (optional) signal for cooperative cancellation
      */
     private async updateLibrary(
         libraryMetadata: ILibraryMetadata,
         filesDirectory: string,
         abortSignal?: AbortSignal
-    ): Promise<any> {
+    ): Promise<void> {
         const ubername = LibraryName.toUberName(libraryMetadata);
 
         try {
@@ -1047,7 +1044,7 @@ export default class LibraryManager {
      * Helper to check abort signal and clean up if aborted during library update.
      * @param ubername the ubername of the library
      * @param libraryMetadata the library metadata
-     * @param abortSignal optional signal for cooperative cancellation
+     * @param abortSignal (optional) signal for cooperative cancellation
      */
     private async checkAbortAndCleanupDuringUpdateLibrary(
         ubername: string,
@@ -1067,6 +1064,12 @@ export default class LibraryManager {
         }
     }
 
+    /**
+     * Get the content of the language file for the specified library and language.
+     * @param library the library for which the language should be retrieved
+     * @param language the language code
+     * @returns the language file as a string
+     */
     private async getLanguageWithoutFallback(
         library: ILibraryName,
         language: string
@@ -1096,6 +1099,11 @@ export default class LibraryManager {
         return languageFileAsString;
     }
 
+    /**
+     * Read the library metadata from the specified directory.
+     * @param directory the directory from which to read the library metadata
+     * @returns the library metadata
+     */
     private async readLibraryMetadataFromDirectory(
         directory: string
     ): Promise<ILibraryMetadata> {
