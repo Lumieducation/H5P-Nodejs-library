@@ -450,14 +450,14 @@ export default class LibraryManager {
             const ubername = LibraryName.toUberName(newLibraryMetadata);
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
+                    `The installation of the library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting library.`
                 );
                 const libraryName = LibraryName.fromUberName(ubername);
                 try {
                     await this.libraryStorage.deleteLibrary(libraryName);
                 } catch (error) {
                     log.error(
-                        `Failed to revert installation of library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
+                        `Failed to delete library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
                     );
                 }
                 throw new H5pError(
@@ -852,14 +852,14 @@ export default class LibraryManager {
         } catch (error) {
             if (error.message == 'occupation-time-exceeded') {
                 log.error(
-                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Reverting installation.`
+                    `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms. Deleting library.`
                 );
                 const libraryName = LibraryName.fromUberName(ubername);
                 try {
                     await this.libraryStorage.deleteLibrary(libraryName);
                 } catch (error) {
                     log.error(
-                        `Failed to revert installation of library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
+                        `Failed to delete library ${ubername} after occupation time exceeded. Manual cleanup might be necessary! Error: ${error.message}`
                     );
                 }
                 throw new H5pError(
