@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ContentScanner aborts scanning when requested 1`] = `
+exports[`ContentScanner > aborts scanning when requested 1`] = `
 [
   "$.a11yCheck",
   "$.a11yCheckingModeHeader",
@@ -41,7 +41,7 @@ exports[`ContentScanner aborts scanning when requested 1`] = `
 ]
 `;
 
-exports[`ContentScanner scans the semantic structure of H5P.Blanks example 1`] = `
+exports[`ContentScanner > scans the semantic structure of H5P.Blanks example 1`] = `
 [
   "$.a11yCheck",
   "$.a11yCheckingModeHeader",

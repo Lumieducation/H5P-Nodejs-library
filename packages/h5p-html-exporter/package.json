@@ -11,8 +11,8 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "npx tsc -p ./tsconfig.build.json && cp src/*.js build",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "test:watch": "jest --watch",
-        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test:watch": "vitest --config vitest.config.ts",
+        "test": "vitest run --config vitest.config.ts"
     },
     "release": {
         "branch": "master"
@@ -44,20 +44,19 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "mime-types": "^2.1.35",
+        "esbuild": "^0.27.0",
+        "mime-types": "^3.0.0",
         "postcss": "^8.4.23",
         "postcss-clean": "^1.2.2",
         "postcss-import": "^16.0.0",
         "postcss-safe-parser": "^7.0.0",
         "postcss-url": "^10.1.3",
-        "uglify-js": "^3.19.3",
         "upath": "^2.0.1"
     },
     "main": "./build/HtmlExporter.js",
     "types": "./build/HtmlExporter.d.ts",
     "devDependencies": {
         "@types/postcss-import": "^14.0.0",
-        "@types/uglify-js": "^3.17.5",
         "promisepipe": "3.0.0",
         "puppeteer": "^24.16.2",
         "tmp-promise": "3.0.3"

@@ -1,8 +1,8 @@
 import * as puppeteer from 'puppeteer';
 import * as path from 'path';
-import { withDir, withFile } from 'tmp-promise';
+import { dir, withDir, withFile } from 'tmp-promise';
 import promisePipe from 'promisepipe';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { createWriteStream, readdirSync } from 'fs';
 
 import ContentManager from '../../h5p-server/src/ContentManager';
@@ -18,129 +18,79 @@ import { LaissezFairePermissionSystem } from '../../h5p-server';
 
 import User from './User';
 
-let browser: puppeteer.Browser;
-let page: puppeteer.Page;
-
-async function importAndExportHtml(
-    packagePath: string,
-    mode: 'singleBundle' | 'externalContentResources'
-): Promise<void> {
-    await withDir(
-        async ({ path: tmpDirPath }) => {
-            const contentDir = path.join(tmpDirPath, 'content');
-            const libraryDir = path.join(tmpDirPath, 'libraries');
-            await mkdir(contentDir, { recursive: true });
-            await mkdir(libraryDir, { recursive: true });
-
-            const user = new User();
-
-            const contentStorage = new FileContentStorage(contentDir);
-            const contentManager = new ContentManager(
-                contentStorage,
-                new LaissezFairePermissionSystem()
-            );
-            const libraryStorage = new FileLibraryStorage(libraryDir);
-            const libraryManager = new LibraryManager(libraryStorage);
-            const config = new H5PConfig(null);
-
-            const packageImporter = new PackageImporter(
-                libraryManager,
-                config,
-                new LaissezFairePermissionSystem(),
-                contentManager,
-                new ContentStorer(contentManager, libraryManager, undefined)
-            );
-
-            const htmlExporter = new HtmlExporter(
-                libraryStorage,
-                contentStorage,
-                config,
-                path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
-                path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`)
-            );
-            const contentId = (
-                await packageImporter.addPackageLibrariesAndContent(
-                    packagePath,
-                    user
-                )
-            ).id;
-            if (mode === 'singleBundle') {
-                const exportedHtml = await htmlExporter.createSingleBundle(
-                    contentId,
-                    user
-                );
-                await withFile(
-                    async (result) => {
-                        await writeFile(result.path, exportedHtml);
-                        await page.goto(`file://${result.path}`, {
-                            waitUntil: ['networkidle0', 'load'],
-                            timeout: 30000
-                        });
-                    },
-                    {
-                        keep: false,
-                        postfix: '.html'
-                    }
-                );
-            } else if (mode === 'externalContentResources') {
-                const res =
-                    await htmlExporter.createBundleWithExternalContentResources(
-                        contentId,
-                        user,
-                        contentId.toString()
-                    );
-                await withDir(
-                    async (result) => {
-                        await mkdir(result.path, { recursive: true });
-                        await writeFile(
-                            path.join(result.path, `${contentId}.html`),
-                            res.html
-                        );
-                        for (const f of res.contentFiles) {
-                            try {
-                                const tempFilePath = path.join(
-                                    result.path,
-                                    contentId.toString(),
-                                    f
-                                );
-                                await mkdir(path.dirname(tempFilePath), {
-                                    recursive: true
-                                });
-                                const writer = createWriteStream(tempFilePath);
-                                const readable =
-                                    await contentStorage.getFileStream(
-                                        contentId,
-                                        f,
-                                        user
-                                    );
-                                await promisePipe(readable, writer);
-                                writer.close();
-                            } catch {
-                                // We silently ignore errors here as there is
-                                // some example content with invalid file
-                                // references.
-                            }
-                        }
-                        await page.goto(
-                            `file://${result.path}/${contentId}.html`,
-                            {
-                                waitUntil: ['networkidle0', 'load'],
-                                timeout: 30000
-                            }
-                        );
-                    },
-                    {
-                        keep: false,
-                        unsafeCleanup: true
-                    }
-                );
-            }
-        },
-        { keep: false, unsafeCleanup: true }
+const hubContentDirectory = path.resolve(
+    `${__dirname}/../../../test/data/hub-content/`
+);
+let h5pFiles: string[];
+try {
+    h5pFiles = readdirSync(hubContentDirectory).filter((f) =>
+        f.endsWith('.h5p')
+    );
+} catch {
+    throw new Error(
+        "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
     );
 }
+
+const corePath = path.resolve(`${__dirname}/../../h5p-examples/h5p/core`);
+const editorPath = path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`);
+
 describe('HtmlExporter', () => {
+    let browser: puppeteer.Browser;
+    let page: puppeteer.Page;
+    let sharedLibraryDir: string;
+    let sharedLibraryStorage: FileLibraryStorage;
+    let sharedLibraryManager: LibraryManager;
+    let sharedContentDir: string;
+    let sharedContentStorage: FileContentStorage;
+    let sharedContentManager: ContentManager;
+    let sharedConfig: H5PConfig;
+    let sharedUser: User;
+    let sharedPackageImporter: PackageImporter;
+    let sharedHtmlExporter: HtmlExporter;
+
     beforeAll(async () => {
+        // Create shared library directory to speed things up
+        const libDir = await dir({ unsafeCleanup: true });
+        sharedLibraryDir = libDir.path;
+
+        sharedLibraryStorage = new FileLibraryStorage(sharedLibraryDir);
+        sharedLibraryManager = new LibraryManager(sharedLibraryStorage);
+
+        // Create shared content directory to speed things up
+        const contentDir = await dir({ unsafeCleanup: true });
+        sharedContentDir = contentDir.path;
+
+        sharedContentStorage = new FileContentStorage(sharedContentDir);
+        sharedContentManager = new ContentManager(
+            sharedContentStorage,
+            new LaissezFairePermissionSystem()
+        );
+
+        sharedConfig = new H5PConfig(null);
+        sharedUser = new User();
+
+        sharedPackageImporter = new PackageImporter(
+            sharedLibraryManager,
+            sharedConfig,
+            new LaissezFairePermissionSystem(),
+            sharedContentManager,
+            new ContentStorer(
+                sharedContentManager,
+                sharedLibraryManager,
+                undefined
+            )
+        );
+
+        sharedHtmlExporter = new HtmlExporter(
+            sharedLibraryStorage,
+            sharedContentStorage,
+            sharedConfig,
+            corePath,
+            editorPath
+        );
+
+        // Launch browser
         browser = await puppeteer.launch({
             executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
             headless: true,
@@ -183,36 +133,106 @@ describe('HtmlExporter', () => {
                 );
             }
         });
-    });
+    }, 120000);
 
     afterAll(async () => {
         await page.close();
         await browser.close();
+        await rm(sharedLibraryDir, { recursive: true, force: true });
+        await rm(sharedContentDir, { recursive: true, force: true });
     });
 
-    const directory = path.resolve(
-        `${__dirname}/../../../test/data/hub-content/`
-    );
-    let files;
-    try {
-        files = readdirSync(directory);
-    } catch {
-        throw new Error(
-            "The directory test/data/hub-content does not exist. Execute 'npm run download:content' to fetch example data from the H5P Hub!"
-        );
+    async function importAndExportHtml(
+        packagePath: string,
+        mode: 'singleBundle' | 'externalContentResources'
+    ): Promise<void> {
+        const contentId = (
+            await sharedPackageImporter.addPackageLibrariesAndContent(
+                packagePath,
+                sharedUser
+            )
+        ).id;
+        if (mode === 'singleBundle') {
+            const exportedHtml = await sharedHtmlExporter.createSingleBundle(
+                contentId,
+                sharedUser
+            );
+            await withFile(
+                async (result) => {
+                    await writeFile(result.path, exportedHtml);
+                    await page.goto(`file://${result.path}`, {
+                        waitUntil: ['load'],
+                        timeout: 30000
+                    });
+                },
+                {
+                    keep: false,
+                    postfix: '.html'
+                }
+            );
+        } else if (mode === 'externalContentResources') {
+            const res =
+                await sharedHtmlExporter.createBundleWithExternalContentResources(
+                    contentId,
+                    sharedUser,
+                    contentId.toString()
+                );
+            await withDir(
+                async (result) => {
+                    await mkdir(result.path, { recursive: true });
+                    await writeFile(
+                        path.join(result.path, `${contentId}.html`),
+                        res.html
+                    );
+                    for (const f of res.contentFiles) {
+                        try {
+                            const tempFilePath = path.join(
+                                result.path,
+                                contentId.toString(),
+                                f
+                            );
+                            await mkdir(path.dirname(tempFilePath), {
+                                recursive: true
+                            });
+                            const writer = createWriteStream(tempFilePath);
+                            const readable =
+                                await sharedContentStorage.getFileStream(
+                                    contentId,
+                                    f,
+                                    sharedUser
+                                );
+                            await promisePipe(readable, writer);
+                            writer.close();
+                        } catch {
+                            // We silently ignore errors here as there is
+                            // some example content with invalid file
+                            // references.
+                        }
+                    }
+                    await page.goto(`file://${result.path}/${contentId}.html`, {
+                        waitUntil: ['load'],
+                        timeout: 30000
+                    });
+                },
+                {
+                    keep: false,
+                    unsafeCleanup: true
+                }
+            );
+        }
     }
 
-    for (const file of files.filter((f) => f.endsWith('.h5p'))) {
+    for (const file of h5pFiles) {
         it(`creates html exports (${file})`, async () => {
             await importAndExportHtml(
-                path.join(directory, file),
+                path.join(hubContentDirectory, file),
                 'singleBundle'
             );
         }, 60000);
     }
     it(`creates html exports (H5P.Dialogcards.h5p)`, async () => {
         await importAndExportHtml(
-            path.join(directory, 'H5P.Dialogcards.h5p'),
+            path.join(hubContentDirectory, 'H5P.Dialogcards.h5p'),
             'externalContentResources'
         );
     }, 60000);
@@ -220,59 +240,63 @@ describe('HtmlExporter', () => {
 
 describe('HtmlExporter template', () => {
     it('uses the optional template', async () => {
-        const tmpDirPath = path.join(__dirname, 'data');
-        const contentDir = path.join(tmpDirPath, 'content');
-        const libraryDir = path.join(tmpDirPath, 'libraries');
-        await mkdir(contentDir, { recursive: true });
-        await mkdir(libraryDir, { recursive: true });
+        const tmpDir = await dir({ unsafeCleanup: true });
+        try {
+            const contentDir = path.join(tmpDir.path, 'content');
+            const libraryDir = path.join(tmpDir.path, 'libraries');
+            await mkdir(contentDir, { recursive: true });
+            await mkdir(libraryDir, { recursive: true });
 
-        const user = new User();
+            const user = new User();
 
-        const contentStorage = new FileContentStorage(contentDir);
-        const contentManager = new ContentManager(
-            contentStorage,
-            new LaissezFairePermissionSystem()
-        );
-        const libraryStorage = new FileLibraryStorage(libraryDir);
-        const libraryManager = new LibraryManager(libraryStorage);
-        const config = new H5PConfig(null);
+            const contentStorage = new FileContentStorage(contentDir);
+            const contentManager = new ContentManager(
+                contentStorage,
+                new LaissezFairePermissionSystem()
+            );
+            const libraryStorage = new FileLibraryStorage(libraryDir);
+            const libraryManager = new LibraryManager(libraryStorage);
+            const config = new H5PConfig(null);
 
-        const packageImporter = new PackageImporter(
-            libraryManager,
-            config,
-            new LaissezFairePermissionSystem(),
-            contentManager,
-            new ContentStorer(contentManager, libraryManager, undefined)
-        );
+            const packageImporter = new PackageImporter(
+                libraryManager,
+                config,
+                new LaissezFairePermissionSystem(),
+                contentManager,
+                new ContentStorer(contentManager, libraryManager, undefined)
+            );
 
-        const contentId = (
-            await packageImporter.addPackageLibrariesAndContent(
-                path.resolve(
-                    `${__dirname}/../../../test/data/hub-content/H5P.Accordion.h5p`
-                ),
+            const contentId = (
+                await packageImporter.addPackageLibrariesAndContent(
+                    path.resolve(
+                        `${__dirname}/../../../test/data/hub-content/H5P.Accordion.h5p`
+                    ),
+                    user
+                )
+            ).id;
+
+            const htmlExporter = new HtmlExporter(
+                libraryStorage,
+                contentStorage,
+                config,
+                corePath,
+                editorPath,
+                (
+                    integration: IIntegration,
+                    scriptsBundle: string,
+                    stylesBundle: string,
+                    contentId2: string
+                ) => `${contentId2}`
+            );
+
+            const exportedHtml = await htmlExporter.createSingleBundle(
+                contentId,
                 user
-            )
-        ).id;
+            );
 
-        const htmlExporter = new HtmlExporter(
-            libraryStorage,
-            contentStorage,
-            config,
-            path.resolve(`${__dirname}/../../h5p-examples/h5p/core`),
-            path.resolve(`${__dirname}/../../h5p-examples/h5p/editor`),
-            (
-                integration: IIntegration,
-                scriptsBundle: string,
-                stylesBundle: string,
-                contentId2: string
-            ) => `${contentId2}`
-        );
-
-        const exportedHtml = await htmlExporter.createSingleBundle(
-            contentId,
-            user
-        );
-
-        expect(exportedHtml).toBe(`${contentId}`);
+            expect(exportedHtml).toBe(`${contentId}`);
+        } finally {
+            await tmpDir.cleanup();
+        }
     });
 });

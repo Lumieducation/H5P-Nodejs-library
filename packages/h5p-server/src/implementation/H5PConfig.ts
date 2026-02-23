@@ -31,7 +31,7 @@ export default class H5PConfig implements IH5PConfig {
     public contentHubMetadataRefreshInterval: number = 1 * 1000 * 60 * 60 * 24;
     public contentUserDataUrl: string = '/contentUserData';
     public contentWhitelist: string =
-        'json png jpg jpeg gif bmp tif tiff eot ttf woff woff2 otf webm mp4 ogg mp3 m4a wav txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile vtt webvtt gltf glb';
+        'json png jpg jpeg gif bmp tif tiff webm mp4 ogg mp3 m4a wav vtt webvtt gltf glb txt';
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
         minor: 27
@@ -71,8 +71,8 @@ export default class H5PConfig implements IH5PConfig {
     public fetchingDisabled: 0 | 1 = 0;
     public h5pVersion: string = '1.27.0';
     public hubContentTypesEndpoint: string =
-        'https://api.h5p.org/v1/content-types/';
-    public hubRegistrationEndpoint: string = 'https://api.h5p.org/v1/sites';
+        'https://hub-api.h5p.org/v1/content-types/';
+    public hubRegistrationEndpoint: string = 'https://hub-api.h5p.org/v1/sites';
     public installLibraryLockMaxOccupationTime: number = 10000;
     public installLibraryLockTimeout: number = 20000;
     public contentHubContentEndpoint: string =
@@ -81,7 +81,8 @@ export default class H5PConfig implements IH5PConfig {
         'https://hub-api.h5p.org/v1/metadata';
     public librariesUrl: string = '/libraries';
     public libraryConfig: { [machineName: string]: any };
-    public libraryWhitelist: string = 'js css svg';
+    public libraryWhitelist: string =
+        'js css svg eot ttf woff woff2 otf txt pdf rtf doc docx xls xlsx ppt pptx odt ods odp xml csv diff patch swf md textile';
     public lrsContentTypes: string[] = [
         'H5P.Questionnaire',
         'H5P.FreeTextQuestion'

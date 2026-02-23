@@ -38,7 +38,9 @@ describe('ClamAVScanner', () => {
             const file = createFileFromFilePath(filePath);
             await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
                 result: MalwareScanResult.MalwareFound,
-                viruses: 'Eicar-Test-Signature'
+                viruses: expect.stringMatching(
+                    /(^Win\.Test\.EICAR_HDB-1$)|(^Eicar-Test-Signature$)/
+                )
             });
         });
         it("doesn't break if it is set to non-existent file", async () => {

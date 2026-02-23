@@ -1,30 +1,28 @@
 import { ContentId } from '../../src/types';
 
 let mockData;
-const mock = jest.fn().mockImplementation(() => {
+const mock = vi.fn().mockImplementation(function () {
     return {
-        deleteAllContentUserDataByUser: jest.fn().mockImplementation(() => {
+        deleteAllContentUserDataByUser: vi.fn().mockImplementation(() => {
             return;
         }),
-        deleteAllContentUserDataByContentId: jest
-            .fn()
-            .mockImplementation(() => {
-                return;
-            }),
-        deleteInvalidatedContentUserData: jest.fn().mockImplementation(() => {
+        deleteAllContentUserDataByContentId: vi.fn().mockImplementation(() => {
             return;
         }),
-        getContentUserData: jest.fn().mockImplementation(() => {
+        deleteInvalidatedContentUserData: vi.fn().mockImplementation(() => {
+            return;
+        }),
+        getContentUserData: vi.fn().mockImplementation(() => {
             return 'this is some data';
         }),
-        createOrUpdateContentUserData: jest.fn().mockImplementation(() => {
+        createOrUpdateContentUserData: vi.fn().mockImplementation(() => {
             return;
         }),
-        createOrUpdateFinishedData: jest.fn().mockImplementation(() => {
+        createOrUpdateFinishedData: vi.fn().mockImplementation(() => {
             return;
         }),
         setMockData: (m) => (mockData = m),
-        getContentUserDataByContentIdAndUser: jest
+        getContentUserDataByContentIdAndUser: vi
             .fn()
             .mockImplementation((contentId: ContentId, userId: string) => {
                 return (

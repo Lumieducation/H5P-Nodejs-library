@@ -11,15 +11,15 @@ import FinishedDataExpressRouter from '../src/FinishedDataRouter/FinishedDataExp
 
 // Mock Setup
 const mockReturnData = { userState: 'returndata' };
-const MockContentUserDataManager = jest.fn().mockImplementation(() => {
+const MockContentUserDataManager = vi.fn().mockImplementation(() => {
     return {
-        getContentUserData: jest.fn().mockImplementation(() => {
+        getContentUserData: vi.fn().mockImplementation(() => {
             return mockReturnData;
         }),
-        createOrUpdateContentUserData: jest.fn().mockImplementation(() => {
+        createOrUpdateContentUserData: vi.fn().mockImplementation(() => {
             return '';
         }),
-        setFinished: jest.fn().mockImplementation(() => {
+        setFinished: vi.fn().mockImplementation(() => {
             return '';
         })
     };

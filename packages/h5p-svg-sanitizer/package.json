@@ -11,8 +11,8 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "test:watch": "jest --watch",
-        "test": "jest --runInBand --forceExit"
+        "test:watch": "vitest --config vitest.config.ts",
+        "test": "vitest run --config vitest.config.ts"
     },
     "release": {
         "branch": "master"
@@ -31,7 +31,7 @@
     "main": "./build/SvgSanitizer.js",
     "types": "./build/SvgSanitizer.d.ts",
     "devDependencies": {
-        "@types/jsdom": "^21.1.7",
+        "@types/jsdom": "^27.0.0",
         "tmp-promise": "^3.0.3"
     },
     "files": [

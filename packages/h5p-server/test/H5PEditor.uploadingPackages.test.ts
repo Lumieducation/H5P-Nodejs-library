@@ -71,7 +71,7 @@ describe('H5PEditor', () => {
                     user
                 );
 
-                expect(
+                await expect(
                     temporaryStorage.fileExists(
                         parameters.image.path.substr(
                             0,
@@ -109,8 +109,8 @@ describe('H5PEditor', () => {
                         return FileSanitizerResult.Ignored;
                     }
                 };
-                const spy1 = jest.spyOn(sanitizer1, 'sanitize');
-                const spy2 = jest.spyOn(sanitizer2, 'sanitize');
+                const spy1 = vi.spyOn(sanitizer1, 'sanitize');
+                const spy2 = vi.spyOn(sanitizer2, 'sanitize');
 
                 const { h5pEditor, temporaryStorage } = createH5PEditor(
                     tempDirPath,
@@ -233,14 +233,14 @@ describe('H5PEditor', () => {
                     const files = await temporaryStorage.listFiles(user);
                     expect(files).toHaveLength(2);
 
-                    expect(
+                    await expect(
                         temporaryStorage.fileExists(
                             tmpFilePath1.substr(0, tmpFilePath1.length - 4),
                             user
                         )
                     ).resolves.toEqual(true);
 
-                    expect(
+                    await expect(
                         temporaryStorage.fileExists(
                             tmpFilePath3.substr(0, tmpFilePath3.length - 4),
                             user

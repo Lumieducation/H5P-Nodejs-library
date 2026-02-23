@@ -5,6 +5,7 @@ import path from 'path';
 import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
+import { validateFileContent } from './contentFileValidation';
 import ContentManager from './ContentManager';
 import generateFilename from './helpers/FilenameGenerator';
 import H5pError from './helpers/H5pError';
@@ -233,6 +234,7 @@ export default class ContentStorer {
                         }
                         throw error;
                     }
+                    await validateFileContent(file);
                     await this.sanitizeFile(file);
                     const readStream: Stream = createReadStream(file);
                     const localPath: string = file.substr(contentPathLength);
@@ -334,6 +336,9 @@ export default class ContentStorer {
                 // collector.
                 throw error;
             }
+
+            // Validate that file content matches its claimed extension
+            await validateFileContent(filepath);
 
             // We sanitize the file before copying it to temporary storage. This
             // prevents possible malicious code from being injected into

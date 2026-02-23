@@ -66,11 +66,12 @@ export default class ContentHub {
             }
         }
 
-        const response = await this.httpClient.get(
-            lang
+        try {
+            const url = lang
                 ? `${this.config.contentHubMetadataEndpoint}?lang=${isoLanguage}`
-                : this.config.contentHubMetadataEndpoint,
-            {
+                : this.config.contentHubMetadataEndpoint;
+
+            const response = await this.httpClient.get(url, {
                 headers: lastUpdate
                     ? {
                           'If-Modified-Since': new Date(
@@ -79,28 +80,32 @@ export default class ContentHub {
                       }
                     : undefined,
                 validateStatus: (status) => status === 200 || status === 304
-            }
-        );
+            });
 
-        if (response.status === 304) {
-            log.debug(
-                'The server reported that there was no change in the content hub metadata'
-            );
-            this.storage.save(updateKey, Date.now());
-            const cached = this.storage.load(metadataKey);
-            if (cached) {
-                return cached;
+            if (response.status === 304) {
+                log.debug(
+                    'The server reported that there was no change in the content hub metadata'
+                );
+                this.storage.save(updateKey, Date.now());
+                const cached = this.storage.load(metadataKey);
+                if (cached) {
+                    return cached;
+                }
+                log.error(
+                    'Wanted to use cached content hub metadata, but none was found. Re-fetching from hub.'
+                );
+                const freshResponse = await this.httpClient.get(url);
+                this.storage.save(metadataKey, freshResponse.data);
+                this.storage.save(updateKey, Date.now());
+                return freshResponse.data;
             }
-            log.error(
-                'Wanted to use cached content hub metadata, but none was found.'
-            );
-        }
-        if (response.status === 200) {
+
             log.debug('Received content hub metadata. Storing in cache.');
             this.storage.save(metadataKey, response.data);
             this.storage.save(updateKey, Date.now());
             return response.data;
+        } catch (error) {
+            throw new H5pError('h5p-hub-connection-failed');
         }
-        throw new H5pError('h5p-hub-connection-failed');
     };
 }
