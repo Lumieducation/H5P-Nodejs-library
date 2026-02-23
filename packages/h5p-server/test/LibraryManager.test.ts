@@ -494,7 +494,7 @@ describe('alterLibrarySemantics hook', () => {
             }
         );
 
-        expect(libManager.getSemantics(library)).resolves.toMatchObject([
+        await expect(libManager.getSemantics(library)).resolves.toMatchObject([
             {
                 label: 'Greeting text',
                 name: 'greeting',

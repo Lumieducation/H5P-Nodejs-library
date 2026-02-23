@@ -67,7 +67,7 @@ export function importAndExportPackage(
                         user
                     );
                     await new Promise<void>((resolve, reject) => {
-                        const whenStreamClosed = jest.fn();
+                        const whenStreamClosed = vi.fn();
                         writeStream.on('close', whenStreamClosed);
                         writeStream.on('close', async () => {
                             expect(whenStreamClosed).toHaveBeenCalled();

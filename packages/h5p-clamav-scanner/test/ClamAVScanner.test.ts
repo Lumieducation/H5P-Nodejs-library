@@ -23,7 +23,9 @@ describe('ClamAVScanner', () => {
             clamAVScanner.scan(path.resolve(__dirname, 'eicar.txt'))
         ).resolves.toMatchObject({
             result: MalwareScanResult.MalwareFound,
-            viruses: 'Win.Test.EICAR_HDB-1'
+            viruses: expect.stringMatching(
+                /(^Win\.Test\.EICAR_HDB-1$)|(^Eicar-Test-Signature$)/
+            )
         });
     });
     it("doesn't break if it is set to non-existent file", async () => {

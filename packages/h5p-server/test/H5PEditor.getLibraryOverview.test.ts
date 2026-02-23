@@ -29,7 +29,7 @@ describe('getting overview about multiple libraries', () => {
             ));
 
     it('returns localized titles', async () => {
-        const localizationSpy = jest.fn((key, language) => '_localized_');
+        const localizationSpy = vi.fn((key, language) => '_localized_');
         const editor = new H5PEditor(
             null,
             new H5PConfig(null),
@@ -63,7 +63,7 @@ describe('getting overview about multiple libraries', () => {
     });
 
     it('falls back to default string if no locale was found', async () => {
-        const localizationSpy = jest.fn((key, language) => key);
+        const localizationSpy = vi.fn((key, language) => key);
         const editor = new H5PEditor(
             null,
             new H5PConfig(null),

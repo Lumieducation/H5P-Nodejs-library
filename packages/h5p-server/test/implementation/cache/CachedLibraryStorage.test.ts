@@ -32,7 +32,7 @@ describe('CachedLibraryStorage', () => {
             intermittentFunction?: () => Promise<any>,
             ...functionParameters: any[]
         ): Promise<number> => {
-            const spy = jest.spyOn(uncachedStorage, functionName);
+            const spy = vi.spyOn(uncachedStorage, functionName);
             const result1 = await cachedStorage[functionName].call(
                 cachedStorage,
                 ...functionParameters

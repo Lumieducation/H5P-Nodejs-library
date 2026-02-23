@@ -1,12 +1,12 @@
 version: 2.1
 orbs:
     coveralls: coveralls/coveralls@2.2.5
-    browser-tools: circleci/browser-tools@2.3.1
+    browser-tools: circleci/browser-tools@2.4.0
 
 jobs:
     install-build:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
         resource_class: medium+
         working_directory: /mnt/ramdisk
         steps:
@@ -73,7 +73,7 @@ jobs:
 
     lint:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -83,7 +83,7 @@ jobs:
 
     format:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
         working_directory: /mnt/ramdisk
         steps:
             - checkout
@@ -93,7 +93,7 @@ jobs:
 
     unit-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
               environment:
                   NODE_ENV: development
                   TMPDIR: /mnt/ramdisk
@@ -102,14 +102,14 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --runInBand --collect-coverage
+            - run: npx vitest run --config vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: Unit tests
 
     integration-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-server
@@ -118,21 +118,21 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --config jest.integration.config.js --runInBand --collect-coverage
+            - run: npx vitest run --config vitest.integration.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: Integration tests
 
     clamav-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
               environment:
                   TMPDIR: /mnt/ramdisk
                   CLAMDSCAN_HOST: localhost
                   CLAMDSCAN_PORT: 3310
                   CLAMSCAN_DEBUG_MODE: true
                   COVERALLS_FLAG_NAME: h5p-clamav-scanner
-            - image: clamav/clamav:1.4
+            - image: clamav/clamav:1.5.1-26
         resource_class: medium+
         steps:
             - checkout
@@ -140,25 +140,26 @@ jobs:
                   at: .
             - run: |
                   ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
-                  npx jest --config packages/h5p-clamav-scanner/jest.config.js ---runInBand --collect-coverage
+                  npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
+                  coverage_file: ./packages/h5p-clamav-scanner/coverage/lcov.info
                   flag_name: ClamAV Scanner tests
 
     html-exporter-tests:
         docker:
-            - image: cimg/node:22.19.0-browsers
+            - image: cimg/node:24.13.1-browsers
               environment:
                   TMPDIR: /mnt/ramdisk
                   COVERALLS_FLAG_NAME: h5p-html-exporter
-                  PUPPETEER_EXECUTABLE_PATH : /usr/bin/google-chrome
+                  PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         resource_class: medium+
         steps:
             - browser-tools/install_chrome
             - checkout
             - attach_workspace:
                   at: .
-            - run: npx jest --config packages/h5p-html-exporter/jest.config.js --runInBand --collect-coverage
+            - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
             - coveralls/upload:
                   parallel: true
                   coverage_file: ./packages/h5p-html-exporter/coverage/lcov.info
@@ -166,7 +167,7 @@ jobs:
 
     db-tests:
         docker:
-            - image: cimg/node:22.19.0
+            - image: cimg/node:24.13.1
               environment:
                   COVERALLS_FLAG_NAME: h5p-mongos3
             - image: circleci/mongo:latest
@@ -182,21 +183,21 @@ jobs:
             - checkout
             - attach_workspace:
                   at: .
-            - run: npm run test:h5p-mongos3 -- --collect-coverage
+            - run: npm run test:h5p-mongos3 -- --coverage
             - coveralls/upload:
                   parallel: true
                   flag_name: DB tests
 
     push_coveralls:
         docker:
-            - image: 'cimg/node:22.19.0'
+            - image: 'cimg/node:24.13.1'
         steps:
             - coveralls/upload:
                   parallel_finished: true
 
     release:
         docker:
-            - image: 'cimg/node:22.19.0'
+            - image: 'cimg/node:24.13.1'
         working_directory: /mnt/ramdisk
         steps:
             - checkout

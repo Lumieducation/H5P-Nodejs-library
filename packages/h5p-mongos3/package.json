@@ -11,8 +11,8 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "test:watch": "jest --watch",
-        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test:watch": "vitest --config vitest.config.ts",
+        "test": "vitest run --config vitest.config.ts"
     },
     "release": {
         "branch": "master"
@@ -46,14 +46,14 @@
         "@aws-sdk/client-s3": "^3.758.0",
         "@aws-sdk/lib-storage": "^3.758.0",
         "@lumieducation/h5p-server": "^10.0.4",
-        "aws-sdk": "2.1692.0",
-        "mongodb": "6.20.0",
+        "aws-sdk": "2.1693.0",
+        "mongodb": "6.21.0",
         "stream-buffers": "^3.0.2"
     },
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
     "devDependencies": {
-        "@types/stream-buffers": "3.0.7",
+        "@types/stream-buffers": "3.0.8",
         "promisepipe": "3.0.0",
         "stream-mock": "2.0.5"
     },

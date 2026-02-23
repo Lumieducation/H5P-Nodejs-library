@@ -1,0 +1,22 @@
+# Vendored frontend libraries (React, FontAwesome, require.js)
+packages/h5p-examples/public/
+
+# H5P PHP-ecosystem core/editor JS (downloaded, not authored here)
+packages/h5p-examples/h5p/
+packages/h5p-rest-example-server/h5p/
+
+# Build output
+**/build/
+**/dist/
+
+# Test fixtures and downloaded data
+test/data/hub-content/
+test/data/hub-content-extracted/
+test/data/content-type-cache/real-content-types.json
+packages/h5p-html-exporter/test/data/content/
+
+# Lock file (use `npm ls` / `npm outdated` CLI instead)
+package-lock.json
+
+# Coverage
+coverage/

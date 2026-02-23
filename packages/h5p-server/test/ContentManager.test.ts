@@ -210,7 +210,7 @@ describe('ContentManager', () => {
                     user
                 );
                 const mockWriteStream1 = new BufferWritableMock();
-                const onFinish1 = jest.fn();
+                const onFinish1 = vi.fn();
                 mockWriteStream1.on('finish', onFinish1);
                 await promisepipe(fileStream, mockWriteStream1);
                 expect(onFinish1).toHaveBeenCalled();

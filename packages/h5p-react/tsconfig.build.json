@@ -9,7 +9,8 @@
         "noImplicitAny": false,
         "removeComments": false,
         "sourceMap": true,
-        "target": "ES2022"
+        "target": "ES2022",
+        "skipLibCheck": true
     },
     "exclude": ["node_modules"],
     "include": ["src/**/*.ts", "src/**/*.tsx"]
