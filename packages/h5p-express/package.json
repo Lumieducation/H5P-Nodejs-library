@@ -11,8 +11,8 @@
         "build:watch": "npx tsc -w -p ./tsconfig.build.json",
         "build": "npx tsc -p ./tsconfig.build.json",
         "clean": "rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "test:watch": "jest --watch",
-        "test": "jest --logHeapUsage --maxWorkers=${BUILD_WORKERS-`nproc`}"
+        "test:watch": "vitest --config vitest.config.ts",
+        "test": "vitest run --config vitest.config.ts"
     },
     "release": {
         "branch": "master"
@@ -53,11 +53,11 @@
         "@types/express-fileupload": "1.5.1",
         "@types/express-serve-static-core": "5.1.0",
         "@types/supertest": "6.0.3",
-        "axios": "1.13.2",
+        "axios": "1.13.5",
         "axios-mock-adapter": "2.1.0",
-        "body-parser": "2.2.1",
+        "body-parser": "2.2.2",
         "express-fileupload": "1.5.2",
-        "supertest": "7.1.4",
+        "supertest": "7.2.2",
         "tmp-promise": "3.0.3"
     },
     "files": [

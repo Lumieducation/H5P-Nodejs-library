@@ -31,7 +31,9 @@ export default class ContentUserDataController {
             return;
         }
 
-        const { contentId, dataType, subContentId } = req.params;
+        const contentId = req.params.contentId as string;
+        const dataType = req.params.dataType as string;
+        const subContentId = req.params.subContentId as string;
         const contextId =
             typeof req.query.contextId === 'string'
                 ? req.query.contextId
@@ -70,7 +72,9 @@ export default class ContentUserDataController {
             return;
         }
 
-        const { contentId, dataType, subContentId } = req.params;
+        const contentId = req.params.contentId as string;
+        const dataType = req.params.dataType as string;
+        const subContentId = req.params.subContentId as string;
         const contextId =
             typeof req.query.contextId === 'string'
                 ? req.query.contextId

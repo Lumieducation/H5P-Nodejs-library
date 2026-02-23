@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Rendering the HTML page includes custom scripts and styles in the generated html 1`] = `
+exports[`Rendering the HTML page > includes custom scripts and styles in the generated html 1`] = `
 "<!doctype html>
 <html class="h5p-iframe">
 <head>
@@ -272,7 +272,7 @@ exports[`Rendering the HTML page includes custom scripts and styles in the gener
 </html>"
 `;
 
-exports[`Rendering the HTML page uses default renderer and integration values 1`] = `
+exports[`Rendering the HTML page > uses default renderer and integration values 1`] = `
 "<!doctype html>
 <html class="h5p-iframe">
 <head>

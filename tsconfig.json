@@ -31,6 +31,7 @@
     "compilerOptions": {
         "outDir": "./build-ide",
         "jsx": "react",
+        "types": ["vitest/globals"],
         "paths": {
             "@lumieducation/h5p-examples": ["packages/h5p-examples/src"],
             "@lumieducation/h5p-express": ["packages/h5p-express/src"],
