@@ -78,6 +78,7 @@ export default class LibraryManager {
         lockProvider?: ILockProvider,
         private config?: {
             installLibraryLockMaxOccupationTime: number;
+            installLibraryLockMaxWaitTime: number;
             installLibraryLockTimeout: number;
         }
     ) {
@@ -97,6 +98,7 @@ export default class LibraryManager {
         if (!this.config) {
             this.config = {
                 installLibraryLockMaxOccupationTime: 10000,
+                installLibraryLockMaxWaitTime: 30000,
                 installLibraryLockTimeout: 120000
             };
         }
@@ -469,17 +471,17 @@ export default class LibraryManager {
 
                 // Wait for the callback to finish (with a safety timeout)
                 const waitStart = Date.now();
-                const maxWaitTime = 30000; // 30 seconds max wait
                 while (
                     !callbackFinished &&
-                    Date.now() - waitStart < maxWaitTime
+                    Date.now() - waitStart <
+                        this.config.installLibraryLockMaxWaitTime
                 ) {
                     await new Promise((resolve) => setTimeout(resolve, 100));
                 }
 
                 if (!callbackFinished) {
                     log.error(
-                        `The callback for library ${ubername} did not finish within ${maxWaitTime}ms after abort signal. Manual cleanup may be required.`
+                        `The callback for library ${ubername} did not finish within ${this.config.installLibraryLockMaxWaitTime}ms after abort signal. Manual cleanup may be required.`
                     );
                 }
 

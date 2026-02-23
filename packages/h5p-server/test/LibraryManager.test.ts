@@ -1,5 +1,5 @@
-import { withDir } from 'tmp-promise';
 import { readdir } from 'fs/promises';
+import { withDir } from 'tmp-promise';
 
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InstalledLibrary from '../src/InstalledLibrary';
@@ -405,6 +405,7 @@ describe('basic file library manager functionality', () => {
                     undefined,
                     {
                         installLibraryLockMaxOccupationTime: 1,
+                        installLibraryLockMaxWaitTime: 50,
                         installLibraryLockTimeout: 50
                     }
                 );
@@ -439,6 +440,7 @@ describe('basic file library manager functionality', () => {
                     undefined,
                     {
                         installLibraryLockMaxOccupationTime: 50,
+                        installLibraryLockMaxWaitTime: 50,
                         installLibraryLockTimeout: 1
                     }
                 );
