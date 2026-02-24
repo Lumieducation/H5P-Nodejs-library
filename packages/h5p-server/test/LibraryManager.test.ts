@@ -5,7 +5,7 @@ import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
 import InstalledLibrary from '../src/InstalledLibrary';
 import LibraryManager from '../src/LibraryManager';
 import LibraryName from '../src/LibraryName';
-import { ILibraryInstallResult } from '../src/types';
+import { ILibraryInstallResult, ILibraryName } from '../src/types';
 
 describe('basic file library manager functionality', () => {
     it('returns the list of installed library in demo directory', async () => {
@@ -520,4 +520,282 @@ describe('alterLibrarySemantics hook', () => {
             }
         ]);
     });
+});
+
+describe('cooperative cancellation and abort behavior', () => {
+    /**
+     * A mock storage that adds configurable delays to operations,
+     * useful for testing timeout and abort scenarios.
+     */
+    class SlowFileLibraryStorage extends FileLibraryStorage {
+        constructor(
+            librariesDirectory: string,
+            private readonly addFileDelay: number = 0,
+            private readonly addLibraryDelay: number = 0
+        ) {
+            super(librariesDirectory);
+        }
+
+        async addFile(
+            library: ILibraryName,
+            filename: string,
+            stream: import('stream').Readable
+        ): Promise<boolean> {
+            if (this.addFileDelay > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, this.addFileDelay)
+                );
+            }
+            return super.addFile(library, filename, stream);
+        }
+
+        async addLibrary(
+            libraryMetadata: import('../src/types').ILibraryMetadata,
+            restricted: boolean = false
+        ): Promise<InstalledLibrary> {
+            if (this.addLibraryDelay > 0) {
+                await new Promise((resolve) =>
+                    setTimeout(resolve, this.addLibraryDelay)
+                );
+            }
+            return super.addLibrary(libraryMetadata, restricted);
+        }
+    }
+
+    it('throws occupation-time-exceeded error when installation takes too long', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // Create a storage with artificial delay in addFile
+                const slowStorage = new SlowFileLibraryStorage(
+                    tempDirPath,
+                    50, // addFile delay
+                    0
+                );
+
+                const libManager = new LibraryManager(
+                    slowStorage,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 10, // Very short timeout
+                        installLibraryLockMaxWaitTime: 500,
+                        installLibraryLockTimeout: 5000
+                    }
+                );
+
+                // This should throw because the addFile delay exceeds maxOccupationTime
+                await expect(
+                    libManager.installFromDirectory(
+                        `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                        false
+                    )
+                ).rejects.toThrow(
+                    'server:install-library-lock-max-time-exceeded'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('cleans up library when installation is aborted via cooperative cancellation', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // Create a storage with delay in addFile to trigger abort
+                const slowStorage = new SlowFileLibraryStorage(
+                    tempDirPath,
+                    100, // addFile delay - long enough to trigger timeout
+                    0
+                );
+
+                const libManager = new LibraryManager(
+                    slowStorage,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 20, // Short timeout
+                        installLibraryLockMaxWaitTime: 1000,
+                        installLibraryLockTimeout: 5000
+                    }
+                );
+
+                // Installation should fail due to timeout
+                await expect(
+                    libManager.installFromDirectory(
+                        `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                        false
+                    )
+                ).rejects.toThrow(
+                    'server:install-library-lock-max-time-exceeded'
+                );
+
+                // Wait a bit for cleanup to complete
+                await new Promise((resolve) => setTimeout(resolve, 200));
+
+                // Verify the library was cleaned up (directory should be empty or not exist)
+                const contents = await readdir(tempDirPath);
+                expect(contents.length).toBe(0);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('waits for callback completion before throwing error using Promise.race', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                let callbackStarted = false;
+                let callbackEnded = false;
+
+                // Create a custom storage that tracks callback lifecycle
+                class TrackingStorage extends FileLibraryStorage {
+                    async addLibrary(
+                        libraryMetadata: import('../src/types').ILibraryMetadata,
+                        restricted: boolean = false
+                    ): Promise<InstalledLibrary> {
+                        callbackStarted = true;
+                        // Simulate some work that takes time
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 100)
+                        );
+                        const result = await super.addLibrary(
+                            libraryMetadata,
+                            restricted
+                        );
+                        callbackEnded = true;
+                        return result;
+                    }
+                }
+
+                const trackingStorage = new TrackingStorage(tempDirPath);
+
+                const libManager = new LibraryManager(
+                    trackingStorage,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 10, // Very short
+                        installLibraryLockMaxWaitTime: 500, // Allow time for callback to finish
+                        installLibraryLockTimeout: 5000
+                    }
+                );
+
+                // Installation should fail
+                await expect(
+                    libManager.installFromDirectory(
+                        `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                        false
+                    )
+                ).rejects.toThrow(
+                    'server:install-library-lock-max-time-exceeded'
+                );
+
+                // The callback should have started
+                expect(callbackStarted).toBe(true);
+
+                // Wait a bit and check that callback completed (Promise.race waited)
+                await new Promise((resolve) => setTimeout(resolve, 300));
+                expect(callbackEnded).toBe(true);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('handles multiple concurrent installations with abort signals correctly', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // Create a storage with slight delay
+                const slowStorage = new SlowFileLibraryStorage(
+                    tempDirPath,
+                    20, // Small delay per file
+                    0
+                );
+
+                const libManager = new LibraryManager(
+                    slowStorage,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 5000, // Reasonable timeout
+                        installLibraryLockMaxWaitTime: 500,
+                        installLibraryLockTimeout: 10000
+                    }
+                );
+
+                // Multiple concurrent installations should work with locking
+                const promises: Promise<ILibraryInstallResult>[] = [];
+                for (let i = 0; i < 5; i++) {
+                    promises.push(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    );
+                }
+
+                // All should resolve (first installs, others detect already installed)
+                const results = await Promise.all(promises);
+
+                // At least one should be 'new', rest should be 'none'
+                const newCount = results.filter((r) => r.type === 'new').length;
+                const noneCount = results.filter(
+                    (r) => r.type === 'none'
+                ).length;
+                expect(newCount).toBe(1);
+                expect(noneCount).toBe(4);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('logs error when callback does not finish within maxWaitTime', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // Create a storage with very long delay that exceeds maxWaitTime
+                const verySlowStorage = new SlowFileLibraryStorage(
+                    tempDirPath,
+                    2000, // Very long delay
+                    0
+                );
+
+                const libManager = new LibraryManager(
+                    verySlowStorage,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    {
+                        installLibraryLockMaxOccupationTime: 10, // Very short
+                        installLibraryLockMaxWaitTime: 100, // Short wait time
+                        installLibraryLockTimeout: 5000
+                    }
+                );
+
+                // Should throw the error even though callback hasn't finished
+                await expect(
+                    libManager.installFromDirectory(
+                        `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                        false
+                    )
+                ).rejects.toThrow(
+                    'server:install-library-lock-max-time-exceeded'
+                );
+
+                // Wait for any background cleanup
+                await new Promise((resolve) => setTimeout(resolve, 2500));
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    }, 10000); // Extended timeout for this test
 });

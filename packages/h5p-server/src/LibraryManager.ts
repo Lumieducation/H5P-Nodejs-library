@@ -5,6 +5,7 @@ import { Readable } from 'stream';
 import upath from 'upath';
 
 import variantEquivalents from '../assets/variantEquivalents.json';
+import AbortedError from './helpers/AbortedErrors';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
@@ -405,7 +406,12 @@ export default class LibraryManager {
         // points and cleans up when aborted. This prevents race conditions
         // when maxOccupationTime is exceeded.
         const abortController = new AbortController();
-        let callbackFinished = false;
+
+        // Promise-based callback completion tracking (avoids busy-wait polling)
+        let resolveCallbackFinished: () => void;
+        const callbackFinishedPromise = new Promise<void>((resolve) => {
+            resolveCallbackFinished = resolve;
+        });
 
         try {
             return await this.lock.acquire(
@@ -454,7 +460,7 @@ export default class LibraryManager {
 
                         return libraryInstallResult;
                     } finally {
-                        callbackFinished = true;
+                        resolveCallbackFinished();
                     }
                 },
                 {
@@ -469,17 +475,19 @@ export default class LibraryManager {
                 // Signal the callback to abort and clean up
                 abortController.abort();
 
-                // Wait for the callback to finish (with a safety timeout)
-                const waitStart = Date.now();
-                while (
-                    !callbackFinished &&
-                    Date.now() - waitStart <
+                // Wait for the callback to finish, with a safety timeout
+                const timeoutPromise = new Promise<'timeout'>((resolve) =>
+                    setTimeout(
+                        () => resolve('timeout'),
                         this.config.installLibraryLockMaxWaitTime
-                ) {
-                    await new Promise((resolve) => setTimeout(resolve, 100));
-                }
+                    )
+                );
+                const result = await Promise.race([
+                    callbackFinishedPromise.then(() => 'finished' as const),
+                    timeoutPromise
+                ]);
 
-                if (!callbackFinished) {
+                if (result === 'timeout') {
                     log.error(
                         `The callback for library ${ubername} did not finish within ${this.config.installLibraryLockMaxWaitTime}ms after abort signal. Manual cleanup may be required.`
                     );
@@ -844,7 +852,7 @@ export default class LibraryManager {
                 `install-library:${ubername}`,
                 async () => {
                     // Check before starting
-                    await this.checkAbortAndCleanupDuringInstallLibrary(
+                    await this.checkAbortAndCleanup(
                         ubername,
                         libraryMetadata,
                         false,
@@ -858,7 +866,7 @@ export default class LibraryManager {
 
                     try {
                         // Check after adding library metadata
-                        await this.checkAbortAndCleanupDuringInstallLibrary(
+                        await this.checkAbortAndCleanup(
                             ubername,
                             libraryMetadata,
                             true,
@@ -868,7 +876,7 @@ export default class LibraryManager {
                         await this.copyLibraryFiles(fromDirectory, libraryInfo);
 
                         // Check after copying files
-                        await this.checkAbortAndCleanupDuringInstallLibrary(
+                        await this.checkAbortAndCleanup(
                             ubername,
                             libraryMetadata,
                             true,
@@ -903,7 +911,7 @@ export default class LibraryManager {
             );
         } catch (error) {
             // If aborted, just re-throw - cleanup was handled inside the callback
-            if (error.message === 'aborted') {
+            if (error instanceof AbortedError) {
                 throw error;
             }
             if (error.message == 'occupation-time-exceeded') {
@@ -939,36 +947,6 @@ export default class LibraryManager {
     }
 
     /**
-     * Helper to check abort signal and clean up if aborted during library installation.
-     * @param ubername the ubername of the library
-     * @param libraryMetadata the library metadata
-     * @param shouldDeleteLibrary whether to delete the library if aborted
-     * @param abortSignal (optional) signal for cooperative cancellation
-     */
-    private async checkAbortAndCleanupDuringInstallLibrary(
-        ubername: string,
-        libraryMetadata: ILibraryMetadata,
-        shouldDeleteLibrary: boolean,
-        abortSignal?: AbortSignal
-    ): Promise<void> {
-        if (abortSignal?.aborted) {
-            log.info(
-                `Installation of library ${ubername} was aborted. Cleaning up.`
-            );
-            if (shouldDeleteLibrary) {
-                try {
-                    await this.libraryStorage.deleteLibrary(libraryMetadata);
-                } catch (cleanupError) {
-                    log.error(
-                        `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
-                    );
-                }
-            }
-            throw new Error('aborted');
-        }
-    }
-
-    /**
      * Updates the library to a new version. REMOVES THE LIBRARY IF THERE IS AN
      * ERROR!!!
      * @param libraryMetadata the library metadata (library.json)
@@ -985,10 +963,12 @@ export default class LibraryManager {
 
         try {
             // Check before starting
-            await this.checkAbortAndCleanupDuringUpdateLibrary(
+            await this.checkAbortAndCleanup(
                 ubername,
                 libraryMetadata,
-                abortSignal
+                false,
+                abortSignal,
+                'update'
             );
 
             log.info(
@@ -999,10 +979,12 @@ export default class LibraryManager {
             await this.libraryStorage.updateLibrary(libraryMetadata);
 
             // Check after updating metadata
-            await this.checkAbortAndCleanupDuringUpdateLibrary(
+            await this.checkAbortAndCleanup(
                 ubername,
                 libraryMetadata,
-                abortSignal
+                true,
+                abortSignal,
+                'update'
             );
 
             log.info(
@@ -1013,19 +995,23 @@ export default class LibraryManager {
             await this.libraryStorage.clearFiles(libraryMetadata);
 
             // Check after clearing files
-            await this.checkAbortAndCleanupDuringUpdateLibrary(
+            await this.checkAbortAndCleanup(
                 ubername,
                 libraryMetadata,
-                abortSignal
+                true,
+                abortSignal,
+                'update'
             );
 
             await this.copyLibraryFiles(filesDirectory, libraryMetadata);
 
             // Check after copying files
-            await this.checkAbortAndCleanupDuringUpdateLibrary(
+            await this.checkAbortAndCleanup(
                 ubername,
                 libraryMetadata,
-                abortSignal
+                true,
+                abortSignal,
+                'update'
             );
 
             await this.checkConsistency(libraryMetadata);
@@ -1043,24 +1029,34 @@ export default class LibraryManager {
     }
 
     /**
-     * Helper to check abort signal and clean up if aborted during library update.
+     * Helper to check abort signal and clean up if aborted during library installation and update.
      * @param ubername the ubername of the library
      * @param libraryMetadata the library metadata
+     * @param shouldDeleteLibrary whether the library should be deleted if aborted
      * @param abortSignal (optional) signal for cooperative cancellation
+     * @param operationType the type of the operation (install or update) to determine the log message
      */
-    private async checkAbortAndCleanupDuringUpdateLibrary(
+    private async checkAbortAndCleanup(
         ubername: string,
         libraryMetadata: ILibraryMetadata,
-        abortSignal?: AbortSignal
+        shouldDeleteLibrary: boolean,
+        abortSignal?: AbortSignal,
+        operationType: 'install' | 'update' = 'install'
     ): Promise<void> {
         if (abortSignal?.aborted) {
-            log.info(`Update of library ${ubername} was aborted. Cleaning up.`);
-            try {
-                await this.libraryStorage.deleteLibrary(libraryMetadata);
-            } catch (cleanupError) {
-                log.error(
-                    `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
-                );
+            const action =
+                operationType === 'install' ? 'Installation' : 'Update';
+            log.info(
+                `${action} of library ${ubername} was aborted. Cleaning up.`
+            );
+            if (shouldDeleteLibrary) {
+                try {
+                    await this.libraryStorage.deleteLibrary(libraryMetadata);
+                } catch (cleanupError) {
+                    log.error(
+                        `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
+                    );
+                }
             }
             throw new Error('aborted');
         }
