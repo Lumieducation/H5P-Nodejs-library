@@ -5,7 +5,7 @@ import { Readable } from 'stream';
 import upath from 'upath';
 
 import variantEquivalents from '../assets/variantEquivalents.json';
-import AbortedError from './helpers/AbortedErrors';
+import AbortedError from './helpers/AbortedError';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import TranslatorWithFallback from './helpers/TranslatorWithFallback';
@@ -886,7 +886,7 @@ export default class LibraryManager {
                         await this.checkConsistency(libraryMetadata);
                     } catch (error) {
                         // Don't log/cleanup twice if it was an abort
-                        if (error.message !== 'aborted') {
+                        if (error instanceof AbortedError) {
                             log.error(
                                 `There was a consistency error when installing library ${ubername}. Reverting installation.`
                             );
@@ -1017,7 +1017,7 @@ export default class LibraryManager {
             await this.checkConsistency(libraryMetadata);
         } catch (error) {
             // Don't log/cleanup twice if it was an abort
-            if (error.message !== 'aborted') {
+            if (error instanceof AbortedError) {
                 log.error(error);
                 log.info(
                     `removing library ${LibraryName.toUberName(libraryMetadata)}`
@@ -1058,7 +1058,7 @@ export default class LibraryManager {
                     );
                 }
             }
-            throw new Error('aborted');
+            throw new AbortedError();
         }
     }
 
