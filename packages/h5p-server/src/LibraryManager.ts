@@ -886,7 +886,7 @@ export default class LibraryManager {
                         await this.checkConsistency(libraryMetadata);
                     } catch (error) {
                         // Don't log/cleanup twice if it was an abort
-                        if (error instanceof AbortedError) {
+                        if (!(error instanceof AbortedError)) {
                             log.error(
                                 `There was a consistency error when installing library ${ubername}. Reverting installation.`
                             );
@@ -1017,7 +1017,7 @@ export default class LibraryManager {
             await this.checkConsistency(libraryMetadata);
         } catch (error) {
             // Don't log/cleanup twice if it was an abort
-            if (error instanceof AbortedError) {
+            if (!(error instanceof AbortedError)) {
                 log.error(error);
                 log.info(
                     `removing library ${LibraryName.toUberName(libraryMetadata)}`
