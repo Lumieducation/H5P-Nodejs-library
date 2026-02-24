@@ -1,18 +1,22 @@
-import path from 'path';
-import { getAllFiles } from 'get-all-files';
-import { Stream } from 'stream';
-import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { access, readFile, rm } from 'fs/promises';
+import { getAllFiles } from 'get-all-files';
+import path from 'path';
+import { Stream } from 'stream';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import { validateFileContent } from './contentFileValidation';
 import ContentManager from './ContentManager';
+import generateFilename from './helpers/FilenameGenerator';
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
+import SemanticsEnforcer from './SemanticsEnforcer';
 import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
+    File,
     FileSanitizerResult,
     IContentMetadata,
     IFileMalwareScanner,
@@ -21,9 +25,6 @@ import {
     IUser,
     MalwareScanResult
 } from './types';
-import generateFilename from './helpers/FilenameGenerator';
-import SemanticsEnforcer from './SemanticsEnforcer';
-import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentStorer');
 
@@ -356,6 +357,17 @@ export default class ContentStorer {
         return { metadata, parameters };
     }
 
+    private createFileFromFilePath(filepath: string): File {
+        const fileName = path.basename(filepath);
+        return {
+            data: undefined,
+            mimetype: '',
+            name: fileName,
+            size: 0,
+            tempFilePath: filepath
+        };
+    }
+
     /**
      * Sanitizes potentially dangerous content from the file at the path using
      * the sanitizers provided in the options. Only does something if the
@@ -365,6 +377,7 @@ export default class ContentStorer {
      * kind of error
      */
     private async sanitizeFile(filepath: string) {
+        const file = this.createFileFromFilePath(filepath);
         for (const sanitizer of this.fileSanitizers) {
             try {
                 log.debug(
@@ -375,7 +388,7 @@ export default class ContentStorer {
                 );
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(filepath);
+                const result = await sanitizer.sanitize(file);
                 if (result === FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
@@ -391,10 +404,11 @@ export default class ContentStorer {
     }
 
     private async scanForMalware(filepath: string) {
+        const file = this.createFileFromFilePath(filepath);
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
                 return {
-                    ...(await scanner.scan(filepath)),
+                    ...(await scanner.scan(file)),
                     scannerName: scanner.name
                 };
             })
