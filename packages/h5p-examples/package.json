@@ -34,7 +34,7 @@
         "express": "5.2.1",
         "express-fileupload": "^1.4.0",
         "fs-extra": "11.3.3",
-        "i18next": "24.2.3",
+        "i18next": "25.8.13",
         "i18next-fs-backend": "2.6.1",
         "i18next-http-middleware": "3.9.2",
         "mongodb": "6.21.0",
