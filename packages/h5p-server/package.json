@@ -63,7 +63,6 @@
         "sanitize-html": "^2.10.0",
         "stream-buffers": "^3.0.2",
         "tmp-promise": "^3.0.3",
-        "upath": "^2.0.1",
         "yauzl-promise": "^4.0.0",
         "yazl": "^3.0.0"
     },

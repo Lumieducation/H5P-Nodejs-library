@@ -1,5 +1,3 @@
-import { encode } from 'node:querystring';
-
 import {
     ContentId,
     IFullLibraryName,
@@ -93,7 +91,7 @@ export default class UrlGenerator implements IUrlGenerator {
         asUserId?: string,
         options?: { readonly?: boolean }
     ): string => {
-        const queries: any = {};
+        const queries: Record<string, string> = {};
         if (contextId) {
             queries.contextId = contextId;
         }
@@ -112,7 +110,7 @@ export default class UrlGenerator implements IUrlGenerator {
             if (qs.name) {
                 queries[qs.name] = qs.value;
             }
-            const queryString = encode(queries);
+            const queryString = new URLSearchParams(queries).toString();
             return `${this.config.baseUrl}${
                 this.config.contentUserDataUrl
             }/:contentId/:dataType/:subContentId${
@@ -120,7 +118,7 @@ export default class UrlGenerator implements IUrlGenerator {
             }`;
         }
 
-        const queryString = encode(queries);
+        const queryString = new URLSearchParams(queries).toString();
         return `${this.config.baseUrl}${
             this.config.contentUserDataUrl
         }/:contentId/:dataType/:subContentId${
