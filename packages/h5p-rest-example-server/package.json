@@ -1,6 +1,6 @@
 {
     "name": "@lumieducation/h5p-rest-example-server",
-    "version": "10.0.4",
+    "version": "10.0.5",
     "private": true,
     "description": "",
     "main": "src/index.ts",
@@ -18,7 +18,7 @@
     "dependencies": {
         "@dr.pogodin/csurf": "^1.14.1",
         "@lumieducation/h5p-clamav-scanner": "^10.0.4",
-        "@lumieducation/h5p-express": "^10.0.4",
+        "@lumieducation/h5p-express": "^10.0.5",
         "@lumieducation/h5p-mongos3": "^10.0.4",
         "@lumieducation/h5p-server": "^10.0.4",
         "@lumieducation/h5p-shared-state-server": "^10.0.4",

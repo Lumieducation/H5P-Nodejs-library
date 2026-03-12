@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.5](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.4...v10.0.5) (2026-03-12)
+
+### Bug Fixes
+
+- **h5p-express:** destroy s3-streams when connections close ([#4427](https://github.com/Lumieducation/H5P-Nodejs-library/issues/4427)) ([561e254](https://github.com/Lumieducation/H5P-Nodejs-library/commit/561e2546a55b7e313f9edf6a7436656cb84f9de9))
+
 ## [10.0.4](https://github.com/Lumieducation/H5P-Nodejs-library/compare/v10.0.3...v10.0.4) (2025-03-08)
 
 **Note:** Version bump only for package @lumieducation/h5p-express
