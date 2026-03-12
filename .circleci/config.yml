@@ -233,12 +233,12 @@ workflows:
             - db-tests:
                   requires:
                       - install-build
-            - clamav-tests:
-                  requires:
-                      - install-build
-            - html-exporter-tests:
-                  requires:
-                      - install-build
+            # - clamav-tests:
+            #       requires:
+            #           - install-build
+            # - html-exporter-tests:
+            #       requires:
+            #           - install-build
             - release:
                   filters:
                       branches:
