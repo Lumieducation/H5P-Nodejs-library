@@ -64,7 +64,7 @@ describe('Loading dependencies', () => {
                 metadataOverride: h5pObject as any
             })
             .then((model) => {
-                expect((model as any).styles.slice(6)).toEqual([
+                expect((model as any).styles.slice(8)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
                     '/h5p/libraries/Foo-4.2/foo2.css?version=4.2.0',
                     '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0'
@@ -148,7 +148,7 @@ describe('Loading dependencies', () => {
                 metadataOverride: h5pObject as any
             })
             .then((model) => {
-                expect((model as any).styles.slice(6)).toEqual([
+                expect((model as any).styles.slice(8)).toEqual([
                     '/h5p/libraries/Foo-4.2/foo1.css?version=4.2.0',
                     '/h5p/libraries/Foo-4.2/foo2.css?version=4.2.0',
                     '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0'
@@ -243,7 +243,7 @@ describe('Loading dependencies', () => {
                 metadataOverride: h5pObject as any
             })
             .then((model) => {
-                expect((model as any).styles.slice(6)).toEqual([
+                expect((model as any).styles.slice(8)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
                     '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
                     '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
@@ -331,7 +331,7 @@ describe('Loading dependencies', () => {
                 metadataOverride: h5pObject as any
             })
             .then((model) => {
-                expect((model as any).styles.slice(6)).toEqual([
+                expect((model as any).styles.slice(8)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
                     '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
                     '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
@@ -423,7 +423,7 @@ describe('Loading dependencies', () => {
                 metadataOverride: h5pObject as any
             })
             .then((model) => {
-                expect((model as any).styles.slice(6)).toEqual([
+                expect((model as any).styles.slice(8)).toEqual([
                     '/h5p/libraries/Baz-3.3/baz.css?version=3.3.0',
                     '/h5p/libraries/Bar-2.1/bar.css?version=2.1.0',
                     '/h5p/libraries/Foo-4.2/foo.css?version=4.2.0'
@@ -530,12 +530,14 @@ describe('Loading dependencies', () => {
         ]);
 
         expect(model.styles).toEqual([
+            `/baseUrl/coreUrl/styles/h5p-fonts.css?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/styles/h5p.css?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/styles/h5p-confirmation-dialog.css?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/styles/h5p-core-button.css?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/styles/h5p-theme.css?version=${config.h5pVersion}`,
+            `/baseUrl/coreUrl/styles/h5p-theme-variables.css?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/styles/h5p-tooltip.css?version=${config.h5pVersion}`,
             `/baseUrl/coreUrl/styles/h5p-table.css?version=${config.h5pVersion}`,
-            `/baseUrl/coreUrl/styles/h5p-fonts.css?version=${config.h5pVersion}`,
             `/baseUrl/libraryUrl/Baz-3.3/baz.css?version=3.3.0`,
             `/baseUrl/libraryUrl/Bar-2.1/bar.css?version=2.1.0`,
             `/baseUrl/libraryUrl/Foo-4.2/foo.css?version=4.2.0`
