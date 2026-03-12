@@ -13,7 +13,7 @@ import type { IPlayerModel } from '@lumieducation/h5p-server';
 
 defineElements('h5p-player');
 
-declare global {
+declare module 'react' {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
@@ -46,7 +46,7 @@ export interface IH5PPlayerUIProps {
 export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
     constructor(props: IH5PPlayerUIProps) {
         super(props);
-        this.h5pPlayer = createRef();
+        this.h5pPlayer = createRef() as RefObject<H5PPlayerComponent>;
     }
 
     private h5pPlayer: RefObject<H5PPlayerComponent>;
@@ -98,7 +98,7 @@ export default class H5PPlayerUI extends Component<IH5PPlayerUIProps> {
         return this.h5pPlayer.current?.getCopyrightHtml() ?? '';
     }
 
-    public getSnapshotBeforeUpdate(): void {
+    public getSnapshotBeforeUpdate(): null {
         // Should the old editor instance be destroyed, we unregister from it...
         this.unregisterEvents();
         return null;
