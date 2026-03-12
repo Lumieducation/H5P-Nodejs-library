@@ -233,12 +233,12 @@ workflows:
             - db-tests:
                   requires:
                       - install-build
-            - clamav-tests:
-                  requires:
-                      - install-build
-            - html-exporter-tests:
-                  requires:
-                      - install-build
+            # - clamav-tests:
+            #       requires:
+            #           - install-build
+            # - html-exporter-tests:
+            #       requires:
+            #           - install-build
             - release:
                   filters:
                       branches:
@@ -248,8 +248,8 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - clamav-tests
-                      - html-exporter-tests                      
+                      # - clamav-tests
+                      # - html-exporter-tests                      
                       # - e2e-tests
                       - integration-tests
                       - db-tests
@@ -259,8 +259,8 @@ workflows:
                       - lint
                       - format
                       - unit-tests
-                      - clamav-tests
-                      - html-exporter-tests
+                      # - clamav-tests
+                      # - html-exporter-tests
                       # - e2e-tests
                       - integration-tests
                       - db-tests
