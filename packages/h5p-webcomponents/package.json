@@ -30,8 +30,7 @@
         "deepmerge": "^4.3.1"
     },
     "devDependencies": {
-        "@lumieducation/h5p-server": "^10.0.4",
-        "@types/resize-observer-browser": "0.1.11"
+        "@lumieducation/h5p-server": "^10.0.4"
     },
     "files": [
         "build",

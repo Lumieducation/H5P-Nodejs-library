@@ -1,6 +1,5 @@
 import { Readable } from 'stream';
 import { getAllFiles } from 'get-all-files';
-import upath from 'upath';
 import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
@@ -768,7 +767,7 @@ export default class LibraryManager {
                 const readStream: Readable = createReadStream(fileFullPath);
                 return this.libraryStorage.addFile(
                     libraryInfo,
-                    upath.toUnix(fileLocalPath),
+                    fileLocalPath.replace(/\\/g, '/'),
                     readStream
                 );
             })

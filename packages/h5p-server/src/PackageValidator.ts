@@ -2,7 +2,6 @@ import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import * as path from 'path';
 import * as yauzl from 'yauzl-promise';
-import upath from 'upath';
 import { getAllFiles } from 'get-all-files';
 import { readdir, readFile } from 'fs/promises';
 
@@ -156,7 +155,7 @@ export default class PackageValidator {
 
         const packagePathLength = packagePath.length + 1;
         const files = (await getAllFiles(packagePath).toArray()).map((f) =>
-            upath.toUnix(f.substr(packagePathLength))
+            f.substr(packagePathLength).replace(/\\/g, '/')
         );
 
         const result = await new ValidatorBuilder()
@@ -702,7 +701,7 @@ export default class PackageValidator {
             `checking if language files in library ${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion} have the correct naming schema and are valid JSON`
         );
         const uberName = `${jsonData.machineName}-${jsonData.majorVersion}.${jsonData.minorVersion}`;
-        const languagePath = upath.join(uberName, 'language/');
+        const languagePath = path.posix.join(uberName, 'language/');
         for (const languageFile of filenames.filter((f) =>
             f.startsWith(languagePath)
         )) {
@@ -837,7 +836,7 @@ export default class PackageValidator {
             await Promise.all(
                 jsonData.preloadedJs.map((file) =>
                     this.fileMustExist(
-                        upath.join(uberName, file.path),
+                        path.posix.join(uberName, file.path),
                         'library-file-missing',
                         false,
                         { filename: file.path, library: uberName }
@@ -851,7 +850,7 @@ export default class PackageValidator {
             await Promise.all(
                 jsonData.preloadedCss.map((file) =>
                     this.fileMustExist(
-                        upath.join(uberName, file.path),
+                        path.posix.join(uberName, file.path),
                         'library-file-missing',
                         false,
                         { filename: file.path, library: uberName }
