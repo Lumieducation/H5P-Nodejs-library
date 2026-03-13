@@ -7,7 +7,7 @@
     "scripts": {
         "build": "npx tsc -P ./tsconfig.build.json",
         "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
-        "prepare": "sh download-core.sh 829524eaf81fe3f3a295d0e843812be4735f51fc 80b3b281ee9d064b563f242e8ee7a0026b5bf205",
+        "prepare": "sh download-core.sh 2aeb0b83fa603e331381b3a6b8bf42c3773ba140 ab2daa18bd61b19e7f8729e22eec88f3b637a868",
         "start:watch": "npx ts-node-dev --deps --respawn src/index.ts",
         "start": "npx ts-node -P ./tsconfig.build.json src/index.ts",
         "start:shared-state:watch": "npx ts-node-dev --deps --respawn src/indexSharedState.ts",
