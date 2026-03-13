@@ -87,7 +87,7 @@ interface IFileSanitizer {
 
     /** Sanitizes files. The original file is expected to be replaced by the
      * sanitized file, so there is no new path to the sanitized file.*/
-    sanitize(file: string): Promise<FileSanitizerResult>;
+    sanitize(file: File): Promise<FileSanitizerResult>;
 }
 
 enum FileSanitizerResult {
@@ -175,7 +175,7 @@ interface IFileMalwareScanner {
 
     /** Scans a file for malware and returns whether it contains malware. */
     scan(
-        file: string
+        file: File
     ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
