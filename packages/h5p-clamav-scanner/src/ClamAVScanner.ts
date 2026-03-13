@@ -186,21 +186,26 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                     result = await this.scanner.scanStream(readable);
                 } else {
                     log.debug('Using temporary file scan for ClamAV binary');
-                    const tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
-                    const tempFilePath = join(tempDir, file.name);
-                    await writeFile(tempFilePath, file.data);
-                    result = await this.scanner.scanFile(tempFilePath);
+                    let tempDir: string | undefined;
+                    let tempFilePath: string | undefined;
                     try {
-                        await unlink(tempFilePath);
-                        await rm(tempDir, { recursive: true });
-                        log.debug(
-                            `Temporary file and directory deleted: ${tempFilePath}`
-                        );
-                    } catch (err) {
-                        log.debug(
-                            `Error deleting temporary file or directory: ${tempFilePath}`,
-                            err
-                        );
+                        tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
+                        tempFilePath = join(tempDir, file.name);
+                        await writeFile(tempFilePath, file.data);
+                        result = await this.scanner.scanFile(tempFilePath);
+                    } finally {
+                        try {
+                            await unlink(tempFilePath);
+                            await rm(tempDir, { recursive: true, force: true });
+                            log.debug(
+                                `Temporary file and directory deleted: ${tempFilePath}`
+                            );
+                        } catch (err) {
+                            log.debug(
+                                `Error deleting temporary file or directory: ${tempFilePath}`,
+                                err
+                            );
+                        }
                     }
                 }
             } else {
