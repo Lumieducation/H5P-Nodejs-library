@@ -178,4 +178,80 @@ describe('SvgSanitizer', () => {
             );
         });
     });
+
+    describe('case-insensitive extension matching', () => {
+        it('sanitizes files with uppercase .SVG extension', async () => {
+            await tmp.withFile(
+                async ({ path }) => {
+                    const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <script>alert(document.cookie);</script>
+                      <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233"></circle>
+                    </svg>`;
+                    await writeFile(path, maliciousSvg, 'utf8');
+
+                    const file = createFileFromFilePath(path);
+                    const result = await new SvgSanitizer().sanitize(file);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const sanitizedSvg = await readFile(path, 'utf-8');
+                    const dom = new JSDOM(sanitizedSvg, {
+                        contentType: 'image/svg+xml'
+                    });
+                    expect(
+                        dom.window.document.querySelector('script')
+                    ).toBeNull();
+                },
+                { postfix: '.SVG', keep: false }
+            );
+        });
+
+        it('sanitizes files with mixed case .Svg extension', async () => {
+            await tmp.withFile(
+                async ({ path }) => {
+                    const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <script>alert(document.cookie);</script>
+                      <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233"></circle>
+                    </svg>`;
+                    await writeFile(path, maliciousSvg, 'utf8');
+
+                    const file = createFileFromFilePath(path);
+                    const result = await new SvgSanitizer().sanitize(file);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const sanitizedSvg = await readFile(path, 'utf-8');
+                    const dom = new JSDOM(sanitizedSvg, {
+                        contentType: 'image/svg+xml'
+                    });
+                    expect(
+                        dom.window.document.querySelector('script')
+                    ).toBeNull();
+                },
+                { postfix: '.Svg', keep: false }
+            );
+        });
+
+        it('sanitizes buffers with uppercase .SVG extension', async () => {
+            const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+              <script>alert(document.cookie);</script>
+              <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233"></circle>
+            </svg>`;
+            const data = Buffer.from(maliciousSvg, 'utf8');
+
+            const file: File = {
+                data: data,
+                mimetype: '',
+                name: 'test.SVG',
+                size: 0,
+                tempFilePath: undefined
+            };
+            const result = await new SvgSanitizer().sanitize(file);
+            expect(result).toBe(FileSanitizerResult.Sanitized);
+
+            const sanitizedSvg = file.data.toString('utf8');
+            const dom = new JSDOM(sanitizedSvg, {
+                contentType: 'image/svg+xml'
+            });
+            expect(dom.window.document.querySelector('script')).toBeNull();
+        });
+    });
 });

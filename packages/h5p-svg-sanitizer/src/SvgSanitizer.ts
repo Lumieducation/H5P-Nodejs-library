@@ -15,7 +15,7 @@ export default class SvgSanitizer implements IFileSanitizer {
     readonly name: string = 'SVG Sanitizer based on dompurify package';
 
     async sanitize(file: File): Promise<FileSanitizerResult> {
-        if (!file.name.endsWith('.svg')) {
+        if (!file.name.toLowerCase().endsWith('.svg')) {
             return FileSanitizerResult.Ignored;
         }
 
