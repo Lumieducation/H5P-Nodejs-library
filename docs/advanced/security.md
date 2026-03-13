@@ -97,9 +97,10 @@ enum FileSanitizerResult {
 }
 ```
 
-Note: Sanitization only works if you pass uploaded content files to {@link
-@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
-in-memory streams!
+ Note: Sanitization works for uploaded content files that you pass to {@link
+ @lumieducation/h5p-server!H5PEditor.saveContentFile} using the {@link
+ @lumieducation/h5p-server!File} shape, regardless of whether they are backed by
+ temporary files on disk or in-memory buffers.
 
 ### Existing file sanitizers
 
