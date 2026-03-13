@@ -649,6 +649,17 @@ export default class H5PEditor {
             (field.type === 'video' && !file.mimetype.startsWith('video/')) ||
             (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
         ) {
+            log.debug(
+                `Invalid file upload: field type is ${field.type} but mimetype is ${file.mimetype}`
+            );
+            throw new H5pError('upload-validation-error', {}, 400);
+        }
+
+        // Ensure we have either a temporary file path or in-memory data to work with
+        if (!file.tempFilePath && !file.data) {
+            log.debug(
+                `Invalid file upload: no data or tempFilePath provided for file ${file.name}`
+            );
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
@@ -672,7 +683,9 @@ export default class H5PEditor {
             }
             // Remove the file from the temporary storage to make sure it can't
             // be accessed anymore
-            await rm(file.tempFilePath, { force: true });
+            if (file.tempFilePath) {
+                await rm(file.tempFilePath, { force: true });
+            }
 
             // TODO: log to audit log
             throw new H5pError('upload-malware-found', {}, 400);
