@@ -31,7 +31,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      */
     private constructor(
         private scanner: NodeClam,
-        private readonly clamdServiceEnabled: boolean
+        private readonly options: { clamdServiceEnabled: boolean }
     ) {
         log.debug('initialize');
     }
@@ -59,7 +59,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         // is a direct property of the object — even if the value is null or
         // undefined."), we have to remove undefined properties from the
         // options.
-        const options: NodeClam.Options =
+        const clamScanOptions: NodeClam.Options =
             removeUndefinedAttributesAndEmptyObjects(
                 merge(
                     {
@@ -72,21 +72,23 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                 )
             );
 
-        log.debug('Initializing ClamAV scanner with options:', options);
+        log.debug('Initializing ClamAV scanner with options:', clamScanOptions);
 
         const clamdServiceEnabled =
-            !options.clamdscan?.socket &&
-            !options.clamdscan?.port &&
-            !options.clamdscan?.host
+            !clamScanOptions.clamdscan?.socket &&
+            !clamScanOptions.clamdscan?.port &&
+            !clamScanOptions.clamdscan?.host
                 ? false
                 : true;
 
-        const clamScan = await new NodeClam().init(options);
+        const clamScan = await new NodeClam().init(clamScanOptions);
         log.debug(
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()
         );
-        return new ClamAVScanner(clamScan, clamdServiceEnabled);
+        const options = { clamdServiceEnabled };
+
+        return new ClamAVScanner(clamScan, options);
     }
 
     /**
@@ -174,7 +176,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                 isInfected: boolean;
             }>;
             if (file.data) {
-                if (this.clamdServiceEnabled) {
+                if (this.options.clamdServiceEnabled) {
                     log.debug('Using stream scan for ClamAV daemon');
                     const readable = Readable.from(file.data);
                     result = await this.scanner.scanStream(readable);
