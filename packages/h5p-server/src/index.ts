@@ -1,26 +1,23 @@
-// Classes
+import { ContentFileScanner } from './ContentFileScanner';
+import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
+import ContentUserDataManager from './ContentUserDataManager';
 import H5PAjaxEndpoint from './H5PAjaxEndpoint';
 import H5PEditor from './H5PEditor';
 import H5PPlayer from './H5PPlayer';
 import InstalledLibrary from './InstalledLibrary';
+import LibraryAdministration from './LibraryAdministration';
+import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
-import H5pError from './helpers/H5pError';
-
+import TemporaryFileManager from './TemporaryFileManager';
+import UrlGenerator from './UrlGenerator';
 import AggregateH5pError from './helpers/AggregateH5pError';
 import AjaxErrorResponse from './helpers/AjaxErrorResponse';
 import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
-import { streamToString } from './helpers/StreamHelpers';
-
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
-
-import { ContentFileScanner } from './ContentFileScanner';
-import ContentStorer from './ContentStorer';
-import ContentUserDataManager from './ContentUserDataManager';
-import LibraryManager from './LibraryManager';
-import TemporaryFileManager from './TemporaryFileManager';
-import UrlGenerator from './UrlGenerator';
+import { streamToString } from './helpers/StreamHelpers';
 import H5PConfig from './implementation/H5PConfig';
 import InMemoryStorage from './implementation/InMemoryStorage';
 import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
@@ -34,8 +31,6 @@ import FileContentUserDataStorage from './implementation/fs/FileContentUserDataS
 import FileLibraryStorage from './implementation/fs/FileLibraryStorage';
 import JsonStorage from './implementation/fs/JsonStorage';
 import * as utils from './implementation/utils';
-
-// Interfaces
 import {
     ContentId,
     ContentParameters,
@@ -81,9 +76,6 @@ import {
     UserDataPermission
 } from './types';
 
-// Adapters
-import LibraryAdministration from './LibraryAdministration';
-
 const fsImplementations = {
     DirectoryTemporaryFileStorage,
     FileContentStorage,
@@ -99,13 +91,11 @@ const cacheImplementations = {
 };
 
 export {
-    // classes
     AggregateH5pError,
     AjaxErrorResponse,
     AjaxSuccessResponse,
     cacheImplementations,
     ContentFileScanner,
-    // interfaces
     ContentId,
     ContentParameters,
     ContentPermission,
@@ -118,7 +108,6 @@ export {
     fsImplementations,
     GeneralPermission,
     H5PAjaxEndpoint,
-    // implementations
     H5PConfig,
     H5PEditor,
     H5pError,
