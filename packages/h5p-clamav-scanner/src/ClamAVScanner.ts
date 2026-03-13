@@ -1,6 +1,5 @@
 import NodeClam from 'clamscan';
-import { mkdtempSync } from 'fs';
-import { rm, unlink, writeFile } from 'fs/promises';
+import { mkdtemp, rm, unlink, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { Readable } from 'stream';
@@ -181,7 +180,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                     result = await this.scanner.scanStream(readable);
                 } else {
                     log.debug('Using temporary file scan for ClamAV binary');
-                    const tempDir = mkdtempSync(join(tmpdir(), 'clam-av-'));
+                    const tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
                     const tempFilePath = join(tempDir, file.name);
                     await writeFile(tempFilePath, file.data);
                     result = await this.scanner.scanFile(tempFilePath);
