@@ -169,6 +169,63 @@ describe('ClamAVScanner', () => {
             // No new clam-av temp directories should remain
             expect(clamAvDirsAfter.length).toBe(clamAvDirsBefore.length);
         });
+
+        it('sanitizes filenames with path traversal attempts', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+
+            // Create a file with a path traversal attempt in the name
+            const file: File = {
+                data: data,
+                mimetype: '',
+                name: '../../../etc/passwd',
+                size: 0
+            };
+
+            // Should not throw and should scan successfully
+            const result = await clamAVScanner.scan(file);
+            expect(result.result).toBe(MalwareScanResult.Clean);
+        });
+
+        it('handles filenames with multiple path separators', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+
+            // Create a file with path separators in the name
+            const file: File = {
+                data: data,
+                mimetype: '',
+                name: 'some/nested/path/file.txt',
+                size: 0
+            };
+
+            // Should not throw and should scan successfully
+            const result = await clamAVScanner.scan(file);
+            expect(result.result).toBe(MalwareScanResult.Clean);
+        });
+
+        it('uses fallback filename when file.name is empty', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+
+            // Create a file with an empty name
+            const file: File = {
+                data: data,
+                mimetype: '',
+                name: '',
+                size: 0
+            };
+
+            // Should not throw and should scan successfully using 'upload' as fallback
+            const result = await clamAVScanner.scan(file);
+            expect(result.result).toBe(MalwareScanResult.Clean);
+        });
     });
 
     // TODO: These tests require a running ClamAV daemon on localhost:3310
