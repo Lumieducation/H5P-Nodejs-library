@@ -110,7 +110,10 @@ describe('ClamAVScanner', () => {
             );
 
             // No new clam-av temp directories should remain
-            expect(clamAvDirsAfter.length).toBe(clamAvDirsBefore.length);
+            const newClamAvDirs = clamAvDirsAfter.filter(
+                (name) => !clamAvDirsBefore.includes(name)
+            );
+            expect(newClamAvDirs.length).toBe(0);
         });
 
         it('cleans up temporary files after multiple sequential scans', async () => {
@@ -139,7 +142,10 @@ describe('ClamAVScanner', () => {
             );
 
             // No new clam-av temp directories should remain
-            expect(clamAvDirsAfter.length).toBe(clamAvDirsBefore.length);
+            const newClamAvDirs = clamAvDirsAfter.filter(
+                (name) => !clamAvDirsBefore.includes(name)
+            );
+            expect(newClamAvDirs.length).toBe(0);
         });
 
         it('cleans up temporary files even when virus is found', async () => {
@@ -167,7 +173,10 @@ describe('ClamAVScanner', () => {
             );
 
             // No new clam-av temp directories should remain
-            expect(clamAvDirsAfter.length).toBe(clamAvDirsBefore.length);
+            const newClamAvDirs = clamAvDirsAfter.filter(
+                (name) => !clamAvDirsBefore.includes(name)
+            );
+            expect(newClamAvDirs.length).toBe(0);
         });
 
         it('sanitizes filenames with path traversal attempts', async () => {
