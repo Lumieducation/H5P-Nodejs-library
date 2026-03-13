@@ -79,11 +79,13 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         log.debug('Initializing ClamAV scanner with options:', clamScanOptions);
 
         const clamdServiceEnabled =
-            !clamScanOptions.clamdscan?.socket &&
-            !clamScanOptions.clamdscan?.port &&
-            !clamScanOptions.clamdscan?.host
+            clamScanOptions.preference === 'clamdscan'
                 ? false
-                : true;
+                : !!(
+                      clamScanOptions.clamdscan?.socket ||
+                      clamScanOptions.clamdscan?.port ||
+                      clamScanOptions.clamdscan?.host
+                  );
 
         const clamScan = await new NodeClam().init(clamScanOptions);
         log.debug(

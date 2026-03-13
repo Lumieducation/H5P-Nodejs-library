@@ -276,4 +276,85 @@ describe('ClamAVScanner', () => {
             });
         });
     });
+
+    describe('clamdServiceEnabled logic', () => {
+        it('uses temp file scanning when preference is clamdscan (even with daemon config)', async () => {
+            // When preference is explicitly 'clamdscan', clamdServiceEnabled is false
+            // This means buffer scanning uses temp files, not stream scanning
+            const clamAVScanner = await ClamAVScanner.create({
+                preference: 'clamdscan',
+                clamdscan: { host: 'localhost', port: 3310 }
+            });
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+            const file = createFileFromFilePath(filePath, data);
+
+            // Should still work (using temp file method instead of stream)
+            await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
+                result: MalwareScanResult.Clean
+            });
+        });
+
+        it('uses temp file scanning when preference is clamscan', async () => {
+            // When preference is 'clamscan', there's no daemon, so temp file is used
+            const clamAVScanner = await ClamAVScanner.create({
+                preference: 'clamscan'
+            });
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+            const file = createFileFromFilePath(filePath, data);
+
+            await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
+                result: MalwareScanResult.Clean
+            });
+        });
+
+        it('uses temp file scanning when no daemon config is provided', async () => {
+            // Without socket/port/host, clamdServiceEnabled is false
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+            const file = createFileFromFilePath(filePath, data);
+
+            await expect(clamAVScanner.scan(file)).resolves.toMatchObject({
+                result: MalwareScanResult.Clean
+            });
+        });
+
+        it('cleans up temp files when preference forces temp file scanning', async () => {
+            const clamAVScanner = await ClamAVScanner.create({
+                preference: 'clamdscan',
+                clamdscan: { host: 'localhost', port: 3310 }
+            });
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+            const fileData = await readFile(filePath);
+            const data = Buffer.from(fileData);
+            const file = createFileFromFilePath(filePath, data);
+
+            // Get temp directories before scan
+            const tmpDirPath = tmpdir();
+            const beforeScan = await readdir(tmpDirPath);
+            const clamAvDirsBefore = beforeScan.filter((name) =>
+                name.startsWith('clam-av-')
+            );
+
+            // Perform scan
+            await clamAVScanner.scan(file);
+
+            // Get temp directories after scan
+            const afterScan = await readdir(tmpDirPath);
+            const clamAvDirsAfter = afterScan.filter((name) =>
+                name.startsWith('clam-av-')
+            );
+
+            // No new clam-av temp directories should remain
+            const newClamAvDirs = clamAvDirsAfter.filter(
+                (name) => !clamAvDirsBefore.includes(name)
+            );
+            expect(newClamAvDirs.length).toBe(0);
+        });
+    });
 });
