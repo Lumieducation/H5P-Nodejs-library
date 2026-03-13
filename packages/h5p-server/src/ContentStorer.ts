@@ -1,6 +1,7 @@
 import { createReadStream } from 'fs';
 import { access, readFile, rm } from 'fs/promises';
 import { getAllFiles } from 'get-all-files';
+import mimeTypes from 'mime-types';
 import path from 'path';
 import { Stream } from 'stream';
 
@@ -359,13 +360,16 @@ export default class ContentStorer {
 
     private createFileFromFilePath(filepath: string): File {
         const fileName = path.basename(filepath);
-        return {
+        const mimetype = mimeTypes.lookup(fileName) || '';
+        const file: File = {
             data: undefined,
-            mimetype: '',
+            mimetype,
             name: fileName,
             size: 0,
             tempFilePath: filepath
         };
+
+        return file;
     }
 
     /**
