@@ -16,6 +16,10 @@ import { removeUndefinedAttributesAndEmptyObjects } from './helpers';
 
 const log = new Logger('ClamAVScanner');
 
+export type ClamAVScannerOptions = {
+    clamdServiceEnabled: boolean;
+};
+
 /**
  * A light wrapper calling the ClamAV scanner to scan files for malware. It
  * utilizes the `clamscan` package.
@@ -31,7 +35,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      */
     private constructor(
         private scanner: NodeClam,
-        private readonly options: { clamdServiceEnabled: boolean }
+        private readonly options: ClamAVScannerOptions
     ) {
         log.debug('initialize');
     }
@@ -86,7 +90,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()
         );
-        const options = { clamdServiceEnabled };
+        const options: ClamAVScannerOptions = { clamdServiceEnabled };
 
         return new ClamAVScanner(clamScan, options);
     }
