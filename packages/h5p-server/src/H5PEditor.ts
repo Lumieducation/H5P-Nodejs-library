@@ -22,7 +22,7 @@ import defaultRenderer from './renderers/default';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
-import { validateFileContent } from './contentFileValidation';
+import { validateContent } from './contentFileValidation';
 import ContentHub from './ContentHub';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -679,9 +679,7 @@ export default class H5PEditor {
         }
 
         // Validate that the file content matches the claimed extension
-        if (file.tempFilePath) {
-            await validateFileContent(file.tempFilePath);
-        }
+        await validateContent(file);
 
         // Sanitize the file if possible
         for (const sanitizer of this.fileSanitizers) {

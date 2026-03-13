@@ -300,6 +300,144 @@ describe('H5PEditor', () => {
         );
     });
 
+    it('rejects SVG content disguised as a JPEG file (via buffer)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const maliciousContent = Buffer.from(
+                    '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+                );
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: maliciousContent,
+                            mimetype: 'image/jpeg',
+                            name: 'malicious.jpg',
+                            size: maliciousContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects HTML content disguised as a PNG file (via buffer)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const maliciousContent = Buffer.from(
+                    '<html><body><script>alert(1)</script></body></html>'
+                );
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: maliciousContent,
+                            mimetype: 'image/png',
+                            name: 'malicious.png',
+                            size: maliciousContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects SVG content disguised as a JPEG file (via tempFilePath)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // Create a temp file with malicious content
+                await withFile(
+                    async ({ path: maliciousFilePath }) => {
+                        const maliciousContent =
+                            '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>';
+                        const writeStream =
+                            createWriteStream(maliciousFilePath);
+                        await new Promise<void>((resolve, reject) => {
+                            writeStream.on('error', reject);
+                            writeStream.on('finish', resolve);
+                            writeStream.end(maliciousContent);
+                        });
+
+                        await expect(
+                            h5pEditor.saveContentFile(
+                                undefined,
+                                {
+                                    name: 'image',
+                                    type: 'image'
+                                },
+                                {
+                                    mimetype: 'image/jpeg',
+                                    name: 'malicious.jpg',
+                                    tempFilePath: maliciousFilePath,
+                                    size: maliciousContent.length
+                                },
+                                user
+                            )
+                        ).rejects.toThrow('upload-validation-error');
+                    },
+                    { postfix: '.jpg' }
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects GIF content disguised as a PNG file', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // GIF87a header - valid GIF but claimed as PNG
+                const gifContent = Buffer.from([
+                    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x01, 0x00, 0x01, 0x00,
+                    0x00, 0x00, 0x00, 0x3b
+                ]);
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: gifContent,
+                            mimetype: 'image/png',
+                            name: 'fake.png',
+                            size: gifContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
     it('saves content and returns the data', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
