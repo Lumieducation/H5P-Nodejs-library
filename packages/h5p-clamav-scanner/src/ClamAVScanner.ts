@@ -196,8 +196,15 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                         result = await this.scanner.scanFile(tempFilePath);
                     } finally {
                         try {
-                            await unlink(tempFilePath);
-                            await rm(tempDir, { recursive: true, force: true });
+                            if (tempFilePath) {
+                                await unlink(tempFilePath);
+                            }
+                            if (tempDir) {
+                                await rm(tempDir, {
+                                    recursive: true,
+                                    force: true
+                                });
+                            }
                             log.debug(
                                 `Temporary file and directory deleted: ${tempFilePath}`
                             );
