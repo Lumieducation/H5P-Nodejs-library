@@ -797,23 +797,42 @@ export default class LibraryManager {
      * storage. Throws errors if something went wrong.
      * @param fromDirectory The directory to copy from
      * @param libraryInfo the library object
+     * @param abortSignal (optional) signal for cooperative cancellation
      */
     private async copyLibraryFiles(
         fromDirectory: string,
-        libraryInfo: ILibraryName
+        libraryInfo: ILibraryName,
+        abortSignal?: AbortSignal
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
+
+        // Check if already aborted before starting
+        if (abortSignal?.aborted) {
+            throw new AbortedError();
+        }
+
         const fromDirectoryLength = fromDirectory.length + 1;
         const files = await getAllFiles(fromDirectory).toArray();
+
+        // Check after getting file list (in case that was slow)
+        if (abortSignal?.aborted) {
+            throw new AbortedError();
+        }
+
         await Promise.all(
-            files.map((fileFullPath: string) => {
+            files.map(async (fileFullPath: string) => {
+                // Check abort signal before each file operation
+                if (abortSignal?.aborted) {
+                    throw new AbortedError();
+                }
+
                 const fileLocalPath: string =
                     fileFullPath.substr(fromDirectoryLength);
                 if (fileLocalPath === 'library.json') {
-                    return Promise.resolve(true);
+                    return;
                 }
                 const readStream: Readable = createReadStream(fileFullPath);
-                return this.libraryStorage.addFile(
+                await this.libraryStorage.addFile(
                     libraryInfo,
                     upath.toUnix(fileLocalPath),
                     readStream
@@ -873,7 +892,11 @@ export default class LibraryManager {
                             abortSignal
                         );
 
-                        await this.copyLibraryFiles(fromDirectory, libraryInfo);
+                        await this.copyLibraryFiles(
+                            fromDirectory,
+                            libraryInfo,
+                            abortSignal
+                        );
 
                         // Check after copying files
                         await this.checkAbortAndCleanup(

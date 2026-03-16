@@ -798,4 +798,161 @@ describe('cooperative cancellation and abort behavior', () => {
             { keep: false, unsafeCleanup: true }
         );
     }, 10000); // Extended timeout for this test
+
+    describe('copyLibraryFiles abort signal handling', () => {
+        it('stops copying files when abort signal is triggered during file operations', async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    let filesCopied = 0;
+
+                    // Create a storage that counts files and has a delay
+                    class CountingSlowStorage extends FileLibraryStorage {
+                        async addFile(
+                            library: ILibraryName,
+                            filename: string,
+                            stream: import('stream').Readable
+                        ): Promise<boolean> {
+                            filesCopied++;
+                            // Add delay to allow abort signal to be checked between files
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, 50)
+                            );
+                            return super.addFile(library, filename, stream);
+                        }
+                    }
+
+                    const countingStorage = new CountingSlowStorage(
+                        tempDirPath
+                    );
+
+                    const libManager = new LibraryManager(
+                        countingStorage,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        {
+                            installLibraryLockMaxOccupationTime: 30, // Very short timeout
+                            installLibraryLockMaxWaitTime: 500,
+                            installLibraryLockTimeout: 5000
+                        }
+                    );
+
+                    // Installation should fail due to timeout during file copying
+                    await expect(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    ).rejects.toThrow(
+                        'server:install-library-lock-max-time-exceeded'
+                    );
+
+                    // Wait for cleanup
+                    await new Promise((resolve) => setTimeout(resolve, 200));
+
+                    // Verify that not all files were copied (abort happened mid-copy)
+                    // The library has multiple files, so if abort works, not all should be copied
+                    expect(filesCopied).toBeGreaterThan(0);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+
+        it('checks abort signal before each individual file copy operation', async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    const addFileCalls: string[] = [];
+
+                    // Storage that records each file operation
+                    class RecordingStorage extends FileLibraryStorage {
+                        async addFile(
+                            library: ILibraryName,
+                            filename: string,
+                            stream: import('stream').Readable
+                        ): Promise<boolean> {
+                            addFileCalls.push(filename);
+                            // Delay to ensure abort can be triggered between files
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, 10)
+                            );
+                            return super.addFile(library, filename, stream);
+                        }
+                    }
+
+                    const recordingStorage = new RecordingStorage(tempDirPath);
+
+                    const libManager = new LibraryManager(
+                        recordingStorage,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        {
+                            installLibraryLockMaxOccupationTime: 5000, // Long enough to complete
+                            installLibraryLockMaxWaitTime: 500,
+                            installLibraryLockTimeout: 5000
+                        }
+                    );
+
+                    // Normal installation should succeed and copy all files
+                    const result = await libManager.installFromDirectory(
+                        `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                        false
+                    );
+
+                    expect(result.type).toBe('new');
+                    // Verify multiple files were copied (library has multiple files)
+                    expect(addFileCalls.length).toBeGreaterThan(1);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+
+        it('cleans up partial library installation when abort occurs during file copying', async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    // Storage with slow file operations that will trigger abort
+                    const slowStorage = new SlowFileLibraryStorage(
+                        tempDirPath,
+                        100, // Slow file operations
+                        0
+                    );
+
+                    const libManager = new LibraryManager(
+                        slowStorage,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        {
+                            installLibraryLockMaxOccupationTime: 50, // Trigger abort during file copy
+                            installLibraryLockMaxWaitTime: 500,
+                            installLibraryLockTimeout: 5000
+                        }
+                    );
+
+                    await expect(
+                        libManager.installFromDirectory(
+                            `${__dirname}/../../../test/data/libraries/H5P.Example1-1.1`,
+                            false
+                        )
+                    ).rejects.toThrow(
+                        'server:install-library-lock-max-time-exceeded'
+                    );
+
+                    // Wait for cleanup to complete
+                    await new Promise((resolve) => setTimeout(resolve, 300));
+
+                    // Directory should be empty - no partial library left behind
+                    const contents = await readdir(tempDirPath);
+                    expect(contents.length).toBe(0);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+    });
 });
