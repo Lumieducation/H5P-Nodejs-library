@@ -474,7 +474,8 @@ export default class LibraryManager {
             );
         } catch (error) {
             const ubername = LibraryName.toUberName(libraryMetadata);
-            if (error.message == 'occupation-time-exceeded') {
+            const errorMessage = this.getErrorMessage(error);
+            if (errorMessage === 'occupation-time-exceeded') {
                 // Signal the callback to abort and clean up
                 abortController.abort();
 
@@ -508,7 +509,7 @@ export default class LibraryManager {
                     500
                 );
             }
-            if (error.message == 'timeout') {
+            if (errorMessage === 'timeout') {
                 log.error(
                     `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
                 );
@@ -738,7 +739,7 @@ export default class LibraryManager {
             throw new H5pError(
                 'library-consistency-check-library-json-unreadable',
                 {
-                    message: error.message,
+                    message: this.getErrorMessage(error),
                     name: LibraryName.toUberName(library)
                 }
             );
@@ -940,7 +941,8 @@ export default class LibraryManager {
             if (error instanceof AbortedError) {
                 throw error;
             }
-            if (error.message == 'occupation-time-exceeded') {
+            const errorMessage = this.getErrorMessage(error);
+            if (errorMessage === 'occupation-time-exceeded') {
                 log.error(
                     `The installation of library ${ubername} took longer than the allowed ${this.config.installLibraryLockMaxOccupationTime} ms.`
                 );
@@ -955,7 +957,7 @@ export default class LibraryManager {
                     500
                 );
             }
-            if (error.message == 'timeout') {
+            if (errorMessage === 'timeout') {
                 log.error(
                     `Could not acquire installation lock for library ${ubername} within the limit of ${this.config.installLibraryLockTimeout} ms.`
                 );
@@ -1080,7 +1082,7 @@ export default class LibraryManager {
                     await this.libraryStorage.deleteLibrary(libraryMetadata);
                 } catch (cleanupError) {
                     log.error(
-                        `Failed to clean up library ${ubername} after abort: ${cleanupError.message}`
+                        `Failed to clean up library ${ubername} after abort: ${this.getErrorMessage(cleanupError)}`
                     );
                 }
             }
@@ -1135,5 +1137,15 @@ export default class LibraryManager {
         const metadata: ILibraryMetadata = JSON.parse(utf8File);
 
         return metadata;
+    }
+
+    /**
+     * Extracts the error message from an error object. Handles both Error
+     * instances and other thrown values by converting them to strings.
+     * @param error the caught error
+     * @returns the error message as a string
+     */
+    private getErrorMessage(error: unknown): string {
+        return error instanceof Error ? error.message : String(error);
     }
 }
