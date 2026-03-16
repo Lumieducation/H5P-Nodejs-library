@@ -77,11 +77,11 @@ export default class LibraryManager {
         ) => ILanguageFileEntry[],
         translationFunction?: ITranslationFunction,
         lockProvider?: ILockProvider,
-        private config?: {
+        private config?: Partial<{
             installLibraryLockMaxOccupationTime: number;
             installLibraryLockMaxWaitTime: number;
             installLibraryLockTimeout: number;
-        }
+        }>
     ) {
         log.info('initialize');
         if (translationFunction) {
@@ -96,13 +96,16 @@ export default class LibraryManager {
             this.lock = lockProvider;
         }
 
-        if (!this.config) {
-            this.config = {
-                installLibraryLockMaxOccupationTime: 10000,
-                installLibraryLockMaxWaitTime: 30000,
-                installLibraryLockTimeout: 120000
-            };
-        }
+        const defaultConfig = {
+            installLibraryLockMaxOccupationTime: 10000,
+            installLibraryLockMaxWaitTime: 30000,
+            installLibraryLockTimeout: 120000
+        };
+
+        this.config = {
+            ...defaultConfig,
+            ...config
+        };
     }
 
     private translator: TranslatorWithFallback;
