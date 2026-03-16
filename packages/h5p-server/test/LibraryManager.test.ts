@@ -955,4 +955,128 @@ describe('cooperative cancellation and abort behavior', () => {
             );
         });
     });
+
+    describe('updateLibrary (patch) abort signal handling', () => {
+        it('cleans up when abort occurs during library patch/update', async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    // First install the base version without delays
+                    const fastStorage = new FileLibraryStorage(tempDirPath);
+                    const fastLibManager = new LibraryManager(fastStorage);
+
+                    // Install version 1.1.1 first
+                    await fastLibManager.installFromDirectory(
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
+                        false
+                    );
+
+                    // Verify base version is installed
+                    const installedLibraries =
+                        await fastLibManager.listInstalledLibraries(
+                            'H5P.Example1'
+                        );
+                    expect(
+                        installedLibraries['H5P.Example1'][0].patchVersion
+                    ).toBe(1);
+
+                    // Now create a slow storage for the patch that will trigger abort
+                    const slowStorage = new SlowFileLibraryStorage(
+                        tempDirPath,
+                        100, // Slow file operations during patch
+                        0
+                    );
+
+                    const slowLibManager = new LibraryManager(
+                        slowStorage,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        {
+                            installLibraryLockMaxOccupationTime: 20, // Short timeout to trigger abort
+                            installLibraryLockMaxWaitTime: 1000,
+                            installLibraryLockTimeout: 5000
+                        }
+                    );
+
+                    // Try to install patch 1.1.2, should abort during file copy
+                    await expect(
+                        slowLibManager.installFromDirectory(
+                            `${__dirname}/data/patches/H5P.Example1-1.1.2`,
+                            false
+                        )
+                    ).rejects.toThrow(
+                        'server:install-library-lock-max-time-exceeded'
+                    );
+
+                    // Wait for cleanup to complete
+                    await new Promise((resolve) => setTimeout(resolve, 300));
+
+                    // The library directory should be cleaned up entirely when patch fails
+                    const contents = await readdir(tempDirPath);
+                    expect(contents.length).toBe(0);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+
+        it('handles abort signal during clearFiles phase of patch update', async () => {
+            await withDir(
+                async ({ path: tempDirPath }) => {
+                    // Storage that adds delay to clearFiles operation
+                    class SlowClearFilesStorage extends FileLibraryStorage {
+                        async clearFiles(library: ILibraryName): Promise<void> {
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, 100)
+                            );
+                            return super.clearFiles(library);
+                        }
+                    }
+
+                    // Install base version first
+                    const normalStorage = new FileLibraryStorage(tempDirPath);
+                    const normalLibManager = new LibraryManager(normalStorage);
+
+                    await normalLibManager.installFromDirectory(
+                        `${__dirname}/data/patches/H5P.Example1-1.1.1`,
+                        false
+                    );
+
+                    // Now try patch with slow clearFiles
+                    const slowStorage = new SlowClearFilesStorage(tempDirPath);
+                    const slowLibManager = new LibraryManager(
+                        slowStorage,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        {
+                            installLibraryLockMaxOccupationTime: 10, // Very short
+                            installLibraryLockMaxWaitTime: 500,
+                            installLibraryLockTimeout: 5000
+                        }
+                    );
+
+                    await expect(
+                        slowLibManager.installFromDirectory(
+                            `${__dirname}/data/patches/H5P.Example1-1.1.2`,
+                            false
+                        )
+                    ).rejects.toThrow(
+                        'server:install-library-lock-max-time-exceeded'
+                    );
+
+                    // Wait for cleanup
+                    await new Promise((resolve) => setTimeout(resolve, 300));
+
+                    // Library should be cleaned up
+                    const contents = await readdir(tempDirPath);
+                    expect(contents.length).toBe(0);
+                },
+                { keep: false, unsafeCleanup: true }
+            );
+        });
+    });
 });

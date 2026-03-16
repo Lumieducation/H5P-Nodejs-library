@@ -1035,7 +1035,11 @@ export default class LibraryManager {
                 'update'
             );
 
-            await this.copyLibraryFiles(filesDirectory, libraryMetadata);
+            await this.copyLibraryFiles(
+                filesDirectory,
+                libraryMetadata,
+                abortSignal
+            );
 
             // Check after copying files
             await this.checkAbortAndCleanup(
