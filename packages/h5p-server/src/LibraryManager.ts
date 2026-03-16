@@ -480,16 +480,20 @@ export default class LibraryManager {
                 abortController.abort();
 
                 // Wait for the callback to finish, with a safety timeout
-                const timeoutPromise = new Promise<'timeout'>((resolve) =>
-                    setTimeout(
+                let timeoutHandle: ReturnType<typeof setTimeout>;
+                const timeoutPromise = new Promise<'timeout'>((resolve) => {
+                    timeoutHandle = setTimeout(
                         () => resolve('timeout'),
                         this.config.installLibraryLockMaxWaitTime
-                    )
-                );
+                    );
+                });
+
                 const result = await Promise.race([
                     callbackFinishedPromise.then(() => 'finished' as const),
                     timeoutPromise
                 ]);
+
+                clearTimeout(timeoutHandle);
 
                 if (result === 'timeout') {
                     log.error(
