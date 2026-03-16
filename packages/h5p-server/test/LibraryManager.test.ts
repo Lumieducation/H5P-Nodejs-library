@@ -758,7 +758,7 @@ describe('cooperative cancellation and abort behavior', () => {
         );
     });
 
-    it('logs error when callback does not finish within maxWaitTime', async () => {
+    it('throws an error when callback does not finish within maxWaitTime', async () => {
         await withDir(
             async ({ path: tempDirPath }) => {
                 // Create a storage with very long delay that exceeds maxWaitTime
