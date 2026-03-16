@@ -411,7 +411,7 @@ export default class LibraryManager {
         const abortController = new AbortController();
 
         // Promise-based callback completion tracking (avoids busy-wait polling)
-        let resolveCallbackFinished: () => void;
+        let resolveCallbackFinished: () => void = () => {};
         const callbackFinishedPromise = new Promise<void>((resolve) => {
             resolveCallbackFinished = resolve;
         });
