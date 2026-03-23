@@ -1904,7 +1904,7 @@ export interface IH5PConfig {
     /**
      * How long to wait for return of callback after abort signal.
      */
-    installLibraryLockMaxWaitTime: number;
+    installLibraryLockMaxWaitTime?: number;
 
     /**
      * How long to wait until a lock is acquired when installing a single
