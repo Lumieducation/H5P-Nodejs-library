@@ -167,12 +167,17 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     }
 
     async scan(
-        file: File
+        file: string | File
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        const normalizedFile: File | { tempFilePath: string; name: string } =
+            typeof file === 'string'
+                ? { tempFilePath: file, name: basename(file) }
+                : file;
+
         try {
             log.debug(
                 'Scanning uploaded file',
-                file.name,
+                normalizedFile.name,
                 'with malware scanner',
                 this.name
             );
@@ -181,10 +186,10 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                 file: string;
                 isInfected: boolean;
             }>;
-            if (file.data) {
+            if ('data' in normalizedFile && normalizedFile.data) {
                 if (this.options.clamdServiceEnabled) {
                     log.debug('Using stream scan for ClamAV daemon');
-                    const readable = Readable.from(file.data);
+                    const readable = Readable.from(normalizedFile.data);
                     result = await this.scanner.scanStream(readable);
                 } else {
                     log.debug('Using temporary file scan for ClamAV binary');
@@ -192,9 +197,9 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                     let tempFilePath: string | undefined;
                     try {
                         tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
-                        const safeFileName = basename(file.name);
+                        const safeFileName = basename(normalizedFile.name);
                         tempFilePath = join(tempDir, safeFileName || 'upload');
-                        await writeFile(tempFilePath, file.data);
+                        await writeFile(tempFilePath, normalizedFile.data);
                         result = await this.scanner.scanFile(tempFilePath);
                     } finally {
                         try {
@@ -218,24 +223,29 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                         }
                     }
                 }
+            } else if (normalizedFile.tempFilePath) {
+                result = await this.scanner.scanFile(
+                    normalizedFile.tempFilePath
+                );
             } else {
-                result = await this.scanner.scanFile(file.tempFilePath);
+                log.error('No file data or path provided for scanning');
+                return { result: MalwareScanResult.NotScanned };
             }
 
             if (result.isInfected) {
                 const viruses = result.viruses.join(',');
                 log.info(
                     'Uploaded file',
-                    file.name,
+                    normalizedFile.name,
                     'is infected with:',
                     viruses
                 );
                 return { result: MalwareScanResult.MalwareFound, viruses };
             }
-            log.debug('Uploaded file', file.name, 'is clean');
+            log.debug('Uploaded file', normalizedFile.name, 'is clean');
             return { result: MalwareScanResult.Clean };
         } catch (error) {
-            log.error('Error while scanning file', file.name, error);
+            log.error('Error while scanning file', normalizedFile.name, error);
             return { result: MalwareScanResult.NotScanned };
         }
     }

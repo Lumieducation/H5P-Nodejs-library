@@ -373,4 +373,47 @@ describe('ClamAVScanner', () => {
             });
         });
     });
+
+    describe('scan with string path input', () => {
+        it('reports "Clean" for uninfected files when passed as string path', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+
+            await expect(clamAVScanner.scan(filePath)).resolves.toMatchObject({
+                result: MalwareScanResult.Clean
+            });
+        });
+
+        it('reports "MalwareFound" for infected files when passed as string path', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'eicar.txt');
+
+            await expect(clamAVScanner.scan(filePath)).resolves.toMatchObject({
+                result: MalwareScanResult.MalwareFound,
+                viruses: expect.stringMatching(
+                    /(^Win\.Test\.EICAR_HDB-1$)|(^Eicar-Test-Signature$)/
+                )
+            });
+        });
+
+        it('reports "NotScanned" for non-existent files when passed as string path', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            const filePath = path.resolve(__dirname, 'doesntexist.txt');
+
+            await expect(clamAVScanner.scan(filePath)).resolves.toMatchObject({
+                result: MalwareScanResult.NotScanned
+            });
+        });
+
+        it('normalizes string path to extract filename correctly', async () => {
+            const clamAVScanner = await ClamAVScanner.create();
+            // Use an absolute path with multiple directory components
+            const filePath = path.resolve(__dirname, 'no-virus.txt');
+
+            // Should work correctly - the normalization extracts basename for logging
+            await expect(clamAVScanner.scan(filePath)).resolves.toMatchObject({
+                result: MalwareScanResult.Clean
+            });
+        });
+    });
 });

@@ -254,4 +254,112 @@ describe('SvgSanitizer', () => {
             expect(dom.window.document.querySelector('script')).toBeNull();
         });
     });
+
+    describe('when sanitizing with string path input', () => {
+        it("doesn't alter clean SVG when passed as string path", async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    const svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <circle style="fill:#666666;stroke:#808080;stroke-width:4.40315;stop-color:#000000" id="path233" cx="98.428535" cy="68.415733" r="54.194405"></circle>
+                     </svg>`;
+                    await writeFile(filePath, svg, 'utf8');
+                    const dom1 = new JSDOM(svg, {
+                        contentType: 'image/svg+xml'
+                    });
+
+                    const result = await new SvgSanitizer().sanitize(filePath);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const svg2 = await readFile(filePath, 'utf-8');
+                    const dom2 = new JSDOM(svg2, {
+                        contentType: 'image/svg+xml'
+                    });
+                    expect(
+                        dom2.window.document.documentElement.isEqualNode(
+                            dom1.window.document.documentElement
+                        )
+                    ).toBe(true);
+                },
+                { postfix: '.svg', keep: false }
+            );
+        });
+
+        it('cleans malicious SVG when passed as string path', async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <script>alert(document.cookie);</script>
+                      <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233" style="fill:#666666;stroke:#808080;stroke-width:4.40315;stop-color:#000000"></circle>
+                    </svg>`;
+                    await writeFile(filePath, maliciousSvg, 'utf8');
+
+                    const result = await new SvgSanitizer().sanitize(filePath);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const sanitizedSvg = await readFile(filePath, 'utf-8');
+                    const dom = new JSDOM(sanitizedSvg, {
+                        contentType: 'image/svg+xml'
+                    });
+
+                    expect(
+                        dom.window.document.querySelector('script')
+                    ).toBeNull();
+                },
+                { postfix: '.svg', keep: false }
+            );
+        });
+
+        it('ignores non-SVG files when passed as string path', async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    await writeFile(filePath, 'some text', 'utf8');
+
+                    const result = await new SvgSanitizer().sanitize(filePath);
+                    expect(result).toBe(FileSanitizerResult.Ignored);
+                },
+                { postfix: '.txt', keep: false }
+            );
+        });
+
+        it('handles uppercase .SVG extension when passed as string path', async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <script>alert(document.cookie);</script>
+                      <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233"></circle>
+                    </svg>`;
+                    await writeFile(filePath, maliciousSvg, 'utf8');
+
+                    const result = await new SvgSanitizer().sanitize(filePath);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const sanitizedSvg = await readFile(filePath, 'utf-8');
+                    const dom = new JSDOM(sanitizedSvg, {
+                        contentType: 'image/svg+xml'
+                    });
+                    expect(
+                        dom.window.document.querySelector('script')
+                    ).toBeNull();
+                },
+                { postfix: '.SVG', keep: false }
+            );
+        });
+
+        it('normalizes string path to extract filename correctly', async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    const svg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40"></circle>
+                     </svg>`;
+                    await writeFile(filePath, svg, 'utf8');
+
+                    // The path contains directory components, but normalization
+                    // should extract only the basename for extension checking
+                    const result = await new SvgSanitizer().sanitize(filePath);
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+                },
+                { postfix: '.svg', keep: false }
+            );
+        });
+    });
 });

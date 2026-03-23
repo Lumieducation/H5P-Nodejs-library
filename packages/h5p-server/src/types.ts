@@ -2492,7 +2492,9 @@ export interface IFileMalwareScanner {
     readonly name: string;
 
     /** Scans a file for malware and returns whether it contains malware. */
-    scan(file: File): Promise<{ result: MalwareScanResult; viruses?: string }>;
+    scan(
+        file: string | File
+    ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
 export enum FileSanitizerResult {
@@ -2517,5 +2519,5 @@ export interface IFileSanitizer {
 
     /** Sanitizes files. The original file is expected to be replaced by the
      * sanitized file, so there is no new path to the sanitized file.*/
-    sanitize(file: File): Promise<FileSanitizerResult>;
+    sanitize(file: string | File): Promise<FileSanitizerResult>;
 }
