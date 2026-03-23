@@ -169,84 +169,111 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     async scan(
         file: string | File
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
-        const normalizedFile: File | { tempFilePath: string; name: string } =
-            typeof file === 'string'
-                ? { tempFilePath: file, name: basename(file) }
-                : file;
+        const normalizedFile = this.normalizeFileInput(file);
+
+        log.debug(
+            'Scanning uploaded file',
+            normalizedFile.name,
+            'with malware scanner',
+            this.name
+        );
 
         try {
-            log.debug(
-                'Scanning uploaded file',
-                normalizedFile.name,
-                'with malware scanner',
-                this.name
-            );
-
-            let result: NodeClam.Response<{
-                file: string;
-                isInfected: boolean;
-            }>;
-            if ('data' in normalizedFile && normalizedFile.data) {
-                if (this.options.clamdServiceEnabled) {
-                    log.debug('Using stream scan for ClamAV daemon');
-                    const readable = Readable.from(normalizedFile.data);
-                    result = await this.scanner.scanStream(readable);
-                } else {
-                    log.debug('Using temporary file scan for ClamAV binary');
-                    let tempDir: string | undefined;
-                    let tempFilePath: string | undefined;
-                    try {
-                        tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
-                        const safeFileName = basename(normalizedFile.name);
-                        tempFilePath = join(tempDir, safeFileName || 'upload');
-                        await writeFile(tempFilePath, normalizedFile.data);
-                        result = await this.scanner.scanFile(tempFilePath);
-                    } finally {
-                        try {
-                            if (tempFilePath) {
-                                await unlink(tempFilePath);
-                            }
-                            if (tempDir) {
-                                await rm(tempDir, {
-                                    recursive: true,
-                                    force: true
-                                });
-                            }
-                            log.debug(
-                                `Temporary file and directory deleted: ${tempFilePath}`
-                            );
-                        } catch (err) {
-                            log.debug(
-                                `Error deleting temporary file or directory: ${tempFilePath}`,
-                                err
-                            );
-                        }
-                    }
-                }
-            } else if (normalizedFile.tempFilePath) {
-                result = await this.scanner.scanFile(
-                    normalizedFile.tempFilePath
-                );
-            } else {
-                log.error('No file data or path provided for scanning');
-                return { result: MalwareScanResult.NotScanned };
-            }
-
-            if (result.isInfected) {
-                const viruses = result.viruses.join(',');
-                log.info(
-                    'Uploaded file',
-                    normalizedFile.name,
-                    'is infected with:',
-                    viruses
-                );
-                return { result: MalwareScanResult.MalwareFound, viruses };
-            }
-            log.debug('Uploaded file', normalizedFile.name, 'is clean');
-            return { result: MalwareScanResult.Clean };
+            const scanResponse = await this.performScan(normalizedFile);
+            return this.buildScanResult(scanResponse, normalizedFile.name);
         } catch (error) {
             log.error('Error while scanning file', normalizedFile.name, error);
             return { result: MalwareScanResult.NotScanned };
         }
+    }
+
+    private normalizeFileInput(
+        file: string | File
+    ): File | { tempFilePath: string; name: string } {
+        return typeof file === 'string'
+            ? { tempFilePath: file, name: basename(file) }
+            : file;
+    }
+
+    private async performScan(
+        normalizedFile: File | { tempFilePath: string; name: string }
+    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
+        if ('data' in normalizedFile && normalizedFile.data) {
+            return this.scanBuffer(normalizedFile.data, normalizedFile.name);
+        }
+
+        if (normalizedFile.tempFilePath) {
+            return this.scanner.scanFile(normalizedFile.tempFilePath);
+        }
+
+        log.error('No file data or path provided for scanning');
+        throw new Error('No file data or path provided for scanning');
+    }
+
+    private async scanBuffer(
+        data: Buffer,
+        fileName: string
+    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
+        if (this.options.clamdServiceEnabled) {
+            log.debug('Using stream scan for ClamAV daemon');
+            const readable = Readable.from(data);
+            return this.scanner.scanStream(readable);
+        }
+
+        log.debug('Using temporary file scan for ClamAV binary');
+        return this.scanBufferWithTempFile(data, fileName);
+    }
+
+    private async scanBufferWithTempFile(
+        data: Buffer,
+        fileName: string
+    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
+        let tempDir: string | undefined;
+        let tempFilePath: string | undefined;
+
+        try {
+            tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
+            const safeFileName = basename(fileName);
+            tempFilePath = join(tempDir, safeFileName || 'upload');
+
+            await writeFile(tempFilePath, data);
+            return await this.scanner.scanFile(tempFilePath);
+        } finally {
+            await this.cleanupTempFiles(tempFilePath, tempDir);
+        }
+    }
+
+    private async cleanupTempFiles(
+        tempFilePath?: string,
+        tempDir?: string
+    ): Promise<void> {
+        try {
+            if (tempFilePath) {
+                await unlink(tempFilePath);
+            }
+            if (tempDir) {
+                await rm(tempDir, { recursive: true, force: true });
+            }
+            log.debug(`Temporary file and directory deleted: ${tempFilePath}`);
+        } catch (err) {
+            log.debug(
+                `Error deleting temporary file or directory: ${tempFilePath}`,
+                err
+            );
+        }
+    }
+
+    private buildScanResult(
+        response: NodeClam.Response<{ file: string; isInfected: boolean }>,
+        fileName: string
+    ): { result: MalwareScanResult; viruses?: string } {
+        if (response.isInfected) {
+            const viruses = response.viruses.join(',');
+            log.info('Uploaded file', fileName, 'is infected with:', viruses);
+            return { result: MalwareScanResult.MalwareFound, viruses };
+        }
+
+        log.debug('Uploaded file', fileName, 'is clean');
+        return { result: MalwareScanResult.Clean };
     }
 }

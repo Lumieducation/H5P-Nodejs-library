@@ -16,21 +16,14 @@ export default class SvgSanitizer implements IFileSanitizer {
     readonly name: string = 'SVG Sanitizer based on dompurify package';
 
     async sanitize(file: string | File): Promise<FileSanitizerResult> {
-        const normalizedFile: File | { tempFilePath: string; name: string } =
-            typeof file === 'string'
-                ? { tempFilePath: file, name: basename(file) }
-                : file;
+        const normalizedFile = this.normalizeFileInput(file);
 
-        if (!normalizedFile.name.toLowerCase().endsWith('.svg')) {
+        if (!this.isSvgFile(normalizedFile.name)) {
             return FileSanitizerResult.Ignored;
         }
 
-        let svgString: string;
-        if ('data' in normalizedFile && normalizedFile.data) {
-            svgString = normalizedFile.data.toString('utf8');
-        } else if (normalizedFile.tempFilePath) {
-            svgString = await readFile(normalizedFile.tempFilePath, 'utf8');
-        } else {
+        const svgString = await this.readContent(normalizedFile);
+        if (svgString === null) {
             return FileSanitizerResult.NotSanitized;
         }
 
@@ -38,18 +31,61 @@ export default class SvgSanitizer implements IFileSanitizer {
             USE_PROFILES: { svg: true }
         });
 
-        if ('data' in normalizedFile && normalizedFile.data) {
-            normalizedFile.data = Buffer.from(sanitizedSvgString, 'utf8');
-        } else if (normalizedFile.tempFilePath) {
-            await writeFile(
-                normalizedFile.tempFilePath,
-                sanitizedSvgString,
-                'utf8'
-            );
-        } else {
-            return FileSanitizerResult.NotSanitized;
+        const writeSuccess = await this.writeContent(
+            normalizedFile,
+            sanitizedSvgString
+        );
+        return writeSuccess
+            ? FileSanitizerResult.Sanitized
+            : FileSanitizerResult.NotSanitized;
+    }
+
+    private normalizeFileInput(
+        file: string | File
+    ): File | { tempFilePath: string; name: string } {
+        return typeof file === 'string'
+            ? { tempFilePath: file, name: basename(file) }
+            : file;
+    }
+
+    private isSvgFile(fileName: string): boolean {
+        return fileName.toLowerCase().endsWith('.svg');
+    }
+
+    private hasBufferData(
+        file: File | { tempFilePath: string; name: string }
+    ): file is File & { data: Buffer } {
+        return 'data' in file && !!file.data;
+    }
+
+    private async readContent(
+        file: File | { tempFilePath: string; name: string }
+    ): Promise<string | null> {
+        if (this.hasBufferData(file)) {
+            return file.data.toString('utf8');
         }
 
-        return FileSanitizerResult.Sanitized;
+        if (file.tempFilePath) {
+            return readFile(file.tempFilePath, 'utf8');
+        }
+
+        return null;
+    }
+
+    private async writeContent(
+        file: File | { tempFilePath: string; name: string },
+        content: string
+    ): Promise<boolean> {
+        if (this.hasBufferData(file)) {
+            file.data = Buffer.from(content, 'utf8');
+            return true;
+        }
+
+        if (file.tempFilePath) {
+            await writeFile(file.tempFilePath, content, 'utf8');
+            return true;
+        }
+
+        return false;
     }
 }
