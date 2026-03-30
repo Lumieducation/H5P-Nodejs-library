@@ -7,8 +7,9 @@ export default defineConfig({
         testTimeout: Number(process.env.TEST_TIMEOUT) || 45000,
         clearMocks: true,
         include: [
-            'packages/h5p-server/test/**/*.test.ts',
+            'packages/h5p-clamav-scanner/test/**/*.test.ts',
             'packages/h5p-express/test/**/*.test.ts',
+            'packages/h5p-server/test/**/*.test.ts',
             'packages/h5p-shared-state-server/test/**/*.test.ts',
             'packages/h5p-svg-sanitizer/test/**/*.test.ts'
         ],
