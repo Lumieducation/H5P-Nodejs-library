@@ -3,8 +3,8 @@ import { withDir } from 'tmp-promise';
 
 import {
     fsImplementations,
-    LibraryManager,
-    ILibraryInstallResult
+    ILibraryInstallResult,
+    LibraryManager
 } from '@lumieducation/h5p-server';
 import RedisLockProvider from '../src/RedisLockProvider';
 
@@ -78,6 +78,7 @@ describe('RedisLockerProvider', () => {
                     new RedisLockProvider(redisClient),
                     {
                         installLibraryLockMaxOccupationTime: 1,
+                        installLibraryLockMaxWaitTime: 50,
                         installLibraryLockTimeout: 50
                     }
                 );
