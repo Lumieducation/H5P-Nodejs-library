@@ -32,8 +32,8 @@
         "express-session": "1.19.0",
         "fs-extra": "11.3.4",
         "i18next": "24.2.3",
-        "i18next-fs-backend": "2.6.1",
-        "i18next-http-middleware": "3.9.2",
+        "i18next-fs-backend": "2.6.4",
+        "i18next-http-middleware": "3.9.3",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
         "tmp-promise": "3.0.3"
@@ -41,7 +41,7 @@
     "devDependencies": {
         "@types/cors": "2.8.19",
         "@types/express": "5.0.6",
-        "@types/express-session": "1.18.2",
+        "@types/express-session": "1.19.0",
         "@types/passport": "1.0.17",
         "@types/passport-local": "1.0.38",
         "ts-node": "10.9.2",
