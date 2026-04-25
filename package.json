@@ -90,7 +90,7 @@
         "@typescript-eslint/parser": "8.59.0",
         "@vitest/coverage-v8": "^4.0.18",
         "axios": "1.15.2",
-        "commitlint": "20.5.0",
+        "commitlint": "20.5.2",
         "concurrently": "9.2.1",
         "eslint": "^8.57.1",
         "eslint-config-prettier": "^10.0.0",
