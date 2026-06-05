@@ -1,43 +1,50 @@
-import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
-import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
+import { createReadStream, createWriteStream, readFileSync } from 'fs';
+import { rm } from 'fs/promises';
 import imageSize from 'image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { rm } from 'fs/promises';
-import { createReadStream, createWriteStream, readFileSync } from 'fs';
+import { PassThrough, Readable, Writable } from 'stream';
+import { file as createTempFile, FileResult, withFile } from 'tmp-promise';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
 import defaultMetadataSemantics from '../assets/defaultMetadataSemantics.json';
+import supportedLanguageList from '../assets/editorLanguages.json';
 import defaultClientLanguageFile from '../assets/translations/client/en.json';
 import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
+import variantEquivalents from '../assets/variantEquivalents.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
-import supportedLanguageList from '../assets/editorLanguages.json';
-import variantEquivalents from '../assets/variantEquivalents.json';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
-import { validateFileContent } from './contentFileValidation';
+import { validateContent } from './contentFileValidation';
+import ContentHub from './ContentHub';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
+import DependencyGetter from './DependencyGetter';
+import { downloadFile } from './helpers/downloadFile';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import SimpleTranslator from './helpers/SimpleTranslator';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
+import SemanticsLocalizer from './SemanticsLocalizer';
 import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
+    File,
     FileSanitizerResult,
     IAssets,
     IContentMetadata,
@@ -66,12 +73,6 @@ import {
     MalwareScanResult
 } from './types';
 import UrlGenerator from './UrlGenerator';
-import SemanticsLocalizer from './SemanticsLocalizer';
-import SimpleTranslator from './helpers/SimpleTranslator';
-import DependencyGetter from './DependencyGetter';
-import ContentHub from './ContentHub';
-import { downloadFile } from './helpers/downloadFile';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('H5PEditor');
 
@@ -629,13 +630,7 @@ export default class H5PEditor {
     public async saveContentFile(
         contentId: ContentId,
         field: ISemanticsEntry,
-        file: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        },
+        file: File,
         user: IUser
     ): Promise<{
         height?: number;
@@ -654,24 +649,25 @@ export default class H5PEditor {
             (field.type === 'video' && !file.mimetype.startsWith('video/')) ||
             (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
         ) {
+            log.debug(
+                `Invalid file upload: field type is ${field.type} but mimetype is ${file.mimetype}`
+            );
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
-        if (
-            (this.malwareScanners.length > 0 ||
-                this.fileSanitizers.length > 0) &&
-            !file.tempFilePath
-        ) {
-            throw new Error(
-                "Inconsistent setup of file upload middleware and malware/sanitization: You've set up a malware scanner and/or file sanitizer and have configured your file upload middleware to stream data to H5PEditor.saveContentFile. If you want to use malware scanners or file sanitization you must use temporary files!"
+        // Ensure we have either a temporary file path or in-memory data to work with
+        if (!file.tempFilePath && !file.data) {
+            log.debug(
+                `Invalid file upload: no data or tempFilePath provided for file ${file.name}`
             );
+            throw new H5pError('upload-validation-error', {}, 400);
         }
 
         // Scan for malware
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
                 return {
-                    ...(await scanner.scan(file.tempFilePath)),
+                    ...(await scanner.scan(file)),
                     scannerName: scanner.name
                 };
             })
@@ -687,23 +683,23 @@ export default class H5PEditor {
             }
             // Remove the file from the temporary storage to make sure it can't
             // be accessed anymore
-            await rm(file.tempFilePath, { force: true });
+            if (file.tempFilePath) {
+                await rm(file.tempFilePath, { force: true });
+            }
 
             // TODO: log to audit log
             throw new H5pError('upload-malware-found', {}, 400);
         }
 
         // Validate that the file content matches the claimed extension
-        if (file.tempFilePath) {
-            await validateFileContent(file.tempFilePath);
-        }
+        await validateContent(file);
 
         // Sanitize the file if possible
         for (const sanitizer of this.fileSanitizers) {
             try {
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(file.tempFilePath);
+                const result = await sanitizer.sanitize(file);
                 if (result == FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
