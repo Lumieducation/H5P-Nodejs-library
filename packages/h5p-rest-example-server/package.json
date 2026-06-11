@@ -24,7 +24,7 @@
         "@lumieducation/h5p-shared-state-server": "^10.0.4",
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "body-parser": "2.2.2",
-        "cache-manager": "4.1.0",
+        "cache-manager": "7.2.8",
         "cache-manager-redis-store": "2.0.0",
         "cors": "2.8.6",
         "express": "5.2.1",
