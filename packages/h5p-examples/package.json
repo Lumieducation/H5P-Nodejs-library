@@ -27,7 +27,7 @@
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "body-parser": "2.2.2",
         "bootstrap": "^5.2.3",
-        "cache-manager": "4.1.0",
+        "cache-manager": "7.2.8",
         "cache-manager-redis-store": "2.0.0",
         "debug": "^4.3.4",
         "dotenv": "^17.0.0",
