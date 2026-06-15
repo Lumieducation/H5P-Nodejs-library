@@ -25,7 +25,7 @@
     ],
     "dependencies": {
         "@lumieducation/h5p-server": "^10.0.4",
-        "simple-redis-mutex": "^2.0.0"
+        "simple-redis-mutex": "^3.0.0"
     },
     "peerDependencies": {
         "redis": "^4.7.0"
