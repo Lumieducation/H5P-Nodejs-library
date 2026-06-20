@@ -1,16 +1,16 @@
 /* eslint-disable no-await-in-loop */
 
-import path from 'path';
-import { withDir, file, FileResult } from 'tmp-promise';
-import { readFile, writeFile } from 'fs/promises';
 import { createWriteStream } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
+import path from 'path';
+import { file, FileResult, withDir } from 'tmp-promise';
 
 import User from './User';
 import { createH5PEditor } from './helpers/H5PEditor';
 
+import { streamToString } from '../src';
 import { ContentMetadata } from '../src/ContentMetadata';
 import { FileSanitizerResult, IFileSanitizer } from '../src/types';
-import { streamToString } from '../src';
 
 describe('H5PEditor', () => {
     it('returns metadata and parameters of package uploads', async () => {
@@ -96,10 +96,14 @@ describe('H5PEditor', () => {
                 const sanitizer2: IFileSanitizer = {
                     name: 'Mock file sanitizer 2',
                     sanitize: async (file) => {
-                        if (file.endsWith('.jpg')) {
+                        if (file.name.endsWith('.jpg')) {
                             // replace the file contents with 'sanitized' to
                             // mimmick sanitization
-                            await writeFile(file, 'sanitized', 'utf8');
+                            await writeFile(
+                                file.tempFilePath,
+                                'sanitized',
+                                'utf8'
+                            );
                             return FileSanitizerResult.Sanitized;
                         }
                         return FileSanitizerResult.Ignored;

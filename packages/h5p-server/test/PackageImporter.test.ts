@@ -1,21 +1,21 @@
+import { mkdir } from 'fs/promises';
 import * as path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir } from 'tmp-promise';
-import { mkdir } from 'fs/promises';
 
 import ContentManager from '../src/ContentManager';
-import H5PConfig from '../src/implementation/H5PConfig';
+import ContentStorer from '../src/ContentStorer';
 import FileContentStorage from '../src/implementation/fs/FileContentStorage';
 import FileLibraryStorage from '../src/implementation/fs/FileLibraryStorage';
+import H5PConfig from '../src/implementation/H5PConfig';
+import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 import LibraryManager from '../src/LibraryManager';
 import PackageImporter from '../src/PackageImporter';
-import ContentStorer from '../src/ContentStorer';
-import { LaissezFairePermissionSystem } from '../src/implementation/LaissezFairePermissionSystem';
 import {
-    IUser,
     GeneralPermission,
     IFileMalwareScanner,
+    IUser,
     MalwareScanResult
 } from '../src/types';
 
@@ -211,7 +211,7 @@ describe('package importer', () => {
                 const mockMalwareScanner: IFileMalwareScanner = {
                     name: 'Mock malware scanner',
                     scan: async (file) => {
-                        if (file.includes('eicar')) {
+                        if (file.name.includes('eicar')) {
                             return {
                                 result: MalwareScanResult.MalwareFound,
                                 viruses: 'EICAR test virus'
