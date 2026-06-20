@@ -52,7 +52,7 @@
         "cache-manager": "^4.0.0",
         "debug": "^4.3.4",
         "flat": "^5.0.2",
-        "get-all-files": "^5.0.0",
+        "get-all-files": "^6.0.0",
         "https-proxy-agent": "^7.0.0",
         "image-size": "^1.0.2",
         "jsonpath": "^1.1.1",
