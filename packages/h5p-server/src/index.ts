@@ -1,4 +1,5 @@
 // Classes
+import AbortedError from './helpers/AbortedError';
 import H5PEditor from './H5PEditor';
 import H5pError from './helpers/H5pError';
 import H5PPlayer from './H5PPlayer';
@@ -99,6 +100,7 @@ const cacheImplementations = {
 
 export {
     // classes
+    AbortedError,
     AggregateH5pError,
     AjaxErrorResponse,
     AjaxSuccessResponse,
