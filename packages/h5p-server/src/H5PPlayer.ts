@@ -163,6 +163,8 @@ export default class H5PPlayer {
             showCopyButton?: boolean;
             showDownloadButton?: boolean;
             showEmbedButton?: boolean;
+            embedCode?: string;
+            resizeCode?: string;
             showFrame?: boolean;
             showH5PIcon?: boolean;
             showLicenseButton?: boolean;
@@ -259,6 +261,8 @@ export default class H5PPlayer {
                     showCopyButton: options?.showCopyButton ?? false,
                     showDownloadButton: options?.showDownloadButton ?? false,
                     showEmbedButton: options?.showEmbedButton ?? false,
+                    embedCode: options?.embedCode,
+                    resizeCode: options?.resizeCode,
                     showFrame: options?.showFrame ?? false,
                     showH5PIcon: options?.showH5PIcon ?? false,
                     showLicenseButton: options?.showLicenseButton ?? false
@@ -397,6 +401,8 @@ export default class H5PPlayer {
             showCopyButton: boolean;
             showDownloadButton: boolean;
             showEmbedButton: boolean;
+            embedCode?: string;
+            resizeCode?: string;
             showFrame: boolean;
             showH5PIcon: boolean;
             showLicenseButton: boolean;
@@ -458,7 +464,12 @@ export default class H5PPlayer {
                     scripts: assets.scripts,
                     styles: assets.styles,
                     url: this.urlGenerator.uniqueContentUrl(contentId),
-                    exportUrl: this.urlGenerator.downloadPackage(contentId)
+                    exportUrl: this.urlGenerator.downloadPackage(contentId),
+                    embedCode: displayOptions.embedCode?.replace(
+                        ':contentId',
+                        contentId
+                    ),
+                    resizeCode: displayOptions.resizeCode
                 }
             },
             core: {
