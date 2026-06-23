@@ -86,8 +86,8 @@
     "devDependencies": {
         "@commitlint/config-conventional": "20.5.3",
         "@eslint/js": "^9.17.0",
-        "@typescript-eslint/eslint-plugin": "8.61.1",
-        "@typescript-eslint/parser": "8.61.1",
+        "@typescript-eslint/eslint-plugin": "8.62.0",
+        "@typescript-eslint/parser": "8.62.0",
         "@vitest/coverage-v8": "^4.0.18",
         "axios": "1.18.1",
         "commitlint": "20.5.3",
