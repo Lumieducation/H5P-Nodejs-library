@@ -91,7 +91,7 @@
         "@vitest/coverage-v8": "^4.0.18",
         "axios": "1.18.1",
         "commitlint": "20.5.3",
-        "concurrently": "9.2.3",
+        "concurrently": "10.0.3",
         "eslint": "^8.57.1",
         "eslint-config-prettier": "^10.0.0",
         "eslint-plugin-react": "^7.35.0",
