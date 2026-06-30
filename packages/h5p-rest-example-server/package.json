@@ -31,7 +31,7 @@
         "express-fileupload": "1.5.2",
         "express-session": "1.19.0",
         "fs-extra": "11.3.6",
-        "i18next": "24.2.3",
+        "i18next": "26.3.4",
         "i18next-fs-backend": "2.6.6",
         "i18next-http-middleware": "3.9.7",
         "passport": "0.7.0",
