@@ -58,7 +58,7 @@
     "devDependencies": {
         "@types/postcss-import": "^14.0.0",
         "promisepipe": "3.0.0",
-        "puppeteer": "^24.16.2",
+        "puppeteer": "^25.0.0",
         "tmp-promise": "3.0.3"
     },
     "files": [
