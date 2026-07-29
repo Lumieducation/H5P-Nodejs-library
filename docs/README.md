@@ -60,9 +60,28 @@ Make sure you have [`git`](https://git-scm.com/), [`node ≥ 10.16`](https://nod
 Windows, you must use bash (comes with Git for windows) as a command shell
 (otherwise scripts won't run).
 
-1. Clone the repository with git
-2. `npm install`
-3. `npm start`
+1.  Clone the repository
+    
+        git clone https://github.com/Lumieducation/H5P-Nodejs-library
+        cd H5P-Nodejs-library
+    
+2.  Install root dependencies
+    
+        npm install
+    
+3.  Install dependencies for `h5p-examples`
+    
+        cd packages/h5p-examples
+        npm install
+    
+4.  Go back to the root directory and build the project
+    
+        cd ../..
+        npm run build
+    
+5.  Start the application
+    
+        npm start
 
 You can then open the URL [http://localhost:8080](http://localhost:8080) in any
 browser.
