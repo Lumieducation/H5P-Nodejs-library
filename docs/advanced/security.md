@@ -87,7 +87,7 @@ interface IFileSanitizer {
 
     /** Sanitizes files. The original file is expected to be replaced by the
      * sanitized file, so there is no new path to the sanitized file.*/
-    sanitize(file: string): Promise<FileSanitizerResult>;
+    sanitize(file: File): Promise<FileSanitizerResult>;
 }
 
 enum FileSanitizerResult {
@@ -97,9 +97,10 @@ enum FileSanitizerResult {
 }
 ```
 
-Note: Sanitization only works if you pass uploaded content files to {@link
-@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
-in-memory streams!
+ Note: Sanitization works for uploaded content files that you pass to {@link
+ @lumieducation/h5p-server!H5PEditor.saveContentFile} using the {@link
+ @lumieducation/h5p-server!File} shape, regardless of whether they are backed by
+ temporary files on disk or in-memory buffers.
 
 ### Existing file sanitizers
 
@@ -175,7 +176,7 @@ interface IFileMalwareScanner {
 
     /** Scans a file for malware and returns whether it contains malware. */
     scan(
-        file: string
+        file: File
     ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 

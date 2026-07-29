@@ -2468,6 +2468,14 @@ export interface ILockProvider {
     ): Promise<T>;
 }
 
+export type File = {
+    data?: Buffer;
+    mimetype: string;
+    name: string;
+    size: number;
+    tempFilePath?: string;
+};
+
 export enum MalwareScanResult {
     MalwareFound,
     Clean,
@@ -2485,7 +2493,7 @@ export interface IFileMalwareScanner {
 
     /** Scans a file for malware and returns whether it contains malware. */
     scan(
-        file: string
+        file: string | File
     ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
@@ -2511,5 +2519,5 @@ export interface IFileSanitizer {
 
     /** Sanitizes files. The original file is expected to be replaced by the
      * sanitized file, so there is no new path to the sanitized file.*/
-    sanitize(file: string): Promise<FileSanitizerResult>;
+    sanitize(file: string | File): Promise<FileSanitizerResult>;
 }

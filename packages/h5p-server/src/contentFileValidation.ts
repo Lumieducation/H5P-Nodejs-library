@@ -1,10 +1,12 @@
+import { createWriteStream } from 'fs';
 import { open } from 'fs/promises';
-import path from 'path';
 import { filetypeextension } from 'magic-bytes.js';
 import { lookup as mimeLookup } from 'mime-types';
-
+import path from 'path';
+import { FileResult, withFile } from 'tmp-promise';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import { File } from './types';
 
 const log = new Logger('contentFileValidation');
 
@@ -29,6 +31,29 @@ const dangerousTextPatterns = [
     '<html',
     '<script'
 ];
+
+/**
+ * Validates that a file's content matches its claimed extension. Automatically
+ * chooses the appropriate validation method based on whether the file data is
+ * available as an in-memory buffer or as a path to a temporary file on disk.
+ *
+ * @param file the uploaded file to validate; must have either `data` (buffer)
+ * or `tempFilePath` set
+ * @throws H5pError with errorId 'upload-validation-error' if the file has
+ * neither data nor tempFilePath, or if content validation fails
+ */
+export async function validateContent(file: File): Promise<void> {
+    if (file.data) {
+        await validateBufferContent(file.data, file.name);
+    } else if (file.tempFilePath) {
+        await validateFileContent(file.tempFilePath);
+    } else {
+        log.error(
+            `File has no data or tempFilePath for validation: ${file.name}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+}
 
 /**
  * Validates that the content of a file matches its claimed extension. Uses
@@ -118,6 +143,48 @@ export async function validateFileContent(filePath: string): Promise<void> {
     } finally {
         await fileHandle.close();
     }
+}
+
+/**
+ * Validates that a buffer's content matches its expected file type. Writes the
+ * buffer to a temporary file and delegates to validateFileContent for magic
+ * byte detection and dangerous content checks.
+ *
+ * Use this function when you have file data in memory (e.g., from a stream or
+ * direct upload) rather than on disk. The temporary file is automatically
+ * cleaned up after validation completes.
+ *
+ * @param buffer the file content to validate; must be non-empty
+ * @param filename the original filename, used to determine the extension for
+ * content-type validation
+ * @throws H5pError with errorId 'upload-validation-error' if the buffer is
+ * empty or if the content fails validation
+ */
+export async function validateBufferContent(
+    buffer: Buffer,
+    filename: string
+): Promise<void> {
+    if (!buffer || buffer.length === 0) {
+        log.error(
+            `Invalid buffer provided to validateBufferContent: empty or undefined`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+    await withFile(
+        async ({ path: tempPath }: FileResult) => {
+            await new Promise<void>((resolve, reject) => {
+                const writeStream = createWriteStream(tempPath);
+                writeStream.on('error', reject);
+                writeStream.on('finish', resolve);
+                writeStream.end(buffer);
+            });
+            await validateFileContent(tempPath);
+        },
+        {
+            discardDescriptor: true,
+            postfix: path.extname(filename) || undefined
+        }
+    );
 }
 
 /**
