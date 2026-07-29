@@ -89,7 +89,7 @@
         "@typescript-eslint/eslint-plugin": "8.65.0",
         "@typescript-eslint/parser": "8.65.0",
         "@vitest/coverage-v8": "^4.0.18",
-        "axios": "1.18.1",
+        "axios": "1.19.0",
         "commitlint": "20.5.3",
         "concurrently": "9.2.4",
         "eslint": "^8.57.1",
