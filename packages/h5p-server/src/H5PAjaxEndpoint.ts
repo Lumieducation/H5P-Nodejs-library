@@ -1,22 +1,23 @@
-import { Writable, Readable } from 'stream';
 import { lookup as mimeLookup } from 'mime-types';
+import { Readable, Writable } from 'stream';
 
-import {
-    IUser,
-    ILibraryDetailedDataForClient,
-    IHubInfo,
-    ContentId,
-    IContentMetadata,
-    ContentParameters,
-    ILibraryOverviewForClient,
-    IFileStats,
-    IAjaxResponse
-} from './types';
 import H5PEditor from './H5PEditor';
-import H5pError from './helpers/H5pError';
 import AjaxSuccessResponse from './helpers/AjaxSuccessResponse';
+import H5pError from './helpers/H5pError';
 import LibraryName from './LibraryName';
 import SemanticsEnforcer from './SemanticsEnforcer';
+import {
+    ContentId,
+    ContentParameters,
+    File,
+    IAjaxResponse,
+    IContentMetadata,
+    IFileStats,
+    IHubInfo,
+    ILibraryDetailedDataForClient,
+    ILibraryOverviewForClient,
+    IUser
+} from './types';
 
 /**
  * Each method in this class corresponds to a route that is called by the H5P
@@ -463,25 +464,13 @@ export default class H5PAjaxEndpoint {
             | { libraryParameters: string },
         language?: string,
         user?: IUser,
-        filesFile?: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        },
+        filesFile?: File,
         id?: string,
         translate?: (
             stringId: string,
             replacements: { [key: string]: any }
         ) => string,
-        libraryUploadFile?: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        },
+        libraryUploadFile?: File,
         hubId?: string
     ): Promise<
         | AjaxSuccessResponse
