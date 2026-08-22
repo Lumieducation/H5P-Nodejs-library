@@ -34,7 +34,7 @@ export default class H5PConfig implements IH5PConfig {
         'json png jpg jpeg gif bmp tif tiff webm mp4 ogg mp3 m4a wav vtt webvtt gltf glb txt';
     public coreApiVersion: { major: number; minor: number } = {
         major: 1,
-        minor: 27
+        minor: 28
     };
     public coreUrl: string = '/core';
     public customization: {
@@ -69,7 +69,7 @@ export default class H5PConfig implements IH5PConfig {
     public enableLrsContentTypes: boolean = true;
     public exportMaxContentPathLength: number = 255;
     public fetchingDisabled: 0 | 1 = 0;
-    public h5pVersion: string = '1.27.0';
+    public h5pVersion: string = '1.28.0';
     public hubContentTypesEndpoint: string =
         'https://hub-api.h5p.org/v1/content-types/';
     public hubRegistrationEndpoint: string = 'https://hub-api.h5p.org/v1/sites';
