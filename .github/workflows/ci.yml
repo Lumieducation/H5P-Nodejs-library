@@ -53,44 +53,56 @@ jobs:
                       "npm run build --prefix packages/h5p-rest-example-client" \
                       "npm run build --prefix packages/h5p-rest-example-server" \
                       "npm run download:content"
+            # actions/upload-artifact zips the workspace and does not
+            # preserve symlinks (it dereferences them into flat file
+            # copies). node_modules/.bin/* entries are symlinks, and some
+            # bin scripts (e.g. concurrently) do relative requires that only
+            # resolve correctly from their real, nested location, so
+            # flattening them breaks with MODULE_NOT_FOUND. tar preserves
+            # symlinks and permissions natively, so archive first and let
+            # upload-artifact ship a single opaque file.
+            - name: Archive workspace
+              run: |
+                  tar -czf workspace.tar.gz \
+                      node_modules \
+                      packages/h5p-clamav-scanner/build \
+                      packages/h5p-clamav-scanner/node_modules \
+                      packages/h5p-examples/build \
+                      packages/h5p-examples/h5p \
+                      packages/h5p-examples/node_modules \
+                      packages/h5p-express/build \
+                      packages/h5p-express/node_modules \
+                      packages/h5p-html-exporter/build \
+                      packages/h5p-html-exporter/node_modules \
+                      packages/h5p-mongos3/build \
+                      packages/h5p-mongos3/node_modules \
+                      packages/h5p-react/build \
+                      packages/h5p-react/node_modules \
+                      packages/h5p-redis-lock/build \
+                      packages/h5p-redis-lock/node_modules \
+                      packages/h5p-rest-example-client/build \
+                      packages/h5p-rest-example-client/node_modules \
+                      packages/h5p-rest-example-server/build \
+                      packages/h5p-rest-example-server/h5p \
+                      packages/h5p-rest-example-server/node_modules \
+                      packages/h5p-server/build \
+                      packages/h5p-server/node_modules \
+                      packages/h5p-shared-state-server/build \
+                      packages/h5p-shared-state-server/node_modules \
+                      packages/h5p-svg-sanitizer/build \
+                      packages/h5p-svg-sanitizer/node_modules \
+                      packages/h5p-webcomponents/build \
+                      packages/h5p-webcomponents/node_modules \
+                      test/data/content-type-cache/real-content-types.json \
+                      test/data/hub-content
             - uses: actions/upload-artifact@v4
               with:
                   name: workspace
                   retention-days: 1
-                  include-hidden-files: true
-                  compression-level: 1
-                  path: |
-                      node_modules
-                      packages/h5p-clamav-scanner/build
-                      packages/h5p-clamav-scanner/node_modules
-                      packages/h5p-examples/build
-                      packages/h5p-examples/h5p
-                      packages/h5p-examples/node_modules
-                      packages/h5p-express/build
-                      packages/h5p-express/node_modules
-                      packages/h5p-html-exporter/build
-                      packages/h5p-html-exporter/node_modules
-                      packages/h5p-mongos3/build
-                      packages/h5p-mongos3/node_modules
-                      packages/h5p-react/build
-                      packages/h5p-react/node_modules
-                      packages/h5p-redis-lock/build
-                      packages/h5p-redis-lock/node_modules
-                      packages/h5p-rest-example-client/build
-                      packages/h5p-rest-example-client/node_modules
-                      packages/h5p-rest-example-server/build
-                      packages/h5p-rest-example-server/h5p
-                      packages/h5p-rest-example-server/node_modules
-                      packages/h5p-server/build
-                      packages/h5p-server/node_modules
-                      packages/h5p-shared-state-server/build
-                      packages/h5p-shared-state-server/node_modules
-                      packages/h5p-svg-sanitizer/build
-                      packages/h5p-svg-sanitizer/node_modules
-                      packages/h5p-webcomponents/build
-                      packages/h5p-webcomponents/node_modules
-                      test/data/content-type-cache/real-content-types.json
-                      test/data/hub-content
+                  # Already gzip-compressed by tar above; re-compressing the
+                  # zip wrapper would just burn CPU for no size benefit.
+                  compression-level: 0
+                  path: workspace.tar.gz
 
     lint:
         needs: install-build
@@ -103,13 +115,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - run: npm run lint
 
     format:
@@ -123,13 +130,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - run: npm run format:check
 
     unit-tests:
@@ -145,13 +147,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - run: npx vitest run --config vitest.config.ts --coverage
 
     integration-tests:
@@ -165,13 +162,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - run: npx vitest run --config vitest.integration.config.ts --coverage
 
     clamav-tests:
@@ -194,13 +186,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - run: ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
             - run: npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
 
@@ -215,13 +202,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - name: Locate Chrome
               run: echo "PUPPETEER_EXECUTABLE_PATH=$(which google-chrome || which google-chrome-stable || which chromium-browser)" >> "$GITHUB_ENV"
             - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
@@ -245,13 +227,8 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
-            - name: Restore executable bits
-              # actions/upload-artifact zips the workspace and does not
-              # reliably preserve the executable bit on node_modules/.bin
-              # scripts (unlike CircleCI's native workspace mechanism), so
-              # npm-run-installed binaries fail with "Permission denied"
-              # unless restored here.
-              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
             - name: Start MinIO
               # GitHub Actions service containers can't override the image's
               # command, and MinIO needs "server /data" to start, so it's
