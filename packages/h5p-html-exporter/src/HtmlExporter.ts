@@ -7,7 +7,6 @@ import mimetypes from 'mime-types';
 import { transformSync, transform } from 'esbuild';
 import postCssSafeParser from 'postcss-safe-parser';
 import { readFileSync } from 'fs';
-import upath from 'upath';
 import { readFile } from 'fs/promises';
 
 import {
@@ -268,7 +267,7 @@ export default class HtmlExporter {
             )
         ).filter((ref) => this.isLocalPath(ref.filePath));
         fileRefs.forEach((ref) => {
-            ref.context.params.path = upath.join(prefix, ref.filePath);
+            ref.context.params.path = path.posix.join(prefix, ref.filePath);
         });
         model.integration.contents[`cid-${model.contentId}`].jsonContent =
             JSON.stringify(params);
@@ -479,7 +478,7 @@ export default class HtmlExporter {
                             // directory of the file that is importing. That way
                             // we preserve the origin of the file (core, editor,
                             // library).
-                            return upath.join(
+                            return path.posix.join(
                                 path.dirname(style),
                                 importedFile
                             );
@@ -501,7 +500,7 @@ export default class HtmlExporter {
                                     ? (f) => {
                                           usedFiles.addFile(
                                               library,
-                                              upath.join(
+                                              path.posix.join(
                                                   path.dirname(filename),
                                                   f
                                               )
@@ -531,7 +530,7 @@ export default class HtmlExporter {
                             ? (f) => {
                                   usedFiles.addFile(
                                       library,
-                                      upath.join(path.dirname(filename), f)
+                                      path.posix.join(path.dirname(filename), f)
                                   );
                               }
                             : undefined
@@ -859,7 +858,7 @@ export default class HtmlExporter {
             const mimetype = mimetypes.lookup(path.extname(asset.relativePath));
 
             if (library) {
-                const p = upath.join(
+                const p = path.posix.join(
                     path.dirname(filename),
                     asset.relativePath
                 );
