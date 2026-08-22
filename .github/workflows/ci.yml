@@ -78,6 +78,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - run: npm run lint
 
     format:
@@ -91,6 +98,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - run: npm run format:check
 
     unit-tests:
@@ -106,6 +120,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - run: npx vitest run --config vitest.config.ts --coverage
 
     integration-tests:
@@ -119,6 +140,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - run: npx vitest run --config vitest.integration.config.ts --coverage
 
     clamav-tests:
@@ -141,6 +169,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - run: ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
             - run: npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
 
@@ -155,6 +190,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - name: Locate Chrome
               run: echo "PUPPETEER_EXECUTABLE_PATH=$(which google-chrome || which google-chrome-stable || which chromium-browser)" >> "$GITHUB_ENV"
             - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
@@ -178,6 +220,13 @@ jobs:
             - uses: actions/download-artifact@v4
               with:
                   name: workspace
+            - name: Restore executable bits
+              # actions/upload-artifact zips the workspace and does not
+              # reliably preserve the executable bit on node_modules/.bin
+              # scripts (unlike CircleCI's native workspace mechanism), so
+              # npm-run-installed binaries fail with "Permission denied"
+              # unless restored here.
+              run: find . -path '*/node_modules/.bin/*' -exec chmod +x {} +
             - name: Start MinIO
               # GitHub Actions service containers can't override the image's
               # command, and MinIO needs "server /data" to start, so it's
