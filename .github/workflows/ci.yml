@@ -1,0 +1,191 @@
+name: CI (GitHub Actions trial)
+
+# Mirrors .circleci/config.yml (minus the release/publish job) so this
+# workflow can run in parallel with CircleCI for a trial period before we
+# decide whether to switch CI platforms. Intentionally does NOT publish
+# packages.
+
+on:
+    push:
+        branches:
+            - '**'
+    pull_request:
+    workflow_dispatch:
+
+env:
+    NODE_VERSION: '24.19.0'
+
+jobs:
+    install-build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - run: npm ci
+            - run: npm run setup
+            - run: |
+                  npm run build --prefix packages/h5p-rest-example-client
+                  npm run build --prefix packages/h5p-rest-example-server
+                  npm run download:content
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: workspace
+                  retention-days: 1
+                  include-hidden-files: true
+                  path: |
+                      node_modules
+                      packages/h5p-clamav-scanner/build
+                      packages/h5p-clamav-scanner/node_modules
+                      packages/h5p-examples/build
+                      packages/h5p-examples/h5p
+                      packages/h5p-examples/node_modules
+                      packages/h5p-express/build
+                      packages/h5p-express/node_modules
+                      packages/h5p-html-exporter/build
+                      packages/h5p-html-exporter/node_modules
+                      packages/h5p-mongos3/build
+                      packages/h5p-mongos3/node_modules
+                      packages/h5p-react/build
+                      packages/h5p-react/node_modules
+                      packages/h5p-redis-lock/build
+                      packages/h5p-redis-lock/node_modules
+                      packages/h5p-rest-example-client/build
+                      packages/h5p-rest-example-client/node_modules
+                      packages/h5p-rest-example-server/build
+                      packages/h5p-rest-example-server/h5p
+                      packages/h5p-rest-example-server/node_modules
+                      packages/h5p-server/build
+                      packages/h5p-server/node_modules
+                      packages/h5p-shared-state-server/build
+                      packages/h5p-shared-state-server/node_modules
+                      packages/h5p-svg-sanitizer/build
+                      packages/h5p-svg-sanitizer/node_modules
+                      packages/h5p-webcomponents/build
+                      packages/h5p-webcomponents/node_modules
+                      test/data/content-type-cache/real-content-types.json
+                      test/data/hub-content
+
+    lint:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - run: npm run lint
+
+    format:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - run: npm run format:check
+
+    unit-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        env:
+            NODE_ENV: development
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - run: npx vitest run --config vitest.config.ts --coverage
+
+    integration-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - run: npx vitest run --config vitest.integration.config.ts --coverage
+
+    clamav-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        services:
+            clamav:
+                image: clamav/clamav:1.5.4
+                ports:
+                    - 3310:3310
+        env:
+            CLAMDSCAN_HOST: localhost
+            CLAMDSCAN_PORT: 3310
+            CLAMSCAN_DEBUG_MODE: true
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - run: ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
+            - run: npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
+
+    html-exporter-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Locate Chrome
+              run: echo "PUPPETEER_EXECUTABLE_PATH=$(which google-chrome || which google-chrome-stable || which chromium-browser)" >> "$GITHUB_ENV"
+            - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
+
+    db-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        services:
+            mongo:
+                image: mongo:8.0
+                env:
+                    MONGO_INITDB_ROOT_USERNAME: root
+                    MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
+                ports:
+                    - 27017:27017
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Start MinIO
+              # GitHub Actions service containers can't override the image's
+              # command, and MinIO needs "server /data" to start, so it's
+              # launched manually here instead of via `services:`.
+              run: |
+                  docker run -d --name minio -p 9000:9000 -p 9001:9001 \
+                      -e MINIO_ROOT_USER=minioaccesskey \
+                      -e MINIO_ROOT_PASSWORD=miniosecret \
+                      minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
+                  timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
+            - run: npm run test:h5p-mongos3 -- --coverage
