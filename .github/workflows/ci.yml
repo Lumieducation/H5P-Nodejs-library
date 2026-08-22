@@ -283,3 +283,47 @@ jobs:
             - uses: coverallsapp/github-action@v2
               with:
                   parallel-finished: true
+
+    release:
+        needs:
+            - install-build
+            - lint
+            - format
+            - unit-tests
+            - clamav-tests
+            - html-exporter-tests
+            - integration-tests
+            - db-tests
+        if: github.ref == 'refs/heads/release'
+        runs-on: ubuntu-latest
+        permissions:
+            # id-token: write lets lerna request a GitHub OIDC token and
+            # exchange it for a short-lived npm publish token per package
+            # (npm Trusted Publishing) instead of a stored NPM_TOKEN.
+            # contents: write lets lerna push version-bump commits/tags and
+            # create the GitHub release using the default GITHUB_TOKEN.
+            id-token: write
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  # lerna needs full git history and tags to compute version
+                  # bumps from conventional commits; actions/checkout
+                  # defaults to a shallow clone.
+                  fetch-depth: 0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
+            - name: Configure git identity
+              run: |
+                  git config --global user.email "c@Lumi.education"
+                  git config --global user.name "Lumi"
+            - name: Release
+              run: npx lerna version -y --conventional-commits --create-release github && npx lerna publish -y from-package
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
