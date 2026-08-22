@@ -155,6 +155,11 @@ jobs:
             - name: Extract workspace
               run: tar -xzf workspace.tar.gz
             - run: npx vitest run --config vitest.config.ts --coverage
+            - uses: coverallsapp/github-action@v2
+              with:
+                  flag-name: Unit tests
+                  parallel: true
+                  path-to-lcov: ./coverage/lcov.info
 
     integration-tests:
         needs: install-build
@@ -170,6 +175,11 @@ jobs:
             - name: Extract workspace
               run: tar -xzf workspace.tar.gz
             - run: npx vitest run --config vitest.integration.config.ts --coverage
+            - uses: coverallsapp/github-action@v2
+              with:
+                  flag-name: Integration tests
+                  parallel: true
+                  path-to-lcov: ./coverage/lcov.info
 
     clamav-tests:
         needs: install-build
@@ -195,6 +205,11 @@ jobs:
               run: tar -xzf workspace.tar.gz
             - run: ./packages/h5p-clamav-scanner/test/wait_for_clamd.sh
             - run: npx vitest run --config packages/h5p-clamav-scanner/vitest.config.ts --coverage
+            - uses: coverallsapp/github-action@v2
+              with:
+                  flag-name: ClamAV Scanner tests
+                  parallel: true
+                  path-to-lcov: ./packages/h5p-clamav-scanner/coverage/lcov.info
 
     html-exporter-tests:
         needs: install-build
@@ -212,6 +227,11 @@ jobs:
             - name: Locate Chrome
               run: echo "PUPPETEER_EXECUTABLE_PATH=$(which google-chrome || which google-chrome-stable || which chromium-browser)" >> "$GITHUB_ENV"
             - run: npx vitest run --config packages/h5p-html-exporter/vitest.config.ts --coverage
+            - uses: coverallsapp/github-action@v2
+              with:
+                  flag-name: HTML Exporter Tests
+                  parallel: true
+                  path-to-lcov: ./packages/h5p-html-exporter/coverage/lcov.info
 
     db-tests:
         needs: install-build
@@ -245,3 +265,21 @@ jobs:
                       minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
                   timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
             - run: npm run test:h5p-mongos3 -- --coverage
+            - uses: coverallsapp/github-action@v2
+              with:
+                  flag-name: DB tests
+                  parallel: true
+                  path-to-lcov: ./coverage/lcov.info
+
+    coveralls-finish:
+        needs:
+            - unit-tests
+            - integration-tests
+            - clamav-tests
+            - html-exporter-tests
+            - db-tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: coverallsapp/github-action@v2
+              with:
+                  parallel-finished: true
