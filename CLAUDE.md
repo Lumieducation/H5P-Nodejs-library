@@ -153,10 +153,11 @@ Where to look for common tasks (all paths relative to `packages/`):
 - Use `npm ls <pkg>` and `npm outdated` to inspect resolved versions (do not
   read `package-lock.json` directly)
 
-## CI Pipeline (CircleCI)
+## CI Pipeline (GitHub Actions)
 
-CI runs on CircleCI (`.circleci/config.yml`), not GitHub Actions. Always check
-this file when analyzing CI — do not assume GitHub Actions.
+CI runs on GitHub Actions (`.github/workflows/ci.yml`). The `release` job
+(release-branch only) publishes packages to npm using OIDC Trusted
+Publishing — no `NPM_TOKEN` secret is used.
 
 
 ## Git Hooks & Commits

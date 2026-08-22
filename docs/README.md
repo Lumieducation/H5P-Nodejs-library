@@ -6,7 +6,7 @@ category: Guides
 
 # H5P-Nodejs-library
 
-[![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=release)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=release)
+[![CI](https://github.com/Lumieducation/H5P-Nodejs-library/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Lumieducation/H5P-Nodejs-library/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=release)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=release)
 
 This library provides everything needed to create custom H5P servers running on
 NodeJS. It is written in TypeScript and fully typed, which makes it much easier
