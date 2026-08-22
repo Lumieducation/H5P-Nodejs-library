@@ -62,8 +62,13 @@ jobs:
             # symlinks and permissions natively, so archive first and let
             # upload-artifact ship a single opaque file.
             - name: Archive workspace
+              # --ignore-failed-read: not every package gets its own
+              # node_modules under npm workspaces hoisting, so several of
+              # these paths won't exist. CircleCI's persist_to_workspace
+              # silently skips missing paths; tar needs to be told to do
+              # the same instead of failing the whole archive.
               run: |
-                  tar -czf workspace.tar.gz \
+                  tar --ignore-failed-read -czf workspace.tar.gz \
                       node_modules \
                       packages/h5p-clamav-scanner/build \
                       packages/h5p-clamav-scanner/node_modules \
