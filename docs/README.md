@@ -65,21 +65,16 @@ Windows, you must use bash (comes with Git for windows) as a command shell
         git clone https://github.com/Lumieducation/H5P-Nodejs-library
         cd H5P-Nodejs-library
     
-2.  Install root dependencies
+2.  Install dependencies (this installs all packages in the monorepo,
+    including `h5p-examples`, as they are managed as NPM workspaces)
     
         npm install
     
-3.  Install dependencies for `h5p-examples`
+3.  Build the project and download the H5P core and editor files
     
-        cd packages/h5p-examples
-        npm install
+        npm run setup
     
-4.  Go back to the root directory and build the project
-    
-        cd ../..
-        npm run build
-    
-5.  Start the application
+4.  Start the application
     
         npm start
 
