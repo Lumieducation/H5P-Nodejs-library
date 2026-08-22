@@ -221,6 +221,7 @@ export default class H5PAjaxExpressController {
         readStream.on('error', (err) => {
             response.status(404).end();
         });
+        response.on('close', () => readStream.destroy());
         readStream.pipe(response);
     };
 
@@ -250,6 +251,7 @@ export default class H5PAjaxExpressController {
         readStream.on('error', (err) => {
             response.status(404).end();
         });
+        response.on('close', () => readStream.destroy());
         readStream.pipe(response);
     };
 }
