@@ -5,7 +5,6 @@
 - [ ] Check CI pipeline test
 - [ ] Run automatic tests on local machine:
   - [ ] test:h5p-redis-lock (requires redis)
-  - [ ] test:h5p-shared-state-server
 
 ## Test Setup for tests
 

@@ -9,7 +9,7 @@ import type { IContentMetadata, IEditorModel } from '@lumieducation/h5p-server';
 
 defineElements('h5p-editor');
 
-declare global {
+declare module 'react' {
     /**
      * Enables type checks for JSX.
      */
@@ -52,7 +52,7 @@ export interface IH5PEditorUIProps {
 export default class H5PEditorUI extends Component<IH5PEditorUIProps> {
     constructor(props: IH5PEditorUIProps) {
         super(props);
-        this.h5pEditor = createRef();
+        this.h5pEditor = createRef() as RefObject<H5PEditorWebComponent>;
     }
 
     private h5pEditor: RefObject<H5PEditorWebComponent>;
@@ -72,7 +72,7 @@ export default class H5PEditorUI extends Component<IH5PEditorUIProps> {
         this.unregisterEvents();
     }
 
-    public getSnapshotBeforeUpdate(): void {
+    public getSnapshotBeforeUpdate(): null {
         // Should the old editor instance be destroyed, we unregister from it...
         this.unregisterEvents();
         return null;
