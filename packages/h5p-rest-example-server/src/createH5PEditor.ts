@@ -1,5 +1,5 @@
 import { Cache, caching } from 'cache-manager';
-import redisStore from 'cache-manager-redis-store';
+import { redisStore } from 'cache-manager-redis-store';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
@@ -61,12 +61,17 @@ export default async function createH5PEditor(
             max: 2 ** 10
         });
     } else if (process.env.CACHE === 'redis') {
+        const store = await redisStore({
+            socket: {
+                host: process.env.REDIS_HOST,
+                port: Number.parseInt(process.env.REDIS_PORT, 10)
+            },
+            password: process.env.REDIS_AUTH_PASS,
+            database: Number.parseInt(process.env.REDIS_DB, 10),
+            ttl: 60 * 60 * 24
+        });
         cache = caching({
-            store: redisStore,
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-            auth_pass: process.env.REDIS_AUTH_PASS,
-            db: process.env.REDIS_DB,
+            store,
             ttl: 60 * 60 * 24
         });
     } else {
