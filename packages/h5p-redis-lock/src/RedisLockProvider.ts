@@ -1,5 +1,5 @@
 import { lock } from 'simple-redis-mutex';
-import { createClient } from '@redis/client';
+import { createClient } from 'redis';
 import { ILockProvider, Logger } from '@lumieducation/h5p-server';
 
 const log = new Logger('RedisLockProvider');
@@ -20,7 +20,14 @@ export default class RedisLockProvider implements ILockProvider {
         let unlock: { (): Promise<void> };
         try {
             log.debug(`Attempting to acquire lock for key ${key}.`);
-            unlock = await lock(this.redis, key, {
+            // simple-redis-mutex@3's TypeScript types (RedisClientType |
+            // RedisClusterType, both with default "any" generics) don't
+            // structurally match the fully resolved client type returned by
+            // redis@5's createClient() (which includes the default modules
+            // such as json/search/bloom). This is a type-level mismatch
+            // only; the client is used at runtime exactly as before, so the
+            // cast is safe.
+            unlock = await lock(this.redis as any, key, {
                 timeout: options.maxOccupationTime, // confusingly the names are reversed
                 failAfter: options.timeout, // confusingly the names are reversed
                 pollingInterval: this.options?.retryTime ?? 5

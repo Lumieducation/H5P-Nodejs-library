@@ -1,4 +1,4 @@
-import { createClient, RedisClientType } from '@redis/client';
+import { createClient, RedisClientType } from 'redis';
 import { withDir } from 'tmp-promise';
 
 import {
