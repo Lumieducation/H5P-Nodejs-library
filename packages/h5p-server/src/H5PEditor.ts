@@ -2,7 +2,7 @@ import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
 import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
-import imageSize from 'image-size';
+import probeImageSize from 'probe-image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
@@ -719,13 +719,22 @@ export default class H5PEditor {
 
         try {
             if (file.mimetype.startsWith('image/')) {
-                imageDimensions = imageSize(
-                    file.data?.length > 0 ? file.data : file.tempFilePath
-                );
+                const imageBuffer =
+                    file.data?.length > 0
+                        ? file.data
+                        : readFileSync(file.tempFilePath);
+                const result = probeImageSize.sync(imageBuffer);
+                if (!result) {
+                    throw new Error('Unsupported or corrupt image format');
+                }
+                imageDimensions = {
+                    height: result.height,
+                    width: result.width
+                };
             }
         } catch (error) {
-            // A caught error means that the file format is not supported by
-            // image-size. This usually means that the file is corrupt.
+            // A caught error means that the file format is not supported or
+            // that the file is corrupt.
             log.debug(`Invalid image upload: ${error}`);
             throw new H5pError('upload-validation-error', {}, 400);
         }

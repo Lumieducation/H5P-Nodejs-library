@@ -58,13 +58,16 @@ h5p-server              Core: content/library management, validation, rendering
 ├── h5p-redis-lock      Redis distributed lock
 ├── h5p-svg-sanitizer   SVG XSS sanitization
 ├── h5p-clamav-scanner  ClamAV antivirus integration
-├── h5p-shared-state-server  ShareDB real-time shared state
 └── h5p-webcomponents   Browser Web Components for editor/player
     └── h5p-react       React wrappers
 ```
 
 Example apps (private, not published): `h5p-examples`, `h5p-rest-example-server`,
 `h5p-rest-example-client`.
+
+The experimental ShareDB-based real-time shared-state component has moved to
+its own repo, released independently:
+[h5p-shared-state-server](https://github.com/Lumieducation/h5p-shared-state-server).
 
 ## Build, Test, Lint
 
@@ -153,10 +156,11 @@ Where to look for common tasks (all paths relative to `packages/`):
 - Use `npm ls <pkg>` and `npm outdated` to inspect resolved versions (do not
   read `package-lock.json` directly)
 
-## CI Pipeline (CircleCI)
+## CI Pipeline (GitHub Actions)
 
-CI runs on CircleCI (`.circleci/config.yml`), not GitHub Actions. Always check
-this file when analyzing CI — do not assume GitHub Actions.
+CI runs on GitHub Actions (`.github/workflows/ci.yml`). The `release` job
+(release-branch only) publishes packages to npm using OIDC Trusted
+Publishing — no `NPM_TOKEN` secret is used.
 
 
 ## Git Hooks & Commits
