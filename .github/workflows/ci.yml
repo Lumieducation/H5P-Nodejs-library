@@ -87,8 +87,6 @@ jobs:
                       packages/h5p-rest-example-server/node_modules \
                       packages/h5p-server/build \
                       packages/h5p-server/node_modules \
-                      packages/h5p-shared-state-server/build \
-                      packages/h5p-shared-state-server/node_modules \
                       packages/h5p-svg-sanitizer/build \
                       packages/h5p-svg-sanitizer/node_modules \
                       packages/h5p-webcomponents/build \

@@ -19,8 +19,6 @@
         "packages/h5p-rest-example-server/src/**/*",
         "packages/h5p-server/src/**/*",
         "packages/h5p-server/test/**/*",
-        "packages/h5p-shared-state-server/src/**/*",
-        "packages/h5p-shared-state-server/test/**/*",
         "packages/h5p-svg-sanitizer/src/**/*",
         "packages/h5p-svg-sanitizer/test/**/*",
         "packages/h5p-clamav-scanner/src/**/*",
@@ -51,9 +49,6 @@
             ],
             "@lumieducation/h5p-server": ["packages/h5p-server/src"],
             "@lumieducation/h5p-redis-lock": ["packages/h5p-redis-lock/src"],
-            "@lumieducation/h5p-shared-state-server": [
-                "packages/h5p-shared-state-server/src"
-            ],
             "@lumieducation/h5p-svg-sanitizer": [
                 "packages/h5p-svg-sanitizer/src"
             ],
