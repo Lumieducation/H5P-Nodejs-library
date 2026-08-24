@@ -27,11 +27,12 @@ Do this once per PR, in order. Do not batch/parallelize checkouts — finish one
 5. **If something's broken**, fix it directly on the branch following the changelog (updated imports, renamed/changed APIs, adjusted config) — not guesswork. Commit the fix with a message like `fix(deps): adjust for <package> vX breaking changes`.
 6. **Push the fix** to the same branch: `git push origin <branch>`.
 7. **Check GitHub Actions on the PR**: `gh pr checks <number>` — wait for it to finish if still running.
-8. **Report as a PR comment** (`gh pr comment <number> --body "..."`), one of:
+8. **Check if the tests really cover the changes and the dependency usage**
+9. **Report as a PR comment** (`gh pr comment <number> --body "..."`), one of:
    - **All checks green, no code changes needed** — "Reviewed: no breaking API usage found, all CI checks pass. Looks safe to merge."
    - **All checks green after a fix** — summarize what broke and what you changed, link the commit, confirm CI is green, recommend merge.
    - **Still failing / blocked** — explain specifically what's failing (paste the relevant error), what you tried, and what a human needs to decide or investigate. Do not add `[status] needs review` if it's already there; otherwise leave existing labels alone.
-9. Move to the next PR only after the current one has a comment posted.
+10. Move to the next PR only after the current one has a comment posted.
 
 ## After all PRs are done
 
