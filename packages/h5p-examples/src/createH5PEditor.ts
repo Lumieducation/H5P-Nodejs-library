@@ -1,6 +1,6 @@
 import { Cache, caching } from 'cache-manager';
 import redisStore from 'cache-manager-redis-store';
-import { createClient } from '@redis/client';
+import { createClient } from 'redis';
 import debug from 'debug';
 import type { Db } from 'mongodb';
 
