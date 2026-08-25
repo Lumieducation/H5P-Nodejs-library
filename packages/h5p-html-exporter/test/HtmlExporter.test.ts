@@ -48,6 +48,27 @@ describe('HtmlExporter', () => {
     let sharedUser: User;
     let sharedPackageImporter: PackageImporter;
     let sharedHtmlExporter: HtmlExporter;
+    // Some content types (e.g. CoursePresentation) schedule async browser
+    // work (timers, observers) that can throw a pageerror well after the
+    // test that triggered it has already finished (sometimes only once the
+    // page/browser is torn down in afterAll). Collecting the errors here and
+    // checking them right after each `page.goto` call attributes genuine
+    // load-time errors to the correct test, instead of throwing directly in
+    // the event listener, which would surface as an unattributable
+    // "Unhandled Rejection" and fail the whole suite.
+    let pageErrors: Error[] = [];
+
+    function checkForPageErrors(): void {
+        if (pageErrors.length > 0) {
+            const errors = pageErrors;
+            pageErrors = [];
+            throw new Error(
+                `There was an error in the page: ${errors
+                    .map((e) => e.message)
+                    .join(', ')}`
+            );
+        }
+    }
 
     beforeAll(async () => {
         // Create shared library directory to speed things up
@@ -108,9 +129,32 @@ describe('HtmlExporter', () => {
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
         );
 
-        // Tests should fail when there is an error on the page
+        // Tests should fail when there is an error on the page. We collect
+        // the errors instead of throwing directly here, as this listener
+        // runs outside the scope of the currently executing test (see
+        // checkForPageErrors above).
         page.on('pageerror', (error) => {
-            throw new Error(`There was in error in the page: ${error.message}`);
+            pageErrors.push(error);
+        });
+
+        // Some example content (e.g. CoursePresentation) embeds live
+        // third-party media (e.g. a YouTube video), which would otherwise
+        // make the exported page fetch scripts from the real internet. That
+        // widget script calls back into the page asynchronously, with timing
+        // that depends on real network latency; when it lands after the
+        // relevant player element is gone, it throws a page error whose
+        // arrival time is unpredictable (sometimes it only surfaces during
+        // an unrelated later test, or during the afterAll teardown). We
+        // don't need real network access to verify HTML/CSS export
+        // correctness, so we block everything except the local file:// URLs
+        // we export to, making the test hermetic and deterministic.
+        await page.setRequestInterception(true);
+        page.on('request', (request) => {
+            if (request.url().startsWith('file://')) {
+                request.continue();
+            } else {
+                request.abort();
+            }
         });
 
         // Tests should fail when there is a failed request to our server
@@ -140,6 +184,11 @@ describe('HtmlExporter', () => {
         await browser.close();
         await rm(sharedLibraryDir, { recursive: true, force: true });
         await rm(sharedContentDir, { recursive: true, force: true });
+        // Any page errors that arrive only now (i.e. that weren't picked up
+        // by checkForPageErrors after a test's page.goto) can no longer be
+        // attributed to a specific test and don't indicate that any export
+        // was broken, as every test already asserted a successful page load.
+        pageErrors = [];
     });
 
     async function importAndExportHtml(
@@ -164,6 +213,7 @@ describe('HtmlExporter', () => {
                         waitUntil: ['load'],
                         timeout: 30000
                     });
+                    checkForPageErrors();
                 },
                 {
                     keep: false,
@@ -213,6 +263,7 @@ describe('HtmlExporter', () => {
                         waitUntil: ['load'],
                         timeout: 30000
                     });
+                    checkForPageErrors();
                 },
                 {
                     keep: false,
