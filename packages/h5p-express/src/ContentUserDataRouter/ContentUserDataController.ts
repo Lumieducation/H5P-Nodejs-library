@@ -10,8 +10,7 @@ import {
 import { IRequestWithUser } from '../expressTypes';
 
 interface IPostContentUserDataRequest
-    extends IPostContentUserData,
-        IRequestWithUser {}
+    extends IPostContentUserData, IRequestWithUser {}
 
 export default class ContentUserDataController {
     constructor(

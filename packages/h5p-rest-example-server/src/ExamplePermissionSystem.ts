@@ -8,9 +8,7 @@ import {
 
 import ExampleUser from './ExampleUser';
 
-export default class ExamplePermissionSystem
-    implements IPermissionSystem<ExampleUser>
-{
+export default class ExamplePermissionSystem implements IPermissionSystem<ExampleUser> {
     async checkForUserData(
         actingUser: ExampleUser,
         permission: UserDataPermission,

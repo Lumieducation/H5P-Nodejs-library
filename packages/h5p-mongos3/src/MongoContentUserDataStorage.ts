@@ -16,9 +16,7 @@ const log = new Logger('MongoContentUserDataStorage');
  *
  * It is highly recommended to call `createIndexes` on initialization.
  */
-export default class MongoContentUserDataStorage
-    implements IContentUserDataStorage
-{
+export default class MongoContentUserDataStorage implements IContentUserDataStorage {
     /**
      * @param userDataCollection a MongoDB collection (read- and writable)
      * @param finishedCollection a MongoDB collection (read- and writable)

@@ -43,23 +43,17 @@ describe('SemanticsEnforcer', () => {
         allowedTags?: string[],
         allowedStyles?: {
             background?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
             color?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
             family?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
             height?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
             size?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
             spacing?:
-                | boolean
-                | { css: string; default?: boolean; label: string }[];
+                boolean | { css: string; default?: boolean; label: string }[];
         },
         maxLength?: number,
         optional?: boolean,
