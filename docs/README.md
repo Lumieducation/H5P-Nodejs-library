@@ -6,7 +6,7 @@ category: Guides
 
 # H5P-Nodejs-library
 
-[![CircleCI](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master.svg?style=svg)](https://circleci.com/gh/Lumieducation/H5P-Nodejs-library/tree/master) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=release)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=release)
+[![CI](https://github.com/Lumieducation/H5P-Nodejs-library/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Lumieducation/H5P-Nodejs-library/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/Lumieducation/H5P-Nodejs-library/badge.svg?branch=release)](https://coveralls.io/github/Lumieducation/H5P-Nodejs-library?branch=release)
 
 This library provides everything needed to create custom H5P servers running on
 NodeJS. It is written in TypeScript and fully typed, which makes it much easier
@@ -60,9 +60,23 @@ Make sure you have [`git`](https://git-scm.com/), [`node ≥ 10.16`](https://nod
 Windows, you must use bash (comes with Git for windows) as a command shell
 (otherwise scripts won't run).
 
-1. Clone the repository with git
-2. `npm install`
-3. `npm start`
+1.  Clone the repository
+    
+        git clone https://github.com/Lumieducation/H5P-Nodejs-library
+        cd H5P-Nodejs-library
+    
+2.  Install dependencies (this installs all packages in the monorepo,
+    including `h5p-examples`, as they are managed as NPM workspaces)
+    
+        npm install
+    
+3.  Build the project and download the H5P core and editor files
+    
+        npm run setup
+    
+4.  Start the application
+    
+        npm start
 
 You can then open the URL [http://localhost:8080](http://localhost:8080) in any
 browser.

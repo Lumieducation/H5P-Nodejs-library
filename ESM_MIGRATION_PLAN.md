@@ -81,7 +81,6 @@ export default defineConfig({
         include: [
             'packages/h5p-server/test/**/*.test.ts',
             'packages/h5p-express/test/**/*.test.ts',
-            'packages/h5p-shared-state-server/test/**/*.test.ts',
             'packages/h5p-svg-sanitizer/test/**/*.test.ts'
         ],
         exclude: [
@@ -327,15 +326,14 @@ Process this package-by-package in dependency order:
 2. `h5p-express` (23 src + 12 test)
 3. `h5p-mongos3` (10 src + 16 test)
 4. `h5p-html-exporter` (4 src + 12 test)
-5. `h5p-shared-state-server` (21 src + 1 test)
-6. `h5p-clamav-scanner` (1 src + 2 test)
-7. `h5p-redis-lock` (0 src + 1 test)
-8. `h5p-svg-sanitizer` (0 src + 2 test)
-9. `h5p-webcomponents` (8 src)
-10. `h5p-react` (2 src)
-11. `h5p-examples` (5 src)
-12. `h5p-rest-example-server` (11 src)
-13. `h5p-rest-example-client` (0 — uses CRA/webpack, not applicable)
+5. `h5p-clamav-scanner` (1 src + 2 test)
+6. `h5p-redis-lock` (0 src + 1 test)
+7. `h5p-svg-sanitizer` (0 src + 2 test)
+8. `h5p-webcomponents` (8 src)
+9. `h5p-react` (2 src)
+10. `h5p-examples` (5 src)
+11. `h5p-rest-example-server` (11 src)
+12. `h5p-rest-example-client` (0 — uses CRA/webpack, not applicable)
 
 ### Step 2.3: Replace `__dirname` with `import.meta.url`
 
@@ -371,7 +369,6 @@ Process by concentration:
 4. **`packages/h5p-server/src/H5PEditor.ts`** — 2 occurrences
 5. **`packages/h5p-html-exporter/src/HtmlExporter.ts`** — 1 occurrence
 6. **`packages/h5p-rest-example-server/src/index.ts`** — 1 occurrence
-7. **`packages/h5p-rest-example-server/src/indexSharedState.ts`** — 1 occurrence
 
 ### Step 2.4: Handle JSON imports
 
@@ -484,9 +481,8 @@ Process package-by-package:
 5. `h5p-redis-lock`
 6. `h5p-svg-sanitizer`
 7. `h5p-clamav-scanner`
-8. `h5p-shared-state-server`
-9. `h5p-webcomponents` (already has dual build — update exports)
-10. `h5p-react` (already has dual build — update exports)
+8. `h5p-webcomponents` (already has dual build — update exports)
+9. `h5p-react` (already has dual build — update exports)
 
 Example/internal packages (`h5p-examples`, `h5p-rest-example-server`,
 `h5p-rest-example-client`) can be ESM-only (no CJS output needed).

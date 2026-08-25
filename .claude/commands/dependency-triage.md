@@ -23,15 +23,16 @@ Do this once per PR, in order. Do not batch/parallelize checkouts — finish one
 1. **Read the PR**: `gh pr view <number>` — package name, current → target version, and look up the linked changelog/release notes/migration guide for breaking changes between those versions.
 2. **Checkout the branch**: `git fetch origin <branch> && git checkout <branch>`.
 3. **Grep the codebase** for usage of any API named in the changelog's breaking-change entries, to figure out fast whether this bump actually touches our code or is a no-op for us.
-4. **Run local checks**: `npm run build`, `npm run lint`, `npm run format:check`, `npm test` (from repo root). Note these do NOT cover the Docker-dependent CircleCI suites (Mongo/S3, ClamAV, html-exporter, integration tests) — local green is necessary but not sufficient.
+4. **Run local checks**: `npm run build`, `npm run lint`, `npm run format:check`, `npm test` (from repo root). Note these do NOT cover the Docker-dependent GitHub Actions suites (Mongo/S3, ClamAV, html-exporter, integration tests) — local green is necessary but not sufficient.
 5. **If something's broken**, fix it directly on the branch following the changelog (updated imports, renamed/changed APIs, adjusted config) — not guesswork. Commit the fix with a message like `fix(deps): adjust for <package> vX breaking changes`.
 6. **Push the fix** to the same branch: `git push origin <branch>`.
-7. **Check CircleCI on the PR**: `gh pr checks <number>` — wait for it to finish if still running.
-8. **Report as a PR comment** (`gh pr comment <number> --body "..."`), one of:
+7. **Check GitHub Actions on the PR**: `gh pr checks <number>` — wait for it to finish if still running.
+8. **Check if the tests really cover the changes and the dependency usage**
+9. **Report as a PR comment** (`gh pr comment <number> --body "..."`), one of:
    - **All checks green, no code changes needed** — "Reviewed: no breaking API usage found, all CI checks pass. Looks safe to merge."
    - **All checks green after a fix** — summarize what broke and what you changed, link the commit, confirm CI is green, recommend merge.
    - **Still failing / blocked** — explain specifically what's failing (paste the relevant error), what you tried, and what a human needs to decide or investigate. Do not add `[status] needs review` if it's already there; otherwise leave existing labels alone.
-9. Move to the next PR only after the current one has a comment posted.
+10. Move to the next PR only after the current one has a comment posted.
 
 ## After all PRs are done
 
