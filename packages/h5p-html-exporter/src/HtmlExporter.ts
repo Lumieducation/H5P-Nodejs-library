@@ -467,7 +467,7 @@ export default class HtmlExporter {
                     editor,
                     library
                 );
-                let processedCss = '';
+                let processedCss: string;
                 const pCss = postCss(
                     // add support for @import statements in CSS
                     postCssImport({

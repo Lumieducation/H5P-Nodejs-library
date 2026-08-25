@@ -30,7 +30,7 @@ export default class FileContentStorage implements IContentStorage {
     protected async createContentId(): Promise<ContentId> {
         let counter = 0;
         let id;
-        let exists = false;
+        let exists: boolean;
         do {
             id = FileContentStorage.getRandomInt(1, 2 ** 32);
             counter += 1;

@@ -53,7 +53,7 @@ export const catchAndPassOnErrors =
         next: NextFunction
     ): Promise<void> => {
         let statusCode = 500;
-        let statusText = '';
+        let statusText: string;
         let detailsList;
         let clientErrorId = '';
 

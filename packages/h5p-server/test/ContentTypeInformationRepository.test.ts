@@ -527,7 +527,7 @@ describe('Content type information repository (= connection to H5P Hub)', () => 
             repository.installContentType('H5P.Blanks', user)
         ).rejects.toThrow('hub-install-denied');
 
-        repository = repository = new ContentTypeInformationRepository(
+        repository = new ContentTypeInformationRepository(
             cache,
             libManager,
             config,
