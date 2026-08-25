@@ -15,6 +15,7 @@
     "license": "MIT",
     "dependencies": {
         "@dr.pogodin/csurf": "^1.14.1",
+        "@keyv/redis": "^5.1.6",
         "@lumieducation/h5p-clamav-scanner": "^10.0.4",
         "@lumieducation/h5p-express": "^10.0.4",
         "@lumieducation/h5p-mongos3": "^10.0.4",
@@ -22,7 +23,7 @@
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "body-parser": "2.3.0",
         "cache-manager": "7.2.9",
-        "cache-manager-redis-store": "3.0.1",
+        "cacheable": "^2.5.0",
         "cors": "2.8.6",
         "express": "5.2.1",
         "express-fileupload": "1.5.2",
@@ -31,6 +32,7 @@
         "i18next": "26.4.0",
         "i18next-fs-backend": "2.6.7",
         "i18next-http-middleware": "3.9.8",
+        "keyv": "^5.6.0",
         "passport": "0.7.0",
         "passport-local": "1.0.0",
         "tmp-promise": "3.0.3"

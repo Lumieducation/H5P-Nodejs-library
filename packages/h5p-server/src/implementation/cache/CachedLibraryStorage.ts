@@ -1,5 +1,7 @@
 import { Readable } from 'stream';
-import { Cache, caching } from 'cache-manager';
+import { Cache, createCache } from 'cache-manager';
+import { Keyv } from 'keyv';
+import { CacheableMemory } from 'cacheable';
 
 import {
     ILibraryStorage,
@@ -39,10 +41,20 @@ export default class CachedLibraryStorage implements ILibraryStorage {
         protected cache?: Cache
     ) {
         if (!this.cache) {
-            this.cache = caching({
-                store: 'memory',
-                ttl: 60 * 60 * 24,
-                max: 2 ** 10
+            this.cache = createCache({
+                stores: [
+                    new Keyv({
+                        store: new CacheableMemory({
+                            ttl: 60 * 60 * 24 * 1000,
+                            lruSize: 2 ** 10
+                        }),
+                        // We store data in memory only, so there's no need
+                        // to (de)serialize it to/from strings. Doing so
+                        // would break on values like Date objects.
+                        serialize: undefined,
+                        deserialize: undefined
+                    })
+                ]
             });
         }
     }
@@ -99,7 +111,7 @@ export default class CachedLibraryStorage implements ILibraryStorage {
      * Invalidates the whole cache.
      */
     public async clearCache(): Promise<void> {
-        return this.cache.reset();
+        await this.cache.clear();
     }
 
     public async clearFiles(library: ILibraryName): Promise<void> {
@@ -116,40 +128,27 @@ export default class CachedLibraryStorage implements ILibraryStorage {
     public async deleteLibrary(library: ILibraryName): Promise<void> {
         const files = await this.storage.listFiles(library);
         await this.storage.deleteLibrary(library);
-        await Promise.all(
-            files
-                .map((file) => this.deleteFileCache(library, file))
-                .concat([
-                    this.cache.del(
-                        this.getCacheKeyForMetadata(
-                            library,
-                            this.METADATA_CACHE_KEY
-                        )
-                    ),
-                    this.cache.del(
-                        this.getCacheKeyForMetadata(
-                            library,
-                            this.LANGUAGES_CACHE_KEY
-                        )
-                    ),
-                    this.cache.del(
-                        this.getCacheKeyForMetadata(
-                            library,
-                            this.LIBRARY_IS_INSTALLED_CACHE_KEY
-                        )
-                    ),
-                    this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY),
-                    this.cache.del(
-                        this.getCacheKeyForLibraryListByMachineName(
-                            library.machineName
-                        )
-                    ),
-                    this.cache.del(this.ADDONS_CACHE_KEY),
-                    this.cache.del(
-                        this.getCacheKeyForMetadata(library, this.FILE_LIST)
-                    )
-                ])
-        );
+        await Promise.all([
+            ...files.map((file) => this.deleteFileCache(library, file)),
+            this.cache.del(
+                this.getCacheKeyForMetadata(library, this.METADATA_CACHE_KEY)
+            ),
+            this.cache.del(
+                this.getCacheKeyForMetadata(library, this.LANGUAGES_CACHE_KEY)
+            ),
+            this.cache.del(
+                this.getCacheKeyForMetadata(
+                    library,
+                    this.LIBRARY_IS_INSTALLED_CACHE_KEY
+                )
+            ),
+            this.cache.del(this.INSTALLED_LIBRARY_NAMES_CACHE_KEY),
+            this.cache.del(
+                this.getCacheKeyForLibraryListByMachineName(library.machineName)
+            ),
+            this.cache.del(this.ADDONS_CACHE_KEY),
+            this.cache.del(this.getCacheKeyForMetadata(library, this.FILE_LIST))
+        ]);
     }
 
     public async fileExists(
