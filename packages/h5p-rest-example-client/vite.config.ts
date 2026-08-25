@@ -1,16 +1,18 @@
-import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
-            react: path.resolve(__dirname, 'node_modules/react'),
-            'react-dom': path.resolve(__dirname, 'node_modules/react-dom')
+            react: path.dirname(require.resolve('react/package.json')),
+            'react-dom': path.dirname(
+                require.resolve('react-dom/package.json')
+            )
         }
     },
     server: {
