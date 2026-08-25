@@ -5,14 +5,14 @@
     "description": "",
     "main": "build/express.js",
     "scripts": {
-        "build:client": "npx tsc -p ./tsconfig.client.json",
+        "build:client": "npx tsc -p ./tsconfig.client.json && npx esbuild src/client/startPage.tsx --bundle --minify --outfile=public/js/startPage.js --format=iife --jsx=automatic --define:process.env.NODE_ENV=\\\"production\\\"",
         "build:server": "npx tsc -p ./tsconfig.server.json",
         "build": "npm run build:server && npm run build:client",
         "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules && rm -rf public",
         "start": "node build/express.js",
         "test:server+upload": "start-server-and-test start http://localhost:8080 test:upload",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "postinstall": "mkdir -p public && cp ../../node_modules/requirejs/require.js ./public/require.js && cp -R ../../node_modules/bootstrap/dist/css/bootstrap.min.css ./public/bootstrap.min.css && cp -R ../../node_modules/@fortawesome/fontawesome-free ./public/ && cp -R ../../node_modules/react ./public/ && cp -R ../../node_modules/react-dom ./public/"
+        "postinstall": "mkdir -p public && cp -R ../../node_modules/bootstrap/dist/css/bootstrap.min.css ./public/bootstrap.min.css && cp -R ../../node_modules/@fortawesome/fontawesome-free ./public/"
     },
     "author": "",
     "license": "ISC",
@@ -38,15 +38,16 @@
         "i18next-fs-backend": "2.6.7",
         "i18next-http-middleware": "3.9.8",
         "mongodb": "6.21.0",
-        "react": "18.3.1",
-        "react-dom": "^18.2.0",
+        "react": "19.2.8",
+        "react-dom": "^19.0.0",
         "redis": "^4.7.0",
-        "requirejs": "^2.3.6",
         "tmp-promise": "3.0.3"
     },
     "devDependencies": {
         "@types/express": "5.0.6",
-        "@types/react": "18.3.31",
-        "start-server-and-test": "2.1.5"
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "esbuild": "^0.28.0",
+        "start-server-and-test": "3.0.12"
     }
 }

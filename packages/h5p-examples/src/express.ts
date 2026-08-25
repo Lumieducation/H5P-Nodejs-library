@@ -228,8 +228,6 @@ const start = async (): Promise<void> => {
     // buttons to display, edit, delete and download existing content.
     server.get('/', startPageRenderer(h5pEditor));
 
-    server.use('/client', express.static(path.join(__dirname, 'client')));
-
     // Serve static files
     server.use('/', express.static(path.join(__dirname, '../public')));
 

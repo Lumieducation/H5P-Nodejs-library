@@ -19,7 +19,6 @@ export default function render(
         <html>
         <head>
             <meta charset="utf-8">
-            <script src="/require.js"></script>
             <link rel="stylesheet" href="/bootstrap.min.css">
             <link rel="stylesheet" href="/fontawesome-free/css/all.min.css">
             <title>H5P NodeJs Demo</title>
@@ -90,26 +89,7 @@ export default function render(
                 <div id="library-admin-container"></div>
             </div>
 
-            <script>
-                requirejs.config({
-                    baseUrl: "assets/js",
-                    paths: {
-                        react: '/react/umd/react.development',
-                        "react-dom": '/react-dom/umd/react-dom.development'
-                    }
-                });
-                requirejs([
-                    "react",
-                    "react-dom",
-                    "./client/LibraryAdminComponent.js",
-                    "./client/ContentTypeCacheComponent.js"], 
-                    function (React, ReactDOM, LibraryAdmin, ContentTypeCache) {
-                        const libraryAdminContainer = document.querySelector('#library-admin-container');
-                        ReactDOM.render(React.createElement(LibraryAdmin.default, { endpointUrl: 'h5p/libraries' }), libraryAdminContainer);
-                        const contentTypeCacheContainer = document.querySelector('#content-type-cache-container');
-                        ReactDOM.render(React.createElement(ContentTypeCache.default, { endpointUrl: 'h5p/content-type-cache' }), contentTypeCacheContainer);
-                    });                
-            </script>
+            <script src="/js/startPage.js"></script>
         </body>
         `);
     };

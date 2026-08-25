@@ -9,9 +9,7 @@
         "clean": "rm -rf h5p && rm -rf build && rm -rf coverage && rm -rf node_modules",
         "prepare": "sh download-core.sh 2aeb0b83fa603e331381b3a6b8bf42c3773ba140 ab2daa18bd61b19e7f8729e22eec88f3b637a868",
         "start:watch": "npx ts-node-dev --deps --respawn src/index.ts",
-        "start": "npx ts-node -P ./tsconfig.build.json src/index.ts",
-        "start:shared-state:watch": "npx ts-node-dev --deps --respawn src/indexSharedState.ts",
-        "start:shared-state": "npx ts-node -P ./tsconfig.build.json src/indexSharedState.ts"
+        "start": "npx ts-node -P ./tsconfig.build.json src/index.ts"
     },
     "author": "S. Rettig",
     "license": "MIT",
@@ -21,7 +19,6 @@
         "@lumieducation/h5p-express": "^10.0.4",
         "@lumieducation/h5p-mongos3": "^10.0.4",
         "@lumieducation/h5p-server": "^10.0.4",
-        "@lumieducation/h5p-shared-state-server": "^10.0.4",
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "body-parser": "2.3.0",
         "cache-manager": "4.1.0",
