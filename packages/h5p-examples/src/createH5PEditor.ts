@@ -1,6 +1,6 @@
 import { Cache, caching } from 'cache-manager';
-import redisStore from 'cache-manager-redis-store';
-import { createClient } from '@redis/client';
+import { redisStore } from 'cache-manager-redis-store';
+import { createClient } from 'redis';
 import debug from 'debug';
 import type { Db } from 'mongodb';
 
@@ -62,12 +62,17 @@ export default async function createH5PEditor(
         debug('h5p-example')(
             `Using Redis for caching library storage (${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, db: ${process.env.REDIS_DB})`
         );
+        const store = await redisStore({
+            socket: {
+                host: process.env.REDIS_HOST,
+                port: Number.parseInt(process.env.REDIS_PORT, 10)
+            },
+            password: process.env.REDIS_AUTH_PASS,
+            database: Number.parseInt(process.env.REDIS_DB, 10),
+            ttl: 60 * 60 * 24
+        });
         cache = caching({
-            store: redisStore,
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-            auth_pass: process.env.REDIS_AUTH_PASS,
-            db: process.env.REDIS_DB,
+            store,
             ttl: 60 * 60 * 24
         });
     } else {
