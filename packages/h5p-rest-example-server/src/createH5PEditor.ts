@@ -1,5 +1,7 @@
-import { Cache, caching } from 'cache-manager';
-import { redisStore } from 'cache-manager-redis-store';
+import { Cache, createCache } from 'cache-manager';
+import { Keyv } from 'keyv';
+import { CacheableMemory } from 'cacheable';
+import KeyvRedis from '@keyv/redis';
 
 import * as H5P from '@lumieducation/h5p-server';
 import * as dbImplementations from '@lumieducation/h5p-mongos3';
@@ -55,24 +57,36 @@ export default async function createH5PEditor(
 ): Promise<H5P.H5PEditor> {
     let cache: Cache;
     if (process.env.CACHE === 'in-memory') {
-        cache = caching({
-            store: 'memory',
-            ttl: 60 * 60 * 24,
-            max: 2 ** 10
+        cache = createCache({
+            stores: [
+                new Keyv({
+                    store: new CacheableMemory({
+                        ttl: 60 * 60 * 24 * 1000,
+                        lruSize: 2 ** 10
+                    }),
+                    // We store data in memory only, so there's no need to
+                    // (de)serialize it to/from strings. Doing so would break
+                    // on values like Date objects.
+                    serialize: undefined,
+                    deserialize: undefined
+                })
+            ]
         });
     } else if (process.env.CACHE === 'redis') {
-        const store = await redisStore({
-            socket: {
-                host: process.env.REDIS_HOST,
-                port: Number.parseInt(process.env.REDIS_PORT, 10)
-            },
-            password: process.env.REDIS_AUTH_PASS,
-            database: Number.parseInt(process.env.REDIS_DB, 10),
-            ttl: 60 * 60 * 24
-        });
-        cache = caching({
-            store,
-            ttl: 60 * 60 * 24
+        cache = createCache({
+            stores: [
+                new Keyv({
+                    store: new KeyvRedis({
+                        socket: {
+                            host: process.env.REDIS_HOST,
+                            port: Number.parseInt(process.env.REDIS_PORT, 10)
+                        },
+                        password: process.env.REDIS_AUTH_PASS,
+                        database: Number.parseInt(process.env.REDIS_DB, 10)
+                    })
+                })
+            ],
+            ttl: 60 * 60 * 24 * 1000
         });
     } else {
         // using no cache
