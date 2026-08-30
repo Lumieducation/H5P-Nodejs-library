@@ -1256,8 +1256,7 @@ export interface ISemanticsEntry {
      */
     font?: {
         background?:
-            | boolean
-            | { css: string; default?: boolean; label: string }[];
+            boolean | { css: string; default?: boolean; label: string }[];
         color?: boolean | { css: string; default?: boolean; label: string }[];
         family?: boolean | { css: string; default?: boolean; label: string }[];
         height?: boolean | { css: string; default?: boolean; label: string }[];
@@ -1373,8 +1372,7 @@ export interface IAdditionalLibraryMetadata {
  * Objects of this interface represent installed libraries that have an id.
  */
 export interface IInstalledLibrary
-    extends ILibraryMetadata,
-        IAdditionalLibraryMetadata {
+    extends ILibraryMetadata, IAdditionalLibraryMetadata {
     /**
      * Compares libraries by giving precedence to title, then major version, then minor version
      * @param otherLibrary

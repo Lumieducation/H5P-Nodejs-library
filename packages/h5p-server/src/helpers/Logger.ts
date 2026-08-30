@@ -10,12 +10,7 @@ enum LogLevelNumber {
 }
 
 export type LogLevel =
-    | 'error'
-    | 'warn'
-    | 'info'
-    | 'verbose'
-    | 'debug'
-    | 'silly';
+    'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly';
 
 export default class Logger {
     constructor(private scope: string) {

@@ -13,12 +13,7 @@ const extensionsMap = {
  * A list of font types used in CSS.
  */
 type FontTypes =
-    | 'woff'
-    | 'woff2'
-    | 'truetype'
-    | 'svg'
-    | 'embedded-opentype'
-    | 'opentype';
+    'woff' | 'woff2' | 'truetype' | 'svg' | 'embedded-opentype' | 'opentype';
 
 /**
  * A PostCSS plugin Removing redundant URLs in @font-face rules by deleting all
