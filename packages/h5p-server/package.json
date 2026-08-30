@@ -52,7 +52,6 @@
         "cache-manager": "^4.0.0",
         "debug": "^4.3.4",
         "flat": "^6.0.0",
-        "get-all-files": "^6.0.0",
         "https-proxy-agent": "^9.0.0",
         "jsonpath": "^1.1.1",
         "magic-bytes.js": "^1.13.0",

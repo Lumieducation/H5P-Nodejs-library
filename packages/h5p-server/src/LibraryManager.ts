@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from './helpers/getAllFiles';
 import { readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
 
@@ -756,7 +756,7 @@ export default class LibraryManager {
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
         const fromDirectoryLength = fromDirectory.length + 1;
-        const files = await getAllFiles(fromDirectory).toArray();
+        const files = await getAllFiles(fromDirectory);
         await Promise.all(
             files.map((fileFullPath: string) => {
                 const fileLocalPath: string =

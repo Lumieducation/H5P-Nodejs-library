@@ -2,7 +2,7 @@ import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import * as path from 'path';
 import * as yauzl from 'yauzl-promise';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from './helpers/getAllFiles';
 import { readdir, readFile } from 'fs/promises';
 
 import AggregateH5pError from './helpers/AggregateH5pError';
@@ -154,7 +154,7 @@ export default class PackageValidator {
         await this.initializeJsonValidators();
 
         const packagePathLength = packagePath.length + 1;
-        const files = (await getAllFiles(packagePath).toArray()).map((f) =>
+        const files = (await getAllFiles(packagePath)).map((f) =>
             f.substr(packagePathLength).replace(/\\/g, '/')
         );
 

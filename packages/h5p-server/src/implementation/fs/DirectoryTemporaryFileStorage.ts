@@ -10,7 +10,7 @@ import {
     writeFile
 } from 'fs/promises';
 
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from '../../helpers/getAllFiles';
 import path from 'path';
 import promisepipe from 'promisepipe';
 
@@ -150,7 +150,7 @@ export default class DirectoryTemporaryFileStorage implements ITemporaryFileStor
                 users.map(async (u) => {
                     const basePath = this.getAbsoluteUserDirectoryPath(u);
                     const basePathLength = basePath.length + 1;
-                    const filesOfUser = await getAllFiles(basePath).toArray();
+                    const filesOfUser = await getAllFiles(basePath);
                     return Promise.all(
                         filesOfUser
                             .map((f) => f.substr(basePathLength))
