@@ -31,7 +31,7 @@ export default class RedisLockProvider implements ILockProvider {
                 log.debug(
                     `There was a timeout when trying to acquire key for ${key}`
                 );
-                throw new Error('timeout');
+                throw new Error('timeout', { cause: error });
             }
         }
 

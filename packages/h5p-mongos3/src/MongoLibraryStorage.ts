@@ -606,7 +606,6 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @returns The list of JSON files in the language folder (without the extension .json)
      */
     public async getLanguages(library: ILibraryName): Promise<string[]> {
-        let files: string[] = [];
         let result: any[];
         try {
             result = await this.mongodb
@@ -661,7 +660,7 @@ export default class MongoLibraryStorage implements ILibraryStorage {
                 500
             );
         }
-        files = result[0].files.map((f) => f.filename);
+        const files = result[0].files.map((f) => f.filename);
         log.debug(`Found ${files.length} file(s) in MongoDB.`);
         return files
             .filter((file) => path.extname(file) === '.json')
@@ -762,7 +761,6 @@ export default class MongoLibraryStorage implements ILibraryStorage {
      * @returns all files that exist for the library
      */
     public async listFiles(library: ILibraryName): Promise<string[]> {
-        let files: string[] = [];
         let result: any;
         try {
             result = await this.mongodb.findOne(
@@ -799,7 +797,9 @@ export default class MongoLibraryStorage implements ILibraryStorage {
             );
         }
 
-        files = result.files.map((f) => f.filename).concat(['library.json']);
+        const files = result.files
+            .map((f) => f.filename)
+            .concat(['library.json']);
         log.debug(`Found ${files.length} file(s) in MongoDB.`);
         return files;
     }

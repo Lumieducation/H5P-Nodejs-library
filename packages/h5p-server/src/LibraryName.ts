@@ -73,7 +73,7 @@ export default class LibraryName implements ILibraryName {
         const result = nameRegex.exec(ubername);
 
         if (!result) {
-            let example = '';
+            let example: string;
             if (options.useHyphen && options.useWhitespace) {
                 example = 'H5P.Example-1.0 or H5P.Example 1.0';
             } else if (options.useHyphen && !options.useWhitespace) {

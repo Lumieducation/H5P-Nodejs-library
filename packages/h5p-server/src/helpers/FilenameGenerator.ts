@@ -46,8 +46,8 @@ export default async (
 
     // try newly generated filenames
     let attempts = 0;
-    let filenameAttempt = '';
-    let exists = false;
+    let filenameAttempt: string;
+    let exists: boolean;
     actualFilename = sanitize(actualFilename);
     const dirname = path.posix.dirname(actualFilename);
     do {
