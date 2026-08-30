@@ -37,8 +37,10 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
     }
 
     public async save(key: string, value: any): Promise<any> {
-        // No ttl is passed so entries never expire (this storage class is
-        // used to persist actual data, not just as a re-fetchable cache).
-        return this.cache.set(`${this.prefix}-${key}`, value);
+        // A ttl of 0 tells Keyv to store the entry without expiration,
+        // overriding any default ttl configured on the cache backend (this
+        // storage class is used to persist actual data, not just as a
+        // re-fetchable cache).
+        return this.cache.set(`${this.prefix}-${key}`, value, 0);
     }
 }
