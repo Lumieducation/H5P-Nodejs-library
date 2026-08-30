@@ -74,15 +74,17 @@ export default async function createH5PEditor(
         debug('h5p-example')(
             `Using Redis for caching library storage (${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, db: ${process.env.REDIS_DB})`
         );
-        const redisAuth = process.env.REDIS_AUTH_PASS
-            ? `:${process.env.REDIS_AUTH_PASS}@`
-            : '';
         cache = createCache({
             stores: [
                 new Keyv({
-                    store: new KeyvRedis(
-                        `redis://${redisAuth}${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/${process.env.REDIS_DB ?? 0}`
-                    )
+                    store: new KeyvRedis({
+                        socket: {
+                            host: process.env.REDIS_HOST,
+                            port: Number.parseInt(process.env.REDIS_PORT, 10)
+                        },
+                        password: process.env.REDIS_AUTH_PASS,
+                        database: Number.parseInt(process.env.REDIS_DB, 10)
+                    })
                 })
             ],
             ttl: 60 * 60 * 24 * 1000
