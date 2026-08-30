@@ -1,5 +1,5 @@
 import path from 'path';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from '../../helpers/getAllFiles';
 import { readFile, rm, writeFile } from 'fs/promises';
 import { existsSync, mkdirSync } from 'fs';
 
@@ -74,7 +74,7 @@ export default class FileContentUserDataStorage implements IContentUserDataStora
     public async getContentUserDataByUser(
         user: IUser
     ): Promise<IContentUserData[]> {
-        const files = await getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory);
         const result: IContentUserData[] = [];
         for (const file of files) {
             if (!file.endsWith('-userdata.json')) {
@@ -194,7 +194,7 @@ export default class FileContentUserDataStorage implements IContentUserDataStora
     }
 
     public async deleteAllContentUserDataByUser(user: IUser): Promise<void> {
-        const files = await getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory);
         for (const file of files) {
             if (!file.endsWith('-userdata.json')) {
                 continue;
@@ -359,7 +359,7 @@ export default class FileContentUserDataStorage implements IContentUserDataStora
     public async getFinishedDataByUser(
         user: IUser
     ): Promise<IFinishedUserData[]> {
-        const files = await getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory);
         const result: IFinishedUserData[] = [];
         for (const file of files) {
             if (!file.endsWith('-finished.json')) {
@@ -415,7 +415,7 @@ export default class FileContentUserDataStorage implements IContentUserDataStora
     }
 
     public async deleteFinishedDataByUser(user: IUser): Promise<void> {
-        const files = await getAllFiles(this.directory).toArray();
+        const files = await getAllFiles(this.directory);
         for (const file of files) {
             if (!file.endsWith('-finished.json')) {
                 continue;

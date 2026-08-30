@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from '../../helpers/getAllFiles';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { createReadStream, createWriteStream, mkdirSync } from 'fs';
@@ -447,7 +447,7 @@ export default class FileLibraryStorage implements ILibraryStorage {
     public async listFiles(library: ILibraryName): Promise<string[]> {
         const libPath = this.getDirectoryPath(library);
         const libPathLength = libPath.length + 1;
-        return (await getAllFiles(libPath).toArray())
+        return (await getAllFiles(libPath))
             .map((p) => p.substr(libPathLength))
             .filter((p) => !this.isIgnored(p))
             .map((p) => p.replace(/\\/g, '/'))

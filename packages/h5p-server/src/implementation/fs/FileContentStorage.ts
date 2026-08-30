@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream, mkdirSync, ReadStream } from 'fs';
 import { Stream } from 'stream';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from '../../helpers/getAllFiles';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { access, mkdir, readdir, rm, stat, writeFile } from 'fs/promises';
@@ -457,7 +457,7 @@ export default class FileContentStorage implements IContentStorage {
         const contentDirectoryPathLength = contentDirectoryPath.length + 1;
         const absolutePaths = await getAllFiles(
             path.join(contentDirectoryPath)
-        ).toArray();
+        );
         const contentPath = path.join(contentDirectoryPath, 'content.json');
         const h5pPath = path.join(contentDirectoryPath, 'h5p.json');
         return absolutePaths

@@ -1,5 +1,5 @@
 import path from 'path';
-import { getAllFiles } from 'get-all-files';
+import { getAllFiles } from './helpers/getAllFiles';
 import { Stream } from 'stream';
 import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
@@ -196,7 +196,7 @@ export default class ContentStorer {
             )
         );
         const otherContentFiles: string[] = (
-            await getAllFiles(path.join(packageDirectory, 'content')).toArray()
+            await getAllFiles(path.join(packageDirectory, 'content'))
         ).filter(
             (file: string) =>
                 file.substr(packageDirectoryLength) !== 'content.json'
