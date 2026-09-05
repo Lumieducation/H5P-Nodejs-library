@@ -20,9 +20,7 @@ const log = new Logger('FileContentUserDataStorage');
  * object. There's a separate file for user states and one for the finished data.
  * Each file contains a list of all states or finished data objects.
  */
-export default class FileContentUserDataStorage
-    implements IContentUserDataStorage
-{
+export default class FileContentUserDataStorage implements IContentUserDataStorage {
     constructor(protected directory: string) {
         if (!existsSync(directory)) {
             log.debug('Creating directory', directory);

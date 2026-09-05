@@ -2,7 +2,6 @@ import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
 import { Readable } from 'stream';
 import { getAllFiles } from './helpers/getAllFiles';
-import upath from 'upath';
 
 import variantEquivalents from '../assets/variantEquivalents.json';
 import H5pError from './helpers/H5pError';

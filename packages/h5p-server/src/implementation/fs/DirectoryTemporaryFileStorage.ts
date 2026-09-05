@@ -29,9 +29,7 @@ import { checkFilename, sanitizeFilename } from './filenameUtils';
  * Manages expiration times by creating companion '.metadata' files for every
  * file stored.
  */
-export default class DirectoryTemporaryFileStorage
-    implements ITemporaryFileStorage
-{
+export default class DirectoryTemporaryFileStorage implements ITemporaryFileStorage {
     /**
      * @param directory the directory in which the temporary files are stored.
      * Must be read- and write accessible
