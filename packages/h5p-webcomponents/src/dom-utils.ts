@@ -1,6 +1,23 @@
-import AwaitLock from 'await-lock';
+/**
+ * Minimal async mutex used to serialize addScripts() calls. Replaces the
+ * await-lock package, which dropped CommonJS/UMD support in v3 and can't be
+ * consumed by this package's UMD build target.
+ */
+class AsyncLock {
+    private queue: Promise<void> = Promise.resolve();
 
-const lock = new AwaitLock();
+    public async acquireAsync(): Promise<() => void> {
+        let release: () => void;
+        const previous = this.queue;
+        this.queue = new Promise((res) => {
+            release = res;
+        });
+        await previous;
+        return release;
+    }
+}
+
+const lock = new AsyncLock();
 
 /**
  * Adds JavaScript file references to the DOM of the target element. If the
@@ -22,7 +39,7 @@ export async function addScripts(
     // a time when not all scripts have been fully loaded. This means that the
     // global H5P objects and functions are not available yet, even though they
     // should be.
-    await lock.acquireAsync();
+    const release = await lock.acquireAsync();
     try {
         const existingScripts = Array.from(
             target.getElementsByTagName('script')
@@ -56,7 +73,7 @@ export async function addScripts(
             })
         );
     } finally {
-        lock.release();
+        release();
     }
 }
 
