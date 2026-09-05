@@ -1,5 +1,7 @@
 import path from 'path';
-import cacheManager from 'cache-manager';
+import { createCache } from 'cache-manager';
+import { Keyv } from 'keyv';
+import { CacheableMemory } from 'cacheable';
 import { dir, DirectoryResult } from 'tmp-promise';
 import { readFile } from 'fs/promises';
 
@@ -96,10 +98,17 @@ describe('CachedLibraryStorage', () => {
         );
         const cachedStorage = new CachedLibraryStorage(
             uncachedStorage,
-            cacheManager.caching({
-                store: 'memory',
-                ttl: 60 * 60 * 24,
-                max: 2 ** 10
+            createCache({
+                stores: [
+                    new Keyv({
+                        store: new CacheableMemory({
+                            ttl: 60 * 60 * 24 * 1000,
+                            lruSize: 2 ** 10
+                        }),
+                        serialize: undefined,
+                        deserialize: undefined
+                    })
+                ]
             })
         );
         const cacheCheck = checkIfFunctionCaches(

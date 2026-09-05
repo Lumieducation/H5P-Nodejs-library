@@ -1,4 +1,6 @@
-import { Cache, caching } from 'cache-manager';
+import { Cache, createCache } from 'cache-manager';
+import { Keyv } from 'keyv';
+import { CacheableMemory } from 'cacheable';
 
 import { IKeyValueStorage } from '../../types';
 
@@ -15,10 +17,17 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
         private cache?: Cache
     ) {
         if (!this.cache) {
-            this.cache = caching({
-                store: 'memory',
-                ttl: 60 * 60 * 24,
-                max: 2 ** 10
+            this.cache = createCache({
+                stores: [
+                    new Keyv({
+                        store: new CacheableMemory({ lruSize: 2 ** 10 }),
+                        // We store data in memory only, so there's no need
+                        // to (de)serialize it to/from strings. Doing so
+                        // would break on values like Date objects.
+                        serialize: undefined,
+                        deserialize: undefined
+                    })
+                ]
             });
         }
     }
@@ -28,6 +37,10 @@ export default class CachedKeyValueStorage implements IKeyValueStorage {
     }
 
     public async save(key: string, value: any): Promise<any> {
-        return this.cache.set(`${this.prefix}-${key}`, value, { ttl: 0 });
+        // A ttl of 0 tells Keyv to store the entry without expiration,
+        // overriding any default ttl configured on the cache backend (this
+        // storage class is used to persist actual data, not just as a
+        // re-fetchable cache).
+        return this.cache.set(`${this.prefix}-${key}`, value, 0);
     }
 }

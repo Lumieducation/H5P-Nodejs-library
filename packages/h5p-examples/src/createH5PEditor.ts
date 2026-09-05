@@ -1,6 +1,8 @@
-import { Cache, caching } from 'cache-manager';
-import redisStore from 'cache-manager-redis-store';
-import { createClient } from '@redis/client';
+import { Cache, createCache } from 'cache-manager';
+import { Keyv } from 'keyv';
+import { CacheableMemory } from 'cacheable';
+import KeyvRedis from '@keyv/redis';
+import { createClient } from 'redis';
 import debug from 'debug';
 import type { Db } from 'mongodb';
 
@@ -53,22 +55,39 @@ export default async function createH5PEditor(
         debug('h5p-example')(
             `Using in memory cache for caching library storage.`
         );
-        cache = caching({
-            store: 'memory',
-            ttl: 60 * 60 * 24,
-            max: 2 ** 10
+        cache = createCache({
+            stores: [
+                new Keyv({
+                    store: new CacheableMemory({
+                        ttl: 60 * 60 * 24 * 1000,
+                        lruSize: 2 ** 10
+                    }),
+                    // We store data in memory only, so there's no need to
+                    // (de)serialize it to/from strings. Doing so would break
+                    // on values like Date objects.
+                    serialize: undefined,
+                    deserialize: undefined
+                })
+            ]
         });
     } else if (process.env.CACHE === 'redis') {
         debug('h5p-example')(
             `Using Redis for caching library storage (${process.env.REDIS_HOST}:${process.env.REDIS_PORT}, db: ${process.env.REDIS_DB})`
         );
-        cache = caching({
-            store: redisStore,
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-            auth_pass: process.env.REDIS_AUTH_PASS,
-            db: process.env.REDIS_DB,
-            ttl: 60 * 60 * 24
+        cache = createCache({
+            stores: [
+                new Keyv({
+                    store: new KeyvRedis({
+                        socket: {
+                            host: process.env.REDIS_HOST,
+                            port: Number.parseInt(process.env.REDIS_PORT, 10)
+                        },
+                        password: process.env.REDIS_AUTH_PASS,
+                        database: Number.parseInt(process.env.REDIS_DB, 10)
+                    })
+                })
+            ],
+            ttl: 60 * 60 * 24 * 1000
         });
     } else {
         debug('h5p-example')('Not using any cache for library storage');

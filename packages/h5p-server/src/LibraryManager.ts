@@ -1,7 +1,7 @@
 import { createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
-import { getAllFiles } from 'get-all-files';
 import { Readable } from 'stream';
+import { getAllFiles } from './helpers/getAllFiles';
 import upath from 'upath';
 
 import variantEquivalents from '../assets/variantEquivalents.json';
@@ -757,7 +757,7 @@ export default class LibraryManager {
     ): Promise<void> {
         log.info(`copying library files from ${fromDirectory}`);
         const fromDirectoryLength = fromDirectory.length + 1;
-        const files = await getAllFiles(fromDirectory).toArray();
+        const files = await getAllFiles(fromDirectory);
         await Promise.all(
             files.map((fileFullPath: string) => {
                 const fileLocalPath: string =
@@ -768,7 +768,7 @@ export default class LibraryManager {
                 const readStream: Readable = createReadStream(fileFullPath);
                 return this.libraryStorage.addFile(
                     libraryInfo,
-                    upath.toUnix(fileLocalPath),
+                    fileLocalPath.replace(/\\/g, '/'),
                     readStream
                 );
             })
