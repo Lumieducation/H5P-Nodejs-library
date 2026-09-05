@@ -1,7 +1,7 @@
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
 import { createReadStream, createWriteStream, readFileSync } from 'fs';
-import { rm } from 'fs/promises';
+import { readFile, rm, writeFile } from 'fs/promises';
 import probeImageSize from 'probe-image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
@@ -44,8 +44,9 @@ import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
-    File,
     FileSanitizerResult,
+    H5PFile,
+    H5PFileBuffer,
     IAssets,
     IContentMetadata,
     IContentStorage,
@@ -630,7 +631,7 @@ export default class H5PEditor {
     public async saveContentFile(
         contentId: ContentId,
         field: ISemanticsEntry,
-        file: File,
+        file: H5PFile,
         user: IUser
     ): Promise<{
         height?: number;
@@ -667,7 +668,7 @@ export default class H5PEditor {
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
                 return {
-                    ...(await scanner.scan(file)),
+                    ...(await this.scanForMalware(scanner, file)),
                     scannerName: scanner.name
                 };
             })
@@ -699,7 +700,7 @@ export default class H5PEditor {
             try {
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(file);
+                const result = await this.sanitizeFile(sanitizer, file);
                 if (result == FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
@@ -1529,6 +1530,63 @@ export default class H5PEditor {
         return resolve(dependencies.shift());
     }
 
+    /**
+     * Sanitizes an uploaded file with a single sanitizer, using whichever
+     * mode the file was uploaded in (temporary file or in-memory buffer). See
+     * {@link scanForMalware} for the reasoning behind the fallback to a
+     * temporary file for sanitizers that don't implement `sanitizeBuffer`.
+     */
+    private async sanitizeFile(
+        sanitizer: IFileSanitizer,
+        file: H5PFile
+    ): Promise<FileSanitizerResult> {
+        if (file.tempFilePath) {
+            return sanitizer.sanitize(file.tempFilePath);
+        }
+        if (sanitizer.sanitizeBuffer) {
+            const fileBuffer = file as H5PFileBuffer;
+            const result = await sanitizer.sanitizeBuffer(fileBuffer);
+            file.data = fileBuffer.data;
+            return result;
+        }
+        return this.withBufferAsTempFile(
+            file.data,
+            file.name,
+            async (tempFilePath) => {
+                const result = await sanitizer.sanitize(tempFilePath);
+                file.data = await readFile(tempFilePath);
+                return result;
+            }
+        );
+    }
+
+    /**
+     * Scans an uploaded file for malware with a single scanner, using
+     * whichever mode the file was uploaded in (temporary file or in-memory
+     * buffer).
+     *
+     * Scanners are never handed a buffer unless they explicitly opted in by
+     * implementing `scanBuffer`: `IFileMalwareScanner.scan(file: string)` is
+     * called exactly as before for scanners that don't, so third-party
+     * scanners written against the pre-existing string-only signature keep
+     * working unmodified. If such a scanner is used with a buffer upload, we
+     * transparently write the buffer to a temporary file first.
+     */
+    private async scanForMalware(
+        scanner: IFileMalwareScanner,
+        file: H5PFile
+    ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        if (file.tempFilePath) {
+            return scanner.scan(file.tempFilePath);
+        }
+        if (scanner.scanBuffer) {
+            return scanner.scanBuffer(file as H5PFileBuffer);
+        }
+        return this.withBufferAsTempFile(file.data, file.name, (tempFilePath) =>
+            scanner.scan(tempFilePath)
+        );
+    }
+
     private validateLanguageCode(languageCode: string): void {
         // We are a bit more tolerant than the ISO standard, as there are three
         // character languages codes and country codes like 'hans' for
@@ -1536,5 +1594,26 @@ export default class H5PEditor {
         if (!/^[a-z]{2,3}(-[A-Z]{2,6})?$/i.test(languageCode)) {
             throw new Error(`Language code ${languageCode} is invalid.`);
         }
+    }
+
+    /**
+     * Writes a buffer to a short-lived temporary file, runs `callback` with
+     * its path, and guarantees the file is deleted afterwards (even if
+     * `callback` throws). Used to give buffer-based uploads to
+     * scanners/sanitizers that only implement the path-based `scan`/
+     * `sanitize` methods.
+     */
+    private async withBufferAsTempFile<T>(
+        data: Buffer,
+        fileName: string,
+        callback: (tempFilePath: string) => Promise<T>
+    ): Promise<T> {
+        return withFile(
+            async ({ path: tempFilePath }: FileResult) => {
+                await writeFile(tempFilePath, data);
+                return callback(tempFilePath);
+            },
+            { postfix: path.extname(fileName) || undefined }
+        );
     }
 }

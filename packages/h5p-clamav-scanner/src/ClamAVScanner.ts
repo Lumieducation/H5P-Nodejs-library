@@ -1,12 +1,12 @@
 import NodeClam from 'clamscan';
-import { mkdtemp, rm, unlink, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { basename, join } from 'path';
 import { Readable } from 'stream';
+import { withFile } from 'tmp-promise';
+import { writeFile } from 'fs/promises';
+import { basename, extname } from 'path';
 import { merge } from 'ts-deepmerge';
 
 import {
-    File,
+    H5PFileBuffer,
     IFileMalwareScanner,
     Logger,
     MalwareScanResult
@@ -32,6 +32,9 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      * We have no public constructor, as we need to initialize the ClamAV
      * scanner asynchronously.
      * @param scanner
+     * @param clamdServiceEnabled true if the resolved scanner is the clamd
+     * daemon, which supports scanning a stream directly; false if it is the
+     * clamscan binary, which requires a file on disk.
      */
     private constructor(
         private scanner: NodeClam,
@@ -78,23 +81,23 @@ export default class ClamAVScanner implements IFileMalwareScanner {
 
         log.debug('Initializing ClamAV scanner with options:', clamScanOptions);
 
-        const clamdServiceEnabled =
-            clamScanOptions.preference === 'clamscan'
-                ? false
-                : !!(
-                      clamScanOptions.clamdscan?.socket ||
-                      clamScanOptions.clamdscan?.port ||
-                      clamScanOptions.clamdscan?.host
-                  );
-
         const clamScan = await new NodeClam().init(clamScanOptions);
         log.debug(
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()
         );
-        const options: ClamAVScannerOptions = { clamdServiceEnabled };
 
-        return new ClamAVScanner(clamScan, options);
+        // clamscan resolves during init() which binary/daemon it actually
+        // ended up using (it can fall back from the configured preference,
+        // e.g. if a socket/host/port is misconfigured or a binary isn't
+        // found). Reading that resolved value back instead of re-deriving it
+        // from the input options ourselves means we never get out of sync
+        // with clamscan's own fallback logic.
+        const clamdServiceEnabled =
+            (clamScan as unknown as { scanner: 'clamdscan' | 'clamscan' })
+                .scanner === 'clamdscan';
+
+        return new ClamAVScanner(clamScan, { clamdServiceEnabled });
     }
 
     /**
@@ -167,100 +170,61 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     }
 
     async scan(
-        file: string | File
+        file: string
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
-        const normalizedFile = this.normalizeFileInput(file);
-
+        const fileName = basename(file);
         log.debug(
             'Scanning uploaded file',
-            normalizedFile.name,
+            fileName,
             'with malware scanner',
             this.name
         );
 
         try {
-            const scanResponse = await this.performScan(normalizedFile);
-            return this.buildScanResult(scanResponse, normalizedFile.name);
+            const scanResponse = await this.scanner.scanFile(file);
+            return this.buildScanResult(scanResponse, fileName);
         } catch (error) {
-            log.error('Error while scanning file', normalizedFile.name, error);
+            log.error('Error while scanning file', fileName, error);
             return { result: MalwareScanResult.NotScanned };
         }
     }
 
-    private normalizeFileInput(
-        file: string | File
-    ): File | { tempFilePath: string; name: string } {
-        return typeof file === 'string'
-            ? { tempFilePath: file, name: basename(file) }
-            : file;
-    }
+    async scanBuffer(
+        file: H5PFileBuffer
+    ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        log.debug(
+            'Scanning uploaded buffer',
+            file.name,
+            'with malware scanner',
+            this.name
+        );
 
-    private async performScan(
-        normalizedFile: File | { tempFilePath: string; name: string }
-    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
-        if ('data' in normalizedFile && normalizedFile.data) {
-            return this.scanBuffer(normalizedFile.data, normalizedFile.name);
+        try {
+            const scanResponse = this.options.clamdServiceEnabled
+                ? await this.scanner.scanStream(Readable.from(file.data))
+                : await this.scanBufferWithTempFile(file.data, file.name);
+            return this.buildScanResult(scanResponse, file.name);
+        } catch (error) {
+            log.error('Error while scanning buffer', file.name, error);
+            return { result: MalwareScanResult.NotScanned };
         }
-
-        if (normalizedFile.tempFilePath) {
-            return this.scanner.scanFile(normalizedFile.tempFilePath);
-        }
-
-        log.error('No file data or path provided for scanning');
-        throw new Error('No file data or path provided for scanning');
-    }
-
-    private async scanBuffer(
-        data: Buffer,
-        fileName: string
-    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
-        if (this.options.clamdServiceEnabled) {
-            log.debug('Using stream scan for ClamAV daemon');
-            const readable = Readable.from(data);
-            return this.scanner.scanStream(readable);
-        }
-
-        log.debug('Using temporary file scan for ClamAV binary');
-        return this.scanBufferWithTempFile(data, fileName);
     }
 
     private async scanBufferWithTempFile(
         data: Buffer,
         fileName: string
     ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
-        let tempDir: string | undefined;
-        let tempFilePath: string | undefined;
-
-        try {
-            tempDir = await mkdtemp(join(tmpdir(), 'clam-av-'));
-            const safeFileName = basename(fileName);
-            tempFilePath = join(tempDir, safeFileName || 'upload');
-
-            await writeFile(tempFilePath, data);
-            return await this.scanner.scanFile(tempFilePath);
-        } finally {
-            await this.cleanupTempFiles(tempFilePath, tempDir);
-        }
-    }
-
-    private async cleanupTempFiles(
-        tempFilePath?: string,
-        tempDir?: string
-    ): Promise<void> {
-        try {
-            if (tempFilePath) {
-                await unlink(tempFilePath);
-            }
-            if (tempDir) {
-                await rm(tempDir, { recursive: true, force: true });
-            }
-            log.debug(`Temporary file and directory deleted: ${tempFilePath}`);
-        } catch (err) {
-            log.debug(
-                `Error deleting temporary file or directory: ${tempFilePath}`,
-                err
-            );
-        }
+        log.debug('Using temporary file scan for ClamAV binary');
+        return withFile(
+            async ({ path: tempFilePath }) => {
+                await writeFile(tempFilePath, data);
+                return this.scanner.scanFile(tempFilePath);
+            },
+            // basename() strips any path-traversal segments a malicious
+            // filename might contain; extname() only ever contributes a
+            // suffix like ".svg" to the generated temp path.
+            { postfix: extname(basename(fileName)) || undefined }
+        );
     }
 
     private buildScanResult(

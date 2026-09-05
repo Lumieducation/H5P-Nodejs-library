@@ -7,8 +7,8 @@ import { withDir, withFile } from 'tmp-promise';
 
 import LibraryName from '../src/LibraryName';
 import {
-    File,
     FileSanitizerResult,
+    H5PFile,
     IContentMetadata,
     IContentStorage,
     IEditorModel,
@@ -229,7 +229,7 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
-                const file: File = {
+                const file: H5PFile = {
                     data: undefined,
                     mimetype: 'image/jpeg',
                     name: 'earth.JPG',
@@ -248,8 +248,10 @@ describe('H5PEditor', () => {
                     new User()
                 );
 
-                // check result
-                expect(sanitizeSpy).toHaveBeenCalledWith(file);
+                // check result: sanitizers only implementing the path-based
+                // `sanitize` method are called with the temp file path, not
+                // the whole file object.
+                expect(sanitizeSpy).toHaveBeenCalledWith(originalPath);
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -484,7 +486,7 @@ describe('H5PEditor', () => {
                     'test/data/sample-content/content/earth.jpg'
                 );
                 const fileBuffer = await readFile(originalPath);
-                const file: File = {
+                const file: H5PFile = {
                     data: fileBuffer,
                     mimetype: 'image/jpeg',
                     name: 'earth.jpg',
@@ -502,8 +504,13 @@ describe('H5PEditor', () => {
                     new User()
                 );
 
-                // check result
-                expect(scanSpy).toHaveBeenCalledWith(file);
+                // check result: scanners only implementing the path-based
+                // `scan` method receive a temporary file the buffer was
+                // written to (with the original extension), not the file
+                // object itself.
+                expect(scanSpy).toHaveBeenCalledWith(
+                    expect.stringMatching(/\.jpg$/)
+                );
             },
             { keep: false, unsafeCleanup: true }
         );

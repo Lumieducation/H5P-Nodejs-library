@@ -1,12 +1,10 @@
-import { createWriteStream } from 'fs';
 import { open } from 'fs/promises';
 import { filetypeextension } from 'magic-bytes.js';
 import { lookup as mimeLookup } from 'mime-types';
 import path from 'path';
-import { FileResult, withFile } from 'tmp-promise';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
-import { File } from './types';
+import { H5PFile } from './types';
 
 const log = new Logger('contentFileValidation');
 
@@ -42,7 +40,7 @@ const dangerousTextPatterns = [
  * @throws H5pError with errorId 'upload-validation-error' if the file has
  * neither data nor tempFilePath, or if content validation fails
  */
-export async function validateContent(file: File): Promise<void> {
+export async function validateContent(file: H5PFile): Promise<void> {
     if (file.data) {
         await validateBufferContent(file.data, file.name);
     } else if (file.tempFilePath) {
@@ -98,61 +96,17 @@ export async function validateFileContent(filePath: string): Promise<void> {
         if (bytesRead === 0) {
             return;
         }
-        const data = buffer.subarray(0, bytesRead);
-
-        // Detect the actual file type using magic bytes
-        const detectedExtensions = filetypeextension([...data] as number[]).map(
-            (e) => e.replace(/^\./, '')
-        );
-
-        if (detectedExtensions.length > 0) {
-            // The library detected a file type — check it matches
-            // the claimed extension
-            if (extensionMatchesDetected(ext, detectedExtensions)) {
-                // Even when the extension matches, text-based detections
-                // (e.g. a BOM causing magic-bytes to return "txt") still
-                // need the dangerous-content check. A UTF-8 BOM followed
-                // by <html>…</html> would otherwise slip through.
-                if (
-                    detectedExtensions.includes('txt') &&
-                    looksLikeXmlOrHtml(data)
-                ) {
-                    log.info(
-                        `File detected as text but contains XML/HTML content. Rejecting file: ${resolvedPath}`
-                    );
-                    throw new H5pError('upload-validation-error', {}, 400);
-                }
-                return;
-            }
-            log.info(
-                `File content mismatch: ${resolvedPath} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
-            );
-            throw new H5pError('upload-validation-error', {}, 400);
-        }
-
-        // magic-bytes.js returned nothing — file may be text-based
-        // or an unrecognized binary format. Check for dangerous
-        // XML/SVG/HTML content that could enable XSS regardless of
-        // the claimed extension.
-        if (looksLikeXmlOrHtml(data)) {
-            log.info(
-                `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${resolvedPath}`
-            );
-            throw new H5pError('upload-validation-error', {}, 400);
-        }
+        validateContentBytes(buffer.subarray(0, bytesRead), ext, resolvedPath);
     } finally {
         await fileHandle.close();
     }
 }
 
 /**
- * Validates that a buffer's content matches its expected file type. Writes the
- * buffer to a temporary file and delegates to validateFileContent for magic
- * byte detection and dangerous content checks.
- *
- * Use this function when you have file data in memory (e.g., from a stream or
- * direct upload) rather than on disk. The temporary file is automatically
- * cleaned up after validation completes.
+ * Validates that a buffer's content matches its expected file type. Inspects
+ * the first 1024 bytes of the in-memory buffer directly (the same amount
+ * {@link validateFileContent} reads from disk), so it never has to write the
+ * (potentially large) buffer to disk just to validate it.
  *
  * @param buffer the file content to validate; must be non-empty
  * @param filename the original filename, used to determine the extension for
@@ -170,21 +124,64 @@ export async function validateBufferContent(
         );
         throw new H5pError('upload-validation-error', {}, 400);
     }
-    await withFile(
-        async ({ path: tempPath }: FileResult) => {
-            await new Promise<void>((resolve, reject) => {
-                const writeStream = createWriteStream(tempPath);
-                writeStream.on('error', reject);
-                writeStream.on('finish', resolve);
-                writeStream.end(buffer);
-            });
-            await validateFileContent(tempPath);
-        },
-        {
-            discardDescriptor: true,
-            postfix: path.extname(filename) || undefined
-        }
+
+    const ext = path.extname(filename).toLowerCase().replace(/^\./, '');
+    if (!ext) {
+        return;
+    }
+
+    validateContentBytes(buffer.subarray(0, 1024), ext, filename);
+}
+
+/**
+ * Shared magic-byte / dangerous-content check used by both
+ * {@link validateFileContent} (reading from disk) and
+ * {@link validateBufferContent} (reading from memory).
+ * @param data the first bytes of the file (up to 1024)
+ * @param ext the claimed extension (without leading dot), already lowercased
+ * @param label a path or filename used only for log messages
+ */
+function validateContentBytes(data: Buffer, ext: string, label: string): void {
+    // Detect the actual file type using magic bytes
+    const detectedExtensions = filetypeextension([...data] as number[]).map(
+        (e) => e.replace(/^\./, '')
     );
+
+    if (detectedExtensions.length > 0) {
+        // The library detected a file type — check it matches
+        // the claimed extension
+        if (extensionMatchesDetected(ext, detectedExtensions)) {
+            // Even when the extension matches, text-based detections
+            // (e.g. a BOM causing magic-bytes to return "txt") still
+            // need the dangerous-content check. A UTF-8 BOM followed
+            // by <html>…</html> would otherwise slip through.
+            if (
+                detectedExtensions.includes('txt') &&
+                looksLikeXmlOrHtml(data)
+            ) {
+                log.info(
+                    `File detected as text but contains XML/HTML content. Rejecting file: ${label}`
+                );
+                throw new H5pError('upload-validation-error', {}, 400);
+            }
+            return;
+        }
+        log.info(
+            `File content mismatch: ${label} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+
+    // magic-bytes.js returned nothing — file may be text-based
+    // or an unrecognized binary format. Check for dangerous
+    // XML/SVG/HTML content that could enable XSS regardless of
+    // the claimed extension.
+    if (looksLikeXmlOrHtml(data)) {
+        log.info(
+            `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${label}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
 }
 
 /**

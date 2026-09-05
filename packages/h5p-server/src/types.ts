@@ -2466,12 +2466,30 @@ export interface ILockProvider {
     ): Promise<T>;
 }
 
-export type File = {
+/**
+ * Describes an uploaded file that can either exist as a temporary file on
+ * disk (`tempFilePath`) or as an in-memory buffer (`data`), depending on how
+ * the implementation that received the upload works. Named `H5PFile` (rather
+ * than `File`) to avoid colliding with the DOM `File` type that many
+ * TypeScript consumers already have in scope.
+ */
+export type H5PFile = {
     data?: Buffer;
     mimetype: string;
     name: string;
     size: number;
     tempFilePath?: string;
+};
+
+/**
+ * The buffer-only counterpart of {@link H5PFile}, used by the optional
+ * `scanBuffer` / `sanitizeBuffer` methods of {@link IFileMalwareScanner} and
+ * {@link IFileSanitizer}. `data` is guaranteed to be present, so
+ * implementers don't need to check for `tempFilePath` or handle the case of
+ * neither being set.
+ */
+export type H5PFileBuffer = Omit<H5PFile, 'data' | 'tempFilePath'> & {
+    data: Buffer;
 };
 
 export enum MalwareScanResult {
@@ -2489,9 +2507,20 @@ export interface IFileMalwareScanner {
     /** The name of the scanner, e.g. ClamAV */
     readonly name: string;
 
-    /** Scans a file for malware and returns whether it contains malware. */
+    /** Scans a file at the given path for malware and returns whether it
+     * contains malware. */
     scan(
-        file: string | File
+        file: string
+    ): Promise<{ result: MalwareScanResult; viruses?: string }>;
+
+    /**
+     * Optional: scans an in-memory buffer for malware without requiring it
+     * to be written to disk first. Implementations that don't support
+     * buffer scanning can omit this method; callers fall back to writing
+     * the buffer to a temporary file and calling {@link scan} instead.
+     */
+    scanBuffer?(
+        file: H5PFileBuffer
     ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
@@ -2515,7 +2544,18 @@ export interface IFileSanitizer {
     /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
     readonly name: string;
 
-    /** Sanitizes files. The original file is expected to be replaced by the
-     * sanitized file, so there is no new path to the sanitized file.*/
-    sanitize(file: string | File): Promise<FileSanitizerResult>;
+    /** Sanitizes the file at the given path. The original file is expected
+     * to be replaced by the sanitized file, so there is no new path to the
+     * sanitized file. */
+    sanitize(file: string): Promise<FileSanitizerResult>;
+
+    /**
+     * Optional: sanitizes an in-memory buffer without requiring it to be
+     * written to disk first. Implementations are expected to replace
+     * `file.data` with the sanitized buffer. Implementations that don't
+     * support buffer sanitization can omit this method; callers fall back
+     * to writing the buffer to a temporary file and calling {@link sanitize}
+     * instead.
+     */
+    sanitizeBuffer?(file: H5PFileBuffer): Promise<FileSanitizerResult>;
 }

@@ -454,9 +454,7 @@ describe('Express Ajax endpoint adapter', () => {
         expect(imageResult.status).toBe(200);
     });
 
-    // Skip: Test data H5P.DragText.h5p has validation errors (invalid-schema-library-json-file,
-    // api-version-unsupported). This is a pre-existing issue with the test package, not the code.
-    it.skip('installs content types from the H5P Hub', async () => {
+    it('installs content types from the H5P Hub', async () => {
         axiosMock
             .onGet(`${h5pEditor.config.hubContentTypesEndpoint}H5P.DragText`)
             .reply(() => [

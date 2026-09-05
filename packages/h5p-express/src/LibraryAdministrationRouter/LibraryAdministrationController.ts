@@ -1,9 +1,9 @@
 import * as express from 'express';
 
 import {
-    File,
     H5PEditor,
     H5pError,
+    H5PFile,
     IInstalledLibrary,
     ILibraryAdministrationOverviewItem,
     LibraryAdministration
@@ -110,7 +110,7 @@ export default class LibraryAdministrationExpressController {
     public postLibraries = async (
         req: express.Request & {
             files: {
-                file: File;
+                file: H5PFile;
             };
         },
         res: express.Response<{ installed: number; updated: number }>

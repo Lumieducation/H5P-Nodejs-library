@@ -2,7 +2,7 @@ import { readFile, stat } from 'fs/promises';
 import path from 'path';
 import { withDir } from 'tmp-promise';
 
-import { File, IFileMalwareScanner, MalwareScanResult } from '../src/types';
+import { IFileMalwareScanner, MalwareScanResult } from '../src/types';
 import User from './User';
 import { createH5PEditor } from './helpers/H5PEditor';
 
@@ -10,10 +10,10 @@ class MockMalwareScanner implements IFileMalwareScanner {
     readonly name: string = 'Mock Scanner';
 
     async scan(
-        file: File
+        file: string
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
         // Simulate scanning logic
-        if (file.name.includes('eicar')) {
+        if (file.includes('eicar')) {
             return {
                 result: MalwareScanResult.MalwareFound,
                 viruses: 'MockVirus'

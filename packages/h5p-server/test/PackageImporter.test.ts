@@ -210,8 +210,8 @@ describe('package importer', () => {
                 );
                 const mockMalwareScanner: IFileMalwareScanner = {
                     name: 'Mock malware scanner',
-                    scan: async (file) => {
-                        if (file.name.includes('eicar')) {
+                    scan: async (filepath) => {
+                        if (filepath.includes('eicar')) {
                             return {
                                 result: MalwareScanResult.MalwareFound,
                                 viruses: 'EICAR test virus'

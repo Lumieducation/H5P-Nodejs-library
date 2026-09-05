@@ -95,15 +95,11 @@ describe('H5PEditor', () => {
                 };
                 const sanitizer2: IFileSanitizer = {
                     name: 'Mock file sanitizer 2',
-                    sanitize: async (file) => {
-                        if (file.name.endsWith('.jpg')) {
+                    sanitize: async (filepath) => {
+                        if (filepath.endsWith('.jpg')) {
                             // replace the file contents with 'sanitized' to
                             // mimmick sanitization
-                            await writeFile(
-                                file.tempFilePath,
-                                'sanitized',
-                                'utf8'
-                            );
+                            await writeFile(filepath, 'sanitized', 'utf8');
                             return FileSanitizerResult.Sanitized;
                         }
                         return FileSanitizerResult.Ignored;

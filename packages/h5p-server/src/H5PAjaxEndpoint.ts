@@ -9,7 +9,7 @@ import SemanticsEnforcer from './SemanticsEnforcer';
 import {
     ContentId,
     ContentParameters,
-    File,
+    H5PFile,
     IAjaxResponse,
     IContentMetadata,
     IFileStats,
@@ -464,13 +464,13 @@ export default class H5PAjaxEndpoint {
             | { libraryParameters: string },
         language?: string,
         user?: IUser,
-        filesFile?: File,
+        filesFile?: H5PFile,
         id?: string,
         translate?: (
             stringId: string,
             replacements: { [key: string]: any }
         ) => string,
-        libraryUploadFile?: File,
+        libraryUploadFile?: H5PFile,
         hubId?: string
     ): Promise<
         | AjaxSuccessResponse

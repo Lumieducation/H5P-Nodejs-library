@@ -8,7 +8,7 @@ import {
     validateContent,
     validateFileContent
 } from '../src/contentFileValidation';
-import { File } from '../src/types';
+import { H5PFile } from '../src/types';
 
 describe('validateFileContent', () => {
     let tmpDir: string;
@@ -298,7 +298,7 @@ describe('validateContent', () => {
             0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
             0x42, 0x60, 0x82
         ]);
-        const file: File = {
+        const file: H5PFile = {
             name: 'image.png',
             data: pngHeader,
             mimetype: 'image/png',
@@ -319,7 +319,7 @@ describe('validateContent', () => {
         ]);
         const filePath = path.join(tmpDir, 'image.png');
         await writeFile(filePath, pngHeader);
-        const file: File = {
+        const file: H5PFile = {
             name: 'image.png',
             tempFilePath: filePath,
             mimetype: 'image/png',
@@ -329,7 +329,7 @@ describe('validateContent', () => {
     });
 
     it('rejects when file has neither data nor tempFilePath', async () => {
-        const file: File = {
+        const file: H5PFile = {
             name: 'orphan.png',
             mimetype: 'image/png',
             size: 1024
@@ -343,7 +343,7 @@ describe('validateContent', () => {
     // without extension, so content validation is skipped. Malicious content
     // can only be detected via file.tempFilePath which preserves the extension.
     it('accepts malicious buffer content via file.data (no extension in temp)', async () => {
-        const file: File = {
+        const file: H5PFile = {
             name: 'malicious',
             data: Buffer.from('<svg><script>alert(1)</script></svg>'),
             mimetype: 'image/png',
@@ -355,7 +355,7 @@ describe('validateContent', () => {
     it('rejects malicious file content via file.tempFilePath', async () => {
         const filePath = path.join(tmpDir, 'malicious.png');
         await writeFile(filePath, '<svg><script>alert(1)</script></svg>');
-        const file: File = {
+        const file: H5PFile = {
             name: 'malicious.png',
             tempFilePath: filePath,
             mimetype: 'image/png',
@@ -379,7 +379,7 @@ describe('validateContent', () => {
         ]);
         const filePath = path.join(tmpDir, 'malicious.png');
         await writeFile(filePath, '<svg><script>alert(1)</script></svg>');
-        const file: File = {
+        const file: H5PFile = {
             name: 'image.png',
             data: pngHeader,
             tempFilePath: filePath,

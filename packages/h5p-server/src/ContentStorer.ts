@@ -1,6 +1,5 @@
 import { createReadStream } from 'fs';
 import { access, readFile, rm } from 'fs/promises';
-import mimeTypes from 'mime-types';
 import path from 'path';
 import { Stream } from 'stream';
 import { getAllFiles } from './helpers/getAllFiles';
@@ -17,7 +16,6 @@ import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
-    File,
     FileSanitizerResult,
     IContentMetadata,
     IFileMalwareScanner,
@@ -358,20 +356,6 @@ export default class ContentStorer {
         return { metadata, parameters };
     }
 
-    private createFileFromFilePath(filepath: string): File {
-        const fileName = path.basename(filepath);
-        const mimetype = mimeTypes.lookup(fileName) || '';
-        const file: File = {
-            data: undefined,
-            mimetype,
-            name: fileName,
-            size: 0,
-            tempFilePath: filepath
-        };
-
-        return file;
-    }
-
     /**
      * Sanitizes potentially dangerous content from the file at the path using
      * the sanitizers provided in the options. Only does something if the
@@ -381,7 +365,6 @@ export default class ContentStorer {
      * kind of error
      */
     private async sanitizeFile(filepath: string) {
-        const file = this.createFileFromFilePath(filepath);
         for (const sanitizer of this.fileSanitizers) {
             try {
                 log.debug(
@@ -392,7 +375,7 @@ export default class ContentStorer {
                 );
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(file);
+                const result = await sanitizer.sanitize(filepath);
                 if (result === FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
@@ -408,11 +391,10 @@ export default class ContentStorer {
     }
 
     private async scanForMalware(filepath: string) {
-        const file = this.createFileFromFilePath(filepath);
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
                 return {
-                    ...(await scanner.scan(file)),
+                    ...(await scanner.scan(filepath)),
                     scannerName: scanner.name
                 };
             })
