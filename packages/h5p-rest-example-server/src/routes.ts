@@ -22,7 +22,7 @@ export default function (
     router.get(`/:contentId/play`, async (req: IRequestWithUser, res) => {
         try {
             const content = await h5pPlayer.render(
-                req.params.contentId,
+                req.params.contentId.toString(),
                 req.user,
                 languageOverride === 'auto'
                     ? (req.language ?? 'en')
@@ -75,7 +75,7 @@ export default function (
             const editorModel = (await h5pEditor.render(
                 req.params.contentId === 'undefined'
                     ? undefined
-                    : req.params.contentId,
+                    : req.params.contentId.toString(),
                 languageOverride === 'auto'
                     ? (req.language ?? 'en')
                     : languageOverride,
@@ -85,7 +85,7 @@ export default function (
                 res.status(200).send(editorModel);
             } else {
                 const content = await h5pEditor.getContent(
-                    req.params.contentId,
+                    req.params.contentId.toString(),
                     req.user
                 );
                 res.status(200).send({
@@ -146,7 +146,10 @@ export default function (
 
     router.delete('/:contentId', async (req: IRequestWithUser, res) => {
         try {
-            await h5pEditor.deleteContent(req.params.contentId, req.user);
+            await h5pEditor.deleteContent(
+                req.params.contentId.toString(),
+                req.user
+            );
         } catch (error) {
             console.error(error);
 
