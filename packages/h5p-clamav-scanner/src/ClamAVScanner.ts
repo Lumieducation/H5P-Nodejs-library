@@ -33,8 +33,12 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      * scanner asynchronously.
      * @param scanner
      * @param clamdServiceEnabled true if the resolved scanner is the clamd
-     * daemon, which supports scanning a stream directly; false if it is the
-     * clamscan binary, which requires a file on disk.
+     * daemon AND a socket/host/port connection to it was actually
+     * configured, which together are required for scanning a stream
+     * directly; false if it is the clamscan binary, or a clamdscan that
+     * would fall back to shelling out to the local binary because no
+     * daemon connection was configured, both of which require a file on
+     * disk.
      */
     private constructor(
         private scanner: NodeClam,
@@ -93,9 +97,33 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         // found). Reading that resolved value back instead of re-deriving it
         // from the input options ourselves means we never get out of sync
         // with clamscan's own fallback logic.
+        //
+        // Note: clamscan's own default `this.scanner` is 'clamdscan' even
+        // when no socket/host/port was configured at all (it then shells out
+        // to the local clamdscan binary instead of talking to a daemon). In
+        // that case `scanStream` is not usable (it requires an actual
+        // socket/host/port connection), so we additionally require that a
+        // daemon connection was actually configured before treating the
+        // scanner as stream-capable.
+        const resolvedSettings = (
+            clamScan as unknown as {
+                settings: {
+                    clamdscan: {
+                        host?: false | string;
+                        port?: false | number;
+                        socket?: false | string;
+                    };
+                };
+            }
+        ).settings;
         const clamdServiceEnabled =
             (clamScan as unknown as { scanner: 'clamdscan' | 'clamscan' })
-                .scanner === 'clamdscan';
+                .scanner === 'clamdscan' &&
+            !!(
+                resolvedSettings.clamdscan.socket ||
+                resolvedSettings.clamdscan.port ||
+                resolvedSettings.clamdscan.host
+            );
 
         return new ClamAVScanner(clamScan, { clamdServiceEnabled });
     }
