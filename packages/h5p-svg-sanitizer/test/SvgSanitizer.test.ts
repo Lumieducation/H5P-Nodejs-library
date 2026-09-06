@@ -319,6 +319,52 @@ describe('SvgSanitizer', () => {
             );
         });
 
+        it('sanitizes an extensionless temp path when originalFilename carries the .svg extension', async () => {
+            // express-fileupload's temp files (useTempFiles mode) are always
+            // extensionless (e.g. tmp-5000-<pid><ts>), regardless of the
+            // uploaded filename. The sanitizer must fall back to the
+            // original filename to detect that the file is an SVG.
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    const maliciousSvg = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+                      <script>alert(document.cookie);</script>
+                      <circle r="54.194405" cy="68.415733" cx="98.428535" id="path233"></circle>
+                    </svg>`;
+                    await writeFile(filePath, maliciousSvg, 'utf8');
+
+                    const result = await new SvgSanitizer().sanitize(
+                        filePath,
+                        'image.svg'
+                    );
+                    expect(result).toBe(FileSanitizerResult.Sanitized);
+
+                    const sanitizedSvg = await readFile(filePath, 'utf-8');
+                    const dom = new JSDOM(sanitizedSvg, {
+                        contentType: 'image/svg+xml'
+                    });
+                    expect(
+                        dom.window.document.querySelector('script')
+                    ).toBeNull();
+                },
+                { postfix: '', keep: false }
+            );
+        });
+
+        it('ignores a file when originalFilename has no SVG extension, even if the path does', async () => {
+            await tmp.withFile(
+                async ({ path: filePath }) => {
+                    await writeFile(filePath, 'some text', 'utf8');
+
+                    const result = await new SvgSanitizer().sanitize(
+                        filePath,
+                        'document.txt'
+                    );
+                    expect(result).toBe(FileSanitizerResult.Ignored);
+                },
+                { postfix: '.svg', keep: false }
+            );
+        });
+
         it('normalizes string path to extract filename correctly', async () => {
             await tmp.withFile(
                 async ({ path: filePath }) => {

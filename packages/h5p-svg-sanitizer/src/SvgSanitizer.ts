@@ -15,8 +15,11 @@ const DOMPurify = createDOMPurify(window);
 export default class SvgSanitizer implements IFileSanitizer {
     readonly name: string = 'SVG Sanitizer based on dompurify package';
 
-    async sanitize(file: string): Promise<FileSanitizerResult> {
-        if (!this.isSvgFile(basename(file))) {
+    async sanitize(
+        file: string,
+        originalFilename?: string
+    ): Promise<FileSanitizerResult> {
+        if (!this.isSvgFile(basename(originalFilename ?? file))) {
             return FileSanitizerResult.Ignored;
         }
 
