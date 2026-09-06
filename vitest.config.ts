@@ -9,7 +9,8 @@ export default defineConfig({
         include: [
             'packages/h5p-server/test/**/*.test.ts',
             'packages/h5p-express/test/**/*.test.ts',
-            'packages/h5p-svg-sanitizer/test/**/*.test.ts'
+            'packages/h5p-svg-sanitizer/test/**/*.test.ts',
+            'packages/h5p-webcomponents/test/**/*.test.ts'
         ],
         exclude: [
             '**/node_modules/**',
