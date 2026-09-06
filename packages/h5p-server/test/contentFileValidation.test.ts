@@ -114,10 +114,16 @@ describe('validateFileContent', () => {
         );
     });
 
-    it('accepts a file with no extension', async () => {
+    it('rejects a file whose path has no extension and no originalFilename is given', async () => {
+        // With no originalFilename argument, the extension falls back to
+        // being derived from filePath itself. An extensionless path is
+        // rejected outright, since there is nothing to validate the content
+        // against.
         const filePath = path.join(tmpDir, 'noextension');
         await writeFile(filePath, 'some content');
-        await expect(validateFileContent(filePath)).resolves.toBeUndefined();
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
     });
 
     it('rejects a file with no extension containing dangerous SVG content (simulating express-fileupload temp files)', async () => {
@@ -130,6 +136,44 @@ describe('validateFileContent', () => {
         await expect(validateFileContent(filePath)).rejects.toThrow(
             'upload-validation-error'
         );
+    });
+
+    it('rejects a valid PNG whose path has no extension and no originalFilename is given', async () => {
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        const filePath = path.join(tmpDir, 'tmp-5000-9876543210');
+        await writeFile(filePath, pngHeader);
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('accepts a valid PNG at an extensionless temp path when originalFilename carries the .png extension', async () => {
+        // This is the express-fileupload useTempFiles scenario: the temp
+        // path itself is extensionless, but the original filename (e.g.
+        // H5PFile.name) carries the real extension and must be used to
+        // derive the claimed extension.
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        const filePath = path.join(tmpDir, 'tmp-5000-1122334455');
+        await writeFile(filePath, pngHeader);
+        await expect(
+            validateFileContent(filePath, 'image.png')
+        ).resolves.toBeUndefined();
     });
 
     it('rejects an empty string path', async () => {
@@ -259,10 +303,9 @@ describe('validateBufferContent', () => {
         ).resolves.toBeUndefined();
     });
 
-    // Note: validateBufferContent always inspects the buffer's content,
-    // regardless of whether the filename carries an extension. These tests
-    // verify that dangerous XML/SVG/HTML content is rejected even when the
-    // filename has no extension to compare against.
+    // Note: a filename with no extension at all is now always rejected,
+    // regardless of its content, since there is nothing to validate the
+    // content against.
     it('rejects a buffer containing XML/SVG content (no extension)', async () => {
         const svgBuffer = Buffer.from(
             '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
@@ -278,6 +321,21 @@ describe('validateBufferContent', () => {
         );
         await expect(
             validateBufferContent(htmlBuffer, 'index')
+        ).rejects.toThrow('upload-validation-error');
+    });
+
+    it('rejects a valid PNG buffer whose filename has no extension', async () => {
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        await expect(
+            validateBufferContent(pngHeader, 'noextension')
         ).rejects.toThrow('upload-validation-error');
     });
 
@@ -379,6 +437,63 @@ describe('validateContent', () => {
         await expect(validateContent(file)).rejects.toThrow(
             'upload-validation-error'
         );
+    });
+
+    it('accepts a temp-file upload with an extensionless tempFilePath but a proper file.name', async () => {
+        // Simulates express-fileupload's useTempFiles mode: the temp path
+        // itself is extensionless, but file.name carries the real
+        // extension, which must be used to derive the claimed extension.
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        const filePath = path.join(tmpDir, 'tmp-5000-1029384756');
+        await writeFile(filePath, pngHeader);
+        const file: H5PFile = {
+            name: 'image.png',
+            tempFilePath: filePath,
+            mimetype: 'image/png',
+            size: pngHeader.length
+        };
+        await expect(validateContent(file)).resolves.toBeUndefined();
+    });
+
+    it('rejects a temp-file upload whose original filename has no extension', async () => {
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        const filePath = path.join(tmpDir, 'tmp-5000-2938475610');
+        await writeFile(filePath, pngHeader);
+        const file: H5PFile = {
+            name: 'noextension',
+            tempFilePath: filePath,
+            mimetype: 'image/png',
+            size: pngHeader.length
+        };
+        await expect(validateContent(file)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('accepts a genuine 0-byte buffer-only upload (no tempFilePath)', async () => {
+        const file: H5PFile = {
+            name: 'empty.png',
+            data: Buffer.alloc(0),
+            mimetype: 'image/png',
+            size: 0
+        };
+        await expect(validateContent(file)).resolves.toBeUndefined();
     });
 
     it('rejects when file has neither data nor tempFilePath', async () => {

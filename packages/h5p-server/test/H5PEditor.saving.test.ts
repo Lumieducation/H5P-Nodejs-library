@@ -249,9 +249,69 @@ describe('H5PEditor', () => {
                 );
 
                 // check result: sanitizers only implementing the path-based
-                // `sanitize` method are called with the temp file path, not
-                // the whole file object.
-                expect(sanitizeSpy).toHaveBeenCalledWith(originalPath);
+                // `sanitize` method are called with the temp file path (not
+                // the whole file object) plus the original filename.
+                expect(sanitizeSpy).toHaveBeenCalledWith(
+                    originalPath,
+                    'earth.JPG'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('sanitizes file.data (not the stale tempFilePath) when both are present on the upload', async () => {
+        // Regression test: if an upload middleware populates both
+        // file.data and file.tempFilePath, the sanitizer must operate on
+        // file.data, since that is what actually gets persisted
+        // (saveContentFile prefers file.data whenever it carries content).
+        // Sanitizing only the temp file while storing the buffer would let
+        // unsanitized content slip through.
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const sanitizeBufferCalls: string[] = [];
+                const mockSanitizer: IFileSanitizer = {
+                    name: 'Mock buffer sanitizer',
+                    sanitize: async () => {
+                        throw new Error(
+                            'sanitize(path) should not be called when file.data is present'
+                        );
+                    },
+                    sanitizeBuffer: async (file) => {
+                        sanitizeBufferCalls.push(file.name);
+                        return FileSanitizerResult.Sanitized;
+                    }
+                };
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    fileSanitizers: [mockSanitizer]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+                const file: H5PFile = {
+                    data: fileBuffer,
+                    // A tempFilePath pointing at a different, stale file is
+                    // also present, as some upload middlewares do.
+                    tempFilePath: originalPath,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.jpg',
+                    size: fileBuffer.length
+                };
+
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    file,
+                    new User()
+                );
+
+                expect(sanitizeBufferCalls).toEqual(['earth.jpg']);
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -511,6 +571,61 @@ describe('H5PEditor', () => {
                 expect(scanSpy).toHaveBeenCalledWith(
                     expect.stringMatching(/\.jpg$/)
                 );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('scans file.data (not a stale tempFilePath) via scanBuffer when both are present on the upload', async () => {
+        // Regression test: scanForMalware must agree with saveContentFile's
+        // persistence precedence (file.data wins whenever present), so a
+        // scanner implementing scanBuffer must receive the real buffer
+        // rather than being skipped in favor of a stale tempFilePath.
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const scanBufferCalls: string[] = [];
+                const mockMalwareScanner: IFileMalwareScanner = {
+                    name: 'Mock buffer malware scanner',
+                    scan: async () => {
+                        throw new Error(
+                            'scan(path) should not be called when file.data is present'
+                        );
+                    },
+                    scanBuffer: async (file) => {
+                        scanBufferCalls.push(file.name);
+                        return { result: MalwareScanResult.Clean };
+                    }
+                };
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockMalwareScanner]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+                const file: H5PFile = {
+                    data: fileBuffer,
+                    // A tempFilePath pointing at a different, stale file is
+                    // also present, as some upload middlewares do.
+                    tempFilePath: originalPath,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.jpg',
+                    size: fileBuffer.length
+                };
+
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    file,
+                    new User()
+                );
+
+                expect(scanBufferCalls).toEqual(['earth.jpg']);
             },
             { keep: false, unsafeCleanup: true }
         );

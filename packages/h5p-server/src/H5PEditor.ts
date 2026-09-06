@@ -22,7 +22,7 @@ import defaultRenderer from './renderers/default';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
-import { validateContent } from './contentFileValidation';
+import { hasBufferData, validateContent } from './contentFileValidation';
 import ContentHub from './ContentHub';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
@@ -709,10 +709,9 @@ export default class H5PEditor {
 
         try {
             if (file.mimetype.startsWith('image/')) {
-                const imageBuffer =
-                    file.data?.length > 0
-                        ? file.data
-                        : readFileSync(file.tempFilePath);
+                const imageBuffer = hasBufferData(file)
+                    ? file.data
+                    : readFileSync(file.tempFilePath);
                 const result = probeImageSize.sync(imageBuffer);
                 if (!result) {
                     throw new Error('Unsupported or corrupt image format');
@@ -766,7 +765,7 @@ export default class H5PEditor {
         cleanFilename = this.addDirectoryByMimetype(cleanFilename);
 
         let dataStream;
-        if (file.data?.length > 0) {
+        if (hasBufferData(file)) {
             dataStream = new PassThrough();
             dataStream.end(file.data);
         } else if (file.tempFilePath) {
@@ -1525,7 +1524,10 @@ export default class H5PEditor {
 
     /**
      * Sanitizes an uploaded file with a single sanitizer, using whichever
-     * mode the file was uploaded in (temporary file or in-memory buffer). See
+     * mode the file was uploaded in (temporary file or in-memory buffer).
+     * `file.data` is treated as authoritative whenever {@link hasBufferData}
+     * says so, matching the precedence used everywhere else a file is read
+     * (validation, malware scanning, persistence) — see
      * {@link scanForMalware} for the reasoning behind the fallback to a
      * temporary file for sanitizers that don't implement `sanitizeBuffer`.
      */
@@ -1533,32 +1535,40 @@ export default class H5PEditor {
         sanitizer: IFileSanitizer,
         file: H5PFile
     ): Promise<FileSanitizerResult> {
-        if (file.tempFilePath) {
-            return sanitizer.sanitize(file.tempFilePath);
-        }
-        if (sanitizer.sanitizeBuffer) {
-            return sanitizer.sanitizeBuffer(file as H5PFileBuffer);
-        }
-        return this.withBufferAsTempFile(
-            file.data,
-            file.name,
-            async (tempFilePath) => {
-                const result = await sanitizer.sanitize(tempFilePath);
-                file.data = await readFile(tempFilePath);
-                return result;
+        if (hasBufferData(file)) {
+            if (sanitizer.sanitizeBuffer) {
+                return sanitizer.sanitizeBuffer(file as H5PFileBuffer);
             }
-        );
+            return this.withBufferAsTempFile(
+                file.data,
+                file.name,
+                async (tempFilePath) => {
+                    const result = await sanitizer.sanitize(
+                        tempFilePath,
+                        file.name
+                    );
+                    file.data = await readFile(tempFilePath);
+                    return result;
+                }
+            );
+        }
+        if (file.tempFilePath) {
+            return sanitizer.sanitize(file.tempFilePath, file.name);
+        }
+        throw new Error('Either file.data or file.tempFilePath must be used!');
     }
 
     /**
      * Runs all configured malware scanners over an uploaded file.
      *
-     * For buffer-only uploads (no `tempFilePath`), scanners that implement
-     * `scanBuffer` use the buffer directly. If one or more scanners only
-     * implement the path-based `scan` method, a single shared temporary file
-     * is written up front and reused by all of them, instead of each
-     * scanner independently writing its own copy of the same buffer to
-     * disk.
+     * `file.data` is treated as authoritative whenever {@link hasBufferData}
+     * says so (matching the precedence used everywhere else a file is read),
+     * even if a `tempFilePath` is also present. For such uploads, scanners
+     * that implement `scanBuffer` use the buffer directly. If one or more
+     * scanners only implement the path-based `scan` method, a single shared
+     * temporary file is written up front from `file.data` and reused by all
+     * of them, instead of each scanner independently writing its own copy of
+     * the same buffer to disk.
      */
     private async scanAllForMalware(file: H5PFile): Promise<
         Array<{
@@ -1586,9 +1596,9 @@ export default class H5PEditor {
                 }))
             );
 
-        if (file.tempFilePath || !file.data) {
-            // Nothing to share: either a temp file already exists, or there
-            // is no buffer to fall back to.
+        if (!hasBufferData(file)) {
+            // Nothing to share: either there is no authoritative buffer, or
+            // a tempFilePath is the authoritative representation.
             return runAll(file);
         }
 
@@ -1600,14 +1610,22 @@ export default class H5PEditor {
         }
 
         return this.withBufferAsTempFile(file.data, file.name, (tempFilePath) =>
-            runAll({ ...file, tempFilePath })
+            // `data` is stripped here so that scanForMalware's
+            // hasBufferData-based precedence (data wins over tempFilePath)
+            // doesn't undo the sharing we just set up: this tempFilePath was
+            // written from this exact `file.data`, so both are equivalent,
+            // but the path-based scanners must be pointed at the one shared
+            // file rather than each writing their own copy of `data` again.
+            runAll({ ...file, data: undefined, tempFilePath })
         );
     }
 
     /**
      * Scans an uploaded file for malware with a single scanner, using
      * whichever mode the file was uploaded in (temporary file or in-memory
-     * buffer).
+     * buffer). `file.data` is treated as authoritative whenever
+     * {@link hasBufferData} says so, even if a `tempFilePath` is also
+     * present.
      *
      * Scanners are never handed a buffer unless they explicitly opted in by
      * implementing `scanBuffer`: `IFileMalwareScanner.scan(file: string)` is
@@ -1620,15 +1638,20 @@ export default class H5PEditor {
         scanner: IFileMalwareScanner,
         file: H5PFile
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        if (hasBufferData(file)) {
+            if (scanner.scanBuffer) {
+                return scanner.scanBuffer(file as H5PFileBuffer);
+            }
+            return this.withBufferAsTempFile(
+                file.data,
+                file.name,
+                (tempFilePath) => scanner.scan(tempFilePath)
+            );
+        }
         if (file.tempFilePath) {
             return scanner.scan(file.tempFilePath);
         }
-        if (scanner.scanBuffer) {
-            return scanner.scanBuffer(file as H5PFileBuffer);
-        }
-        return this.withBufferAsTempFile(file.data, file.name, (tempFilePath) =>
-            scanner.scan(tempFilePath)
-        );
+        throw new Error('Either file.data or file.tempFilePath must be used!');
     }
 
     private validateLanguageCode(languageCode: string): void {

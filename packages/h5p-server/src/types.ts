@@ -2544,10 +2544,23 @@ export interface IFileSanitizer {
     /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
     readonly name: string;
 
-    /** Sanitizes the file at the given path. The original file is expected
+    /**
+     * Sanitizes the file at the given path. The original file is expected
      * to be replaced by the sanitized file, so there is no new path to the
-     * sanitized file. */
-    sanitize(file: string): Promise<FileSanitizerResult>;
+     * sanitized file.
+     * @param file the path of the file to sanitize; this is often a
+     * temporary file whose path carries no usable extension (e.g.
+     * express-fileupload's temp files), so implementations that need to
+     * detect the file type by its name should prefer `originalFilename`
+     * @param originalFilename optional: the original filename of the
+     * uploaded file (e.g. `H5PFile.name`), which does carry a usable
+     * extension even when `file`'s path does not; defaults to `file` when
+     * not given, to keep existing callers working
+     */
+    sanitize(
+        file: string,
+        originalFilename?: string
+    ): Promise<FileSanitizerResult>;
 
     /**
      * Optional: sanitizes an in-memory buffer without requiring it to be
