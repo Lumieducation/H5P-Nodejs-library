@@ -3,7 +3,7 @@
  * await-lock package, which dropped CommonJS/UMD support in v3 and can't be
  * consumed by this package's UMD build target.
  */
-class AsyncLock {
+export class AsyncLock {
     private queue: Promise<void> = Promise.resolve();
 
     public async acquireAsync(): Promise<() => void> {
