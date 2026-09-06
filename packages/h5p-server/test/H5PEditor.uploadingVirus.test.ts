@@ -1,10 +1,10 @@
-import path from 'path';
 import { readFile, stat } from 'fs/promises';
+import path from 'path';
 import { withDir } from 'tmp-promise';
 
+import { IFileMalwareScanner, MalwareScanResult } from '../src/types';
 import User from './User';
 import { createH5PEditor } from './helpers/H5PEditor';
-import { MalwareScanResult, IFileMalwareScanner } from '../src/types';
 
 class MockMalwareScanner implements IFileMalwareScanner {
     readonly name: string = 'Mock Scanner';

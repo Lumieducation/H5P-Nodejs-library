@@ -3,16 +3,16 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import bodyParser from 'body-parser';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import { createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
 import path from 'path';
 import supertest from 'supertest';
 import { dir } from 'tmp-promise';
-import { readFile } from 'fs/promises';
-import { createReadStream } from 'fs';
 
 import * as H5P from '@lumieducation/h5p-server';
 
-import User from './User';
 import H5PAjaxExpressRouter from '../src/H5PAjaxRouter/H5PAjaxExpressRouter';
+import User from './User';
 
 const axiosMock = new AxiosMockAdapter(axios);
 interface RequestEx extends express.Request {

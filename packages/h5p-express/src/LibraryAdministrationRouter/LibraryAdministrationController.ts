@@ -3,6 +3,7 @@ import * as express from 'express';
 import {
     H5PEditor,
     H5pError,
+    H5PFile,
     IInstalledLibrary,
     ILibraryAdministrationOverviewItem,
     LibraryAdministration
@@ -109,13 +110,7 @@ export default class LibraryAdministrationExpressController {
     public postLibraries = async (
         req: express.Request & {
             files: {
-                file: {
-                    data?: Buffer;
-                    mimetype: string;
-                    name: string;
-                    size: number;
-                    tempFilePath?: string;
-                };
+                file: H5PFile;
             };
         },
         res: express.Response<{ installed: number; updated: number }>

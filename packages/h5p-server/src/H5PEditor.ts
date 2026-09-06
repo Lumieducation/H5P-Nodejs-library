@@ -1,44 +1,52 @@
-import { withFile, file as createTempFile, FileResult } from 'tmp-promise';
-import { PassThrough, Writable, Readable } from 'stream';
 import Ajv, { ValidateFunction } from 'ajv';
 import ajvKeywords from 'ajv-keywords';
+import { createReadStream, createWriteStream, readFileSync } from 'fs';
+import { readFile, rm, writeFile } from 'fs/promises';
 import probeImageSize from 'probe-image-size';
 import mimeTypes from 'mime-types';
 import path from 'path';
 import promisepipe from 'promisepipe';
-import { rm } from 'fs/promises';
-import { createReadStream, createWriteStream, readFileSync } from 'fs';
+import { PassThrough, Readable, Writable } from 'stream';
+import { file as createTempFile, FileResult, withFile } from 'tmp-promise';
 
 import defaultClientStrings from '../assets/defaultClientStrings.json';
 import defaultCopyrightSemantics from '../assets/defaultCopyrightSemantics.json';
 import defaultMetadataSemantics from '../assets/defaultMetadataSemantics.json';
+import supportedLanguageList from '../assets/editorLanguages.json';
 import defaultClientLanguageFile from '../assets/translations/client/en.json';
 import defaultCopyrightSemanticsLanguageFile from '../assets/translations/copyright-semantics/en.json';
 import defaultMetadataSemanticsLanguageFile from '../assets/translations/metadata-semantics/en.json';
+import variantEquivalents from '../assets/variantEquivalents.json';
 import editorAssetList from './editorAssetList.json';
 import defaultRenderer from './renderers/default';
-import supportedLanguageList from '../assets/editorLanguages.json';
-import variantEquivalents from '../assets/variantEquivalents.json';
 
 import ContentUserDataManager from './ContentUserDataManager';
 
-import { validateFileContent } from './contentFileValidation';
+import { validateContent } from './contentFileValidation';
+import ContentHub from './ContentHub';
 import ContentManager from './ContentManager';
 import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
 import ContentTypeCache from './ContentTypeCache';
 import ContentTypeInformationRepository from './ContentTypeInformationRepository';
+import DependencyGetter from './DependencyGetter';
+import { downloadFile } from './helpers/downloadFile';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import SimpleTranslator from './helpers/SimpleTranslator';
+import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 import PackageExporter from './PackageExporter';
 import PackageImporter from './PackageImporter';
+import SemanticsLocalizer from './SemanticsLocalizer';
 import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
     ContentParameters,
     FileSanitizerResult,
+    H5PFile,
+    H5PFileBuffer,
     IAssets,
     IContentMetadata,
     IContentStorage,
@@ -66,12 +74,6 @@ import {
     MalwareScanResult
 } from './types';
 import UrlGenerator from './UrlGenerator';
-import SemanticsLocalizer from './SemanticsLocalizer';
-import SimpleTranslator from './helpers/SimpleTranslator';
-import DependencyGetter from './DependencyGetter';
-import ContentHub from './ContentHub';
-import { downloadFile } from './helpers/downloadFile';
-import { LaissezFairePermissionSystem } from './implementation/LaissezFairePermissionSystem';
 
 const log = new Logger('H5PEditor');
 
@@ -629,13 +631,7 @@ export default class H5PEditor {
     public async saveContentFile(
         contentId: ContentId,
         field: ISemanticsEntry,
-        file: {
-            data?: Buffer;
-            mimetype: string;
-            name: string;
-            size: number;
-            tempFilePath?: string;
-        },
+        file: H5PFile,
         user: IUser
     ): Promise<{
         height?: number;
@@ -654,24 +650,25 @@ export default class H5PEditor {
             (field.type === 'video' && !file.mimetype.startsWith('video/')) ||
             (field.type === 'audio' && !file.mimetype.startsWith('audio/'))
         ) {
+            log.debug(
+                `Invalid file upload: field type is ${field.type} but mimetype is ${file.mimetype}`
+            );
             throw new H5pError('upload-validation-error', {}, 400);
         }
 
-        if (
-            (this.malwareScanners.length > 0 ||
-                this.fileSanitizers.length > 0) &&
-            !file.tempFilePath
-        ) {
-            throw new Error(
-                "Inconsistent setup of file upload middleware and malware/sanitization: You've set up a malware scanner and/or file sanitizer and have configured your file upload middleware to stream data to H5PEditor.saveContentFile. If you want to use malware scanners or file sanitization you must use temporary files!"
+        // Ensure we have either a temporary file path or in-memory data to work with
+        if (!file.tempFilePath && !file.data) {
+            log.debug(
+                `Invalid file upload: no data or tempFilePath provided for file ${file.name}`
             );
+            throw new H5pError('upload-validation-error', {}, 400);
         }
 
         // Scan for malware
         const malwareScanResults = await Promise.all(
             this.malwareScanners.map(async (scanner) => {
                 return {
-                    ...(await scanner.scan(file.tempFilePath)),
+                    ...(await this.scanForMalware(scanner, file)),
                     scannerName: scanner.name
                 };
             })
@@ -687,23 +684,23 @@ export default class H5PEditor {
             }
             // Remove the file from the temporary storage to make sure it can't
             // be accessed anymore
-            await rm(file.tempFilePath, { force: true });
+            if (file.tempFilePath) {
+                await rm(file.tempFilePath, { force: true });
+            }
 
             // TODO: log to audit log
             throw new H5pError('upload-malware-found', {}, 400);
         }
 
         // Validate that the file content matches the claimed extension
-        if (file.tempFilePath) {
-            await validateFileContent(file.tempFilePath);
-        }
+        await validateContent(file);
 
         // Sanitize the file if possible
         for (const sanitizer of this.fileSanitizers) {
             try {
                 // Must be run in sequence and can't be parallelized.
                 // eslint-disable-next-line no-await-in-loop
-                const result = await sanitizer.sanitize(file.tempFilePath);
+                const result = await this.sanitizeFile(sanitizer, file);
                 if (result == FileSanitizerResult.Sanitized) {
                     log.debug(
                         'Sanitized file',
@@ -1533,6 +1530,63 @@ export default class H5PEditor {
         return resolve(dependencies.shift());
     }
 
+    /**
+     * Sanitizes an uploaded file with a single sanitizer, using whichever
+     * mode the file was uploaded in (temporary file or in-memory buffer). See
+     * {@link scanForMalware} for the reasoning behind the fallback to a
+     * temporary file for sanitizers that don't implement `sanitizeBuffer`.
+     */
+    private async sanitizeFile(
+        sanitizer: IFileSanitizer,
+        file: H5PFile
+    ): Promise<FileSanitizerResult> {
+        if (file.tempFilePath) {
+            return sanitizer.sanitize(file.tempFilePath);
+        }
+        if (sanitizer.sanitizeBuffer) {
+            const fileBuffer = file as H5PFileBuffer;
+            const result = await sanitizer.sanitizeBuffer(fileBuffer);
+            file.data = fileBuffer.data;
+            return result;
+        }
+        return this.withBufferAsTempFile(
+            file.data,
+            file.name,
+            async (tempFilePath) => {
+                const result = await sanitizer.sanitize(tempFilePath);
+                file.data = await readFile(tempFilePath);
+                return result;
+            }
+        );
+    }
+
+    /**
+     * Scans an uploaded file for malware with a single scanner, using
+     * whichever mode the file was uploaded in (temporary file or in-memory
+     * buffer).
+     *
+     * Scanners are never handed a buffer unless they explicitly opted in by
+     * implementing `scanBuffer`: `IFileMalwareScanner.scan(file: string)` is
+     * called exactly as before for scanners that don't, so third-party
+     * scanners written against the pre-existing string-only signature keep
+     * working unmodified. If such a scanner is used with a buffer upload, we
+     * transparently write the buffer to a temporary file first.
+     */
+    private async scanForMalware(
+        scanner: IFileMalwareScanner,
+        file: H5PFile
+    ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        if (file.tempFilePath) {
+            return scanner.scan(file.tempFilePath);
+        }
+        if (scanner.scanBuffer) {
+            return scanner.scanBuffer(file as H5PFileBuffer);
+        }
+        return this.withBufferAsTempFile(file.data, file.name, (tempFilePath) =>
+            scanner.scan(tempFilePath)
+        );
+    }
+
     private validateLanguageCode(languageCode: string): void {
         // We are a bit more tolerant than the ISO standard, as there are three
         // character languages codes and country codes like 'hans' for
@@ -1540,5 +1594,26 @@ export default class H5PEditor {
         if (!/^[a-z]{2,3}(-[A-Z]{2,6})?$/i.test(languageCode)) {
             throw new Error(`Language code ${languageCode} is invalid.`);
         }
+    }
+
+    /**
+     * Writes a buffer to a short-lived temporary file, runs `callback` with
+     * its path, and guarantees the file is deleted afterwards (even if
+     * `callback` throws). Used to give buffer-based uploads to
+     * scanners/sanitizers that only implement the path-based `scan`/
+     * `sanitize` methods.
+     */
+    private async withBufferAsTempFile<T>(
+        data: Buffer,
+        fileName: string,
+        callback: (tempFilePath: string) => Promise<T>
+    ): Promise<T> {
+        return withFile(
+            async ({ path: tempFilePath }: FileResult) => {
+                await writeFile(tempFilePath, data);
+                return callback(tempFilePath);
+            },
+            { postfix: path.extname(fileName) || undefined }
+        );
     }
 }

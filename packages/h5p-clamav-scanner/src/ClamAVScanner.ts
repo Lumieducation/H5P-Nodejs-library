@@ -1,15 +1,24 @@
 import NodeClam from 'clamscan';
+import { Readable } from 'stream';
+import { withFile } from 'tmp-promise';
+import { writeFile } from 'fs/promises';
+import { basename, extname } from 'path';
 import { merge } from 'ts-deepmerge';
 
 import {
+    H5PFileBuffer,
     IFileMalwareScanner,
-    MalwareScanResult,
-    Logger
+    Logger,
+    MalwareScanResult
 } from '@lumieducation/h5p-server';
 
 import { removeUndefinedAttributesAndEmptyObjects } from './helpers';
 
 const log = new Logger('ClamAVScanner');
+
+export type ClamAVScannerOptions = {
+    clamdServiceEnabled: boolean;
+};
 
 /**
  * A light wrapper calling the ClamAV scanner to scan files for malware. It
@@ -23,8 +32,14 @@ export default class ClamAVScanner implements IFileMalwareScanner {
      * We have no public constructor, as we need to initialize the ClamAV
      * scanner asynchronously.
      * @param scanner
+     * @param clamdServiceEnabled true if the resolved scanner is the clamd
+     * daemon, which supports scanning a stream directly; false if it is the
+     * clamscan binary, which requires a file on disk.
      */
-    private constructor(private scanner: NodeClam) {
+    private constructor(
+        private scanner: NodeClam,
+        private readonly options: ClamAVScannerOptions
+    ) {
         log.debug('initialize');
     }
 
@@ -51,7 +66,7 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         // is a direct property of the object — even if the value is null or
         // undefined."), we have to remove undefined properties from the
         // options.
-        const options: NodeClam.Options =
+        const clamScanOptions: NodeClam.Options =
             removeUndefinedAttributesAndEmptyObjects(
                 merge(
                     {
@@ -64,14 +79,25 @@ export default class ClamAVScanner implements IFileMalwareScanner {
                 )
             );
 
-        log.debug('Initializing ClamAV scanner with options:', options);
+        log.debug('Initializing ClamAV scanner with options:', clamScanOptions);
 
-        const clamScan = await new NodeClam().init(options);
+        const clamScan = await new NodeClam().init(clamScanOptions);
         log.debug(
             'ClamAV scanner initialized. Version:',
             await clamScan.getVersion()
         );
-        return new ClamAVScanner(clamScan);
+
+        // clamscan resolves during init() which binary/daemon it actually
+        // ended up using (it can fall back from the configured preference,
+        // e.g. if a socket/host/port is misconfigured or a binary isn't
+        // found). Reading that resolved value back instead of re-deriving it
+        // from the input options ourselves means we never get out of sync
+        // with clamscan's own fallback logic.
+        const clamdServiceEnabled =
+            (clamScan as unknown as { scanner: 'clamdscan' | 'clamscan' })
+                .scanner === 'clamdscan';
+
+        return new ClamAVScanner(clamScan, { clamdServiceEnabled });
     }
 
     /**
@@ -146,24 +172,72 @@ export default class ClamAVScanner implements IFileMalwareScanner {
     async scan(
         file: string
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        const fileName = basename(file);
+        log.debug(
+            'Scanning uploaded file',
+            fileName,
+            'with malware scanner',
+            this.name
+        );
+
         try {
-            log.debug(
-                'Scanning uploaded file',
-                file,
-                'with malware scanner',
-                this.name
-            );
-            const result = await this.scanner.isInfected(file);
-            if (result.isInfected) {
-                const viruses = result.viruses.join(',');
-                log.info('Uploaded file', file, 'is infected with:', viruses);
-                return { result: MalwareScanResult.MalwareFound, viruses };
-            }
-            log.debug('Uploaded file', file, 'is clean');
-            return { result: MalwareScanResult.Clean };
+            const scanResponse = await this.scanner.scanFile(file);
+            return this.buildScanResult(scanResponse, fileName);
         } catch (error) {
-            log.error('Error while scanning file', file, error);
+            log.error('Error while scanning file', fileName, error);
             return { result: MalwareScanResult.NotScanned };
         }
+    }
+
+    async scanBuffer(
+        file: H5PFileBuffer
+    ): Promise<{ result: MalwareScanResult; viruses?: string }> {
+        log.debug(
+            'Scanning uploaded buffer',
+            file.name,
+            'with malware scanner',
+            this.name
+        );
+
+        try {
+            const scanResponse = this.options.clamdServiceEnabled
+                ? await this.scanner.scanStream(Readable.from(file.data))
+                : await this.scanBufferWithTempFile(file.data, file.name);
+            return this.buildScanResult(scanResponse, file.name);
+        } catch (error) {
+            log.error('Error while scanning buffer', file.name, error);
+            return { result: MalwareScanResult.NotScanned };
+        }
+    }
+
+    private async scanBufferWithTempFile(
+        data: Buffer,
+        fileName: string
+    ): Promise<NodeClam.Response<{ file: string; isInfected: boolean }>> {
+        log.debug('Using temporary file scan for ClamAV binary');
+        return withFile(
+            async ({ path: tempFilePath }) => {
+                await writeFile(tempFilePath, data);
+                return this.scanner.scanFile(tempFilePath);
+            },
+            // basename() strips any path-traversal segments a malicious
+            // filename might contain; extname() only ever contributes a
+            // suffix like ".svg" to the generated temp path.
+            { postfix: extname(basename(fileName)) || undefined }
+        );
+    }
+
+    private buildScanResult(
+        response: NodeClam.Response<{ file: string; isInfected: boolean }>,
+        fileName: string
+    ): { result: MalwareScanResult; viruses?: string } {
+        if (response.isInfected) {
+            const viruses = response.viruses.join(',');
+            log.info('Uploaded file', fileName, 'is infected with:', viruses);
+            return { result: MalwareScanResult.MalwareFound, viruses };
+        }
+
+        log.debug('Uploaded file', fileName, 'is clean');
+        return { result: MalwareScanResult.Clean };
     }
 }
