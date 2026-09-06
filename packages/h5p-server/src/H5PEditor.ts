@@ -665,14 +665,7 @@ export default class H5PEditor {
         }
 
         // Scan for malware
-        const malwareScanResults = await Promise.all(
-            this.malwareScanners.map(async (scanner) => {
-                return {
-                    ...(await this.scanForMalware(scanner, file)),
-                    scannerName: scanner.name
-                };
-            })
-        );
+        const malwareScanResults = await this.scanAllForMalware(file);
         const positiveMalwareScanResults = malwareScanResults.filter(
             (result) => result.result === MalwareScanResult.MalwareFound
         );
@@ -1544,10 +1537,7 @@ export default class H5PEditor {
             return sanitizer.sanitize(file.tempFilePath);
         }
         if (sanitizer.sanitizeBuffer) {
-            const fileBuffer = file as H5PFileBuffer;
-            const result = await sanitizer.sanitizeBuffer(fileBuffer);
-            file.data = fileBuffer.data;
-            return result;
+            return sanitizer.sanitizeBuffer(file as H5PFileBuffer);
         }
         return this.withBufferAsTempFile(
             file.data,
@@ -1557,6 +1547,60 @@ export default class H5PEditor {
                 file.data = await readFile(tempFilePath);
                 return result;
             }
+        );
+    }
+
+    /**
+     * Runs all configured malware scanners over an uploaded file.
+     *
+     * For buffer-only uploads (no `tempFilePath`), scanners that implement
+     * `scanBuffer` use the buffer directly. If one or more scanners only
+     * implement the path-based `scan` method, a single shared temporary file
+     * is written up front and reused by all of them, instead of each
+     * scanner independently writing its own copy of the same buffer to
+     * disk.
+     */
+    private async scanAllForMalware(file: H5PFile): Promise<
+        Array<{
+            result: MalwareScanResult;
+            scannerName: string;
+            viruses?: string;
+        }>
+    > {
+        const runAll = (
+            fileForPathBasedScanners: H5PFile
+        ): Promise<
+            Array<{
+                result: MalwareScanResult;
+                scannerName: string;
+                viruses?: string;
+            }>
+        > =>
+            Promise.all(
+                this.malwareScanners.map(async (scanner) => ({
+                    ...(await this.scanForMalware(
+                        scanner,
+                        scanner.scanBuffer ? file : fileForPathBasedScanners
+                    )),
+                    scannerName: scanner.name
+                }))
+            );
+
+        if (file.tempFilePath || !file.data) {
+            // Nothing to share: either a temp file already exists, or there
+            // is no buffer to fall back to.
+            return runAll(file);
+        }
+
+        const needsSharedTempFile = this.malwareScanners.some(
+            (scanner) => !scanner.scanBuffer
+        );
+        if (!needsSharedTempFile) {
+            return runAll(file);
+        }
+
+        return this.withBufferAsTempFile(file.data, file.name, (tempFilePath) =>
+            runAll({ ...file, tempFilePath })
         );
     }
 

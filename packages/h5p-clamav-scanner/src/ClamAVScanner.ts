@@ -189,6 +189,12 @@ export default class ClamAVScanner implements IFileMalwareScanner {
         }
     }
 
+    /**
+     * Scans an in-memory buffer for malware. If the underlying scanner is
+     * the clamd daemon, the buffer is streamed directly; otherwise it is
+     * written to a temporary file first, as the clamscan binary requires a
+     * file on disk.
+     */
     async scanBuffer(
         file: H5PFileBuffer
     ): Promise<{ result: MalwareScanResult; viruses?: string }> {

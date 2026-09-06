@@ -41,7 +41,7 @@ const dangerousTextPatterns = [
  * neither data nor tempFilePath, or if content validation fails
  */
 export async function validateContent(file: H5PFile): Promise<void> {
-    if (file.data) {
+    if (file.data?.length > 0) {
         await validateBufferContent(file.data, file.name);
     } else if (file.tempFilePath) {
         await validateFileContent(file.tempFilePath);
@@ -54,10 +54,14 @@ export async function validateContent(file: H5PFile): Promise<void> {
 }
 
 /**
- * Validates that the content of a file matches its claimed extension. Uses
- * magic byte detection via magic-bytes.js to identify binary file types and
- * rejects mismatches. Also detects XML/SVG/HTML content disguised as other file
- * types, which could enable XSS attacks.
+ * Validates the content of a file. Uses magic byte detection via
+ * magic-bytes.js to identify binary file types and detects XML/SVG/HTML
+ * content disguised as other file types, which could enable XSS attacks.
+ * Content is always inspected, regardless of whether the file path carries a
+ * recognizable extension (many upload middlewares, e.g. express-fileupload's
+ * temp files, generate extensionless paths). When the path does carry an
+ * extension, it is additionally checked for a match against the detected
+ * content type.
  *
  * This validator checks all extensions in the configured content whitelist, not
  * a hardcoded set, so custom whitelist entries are also validated.
@@ -70,7 +74,7 @@ export async function validateContent(file: H5PFile): Promise<void> {
  * @param filePath absolute path to the file to validate; not suitable for user
  * input without sanitization
  * @throws H5pError with errorId 'upload-validation-error' if the file content
- * does not match its extension
+ * does not match its extension, or if it contains disguised dangerous content
  */
 export async function validateFileContent(filePath: string): Promise<void> {
     // Validate and normalize the file path to guard against malformed or
@@ -85,9 +89,6 @@ export async function validateFileContent(filePath: string): Promise<void> {
     const resolvedPath = path.resolve(filePath);
 
     const ext = path.extname(resolvedPath).toLowerCase().replace(/^\./, '');
-    if (!ext) {
-        return;
-    }
 
     const fileHandle = await open(resolvedPath, 'r');
     try {
@@ -103,32 +104,31 @@ export async function validateFileContent(filePath: string): Promise<void> {
 }
 
 /**
- * Validates that a buffer's content matches its expected file type. Inspects
- * the first 1024 bytes of the in-memory buffer directly (the same amount
- * {@link validateFileContent} reads from disk), so it never has to write the
- * (potentially large) buffer to disk just to validate it.
+ * Validates the content of a buffer. Inspects the first 1024 bytes of the
+ * in-memory buffer directly (the same amount {@link validateFileContent}
+ * reads from disk), so it never has to write the (potentially large) buffer
+ * to disk just to validate it. Content is always inspected, regardless of
+ * whether the filename carries a recognizable extension. When the filename
+ * does carry an extension, it is additionally checked for a match against
+ * the detected content type.
  *
- * @param buffer the file content to validate; must be non-empty
+ * @param buffer the file content to validate; a genuinely empty buffer is
+ * treated as valid (no-op), matching {@link validateFileContent}'s handling
+ * of empty files
  * @param filename the original filename, used to determine the extension for
  * content-type validation
- * @throws H5pError with errorId 'upload-validation-error' if the buffer is
- * empty or if the content fails validation
+ * @throws H5pError with errorId 'upload-validation-error' if the content
+ * fails validation
  */
 export async function validateBufferContent(
     buffer: Buffer,
     filename: string
 ): Promise<void> {
     if (!buffer || buffer.length === 0) {
-        log.error(
-            `Invalid buffer provided to validateBufferContent: empty or undefined`
-        );
-        throw new H5pError('upload-validation-error', {}, 400);
+        return;
     }
 
     const ext = path.extname(filename).toLowerCase().replace(/^\./, '');
-    if (!ext) {
-        return;
-    }
 
     validateContentBytes(buffer.subarray(0, 1024), ext, filename);
 }

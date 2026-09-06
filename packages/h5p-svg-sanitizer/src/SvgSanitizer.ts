@@ -27,6 +27,10 @@ export default class SvgSanitizer implements IFileSanitizer {
         return FileSanitizerResult.Sanitized;
     }
 
+    /**
+     * Sanitizes an in-memory SVG buffer. Replaces `file.data` with the
+     * sanitized buffer in place.
+     */
     async sanitizeBuffer(file: H5PFileBuffer): Promise<FileSanitizerResult> {
         if (!this.isSvgFile(file.name)) {
             return FileSanitizerResult.Ignored;
@@ -50,6 +54,7 @@ export default class SvgSanitizer implements IFileSanitizer {
         });
     }
 
+    // Case-insensitive so e.g. "image.SVG" is sanitized too, not just "image.svg".
     private isSvgFile(fileName: string): boolean {
         return fileName.toLowerCase().endsWith('.svg');
     }

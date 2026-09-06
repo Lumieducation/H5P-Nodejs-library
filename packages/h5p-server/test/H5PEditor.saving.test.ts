@@ -601,6 +601,90 @@ describe('H5PEditor', () => {
                 // check result
                 expect(scanSpy1).toHaveBeenCalled();
                 expect(scanSpy2).toHaveBeenCalled();
+
+                // Both scanners only implement the path-based `scan` method
+                // and are given a buffer-only upload, so they must share a
+                // single temporary file instead of each writing their own
+                // copy of the same buffer.
+                const scannedPath1 = scanSpy1.mock.calls[0][0];
+                const scannedPath2 = scanSpy2.mock.calls[0][0];
+                expect(scannedPath1).toEqual(scannedPath2);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('lets malware scanners implementing scanBuffer use the buffer directly while scanners without it share a single temporary file', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockScannerWithBuffer: IFileMalwareScanner = {
+                    name: 'Mock scanner with scanBuffer',
+                    scan: async () => ({ result: MalwareScanResult.Clean }),
+                    scanBuffer: async () => ({
+                        result: MalwareScanResult.Clean
+                    })
+                };
+                const mockScannerWithoutBuffer1: IFileMalwareScanner = {
+                    name: 'Mock scanner without scanBuffer 1',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const mockScannerWithoutBuffer2: IFileMalwareScanner = {
+                    name: 'Mock scanner without scanBuffer 2',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const scanBufferSpy = vi.spyOn(
+                    mockScannerWithBuffer,
+                    'scanBuffer'
+                );
+                const scanSpyWithBuffer = vi.spyOn(
+                    mockScannerWithBuffer,
+                    'scan'
+                );
+                const scanSpy1 = vi.spyOn(mockScannerWithoutBuffer1, 'scan');
+                const scanSpy2 = vi.spyOn(mockScannerWithoutBuffer2, 'scan');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [
+                        mockScannerWithBuffer,
+                        mockScannerWithoutBuffer1,
+                        mockScannerWithoutBuffer2
+                    ]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result: the scanner implementing scanBuffer never
+                // falls back to a temporary file...
+                expect(scanBufferSpy).toHaveBeenCalled();
+                expect(scanSpyWithBuffer).not.toHaveBeenCalled();
+
+                // ...while the scanners without scanBuffer are both called
+                // and share the same temporary file.
+                expect(scanSpy1).toHaveBeenCalled();
+                expect(scanSpy2).toHaveBeenCalled();
+                const scannedPath1 = scanSpy1.mock.calls[0][0];
+                const scannedPath2 = scanSpy2.mock.calls[0][0];
+                expect(scannedPath1).toEqual(scannedPath2);
             },
             { keep: false, unsafeCleanup: true }
         );

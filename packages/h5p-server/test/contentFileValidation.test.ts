@@ -120,6 +120,18 @@ describe('validateFileContent', () => {
         await expect(validateFileContent(filePath)).resolves.toBeUndefined();
     });
 
+    it('rejects a file with no extension containing dangerous SVG content (simulating express-fileupload temp files)', async () => {
+        // express-fileupload's temp files (useTempFiles mode, the default)
+        // are always named without an extension (e.g. tmp-5000-<pid><ts>),
+        // regardless of the uploaded filename. Content inspection must not
+        // be skipped just because the temp path has no extension.
+        const filePath = path.join(tmpDir, 'tmp-5000-1234567890');
+        await writeFile(filePath, '<svg><script>alert(1)</script></svg>');
+        await expect(validateFileContent(filePath)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
     it('rejects an empty string path', async () => {
         await expect(validateFileContent('')).rejects.toThrow(
             'upload-validation-error'
@@ -234,39 +246,39 @@ describe('validateBufferContent', () => {
         ).resolves.toBeUndefined();
     });
 
-    it('rejects an empty buffer', async () => {
+    it('accepts an empty buffer as a no-op, matching validateFileContent for empty files', async () => {
         const emptyBuffer = Buffer.alloc(0);
         await expect(
             validateBufferContent(emptyBuffer, 'empty.png')
-        ).rejects.toThrow('upload-validation-error');
-    });
-
-    it('rejects a null buffer', async () => {
-        await expect(
-            validateBufferContent(null as unknown as Buffer, 'null.png')
-        ).rejects.toThrow('upload-validation-error');
-    });
-
-    // Note: validateBufferContent writes to a temp file without extension,
-    // so content-type mismatch validation is not performed. These tests
-    // verify the function accepts the buffers (since there's no extension
-    // to compare against).
-    it('accepts a buffer containing XML/SVG content (no extension)', async () => {
-        const svgBuffer = Buffer.from(
-            '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
-        );
-        await expect(
-            validateBufferContent(svgBuffer, 'image.svg')
         ).resolves.toBeUndefined();
     });
 
-    it('accepts a buffer containing HTML content (no extension)', async () => {
+    it('accepts a null buffer as a no-op', async () => {
+        await expect(
+            validateBufferContent(null as unknown as Buffer, 'null.png')
+        ).resolves.toBeUndefined();
+    });
+
+    // Note: validateBufferContent always inspects the buffer's content,
+    // regardless of whether the filename carries an extension. These tests
+    // verify that dangerous XML/SVG/HTML content is rejected even when the
+    // filename has no extension to compare against.
+    it('rejects a buffer containing XML/SVG content (no extension)', async () => {
+        const svgBuffer = Buffer.from(
+            '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+        );
+        await expect(validateBufferContent(svgBuffer, 'image')).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
+    it('rejects a buffer containing HTML content (no extension)', async () => {
         const htmlBuffer = Buffer.from(
             '<html><body><script>alert(1)</script></body></html>'
         );
         await expect(
             validateBufferContent(htmlBuffer, 'index')
-        ).resolves.toBeUndefined();
+        ).rejects.toThrow('upload-validation-error');
     });
 
     it('accepts a valid JSON buffer', async () => {
@@ -328,6 +340,47 @@ describe('validateContent', () => {
         await expect(validateContent(file)).resolves.toBeUndefined();
     });
 
+    it('follows file.tempFilePath when file.data is a truthy-but-empty buffer, as produced by express-fileupload in useTempFiles mode', async () => {
+        // express-fileupload's useTempFiles mode (the default/documented
+        // configuration) sets file.data to Buffer.concat([]) -- an empty
+        // but still truthy Buffer -- alongside a real file.tempFilePath.
+        // validateContent must not mistake this for a buffer upload.
+        const pngHeader = Buffer.from([
+            0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
+            0x0d, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+            0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde,
+            0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63,
+            0xf8, 0xcf, 0xc0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0xe2, 0x21,
+            0xbc, 0x33, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+            0x42, 0x60, 0x82
+        ]);
+        const filePath = path.join(tmpDir, 'image.png');
+        await writeFile(filePath, pngHeader);
+        const file: H5PFile = {
+            name: 'image.png',
+            data: Buffer.concat([]),
+            tempFilePath: filePath,
+            mimetype: 'image/png',
+            size: pngHeader.length
+        };
+        await expect(validateContent(file)).resolves.toBeUndefined();
+    });
+
+    it('rejects malicious content via file.tempFilePath even when file.data is a truthy-but-empty buffer', async () => {
+        const filePath = path.join(tmpDir, 'malicious.png');
+        await writeFile(filePath, '<svg><script>alert(1)</script></svg>');
+        const file: H5PFile = {
+            name: 'malicious.png',
+            data: Buffer.concat([]),
+            tempFilePath: filePath,
+            mimetype: 'image/png',
+            size: 1024
+        };
+        await expect(validateContent(file)).rejects.toThrow(
+            'upload-validation-error'
+        );
+    });
+
     it('rejects when file has neither data nor tempFilePath', async () => {
         const file: H5PFile = {
             name: 'orphan.png',
@@ -339,17 +392,20 @@ describe('validateContent', () => {
         );
     });
 
-    // Note: When using file.data, validateBufferContent creates a temp file
-    // without extension, so content validation is skipped. Malicious content
-    // can only be detected via file.tempFilePath which preserves the extension.
-    it('accepts malicious buffer content via file.data (no extension in temp)', async () => {
+    // Note: validateBufferContent always inspects the buffer's content,
+    // regardless of whether file.name carries an extension. Malicious
+    // content is rejected via file.data just as it would be via
+    // file.tempFilePath.
+    it('rejects malicious buffer content via file.data (no extension)', async () => {
         const file: H5PFile = {
             name: 'malicious',
             data: Buffer.from('<svg><script>alert(1)</script></svg>'),
             mimetype: 'image/png',
             size: 1024
         };
-        await expect(validateContent(file)).resolves.toBeUndefined();
+        await expect(validateContent(file)).rejects.toThrow(
+            'upload-validation-error'
+        );
     });
 
     it('rejects malicious file content via file.tempFilePath', async () => {
