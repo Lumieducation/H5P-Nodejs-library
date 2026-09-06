@@ -1,14 +1,17 @@
-import path from 'path';
-import { getAllFiles } from './helpers/getAllFiles';
-import { Stream } from 'stream';
-import { rm, access, readFile } from 'fs/promises';
 import { createReadStream } from 'fs';
+import { access, readFile, rm } from 'fs/promises';
+import path from 'path';
+import { Stream } from 'stream';
+import { getAllFiles } from './helpers/getAllFiles';
 
 import { ContentFileScanner, IFileReference } from './ContentFileScanner';
 import { validateFileContent } from './contentFileValidation';
 import ContentManager from './ContentManager';
+import generateFilename from './helpers/FilenameGenerator';
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
+import SemanticsEnforcer from './SemanticsEnforcer';
 import TemporaryFileManager from './TemporaryFileManager';
 import {
     ContentId,
@@ -21,9 +24,6 @@ import {
     IUser,
     MalwareScanResult
 } from './types';
-import generateFilename from './helpers/FilenameGenerator';
-import SemanticsEnforcer from './SemanticsEnforcer';
-import H5pError from './helpers/H5pError';
 
 const log = new Logger('ContentStorer');
 

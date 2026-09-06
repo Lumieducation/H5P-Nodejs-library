@@ -1,10 +1,10 @@
 import { open } from 'fs/promises';
-import path from 'path';
 import { filetypeextension } from 'magic-bytes.js';
 import { lookup as mimeLookup } from 'mime-types';
-
+import path from 'path';
 import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
+import { H5PFile } from './types';
 
 const log = new Logger('contentFileValidation');
 
@@ -31,10 +31,63 @@ const dangerousTextPatterns = [
 ];
 
 /**
- * Validates that the content of a file matches its claimed extension. Uses
- * magic byte detection via magic-bytes.js to identify binary file types and
- * rejects mismatches. Also detects XML/SVG/HTML content disguised as other file
- * types, which could enable XSS attacks.
+ * Determines whether `file.data` should be treated as the authoritative
+ * representation of an uploaded file's content, as opposed to
+ * `file.tempFilePath`. This is shared by every code path that has to pick
+ * one of the two (validation, sanitization, malware scanning, persistence)
+ * so that they all agree on the same file content.
+ *
+ * `file.data` wins whenever it actually carries content. A defined but
+ * empty buffer (as produced by express-fileupload's `useTempFiles` mode,
+ * which always sets `data` to `Buffer.concat([])` alongside a real
+ * `tempFilePath`) is not treated as authoritative when a `tempFilePath` is
+ * also present, since the real content lives on disk in that case. A
+ * defined empty buffer with no `tempFilePath` at all (a genuine 0-byte
+ * buffer-only upload) is still treated as authoritative, since there is no
+ * fallback for it to defer to.
+ */
+export function hasBufferData(file: H5PFile): boolean {
+    return (
+        file.data !== undefined && (file.data.length > 0 || !file.tempFilePath)
+    );
+}
+
+/**
+ * Validates that a file's content matches its claimed extension. Automatically
+ * chooses the appropriate validation method based on whether the file data is
+ * available as an in-memory buffer or as a path to a temporary file on disk.
+ *
+ * @param file the uploaded file to validate; must have either `data` (buffer)
+ * or `tempFilePath` set
+ * @throws H5pError with errorId 'upload-validation-error' if the file has
+ * neither data nor tempFilePath, if the original filename (`file.name`) has
+ * no extension, or if content validation fails
+ */
+export async function validateContent(file: H5PFile): Promise<void> {
+    if (hasBufferData(file)) {
+        await validateBufferContent(file.data, file.name);
+    } else if (file.tempFilePath) {
+        await validateFileContent(file.tempFilePath, file.name);
+    } else {
+        log.error(
+            `File has no data or tempFilePath for validation: ${file.name}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+}
+
+/**
+ * Validates the content of a file. Uses magic byte detection via
+ * magic-bytes.js to identify binary file types and detects XML/SVG/HTML
+ * content disguised as other file types, which could enable XSS attacks.
+ *
+ * The claimed extension is always derived from the ORIGINAL filename
+ * (`originalFilename`), never from `filePath` itself: many upload
+ * middlewares (e.g. express-fileupload's temp files) generate extensionless
+ * paths, and deriving the extension from such a path would let its content
+ * skip the extension-match check entirely. A file whose original filename
+ * has no extension at all is rejected outright, since there is nothing to
+ * validate its content against.
  *
  * This validator checks all extensions in the configured content whitelist, not
  * a hardcoded set, so custom whitelist entries are also validated.
@@ -46,10 +99,18 @@ const dangerousTextPatterns = [
  *
  * @param filePath absolute path to the file to validate; not suitable for user
  * input without sanitization
+ * @param originalFilename optional: the original filename of the uploaded
+ * file (e.g. `H5PFile.name`), used to determine the claimed extension;
+ * defaults to `filePath` when not given, for backwards compatibility with
+ * callers that pass real in-package paths which already carry extensions
  * @throws H5pError with errorId 'upload-validation-error' if the file content
- * does not match its extension
+ * does not match its extension, if the original filename has no extension, or
+ * if it contains disguised dangerous content
  */
-export async function validateFileContent(filePath: string): Promise<void> {
+export async function validateFileContent(
+    filePath: string,
+    originalFilename?: string
+): Promise<void> {
     // Validate and normalize the file path to guard against malformed or
     // relative paths. All callers are expected to pass absolute paths
     // produced by trusted middleware (e.g. file-upload temp files).
@@ -61,10 +122,11 @@ export async function validateFileContent(filePath: string): Promise<void> {
     }
     const resolvedPath = path.resolve(filePath);
 
-    const ext = path.extname(resolvedPath).toLowerCase().replace(/^\./, '');
-    if (!ext) {
-        return;
-    }
+    const ext = path
+        .extname(originalFilename ?? filePath)
+        .toLowerCase()
+        .replace(/^\./, '');
+    const label = originalFilename ?? resolvedPath;
 
     const fileHandle = await open(resolvedPath, 'r');
     try {
@@ -73,50 +135,97 @@ export async function validateFileContent(filePath: string): Promise<void> {
         if (bytesRead === 0) {
             return;
         }
-        const data = buffer.subarray(0, bytesRead);
-
-        // Detect the actual file type using magic bytes
-        const detectedExtensions = filetypeextension([...data] as number[]).map(
-            (e) => e.replace(/^\./, '')
-        );
-
-        if (detectedExtensions.length > 0) {
-            // The library detected a file type — check it matches
-            // the claimed extension
-            if (extensionMatchesDetected(ext, detectedExtensions)) {
-                // Even when the extension matches, text-based detections
-                // (e.g. a BOM causing magic-bytes to return "txt") still
-                // need the dangerous-content check. A UTF-8 BOM followed
-                // by <html>…</html> would otherwise slip through.
-                if (
-                    detectedExtensions.includes('txt') &&
-                    looksLikeXmlOrHtml(data)
-                ) {
-                    log.info(
-                        `File detected as text but contains XML/HTML content. Rejecting file: ${resolvedPath}`
-                    );
-                    throw new H5pError('upload-validation-error', {}, 400);
-                }
-                return;
-            }
-            log.info(
-                `File content mismatch: ${resolvedPath} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
-            );
-            throw new H5pError('upload-validation-error', {}, 400);
-        }
-
-        // magic-bytes.js returned nothing — file may be text-based
-        // or an unrecognized binary format. Check for dangerous
-        // XML/SVG/HTML content that could enable XSS regardless of
-        // the claimed extension.
-        if (looksLikeXmlOrHtml(data)) {
-            log.info(
-                `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${resolvedPath}`
-            );
-            throw new H5pError('upload-validation-error', {}, 400);
-        }
+        validateContentBytes(buffer.subarray(0, bytesRead), ext, label);
     } finally {
         await fileHandle.close();
+    }
+}
+
+/**
+ * Validates the content of a buffer. Inspects the first 1024 bytes of the
+ * in-memory buffer directly (the same amount {@link validateFileContent}
+ * reads from disk), so it never has to write the (potentially large) buffer
+ * to disk just to validate it. The claimed extension is derived from
+ * `filename`; a filename with no extension is rejected outright, since there
+ * is nothing to validate the content against.
+ *
+ * @param buffer the file content to validate; a genuinely empty buffer is
+ * treated as valid (no-op), matching {@link validateFileContent}'s handling
+ * of empty files
+ * @param filename the original filename, used to determine the extension for
+ * content-type validation
+ * @throws H5pError with errorId 'upload-validation-error' if the content
+ * fails validation, or if `filename` has no extension
+ */
+export async function validateBufferContent(
+    buffer: Buffer,
+    filename: string
+): Promise<void> {
+    if (!buffer || buffer.length === 0) {
+        return;
+    }
+
+    const ext = path.extname(filename).toLowerCase().replace(/^\./, '');
+
+    validateContentBytes(buffer.subarray(0, 1024), ext, filename);
+}
+
+/**
+ * Shared magic-byte / dangerous-content check used by both
+ * {@link validateFileContent} (reading from disk) and
+ * {@link validateBufferContent} (reading from memory).
+ * @param data the first bytes of the file (up to 1024)
+ * @param ext the claimed extension (without leading dot), already lowercased;
+ * an empty string means the original filename had no extension at all
+ * @param label a path or filename used only for log messages
+ */
+function validateContentBytes(data: Buffer, ext: string, label: string): void {
+    if (!ext) {
+        log.info(
+            `File has no extension in its original filename. Rejecting file: ${label}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+
+    // Detect the actual file type using magic bytes
+    const detectedExtensions = filetypeextension([...data] as number[]).map(
+        (e) => e.replace(/^\./, '')
+    );
+
+    if (detectedExtensions.length > 0) {
+        // The library detected a file type — check it matches
+        // the claimed extension
+        if (extensionMatchesDetected(ext, detectedExtensions)) {
+            // Even when the extension matches, text-based detections
+            // (e.g. a BOM causing magic-bytes to return "txt") still
+            // need the dangerous-content check. A UTF-8 BOM followed
+            // by <html>…</html> would otherwise slip through.
+            if (
+                detectedExtensions.includes('txt') &&
+                looksLikeXmlOrHtml(data)
+            ) {
+                log.info(
+                    `File detected as text but contains XML/HTML content. Rejecting file: ${label}`
+                );
+                throw new H5pError('upload-validation-error', {}, 400);
+            }
+            return;
+        }
+        log.info(
+            `File content mismatch: ${label} claims to be .${ext} but detected as ${detectedExtensions.join(', ')}. Rejecting file.`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
+    }
+
+    // magic-bytes.js returned nothing — file may be text-based
+    // or an unrecognized binary format. Check for dangerous
+    // XML/SVG/HTML content that could enable XSS regardless of
+    // the claimed extension.
+    if (looksLikeXmlOrHtml(data)) {
+        log.info(
+            `File contains XML/HTML content but claims to be .${ext}. Rejecting file: ${label}`
+        );
+        throw new H5pError('upload-validation-error', {}, 400);
     }
 }
 

@@ -1,30 +1,33 @@
+import { createWriteStream } from 'fs';
+import { readFile, stat } from 'fs/promises';
 import path from 'path';
 import promisepipe from 'promisepipe';
 import { BufferWritableMock } from 'stream-mock';
 import { withDir, withFile } from 'tmp-promise';
-import { readFile, stat } from 'fs/promises';
-import { createWriteStream } from 'fs';
 
 import LibraryName from '../src/LibraryName';
 import {
     FileSanitizerResult,
+    H5PFile,
     IContentMetadata,
     IContentStorage,
     IEditorModel,
+    IFileMalwareScanner,
     IFileSanitizer,
     IH5PConfig,
     IH5PEditorOptions,
     IKeyValueStorage,
     ILibraryFileUrlResolver,
     ILibraryStorage,
-    ITemporaryFileStorage
+    ITemporaryFileStorage,
+    MalwareScanResult
 } from '../src/types';
 
-import User from './User';
 import { fsImplementations, H5PEditor } from '../src';
 import H5PConfig from '../src/implementation/H5PConfig';
 import UrlGenerator from '../src/UrlGenerator';
 import { validatePackage } from './helpers/PackageValidatorHelper';
+import User from './User';
 
 import MockContentUserDataStorage from './__mocks__/ContentUserDataStorage';
 
@@ -226,6 +229,13 @@ describe('H5PEditor', () => {
                 const originalPath = path.resolve(
                     'test/data/sample-content/content/earth.jpg'
                 );
+                const file: H5PFile = {
+                    data: undefined,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.JPG',
+                    tempFilePath: originalPath,
+                    size: (await stat(originalPath)).size
+                };
 
                 // perform action
                 await h5pEditor.saveContentFile(
@@ -234,17 +244,74 @@ describe('H5PEditor', () => {
                         name: 'image',
                         type: 'image'
                     },
-                    {
-                        mimetype: 'image/jpeg',
-                        name: 'earth.JPG',
-                        tempFilePath: originalPath,
-                        size: (await stat(originalPath)).size
-                    },
+                    file,
                     new User()
                 );
 
-                // check result
-                expect(sanitizeSpy).toHaveBeenCalledWith(originalPath);
+                // check result: sanitizers only implementing the path-based
+                // `sanitize` method are called with the temp file path (not
+                // the whole file object) plus the original filename.
+                expect(sanitizeSpy).toHaveBeenCalledWith(
+                    originalPath,
+                    'earth.JPG'
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('sanitizes file.data (not the stale tempFilePath) when both are present on the upload', async () => {
+        // Regression test: if an upload middleware populates both
+        // file.data and file.tempFilePath, the sanitizer must operate on
+        // file.data, since that is what actually gets persisted
+        // (saveContentFile prefers file.data whenever it carries content).
+        // Sanitizing only the temp file while storing the buffer would let
+        // unsanitized content slip through.
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const sanitizeBufferCalls: string[] = [];
+                const mockSanitizer: IFileSanitizer = {
+                    name: 'Mock buffer sanitizer',
+                    sanitize: async () => {
+                        throw new Error(
+                            'sanitize(path) should not be called when file.data is present'
+                        );
+                    },
+                    sanitizeBuffer: async (file) => {
+                        sanitizeBufferCalls.push(file.name);
+                        return FileSanitizerResult.Sanitized;
+                    }
+                };
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    fileSanitizers: [mockSanitizer]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+                const file: H5PFile = {
+                    data: fileBuffer,
+                    // A tempFilePath pointing at a different, stale file is
+                    // also present, as some upload middlewares do.
+                    tempFilePath: originalPath,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.jpg',
+                    size: fileBuffer.length
+                };
+
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    file,
+                    new User()
+                );
+
+                expect(sanitizeBufferCalls).toEqual(['earth.jpg']);
             },
             { keep: false, unsafeCleanup: true }
         );
@@ -292,6 +359,447 @@ describe('H5PEditor', () => {
                 // check result
                 expect(sanitizeSpy1).toHaveBeenCalled();
                 expect(sanitizeSpy2).toHaveBeenCalled();
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects SVG content disguised as a JPEG file (via buffer)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const maliciousContent = Buffer.from(
+                    '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+                );
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: maliciousContent,
+                            mimetype: 'image/jpeg',
+                            name: 'malicious.jpg',
+                            size: maliciousContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects HTML content disguised as a PNG file (via buffer)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                const maliciousContent = Buffer.from(
+                    '<html><body><script>alert(1)</script></body></html>'
+                );
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: maliciousContent,
+                            mimetype: 'image/png',
+                            name: 'malicious.png',
+                            size: maliciousContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects SVG content disguised as a JPEG file (via tempFilePath)', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // Create a temp file with malicious content
+                await withFile(
+                    async ({ path: maliciousFilePath }) => {
+                        const maliciousContent =
+                            '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>';
+                        const writeStream =
+                            createWriteStream(maliciousFilePath);
+                        await new Promise<void>((resolve, reject) => {
+                            writeStream.on('error', reject);
+                            writeStream.on('finish', resolve);
+                            writeStream.end(maliciousContent);
+                        });
+
+                        await expect(
+                            h5pEditor.saveContentFile(
+                                undefined,
+                                {
+                                    name: 'image',
+                                    type: 'image'
+                                },
+                                {
+                                    mimetype: 'image/jpeg',
+                                    name: 'malicious.jpg',
+                                    tempFilePath: maliciousFilePath,
+                                    size: maliciousContent.length
+                                },
+                                user
+                            )
+                        ).rejects.toThrow('upload-validation-error');
+                    },
+                    { postfix: '.jpg' }
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects GIF content disguised as a PNG file', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                // GIF87a header - valid GIF but claimed as PNG
+                const gifContent = Buffer.from([
+                    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x01, 0x00, 0x01, 0x00,
+                    0x00, 0x00, 0x00, 0x3b
+                ]);
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: gifContent,
+                            mimetype: 'image/png',
+                            name: 'fake.png',
+                            size: gifContent.length
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects file with neither data nor tempFilePath', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const { h5pEditor } = createH5PEditor(tempDirPath);
+                const user = new User();
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            mimetype: 'image/jpeg',
+                            name: 'orphan.jpg',
+                            size: 100
+                        },
+                        user
+                    )
+                ).rejects.toThrow('upload-validation-error');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('scans uploaded files for malware when configured', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockMalwareScanner: IFileMalwareScanner = {
+                    name: 'Mock malware scanner',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const scanSpy = vi.spyOn(mockMalwareScanner, 'scan');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockMalwareScanner]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+                const file: H5PFile = {
+                    data: fileBuffer,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.jpg',
+                    size: (await stat(originalPath)).size
+                };
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    file,
+                    new User()
+                );
+
+                // check result: scanners only implementing the path-based
+                // `scan` method receive a temporary file the buffer was
+                // written to (with the original extension), not the file
+                // object itself.
+                expect(scanSpy).toHaveBeenCalledWith(
+                    expect.stringMatching(/\.jpg$/)
+                );
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('scans file.data (not a stale tempFilePath) via scanBuffer when both are present on the upload', async () => {
+        // Regression test: scanForMalware must agree with saveContentFile's
+        // persistence precedence (file.data wins whenever present), so a
+        // scanner implementing scanBuffer must receive the real buffer
+        // rather than being skipped in favor of a stale tempFilePath.
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                const scanBufferCalls: string[] = [];
+                const mockMalwareScanner: IFileMalwareScanner = {
+                    name: 'Mock buffer malware scanner',
+                    scan: async () => {
+                        throw new Error(
+                            'scan(path) should not be called when file.data is present'
+                        );
+                    },
+                    scanBuffer: async (file) => {
+                        scanBufferCalls.push(file.name);
+                        return { result: MalwareScanResult.Clean };
+                    }
+                };
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockMalwareScanner]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+                const file: H5PFile = {
+                    data: fileBuffer,
+                    // A tempFilePath pointing at a different, stale file is
+                    // also present, as some upload middlewares do.
+                    tempFilePath: originalPath,
+                    mimetype: 'image/jpeg',
+                    name: 'earth.jpg',
+                    size: fileBuffer.length
+                };
+
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    file,
+                    new User()
+                );
+
+                expect(scanBufferCalls).toEqual(['earth.jpg']);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('rejects files when malware is found', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockMalwareScanner: IFileMalwareScanner = {
+                    name: 'Mock malware scanner',
+                    scan: async () => ({
+                        result: MalwareScanResult.MalwareFound,
+                        viruses: 'TestVirus'
+                    })
+                };
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockMalwareScanner]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+
+                await expect(
+                    h5pEditor.saveContentFile(
+                        undefined,
+                        {
+                            name: 'image',
+                            type: 'image'
+                        },
+                        {
+                            data: fileBuffer,
+                            mimetype: 'image/jpeg',
+                            name: 'infected.jpg',
+                            size: (await stat(originalPath)).size
+                        },
+                        new User()
+                    )
+                ).rejects.toThrow('upload-malware-found');
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('checks if all malware scanners are called', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockScanner1: IFileMalwareScanner = {
+                    name: 'Mock scanner 1',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const mockScanner2: IFileMalwareScanner = {
+                    name: 'Mock scanner 2',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const scanSpy1 = vi.spyOn(mockScanner1, 'scan');
+                const scanSpy2 = vi.spyOn(mockScanner2, 'scan');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [mockScanner1, mockScanner2]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result
+                expect(scanSpy1).toHaveBeenCalled();
+                expect(scanSpy2).toHaveBeenCalled();
+
+                // Both scanners only implement the path-based `scan` method
+                // and are given a buffer-only upload, so they must share a
+                // single temporary file instead of each writing their own
+                // copy of the same buffer.
+                const scannedPath1 = scanSpy1.mock.calls[0][0];
+                const scannedPath2 = scanSpy2.mock.calls[0][0];
+                expect(scannedPath1).toEqual(scannedPath2);
+            },
+            { keep: false, unsafeCleanup: true }
+        );
+    });
+
+    it('lets malware scanners implementing scanBuffer use the buffer directly while scanners without it share a single temporary file', async () => {
+        await withDir(
+            async ({ path: tempDirPath }) => {
+                // setup
+                const mockScannerWithBuffer: IFileMalwareScanner = {
+                    name: 'Mock scanner with scanBuffer',
+                    scan: async () => ({ result: MalwareScanResult.Clean }),
+                    scanBuffer: async () => ({
+                        result: MalwareScanResult.Clean
+                    })
+                };
+                const mockScannerWithoutBuffer1: IFileMalwareScanner = {
+                    name: 'Mock scanner without scanBuffer 1',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const mockScannerWithoutBuffer2: IFileMalwareScanner = {
+                    name: 'Mock scanner without scanBuffer 2',
+                    scan: async () => ({ result: MalwareScanResult.Clean })
+                };
+                const scanBufferSpy = vi.spyOn(
+                    mockScannerWithBuffer,
+                    'scanBuffer'
+                );
+                const scanSpyWithBuffer = vi.spyOn(
+                    mockScannerWithBuffer,
+                    'scan'
+                );
+                const scanSpy1 = vi.spyOn(mockScannerWithoutBuffer1, 'scan');
+                const scanSpy2 = vi.spyOn(mockScannerWithoutBuffer2, 'scan');
+
+                const { h5pEditor } = createH5PEditor(tempDirPath, undefined, {
+                    malwareScanners: [
+                        mockScannerWithBuffer,
+                        mockScannerWithoutBuffer1,
+                        mockScannerWithoutBuffer2
+                    ]
+                });
+
+                const originalPath = path.resolve(
+                    'test/data/sample-content/content/earth.jpg'
+                );
+                const fileBuffer = await readFile(originalPath);
+
+                // perform action
+                await h5pEditor.saveContentFile(
+                    undefined,
+                    {
+                        name: 'image',
+                        type: 'image'
+                    },
+                    {
+                        data: fileBuffer,
+                        mimetype: 'image/jpeg',
+                        name: 'earth.jpg',
+                        size: (await stat(originalPath)).size
+                    },
+                    new User()
+                );
+
+                // check result: the scanner implementing scanBuffer never
+                // falls back to a temporary file...
+                expect(scanBufferSpy).toHaveBeenCalled();
+                expect(scanSpyWithBuffer).not.toHaveBeenCalled();
+
+                // ...while the scanners without scanBuffer are both called
+                // and share the same temporary file.
+                expect(scanSpy1).toHaveBeenCalled();
+                expect(scanSpy2).toHaveBeenCalled();
+                const scannedPath1 = scanSpy1.mock.calls[0][0];
+                const scannedPath2 = scanSpy2.mock.calls[0][0];
+                expect(scannedPath1).toEqual(scannedPath2);
             },
             { keep: false, unsafeCleanup: true }
         );

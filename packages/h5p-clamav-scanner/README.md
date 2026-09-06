@@ -36,7 +36,7 @@ const h5pEditor = new H5PEditor(
     // ... regular configuration ...
     // Add the scanner to the options parameter
     {
-        malwareScanners: [ clamAVScanner ]
+        malwareScanners: [clamAVScanner]
     }
 );
 ```
@@ -108,12 +108,15 @@ CLAMSCAN_ENABLED=true npm start
 Note:
 
 - The `CLAMSCAN_ENABLED` environment variable is part of the example code and
-won't work if you don't add specific support for it. It triggers the creation of
-a `ClamAVScanner` instance. You can use the other environment variables to
-configure the `ClamAVScanner` instance as needed.
-- Malware scanning only works of you pass uploaded content files to {@link
-@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
-in-memory streams. Temporary file uploads are used by default, in the example
-(and could be disabled with the environment variable TEMP_UPLOADS=false). The
-environment variable TEMP_UPLOADS is part of the example code and won't work in
-your custom implementation, if you don't add explicit support for it.
+  won't work if you don't add specific support for it. It triggers the creation of
+  a `ClamAVScanner` instance. You can use the other environment variables to
+  configure the `ClamAVScanner` instance as needed.
+- Malware scanning works transparently for uploaded content files that you
+  pass to {@link @lumieducation/h5p-server!H5PEditor.saveContentFile}, whether
+  they are backed by temporary files on disk or in-memory buffers. `ClamAVScanner`
+  implements `scanBuffer`, so buffer-based uploads are scanned directly without
+  being written to disk first. Temporary file uploads are used by default, in the
+  example (and could be disabled with the environment variable
+  TEMP_UPLOADS=false). The environment variable TEMP_UPLOADS is part of the
+  example code and won't work in your custom implementation, if you don't add
+  explicit support for it.

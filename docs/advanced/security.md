@@ -85,9 +85,20 @@ interface IFileSanitizer {
     /** The name of the scanner, e.g. SVG Sanitizer. Used in debug output */
     readonly name: string;
 
-    /** Sanitizes files. The original file is expected to be replaced by the
-     * sanitized file, so there is no new path to the sanitized file.*/
+    /** Sanitizes the file at the given path. The original file is expected
+     * to be replaced by the sanitized file, so there is no new path to the
+     * sanitized file. */
     sanitize(file: string): Promise<FileSanitizerResult>;
+
+    /**
+     * Optional: sanitizes an in-memory buffer without requiring it to be
+     * written to disk first. Implementations are expected to replace
+     * `file.data` with the sanitized buffer. Implementations that don't
+     * support buffer sanitization can omit this method; callers fall back
+     * to writing the buffer to a temporary file and calling `sanitize`
+     * instead.
+     */
+    sanitizeBuffer?(file: H5PFileBuffer): Promise<FileSanitizerResult>;
 }
 
 enum FileSanitizerResult {
@@ -97,9 +108,13 @@ enum FileSanitizerResult {
 }
 ```
 
-Note: Sanitization only works if you pass uploaded content files to {@link
-@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
-in-memory streams!
+Note: Sanitization works transparently for uploaded content files that you
+pass to {@link @lumieducation/h5p-server!H5PEditor.saveContentFile} using the
+{@link @lumieducation/h5p-server!H5PFile} shape, regardless of whether they
+are backed by temporary files on disk (`tempFilePath`) or in-memory buffers
+(`data`). If a sanitizer doesn't implement `sanitizeBuffer`, buffer-based
+uploads are automatically written to a temporary file before being passed to
+`sanitize`, so all sanitizers support both upload modes without extra work.
 
 ### Existing file sanitizers
 
@@ -173,9 +188,20 @@ interface IFileMalwareScanner {
     /** The name of the scanner, e.g. ClamAV */
     readonly name: string;
 
-    /** Scans a file for malware and returns whether it contains malware. */
+    /** Scans a file at the given path for malware and returns whether it
+     * contains malware. */
     scan(
         file: string
+    ): Promise<{ result: MalwareScanResult; viruses?: string }>;
+
+    /**
+     * Optional: scans an in-memory buffer for malware without requiring it
+     * to be written to disk first. Implementations that don't support
+     * buffer scanning can omit this method; callers fall back to writing
+     * the buffer to a temporary file and calling `scan` instead.
+     */
+    scanBuffer?(
+        file: H5PFileBuffer
     ): Promise<{ result: MalwareScanResult; viruses?: string }>;
 }
 
@@ -186,9 +212,13 @@ enum MalwareScanResult {
 }
 ```
 
-Note: Malware scanning only works if you pass uploaded content files to {@link
-@lumieducation/h5p-server!H5PEditor.saveContentFile} as temporary files, not as
-in-memory streams!
+Note: Malware scanning works transparently for uploaded content files that
+you pass to {@link @lumieducation/h5p-server!H5PEditor.saveContentFile},
+regardless of whether they are backed by temporary files on disk
+(`tempFilePath`) or in-memory buffers (`data`). If a scanner doesn't
+implement `scanBuffer`, buffer-based uploads are automatically written to a
+temporary file before being passed to `scan`, so all scanners support both
+upload modes without extra work.
 
 ### Existing malware scanners
 
