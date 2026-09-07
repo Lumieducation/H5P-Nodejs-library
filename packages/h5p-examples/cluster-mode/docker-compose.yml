@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
     mongo:
-        image: mongo:8.0
+        image: mongo:8.3
         restart: always
         environment:
             - MONGO_INITDB_ROOT_USERNAME=root
