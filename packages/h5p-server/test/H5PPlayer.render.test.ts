@@ -470,4 +470,38 @@ describe('H5P.render()', () => {
             })
         ).rejects.toThrow('h5p-server:user-state-missing-view-permission');
     });
+
+    it('replaces all occurrences of :contentId in embedCode and sets resizeCode', async () => {
+        const contentId = 'foo';
+        const contentObject = {};
+        const metadata: any = {};
+
+        const config = new H5PConfig(undefined);
+        const user = new User();
+
+        const player = new H5PPlayer(undefined, undefined, config);
+        player.setRenderer((model) => model);
+        const playerModel: IPlayerModel = await player.render(
+            contentId,
+            user,
+            'en',
+            {
+                parametersOverride: contentObject,
+                metadataOverride: metadata as any,
+                embedCode:
+                    '<iframe src="https://example.org/h5p/embed/:contentId" data-content-id=":contentId"></iframe>',
+                resizeCode:
+                    '<script src="https://example.org/h5p/resizer.js"></script>'
+            }
+        );
+
+        expect(
+            playerModel.integration.contents[`cid-${contentId}`].embedCode
+        ).toEqual(
+            '<iframe src="https://example.org/h5p/embed/foo" data-content-id="foo"></iframe>'
+        );
+        expect(
+            playerModel.integration.contents[`cid-${contentId}`].resizeCode
+        ).toEqual('<script src="https://example.org/h5p/resizer.js"></script>');
+    });
 });

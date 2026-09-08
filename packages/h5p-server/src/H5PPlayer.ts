@@ -149,7 +149,17 @@ export default class H5PPlayer {
         in the URL of the content state Ajax call. The h5p-express adapter
         ignores posts that have this query parameter. You should, however, still
         prevent malicious users from writing other users' states in the
-        permission system! 
+        permission system!
+     * @param options.embedCode (optional) the HTML embed code (e.g. an
+        `<iframe>` tag) that is exposed to the H5P core client as
+        `H5PIntegration.contents[cid].embedCode` and used by the "Embed"
+        button. Any occurrence of the placeholder `:contentId` is replaced
+        with the actual content id, so the same template can be reused across
+        content items.
+     * @param options.resizeCode (optional) the `<script>` tag that is exposed
+        as `H5PIntegration.contents[cid].resizeCode` and included alongside
+        the embed code to make the embedded iframe resize to the available
+        width.
      * @returns a HTML string that you can insert into your page
      */
     public async render(
@@ -465,7 +475,7 @@ export default class H5PPlayer {
                     styles: assets.styles,
                     url: this.urlGenerator.uniqueContentUrl(contentId),
                     exportUrl: this.urlGenerator.downloadPackage(contentId),
-                    embedCode: displayOptions.embedCode?.replace(
+                    embedCode: displayOptions.embedCode?.replaceAll(
                         ':contentId',
                         contentId
                     ),
