@@ -38,7 +38,8 @@ export default class EditorPage {
     /**
      * Chooses a content type from the H5P Hub tile list. Only works for
      * content types that are already installed (tiles for uninstalled types
-     * show a "Get" button and require an install step first).
+     * show a "Get" button and require an install step first - see
+     * `installContentTypeFromHub()`).
      */
     public async chooseContentType(label: string): Promise<void> {
         const tile = this.frame
@@ -46,6 +47,70 @@ export default class EditorPage {
             .filter({ hasText: label });
         await tile.waitFor({ state: 'visible' });
         await tile.click();
+    }
+
+    /**
+     * The Hub's "Create Content" tab search bar
+     * (`aria-label="Search for content type to create"`). Two other search
+     * bars exist on the same page - the "Create from OER Content" tab's
+     * (`aria-label="Search for content from OER hub"`, a different feature:
+     * downloading ready-made *content*, not installing a content *type*)
+     * and, once the search field renders, none other - so this must be
+     * scoped by label rather than by CSS class alone (both share
+     * `.h5p-hub-search-bar`).
+     */
+    public hubSearchBar(): Locator {
+        return this.frame.getByLabel('Search for content type to create');
+    }
+
+    public async searchHub(term: string): Promise<void> {
+        await this.hubSearchBar().waitFor({ state: 'visible' });
+        await this.hubSearchBar().fill(term);
+    }
+
+    public hubTile(label: string): Locator {
+        return this.frame
+            .locator('li.h5p-hub-media')
+            .filter({ hasText: label });
+    }
+
+    /**
+     * Installs a content type that is not yet present on the server via the
+     * Hub tile's "Get" flow (`test/specs/content-hub.spec.ts`), then opens
+     * its content form - unlike `chooseContentType()`, this works
+     * regardless of whether the type was already installed.
+     *
+     * Clicking an uninstalled tile opens a detail panel (screenshots,
+     * license info, an "Install" button) in place of the tile list, not the
+     * content form directly. Clicking "Install" downloads the package from
+     * h5p.org and, once done, replaces the detail panel with a
+     * "<Name> successfully installed!" confirmation and a "Use" button -
+     * clicking that opens the content form directly (there is no need to
+     * go back to the tile list and click the tile a second time). Once
+     * already installed, clicking a tile opens its content form
+     * immediately with no detail panel at all, which is why this checks
+     * whether the detail panel's install button is visible before doing
+     * any of that.
+     */
+    public async installContentTypeFromHub(label: string): Promise<void> {
+        const tile = this.hubTile(label);
+        await tile.click();
+
+        const installButton = this.frame.locator(
+            '.h5p-hub-content-type-detail-button-bar button.h5p-hub-button-install'
+        );
+        if (await installButton.isVisible().catch(() => false)) {
+            await installButton.click();
+            const useButton = this.frame.getByRole('button', {
+                name: 'Use'
+            });
+            await useButton.waitFor({ state: 'visible', timeout: 45_000 });
+            await useButton.click();
+        }
+
+        await this.frame
+            .locator('.field-name-extraTitle input')
+            .waitFor({ state: 'visible' });
     }
 
     /**
@@ -57,9 +122,30 @@ export default class EditorPage {
         await this.frame.locator(fieldSelector).waitFor({ state: 'visible' });
     }
 
+    /**
+     * Fills the top-level "Title" field content types render directly on
+     * their main form (`.field-name-extraTitle`, an "extra" title semantics
+     * adds to every content type outside of `metadataSettings.disable`) -
+     * distinct from `setTitle()`, which fills the Metadata popup's own
+     * `.field-name-title` (Blanks and Course Presentation, per
+     * `content-lifecycle.spec.ts`, drive title entirely through the popup
+     * and never render this top-level field visibly).
+     */
+    public async setExtraTitle(title: string): Promise<void> {
+        await this.frame.locator('.field-name-extraTitle input').fill(title);
+    }
+
+    /**
+     * Opens the Metadata popup via its `.h5p-metadata-button-wrapper`
+     * toggle (a `role="button"` div wrapping the `.h5p-metadata-toggler`
+     * text label) rather than `getByRole('button', { name: 'Metadata' })`:
+     * the toggle's visible text is localized ("Metadaten" under `?lng=de`,
+     * see `localization.spec.ts`), so a CSS selector is what keeps this
+     * working across languages.
+     */
     public async openMetadata(): Promise<void> {
         await this.frame
-            .getByRole('button', { name: 'Metadata' })
+            .locator('.h5p-metadata-button-wrapper')
             .first()
             .click();
         await this.metadataOverlay.waitFor({ state: 'visible' });

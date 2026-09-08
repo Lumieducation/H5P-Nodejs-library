@@ -438,6 +438,91 @@ and Mongo are brought up in CI).
 **Acceptance:** with `npm run start:dbs` running, both non-fs permutations pass,
 and re-running immediately also passes (proving the reset works).
 
+**Corrected in session 7:**
+
+- The env-var sets transcribed into `test/fixtures/storageEnv.ts` deviate
+  from the checked-in `.env` files in the Mongo collection names, the Mongo
+  database name and the S3 bucket names (all given an `e2e`/`e2e-` prefix and
+  their own `e2e_h5p` database) - not just as a defensive collision guard
+  against `test:h5p-mongos3`'s fixtures (which already use their own
+  randomly-suffixed bucket names and a `h5pintegrationtest` database), but
+  because `scripts/mongo-s3-docker-compose.yml` (`npm run start:dbs`) does
+  not pre-create any S3 buckets at all, unlike
+  `scripts/mongo-s3-redis-docker-compose.yml`'s `minio_init` service - so the
+  Mongo/S3 reset helper (`MongoS3StateResetter` in `test/fixtures/reset.ts`)
+  creates each configured bucket if it doesn't exist yet, then empties it,
+  rather than assuming it's already there.
+- `mongo+mongos3.env`'s `CACHE=in-memory` is deliberately **not** carried
+  over into the `mongo-only` permutation's env (see `MONGO_ONLY_ENV` in
+  `storageEnv.ts`). The example server process is started once per
+  `npm run test:e2e:mongo(-s3-redis)` run and stays up across every spec
+  file in that run, not restarted between them - discovered by running the
+  permutation for the first time: after `library-management.spec.ts`'s own
+  `test.beforeAll` reset (a direct Mongo wipe, run against the *already
+  running* server), the library admin panel still listed 64 libraries left
+  over from an earlier spec file, because `createH5PEditor.ts`'s
+  `CachedLibraryStorage` (backed by an in-process `cache-manager` instance
+  for `CACHE=in-memory`) has no way to learn that storage changed out from
+  under it. `CACHE=redis` (the `mongo-s3-redis` permutation) doesn't have
+  this problem - Redis lives outside the server process, so
+  `MongoS3StateResetter` flushes the relevant Redis logical DBs directly
+  alongside the Mongo/S3 reset - but there is no external hook to flush an
+  in-memory cache-manager instance, so `mongo-only` drops `CACHE` entirely
+  (falling back to `createH5PEditor.ts`'s "no cache" branch) instead.
+  Dropping it still exercises the exact `MongoLibraryStorage` code path this
+  permutation exists to test; the in-memory caching layer itself is already
+  covered independently by
+  `packages/h5p-server/test/implementation/cache/CachedLibraryStorage.test.ts`.
+- `getStateResetter()` (used both by `resetCli.ts`, chained in front of
+  `npm start` in `webServer.command`, and by every spec's own
+  `test.beforeAll`) needs the same Mongo/S3/Redis connection details in
+  *both* places, but `webServer.env` only applies to the `webServer`
+  child process, not to the Playwright test workers that also call
+  `getStateResetter()` directly. `playwright.config.ts` therefore applies
+  the `E2E_STORAGE` env-var overlay to `process.env` itself, at config-load
+  time, before `defineConfig()` runs - not only to `webServer.env` - so
+  both the reset-before-boot path and every in-test reset agree on the same
+  backend.
+- `npm run start:dbs` / `start:dbs:redis` invoke the standalone
+  `docker-compose` (v1) binary. The machine this session ran on only had
+  the `docker compose` (v2, space-separated) plugin on `PATH`, not that
+  binary, so verifying this session had to fall back to running
+  `docker compose -f ... up -d` directly instead of through the npm
+  scripts. Left the scripts as `docker-compose` rather than changing them
+  project-wide on the strength of one environment's `PATH`; if this turns
+  out to be common rather than a one-off, switching these two scripts (and
+  `start:dbs`/`stop:dbs`) to `docker compose` is a one-line-each fix.
+- The sandbox this session ran in could not pull `redis:alpine` or
+  `minio/mc` (the image `mongo-s3-redis-docker-compose.yml`'s `minio_init`
+  service uses to auto-create S3 buckets) from Docker Hub at all - repeated
+  attempts over several minutes each made zero progress, while previously
+  content the sandbox already had cached (`mongo:8.0`,
+  `minio/minio:RELEASE.2025-09-07T16-13-09Z`, `redis:7-alpine`) pulled
+  fine, so this reads as a registry/rate-limit quirk of that sandbox, not a
+  problem with the compose file. Verification of the `mongo-s3-redis`
+  permutation therefore used a locally-retagged `docker tag redis:7-alpine
+  redis:alpine` plus `docker run redis:alpine` standing in for the
+  `mongo-s3-redis-docker-compose.yml` stack's `redis` service, and relied on
+  `MongoS3StateResetter`'s bucket-auto-create step (which exists precisely
+  because `mongo-s3-docker-compose.yml` has no `minio_init` equivalent) to
+  cover for the missing `minio_init` service. This is a sandbox-networking
+  workaround for verification only, not a code path - the checked-in
+  compose file and npm scripts are unchanged, and a machine with normal
+  Docker Hub access should pull both images and run
+  `npm run start:dbs:redis` directly with no substitution needed. Both
+  `mongo-only` and `mongo-s3-redis` were confirmed to pass twice in a row
+  against real Mongo/MinIO(/Redis) containers this way, including
+  confirming via `redis-cli -n 8/9 dbsize` that the cache and lock Redis
+  DBs actually had data in them (i.e. the server really was using Redis,
+  not silently falling back).
+- Root scripts `start:dbs:redis` / `stop:dbs:redis` were added alongside
+  `test:e2e:mongo-s3-redis` (bringing up
+  `scripts/mongo-s3-redis-docker-compose.yml`, the compose file with a
+  Redis service and bucket auto-creation) - the plan's step 3 mentioned
+  using that file for the redis permutation but didn't call out that it
+  needs its own start/stop script pair distinct from `start:dbs`/`stop:dbs`
+  (which point at the plain `scripts/mongo-s3-docker-compose.yml`).
+
 ---
 
 ### Session 8 — Content Hub and localization
@@ -469,6 +554,61 @@ than hard-coding, so translation updates do not break the suite.
 
 **Acceptance:** `npx playwright test --grep-invert @network` passes with no
 network access; the full run passes with network.
+
+**Corrected in session 8:**
+
+- The `page.route`-recorded `@offline` variant suggested for Content Hub was
+  not built - both live content types installed for the "download and it
+  renders" tests are cheap and fast in practice (well under 2s each once the
+  Hub tile list itself is cached by the browser within a run), and
+  hand-maintaining recorded fixtures for a Hub UI that isn't code in this
+  repo (bundled with the downloaded H5P core, not `packages/h5p-server`)
+  seemed like more ongoing maintenance than the offline variant would save.
+  Only the `@network`-tagged variant exists; it is excluded from the
+  default `--grep-invert @network` run like every other Hub test.
+- Two Hub content types were chosen for their content-hub download tests:
+  H5P.FindTheWords and H5P.Accordion - both need only their top-level Title
+  field filled in to save (Find The Words' other required fields ship
+  non-empty semantics.json defaults; Accordion's one default panel needs
+  its nested Title/Text filled in, handled as a one-off in the spec).
+  Installing an uninstalled Hub tile does not go tile → detail panel →
+  "Install" → back to the tile list → click the tile again, as the plan's
+  wording might suggest - clicking "Install" replaces the detail panel with
+  a "\<Name\> successfully installed!" confirmation and a "Use" button that
+  opens the content form directly (`EditorPage.installContentTypeFromHub()`
+  documents the flow; see SELECTORS.md for the class names).
+- `EditorPage.openMetadata()` originally used
+  `getByRole('button', { name: 'Metadata' })` (session 2), which only
+  matches under English - localization.spec.ts's `?lng=de` tests need this
+  same method, so it was changed to a CSS selector on the toggle's wrapper
+  element (`.h5p-metadata-button-wrapper`) instead, which works in any
+  language. This is a fix to session 2's page object, not new
+  session-8-only code.
+- The player's Reuse button's accessible *name* (what `getByRole('button',
+  { name: ... })` matches) is its `aria-label` - the German
+  `reuseDescription` string ("Diesen Inhalt an einer anderen Stelle
+  nutzen."), not the visible `reuse` label text ("Weiterverwenden") the
+  plan bullet asks to assert. `localization.spec.ts` matches the visible
+  label via `getByRole('button').filter({ hasText: client.reuse })`
+  instead of passing `name` to `getByRole`.
+- The Reuse dialog's own body copy ("Download as an .h5p file...", "Copy
+  content...") renders in English even under `?lng=de` - the installed H5P
+  core version's reuse-dialog layout does not use `client/de.json`'s
+  `downloadDescription`/`embedDescription`/`copyrightsDescription` keys at
+  all (those appear to belong to an older dialog layout this core version
+  no longer renders). The "modal labels in the player" test instead asserts
+  on the dialog's heading (`reuseContent`) and its "Close" button
+  (`close`), both of which are genuinely localized.
+- Testing the German server error message for an invalid `.h5p` upload
+  needed the editor's Hub "Upload" tab flow, not the library admin panel's
+  upload control: `LibraryAdminComponent.tsx`'s own upload handler only
+  ever shows a hardcoded, untranslated "Error while uploading package." on
+  failure - it doesn't surface the real server response text
+  (`unable-to-unzip` et al.) at all. That test also uses a second, unwrapped
+  page (`page.context().newPage()`, the same pattern `html-export.spec.ts`
+  established in session 6) rather than the fixture's own `page`, since
+  triggering the failure necessarily logs a "Failed to load resource: ...
+  400" console error that the shared console guard would otherwise flag.
 
 ---
 
