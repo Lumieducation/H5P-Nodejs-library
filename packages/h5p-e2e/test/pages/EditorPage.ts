@@ -249,8 +249,15 @@ export default class EditorPage {
      * specific field has content).
      */
     public async copyContent(): Promise<void> {
+        // `:not(.disabled)` alone is not enough to disambiguate once any
+        // field-level copy button (e.g. a filled-in "list" widget's own
+        // copy/paste-wrap) has also become enabled - `.first()` picks the
+        // top-level one, which always renders before any field's, as it is
+        // part of the outer form chrome rather than a specific field. See
+        // SELECTORS.md.
         await this.frame
             .locator('.h5peditor-copy-button:not(.disabled)')
+            .first()
             .click();
     }
 

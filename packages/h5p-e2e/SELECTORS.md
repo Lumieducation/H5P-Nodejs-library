@@ -314,7 +314,13 @@ disambiguated:
 - Copy: `.h5peditor-copy-button:not(.disabled)` - the whole-content one is
   enabled as soon as the form has a title; a field-level one stays disabled
   until that specific field is filled in, so `:not(.disabled)` picks the
-  right one as long as no field-level copy button has been enabled yet.
+  right one **only** as long as no field-level copy button has also become
+  enabled. Once any field with its own copy/paste-wrap has content too
+  (e.g. round-trip.spec.ts's Blanks form, whose list field is filled in
+  before copying), both match and `:not(.disabled)` alone throws a
+  Playwright strict-mode violation - add `.first()`, since the top-level
+  button always renders before any field's (it's part of the outer form
+  chrome, not a specific field).
 - Paste & Replace: disambiguated by its title attribute,
   `[title="Replace existing content with H5P Content from the clipboard"]`
   (the Hub's _own_ upload-tab paste button, `#h5peditor-hub-paste-button`,
@@ -363,3 +369,69 @@ must assert **HTTP 500**, not 404, after deletion.
 renders a small standalone "Content successfully deleted." page with a
 JS-driven "Go Back" link; navigate back to `/` explicitly afterwards to
 check the start page list.
+
+## Session 6 additions: round trip, HTML export, cross-browser
+
+### Seeding content over the JSON API instead of the editor UI
+
+`POST /h5p/new` (and `POST /h5p/edit/:contentId` for updates) accepts a
+JSON body - `{ params: { params, metadata }, library }` where `library` is
+an "ubername" string like `"H5P.Blanks 1.14"` (majorVersion.minorVersion,
+space-separated, no patch version) - and calls
+`H5PEditor.saveOrUpdateContent()` directly
+(`packages/h5p-examples/src/expressRoutes.ts`). The response body is
+`{ "contentId": "<id>" }`.
+
+`html-export.spec.ts` uses this instead of driving the editor to create its
+test content, because that spec's actual subject is the downloaded HTML
+export rendering correctly across browser engines - driving the editor's
+CKEditor "Text blocks" field via `.fill()` does not reliably commit a value
+under Mobile Safari's touch emulation (confirmed independently of any
+export-specific behavior), which would make the cross-browser projects fail
+for a reason unrelated to what they're meant to check. `seedLibraries()` in
+`fixtures/seed.ts` is a sibling example of this same pattern, one layer
+down (installing a _library_ via the ajax upload endpoint instead of the
+Hub UI).
+
+### `.h5p` download / HTML export download links
+
+Both are plain `<a>` tags on the start page (`StartPage.downloadLink()` /
+`downloadHtmlLink()`) that trigger a real browser download - drive them
+with `Promise.all([page.waitForEvent('download'), link.click()])` and
+`download.saveAs(path)`, then read the file from Node directly (e.g. with
+`yauzl-promise` for the `.h5p` zip) rather than asserting anything through
+the UI.
+
+### `file://` console noise is engine-specific
+
+Loading a downloaded HTML export via a `file://` URL always produces at
+least one console error, because H5P core's user-state XHR has no origin
+to request from under `file://` - but the exact message differs enough per
+engine that `html-export.spec.ts` keeps its own allowlist rather than
+extending the shared one in `fixtures/index.ts`:
+
+| Engine   | Message pattern(s)                                                                                                                                                                                                                                                                                                           |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chromium | `Access to XMLHttpRequest...has been blocked by CORS policy`, `net::ERR_FAILED`                                                                                                                                                                                                                                              |
+| Firefox  | `Cross origin requests are only supported for...` **and** a second message naming the file URL `...due to access control checks`, plus an unrelated, spurious `XML Parsing Error` for the same document (content still renders correctly - this looks like an internal feed/XML-sniffing pass Firefox runs over local files) |
+| WebKit   | `Cross-Origin Request Blocked`, `Not allowed to request resource`                                                                                                                                                                                                                                                            |
+
+The console guard used for this one navigation is also custom: a _second_
+page created via `page.context().newPage()` (not the fixture's own `page`,
+which is already wrapped by `fixtures/index.ts`'s global console guard) so
+this spec's engine-specific allowlist doesn't have to be merged into the
+shared one every other spec's `page` also uses.
+
+### Shared allowlist addition: `contentUserData` 403 on non-Chromium
+
+Every content player load triggers
+`GET /h5p/contentUserData/:contentId/:dataType/:subContentId` to restore
+saved user state. `packages/h5p-examples` never sets
+`contentUserStateSaveInterval`, so
+`ContentUserDataController.getContentUserData` responds `403` by design
+(feature not opted into, not a bug) - Chromium does not surface a failed
+same-origin XHR like this as a console "error" by default, but Firefox and
+WebKit do. Added to the shared `ALLOWED_CONSOLE_ERRORS` in
+`fixtures/index.ts` (not a spec-local one) since it can affect any spec's
+`page` fixture, not just this session's, once run under a non-Chromium
+project.

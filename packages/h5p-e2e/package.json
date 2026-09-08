@@ -19,6 +19,8 @@
         }
     ],
     "devDependencies": {
-        "@playwright/test": "^1.56.0"
+        "@playwright/test": "^1.56.0",
+        "@types/yauzl-promise": "4.0.1",
+        "yauzl-promise": "^4.0.0"
     }
 }

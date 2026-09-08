@@ -366,6 +366,46 @@ demands across browsers pay the cost; everything else runs on Chromium only.
 **Acceptance:** `npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=webkit`
 passes, and the full default run stays under ~10 minutes locally.
 
+**Corrected in session 6:**
+
+- The `testMatch: /html-export|player/` pattern assumed a `player.spec.ts`
+  file that was never created - session 2 folded basic player-rendering
+  coverage into `blanks-creation.spec.ts` instead. The actual config
+  restricts the non-Chromium projects to `html-export.spec.ts` only, not
+  `blanks-creation.spec.ts`: driving that spec's CKEditor "Text blocks"
+  field through `.fill()` does not reliably commit its value under Mobile
+  Safari's touch emulation (confirmed independently - a real WebKit/editor
+  interaction quirk, not a config mistake). `html-export.spec.ts` still
+  exercises the player across every project (the downloaded HTML renders
+  via the same player code), it just seeds its content over the
+  `POST /h5p/new` JSON API instead of through the editor UI, which
+  sidesteps that field entirely and also means this spec's cross-browser
+  runs aren't testing editor-UI compatibility, only player/export
+  rendering - the two are different problems, and this project mostly
+  the latter.
+- The metadata assertion for copy/paste in `round-trip.spec.ts` uses the
+  Title field, not the plain "Task description" rich-text field: the H5P
+  editor has its own autosave/draft-restore feature that persists unsaved
+  form state in `localStorage` across "new content" page loads, which could
+  make an assertion on that field pass even with a broken paste. See
+  SELECTORS.md's "whole-content copy/paste" note.
+- `html-export.spec.ts`'s `file://` console-guard allowlist needed
+  per-engine entries beyond Chromium's CORS message: Firefox splits the
+  same failure into two console messages and also logs an unrelated,
+  spurious "XML Parsing Error" for the same document (content still
+  renders correctly; this looks like an internal feed/XML-sniffing pass);
+  WebKit phrases its CORS message differently again. All are specific to
+  loading a page via `file://` and are kept in that spec's own allowlist,
+  not the shared one in `fixtures/index.ts`.
+- Session 6 also surfaced one pre-existing, unrelated cross-browser
+  finding while diagnosing the above: Firefox and WebKit (unlike Chromium)
+  surface the `GET /h5p/contentUserData/:contentId/:dataType/:subContentId`
+  request's expected 403 (packages/h5p-examples doesn't set
+  `contentUserStateSaveInterval`) as a console error on every content
+  player load. This is now in the shared allowlist in `fixtures/index.ts`
+  since it affects any spec's `page` fixture once it runs a
+  non-Chromium project, not just this session's specs.
+
 ---
 
 ### Session 7 — Storage permutation matrix

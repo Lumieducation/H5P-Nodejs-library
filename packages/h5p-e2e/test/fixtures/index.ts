@@ -9,8 +9,17 @@ import { test as base, expect } from '@playwright/test';
  * expected and harmless.
  */
 const ALLOWED_CONSOLE_ERRORS: RegExp[] = [
-    // (none yet - keep this array short and documented; see the comment
-    // above before adding to it)
+    // H5P core requests GET /h5p/contentUserData/:contentId/:dataType/:subContentId
+    // whenever the player loads, to restore previously saved user state.
+    // packages/h5p-examples does not set `contentUserStateSaveInterval`, so
+    // ContentUserDataController.getContentUserData responds 403 by design
+    // (see packages/h5p-express/src/ContentUserDataRouter/ContentUserDataController.ts) -
+    // not a bug, just a feature this example app doesn't opt into. Chromium
+    // does not surface a failed same-origin XHR like this as a console
+    // "error" by default, but Firefox and WebKit do (added while adding the
+    // session 6 cross-browser matrix in E2E_AUTOMATION_PLAN.md), so this is
+    // only visible on those browsers' projects.
+    /contentUserData\/.*\/state\//
 ];
 
 /**
