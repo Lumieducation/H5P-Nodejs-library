@@ -19,8 +19,11 @@
         }
     ],
     "devDependencies": {
+        "@aws-sdk/client-s3": "^3.758.0",
         "@playwright/test": "^1.56.0",
         "@types/yauzl-promise": "4.0.1",
+        "mongodb": "7.6.0",
+        "redis": "^6.0.0",
         "yauzl-promise": "^4.0.0"
     }
 }

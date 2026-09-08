@@ -2,7 +2,33 @@ import { defineConfig, devices } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
+import { getStorageEnv, getStorageMode } from './test/fixtures/storageEnv';
+
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:8080';
+const storageMode = getStorageMode();
+
+// Applied to `process.env` itself (not just `webServer.env` below) because
+// `getStateResetter()` (test/fixtures/reset.ts) also runs inside the
+// Playwright test workers themselves - e.g. every spec's
+// `test.beforeAll(() => getStateResetter().reset())` - and those workers
+// inherit this config file's process env, not the `webServer` child
+// process's. Mutating it here, before `defineConfig` is even called, is
+// what makes both the reset-before-tests calls and the reset chained in
+// front of `npm start` (via `resetCli.ts`, see `webServer.command` below)
+// agree on the same Mongo/S3(/Redis) connection details.
+Object.assign(process.env, getStorageEnv(storageMode));
+
+// Session 7: the `mongo-s3-redis` / `mongo-only` storage permutations spin
+// up a real Mongo + MinIO (+ Redis) stack, which is expensive and mostly
+// exercises the same storage-interface code paths regardless of which
+// content type is involved - so, per E2E_AUTOMATION_PLAN.md, they run only
+// the two specs the manual "Permutations of storage" section actually
+// requires (library management, content lifecycle) instead of the whole
+// suite.
+const nonFsStorageSpecs = [
+    'test/specs/library-management.spec.ts',
+    'test/specs/content-lifecycle.spec.ts'
+];
 
 // The example app needs the downloaded H5P core and editor files to render
 // anything. Without them the editor page loads but silently fails, so fail
@@ -18,6 +44,13 @@ if (!process.env.E2E_BASE_URL && !fs.existsSync(h5pCoreDir)) {
 
 export default defineConfig({
     testDir: './test',
+    // Restrict to the storage-relevant specs for the non-fs permutations
+    // (see `nonFsStorageSpecs` above); `undefined` for `fs` runs the whole
+    // suite as before.
+    testMatch:
+        storageMode === 'fs'
+            ? undefined
+            : nonFsStorageSpecs.map((spec) => new RegExp(`${spec}$`)),
     fullyParallel: false,
     // The example app has one shared content/library store, so specs must
     // not run concurrently against it. Separate server instances per
@@ -25,6 +58,16 @@ export default defineConfig({
     workers: 1,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
+    // Session 2 already called for these budgets ("expect timeout 15s, test
+    // timeout 120s") but the config never applied them. Session 7 hit the
+    // gap directly: the `mongo-only` permutation deliberately runs without a
+    // library-metadata cache (see storageEnv.ts's `MONGO_ONLY_ENV`), which
+    // measurably slows down editor/dragnbar initialization and pushed a
+    // Course Presentation drag-and-drop action past the 30s default test
+    // timeout. Applying the plan's original budget fixes it for every
+    // storage mode, not just the slow one.
+    timeout: 120_000,
+    expect: { timeout: 15_000 },
     reporter: process.env.CI
         ? [['github'], ['html', { open: 'never' }]]
         : 'list',
@@ -49,7 +92,14 @@ export default defineConfig({
               cwd: path.join(__dirname, '../..'),
               url: baseURL,
               reuseExistingServer: !process.env.CI,
-              timeout: 120_000
+              timeout: 120_000,
+              // `process.env` already carries the session 7 storage
+              // overlay (see the `Object.assign` above), so the spawned
+              // shell command - both `resetCli.ts` and the example server
+              // it chains into - inherits the same Mongo/S3(/Redis)
+              // backend `getStateResetter()` reads inside the test
+              // workers.
+              env: process.env as Record<string, string>
           },
     projects: [
         {
