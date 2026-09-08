@@ -10,8 +10,7 @@ import {
     IContentMetadata,
     IUser,
     ContentPermission,
-    IPermissionSystem,
-    ILibraryMetadata
+    IPermissionSystem
 } from './types';
 import { ContentFileScanner } from './ContentFileScanner';
 import Logger from './helpers/Logger';
@@ -186,10 +185,7 @@ export default class PackageExporter {
             if (this.libraryManager.libraryStorage?.listAddons) {
                 const addOns =
                     await this.libraryManager.libraryStorage.listAddons();
-                const addOnNames = addOns.map((addOn) =>
-                    LibraryName.fromUberName(addOn.machineName)
-                );
-                dependencies = [...dependencies, ...addOnNames];
+                dependencies = [...dependencies, ...addOns];
             }
 
             for (const dependency of dependencies) {
@@ -203,30 +199,6 @@ export default class PackageExporter {
                         `${LibraryName.toUberName(dependency)}/${file}`
                     );
                 }
-            }
-        }
-    }
-
-    /**
-     * Adds the editor addons to the zip
-     * to be playable.
-     */
-    private async addAddonsFiles(
-        metadata: IContentMetadata,
-        outputZipFile: yazl.ZipFile
-    ): Promise<void> {
-        let dependencies: ILibraryMetadata[] = [];
-        const libraryStorage = this.libraryManager.libraryStorage;
-        if (libraryStorage?.listAddons) {
-            dependencies = await libraryStorage.listAddons();
-        }
-        for (const dependency of dependencies) {
-            const files = await this.libraryManager.listFiles(dependency);
-            for (const file of files) {
-                outputZipFile.addReadStream(
-                    await this.libraryManager.getFileStream(dependency, file),
-                    `${LibraryName.toUberName(dependency)}/${file}`
-                );
             }
         }
     }
