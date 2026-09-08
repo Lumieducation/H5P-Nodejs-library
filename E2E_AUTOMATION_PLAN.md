@@ -46,7 +46,7 @@ entire "Permutations of storage" section of the manual plan.
 H5P Hub.** `test/data/hub-content/*.h5p` is populated by `npm run download:content`
 (and cached in CI) and contains `H5P.Blanks.h5p` and `H5P.CoursePresentation.h5p`.
 Installing from these via the library-upload endpoint makes the content tests
-deterministic and offline. Hub *browsing* is tested separately and tagged
+deterministic and offline. Hub _browsing_ is tested separately and tagged
 `@network`.
 
 **Every test asserts a clean browser console.** "Check browser console for errors
@@ -62,25 +62,25 @@ These items cannot reasonably be automated here and must remain in a slimmed-dow
 - Upload downloaded content in a **WordPress** instance (`scripts/wordpress.yaml`).
 - Real **Mobile Safari on a real device** (WebKit emulation is a proxy, not a
   substitute).
-- Human judgement on whether rendered content *looks* right.
+- Human judgement on whether rendered content _looks_ right.
 
 ---
 
 ## 2. Reference map — files the executing agent will need
 
-| What | Where |
-| --- | --- |
-| Example server entry point, routes, port (`PORT`, default 8080) | `packages/h5p-examples/src/express.ts` |
-| Storage wiring from env vars | `packages/h5p-examples/src/createH5PEditor.ts` |
-| Start page HTML (content list, edit/download/HTML/delete buttons) | `packages/h5p-examples/src/startPageRenderer.ts` |
-| Play / edit / new / delete routes | `packages/h5p-examples/src/expressRoutes.ts` |
-| Library admin + content-type-cache React UI | `packages/h5p-examples/src/client/*.tsx` |
-| Editor page template (`#h5p-content-form`, `#save-h5p`, `.h5p-editor`) | `packages/h5p-server/src/renderers/default.ts` |
-| Player page template | `packages/h5p-server/src/renderers/player.ts` |
-| Storage permutation env vars | `packages/h5p-examples/*.env` |
-| Mongo + MinIO for local runs | `scripts/mongo-s3-docker-compose.yml`, `scripts/mongo-s3-redis-docker-compose.yml` |
-| CI pipeline (job structure, workspace tarball, MinIO startup) | `.github/workflows/ci.yml` |
-| Content fixtures | `test/data/hub-content/*.h5p` |
+| What                                                                   | Where                                                                              |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Example server entry point, routes, port (`PORT`, default 8080)        | `packages/h5p-examples/src/express.ts`                                             |
+| Storage wiring from env vars                                           | `packages/h5p-examples/src/createH5PEditor.ts`                                     |
+| Start page HTML (content list, edit/download/HTML/delete buttons)      | `packages/h5p-examples/src/startPageRenderer.ts`                                   |
+| Play / edit / new / delete routes                                      | `packages/h5p-examples/src/expressRoutes.ts`                                       |
+| Library admin + content-type-cache React UI                            | `packages/h5p-examples/src/client/*.tsx`                                           |
+| Editor page template (`#h5p-content-form`, `#save-h5p`, `.h5p-editor`) | `packages/h5p-server/src/renderers/default.ts`                                     |
+| Player page template                                                   | `packages/h5p-server/src/renderers/player.ts`                                      |
+| Storage permutation env vars                                           | `packages/h5p-examples/*.env`                                                      |
+| Mongo + MinIO for local runs                                           | `scripts/mongo-s3-docker-compose.yml`, `scripts/mongo-s3-redis-docker-compose.yml` |
+| CI pipeline (job structure, workspace tarball, MinIO startup)          | `.github/workflows/ci.yml`                                                         |
+| Content fixtures                                                       | `test/data/hub-content/*.h5p`                                                      |
 
 Useful existing scripts: `npm run setup` (build + download H5P core + content type
 cache), `npm run download:content`, `npm start` (starts h5p-examples on 8080),
@@ -107,16 +107,16 @@ Chromium, asserts it rendered, and shuts down cleanly.
    with `npx playwright install --with-deps chromium firefox webkit` (document
    this in the package README; CI will need it too).
 3. Write `packages/h5p-e2e/playwright.config.ts`:
-   - `testDir: './test'`, `fullyParallel: false` for now (the example app has one
-     shared content store — parallelism comes later, in session 7, via separate
-     server instances per project).
-   - `use: { baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:8080',
-     trace: 'retain-on-failure', video: 'retain-on-failure' }`.
-   - `webServer`: command `npm start --workspace=packages/h5p-examples`, url
-     `http://localhost:8080`, `reuseExistingServer: !process.env.CI`,
-     `timeout: 120_000`. Guard it so it is skipped when `E2E_BASE_URL` is set
-     externally.
-   - Reporter: `list` locally, `['github', ['html', { open: 'never' }]]` in CI.
+    - `testDir: './test'`, `fullyParallel: false` for now (the example app has one
+      shared content store — parallelism comes later, in session 7, via separate
+      server instances per project).
+    - `use: { baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:8080',
+trace: 'retain-on-failure', video: 'retain-on-failure' }`.
+    - `webServer`: command `npm start --workspace=packages/h5p-examples`, url
+      `http://localhost:8080`, `reuseExistingServer: !process.env.CI`,
+      `timeout: 120_000`. Guard it so it is skipped when `E2E_BASE_URL` is set
+      externally.
+    - Reporter: `list` locally, `['github', ['html', { open: 'never' }]]` in CI.
 4. Add root scripts: `"test:e2e": "npx playwright test --config packages/h5p-e2e/playwright.config.ts"`
    and `"test:e2e:ui": "... --ui"`.
 5. Add `packages/h5p-e2e/test/smoke.spec.ts`: navigate to `/`, expect the
@@ -151,14 +151,14 @@ selectors must be discovered empirically, never guessed.
 1. Start the app manually (`npm start`), install a content type by hand, and use
    `npx playwright codegen http://localhost:8080` plus DOM dumps to record the
    real structure of:
-   - the **editor**: the outer form (`#h5p-content-form`, submit `#save-h5p`),
-     the editor iframe the H5P core creates inside `.h5p-editor`, the content-type
-     selector, the title/metadata fields, the "Metadata" button, image upload
-     widgets (they use a hidden `<input type="file">` — find it), and the
-     "Paste"/"Copy" buttons on subcontent.
-   - the **player**: the `.h5p-iframe` and the action bar (Reuse, Copyright,
-     Embed, Download).
-   - the **library admin** and **content type cache** React panels on `/`.
+    - the **editor**: the outer form (`#h5p-content-form`, submit `#save-h5p`),
+      the editor iframe the H5P core creates inside `.h5p-editor`, the content-type
+      selector, the title/metadata fields, the "Metadata" button, image upload
+      widgets (they use a hidden `<input type="file">` — find it), and the
+      "Paste"/"Copy" buttons on subcontent.
+    - the **player**: the `.h5p-iframe` and the action bar (Reuse, Copyright,
+      Embed, Download).
+    - the **library admin** and **content type cache** React panels on `/`.
 2. Write `packages/h5p-e2e/test/pages/` with one class per surface:
    `StartPage`, `EditorPage`, `PlayerPage`, `LibraryAdminPanel`,
    `ContentTypeCachePanel`. Expose intent-level methods
@@ -197,33 +197,34 @@ routes), `packages/h5p-examples/src/express.ts` for the mounted paths.
    collections and empty the buckets — design the helper behind an interface
    from the start so session 7 only adds an implementation.
 
-   **Corrected in session 3:** this plan originally said to run the reset in a
-   Playwright `globalSetup` hook "before the server starts". That assumption
-   was wrong — Playwright's task order (see `createGlobalSetupTasks` in
-   `playwright/lib/runner/index.js`) runs the `webServer` plugin's `setup()`
-   (which starts the process and waits for it to become available) *before*
-   the user's `globalSetup` file runs, not after. A `globalSetup`-based reset
-   would therefore race the already-started server. Instead, `webServer.command`
-   in `playwright.config.ts` chains a small CLI (`test/fixtures/resetCli.ts`,
-   invoked via `npx ts-node`) in front of the actual start command:
-   `resetCli.ts && npm start --workspace=packages/h5p-examples`. This still
-   resets before the server ever binds the port, and it composes correctly
-   with `reuseExistingServer` — when a server is already up the whole
-   command (reset included) is skipped, which is what you want for local dev
-   iteration.
+    **Corrected in session 3:** this plan originally said to run the reset in a
+    Playwright `globalSetup` hook "before the server starts". That assumption
+    was wrong — Playwright's task order (see `createGlobalSetupTasks` in
+    `playwright/lib/runner/index.js`) runs the `webServer` plugin's `setup()`
+    (which starts the process and waits for it to become available) _before_
+    the user's `globalSetup` file runs, not after. A `globalSetup`-based reset
+    would therefore race the already-started server. Instead, `webServer.command`
+    in `playwright.config.ts` chains a small CLI (`test/fixtures/resetCli.ts`,
+    invoked via `npx ts-node`) in front of the actual start command:
+    `resetCli.ts && npm start --workspace=packages/h5p-examples`. This still
+    resets before the server ever binds the port, and it composes correctly
+    with `reuseExistingServer` — when a server is already up the whole
+    command (reset included) is skipped, which is what you want for local dev
+    iteration.
+
 2. `test/fixtures/seed.ts` — installs a content type by POSTing a local
    `test/data/hub-content/<name>.h5p` to the library-upload endpoint using
    Playwright's `request` API. Provide `seedLibraries(['H5P.Blanks',
-   'H5P.CoursePresentation'])`. Verify against `packages/h5p-express` which
+'H5P.CoursePresentation'])`. Verify against `packages/h5p-express` which
    action name and multipart field name the endpoint expects.
 3. `test/fixtures/index.ts` — export a `test` extended from `@playwright/test`
    that:
-   - attaches a `page.on('console')` listener collecting `error`-severity
-     messages and a `page.on('pageerror')` listener, and fails the test in an
-     `afterEach` if anything was collected;
-   - supports an allowlist of known-benign messages (regexes), kept in one
-     documented array with a comment per entry explaining why it is tolerated —
-     the list must stay short and every addition is a deliberate decision.
+    - attaches a `page.on('console')` listener collecting `error`-severity
+      messages and a `page.on('pageerror')` listener, and fails the test in an
+      `afterEach` if anything was collected;
+    - supports an allowlist of known-benign messages (regexes), kept in one
+      documented array with a comment per entry explaining why it is tolerated —
+      the list must stay short and every addition is a deliberate decision.
 4. Convert the session-2 spec to use the new fixtures and drop the manual setup.
 
 **Acceptance:** `npm run test:e2e` passes starting from a wiped
@@ -253,35 +254,35 @@ Automates the whole "Tests: Library management" section.
 - Delete a content type through the GUI and assert it disappears from both the
   panel and the `GET /h5p/libraries` response.
 
-  **Note from session 4:** the admin panel only renders a delete button when
-  `canBeDeleted` is true, i.e. `dependentsCount === 0`
-  (`LibraryAdministration` / `LibraryAdminComponent.tsx`). Course
-  Presentation's dependency tree pulls in ~40 libraries including
-  H5P.Blanks and both content types' own editor-widget libraries depend back
-  on their runtime library, so once both content types from the bullet above
-  are installed together, *nothing* is directly deletable any more - every
-  library has at least one dependent. The delete test therefore seeds only
-  H5P.Blanks by itself (zero dependents) rather than reusing the state from
-  the "install Blanks and Course Presentation" test.
+    **Note from session 4:** the admin panel only renders a delete button when
+    `canBeDeleted` is true, i.e. `dependentsCount === 0`
+    (`LibraryAdministration` / `LibraryAdminComponent.tsx`). Course
+    Presentation's dependency tree pulls in ~40 libraries including
+    H5P.Blanks and both content types' own editor-widget libraries depend back
+    on their runtime library, so once both content types from the bullet above
+    are installed together, _nothing_ is directly deletable any more - every
+    library has at least one dependent. The delete test therefore seeds only
+    H5P.Blanks by itself (zero dependents) rather than reusing the state from
+    the "install Blanks and Course Presentation" test.
 
 - Upload the MathJax addon (`H5P.MathDisplay`) through the library upload UI and
   assert it registers as an addon. Add the `.h5p` to `test/data/` if
   `download:content` does not already provide it; if it must be fetched from
   h5p.org, tag that test `@network`.
 
-  **Note from session 4:** `download:content` does not provide this file -
-  H5P.MathDisplay is an addon, not a Hub content type, so it isn't in
-  `real-content-types.json` and `https://api.h5p.org/v1/content-types/H5P.MathDisplay`
-  404s. Its actual package lives at a static URL scraped from
-  https://h5p.org/mathematical-expressions:
-  `https://h5p.org/sites/default/files/h5p-math-display-1-0-45_0.h5p`. There
-  is no documented stable API for this, so rather than committing the binary
-  to `test/data/`, the `@network` test downloads it at runtime via
-  Playwright's `request` fixture and calls `test.skip()` (not a failure) if
-  the download doesn't succeed - the URL could change without notice.
-  "Registers as an addon" is asserted via `GET /h5p/libraries`'s `isAddon`
-  field rather than through the UI, since `LibraryAdminComponent.tsx` has no
-  addon indicator in its table.
+    **Note from session 4:** `download:content` does not provide this file -
+    H5P.MathDisplay is an addon, not a Hub content type, so it isn't in
+    `real-content-types.json` and `https://api.h5p.org/v1/content-types/H5P.MathDisplay`
+    404s. Its actual package lives at a static URL scraped from
+    https://h5p.org/mathematical-expressions:
+    `https://h5p.org/sites/default/files/h5p-math-display-1-0-45_0.h5p`. There
+    is no documented stable API for this, so rather than committing the binary
+    to `test/data/`, the `@network` test downloads it at runtime via
+    Playwright's `request` fixture and calls `test.skip()` (not a failure) if
+    the download doesn't succeed - the URL could change without notice.
+    "Registers as an addon" is asserted via `GET /h5p/libraries`'s `isAddon`
+    field rather than through the UI, since `LibraryAdminComponent.tsx` has no
+    addon indicator in its table.
 
 **Acceptance:** the spec file passes in isolation and as part of the full run.
 
@@ -312,6 +313,30 @@ the start page and returns 404/absent from storage.
 
 **Acceptance:** both parameterisations pass; the console guard stays green
 throughout (this is where it will most likely catch real bugs).
+
+**Corrected in session 5:**
+
+- "returns 404/absent from storage" was imprecise: `expressRoutes.ts`'s
+  play route has no not-found branch of its own - any rejection from
+  `h5pPlayer.render()` (content missing included) is caught and turned into
+  an HTTP **500**, not a 404. The delete test asserts 500.
+- The metadata popup's author field is not a generic list widget
+  (`.field-name-authorList`, as session 2's notes speculated) but a bespoke
+  `.h5p-metadata-author-widget` with its own name input, role select and
+  "Save author" button. See SELECTORS.md.
+- Uploading an image is identical for both content types (Blanks' `media`
+  group and Course Presentation's "Image" toolbar element both render the
+  same `.field-name-file` structure), _except_ that Blanks' `media.type`
+  library selector auto-selects "Image" and hides itself entirely once
+  H5P.Video/H5P.Audio aren't installed (this suite only seeds H5P.Blanks) -
+  no explicit "choose Image" step is needed or possible in that case.
+- Course Presentation's dragnbar toolbar buttons open a full subcontent
+  form immediately on click (not a bare drop-and-configure-later element),
+  and every newly added element defaults to the exact same position/size,
+  so elements on a slide with more than one item fully overlap; only the
+  most-recently-added one can be reliably clicked again afterwards
+  (repositioning older ones would require driving the "Transform" panel,
+  which no spec needs yet). See SELECTORS.md for the full writeup of both.
 
 ---
 

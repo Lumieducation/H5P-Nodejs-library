@@ -45,7 +45,10 @@ export default class StartPage {
     }
 
     public downloadLink(title: string): Locator {
-        return this.contentRow(title).getByRole('link', { name: 'download' });
+        return this.contentRow(title).getByRole('link', {
+            name: 'download',
+            exact: true
+        });
     }
 
     public downloadHtmlLink(title: string): Locator {
