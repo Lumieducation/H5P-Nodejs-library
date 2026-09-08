@@ -195,7 +195,7 @@ export default class S3TemporaryFileStorage implements ITemporaryFileStorage {
                 Bucket: this.options?.s3Bucket,
                 Key: filename,
                 Range:
-                    rangeStart && rangeEnd
+                    rangeStart !== undefined && rangeEnd !== undefined
                         ? `bytes=${rangeStart}-${rangeEnd}`
                         : undefined
             })
