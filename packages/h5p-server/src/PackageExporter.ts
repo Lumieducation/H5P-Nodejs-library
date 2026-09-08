@@ -175,12 +175,19 @@ export default class PackageExporter {
             const dependencyGetter = new DependencyGetter(
                 this.libraryManager.libraryStorage
             );
-            const dependencies = await dependencyGetter.getDependentLibraries(
+            let dependencies = await dependencyGetter.getDependentLibraries(
                 metadata.preloadedDependencies
                     .concat(metadata.editorDependencies || [])
                     .concat(metadata.dynamicDependencies || []),
                 { editor: true, preloaded: true }
             );
+
+            if (this.libraryManager.libraryStorage?.listAddons) {
+                const addOns =
+                    await this.libraryManager.libraryStorage.listAddons();
+                dependencies = [...dependencies, ...addOns];
+            }
+
             for (const dependency of dependencies) {
                 const files = await this.libraryManager.listFiles(dependency);
                 for (const file of files) {
