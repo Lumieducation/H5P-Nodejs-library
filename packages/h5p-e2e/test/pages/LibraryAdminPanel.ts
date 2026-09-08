@@ -20,8 +20,15 @@ export default class LibraryAdminPanel {
      */
     public readonly uploadInput: Locator;
 
-    public async uploadLibrary(filePath: string): Promise<void> {
-        await this.uploadInput.setInputFiles(filePath);
+    /**
+     * Uploads a `.h5p` library package, either from a path on disk or from
+     * an in-memory buffer (useful when the package was just downloaded over
+     * the network rather than checked into `test/data/`).
+     */
+    public async uploadLibrary(
+        file: string | { name: string; mimeType: string; buffer: Buffer }
+    ): Promise<void> {
+        await this.uploadInput.setInputFiles(file);
     }
 
     /**

@@ -252,10 +252,36 @@ Automates the whole "Tests: Library management" section.
   both appear in the library admin panel with correct version numbers.
 - Delete a content type through the GUI and assert it disappears from both the
   panel and the `GET /h5p/libraries` response.
+
+  **Note from session 4:** the admin panel only renders a delete button when
+  `canBeDeleted` is true, i.e. `dependentsCount === 0`
+  (`LibraryAdministration` / `LibraryAdminComponent.tsx`). Course
+  Presentation's dependency tree pulls in ~40 libraries including
+  H5P.Blanks and both content types' own editor-widget libraries depend back
+  on their runtime library, so once both content types from the bullet above
+  are installed together, *nothing* is directly deletable any more - every
+  library has at least one dependent. The delete test therefore seeds only
+  H5P.Blanks by itself (zero dependents) rather than reusing the state from
+  the "install Blanks and Course Presentation" test.
+
 - Upload the MathJax addon (`H5P.MathDisplay`) through the library upload UI and
   assert it registers as an addon. Add the `.h5p` to `test/data/` if
   `download:content` does not already provide it; if it must be fetched from
   h5p.org, tag that test `@network`.
+
+  **Note from session 4:** `download:content` does not provide this file -
+  H5P.MathDisplay is an addon, not a Hub content type, so it isn't in
+  `real-content-types.json` and `https://api.h5p.org/v1/content-types/H5P.MathDisplay`
+  404s. Its actual package lives at a static URL scraped from
+  https://h5p.org/mathematical-expressions:
+  `https://h5p.org/sites/default/files/h5p-math-display-1-0-45_0.h5p`. There
+  is no documented stable API for this, so rather than committing the binary
+  to `test/data/`, the `@network` test downloads it at runtime via
+  Playwright's `request` fixture and calls `test.skip()` (not a failure) if
+  the download doesn't succeed - the URL could change without notice.
+  "Registers as an addon" is asserted via `GET /h5p/libraries`'s `isAddon`
+  field rather than through the UI, since `LibraryAdminComponent.tsx` has no
+  addon indicator in its table.
 
 **Acceptance:** the spec file passes in isolation and as part of the full run.
 
