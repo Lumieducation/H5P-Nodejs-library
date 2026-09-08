@@ -19,6 +19,10 @@ if (!process.env.E2E_BASE_URL && !fs.existsSync(h5pCoreDir)) {
 export default defineConfig({
     testDir: './test',
     fullyParallel: false,
+    // The example app has one shared content/library store, so specs must
+    // not run concurrently against it. Separate server instances per
+    // project/worker arrive in session 7.
+    workers: 1,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     reporter: process.env.CI

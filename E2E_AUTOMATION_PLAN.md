@@ -227,9 +227,13 @@ Automates the whole "Tests: Library management" section.
 
 - Reset library storage and cache, then assert the library admin panel lists
   nothing.
-- Download the library cache file from the UI (content type cache panel) —
-  intercept the download with `page.waitForEvent('download')` and assert the
-  saved file parses as JSON with the expected shape.
+- ~~Download the library cache file from the UI (content type cache panel)~~ —
+  **corrected in session 2:** `ContentTypeCacheComponent.tsx` has no
+  download/export control, only a "Last update: ..." text and an "Update now"
+  button (see `packages/h5p-e2e/SELECTORS.md`). Cover the cache instead by
+  clicking "Update now" (tag `@network`, since it calls h5p.org) and asserting
+  the "Last update" text changes, using `test/data/content-type-cache/*.json`
+  fixtures for any assertions that need the cache's shape.
 - Install Blanks and Course Presentation (via the seeding fixture) and assert
   both appear in the library admin panel with correct version numbers.
 - Delete a content type through the GUI and assert it disappears from both the
