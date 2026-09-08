@@ -36,7 +36,16 @@ export default defineConfig({
     webServer: process.env.E2E_BASE_URL
         ? undefined
         : {
-              command: 'npm start --workspace=packages/h5p-examples',
+              // Playwright starts `webServer` before it runs `globalSetup`
+              // (session 3 originally assumed the opposite - see
+              // E2E_AUTOMATION_PLAN.md), so the state reset has to be
+              // chained in front of the actual start command here to
+              // guarantee it runs first. `reuseExistingServer` means this
+              // whole command - including the reset - is skipped entirely
+              // when a server is already up, which is the desired behaviour
+              // for local dev iteration.
+              command:
+                  'npx ts-node packages/h5p-e2e/test/fixtures/resetCli.ts && npm start --workspace=packages/h5p-examples',
               cwd: path.join(__dirname, '../..'),
               url: baseURL,
               reuseExistingServer: !process.env.CI,

@@ -193,10 +193,24 @@ routes), `packages/h5p-examples/src/express.ts` for the mounted paths.
 
 1. `test/fixtures/reset.ts` — a helper that empties library and content storage.
    For the filesystem backend, delete `packages/h5p-examples/h5p/{libraries,content,temporary-storage,user-data}`
-   before the server starts (a `globalSetup` hook, since the server holds the
-   paths). For Mongo/S3 (session 7) it must instead drop the collections and empty
-   the buckets — design the helper behind an interface from the start so
-   session 7 only adds an implementation.
+   before the server starts. For Mongo/S3 (session 7) it must instead drop the
+   collections and empty the buckets — design the helper behind an interface
+   from the start so session 7 only adds an implementation.
+
+   **Corrected in session 3:** this plan originally said to run the reset in a
+   Playwright `globalSetup` hook "before the server starts". That assumption
+   was wrong — Playwright's task order (see `createGlobalSetupTasks` in
+   `playwright/lib/runner/index.js`) runs the `webServer` plugin's `setup()`
+   (which starts the process and waits for it to become available) *before*
+   the user's `globalSetup` file runs, not after. A `globalSetup`-based reset
+   would therefore race the already-started server. Instead, `webServer.command`
+   in `playwright.config.ts` chains a small CLI (`test/fixtures/resetCli.ts`,
+   invoked via `npx ts-node`) in front of the actual start command:
+   `resetCli.ts && npm start --workspace=packages/h5p-examples`. This still
+   resets before the server ever binds the port, and it composes correctly
+   with `reuseExistingServer` — when a server is already up the whole
+   command (reset included) is skipped, which is what you want for local dev
+   iteration.
 2. `test/fixtures/seed.ts` — installs a content type by POSTing a local
    `test/data/hub-content/<name>.h5p` to the library-upload endpoint using
    Playwright's `request` API. Provide `seedLibraries(['H5P.Blanks',

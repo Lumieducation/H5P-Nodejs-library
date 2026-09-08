@@ -1,31 +1,10 @@
-import path from 'path';
-import { test, expect } from '@playwright/test';
+import { test, expect, seedLibraries } from '../fixtures';
 
 import EditorPage from '../pages/EditorPage';
 import PlayerPage from '../pages/PlayerPage';
 
-// Installing content types via the UI is exercised in the library management
-// spec (session 4). For now we install Blanks once per run through the same
-// ajax endpoint the "upload" tab in the editor's Hub panel uses, so this spec
-// can run deterministically end to end. Session 3 turns this into a shared
-// `seedLibraries()` fixture used by every spec.
 test.beforeAll(async ({ request }) => {
-    await request.post('/h5p/ajax?action=library-upload', {
-        multipart: {
-            h5p: {
-                name: 'H5P.Blanks.h5p',
-                mimeType: 'application/octet-stream',
-                buffer: await import('fs').then((fs) =>
-                    fs.promises.readFile(
-                        path.join(
-                            __dirname,
-                            '../../../../test/data/hub-content/H5P.Blanks.h5p'
-                        )
-                    )
-                )
-            }
-        }
-    });
+    await seedLibraries(request, ['H5P.Blanks']);
 });
 
 test.describe('Blanks content creation', () => {
