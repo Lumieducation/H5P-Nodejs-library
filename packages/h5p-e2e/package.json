@@ -1,0 +1,24 @@
+{
+    "name": "@lumieducation/h5p-e2e",
+    "private": true,
+    "version": "10.0.4",
+    "description": "End-to-end browser tests for the H5P NodeJs example app, driven by Playwright",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
+    },
+    "scripts": {
+        "test:e2e": "npx playwright test --config playwright.config.ts",
+        "test:e2e:ui": "npx playwright test --config playwright.config.ts --ui"
+    },
+    "contributors": [
+        {
+            "name": "Sebastian Rettig",
+            "email": "serettig@posteo.de"
+        }
+    ],
+    "devDependencies": {
+        "@playwright/test": "^1.56.0"
+    }
+}
