@@ -435,3 +435,62 @@ WebKit do. Added to the shared `ALLOWED_CONSOLE_ERRORS` in
 `fixtures/index.ts` (not a spec-local one) since it can affect any spec's
 `page` fixture, not just this session's, once run under a non-Chromium
 project.
+
+## `RestExampleAppPage.ts` (session 9)
+
+`packages/h5p-rest-example-client` is a single-page React app, not a set of
+server-rendered pages, so it needs its own page object rather than reusing
+`StartPage`/`EditorPage`/`PlayerPage`. It embeds the same H5P core JS via
+`@lumieducation/h5p-webcomponents`' `<h5p-editor>`/`<h5p-player>` custom
+elements (through `@lumieducation/h5p-react`'s `H5PEditorUI`/`H5PPlayerUI`
+wrappers), so several inner selectors are identical to the ones
+`EditorPage`/`PlayerPage` already document - only the outer DOM differs.
+
+- **Login**: a react-bootstrap `Dropdown` toggle with the accessible name
+  `Login as`; each user is a plain menu item matched by its visible label
+  text (e.g. `Teacher 1`), not a role, since react-bootstrap `Dropdown.Item`
+  does not reliably expose a `menuitem`/`button` role across versions.
+- **Content list items**: `ContentListComponent.new()` always **prepends**
+  a freshly created item to the array, so `.list-group-item` `.first()`
+  reliably scopes every subsequent locator to the content just created,
+  regardless of how many other items (from a previous run, or seeded data)
+  are already in the list.
+- **Editor iframe**: identical to `EditorPage`'s `.h5p-editor-iframe` -
+  `h5p-editor.ts` (the underlying custom element, no shadow DOM - it uses
+  `this.querySelector('.h5p-editor-component-root')` as its render root, not
+  `attachShadow`) creates the same iframe class the server-rendered editor
+  page does.
+- **Save button**: unlike `EditorPage`'s outer-page `#save-h5p`, the REST
+  client's save button is a plain react-bootstrap `<Button>` with visible
+  text `save` (`ContentListEntryComponent.tsx`) - matched via
+  `getByRole('button', { name: /save/i })` scoped to the content's list
+  item, not a page-level id. There is no navigation on save (no
+  `/h5p/play/:id` URL to parse, unlike `EditorPage.save()`) - the item's
+  `play`/`edit`/`download`/`delete` buttons simply become visible once
+  `ContentListEntryComponent.isNew()` turns false, which is what
+  `RestExampleAppPage.save()` waits on instead.
+- **Player iframe - a real difference from `PlayerPage`**: `PlayerPage`'s
+  doc comment notes the server-rendered player page places `.h5p-content`
+  directly on the page, with no iframe, because H5P core only wraps content
+  in an iframe when actually embedded via `h5p-embed.js`. The
+  `<h5p-player>` web component **always** wraps content in a real
+  `iframe.h5p-iframe` (`h5p-player.ts`'s `createIframe()`/`h5pIFrameWrapper`),
+  since from the H5P core's perspective every web-component usage *is* an
+  embedding. `RestExampleAppPage.content()` therefore goes through
+  `playerFrame()` (a `frameLocator('iframe.h5p-iframe')`) rather than a
+  plain descendant locator - confirmed by a failing first attempt at this
+  session that used a plain locator and got `element(s) not found` even
+  though the player had rendered successfully (verified via the trace's
+  accessibility snapshot, which showed a bare `iframe` node with no
+  `.h5p-content` as a page-level descendant).
+- **CSRF**: `packages/h5p-rest-example-server` enables `csurf()` protection
+  on every `/h5p/*` route (unlike `packages/h5p-examples`, which has none),
+  but nothing in the UI flow above needs special handling for it - logging
+  in via the "Login as" dropdown stores the token from `/login`'s JSON
+  response in `ContentService`, which attaches it as a `CSRF-Token` header
+  on every subsequent fetch. Only the *seeding* step (installing H5P.Blanks
+  before the UI test runs, done via a raw API call in
+  `test/fixtures/restExampleSeed.ts`) has to do this manually, since it
+  bypasses the UI entirely - see that file's doc comment for how (log in as
+  `admin`, the only role with the library-upload permission, then pass the
+  returned token as the `_csrf` query parameter).

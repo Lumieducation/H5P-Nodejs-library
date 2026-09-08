@@ -59,5 +59,6 @@ export const test = base.extend({
 
 export { expect };
 export { seedLibraries } from './seed';
+export { seedRestExampleLibrary } from './restExampleSeed';
 export { getStateResetter } from './reset';
 export type { IStateResetter } from './reset';

@@ -629,6 +629,100 @@ test; the deep coverage lives in the h5p-examples specs.
 
 **Acceptance:** `npx playwright test --project=rest-example` passes.
 
+**Corrected in session 9:**
+
+- The `.env` var the plan flagged (`PORT`, default 8080) was indeed the
+  right thing to override, but the Vite client's `vite.config.ts` also
+  hardcoded its proxy target to `http://127.0.0.1:8080` for `/h5p`,
+  `/login` and `/logout` - so simply changing the REST server's `PORT` env
+  var alone would have left the client silently proxying to the wrong
+  (non-existent, since h5p-examples runs on 8080 in the default project)
+  server. Fixed by making `vite.config.ts` read the target port from a new
+  `H5P_REST_SERVER_PORT` env var (defaulting to `8080` for backwards
+  compatibility with any existing manual usage), which the `rest-example`
+  webServer entry for the Vite client sets to `8081` to match the REST
+  server's own overridden port.
+- Playwright's `webServer` option is genuinely global to the whole config,
+  not scoped per project - there is no supported way to say "only start
+  this `webServer` entry for project X". The plan's phrase "its own
+  `webServer` array" undersold this: the config detects
+  `--project=rest-example` on `process.argv` at load time and swaps the
+  *entire* `webServer` value between the h5p-examples entry and the REST
+  example pair (mirroring the config-load-time environment inspection
+  session 7 already established for `E2E_STORAGE`). A first attempt at
+  this broke silently because Playwright reloads `playwright.config.ts`
+  inside every worker process it spawns, and worker processes start with a
+  different `process.argv`
+  (`playwright/lib/worker/workerProcessEntry.js`, no `--project` flag at
+  all) - so the worker's own reload of the config fell back to the
+  h5p-examples `baseURL` even though the CLI process correctly started the
+  REST/Vite servers. Fixed by latching the detection result into
+  `process.env.PLAYWRIGHT_H5P_REST_EXAMPLE_RUN` once found on the CLI
+  process's `argv` - worker processes inherit `process.env` from the
+  parent that spawns them, so they see the flag even though their `argv`
+  doesn't have it.
+- `packages/h5p-rest-example-server` enables `csurf()` CSRF protection on
+  every `/h5p/*` route (`packages/h5p-examples` has none at all), and only
+  the `admin` role has the `UpdateAndInstallLibraries` permission
+  (`ExamplePermissionSystem.checkForGeneralAction`) needed for the
+  library-upload endpoint the existing `seedLibraries()` fixture uses. So
+  session 9 could not reuse that fixture as-is; `test/fixtures/restExampleSeed.ts`
+  adds a REST-example-specific `seedRestExampleLibrary()` that first logs
+  in as `admin` via `/login` (the example server's `LocalStrategy` never
+  checks the password) to obtain a CSRF token, then passes it as the
+  `_csrf` query parameter on the upload request - the same mechanism the
+  server's own `UrlGenerator` uses to authorize the URLs it hands to the
+  browser. The UI flow itself (logging in as a teacher, creating/playing/
+  deleting content) needs no such handling - the client's `ContentService`
+  already attaches the token from its own login response as a
+  `CSRF-Token` header on every request.
+- `LibraryAdminComponent.tsx` and `ContentTypeCacheComponent.tsx` exist in
+  `packages/h5p-rest-example-client/src/components/` but are not
+  referenced anywhere in `App.tsx` (confirmed by grepping the whole `src/`
+  tree) - there is no library-administration UI reachable in this app at
+  all, only the JSON REST endpoints. This is why seeding has to go through
+  a raw API call rather than a UI flow, unlike `packages/h5p-examples`'
+  content-hub-based seeding.
+- The `<h5p-player>` web component (`@lumieducation/h5p-webcomponents`)
+  always renders content inside a real `iframe.h5p-iframe`
+  (`h5p-player.ts`'s `createIframe()`), unlike `packages/h5p-examples`'
+  server-rendered player page, which places `.h5p-content` directly on the
+  page and only wraps it in an iframe when actually embedded via
+  `h5p-embed.js` (see `PlayerPage.ts`'s doc comment). `RestExampleAppPage`
+  needed its own `playerFrame()` (a `frameLocator`) rather than reusing
+  `PlayerPage`'s plain `.h5p-content` locator - see `SELECTORS.md`.
+- Verifying this session surfaced a pre-existing, unrelated dependency bug
+  in `packages/h5p-rest-example-client`: its `package.json` pinned
+  `"vite": "7.3.6"` as an exact version, while `@vitejs/plugin-react@5.2.0`'s
+  peer dependency deduped to a separately-hoisted `vite@8.2.2` (pulled in
+  by `vitest@4.1.11` elsewhere in the workspace) at the repository root.
+  Running `vite`'s own CLI resolved the pinned local `7.3.6`, but that
+  process's `@vitejs/plugin-react` (hoisted to the repository root, since
+  the client package has no local copy) internally resolved `vite`'s own
+  APIs to the *other*, root-hoisted `8.2.2` copy via Node's normal
+  `require` resolution - a version whose rolldown-based plugin container
+  expects a `moduleType` field the running `7.3.6` instance's transform
+  pipeline never sets, breaking every module transform with `Missing field
+  'moduleType'` and making the client fail to render at all (reproduced
+  independently of any change in this session, via a plain `npm run
+  start:rest:client` on the pre-session-9 tree). Fixed by bumping the
+  client's own `vite` devDependency to `8.2.2` to match the version
+  `@vitejs/plugin-react` actually resolves at runtime, which lets `npm
+  install` dedupe both down to one shared copy. Out of scope for this
+  session to also address the ecosystem-wide "vite 8 / rolldown-vite"
+  transition itself - this is a minimal version-alignment fix, not an
+  upgrade to embrace the new bundler.
+- No state-reset fixture was added for `packages/h5p-rest-example-server`
+  (unlike `packages/h5p-examples`'s `test/fixtures/reset.ts`) - building
+  one for a single smoke test seemed like more infrastructure than this
+  session's scope warrants, especially since the plan explicitly calls
+  this a smoke test whose "deep coverage lives in the h5p-examples specs".
+  Instead, the created content's title includes a per-run timestamp
+  (`rest-example-smoke.spec.ts`), so the test locates and asserts against
+  its own list item regardless of any content left over from a previous
+  (or previously failed) run; the test also deletes its own content at the
+  end, keeping repeated runs clean in the common case.
+
 ---
 
 ### Session 10 — CI integration and rewriting `test-plan.md`
