@@ -407,7 +407,7 @@ export default class MongoS3ContentStorage implements IContentStorage {
                 Bucket: this.options.s3Bucket,
                 Key: MongoS3ContentStorage.getS3Key(contentId, filename),
                 Range:
-                    rangeStart && rangeEnd
+                    rangeStart !== undefined && rangeEnd !== undefined
                         ? `bytes=${rangeStart}-${rangeEnd}`
                         : undefined
             })
