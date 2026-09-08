@@ -377,51 +377,42 @@ describe('Express Ajax endpoint adapter', () => {
         ]);
     });
 
-    describe('tests requiring uploaded files', () => {
-        let mockApp;
-        let uploadResult: any;
-        beforeEach(async () => {
-            mockApp = supertest(app);
-            uploadResult = await mockApp
-                .post(`/ajax?action=library-upload`)
-                .attach('h5p', path.resolve('test/data/validator/valid2.h5p'), {
-                    contentType: 'application/zip',
-                    filename: 'valid2.h5p'
-                });
-        });
+    it('should upload h5p packages successfully and make their temporary files accessible', async () => {
+        const mockApp = supertest(app);
+        const uploadResult = await mockApp
+            .post(`/ajax?action=library-upload`)
+            .attach('h5p', path.resolve('test/data/validator/valid2.h5p'), {
+                contentType: 'application/zip',
+                filename: 'valid2.h5p'
+            });
 
-        it('should upload h5p packages successfully', async () => {
-            expect(uploadResult.status).toBe(200);
-            const returned = JSON.parse(uploadResult.text);
-            expect(returned.data.content).toMatchObject({
-                greeting: 'Hello world!',
-                image: {
-                    copyright: { license: 'U' },
-                    height: 300,
-                    width: 300
+        expect(uploadResult.status).toBe(200);
+        const returned = JSON.parse(uploadResult.text);
+        expect(returned.data.content).toMatchObject({
+            greeting: 'Hello world!',
+            image: {
+                copyright: { license: 'U' },
+                height: 300,
+                width: 300
+            }
+        });
+        expect(returned.data.h5p).toMatchObject({
+            embedTypes: ['div'],
+            language: 'und',
+            license: 'U',
+            mainLibrary: 'H5P.GreetingCard',
+            preloadedDependencies: [
+                {
+                    machineName: 'H5P.GreetingCard',
+                    majorVersion: '1',
+                    minorVersion: '0'
                 }
-            });
-            expect(returned.data.h5p).toMatchObject({
-                embedTypes: ['div'],
-                language: 'und',
-                license: 'U',
-                mainLibrary: 'H5P.GreetingCard',
-                preloadedDependencies: [
-                    {
-                        machineName: 'H5P.GreetingCard',
-                        majorVersion: '1',
-                        minorVersion: '0'
-                    }
-                ]
-            });
+            ]
         });
 
-        it('temporary files of uploaded packages should be accessible', async () => {
-            const returned = JSON.parse(uploadResult.text);
-            const imagePath = returned.data.content.image.path;
-            const imageResult = await mockApp.get(`/temp-files/${imagePath}`);
-            expect(imageResult.status).toBe(200);
-        });
+        const imagePath = returned.data.content.image.path;
+        const imageResult = await mockApp.get(`/temp-files/${imagePath}`);
+        expect(imageResult.status).toBe(200);
     });
 
     it('returns 200 on filter requests', async () => {

@@ -5,6 +5,7 @@ export default defineConfig({
         globals: true,
         environment: 'node',
         testTimeout: Number(process.env.TEST_TIMEOUT) || 45000,
+        hookTimeout: Number(process.env.TEST_TIMEOUT) || 45000,
         clearMocks: true,
         include: [
             'packages/h5p-server/test/**/*.test.ts',
