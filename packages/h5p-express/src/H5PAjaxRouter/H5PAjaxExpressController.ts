@@ -219,7 +219,11 @@ export default class H5PAjaxExpressController {
         });
 
         readStream.on('error', (err) => {
-            response.status(404).end();
+            if (!response.headersSent) {
+                response.status(404).end();
+            } else {
+                response.end();
+            }
         });
         response.on('close', () => readStream.destroy());
         readStream.pipe(response);
@@ -249,7 +253,11 @@ export default class H5PAjaxExpressController {
         });
 
         readStream.on('error', (err) => {
-            response.status(404).end();
+            if (!response.headersSent) {
+                response.status(404).end();
+            } else {
+                response.end();
+            }
         });
         response.on('close', () => readStream.destroy());
         readStream.pipe(response);
