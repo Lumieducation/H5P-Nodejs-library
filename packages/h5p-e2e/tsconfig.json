@@ -1,0 +1,8 @@
+{
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "types": ["node"],
+        "noEmit": true
+    },
+    "include": ["playwright.config.ts", "test/**/*.ts"]
+}

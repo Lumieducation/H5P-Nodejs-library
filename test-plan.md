@@ -1,70 +1,55 @@
 # Plan of manual tests before releases
 
-## General
+Most of what used to be a manual checklist here is now an automated
+Playwright E2E suite in `packages/h5p-e2e` (see
+`packages/h5p-e2e/docs/E2E_AUTOMATION_PLAN.md` for the original planning
+document). Before a release, run the suite (or check its CI job) and then
+work through the short list of things that genuinely still need a human,
+below.
 
-- [ ] Check CI pipeline test
-- [ ] Run automatic tests on local machine:
-  - [ ] test:h5p-redis-lock (requires redis)
+## Running the automated E2E suite locally
 
-## Test Setup for tests
+- `npm run setup` once (build + download H5P core + content type cache),
+  then `npm run test:e2e` - the default run: Chromium, filesystem storage,
+  the whole suite except `@network` tests (see "Automated coverage" below
+  for what that covers).
+- `npm run test:e2e:mongo` / `npm run test:e2e:mongo-s3-redis` - the storage
+  permutations (`npm run start:dbs` / `npm run start:dbs:redis` first).
+- `npx playwright test --config packages/h5p-e2e/playwright.config.ts --grep @network` -
+  the Content Hub tests that talk to h5p.org (needs network access).
+- `npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=webkit`
+  (or `firefox` / `mobile-safari`) - cross-browser/HTML-export coverage.
+- `npm run test:e2e:rest-example` - the REST example server + React client
+  smoke test.
+- CI runs the default Chromium/filesystem project (`@network` excluded) on
+  every push (`e2e-tests` job, `.github/workflows/ci.yml`); the full
+  cross-browser matrix, both storage permutations, the REST example project
+  and the `@network` Hub tests run nightly instead
+  (`.github/workflows/e2e-nightly.yml`) since they are too slow/expensive
+  for every push.
 
-- [ ] Server-side rendering
+## Automated coverage
 
-### Permutations of storage
+Nothing to check by hand here - just confirm the relevant run is green.
 
-- [ ] File system storages (default)
-- [ ] MongoDB + S3 Storage + Redis Cache (rename mongo+s3+redis.env file in packages/h5p-examples to .env)
-- [ ] Pure MongoDB storage without cache (rename mongo+mongos3.env file in packages/h5p-examples to .env)
+| Area                                                              | Spec                                    |
+| ------------------------------------------------------------------ | ---------------------------------------- |
+| Server-side rendering; storage permutations (fs / Mongo+S3+Redis / Mongo-only) | `library-management.spec.ts`, `content-lifecycle.spec.ts` (run against all three backends, see `test/fixtures/storageEnv.ts`) |
+| Library management: reset, install/delete content types | `test/specs/library-management.spec.ts` |
+| Library management (`@network`): addon upload, content type cache update | `test/specs/library-management-network.spec.ts` |
+| Content lifecycle (Blanks and Course Presentation): create with metadata/image/minimal content, display, edit, delete, clean browser console throughout | `test/specs/content-lifecycle.spec.ts` |
+| Copy & paste; download and re-upload round trip                    | `test/specs/round-trip.spec.ts`          |
+| HTML export, checked in Chromium, Firefox, WebKit and Mobile Safari (emulated) | `test/specs/html-export.spec.ts`         |
+| Content Hub: search, browse, download two content types (`@network`) | `test/specs/content-hub.spec.ts`         |
+| REST example server + React client                                 | `test/specs/rest-example-smoke.spec.ts`  |
+| Localization (`?lng=de`): Hub content type names/descriptions, content metadata field names, editor field labels, editor/player modal labels, a server error message, the player's "Reuse" button label | `test/specs/localization.spec.ts`        |
+| `h5p-redis-lock` against a real Redis (not a Playwright/browser test, but likewise nothing to check by hand - just confirm the CI run is green) | `packages/h5p-redis-lock/test/RedisLockerProvider.test.ts`, run via `npm run test:h5p-redis-lock` in the `db-tests` CI job (`.github/workflows/ci.yml`), which stands up a `redis:7-alpine` service alongside the Mongo/MinIO one it already had for `test:h5p-mongos3` |
 
-## Tests: Library management
+## Remaining manual checks
 
-- [ ] Reset library storage & cache
-- [ ] Download library cache file from UI
-- [ ] Download some content types from Hub
-- [ ] Delete content types in GUI
-- [ ] Reset library storage
-- [ ] Download Blanks and Course Presentation from Hub.
-- [ ] Manually upload MathJax addon through library upload (https://h5p.org/mathematical-expressions)
+These cannot reasonably be automated by the E2E suite:
 
-## Tests: Content
-
-Do all of the following for Blanks and Course Presentation (with 2 subtypes):
-
-- [ ] Check browser console for errors while doing tests.
-- [ ] Create
-  - [ ] set metadata
-  - [ ] upload image
-  - [ ] minimal content
-- [ ] Display content
-- [ ] Use copy & paste to create new content
-- [ ] Download and upload again
-- [ ] Load downloaded content in Lumi and try out
-- [ ] Upload downloaded content in WordPress instance and try out (use the docker-compose in scripts)
-- [ ] Download HTML export
-- [ ] Check HTML export in Chrome, Firefox, Safari Desktop and Mobile Safari
-- [ ] Edit content, save and display
-- [ ] Delete content
-
-## Tests: Content Hub
-
-- [ ] Search content hub
-- [ ] Browse content hub
-- [ ] Download 2 different types of content
-
-## Mongo / S3 / Redis storage
-
-## Rest example
-
-- [ ] run REST example & React frontend
-
-## Tests: Localization
-
-- [ ] Switch languages in REST server and check ...
-  - [ ] H5P Hub content type names and descriptions 
-  - [ ] content metadata field names
-  - [ ] editor fields
-  - [ ] modal labels in editor
-  - [ ] modal labels in player
-  - [ ] Server messages (upload invalid h5p package)
-- [ ] server-side rendering
-  - [ ] "Reuse" buttons in player
+- [ ] Load a downloaded `.h5p` package in Lumi (separate desktop app) and try it out.
+- [ ] Upload a downloaded `.h5p` package to a WordPress instance (`scripts/wordpress.yaml`) and try it out.
+- [ ] Try newly created content on a real Mobile Safari device - WebKit emulation in the E2E suite is a proxy, not a substitute.
+- [ ] General visual sanity pass: does content actually *look* right, not just "does it render without console errors"?

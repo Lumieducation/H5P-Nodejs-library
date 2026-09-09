@@ -28,3 +28,8 @@ google_translate.json
 .json-autotranslate-cache
 
 .dccache
+
+# Playwright E2E test output
+packages/h5p-e2e/test-results/
+packages/h5p-e2e/playwright-report/
+packages/h5p-e2e/blob-report/

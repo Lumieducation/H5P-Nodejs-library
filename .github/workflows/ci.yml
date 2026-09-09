@@ -67,9 +67,11 @@ jobs:
                       node_modules \
                       packages/h5p-clamav-scanner/build \
                       packages/h5p-clamav-scanner/node_modules \
+                      packages/h5p-e2e/node_modules \
                       packages/h5p-examples/build \
                       packages/h5p-examples/h5p \
                       packages/h5p-examples/node_modules \
+                      packages/h5p-examples/public \
                       packages/h5p-express/build \
                       packages/h5p-express/node_modules \
                       packages/h5p-html-exporter/build \
@@ -116,6 +118,7 @@ jobs:
             - name: Extract workspace
               run: tar -xzf workspace.tar.gz
             - run: npm run lint
+            - run: npm run typecheck --workspace=packages/h5p-e2e
 
     format:
         needs: install-build
@@ -173,6 +176,55 @@ jobs:
                   flag-name: Integration tests
                   parallel: true
                   path-to-lcov: ./coverage/lcov.info
+
+    e2e-tests:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
+            - name: Get installed Playwright version
+              id: playwright-version
+              run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+            - uses: actions/cache@v4
+              id: playwright-cache
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-${{ steps.playwright-version.outputs.version }}
+            - name: Install Playwright browser
+              run: npx playwright install --with-deps chromium
+              # `--with-deps` also installs the OS-level packages Chromium
+              # needs. Those live outside `~/.cache/ms-playwright`, so they
+              # would be silently missing on a cache hit if this step were
+              # skipped whenever the browser binary itself is already
+              # cached - always run it, letting Playwright itself skip the
+              # (large, slow) browser download when the cache already has
+              # it.
+            # This is deliberately just the default Chromium/`fs` storage
+            # project with the network-dependent Hub tests excluded - the
+            # full cross-browser matrix, the Mongo/S3(/Redis) permutations
+            # and the `@network` tests run on their own schedule instead
+            # (see .github/workflows/e2e-nightly.yml) since they are too
+            # slow/expensive to pay on every push.
+            - run: npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=chromium --grep-invert @network
+            - uses: actions/upload-artifact@v4
+              # Traces are the whole point when a headless E2E test fails -
+              # upload the report/results even (especially) when the run
+              # above failed.
+              if: always()
+              with:
+                  name: playwright-report
+                  retention-days: 7
+                  path: |
+                      packages/h5p-e2e/playwright-report/
+                      packages/h5p-e2e/test-results/
 
     clamav-tests:
         needs: install-build
@@ -237,6 +289,13 @@ jobs:
                     MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
                 ports:
                     - 27017:27017
+            redis:
+                # Unlike MinIO, Redis's default command needs no override,
+                # so a `services:` entry works directly instead of the
+                # manual `docker run` MinIO needs below.
+                image: redis:7-alpine
+                ports:
+                    - 6379:6379
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -258,6 +317,7 @@ jobs:
                       minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
                   timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
             - run: npm run test:h5p-mongos3 -- --coverage
+            - run: npm run test:h5p-redis-lock
             - uses: coverallsapp/github-action@v2
               with:
                   flag-name: DB tests
@@ -287,6 +347,7 @@ jobs:
             - html-exporter-tests
             - integration-tests
             - db-tests
+            - e2e-tests
         if: github.ref == 'refs/heads/release'
         runs-on: ubuntu-latest
         permissions:
