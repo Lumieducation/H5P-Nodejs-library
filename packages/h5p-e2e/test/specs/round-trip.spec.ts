@@ -44,6 +44,11 @@ test.beforeAll(async ({ request }) => {
     await seedLibraries(request, ['H5P.Blanks']);
 });
 
+const imagePath = path.join(
+    __dirname,
+    '../../../../test/data/sample-content/content/earth.jpg'
+);
+
 test.describe('Round trip: copy & paste', () => {
     test('copying content and pasting it into new content produces an equivalent result', async ({
         page
@@ -61,6 +66,15 @@ test.describe('Round trip: copy & paste', () => {
             '.field.list.importance-high .ckeditor',
             'The capital of Norway is *Oslo*.'
         );
+
+        // Include an image in the copied content, not just text: the H5P
+        // clipboard payload embeds media as base64
+        // (`H5P.ClipboardItem`/`H5P.setClipboard`), a completely different
+        // code path from the plain-text field content above, so a
+        // text-only source content would not catch a paste that silently
+        // dropped the image.
+        await editor.expandGroup('.field-name-media');
+        await editor.uploadImage(imagePath, 'Planet Earth');
 
         await editor.copyContent();
 
@@ -85,11 +99,28 @@ test.describe('Round trip: copy & paste', () => {
                 .locator('.field.list.importance-high .ckeditor')
         ).toHaveText('The capital of Norway is *Oslo*.');
 
+        // The pasted image widget re-renders collapsed, like any other
+        // "Media" group field - expand it again to check the alt text
+        // survived the clipboard round trip. This is a lighter-weight
+        // signal than the file's actual bytes, but (unlike the text
+        // fields above) it is not subject to the autosave/draft-restore
+        // quirk noted below, since no earlier "new content" page load ever
+        // had an image in this field.
+        await editor.expandGroup('.field-name-media');
+        await expect(
+            page
+                .frameLocator('.h5p-editor-iframe')
+                .locator('.field-name-alt input')
+        ).toHaveValue('Planet Earth');
+
         const contentId = await editor.save();
 
         const player = new PlayerPage(page);
         await expect(player.content).toBeVisible();
         await expect(page.getByText('The capital of Norway is')).toBeVisible();
+        await expect(
+            page.locator('.h5p-content img[alt="Planet Earth"]')
+        ).toBeVisible();
 
         await editor.gotoEdit(contentId);
         await editor.waitForContentForm('.field-name-text .ckeditor');

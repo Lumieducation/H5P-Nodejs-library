@@ -20,16 +20,6 @@ on:
         # 03:00 UTC daily.
         - cron: '0 3 * * *'
     workflow_dispatch:
-    # TEMPORARY - REVERT BEFORE MERGE.
-    # This workflow does not exist on the default branch yet, so
-    # `workflow_dispatch` cannot target it and the matrix has no way to
-    # prove itself before it merges. This trigger runs it against PR #4614
-    # once so the full browser matrix and both storage permutations are
-    # exercised at least once pre-merge. Remove this block (and this
-    # comment) once the run is green.
-    pull_request:
-        branches:
-            - '**'
 
 env:
     NODE_VERSION: '24.19.0'

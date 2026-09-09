@@ -170,6 +170,20 @@ test.describe('Localization (?lng=de)', () => {
         await expect(reuseButton).toBeVisible();
         await reuseButton.click();
 
+        // H5P core's `H5P.Dialog.open()` (h5p.js) fades the dialog in by
+        // adding an `h5p-open` class (which drives `opacity: 1` via CSS)
+        // inside a `setTimeout(..., 1)`, not synchronously on click. The
+        // dialog element itself is already in the DOM at full size the
+        // instant it's created, so a plain `toBeVisible()` check on its
+        // heading/buttons - which only looks at bounding box and
+        // display/visibility, not opacity - can pass while the dialog is
+        // still fully transparent (`opacity: 0`), i.e. genuinely invisible
+        // on screen. Waiting for `h5p-open` here is what makes this test
+        // actually verify a *shown* modal, not just one present in the DOM
+        // - without it, a screenshot taken right after would show a blank
+        // page even though every assertion below passes.
+        await expect(page.locator('.h5p-reuse-dialog')).toHaveClass(/h5p-open/);
+
         await expect(
             page.getByRole('heading', { name: client.reuseContent })
         ).toBeVisible();

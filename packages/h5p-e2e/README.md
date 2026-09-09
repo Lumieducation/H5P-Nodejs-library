@@ -27,6 +27,14 @@ npm run test:e2e        # headless run, starts packages/h5p-examples itself
 npm run test:e2e:ui     # Playwright UI mode
 ```
 
+`test:e2e:ui` opens Playwright's UI mode: a local app with a test explorer,
+a live browser preview, and a timeline you can scrub through per test step
+(DOM snapshots, console/network logs, and a full trace on failure). Use it
+to watch a spec run interactively or to debug a failing one, instead of
+reading CLI output. Pick individual tests or specs from the explorer, or use
+"Run all" to run everything the underlying `npm run test:e2e` grep/project
+selection would run.
+
 By default Playwright starts `packages/h5p-examples` on `http://localhost:8080`
 and tears it down afterwards. Set `E2E_BASE_URL` to point the suite at an
 already-running server instead (Playwright will not manage the server's
@@ -67,7 +75,7 @@ on an unrelated upstream release. Where practical, specs read the actual
 version out of the vendored package itself
 (`test/fixtures/vendoredLibraryVersion.ts`) instead of hard-coding it.
 
-`H5P.MathDisplay` is deliberately *not* vendored: it's used only by the
+`H5P.MathDisplay` is deliberately _not_ vendored: it's used only by the
 `@network`-tagged addon-installation test in
 `test/specs/library-management-network.spec.ts`, which is specifically
 testing installation from the live Hub and already skips itself if that
