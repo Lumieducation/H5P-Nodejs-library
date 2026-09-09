@@ -1,0 +1,197 @@
+name: E2E nightly
+
+# The expensive E2E dimensions - the full browser matrix
+# (chromium/firefox/webkit/mobile-safari), both Mongo/S3(/Redis) storage
+# permutations, the REST example smoke test, and the `@network` Content Hub
+# tests - do not run on every push (see `e2e-tests` in ci.yml, which only
+# covers the default Chromium/`fs` project with `@network` tests excluded).
+# Running all of this on a schedule instead keeps push-to-push feedback fast
+# while still exercising the full suite regularly.
+#
+# This workflow builds its own copy of the workspace rather than reusing
+# ci.yml's `install-build` artifact: `actions/upload-artifact` retains
+# artifacts for a limited time (`retention-days: 1` on that job) and
+# artifacts cannot be shared across separate workflow runs without extra
+# API calls, so a scheduled run - which by definition happens well after
+# the triggering push's own CI run - cannot rely on that artifact still
+# existing.
+on:
+    schedule:
+        # 03:00 UTC daily.
+        - cron: '0 3 * * *'
+    workflow_dispatch:
+
+env:
+    NODE_VERSION: '24.19.0'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: npm
+            - uses: actions/cache@v4
+              with:
+                  path: packages/h5p-examples/h5p
+                  key: h5p-core-cache1-${{ hashFiles('scripts/install.sh') }}
+            - uses: actions/cache@v4
+              with:
+                  path: packages/h5p-rest-example-server/h5p
+                  key: h5p-core-cache2-${{ hashFiles('scripts/install.sh') }}
+            - run: npm ci
+            - run: npm run setup
+            - uses: actions/cache@v4
+              with:
+                  path: test/data/hub-content
+                  key: h5p-examples-cache-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
+            - run: |
+                  npx concurrently \
+                      "npm run build --prefix packages/h5p-rest-example-client" \
+                      "npm run build --prefix packages/h5p-rest-example-server" \
+                      "npm run download:content"
+            - name: Archive workspace
+              run: |
+                  tar --ignore-failed-read -czf workspace.tar.gz \
+                      node_modules \
+                      packages/h5p-clamav-scanner/build \
+                      packages/h5p-clamav-scanner/node_modules \
+                      packages/h5p-examples/build \
+                      packages/h5p-examples/h5p \
+                      packages/h5p-examples/node_modules \
+                      packages/h5p-express/build \
+                      packages/h5p-express/node_modules \
+                      packages/h5p-html-exporter/build \
+                      packages/h5p-html-exporter/node_modules \
+                      packages/h5p-mongos3/build \
+                      packages/h5p-mongos3/node_modules \
+                      packages/h5p-react/build \
+                      packages/h5p-react/node_modules \
+                      packages/h5p-redis-lock/build \
+                      packages/h5p-redis-lock/node_modules \
+                      packages/h5p-rest-example-client/build \
+                      packages/h5p-rest-example-client/node_modules \
+                      packages/h5p-rest-example-server/build \
+                      packages/h5p-rest-example-server/h5p \
+                      packages/h5p-rest-example-server/node_modules \
+                      packages/h5p-server/build \
+                      packages/h5p-server/node_modules \
+                      packages/h5p-svg-sanitizer/build \
+                      packages/h5p-svg-sanitizer/node_modules \
+                      packages/h5p-webcomponents/build \
+                      packages/h5p-webcomponents/node_modules \
+                      test/data/content-type-cache/real-content-types.json \
+                      test/data/hub-content
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: workspace
+                  retention-days: 1
+                  compression-level: 0
+                  path: workspace.tar.gz
+
+    # The full cross-browser + REST-example matrix, plus the `@network`
+    # Content Hub tests, all against the default filesystem storage.
+    e2e-matrix:
+        needs: build
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    [chromium, firefox, webkit, mobile-safari, rest-example]
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
+            - name: Get installed Playwright version
+              id: playwright-version
+              run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-${{ steps.playwright-version.outputs.version }}
+            - name: Install Playwright browsers
+              run: npx playwright install --with-deps
+            - run: npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=${{ matrix.project }}
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: playwright-report-${{ matrix.project }}
+                  retention-days: 7
+                  path: |
+                      packages/h5p-e2e/playwright-report/
+                      packages/h5p-e2e/test-results/
+
+    # The Mongo/S3(/Redis) storage permutations, restricted (per
+    # E2E_AUTOMATION_PLAN.md session 7) to library-management.spec.ts and
+    # content-lifecycle.spec.ts.
+    e2e-storage-permutations:
+        needs: build
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                permutation: [mongo-only, mongo-s3-redis]
+        services:
+            mongo:
+                image: mongo:8.3
+                ports:
+                    - 27017:27017
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
+            - name: Start MinIO
+              # GitHub Actions service containers can't override the
+              # image's command (see the `db-tests` job in ci.yml, which
+              # does the same thing) - both permutations use Mongo/S3, so
+              # both need this regardless of which one the matrix leg is
+              # running.
+              run: |
+                  docker run -d --name minio -p 9000:9000 -p 9001:9001 \
+                      -e MINIO_ROOT_USER=minioaccesskey \
+                      -e MINIO_ROOT_PASSWORD=miniosecret \
+                      minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
+                  timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
+            - name: Start Redis
+              # Only the mongo-s3-redis permutation needs this (see
+              # test/fixtures/storageEnv.ts) - the mongo-only permutation
+              # deliberately drops the cache/lock backend entirely.
+              if: matrix.permutation == 'mongo-s3-redis'
+              run: |
+                  docker run -d --name redis -p 6379:6379 redis:7-alpine
+                  timeout 30 sh -c 'until docker exec redis redis-cli ping; do sleep 1; done'
+            - name: Get installed Playwright version
+              id: playwright-version
+              run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+            - uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-browsers-${{ steps.playwright-version.outputs.version }}
+            - name: Install Playwright browser
+              run: npx playwright install --with-deps chromium
+            - run: npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=chromium
+              env:
+                  E2E_STORAGE: ${{ matrix.permutation }}
+            - uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: playwright-report-${{ matrix.permutation }}
+                  retention-days: 7
+                  path: |
+                      packages/h5p-e2e/playwright-report/
+                      packages/h5p-e2e/test-results/
