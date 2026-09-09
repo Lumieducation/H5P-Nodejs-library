@@ -286,6 +286,13 @@ jobs:
                     MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
                 ports:
                     - 27017:27017
+            redis:
+                # Unlike MinIO, Redis's default command needs no override,
+                # so a `services:` entry works directly instead of the
+                # manual `docker run` MinIO needs below.
+                image: redis:7-alpine
+                ports:
+                    - 6379:6379
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -307,6 +314,7 @@ jobs:
                       minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
                   timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
             - run: npm run test:h5p-mongos3 -- --coverage
+            - run: npm run test:h5p-redis-lock
             - uses: coverallsapp/github-action@v2
               with:
                   flag-name: DB tests

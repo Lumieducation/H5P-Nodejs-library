@@ -41,6 +41,7 @@ Nothing to check by hand here - just confirm the relevant run is green.
 | Content Hub: search, browse, download two content types (`@network`) | `test/specs/content-hub.spec.ts`         |
 | REST example server + React client                                 | `test/specs/rest-example-smoke.spec.ts`  |
 | Localization (`?lng=de`): Hub content type names/descriptions, content metadata field names, editor field labels, editor/player modal labels, a server error message, the player's "Reuse" button label | `test/specs/localization.spec.ts`        |
+| `h5p-redis-lock` against a real Redis (not a Playwright/browser test, but likewise nothing to check by hand - just confirm the CI run is green) | `packages/h5p-redis-lock/test/RedisLockerProvider.test.ts`, run via `npm run test:h5p-redis-lock` in the `db-tests` CI job (`.github/workflows/ci.yml`), which stands up a `redis:7-alpine` service alongside the Mongo/MinIO one it already had for `test:h5p-mongos3` |
 
 ## Remaining manual checks
 
@@ -50,5 +51,4 @@ These cannot reasonably be automated by the E2E suite (see
 - [ ] Load a downloaded `.h5p` package in Lumi (separate desktop app) and try it out.
 - [ ] Upload a downloaded `.h5p` package to a WordPress instance (`scripts/wordpress.yaml`) and try it out.
 - [ ] Try newly created content on a real Mobile Safari device - WebKit emulation in the E2E suite is a proxy, not a substitute.
-- [ ] `npm run test:h5p-redis-lock` (requires a local Redis; not part of the Playwright suite).
 - [ ] General visual sanity pass: does content actually *look* right, not just "does it render without console errors"?
