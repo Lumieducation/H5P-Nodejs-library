@@ -12,6 +12,16 @@ a concrete acceptance command that must pass before the session is considered
 done. Sessions build on each other — do not start session N+1 before session N's
 acceptance criteria are green.
 
+**Status: complete.** All 10 sessions below have been implemented, verified
+locally (session 10's own acceptance criteria could only be verified for the
+push-triggered `e2e-tests` job by close inspection plus local dry-runs of the
+underlying commands — see session 10's "Corrected" notes — since this plan's
+execution environment cannot itself trigger a GitHub Actions run), and
+merged. `test-plan.md` now reflects the slimmed-down residual manual
+checklist session 10 produced. Nothing further should be added to this
+document as part of this project; a *new* need for more E2E coverage should
+get its own plan.
+
 ---
 
 ## 1. Architectural decisions (do not re-litigate these)
@@ -755,6 +765,50 @@ image command.
 
 **Acceptance:** the pipeline is green on a pushed branch, the report artifact is
 downloadable from a failed run, and `test-plan.md` is under ~20 checkboxes.
+
+**Corrected in session 10:**
+
+- `coveralls-finish`'s `needs:` list was left untouched, per the plan's own
+  step 4 - `e2e-tests` produces no lcov output, only a Playwright HTML
+  report/trace artifacts. `e2e-tests` was instead added to the `release`
+  job's `needs:` list (not mentioned explicitly by the plan, but consistent
+  with every other quality gate already there - `lint`, `format`,
+  `unit-tests`, `clamav-tests`, `html-exporter-tests`, `integration-tests`,
+  `db-tests` - all block `release`, and there is no reason E2E failures
+  should be the one gate that doesn't).
+- The scheduled workflow (`.github/workflows/e2e-nightly.yml`) cannot share
+  `install-build`'s `workspace.tar.gz` artifact with `ci.yml`: that artifact
+  has `retention-days: 1` and, more fundamentally, artifacts aren't
+  addressable across separate workflow *runs* without extra API calls (the
+  `actions/download-artifact` action only looks within the current run by
+  default). A `schedule`-triggered run is its own run, disconnected from
+  whatever push last triggered `ci.yml`. So the nightly workflow has its own
+  `build` job, duplicating `install-build`'s steps verbatim rather than
+  trying to reference the other workflow's output.
+- The nightly workflow's storage-permutation matrix always starts a MinIO
+  container regardless of which permutation (`mongo-only` or
+  `mongo-s3-redis`) is running, since `test/fixtures/storageEnv.ts` confirms
+  both need Mongo *and* S3 - they only differ in whether Redis is also
+  needed (`mongo-s3-redis` only). The Redis container step is gated with
+  `if: matrix.permutation == 'mongo-s3-redis'` accordingly.
+- This session could not actually exercise either workflow file end to end
+  - GitHub Actions only runs workflow YAML that exists on a ref it
+  evaluates, and this session's sandbox has no way to trigger a real
+  Actions run (the task instructions explicitly say not to try). Both files
+  were validated by `python3 -c "import yaml; yaml.safe_load(...)"` (parses
+  without error) and by close comparison against `ci.yml`'s own established
+  patterns (artifact download/extract sequence, the `db-tests` job's manual
+  MinIO startup, `actions/cache` keyed on a tool version) rather than by a
+  green run. Whoever next touches CI should watch the first scheduled
+  (or manually `workflow_dispatch`-triggered) run of
+  `e2e-nightly.yml` and the next push's `e2e-tests` job closely.
+- `test-plan.md`'s automated-coverage section is a table of area → spec
+  file rather than a list of checkboxes, since none of those rows need a
+  human to actually do anything - a checkbox implies an action, and
+  "confirm the suite is green" for eight different areas would just be the
+  same checkbox copy-pasted eight times. The plan's "under ~20 checkboxes"
+  acceptance target is about the *actionable* residual checklist, which
+  landed at 5.
 
 ---
 
