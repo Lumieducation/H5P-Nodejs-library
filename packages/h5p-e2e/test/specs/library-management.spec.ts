@@ -1,19 +1,21 @@
-import { test, expect, seedLibraries, getStateResetter } from '../fixtures';
+import {
+    test,
+    expect,
+    seedLibraries,
+    getStateResetter,
+    readVendoredLibraryVersion
+} from '../fixtures';
 
 import LibraryAdminPanel from '../pages/LibraryAdminPanel';
-import ContentTypeCachePanel from '../pages/ContentTypeCachePanel';
 
 /**
- * The direct download URL for the H5P.MathDisplay addon, scraped from
- * https://h5p.org/mathematical-expressions (the addon has no `h5p.json`, so
- * it isn't part of the H5P Hub content-type list `download:content` fetches
- * from - it can't be requested through the usual
- * `https://api.h5p.org/v1/content-types/<id>` endpoint at all). There is no
- * documented stable API for this URL, so a test using it is tagged
- * `@network` and skips itself instead of failing if it ever goes away.
+ * `@network` coverage for the Hub content-type cache and addon installation
+ * lives in `library-management-network.spec.ts` - kept out of this file so
+ * that `playwright.config.ts`'s non-`fs` storage permutations, which
+ * restrict their run to this spec plus `content-lifecycle.spec.ts`, never
+ * pick it up. Splitting by file makes that exclusion structural rather than
+ * depending on every entry point remembering `--grep-invert @network`.
  */
-const mathDisplayAddonUrl =
-    'https://h5p.org/sites/default/files/h5p-math-display-1-0-45_0.h5p';
 
 test.describe('Library management', () => {
     // These build on each other (empty -> installed -> deleted -> installed
@@ -48,13 +50,17 @@ test.describe('Library management', () => {
             // depends on it, so it is directly deletable.
             await seedLibraries(request, ['H5P.Blanks']);
 
+            const blanksVersion =
+                await readVendoredLibraryVersion('H5P.Blanks');
+            const blanksTitle = `Fill in the Blanks (${blanksVersion.major}.${blanksVersion.minor}.${blanksVersion.patch})`;
+
             const admin = new LibraryAdminPanel(page);
             await page.goto('/');
 
-            const row = admin.row('Fill in the Blanks (1.14.13)');
+            const row = admin.row(blanksTitle);
             await expect(row).toBeVisible();
 
-            await admin.deleteButton('Fill in the Blanks (1.14.13)').click();
+            await admin.deleteButton(blanksTitle).click();
             await expect(row).toBeHidden();
 
             const libraries = await (
@@ -77,66 +83,25 @@ test.describe('Library management', () => {
                 'H5P.CoursePresentation'
             ]);
 
+            const [blanksVersion, coursePresentationVersion] =
+                await Promise.all([
+                    readVendoredLibraryVersion('H5P.Blanks'),
+                    readVendoredLibraryVersion('H5P.CoursePresentation')
+                ]);
+
             const admin = new LibraryAdminPanel(page);
             await page.goto('/');
 
             await expect(
-                admin.row('Fill in the Blanks (1.14.13)')
+                admin.row(
+                    `Fill in the Blanks (${blanksVersion.major}.${blanksVersion.minor}.${blanksVersion.patch})`
+                )
             ).toBeVisible();
             await expect(
-                admin.row('Course Presentation (1.26.3)')
+                admin.row(
+                    `Course Presentation (${coursePresentationVersion.major}.${coursePresentationVersion.minor}.${coursePresentationVersion.patch})`
+                )
             ).toBeVisible();
         });
-    });
-
-    test('@network updates the content type cache via "Update now"', async ({
-        page
-    }) => {
-        const cachePanel = new ContentTypeCachePanel(page);
-        await page.goto('/');
-
-        await expect(cachePanel.lastUpdateText()).toBeVisible();
-        await expect(cachePanel.lastUpdateText()).not.toContainText(
-            'Loading...'
-        );
-        const before = await cachePanel.lastUpdateText().textContent();
-
-        await cachePanel.updateNowButton.click();
-
-        await expect
-            .poll(async () => cachePanel.lastUpdateText().textContent(), {
-                timeout: 15_000
-            })
-            .not.toBe(before);
-    });
-
-    test('@network installs the H5P.MathDisplay addon and it registers as an addon', async ({
-        page,
-        request
-    }) => {
-        const download = await request.get(mathDisplayAddonUrl);
-        test.skip(
-            !download.ok(),
-            `Could not download the MathDisplay addon from h5p.org (status ${download.status()})`
-        );
-        const buffer = await download.body();
-
-        const admin = new LibraryAdminPanel(page);
-        await page.goto('/');
-        await admin.uploadLibrary({
-            name: 'H5P.MathDisplay.h5p',
-            mimeType: 'application/octet-stream',
-            buffer
-        });
-
-        await expect(page.getByText(/Successfully installed/)).toBeVisible();
-
-        const libraries = await (await request.get('/h5p/libraries')).json();
-        const mathDisplay = libraries.find(
-            (library: { machineName: string }) =>
-                library.machineName === 'H5P.MathDisplay'
-        );
-        expect(mathDisplay).toBeTruthy();
-        expect(mathDisplay.isAddon).toBe(true);
     });
 });

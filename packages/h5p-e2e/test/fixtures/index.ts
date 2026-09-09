@@ -16,9 +16,8 @@ const ALLOWED_CONSOLE_ERRORS: RegExp[] = [
     // (see packages/h5p-express/src/ContentUserDataRouter/ContentUserDataController.ts) -
     // not a bug, just a feature this example app doesn't opt into. Chromium
     // does not surface a failed same-origin XHR like this as a console
-    // "error" by default, but Firefox and WebKit do (added while adding the
-    // session 6 cross-browser matrix in E2E_AUTOMATION_PLAN.md), so this is
-    // only visible on those browsers' projects.
+    // "error" by default, but Firefox and WebKit do, so this is only
+    // visible on those browsers' projects.
     /contentUserData\/.*\/state\//
 ];
 
@@ -62,3 +61,5 @@ export { seedLibraries } from './seed';
 export { seedRestExampleLibrary } from './restExampleSeed';
 export { getStateResetter } from './reset';
 export type { IStateResetter } from './reset';
+export { readVendoredLibraryVersion } from './vendoredLibraryVersion';
+export type { ILibraryVersion } from './vendoredLibraryVersion';

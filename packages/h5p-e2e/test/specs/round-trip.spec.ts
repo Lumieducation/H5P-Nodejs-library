@@ -13,8 +13,7 @@ import StartPage from '../pages/StartPage';
  * Reads every entry of a zip file into a `{ path: content }` map, decoding
  * `.json` entries as UTF-8 text and leaving everything else as a `Buffer`.
  * Used to make structural assertions about a downloaded `.h5p` package
- * without ever shelling out to `unzip` - see E2E_AUTOMATION_PLAN.md,
- * session 6.
+ * without ever shelling out to `unzip`.
  */
 async function readZipEntries(filePath: string): Promise<Map<string, Buffer>> {
     const entries = new Map<string, Buffer>();

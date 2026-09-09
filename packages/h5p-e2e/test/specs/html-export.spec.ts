@@ -2,7 +2,13 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 
-import { test, expect, seedLibraries, getStateResetter } from '../fixtures';
+import {
+    test,
+    expect,
+    seedLibraries,
+    getStateResetter,
+    readVendoredLibraryVersion
+} from '../fixtures';
 
 import StartPage from '../pages/StartPage';
 
@@ -18,9 +24,12 @@ const title = 'HTML Export Round Trip';
  * (already covered elsewhere, e.g. content-lifecycle.spec.ts, on Chromium);
  * driving the editor here would make this cross-browser project fail for
  * unrelated reasons - `.fill()` on the "Text blocks" CKEditor field does
- * not reliably commit its value under Mobile Safari's touch emulation
- * (confirmed independently of this spec; see E2E_AUTOMATION_PLAN.md,
- * session 6).
+ * not reliably commit its value under Mobile Safari's touch emulation.
+ *
+ * The main library's major/minor version is read from the vendored
+ * `H5P.Blanks.h5p` package itself (`readVendoredLibraryVersion()`) rather
+ * than hard-coded, so this stays correct if the vendored fixture is ever
+ * refreshed to a newer H5P.Blanks release.
  *
  * @returns the new content's id
  */
@@ -29,6 +38,7 @@ async function seedBlanksContent(
     contentTitle: string,
     sentence: string
 ): Promise<string> {
+    const { major, minor } = await readVendoredLibraryVersion('H5P.Blanks');
     const response = await request.post('/h5p/new', {
         data: {
             params: {
@@ -45,15 +55,15 @@ async function seedBlanksContent(
                     preloadedDependencies: [
                         {
                             machineName: 'H5P.Blanks',
-                            majorVersion: 1,
-                            minorVersion: 14
+                            majorVersion: major,
+                            minorVersion: minor
                         }
                     ],
                     title: contentTitle,
                     defaultLanguage: 'en'
                 }
             },
-            library: 'H5P.Blanks 1.14'
+            library: `H5P.Blanks ${major}.${minor}`
         }
     });
     if (!response.ok()) {

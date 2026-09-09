@@ -17,10 +17,10 @@ const imagePath = path.join(
 );
 
 /**
- * One spec-independent description of everything content-lifecycle.spec.ts
- * needs to do for a content type, so the whole "Tests: Content" section of
- * the manual plan runs identically for Blanks and Course Presentation. See
- * E2E_AUTOMATION_PLAN.md, session 5.
+ * One content-type-independent description of everything
+ * content-lifecycle.spec.ts needs to do, so the whole content lifecycle
+ * (create, edit, delete) runs identically for Blanks and Course
+ * Presentation.
  */
 interface IContentTypeFixture {
     machineName: string;
@@ -257,7 +257,9 @@ for (const contentType of contentTypes) {
                 // expressRoutes.ts's play route has no not-found branch of
                 // its own - h5pPlayer.render() rejects when the content is
                 // gone and the route's catch-all turns that into a 500, not
-                // a 404. See E2E_AUTOMATION_PLAN.md's session 5 note.
+                // a 404. Tracked as
+                // https://github.com/Lumieducation/H5P-Nodejs-library/issues/4615 -
+                // update this assertion to expect 404 once that's fixed.
                 expect(playResponse.status()).toBe(500);
             });
         });

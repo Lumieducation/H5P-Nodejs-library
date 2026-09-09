@@ -3,16 +3,22 @@ import path from 'path';
 import { APIRequestContext } from '@playwright/test';
 
 /**
- * Directory containing the `.h5p` packages downloaded by
- * `npm run download:content` (cached in CI). Populated from
- * `test/data/content-type-cache/real-content-types.json`.
+ * Directory containing the `.h5p` packages this suite vendors directly
+ * (committed to the repo, see `packages/h5p-e2e/README.md`). These are the
+ * only content types `seedLibraries()` is ever asked for, so this suite has
+ * no dependency on the much larger, gitignored `test/data/hub-content/`
+ * directory that `npm run download:content` populates from the live H5P
+ * Hub - that directory (and the Hub itself) is still used directly by the
+ * `@network`-tagged content-hub and library-management specs, which
+ * install content types this suite deliberately does not vendor.
  */
-const hubContentDir = path.join(__dirname, '../../../../test/data/hub-content');
+const vendoredContentDir = path.join(__dirname, '../data/vendored-content');
 
 /**
- * Installs content types by POSTing a local `test/data/hub-content/<name>.h5p`
- * package to the ajax `library-upload` action - the same endpoint the
- * editor's Hub "upload" tab uses. This is deliberately the ajax endpoint
+ * Installs content types by POSTing a local
+ * `test/data/vendored-content/<name>.h5p` package to the ajax
+ * `library-upload` action - the same endpoint the editor's Hub "upload" tab
+ * uses. This is deliberately the ajax endpoint
  * (`/h5p/ajax?action=library-upload`, multipart field `h5p`), not the REST
  * library administration endpoint (`/h5p/libraries`, multipart field `file`)
  * covered separately in the library-management spec - both exist and both
@@ -27,7 +33,7 @@ export async function seedLibraries(
     machineNames: string[]
 ): Promise<void> {
     for (const machineName of machineNames) {
-        const filePath = path.join(hubContentDir, `${machineName}.h5p`);
+        const filePath = path.join(vendoredContentDir, `${machineName}.h5p`);
         const buffer = await fs.readFile(filePath);
         const response = await request.post('/h5p/ajax?action=library-upload', {
             multipart: {

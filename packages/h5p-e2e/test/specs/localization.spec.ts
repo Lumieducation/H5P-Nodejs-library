@@ -14,8 +14,9 @@ import EditorPage from '../pages/EditorPage';
  * break the suite - only the shape of the assertions ("this field's label
  * is whatever `title` currently says") is hard-coded.
  *
- * None of these tests need `@network`: content types are seeded from local
- * `test/data/hub-content/*.h5p` files (`seedLibraries()`), not installed
+ * None of these tests need `@network`: content types are seeded from the
+ * vendored `test/data/vendored-content/*.h5p` files (`seedLibraries()`), not
+ * installed
  * from the live Hub. The Hub content-type names/descriptions bullet from
  * the plan is still covered below using `hub/de.json` against the tile
  * list, which is populated locally from H5P.Blanks'/H5P.CoursePresentation's

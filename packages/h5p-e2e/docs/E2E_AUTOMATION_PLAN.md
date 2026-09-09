@@ -1,3 +1,8 @@
+> **Historical planning document.** This is the original implementation plan
+> for the `packages/h5p-e2e` Playwright suite. The plan has been fully
+> implemented; it is kept for historical reference only and is not updated
+> as the suite evolves further. Last updated: 2026-09-09.
+
 # Plan: Automating `test-plan.md` with Playwright E2E tests
 
 ## Purpose of this document

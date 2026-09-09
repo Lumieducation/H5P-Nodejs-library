@@ -118,6 +118,7 @@ jobs:
             - name: Extract workspace
               run: tar -xzf workspace.tar.gz
             - run: npm run lint
+            - run: npm run typecheck --workspace=packages/h5p-e2e
 
     format:
         needs: install-build

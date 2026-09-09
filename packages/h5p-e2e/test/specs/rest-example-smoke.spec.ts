@@ -2,9 +2,8 @@ import { test, expect, seedRestExampleLibrary } from '../fixtures';
 import RestExampleAppPage from '../pages/RestExampleAppPage';
 
 /**
- * Automates the manual test plan's "Rest example" line by smoke-testing
- * `packages/h5p-rest-example-server` + `packages/h5p-rest-example-client`
- * (session 9, E2E_AUTOMATION_PLAN.md). This is deliberately a shallow smoke
+ * Smoke-tests `packages/h5p-rest-example-server` +
+ * `packages/h5p-rest-example-client`. This is deliberately a shallow smoke
  * test - logs in, creates one piece of content through the web components,
  * plays it, deletes it - since the deep content-type/editor/player coverage
  * already lives in the `packages/h5p-examples` specs and exercises the same
@@ -13,14 +12,14 @@ import RestExampleAppPage from '../pages/RestExampleAppPage';
  * Runs against the `rest-example` Playwright project, which starts its own
  * pair of servers (the REST example server on port 8082, the Vite client on
  * its default port 3000) instead of `packages/h5p-examples` - see
- * `playwright.config.ts` and E2E_AUTOMATION_PLAN.md's session 9 notes.
+ * `playwright.config.ts`.
  *
  * The REST example server has no state-reset fixture of its own (unlike
  * `packages/h5p-examples`, see `test/fixtures/reset.ts`) - adding one for a
- * single smoke test seemed like more machinery than this session's scope
- * warrants. Instead, the created content's title includes a per-run
- * timestamp, so the test locates and asserts against *its own* list item
- * even if content from a previous (or failed) run is still present.
+ * single smoke test would be more machinery than it's worth. Instead, the
+ * created content's title includes a per-run timestamp, so the test
+ * locates and asserts against *its own* list item even if content from a
+ * previous (or failed) run is still present.
  */
 test.describe('REST example smoke test', () => {
     const title = `E2E REST smoke ${Date.now()}`;

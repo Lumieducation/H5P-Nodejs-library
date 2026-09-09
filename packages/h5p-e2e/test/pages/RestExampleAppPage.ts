@@ -1,7 +1,7 @@
 import { FrameLocator, Locator, Page } from '@playwright/test';
 
 /**
- * The `packages/h5p-rest-example-client` single-page app (session 9).
+ * The `packages/h5p-rest-example-client` single-page app.
  *
  * Unlike `packages/h5p-examples` (a set of server-rendered pages,
  * `StartPage`/`EditorPage`/`PlayerPage`), this is one React page that never

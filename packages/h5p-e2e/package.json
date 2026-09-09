@@ -9,8 +9,7 @@
         "url": "https://github.com/Lumieducation/H5P-Nodejs-library"
     },
     "scripts": {
-        "test:e2e": "npx playwright test --config playwright.config.ts",
-        "test:e2e:ui": "npx playwright test --config playwright.config.ts --ui"
+        "typecheck": "npx tsc -p ./tsconfig.json"
     },
     "contributors": [
         {

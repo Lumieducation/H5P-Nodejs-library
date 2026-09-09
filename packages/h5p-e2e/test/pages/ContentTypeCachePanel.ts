@@ -6,8 +6,7 @@ import { Locator, Page } from '@playwright/test';
  *
  * Note: as of this writing the panel has no download/export button for the
  * cache file - it only shows the last update time and an "Update now"
- * button. E2E_AUTOMATION_PLAN.md session 4 assumed a download button existed;
- * that assumption is incorrect and the plan has been updated accordingly.
+ * button.
  *
  * Selectors verified against packages/h5p-examples/src/client/ContentTypeCacheComponent.tsx.
  */

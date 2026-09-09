@@ -76,10 +76,18 @@ test.describe('Content Hub', () => {
         // H5P.FindTheWords' semantics.json ships "one,two,three" as the
         // default word list. It renders that as a letter grid (not
         // asserted here - individual letters aren't a stable target) plus
-        // a plain-text sidebar list of the words to find, which is a
-        // reliable, content-specific signal that the game actually mounted
-        // rather than just its action bar.
-        await expect(page.getByRole('listitem', { name: 'one' })).toBeVisible();
+        // a sidebar vocabulary list, which is a reliable, content-specific
+        // signal that the game actually mounted rather than just its
+        // action bar. Each entry is a `[role="listitem"]` element (see
+        // `h5p-find-the-words-vocabulary.js`), but it carries an explicit
+        // `aria-label` of "<word> not found" rather than exposing the word
+        // itself as its accessible name, so matching by role name doesn't
+        // work - matching on the element's text content does.
+        await expect(
+            page.locator('.vocabulary-container [role="listitem"]', {
+                hasText: 'one'
+            })
+        ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Check' })).toBeVisible();
     });
 

@@ -14,7 +14,7 @@ Verified against:
 - H5P editor client (`h5p-editor-php-library`): commit
   `ab2daa18bd61b19e7f8729e22eec88f3b637a868`.
 - Content type used for discovery: H5P.Blanks 1.14.13
-  (`test/data/hub-content/H5P.Blanks.h5p`).
+  (`test/data/vendored-content/H5P.Blanks.h5p`).
 
 Discovery method: started the app with `npm start`, installed H5P.Blanks via
 `POST /h5p/ajax?action=library-upload`, and drove a real Chromium instance
@@ -113,14 +113,16 @@ still race the CSS transition.
 | `.field-name-yearFrom input`, `.field-name-yearTo input` | Year range                                                                                                                                                                                                                  |
 | `.field-name-source input`                               | Source URL                                                                                                                                                                                                                  |
 | `.h5p-metadata-button.h5p-save`                          | "Save metadata" button; closes the popup                                                                                                                                                                                    |
-| (author list) `.field-name-authorList`                   | Not yet wrapped in a page object method - list widget for adding authors, has its own "Author's name" input and "Save author" button per entry. Add a method when a session needs it (likely session 5, metadata coverage). |
+| (author list) `.h5p-metadata-author-widget`               | Bespoke widget, not a generic H5P "list" field - see "Author widget (metadata popup)" below for its own selectors; wrapped by `EditorPage.addAuthor()`.                                                                    |
 
 ### Import via `.h5p` upload (inside the iframe)
 
-`input[type="file"][accept=".h5p"]` (no id, `aria-hidden="true"`) is the
-"Paste"-adjacent import control on the Hub's upload tab
-(`#h5p-hub-tab-panel-h5p-hub-upload`). Not yet wrapped in a page object
-method - needed for the round-trip spec in session 6.
+`input[type="file"][accept=".h5p"]` (no id, `aria-hidden="true"`) looks like
+the "Paste"-adjacent import control on the Hub's upload tab
+(`#h5p-hub-tab-panel-h5p-hub-upload`), but is not the one actually used for
+`.h5p` re-import - see "`.h5p` package upload via the Hub's 'Upload' tab"
+below, which lives in a different, apparently unused, markup branch from
+this selector.
 
 ### Save (outer document)
 
@@ -147,9 +149,8 @@ Copyright/Embed/Download buttons in the action bar are conditional:
   content actually having export enabled).
 - Embed only appears when `embedCode`/`resizeCode` are present on the
   content (added by the `#4613` player-model change; empty for content
-  created through the plain editor flow used in this session's spec).
-- Copyright/"Rights of use" visibility was not conclusively verified in this
-  session - revisit when session 5 needs it.
+  created through the plain editor flow).
+- Copyright/"Rights of use" visibility has not been conclusively verified.
 
 ## LibraryAdminPanel (`#library-admin-container` on `/`)
 
@@ -171,25 +172,21 @@ React component, source `ContentTypeCacheComponent.tsx`. No iframe.
 | `getByRole('button', { name: 'Update now' })` | Triggers a manual Hub cache refresh (network call to h5p.org - tag any spec using this `@network`) |
 | `getByText('Last update:')`                   | Shows the last cache update timestamp, or "never"                                                  |
 
-**Plan correction:** `E2E_AUTOMATION_PLAN.md` session 4 assumed this panel
-has a button to download the cache file as JSON. It does not - the component
-only has the last-update text and the "Update now" button. There is no
-UI-driven download of the content type cache; the equivalent data is only
-reachable through `test/data/content-type-cache/*.json` fixtures. Session 4
-must be adjusted to drop that sub-task (or re-target it at a REST endpoint
-call instead of a UI download) when it is implemented.
+**Note:** this panel has no button to download the cache file as JSON - the
+component only has the last-update text and the "Update now" button. There
+is no UI-driven download of the content type cache; the equivalent data is
+only reachable through `test/data/content-type-cache/*.json` fixtures.
 
-## Session 5 additions: content lifecycle (Blanks + Course Presentation)
+## Content lifecycle (Blanks + Course Presentation)
 
 Discovered by driving a real Chromium instance against a manually started
 `npm start` with both content types installed, dumping `innerHTML` at each
-step (same approach as session 2 - see its "Discovery method" note).
+step (see the top-level "Discovery method" note).
 
 ### Author widget (metadata popup)
 
-`.field-name-authorList` (mentioned as a TODO in the session-2 notes above)
-does not exist; the author list is a bespoke widget,
-`.h5p-metadata-author-widget`, not a generic H5P "list" field:
+There is no `.field-name-authorList` element; the author list is a bespoke
+widget, `.h5p-metadata-author-widget`, not a generic H5P "list" field:
 
 | Selector (scoped to `.h5p-metadata-author-widget`) | Notes                                                            |
 | -------------------------------------------------- | ---------------------------------------------------------------- |
@@ -347,9 +344,9 @@ disambiguated:
    (`role="tab"`-like radio buttons, not real tabs).
 2. `.h5p-hub-input-wrapper input[type="file"]` - distinct from the outer
    page's unrelated `input[type="file"][accept=".h5p"]` hub-level import
-   input mentioned in session 2's notes below (that one lives in a
-   different, apparently unused, `.h5p-hub-upload-wrapper` markup branch -
-   always scope to `.h5p-hub-input-wrapper` for the real one).
+   input mentioned under "Import via `.h5p` upload" above (that one lives
+   in a different, apparently unused, `.h5p-hub-upload-wrapper` markup
+   branch - always scope to `.h5p-hub-input-wrapper` for the real one).
 3. `getByRole('button', { name: 'Use' })` - confirms the picked file, parses
    it, and swaps in the package's content type's editor form pre-filled
    from its `content.json`. Wait for that content type's own
@@ -370,7 +367,7 @@ renders a small standalone "Content successfully deleted." page with a
 JS-driven "Go Back" link; navigate back to `/` explicitly afterwards to
 check the start page list.
 
-## Session 6 additions: round trip, HTML export, cross-browser
+## Round trip, HTML export, cross-browser
 
 ### Seeding content over the JSON API instead of the editor UI
 
@@ -433,10 +430,9 @@ saved user state. `packages/h5p-examples` never sets
 same-origin XHR like this as a console "error" by default, but Firefox and
 WebKit do. Added to the shared `ALLOWED_CONSOLE_ERRORS` in
 `fixtures/index.ts` (not a spec-local one) since it can affect any spec's
-`page` fixture, not just this session's, once run under a non-Chromium
-project.
+`page` fixture once run under a non-Chromium project.
 
-## `RestExampleAppPage.ts` (session 9)
+## `RestExampleAppPage.ts`
 
 `packages/h5p-rest-example-client` is a single-page React app, not a set of
 server-rendered pages, so it needs its own page object rather than reusing
@@ -478,10 +474,9 @@ wrappers), so several inner selectors are identical to the ones
   since from the H5P core's perspective every web-component usage *is* an
   embedding. `RestExampleAppPage.content()` therefore goes through
   `playerFrame()` (a `frameLocator('iframe.h5p-iframe')`) rather than a
-  plain descendant locator - confirmed by a failing first attempt at this
-  session that used a plain locator and got `element(s) not found` even
-  though the player had rendered successfully (verified via the trace's
-  accessibility snapshot, which showed a bare `iframe` node with no
+  plain descendant locator - a plain locator produces `element(s) not
+  found` even though the player has rendered successfully (verified via the
+  trace's accessibility snapshot, which showed a bare `iframe` node with no
   `.h5p-content` as a page-level descendant).
 - **CSRF**: `packages/h5p-rest-example-server` enables `csurf()` protection
   on every `/h5p/*` route (unlike `packages/h5p-examples`, which has none),

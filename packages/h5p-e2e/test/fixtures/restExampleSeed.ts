@@ -3,22 +3,23 @@ import path from 'path';
 import { APIRequestContext } from '@playwright/test';
 
 /**
- * Same fixture directory `seed.ts` uses for the h5p-examples specs.
+ * Same vendored fixture directory `seed.ts` uses for the h5p-examples
+ * specs.
  */
-const hubContentDir = path.join(__dirname, '../../../../test/data/hub-content');
+const vendoredContentDir = path.join(__dirname, '../data/vendored-content');
 
 /**
  * Installs a content type on `packages/h5p-rest-example-server`, the same
  * way `seedLibraries()` (`./seed.ts`) does for `packages/h5p-examples` - by
- * POSTing a local `test/data/hub-content/<name>.h5p` package to the ajax
- * `library-upload` action.
+ * POSTing a local `test/data/vendored-content/<name>.h5p` package to the
+ * ajax `library-upload` action.
  *
  * Unlike `packages/h5p-examples`, the REST example server enables CSRF
  * protection (`csurf()`) on every `/h5p/*` route and only grants the
  * `UpdateAndInstallLibraries` permission to the `admin` role
- * (`ExamplePermissionSystem.checkForGeneralAction`) - see
- * E2E_AUTOMATION_PLAN.md, session 9. So this first logs in as `admin`
- * (the example server's `LocalStrategy` never checks the password, only
+ * (`ExamplePermissionSystem.checkForGeneralAction`). So this first logs in
+ * as `admin` (the example server's `LocalStrategy` never checks the
+ * password, only
  * that the username exists in its in-memory `userTable`) to obtain a
  * session cookie and a CSRF token, then passes that token as the `_csrf`
  * query parameter on the upload request itself - the same mechanism the
@@ -49,7 +50,7 @@ export async function seedRestExampleLibrary(
         csrfToken: string;
     };
 
-    const filePath = path.join(hubContentDir, `${machineName}.h5p`);
+    const filePath = path.join(vendoredContentDir, `${machineName}.h5p`);
     const buffer = await fs.readFile(filePath);
     const response = await request.post(
         `/h5p/ajax?action=library-upload&_csrf=${encodeURIComponent(csrfToken)}`,

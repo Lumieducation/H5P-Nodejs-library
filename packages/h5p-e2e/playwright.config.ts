@@ -7,8 +7,8 @@ import { getStorageEnv, getStorageMode } from './test/fixtures/storageEnv';
 const baseURL = process.env.E2E_BASE_URL ?? 'http://localhost:8080';
 const storageMode = getStorageMode();
 
-// Session 9: the `rest-example` project exercises a completely different
-// pair of servers (packages/h5p-rest-example-server +
+// The `rest-example` project exercises a completely different pair of
+// servers (packages/h5p-rest-example-server +
 // packages/h5p-rest-example-client) instead of packages/h5p-examples, so it
 // needs its own `webServer` entries and its own `baseURL` (the Vite client,
 // not the REST server itself).
@@ -19,9 +19,9 @@ const storageMode = getStorageMode();
 // every server for every run (wasteful, and a source of port collisions for
 // runs that don't need it), this detects the `--project=rest-example` /
 // `--project rest-example` CLI flag directly from `process.argv` - the same
-// kind of config-load-time environment inspection session 7 already
-// established for `E2E_STORAGE` - and swaps the entire `webServer` value
-// between the h5p-examples server and the REST example pair.
+// kind of config-load-time environment inspection used below for
+// `E2E_STORAGE` - and swaps the entire `webServer` value between the
+// h5p-examples server and the REST example pair.
 // This config file is not only loaded once by the `playwright test` CLI
 // process - Playwright also reloads it inside every worker process it
 // spawns to run tests, and those worker processes are started with a
@@ -64,13 +64,15 @@ const restExampleServerPort = '8082';
 // agree on the same Mongo/S3(/Redis) connection details.
 Object.assign(process.env, getStorageEnv(storageMode));
 
-// Session 7: the `mongo-s3-redis` / `mongo-only` storage permutations spin
-// up a real Mongo + MinIO (+ Redis) stack, which is expensive and mostly
-// exercises the same storage-interface code paths regardless of which
-// content type is involved - so, per E2E_AUTOMATION_PLAN.md, they run only
-// the two specs the manual "Permutations of storage" section actually
-// requires (library management, content lifecycle) instead of the whole
-// suite.
+// The `mongo-s3-redis` / `mongo-only` storage permutations spin up a real
+// Mongo + MinIO (+ Redis) stack, which is expensive and mostly exercises
+// the same storage-interface code paths regardless of which content type
+// is involved - so they run only the two specs that actually depend on
+// storage behaviour (library management, content lifecycle) instead of the
+// whole suite. `library-management-network.spec.ts`'s `@network` tests are
+// deliberately not part of this list - and its filename does not match
+// either regex below - so a Hub outage can never fail these storage runs
+// for a reason unrelated to storage.
 const nonFsStorageSpecs = [
     'test/specs/library-management.spec.ts',
     'test/specs/content-lifecycle.spec.ts'
@@ -126,19 +128,16 @@ export default defineConfig({
             : nonFsStorageSpecs.map((spec) => new RegExp(`${spec}$`)),
     fullyParallel: false,
     // The example app has one shared content/library store, so specs must
-    // not run concurrently against it. Separate server instances per
-    // project/worker arrive in session 7.
+    // not run concurrently against it.
     workers: 1,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    // Session 2 already called for these budgets ("expect timeout 15s, test
-    // timeout 120s") but the config never applied them. Session 7 hit the
-    // gap directly: the `mongo-only` permutation deliberately runs without a
+    // The `mongo-only` permutation deliberately runs without a
     // library-metadata cache (see storageEnv.ts's `MONGO_ONLY_ENV`), which
-    // measurably slows down editor/dragnbar initialization and pushed a
+    // measurably slows down editor/dragnbar initialization and pushes a
     // Course Presentation drag-and-drop action past the 30s default test
-    // timeout. Applying the plan's original budget fixes it for every
-    // storage mode, not just the slow one.
+    // timeout. This larger budget applies to every storage mode, not just
+    // the slow one, since it costs nothing for the faster ones.
     timeout: 120_000,
     expect: { timeout: 15_000 },
     reporter: process.env.CI
@@ -179,13 +178,12 @@ export default defineConfig({
                 }
             ]
           : {
-                // Playwright starts `webServer` before it runs `globalSetup`
-                // (session 3 originally assumed the opposite - see
-                // E2E_AUTOMATION_PLAN.md), so the state reset has to be
-                // chained in front of the actual start command here to
-                // guarantee it runs first. `reuseExistingServer` means this
-                // whole command - including the reset - is skipped entirely
-                // when a server is already up, which is the desired behaviour
+                // Playwright starts `webServer` before it runs
+                // `globalSetup`, so the state reset has to be chained in
+                // front of the actual start command here to guarantee it
+                // runs first. `reuseExistingServer` means this whole
+                // command - including the reset - is skipped entirely when
+                // a server is already up, which is the desired behaviour
                 // for local dev iteration.
                 command:
                     'npx ts-node packages/h5p-e2e/test/fixtures/resetCli.ts && npm start --workspace=packages/h5p-examples',
@@ -193,12 +191,11 @@ export default defineConfig({
                 url: baseURL,
                 reuseExistingServer: !process.env.CI,
                 timeout: 120_000,
-                // `process.env` already carries the session 7 storage
-                // overlay (see the `Object.assign` above), so the spawned
-                // shell command - both `resetCli.ts` and the example server
-                // it chains into - inherits the same Mongo/S3(/Redis)
-                // backend `getStateResetter()` reads inside the test
-                // workers.
+                // `process.env` already carries the storage overlay (see
+                // the `Object.assign` above), so the spawned shell command -
+                // both `resetCli.ts` and the example server it chains into -
+                // inherits the same Mongo/S3(/Redis) backend
+                // `getStateResetter()` reads inside the test workers.
                 env: process.env as Record<string, string>
             },
     projects: [
@@ -214,25 +211,19 @@ export default defineConfig({
             use: { browserName: 'chromium' },
             testMatch: projectTestMatch(/rest-example-smoke\.spec\.ts$/)
         },
-        // Cross-browser coverage is restricted to the one spec the manual
-        // plan actually demands across browsers - the standalone HTML
-        // export (html-export.spec.ts) - rather than the whole suite, so
-        // the Firefox/WebKit/Mobile Safari cost is paid only where it buys
-        // real signal.
-        //
-        // Session 6 correction: the plan's original `/html-export|player/`
-        // regex assumed a `player.spec.ts` file that was never created, and
-        // an earlier draft of this config matched `blanks-creation.spec.ts`
-        // (session 2's basic player-rendering spec) instead. That spec was
-        // dropped from this matrix because driving its CKEditor "Text
-        // blocks" field through `.fill()` does not reliably commit a value
-        // under Mobile Safari's touch emulation - confirmed independently
-        // of any change in this session, i.e. a genuine editor/WebKit
-        // interaction quirk, not a testMatch or timing issue. Player
-        // rendering itself is still exercised across every project because
-        // html-export.spec.ts's downloaded HTML also renders via the
-        // player - it just seeds its content over the JSON API instead of
-        // through the editor UI, sidestepping the incompatible field.
+        // Cross-browser coverage is restricted to the one spec that
+        // actually needs it across browsers - the standalone HTML export
+        // (html-export.spec.ts) - rather than the whole suite, so the
+        // Firefox/WebKit/Mobile Safari cost is paid only where it buys real
+        // signal. `blanks-creation.spec.ts` (a basic player-rendering spec)
+        // is deliberately excluded from this matrix because driving its
+        // CKEditor "Text blocks" field through `.fill()` does not reliably
+        // commit a value under Mobile Safari's touch emulation - a genuine
+        // editor/WebKit interaction quirk, not a testMatch or timing issue.
+        // Player rendering itself is still exercised across every project
+        // because html-export.spec.ts's downloaded HTML also renders via
+        // the player - it just seeds its content over the JSON API instead
+        // of through the editor UI, sidestepping the incompatible field.
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },

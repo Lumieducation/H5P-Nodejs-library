@@ -1,11 +1,10 @@
 /**
- * Storage permutation matrix (session 7). `E2E_STORAGE` selects which
- * backend `packages/h5p-examples` starts with; the env-var sets below are
+ * Storage permutation matrix. `E2E_STORAGE` selects which backend
+ * `packages/h5p-examples` starts with; the env-var sets below are
  * transcribed from `packages/h5p-examples/*.env` rather than renaming those
- * files, per E2E_AUTOMATION_PLAN.md's architectural decision: dotenv does
- * not override variables already present in the process environment, so
- * exporting these before `npm start` selects a backend without touching any
- * file on disk.
+ * files, because dotenv does not override variables already present in the
+ * process environment, so exporting these before `npm start` selects a
+ * backend without touching any file on disk.
  *
  * One deliberate change from the checked-in `.env` files: every Mongo
  * collection name, the Mongo database name, and every S3 bucket name below
@@ -92,8 +91,7 @@ const MONGO_S3_REDIS_ENV: Record<string, string> = {
  * per spec) - an in-memory cache lives inside that process and has no way
  * to be invalidated from outside it, so a direct Mongo wipe between specs
  * would leave the server serving stale cached library lists while the
- * actual collection is already empty (discovered while first running this
- * permutation - see E2E_AUTOMATION_PLAN.md's session 7 correction). Redis
+ * actual collection is already empty. Redis
  * doesn't have this problem (`resetMongoS3RedisEnv`'s resetter flushes it
  * directly, see `reset.ts`), so this is specific to `mongo-only`, and
  * dropping the env var entirely (falling back to `createH5PEditor.ts`'s

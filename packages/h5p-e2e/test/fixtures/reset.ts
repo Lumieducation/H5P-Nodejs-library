@@ -8,10 +8,10 @@ import { getStorageMode } from './storageEnv';
 
 /**
  * Wipes library and content storage so a test run starts from a known-empty
- * server. Implemented behind an interface so session 7 (storage permutation
- * matrix) can add a Mongo/S3 implementation that drops the configured
- * collections and empties the configured buckets instead of touching the
- * filesystem, without changing any call site.
+ * server. Implemented behind an interface so the storage permutation matrix
+ * (see `MongoS3StateResetter` below) can drop the configured collections
+ * and empty the configured buckets instead of touching the filesystem,
+ * without changing any call site.
  */
 export interface IStateResetter {
     reset(): Promise<void>;
@@ -49,8 +49,8 @@ export class FsStateResetter implements IStateResetter {
 
 /**
  * Drops the configured Mongo collections and empties the configured S3
- * buckets for the `mongo-s3-redis` / `mongo-only` storage permutations
- * (session 7). Reads its configuration from the same environment variables
+ * buckets for the `mongo-s3-redis` / `mongo-only` storage permutations.
+ * Reads its configuration from the same environment variables
  * `packages/h5p-examples/src/createH5PEditor.ts` uses to pick storage
  * implementations (`CONTENTSTORAGE`, `LIBRARYSTORAGE`, `TEMPORARYSTORAGE`,
  * `USERDATASTORAGE`, the `*_MONGO_COLLECTION` / `*_AWS_S3_BUCKET` names,

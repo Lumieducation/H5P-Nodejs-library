@@ -132,9 +132,9 @@ jobs:
                       packages/h5p-e2e/playwright-report/
                       packages/h5p-e2e/test-results/
 
-    # The Mongo/S3(/Redis) storage permutations, restricted (per
-    # E2E_AUTOMATION_PLAN.md session 7) to library-management.spec.ts and
-    # content-lifecycle.spec.ts.
+    # The Mongo/S3(/Redis) storage permutations, restricted to
+    # library-management.spec.ts and content-lifecycle.spec.ts (see
+    # `nonFsStorageSpecs` in playwright.config.ts).
     e2e-storage-permutations:
         needs: build
         runs-on: ubuntu-latest
