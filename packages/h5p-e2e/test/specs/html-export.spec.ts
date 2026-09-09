@@ -120,23 +120,30 @@ test('downloaded HTML export renders standalone from a file:// URL with a clean 
     page,
     request
 }) => {
-    await seedBlanksContent(
+    const contentId = await seedBlanksContent(
         request,
         title,
         'The capital of Finland is *Helsinki*.'
     );
 
-    const start = new StartPage(page);
-    await start.goto();
-    const [download] = await Promise.all([
-        page.waitForEvent('download'),
-        start.downloadHtmlLink(title).click()
-    ]);
+    // The export is fetched over HTTP rather than by clicking the start
+    // page's "download HTML" link and awaiting a browser `download` event.
+    // The server does send `Content-disposition: attachment` (see
+    // packages/h5p-examples/src/express.ts), and Chromium, Firefox and
+    // macOS WebKit all honour it, but the Linux WebKit build Playwright
+    // ships renders the text/html response inline instead of downloading
+    // it, so `waitForEvent('download')` never resolves there. That is a
+    // property of that browser build, not of the export, and this test's
+    // subject is whether the exported HTML renders standalone - so it
+    // fetches the bytes directly and every project exercises an identical
+    // code path. The link itself is covered by the test below.
+    const exportResponse = await request.get(`/h5p/html/${contentId}`);
+    expect(exportResponse.ok()).toBe(true);
     const downloadedPath = path.join(
         os.tmpdir(),
         `h5p-e2e-html-export-${Date.now()}.html`
     );
-    await download.saveAs(downloadedPath);
+    await fs.writeFile(downloadedPath, await exportResponse.body());
 
     // A separate page, deliberately not the fixture's console-guarded
     // `page` - the file:// CORS noise above is expected only on this one
@@ -179,4 +186,41 @@ test('downloaded HTML export renders standalone from a file:// URL with a clean 
         await filePage.close();
         await fs.rm(downloadedPath, { force: true });
     }
+});
+
+/**
+ * Covers the start page's "download HTML" link itself, which the test above
+ * deliberately bypasses. Skipped on WebKit: the Linux WebKit build
+ * Playwright ships renders the `Content-disposition: attachment` response
+ * inline instead of downloading it, so no `download` event is ever emitted
+ * there. The same link works in Chromium, Firefox and macOS WebKit, so this
+ * is a limitation of that browser build rather than something the example
+ * app can fix - and the export's actual content is asserted above on every
+ * project regardless.
+ */
+test('the start page offers the export as a file download', async ({
+    page,
+    request,
+    browserName
+}) => {
+    test.skip(
+        browserName === 'webkit',
+        "Playwright's Linux WebKit build renders attachment responses inline instead of downloading them"
+    );
+
+    await seedBlanksContent(
+        request,
+        `${title} (link)`,
+        'The capital of Finland is *Helsinki*.'
+    );
+
+    const start = new StartPage(page);
+    await start.goto();
+    const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        start.downloadHtmlLink(`${title} (link)`).click()
+    ]);
+
+    expect(await download.failure()).toBeNull();
+    expect(download.suggestedFilename()).toMatch(/\.html$/);
 });
