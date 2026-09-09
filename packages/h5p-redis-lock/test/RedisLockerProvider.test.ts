@@ -36,6 +36,11 @@ describe('RedisLockerProvider', () => {
     });
 
     afterEach(async () => {
+        // Disconnect before dropping the reference, otherwise the
+        // connection opened in beforeEach leaks until the process exits.
+        if (redisClient) {
+            await redisClient.disconnect();
+        }
         redisClient = null;
     });
 
@@ -93,9 +98,31 @@ describe('RedisLockerProvider', () => {
                         );
                     }
                 }
-                await expect(Promise.all(promises)).rejects.toThrow(
-                    'server:install-library-lock-max-time-exceeded'
-                );
+
+                // We must wait for ALL installs to settle (not just the
+                // first rejection) before leaving this callback, as
+                // `withDir` will remove `tempDirPath` right afterwards.
+                // Using `Promise.all` here would resolve as soon as the
+                // first promise rejects, while the remaining installs
+                // are still writing to `tempDirPath`, racing the
+                // subsequent directory cleanup and causing intermittent
+                // ENOTEMPTY errors.
+                const results = await Promise.allSettled(promises);
+                const rejected = results.filter(
+                    (result) => result.status === 'rejected'
+                ) as PromiseRejectedResult[];
+
+                // At least one install must have failed with the
+                // expected lock-timeout error to prove the timeout
+                // behavior actually happened.
+                expect(rejected.length).toBeGreaterThan(0);
+                expect(
+                    rejected.some((result) =>
+                        String(result.reason?.message).includes(
+                            'server:install-library-lock-max-time-exceeded'
+                        )
+                    )
+                ).toBe(true);
             },
             { keep: false, unsafeCleanup: true }
         );
