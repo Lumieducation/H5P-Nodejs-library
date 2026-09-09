@@ -76,6 +76,25 @@ const nonFsStorageSpecs = [
     'test/specs/content-lifecycle.spec.ts'
 ];
 
+// The top-level `testMatch` below (passed to `defineConfig`) is only
+// inherited by projects that don't define their own `testMatch` - Playwright
+// does not merge project-level and top-level `testMatch`, it replaces it.
+// `firefox`, `webkit`, `mobile-safari` and `rest-example` all define their
+// own, so without this they would escape the mongo-only/mongo-s3-redis
+// restriction and still run their (unrelated) spec even though it isn't one
+// of `nonFsStorageSpecs`. This wraps a project's own pattern so it keeps
+// working unchanged for `fs` runs, and matches nothing at all for the
+// non-fs permutations (none of those projects' specs are storage-relevant).
+function projectTestMatch(pattern: RegExp): RegExp {
+    if (storageMode === 'fs') {
+        return pattern;
+    }
+    const targetsStorageRelevantSpec = nonFsStorageSpecs.some((spec) =>
+        pattern.test(spec)
+    );
+    return targetsStorageRelevantSpec ? pattern : /^$/;
+}
+
 // The example app(s) need the downloaded H5P core and editor files to
 // render anything. Without them the editor page loads but silently fails,
 // so fail loudly here instead of producing confusing test failures later.
@@ -85,7 +104,10 @@ const h5pCoreDir = path.join(
         ? '../h5p-rest-example-server/h5p/core'
         : '../h5p-examples/h5p/core'
 );
-if (!process.env.E2E_BASE_URL && !fs.existsSync(h5pCoreDir)) {
+const explicitBaseUrl = isRestExampleRun
+    ? process.env.E2E_REST_EXAMPLE_BASE_URL
+    : process.env.E2E_BASE_URL;
+if (!explicitBaseUrl && !fs.existsSync(h5pCoreDir)) {
     throw new Error(
         `Cannot find ${h5pCoreDir}. Run "npm run setup" (or ` +
             '"npm run download:h5p") from the repository root before ' +
@@ -127,7 +149,7 @@ export default defineConfig({
         trace: 'retain-on-failure',
         video: 'retain-on-failure'
     },
-    webServer: process.env.E2E_BASE_URL
+    webServer: explicitBaseUrl
         ? undefined
         : isRestExampleRun
           ? [
@@ -190,7 +212,7 @@ export default defineConfig({
         {
             name: 'rest-example',
             use: { browserName: 'chromium' },
-            testMatch: /rest-example-smoke\.spec\.ts$/
+            testMatch: projectTestMatch(/rest-example-smoke\.spec\.ts$/)
         },
         // Cross-browser coverage is restricted to the one spec the manual
         // plan actually demands across browsers - the standalone HTML
@@ -214,17 +236,17 @@ export default defineConfig({
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
-            testMatch: /html-export\.spec\.ts$/
+            testMatch: projectTestMatch(/html-export\.spec\.ts$/)
         },
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
-            testMatch: /html-export\.spec\.ts$/
+            testMatch: projectTestMatch(/html-export\.spec\.ts$/)
         },
         {
             name: 'mobile-safari',
             use: { ...devices['iPhone 15'] },
-            testMatch: /html-export\.spec\.ts$/
+            testMatch: projectTestMatch(/html-export\.spec\.ts$/)
         }
     ]
 });

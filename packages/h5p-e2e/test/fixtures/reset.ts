@@ -138,23 +138,34 @@ export class MongoS3StateResetter implements IStateResetter {
     }
 
     private async resetRedis(): Promise<void> {
-        const redisDbs = new Set<string>();
+        const targets: { host: string; port: string; database: string }[] = [];
         if (process.env.CACHE === 'redis' && process.env.REDIS_DB) {
-            redisDbs.add(process.env.REDIS_DB);
+            targets.push({
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                database: process.env.REDIS_DB
+            });
         }
         if (process.env.LOCK === 'redis' && process.env.LOCK_REDIS_DB) {
-            redisDbs.add(process.env.LOCK_REDIS_DB);
+            // Mirrors createH5PEditor.ts: the lock client has its own
+            // host/port settings, independent of the cache's REDIS_HOST /
+            // REDIS_PORT.
+            targets.push({
+                host: process.env.LOCK_REDIS_HOST,
+                port: process.env.LOCK_REDIS_PORT,
+                database: process.env.LOCK_REDIS_DB
+            });
         }
-        if (redisDbs.size === 0) {
+        if (targets.length === 0) {
             return;
         }
 
         await Promise.all(
-            [...redisDbs].map(async (database) => {
+            targets.map(async ({ host, port, database }) => {
                 const client = createClient({
                     socket: {
-                        host: process.env.REDIS_HOST,
-                        port: Number.parseInt(process.env.REDIS_PORT, 10)
+                        host,
+                        port: Number.parseInt(port, 10)
                     },
                     database: Number.parseInt(database, 10)
                 });
@@ -226,7 +237,7 @@ export class MongoS3StateResetter implements IStateResetter {
             });
             const objects = listing.Contents ?? [];
             if (objects.length > 0) {
-                await s3.deleteObjects({
+                const result = await s3.deleteObjects({
                     Bucket: bucket,
                     Delete: {
                         Objects: objects.map((object) => ({
@@ -234,6 +245,15 @@ export class MongoS3StateResetter implements IStateResetter {
                         }))
                     }
                 });
+                if (result.Errors?.length) {
+                    const failedKeys = result.Errors.map(
+                        (error) =>
+                            `${error.Key} (${error.Code}: ${error.Message})`
+                    ).join(', ');
+                    throw new Error(
+                        `Failed to delete ${result.Errors.length} object(s) from bucket "${bucket}": ${failedKeys}`
+                    );
+                }
             }
             continuationToken = listing.IsTruncated
                 ? listing.NextContinuationToken

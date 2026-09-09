@@ -77,8 +77,7 @@ export default class EditorPage {
     /**
      * Installs a content type that is not yet present on the server via the
      * Hub tile's "Get" flow (`test/specs/content-hub.spec.ts`), then opens
-     * its content form - unlike `chooseContentType()`, this works
-     * regardless of whether the type was already installed.
+     * its content form.
      *
      * Clicking an uninstalled tile opens a detail panel (screenshots,
      * license info, an "Install" button) in place of the tile list, not the
@@ -86,11 +85,15 @@ export default class EditorPage {
      * h5p.org and, once done, replaces the detail panel with a
      * "<Name> successfully installed!" confirmation and a "Use" button -
      * clicking that opens the content form directly (there is no need to
-     * go back to the tile list and click the tile a second time). Once
-     * already installed, clicking a tile opens its content form
-     * immediately with no detail panel at all, which is why this checks
-     * whether the detail panel's install button is visible before doing
-     * any of that.
+     * go back to the tile list and click the tile a second time).
+     *
+     * The caller must pass a type that is genuinely not installed yet:
+     * `content-hub.spec.ts` resets library storage in its `beforeAll` and
+     * seeds neither of the types it uses here, so the detail panel is the
+     * only possible outcome of the tile click. A missing install button is
+     * therefore a real failure (a Hub that never loaded, changed markup),
+     * not a sign that the type was already installed - use
+     * `chooseContentType()` for types that are.
      */
     public async installContentTypeFromHub(label: string): Promise<void> {
         const tile = this.hubTile(label);
@@ -99,14 +102,12 @@ export default class EditorPage {
         const installButton = this.frame.locator(
             '.h5p-hub-content-type-detail-button-bar button.h5p-hub-button-install'
         );
-        if (await installButton.isVisible().catch(() => false)) {
-            await installButton.click();
-            const useButton = this.frame.getByRole('button', {
-                name: 'Use'
-            });
-            await useButton.waitFor({ state: 'visible', timeout: 45_000 });
-            await useButton.click();
-        }
+        await installButton.waitFor({ state: 'visible', timeout: 10_000 });
+        await installButton.click();
+
+        const useButton = this.frame.getByRole('button', { name: 'Use' });
+        await useButton.waitFor({ state: 'visible', timeout: 45_000 });
+        await useButton.click();
 
         await this.frame
             .locator('.field-name-extraTitle input')

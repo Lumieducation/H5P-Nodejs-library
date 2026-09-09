@@ -28,8 +28,10 @@ test.describe('Library management', () => {
             await page.goto('/');
 
             await expect(
-                admin.container.getByText('Loading installed libraries')
-            ).toBeHidden();
+                admin.container.getByText(
+                    'The following libraries are installed'
+                )
+            ).toBeVisible();
             await expect(admin.container.locator('tbody tr')).toHaveCount(0);
         });
 
@@ -94,6 +96,9 @@ test.describe('Library management', () => {
         await page.goto('/');
 
         await expect(cachePanel.lastUpdateText()).toBeVisible();
+        await expect(cachePanel.lastUpdateText()).not.toContainText(
+            'Loading...'
+        );
         const before = await cachePanel.lastUpdateText().textContent();
 
         await cachePanel.updateNowButton.click();
