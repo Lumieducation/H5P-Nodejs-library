@@ -1,6 +1,10 @@
 {
     "name": "@lumieducation/h5p-express",
     "version": "10.0.4",
+    "engines": {
+        "node": ">=22.12.0",
+        "npm": ">=9.0.0"
+    },
     "description": "A community re-implementation of the H5P server",
     "license": "GPL-3.0-or-later",
     "repository": {
