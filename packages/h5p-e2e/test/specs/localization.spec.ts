@@ -207,30 +207,33 @@ test.describe('Localization (?lng=de)', () => {
         // so the Hub's "Upload" tab in the editor is used instead, which
         // does display the real server error text.
         const rawPage = await page.context().newPage();
-        await rawPage.goto('/h5p/new?lng=de');
-        await rawPage
-            .frameLocator('.h5p-editor-iframe')
-            .getByText('Hochladen', { exact: true })
-            .click();
-        await rawPage
-            .frameLocator('.h5p-editor-iframe')
-            .locator('.h5p-hub-input-wrapper input[type="file"]')
-            .setInputFiles({
-                name: 'invalid.h5p',
-                mimeType: 'application/octet-stream',
-                buffer: Buffer.from('not a real H5P package')
-            });
-        await rawPage
-            .frameLocator('.h5p-editor-iframe')
-            .getByRole('button', { name: 'Benutzen' })
-            .click();
-
-        await expect(
-            rawPage
+        try {
+            await rawPage.goto('/h5p/new?lng=de');
+            await rawPage
                 .frameLocator('.h5p-editor-iframe')
-                .locator('.h5p-hub-message-content')
-        ).toHaveText(server['unable-to-unzip']);
-        await rawPage.close();
+                .getByText('Hochladen', { exact: true })
+                .click();
+            await rawPage
+                .frameLocator('.h5p-editor-iframe')
+                .locator('.h5p-hub-input-wrapper input[type="file"]')
+                .setInputFiles({
+                    name: 'invalid.h5p',
+                    mimeType: 'application/octet-stream',
+                    buffer: Buffer.from('not a real H5P package')
+                });
+            await rawPage
+                .frameLocator('.h5p-editor-iframe')
+                .getByRole('button', { name: 'Benutzen' })
+                .click();
+
+            await expect(
+                rawPage
+                    .frameLocator('.h5p-editor-iframe')
+                    .locator('.h5p-hub-message-content')
+            ).toHaveText(server['unable-to-unzip']);
+        } finally {
+            await rawPage.close();
+        }
     });
 
     test('shows the German "Reuse" button label in the player', async ({

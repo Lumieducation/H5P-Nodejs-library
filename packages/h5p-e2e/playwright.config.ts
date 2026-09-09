@@ -38,7 +38,7 @@ const storageMode = getStorageMode();
 // have it.
 const isRestExampleRun =
     process.env.PLAYWRIGHT_H5P_REST_EXAMPLE_RUN === '1' ||
-    process.argv.join(' ').includes('--project=rest-example');
+    /--project[= ]rest-example/.test(process.argv.join(' '));
 if (isRestExampleRun) {
     process.env.PLAYWRIGHT_H5P_REST_EXAMPLE_RUN = '1';
 }
@@ -46,10 +46,12 @@ const restExampleBaseURL =
     process.env.E2E_REST_EXAMPLE_BASE_URL ?? 'http://localhost:3000';
 // packages/h5p-rest-example-server/src/index.ts defaults PORT to 8080,
 // which would collide with packages/h5p-examples, so the rest-example
-// project's own webServer array (below) runs it on 8081 instead. The Vite
-// client's proxy target port must match - see `H5P_REST_SERVER_PORT` in
+// project's own webServer array (below) runs it on 8082 instead (8081 is
+// mongo-express's port in scripts/mongo-s3-docker-compose.yml and
+// scripts/mongo-s3-redis-docker-compose.yml). The Vite client's proxy
+// target port must match - see `H5P_REST_SERVER_PORT` in
 // packages/h5p-rest-example-client/vite.config.ts.
-const restExampleServerPort = '8081';
+const restExampleServerPort = '8082';
 
 // Applied to `process.env` itself (not just `webServer.env` below) because
 // `getStateResetter()` (test/fixtures/reset.ts) also runs inside the

@@ -58,6 +58,7 @@ jobs:
                       node_modules \
                       packages/h5p-clamav-scanner/build \
                       packages/h5p-clamav-scanner/node_modules \
+                      packages/h5p-e2e/node_modules \
                       packages/h5p-examples/build \
                       packages/h5p-examples/h5p \
                       packages/h5p-examples/node_modules \
@@ -144,6 +145,9 @@ jobs:
         services:
             mongo:
                 image: mongo:8.3
+                env:
+                    MONGO_INITDB_ROOT_USERNAME: root
+                    MONGO_INITDB_ROOT_PASSWORD: h5pnodejs
                 ports:
                     - 27017:27017
         steps:

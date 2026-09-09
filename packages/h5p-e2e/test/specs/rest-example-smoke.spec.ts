@@ -11,7 +11,7 @@ import RestExampleAppPage from '../pages/RestExampleAppPage';
  * underlying H5P core JS.
  *
  * Runs against the `rest-example` Playwright project, which starts its own
- * pair of servers (the REST example server on port 8081, the Vite client on
+ * pair of servers (the REST example server on port 8082, the Vite client on
  * its default port 3000) instead of `packages/h5p-examples` - see
  * `playwright.config.ts` and E2E_AUTOMATION_PLAN.md's session 9 notes.
  *

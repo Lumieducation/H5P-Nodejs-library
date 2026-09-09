@@ -67,6 +67,7 @@ jobs:
                       node_modules \
                       packages/h5p-clamav-scanner/build \
                       packages/h5p-clamav-scanner/node_modules \
+                      packages/h5p-e2e/node_modules \
                       packages/h5p-examples/build \
                       packages/h5p-examples/h5p \
                       packages/h5p-examples/node_modules \
