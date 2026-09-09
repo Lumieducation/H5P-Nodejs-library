@@ -61,6 +61,7 @@ jobs:
                       packages/h5p-examples/build \
                       packages/h5p-examples/h5p \
                       packages/h5p-examples/node_modules \
+                      packages/h5p-examples/public \
                       packages/h5p-express/build \
                       packages/h5p-express/node_modules \
                       packages/h5p-html-exporter/build \
