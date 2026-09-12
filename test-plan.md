@@ -143,9 +143,13 @@ Still open for this release:
 - [x] HTML export after the `uglify-js` -> `esbuild` swap: export a
       JS-heavy content type (Course Presentation, Interactive Video) and
       watch for console errors from mis-minified core code.
-- [x] Browser-level check that the editor _surfaces_ upload rejections
-      instead of hanging - see
-      `packages/h5p-e2e/docs/UPLOAD_REJECTION_SPEC_HANDOVER.md`.
+- [ ] Browser-level check that the editor _surfaces_ upload rejections
+      instead of hanging on a spinner. The server side is verified (see
+      above), but nothing drives a _failing_ upload through the UI. Note
+      that a spec for this has to deal with the shared console-error
+      fixture in `packages/h5p-e2e/test/fixtures/index.ts`: H5P core calls
+      `console.error` on every rejected upload, so the spec fails even when
+      the behaviour is correct unless that one message is allowlisted.
 - [ ] The four standing manual checks above (Lumi, WordPress, real Mobile
       Safari, visual sanity). The visual pass matters more than usual this
       release because H5P core 1.28 adds `styles/h5p-fonts.css`.
