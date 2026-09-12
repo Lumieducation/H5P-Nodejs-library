@@ -217,9 +217,20 @@ export default class EditorPage {
      * renders as a `<fieldset class="field ... field-name-<x>">` whose
      * `> .title` element toggles the `expanded` class via a click handler
      * (`role="button"` but not a real `<button>`).
+     *
+     * Waits for `> .content` to actually become visible before returning:
+     * `h5peditor-group.js`'s `expand()` adds the `expanded` class (the class
+     * `.group.expanded > .content { display: block }` keys off) inside a
+     * `setTimeout(..., 100)`, not synchronously on click, so a caller that
+     * immediately does a one-shot visibility check of something inside the
+     * group (rather than a Playwright action, which auto-retries) can
+     * otherwise race that 100ms delay and see stale, still-collapsed state.
      */
     public async expandGroup(groupSelector: string): Promise<void> {
         await this.frame.locator(`${groupSelector} > .title`).click();
+        await this.frame
+            .locator(`${groupSelector} > .content`)
+            .waitFor({ state: 'visible' });
     }
 
     /**
@@ -242,6 +253,46 @@ export default class EditorPage {
     }
 
     /**
+     * Like `selectLibraryType()`, but only interacts with the `<select>` if
+     * it is actually visible - the H5P media widget hides it entirely when
+     * only one real option (besides its "-" placeholder) is available,
+     * auto-selecting that option instead (see `selectLibraryType()`'s own
+     * doc comment). Whether that is the case depends on which other
+     * libraries happen to already be installed on the server this spec runs
+     * against, not just on the machine name(s) `seedLibraries()` was given
+     * for this spec: `content-lifecycle.spec.ts`'s Blanks fixture sees only
+     * "Image" because it seeds nothing else itself, but a real Playwright
+     * run's single, long-lived server process can carry over libraries
+     * installed by *earlier* spec files' `seedLibraries()` calls too (e.g.
+     * Course Presentation's H5P.Video/H5P.Audio dependencies) - `reset()`
+     * wipes storage on disk between specs, but has no way to invalidate a
+     * library-list cache already held in that still-running process's
+     * memory. Calling this instead of `selectLibraryType()` directly makes a
+     * spec's media-type selection correct either way, without having to
+     * know or control what ran before it.
+     */
+    public async selectLibraryTypeIfVisible(
+        groupSelector: string,
+        optionLabel: string
+    ): Promise<void> {
+        const select = this.frame.locator(
+            `${groupSelector} > .content > .field.library > select`
+        );
+        // The library list itself loads asynchronously
+        // (`h5peditor-library.js`'s `librariesLoaded()`, fired once an
+        // internal AJAX call resolves) - until it does, the `<select>` has
+        // only its "-" placeholder option and `isVisible()` below would
+        // race that load. Waiting for a second `<option>` to attach means
+        // `librariesLoaded()` has run and already made its
+        // hide-if-single-real-option decision, so checking visibility next
+        // is no longer a race.
+        await select.locator('option').nth(1).waitFor({ state: 'attached' });
+        if (await select.isVisible()) {
+            await select.selectOption({ label: optionLabel });
+        }
+    }
+
+    /**
      * Uploads an image into the (single, currently visible) `image` widget
      * field and fills its required alternative text. Both Blanks' Media
      * group and Course Presentation's per-element image form render the
@@ -259,6 +310,50 @@ export default class EditorPage {
             .locator('input[type="file"][accept*="image"]')
             .setInputFiles(imagePath);
         await this.frame.locator('.field-name-alt input').fill(altText);
+    }
+
+    /**
+     * Same "Add" -> `<input type="file">` flow as `uploadImage()`, but for a
+     * file the server is expected to reject: skips filling "Alternative
+     * text" (that field never appears - it is only rendered once an upload
+     * actually succeeds) and does not wait for anything to complete.
+     * `input[type="file"]` is left unscoped by `accept` (unlike
+     * `uploadImage()`) so this also works for a generic `file`-type widget,
+     * whose input has no `accept*="image"` attribute - see
+     * `h5peditor-file-uploader.js`'s `determineAllowedMimeTypes()`.
+     */
+    public async attemptFileUpload(filePath: string): Promise<void> {
+        await this.frame.locator('.field-name-file .file a.add').click();
+        // `:not([accept=".h5p"])` excludes the Hub's own (always-present,
+        // if hidden) upload-tab file input - see `switchToUploadTab()` /
+        // `uploadH5pPackage()` - which also matches a bare
+        // `input[type="file"]` and would otherwise make this locator
+        // ambiguous.
+        await this.frame
+            .locator('input[type="file"]:not([accept=".h5p"])')
+            .setInputFiles(filePath);
+    }
+
+    /**
+     * The `<p>` a rejected upload's server message is rendered into
+     * (`h5peditor-file.js`'s `uploadComplete` handler appends
+     * `ns.createError(error)` to `.h5p-errors` on failure - see
+     * `ns.createError()` in `h5peditor.js`). Scoped to `.field-name-file`
+     * like `uploadImage()`, since only one such field is ever visible at a
+     * time.
+     */
+    public fileFieldError(): Locator {
+        return this.frame.locator('.field-name-file .h5p-errors p');
+    }
+
+    /**
+     * The "Add" link a `file`/`image` widget shows while no file is
+     * attached (`h5peditor-file.js`'s `addFile()`). Re-rendered after a
+     * failed upload, so asserting this is visible again proves the widget
+     * recovered rather than staying stuck on the upload throbber.
+     */
+    public fileFieldAddLink(): Locator {
+        return this.frame.locator('.field-name-file .file a.add');
     }
 
     /**
