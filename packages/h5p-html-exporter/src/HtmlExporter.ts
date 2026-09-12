@@ -2,7 +2,6 @@ import path from 'path';
 import postCss, { CssSyntaxError } from 'postcss';
 import postCssUrl from 'postcss-url';
 import postCssImport from 'postcss-import';
-import postCssClean from 'postcss-clean';
 import mimetypes from 'mime-types';
 import { transformSync, transform } from 'esbuild';
 import postCssSafeParser from 'postcss-safe-parser';
@@ -80,7 +79,7 @@ export type IExporterTemplate = (
  * full license text).
  *
  * (important!) You need to install these NPM packages for the exporter to work:
- * postcss, postcss-clean, postcss-url, postcss-safe-parser, esbuild
+ * postcss, postcss-import, postcss-url, postcss-safe-parser, esbuild
  */
 
 export default class HtmlExporter {
@@ -284,8 +283,8 @@ export default class HtmlExporter {
      * @param editor
      * @param library
      * @returns a multi-line comment with the license information. The comment
-     * is marked as important and includes @license so that esbuild and
-     * postcss-clean leave it in.
+     * is marked as important and includes @license so that esbuild leaves
+     * it in.
      */
     private async generateLicenseText(
         filename: string,
@@ -520,8 +519,7 @@ export default class HtmlExporter {
                                     core,
                                     usedFiles
                                 )
-                            }),
-                            postCssClean()
+                            })
                         ]
                     }),
                     postCssRemoveRedundantUrls(
@@ -543,8 +541,7 @@ export default class HtmlExporter {
                             core,
                             usedFiles
                         )
-                    }),
-                    postCssClean()
+                    })
                 );
                 let oldCwd;
                 try {
@@ -585,10 +582,36 @@ export default class HtmlExporter {
                         process.chdir(oldCwd);
                     }
                 }
-                styleTexts[style] = processedCss;
+                styleTexts[style] = await this.minifyCss(processedCss);
             })
         );
         return model.styles.map((style) => styleTexts[style]).join('\n');
+    }
+
+    /**
+     * Minifies a stylesheet. We deliberately don't lower modern CSS syntax
+     * (nesting, `@container`, `color-mix`, ...) to older equivalents, as the
+     * regular H5P player serves the very same stylesheets unchanged, so the
+     * exported HTML supports exactly the same browsers as the player does.
+     * @param css the stylesheet to minify
+     * @returns the minified stylesheet; the unchanged input if minification
+     * failed
+     */
+    private async minifyCss(css: string): Promise<string> {
+        try {
+            return (
+                await transform(css, {
+                    loader: 'css',
+                    minify: true,
+                    // keeps the /*!@license ... */ comments we added
+                    legalComments: 'inline'
+                })
+            ).code;
+        } catch {
+            // Minification is an optimization, not a requirement, so we rather
+            // bundle the unminified stylesheet than fail the whole export.
+            return css;
+        }
     }
 
     /**

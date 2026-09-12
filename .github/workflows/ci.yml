@@ -314,7 +314,7 @@ jobs:
                   docker run -d --name minio -p 9000:9000 -p 9001:9001 \
                       -e MINIO_ROOT_USER=minioaccesskey \
                       -e MINIO_ROOT_PASSWORD=miniosecret \
-                      minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
+                      quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data --console-address :9001
                   timeout 30 sh -c 'until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done'
             - run: npm run test:h5p-mongos3 -- --coverage
             - run: npm run test:h5p-redis-lock

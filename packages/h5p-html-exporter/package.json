@@ -51,7 +51,6 @@
         "esbuild": "^0.28.0",
         "mime-types": "^3.0.0",
         "postcss": "^8.4.23",
-        "postcss-clean": "^1.2.2",
         "postcss-import": "^17.0.0",
         "postcss-safe-parser": "^7.0.0",
         "postcss-url": "^10.1.3"
