@@ -1,6 +1,7 @@
 import os from 'os';
-import { Request } from 'express';
+import { Request, Express } from 'express';
 import { rm } from 'fs/promises';
+import { Server } from 'http';
 
 /**
  * Displays links to the server at all available IP addresses.
@@ -22,6 +23,34 @@ export function displayIps(port: string): void {
                 )
             );
     }
+}
+
+/**
+ * Starts listening on the given port. If the port is already in use, it
+ * tries the next port number up, and keeps doing so until it finds a free
+ * one.
+ * @param app the Express app to start listening with
+ * @param port the port to start trying from
+ * @returns the http.Server instance and the port it is actually listening on
+ */
+export function listenOnAvailablePort(
+    app: Express,
+    port: number
+): Promise<{ server: Server; port: number }> {
+    return new Promise((resolve, reject) => {
+        const server = app.listen(port);
+        server.once('listening', () => {
+            resolve({ server, port });
+        });
+        server.once('error', (error: NodeJS.ErrnoException) => {
+            if (error.code === 'EADDRINUSE') {
+                server.close();
+                resolve(listenOnAvailablePort(app, port + 1));
+            } else {
+                reject(error);
+            }
+        });
+    });
 }
 
 /**

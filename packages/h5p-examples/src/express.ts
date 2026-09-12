@@ -22,7 +22,7 @@ import startPageRenderer from './startPageRenderer';
 import expressRoutes from './expressRoutes';
 import User from './User';
 import createH5PEditor from './createH5PEditor';
-import { displayIps, clearTempFiles } from './utils';
+import { displayIps, clearTempFiles, listenOnAvailablePort } from './utils';
 
 let tmpDir: DirectoryResult;
 
@@ -249,13 +249,15 @@ const start = async (): Promise<void> => {
         );
     }
 
-    const port = process.env.PORT || '8080';
+    const requestedPort = parseInt(process.env.PORT || '8080', 10);
+
+    // If the requested port is already in use, we try the next port number
+    // up until we find one that is free.
+    const { port } = await listenOnAvailablePort(server, requestedPort);
 
     // For developer convenience we display a list of IPs, the server is running
     // on. You can then simply click on it in the terminal.
-    displayIps(port);
-
-    server.listen(port);
+    displayIps(port.toString());
 };
 
 // We can't use await outside a an async function, so we use the start()
