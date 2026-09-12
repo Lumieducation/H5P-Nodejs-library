@@ -105,15 +105,15 @@ popup). Wait for `.h5p-metadata-popup-overlay` to become visible before
 interacting - it renders instantly but Playwright's actionability check can
 still race the CSS transition.
 
-| Selector (scoped to `.h5p-metadata-popup-overlay`)       | Notes                                                                                                                                                                                                                       |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.field-name-title input`                                | Title text input                                                                                                                                                                                                            |
-| `.field-name-license select`                             | License `<select>`                                                                                                                                                                                                          |
-| `.field-name-licenseVersion select`                      | License version `<select>`, disabled until a versioned license is chosen                                                                                                                                                    |
-| `.field-name-yearFrom input`, `.field-name-yearTo input` | Year range                                                                                                                                                                                                                  |
-| `.field-name-source input`                               | Source URL                                                                                                                                                                                                                  |
-| `.h5p-metadata-button.h5p-save`                          | "Save metadata" button; closes the popup                                                                                                                                                                                    |
-| (author list) `.h5p-metadata-author-widget`               | Bespoke widget, not a generic H5P "list" field - see "Author widget (metadata popup)" below for its own selectors; wrapped by `EditorPage.addAuthor()`.                                                                    |
+| Selector (scoped to `.h5p-metadata-popup-overlay`)       | Notes                                                                                                                                                   |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.field-name-title input`                                | Title text input                                                                                                                                        |
+| `.field-name-license select`                             | License `<select>`                                                                                                                                      |
+| `.field-name-licenseVersion select`                      | License version `<select>`, disabled until a versioned license is chosen                                                                                |
+| `.field-name-yearFrom input`, `.field-name-yearTo input` | Year range                                                                                                                                              |
+| `.field-name-source input`                               | Source URL                                                                                                                                              |
+| `.h5p-metadata-button.h5p-save`                          | "Save metadata" button; closes the popup                                                                                                                |
+| (author list) `.h5p-metadata-author-widget`              | Bespoke widget, not a generic H5P "list" field - see "Author widget (metadata popup)" below for its own selectors; wrapped by `EditorPage.addAuthor()`. |
 
 ### Import via `.h5p` upload (inside the iframe)
 
@@ -248,6 +248,28 @@ dragnbar element render the exact same `field-name-file` structure:
 Only one `.field-name-file` is ever visible at a time in either flow, so
 none of this needs extra scoping. `EditorPage.uploadImage(path, altText)`
 wraps all three steps.
+
+### Rejected uploads (`test/specs/upload-rejection.spec.ts`)
+
+Reuses the same `.field-name-file` structure as image upload above, but
+`h5peditor-file.js` renders the outcome differently on rejection:
+
+1. `EditorPage.attemptFileUpload(path)` performs steps 1-2 of image upload
+   only (click `a.add`, `setInputFiles` on the input it creates) - no alt
+   text field ever appears, since that only renders once an upload actually
+   succeeds.
+2. `EditorPage.fileFieldError()` (`.field-name-file .h5p-errors p`) - the
+   server's `message` (from `AjaxErrorResponse`), rendered here by
+   `ns.createError()` once `h5peditor-file-uploader.js` parses the failed
+   response. This is a bare `<p>`, not a widget-specific element - do not
+   over-scope selectors on it, `.field-name-file` is enough.
+3. `EditorPage.fileFieldAddLink()` (`.field-name-file .file a.add`) -
+   re-rendered by `addFile()` once `uploadComplete` fires, whether the
+   upload succeeded or failed. Asserting it is visible again after a
+   rejection proves the widget recovered instead of staying stuck on the
+   upload throbber (`.h5peditor-uploading`) - no separate "throbber gone"
+   selector is needed, since this element only exists once that throbber
+   markup has already been replaced.
 
 ### Course Presentation slide elements (DragNBar toolbar)
 
@@ -471,11 +493,11 @@ wrappers), so several inner selectors are identical to the ones
   in an iframe when actually embedded via `h5p-embed.js`. The
   `<h5p-player>` web component **always** wraps content in a real
   `iframe.h5p-iframe` (`h5p-player.ts`'s `createIframe()`/`h5pIFrameWrapper`),
-  since from the H5P core's perspective every web-component usage *is* an
+  since from the H5P core's perspective every web-component usage _is_ an
   embedding. `RestExampleAppPage.content()` therefore goes through
   `playerFrame()` (a `frameLocator('iframe.h5p-iframe')`) rather than a
   plain descendant locator - a plain locator produces `element(s) not
-  found` even though the player has rendered successfully (verified via the
+found` even though the player has rendered successfully (verified via the
   trace's accessibility snapshot, which showed a bare `iframe` node with no
   `.h5p-content` as a page-level descendant).
 - **CSRF**: `packages/h5p-rest-example-server` enables `csurf()` protection
@@ -483,7 +505,7 @@ wrappers), so several inner selectors are identical to the ones
   but nothing in the UI flow above needs special handling for it - logging
   in via the "Login as" dropdown stores the token from `/login`'s JSON
   response in `ContentService`, which attaches it as a `CSRF-Token` header
-  on every subsequent fetch. Only the *seeding* step (installing H5P.Blanks
+  on every subsequent fetch. Only the _seeding_ step (installing H5P.Blanks
   before the UI test runs, done via a raw API call in
   `test/fixtures/restExampleSeed.ts`) has to do this manually, since it
   bypasses the UI entirely - see that file's doc comment for how (log in as
