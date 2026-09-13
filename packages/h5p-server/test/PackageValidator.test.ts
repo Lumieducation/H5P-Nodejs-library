@@ -1,11 +1,16 @@
 import * as path from 'path';
+import { dir } from 'tmp-promise';
+import { readFile, rm, writeFile } from 'fs/promises';
 
 import H5PConfig from '../src/implementation/H5PConfig';
+import PackageImporter from '../src/PackageImporter';
+import PackageValidator from '../src/PackageValidator';
 import { validatePackage } from './helpers/PackageValidatorHelper';
 
 const libraryManagerMock = {
     isPatchedLibrary: () => Promise.resolve(undefined),
-    libraryExists: () => Promise.resolve(false)
+    libraryExists: () => Promise.resolve(false),
+    getNotInstalledLibraries: () => Promise.resolve([])
 } as any;
 
 describe('validating H5P files', () => {
@@ -180,11 +185,83 @@ describe('validating H5P files', () => {
             validatePackage(
                 {
                     isPatchedLibrary: () => Promise.resolve(false),
-                    libraryExists: () => Promise.resolve(true)
+                    libraryExists: () => Promise.resolve(true),
+                    getNotInstalledLibraries: () => Promise.resolve([])
                 } as any,
                 config,
                 h5pFile
             )
         ).resolves.toBeDefined();
+    });
+
+    it('accepts packages that contain all libraries their libraries depend on', async () => {
+        const h5pFile = path.resolve('test/data/validator/valid1.h5p');
+        const config = new H5PConfig(null);
+        await expect(
+            validatePackage(
+                {
+                    isPatchedLibrary: () => Promise.resolve(undefined),
+                    libraryExists: () => Promise.resolve(false),
+                    // nothing is installed on the system, so the package must
+                    // satisfy all dependencies by itself
+                    getNotInstalledLibraries: (libraries) =>
+                        Promise.resolve(libraries)
+                } as any,
+                config,
+                h5pFile
+            )
+        ).resolves.toBeDefined();
+    });
+
+    it('rejects packages with dependencies that are neither in the package nor installed', async () => {
+        const config = new H5PConfig(null);
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            // Make one of the libraries in the package require a version of
+            // another library that the package doesn't contain (this is what
+            // some packages on the H5P Hub actually do).
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.preloadedDependencies.push({
+                machineName: 'H5P.Question',
+                majorVersion: 1,
+                minorVersion: 5
+            });
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any);
+
+            await expect(
+                packageValidator.validateExtractedPackage(tempDirPath)
+            ).rejects.toThrow(
+                'package-validation-failed:missing-required-library (library: H5P.Question-1.5)'
+            );
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
     });
 });
