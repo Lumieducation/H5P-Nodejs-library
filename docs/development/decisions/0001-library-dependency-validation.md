@@ -8,7 +8,7 @@ category: Contributing
 
 Date: 2026-09-13
 
-Status: proposed
+Status: accepted
 
 ## Context
 
@@ -23,11 +23,11 @@ Verified by installing each package into an empty system and then calling
 
 | Package                                    | Unsatisfied dependency                            |
 | ------------------------------------------ | ------------------------------------------------- |
-| Arts of Europe (hub content)               | `H5P.Question-1.5`, `H5PEditor.ColorSelector-1.2`  |
-| Making a strawberry smoothie (hub content) | `H5PEditor.ColorSelector-1.2`                      |
-| `H5P.BranchingScenario.h5p` (content type) | `H5P.InteractiveVideo-1.27`                        |
+| Arts of Europe (hub content)               | `H5P.Question-1.5`, `H5PEditor.ColorSelector-1.2` |
+| Making a strawberry smoothie (hub content) | `H5PEditor.ColorSelector-1.2`                     |
+| `H5P.BranchingScenario.h5p` (content type) | `H5P.InteractiveVideo-1.27`                       |
 
-The packages ship a *different* version of a shared editor library than their
+The packages ship a _different_ version of a shared editor library than their
 own older libraries require — newer (`H5PEditor.ColorSelector 1.3` shipped,
 `1.2` required) or older (`H5P.Question 1.4` shipped, `1.5` required). On
 h5p.org this goes unnoticed because those sites have every version installed
@@ -44,7 +44,7 @@ The H5P PHP core resolves this trade-off by refusing the package, and it has
 done so since long before the Content Hub existed. Line numbers refer to the
 core version pinned in `scripts/install.sh`.
 
-**Where.** `H5PValidator::isValidPackage()` checks dependencies *before*
+**Where.** `H5PValidator::isValidPackage()` checks dependencies _before_
 anything is installed (`h5p.classes.php:1050`). If the check fails, the
 extracted package is deleted (`deleteFileTree`) and nothing is installed — it
 is all-or-nothing, not a partial install.
@@ -126,7 +126,7 @@ unsatisfied dependency.
   merely view or export it, which today they can.
 - Parity: this is what the PHP core does, with the same scope, the same exact
   version matching and the same error codes (see above).
-- Bonus: `missing-required-library` is the *only* error code the H5P hub client
+- Bonus: `missing-required-library` is the _only_ error code the H5P hub client
   renders as text; everything else collapses to "Something went wrong. Please
   try again." Choosing it means the reason reaches the user without touching
   the externally maintained client. The client does prepend its own hardcoded
@@ -155,7 +155,7 @@ versions backwards compatible.
 - Hub compatibility: **best of the options that actually fix something.** It
   resolves the `ColorSelector 1.3 satisfies 1.2` class — the most common one —
   and keeps that content editable rather than merely diagnosable.
-- Cost: it does not help when the package ships an *older* version than
+- Cost: it does not help when the package ships an _older_ version than
   required (`H5P.Question`), so a check is still needed for the remainder. It
   changes dependency resolution everywhere (`listAssets`,
   `getNotInstalledLibraries`, exports) and has no counterpart upstream — the
@@ -200,7 +200,10 @@ silently produces an unusable editor for a refusal that names the missing
 libraries is a better default, and it is the behaviour users coming from the
 PHP implementation expect.
 
-This is a default, not a ceiling. Option D remains worth doing on its own
+This is a default, not a ceiling. `IH5PConfig.validateLibraryDependencies`
+(default `true`) lets an integrator turn the check off without forking —
+useful for systems that only import content to view or export it, where a
+blank editor is not a concern. Option D remains worth doing on its own
 merits and would make the remaining silent-failure cases visible. Option C is
 the escape hatch if refusing Hub content turns out to be too disruptive in
 practice — it is the only option that would make the affected content work
@@ -225,3 +228,35 @@ rather than merely fail clearly, and it can be adopted later without undoing A.
   be imported standalone — coverage lost for that package.
 - If option C is adopted later, this decision is superseded rather than
   reversed: the check stays, but fewer packages trip it.
+- `IH5PConfig` gains a required member, `validateLibraryDependencies` (default
+  `true`), that gates the check. This is itself a small breaking change for
+  anyone implementing `IH5PConfig` directly rather than using the bundled
+  `H5PConfig`.
+- The check is **permission-gated**, not universal. `PackageImporter` only runs
+  it when `installLibraries` is `true`, which requires the acting user to have
+  `GeneralPermission.UpdateAndInstallLibraries` (`PackageImporter.ts:155`,
+  `:195`). For a user without that permission, `checkLibraries` is `false`, the
+  rule added by this decision never runs, and the blank-editor failure mode is
+  still reachable for that user — the fix only closes the gap for users who are
+  actually allowed to install libraries.
+- `dynamicDependencies` are included in the check even though they are not
+  what caused the failure this decision responds to: `DependencyGetter.ts:123`
+  resolves `dynamicDependencies` lazily, only when the running content
+  actually requests them, so a missing dynamic dependency does not by itself
+  produce the `listAssets` 404 that motivated this work. They are included
+  anyway for parity with the PHP core's `getMissingDependencies`, which checks
+  all three dependency kinds without distinguishing them, and because a
+  dynamic dependency that is genuinely missing will still fail later, just
+  later than a preloaded or editor dependency would.
+- The content-level half of the fix: dependencies the _content's own_
+  `h5p.json` declares (as opposed to dependencies libraries declare among
+  themselves) are checked separately, in `PackageImporter`. That path used to
+  throw a plain `H5pError('install-missing-libraries')`, which
+  `expressErrorHandler` cannot turn into the `details` array the hub client
+  needs, so it collapsed to "Something went wrong. Please try again." — the
+  same silent failure this decision set out to fix, just on the other half of
+  the import path. It now throws an `AggregateH5pError` with one
+  `missing-main-library` or `missing-required-library` entry per missing
+  library (mirroring `h5p.classes.php:1074-1078`), alongside an
+  `install-missing-libraries` entry kept for backward compatibility with
+  downstream code that matches on that code.
