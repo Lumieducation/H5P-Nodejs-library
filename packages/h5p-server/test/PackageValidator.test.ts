@@ -264,4 +264,251 @@ describe('validating H5P files', () => {
             await rm(tempDirPath, { recursive: true, force: true });
         }
     });
+
+    it('rejects packages with an editorDependencies dependency that is neither in the package nor installed', async () => {
+        const config = new H5PConfig(null);
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.editorDependencies.push({
+                machineName: 'H5PEditor.Missing',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any);
+
+            await expect(
+                packageValidator.validateExtractedPackage(tempDirPath)
+            ).rejects.toThrow(
+                'package-validation-failed:missing-required-library (library: H5PEditor.Missing-1.0)'
+            );
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    });
+
+    it('rejects packages with a dynamicDependencies dependency that is neither in the package nor installed', async () => {
+        const config = new H5PConfig(null);
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.dynamicDependencies = [
+                {
+                    machineName: 'H5P.MissingDynamic',
+                    majorVersion: 1,
+                    minorVersion: 0
+                }
+            ];
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any);
+
+            await expect(
+                packageValidator.validateExtractedPackage(tempDirPath)
+            ).rejects.toThrow(
+                'package-validation-failed:missing-required-library (library: H5P.MissingDynamic-1.0)'
+            );
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    });
+
+    it('accepts a dependency that is not shipped in the package if it is reported as already installed', async () => {
+        const config = new H5PConfig(null);
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.preloadedDependencies.push({
+                machineName: 'H5P.AlreadyInstalled',
+                majorVersion: 1,
+                minorVersion: 0
+            });
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                // Simulate that everything is already installed on the
+                // system, so nothing is reported as missing even though
+                // H5P.AlreadyInstalled isn't shipped inside the package.
+                getNotInstalledLibraries: () => Promise.resolve([])
+            } as any);
+
+            await expect(
+                packageValidator.validateExtractedPackage(tempDirPath)
+            ).resolves.toBeDefined();
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    });
+
+    it('does not double-report a library whose library.json cannot be parsed', async () => {
+        const config = new H5PConfig(null);
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            // Corrupt the JSON so it cannot be parsed.
+            await writeFile(libraryJsonPath, '{ not valid json', 'utf-8');
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any);
+
+            let thrownError: any;
+            try {
+                await packageValidator.validateExtractedPackage(tempDirPath);
+            } catch (error) {
+                thrownError = error;
+            }
+
+            expect(thrownError).toBeDefined();
+            const errorIds = thrownError
+                .getErrors()
+                .map((e: { errorId: string }) => e.errorId);
+            // The unparseable library.json is reported once by
+            // librariesMustBeValid...
+            expect(errorIds).toContain('invalid-library-json-file');
+            // ...and must not be reported again as a missing dependency by
+            // libraryDependenciesMustBeSatisfied.
+            expect(errorIds).not.toContain('missing-required-library');
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    });
+
+    it('accepts packages with unsatisfiable dependencies if validateLibraryDependencies is turned off', async () => {
+        const config = new H5PConfig(null);
+        config.validateLibraryDependencies = false;
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.preloadedDependencies.push({
+                machineName: 'H5P.Question',
+                majorVersion: 1,
+                minorVersion: 5
+            });
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+
+            const packageValidator = new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any);
+
+            await expect(
+                packageValidator.validateExtractedPackage(tempDirPath)
+            ).resolves.toBeDefined();
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    });
 });
