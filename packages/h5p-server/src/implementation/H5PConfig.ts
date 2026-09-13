@@ -109,6 +109,7 @@ export default class H5PConfig implements IH5PConfig {
     public temporaryFileLifetime: number = 120 * 60 * 1000; // 120 minutes
     public temporaryFilesUrl: string = '/temp-files';
     public uuid: string = '';
+    public validateLibraryDependencies: boolean = true;
 
     private storage: IKeyValueStorage;
 
@@ -141,6 +142,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.loadSettingFromStorage('setFinishedEnabled');
         await this.loadSettingFromStorage('siteType');
         await this.loadSettingFromStorage('uuid');
+        await this.loadSettingFromStorage('validateLibraryDependencies');
         return this;
     }
 
@@ -172,6 +174,7 @@ export default class H5PConfig implements IH5PConfig {
         await this.saveSettingToStorage('setFinishedEnabled');
         await this.saveSettingToStorage('siteType');
         await this.saveSettingToStorage('uuid');
+        await this.saveSettingToStorage('validateLibraryDependencies');
     }
 
     /**
