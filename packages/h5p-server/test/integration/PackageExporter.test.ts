@@ -2,18 +2,13 @@ import path from 'path';
 import { readdirSync } from 'fs';
 
 import { importAndExportPackage } from '../PackageExporter.test';
-
-/**
- * Packages on the H5P Hub that declare dependencies on libraries they don't
- * ship themselves and that PackageValidator rejects for that reason. They
- * can't be imported into an empty system at all, so there is nothing to
- * export again. (H5PEditor.CoursePresentation 1.25, which is part of
- * H5P.BranchingScenario, requires H5P.InteractiveVideo 1.27.)
- */
-const packagesWithUnsatisfiableDependencies = ['H5P.BranchingScenario.h5p'];
+import {
+    hubContentDirectory,
+    packagesWithUnsatisfiableDependencies
+} from '../../../../test/data/hub-content';
 
 describe('PackageExporter (integration tests with examples from H5P Hub)', () => {
-    const directory = `${path.resolve('')}/test/data/hub-content/`;
+    const directory = `${hubContentDirectory}/`;
     let files;
     try {
         files = readdirSync(directory);

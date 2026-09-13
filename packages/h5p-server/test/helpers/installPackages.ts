@@ -13,7 +13,10 @@
  * @param files the packages to install
  * @param install the function that installs a single package
  * @returns the results of the install function by package
- * @throws the last error if there are packages left that can't be installed
+ * @throws an error naming every package that is still failing (with its own
+ * message) once a retry round makes no further progress. (Rethrowing only
+ * the error of whichever package happened to be processed last in that round
+ * would attribute a future genuine regression to the wrong file.)
  */
 export async function installPackagesInDependencyOrder<T>(
     files: string[],
@@ -21,24 +24,36 @@ export async function installPackagesInDependencyOrder<T>(
 ): Promise<Map<string, T>> {
     const results = new Map<string, T>();
     let remaining = files;
-    let lastError: Error;
+    let lastFailures: Map<string, Error>;
 
     while (remaining.length > 0) {
         const failed: string[] = [];
+        const failures = new Map<string, Error>();
         for (const file of remaining) {
             try {
                 results.set(file, await install(file));
             } catch (error) {
                 failed.push(file);
-                lastError = error;
+                failures.set(file, error);
             }
         }
         if (failed.length === remaining.length) {
             // None of the remaining packages could be installed, so waiting
             // for other packages to provide their dependencies won't help.
-            throw lastError;
+            lastFailures = failures;
+            break;
         }
         remaining = failed;
+    }
+
+    if (lastFailures) {
+        throw new Error(
+            `Could not install ${lastFailures.size} package(s):\n${[
+                ...lastFailures.entries()
+            ]
+                .map(([file, error]) => `${file}: ${error.message}`)
+                .join('\n')}`
+        );
     }
 
     return results;
