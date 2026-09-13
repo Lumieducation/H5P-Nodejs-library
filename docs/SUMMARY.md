@@ -39,4 +39,4 @@
   - [Core updates](development/core-updates.md)
   - [Project Status](development/status.md)
   - Decisions
-    - [Validating library dependencies when importing packages](development/decisions/0001-library-dependency-validation.md)
+    - [Handling packages whose library dependencies can't be resolved](development/decisions/0001-library-dependency-validation.md)
