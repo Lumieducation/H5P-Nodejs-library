@@ -4,8 +4,12 @@ import path from 'path';
  * The directory containing example content downloaded from the H5P Hub via
  * `npm run download:content`. Shared by the PackageExporter and HtmlExporter
  * integration test suites so both exercise the same corpus of packages.
+ *
+ * Resolved relative to this file rather than to the current working
+ * directory, as the suites importing it are run both from the repository
+ * root and from inside their own package directory.
  */
-export const hubContentDirectory = path.resolve('test/data/hub-content');
+export const hubContentDirectory = path.resolve(__dirname, 'hub-content');
 
 /**
  * Packages on the H5P Hub that declare dependencies on libraries they don't
