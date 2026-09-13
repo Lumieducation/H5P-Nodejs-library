@@ -32,6 +32,17 @@ libraries and that they might inadvertently "infect" an installation by
 uploading content packages. As an application developer and site administrator
 you must make sure that this doesn't happen!)
 
+By default, a package (or its content's `h5p.json`) that declares a library
+dependency which is neither shipped inside the package nor already installed
+is refused at import time, rather than being installed and failing later in
+the browser; see {@link
+@lumieducation/h5p-server!IH5PConfig.validateLibraryDependencies |
+IH5PConfig.validateLibraryDependencies} and [ADR
+0001](../development/decisions/0001-library-dependency-validation.md) for the
+reasoning. Turn it off only if you have another way of ensuring dependencies
+are satisfied, e.g. because packages are only imported to be viewed or
+exported rather than edited.
+
 ## File sanitization
 
 ### What do file sanitizers do?
