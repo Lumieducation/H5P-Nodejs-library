@@ -17,18 +17,11 @@ import { IIntegration } from '../../h5p-server/src/types';
 import { LaissezFairePermissionSystem } from '../../h5p-server';
 
 import User from './User';
+import {
+    hubContentDirectory,
+    packagesWithUnsatisfiableDependencies
+} from '../../../test/data/hub-content';
 
-const hubContentDirectory = path.resolve(
-    `${__dirname}/../../../test/data/hub-content/`
-);
-/**
- * Some packages on the H5P Hub declare dependencies on libraries they don't
- * ship themselves and that PackageValidator rejects for that reason. They
- * can't be imported into an empty system at all. (H5PEditor.CoursePresentation
- * 1.25, which is part of H5P.BranchingScenario, requires
- * H5P.InteractiveVideo 1.27.)
- */
-const packagesWithUnsatisfiableDependencies = ['H5P.BranchingScenario.h5p'];
 let h5pFiles: string[];
 try {
     h5pFiles = readdirSync(hubContentDirectory).filter(
