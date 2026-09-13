@@ -161,6 +161,18 @@ versions backwards compatible.
   `getNotInstalledLibraries`, exports) and has no counterpart upstream — the
   PHP core matches exactly at every step — so the same package could be
   accepted here and refused on h5p.org.
+- Caveat: "minor versions are backwards compatible" is H5P's nominal
+  versioning policy, not a verified guarantee. The PHP core itself never
+  relies on it — it matches major.minor exactly everywhere and has a single,
+  narrow, upgrade-driven exception (see "One escape hatch" above), not a
+  general minor-version leniency rule. Adopting C means trusting a policy
+  that individual content type authors are not reliably observed to honor in
+  practice, which trades today's clear failure (blank editor / refused
+  import) for a silent one (content loads against a library version it was
+  never tested with). Before adopting C, the leniency should be scoped down
+  from "any higher minor satisfies" to cases that can actually be checked
+  (e.g. the newer library declaring compatibility, or an explicit allowlist),
+  rather than assumed from version numbers alone.
 
 ### D. Surface editor AJAX errors in the client
 
