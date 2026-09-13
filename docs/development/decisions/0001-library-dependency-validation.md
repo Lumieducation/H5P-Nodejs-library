@@ -38,6 +38,66 @@ break later, and `h5peditor.js` only logs the failing request's status text to
 the browser console, so the user sees a "successfully imported" banner followed
 by a blank editor.
 
+## How the PHP implementation does it
+
+The H5P PHP core resolves this trade-off by refusing the package, and it has
+done so since long before the Content Hub existed. Line numbers refer to the
+core version pinned in `scripts/install.sh`.
+
+**Where.** `H5PValidator::isValidPackage()` checks dependencies *before*
+anything is installed (`h5p.classes.php:1050`). If the check fails, the
+extracted package is deleted (`deleteFileTree`) and nothing is installed — it
+is all-or-nothing, not a partial install.
+
+**What is checked.** `getMissingLibraries()` (`h5p.classes.php:1232`) walks
+every library in the package — plus the content's `h5p.json` dependencies when
+content is included — and collects the `preloadedDependencies`,
+`dynamicDependencies` and `editorDependencies` that no library in the package
+provides (`getMissingDependencies`, `h5p.classes.php:1259`). It is one level
+deep over the package's own libraries: a dependency satisfied by an
+already-installed library is not traversed further. Each remaining entry is
+then looked up among the installed libraries (`getLibraryId`,
+`h5p.classes.php:3193`) and dropped if found.
+
+**How versions are matched.** Both steps key on `libraryToString()` —
+`"MachineName major.minor"` (`h5p.classes.php:2761`) — and the installed-library
+lookup passes `machineName`, `majorVersion` and `minorVersion` separately.
+Matching is exact on major.minor; the patch version is ignored. There is no
+leniency anywhere: an installed `1.3` does not satisfy a dependency on `1.2`.
+Option C has no precedent upstream.
+
+**One escape hatch.** If the package contains content and the content's main
+library `libraryHasUpgrade()` — a newer version is already installed — the
+missing-library errors are suppressed and the package is accepted
+(`h5p.classes.php:1068`). The reasoning is that the content will be run through
+a content upgrade, so the old libraries it references are not needed. We have
+no equivalent, because the import paths in question do not upgrade content.
+
+**How it is reported.** One error per missing library:
+`missing-main-library` if the missing library is the content's main library,
+`missing-required-library` otherwise (`h5p.classes.php:1074-1078`). If the user
+is not allowed to install libraries at all, the core adds a note saying the
+libraries may well be in the uploaded file but the user may not upload them —
+which is where the H5P hub client's fixed "You are not authorized to install or
+update the libraries required by this content" wording comes from; the client
+shows it for any response carrying `missing-required-library`.
+
+**On the Content Hub path specifically.** `getHubContent()`
+(`h5peditor-ajax.class.php:348`) downloads the export and validates it with the
+same `isValidPackage()`, answering a failure with
+`ajaxError('Validating h5p package failed.', 'VALIDATION_FAILED', NULL,
+getMessages('error'))` — a JSON body of `success: false`, `message`,
+`errorCode` and a `details` array of `{code, message}` objects
+(`h5p.classes.php:3278`). That is exactly the response this library now
+produces, down to the `VALIDATION_FAILED` error code, so the hub client behaves
+identically against either backend.
+
+**Why h5p.org doesn't trip over it.** The check consults installed libraries,
+and those sites have accumulated many versions of each library side by side, so
+the dependencies are satisfied there.
+
+## The trade-off
+
 This leaves a genuine tension, and it is what this decision is about:
 
 - **Diagnosability.** The failure has to become visible. Today it is invisible
@@ -64,8 +124,8 @@ unsatisfied dependency.
   Content Hub content is refused outright. What is lost is content that could
   not be edited anyway — but "refused" also means the user can't import it to
   merely view or export it, which today they can.
-- Parity: matches the H5P PHP core, which performs the same check and reports
-  `missing-required-library` (`h5p.classes.php:1078`).
+- Parity: this is what the PHP core does, with the same scope, the same exact
+  version matching and the same error codes (see above).
 - Bonus: `missing-required-library` is the *only* error code the H5P hub client
   renders as text; everything else collapses to "Something went wrong. Please
   try again." Choosing it means the reason reaches the user without touching
@@ -98,8 +158,9 @@ versions backwards compatible.
 - Cost: it does not help when the package ships an *older* version than
   required (`H5P.Question`), so a check is still needed for the remainder. It
   changes dependency resolution everywhere (`listAssets`,
-  `getNotInstalledLibraries`, exports) and diverges from the PHP core, so the
-  same package could behave differently here and on h5p.org.
+  `getNotInstalledLibraries`, exports) and has no counterpart upstream — the
+  PHP core matches exactly at every step — so the same package could be
+  accepted here and refused on h5p.org.
 
 ### D. Surface editor AJAX errors in the client
 
