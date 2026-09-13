@@ -21,10 +21,20 @@ import User from './User';
 const hubContentDirectory = path.resolve(
     `${__dirname}/../../../test/data/hub-content/`
 );
+/**
+ * Some packages on the H5P Hub declare dependencies on libraries they don't
+ * ship themselves and that PackageValidator rejects for that reason. They
+ * can't be imported into an empty system at all. (H5PEditor.CoursePresentation
+ * 1.25, which is part of H5P.BranchingScenario, requires
+ * H5P.InteractiveVideo 1.27.)
+ */
+const packagesWithUnsatisfiableDependencies = ['H5P.BranchingScenario.h5p'];
 let h5pFiles: string[];
 try {
-    h5pFiles = readdirSync(hubContentDirectory).filter((f) =>
-        f.endsWith('.h5p')
+    h5pFiles = readdirSync(hubContentDirectory).filter(
+        (f) =>
+            f.endsWith('.h5p') &&
+            !packagesWithUnsatisfiableDependencies.includes(f)
     );
 } catch {
     throw new Error(
