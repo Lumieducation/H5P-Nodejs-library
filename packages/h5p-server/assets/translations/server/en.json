@@ -55,6 +55,7 @@
     "library-used": "The library {{library}} cannot be deleted as it is still in use.",
     "malformed-request": "The request sent by the client is malformed: {{error}}",
     "missing-h5p-extension": "The file you uploaded is not a valid HTML5 Package (It does not have the .h5p file extension)",
+    "missing-required-library": "Missing required library {{library}}",
     "multipart-ranges-unsupported": "Multipart range requests are not supported on this server.",
     "not-in-whitelist": "File \"{{filename}}\" not allowed. Only files with the following extensions are allowed: {{files-allowed}}.",
     "package-validation-failed": "Validating h5p package failed.",

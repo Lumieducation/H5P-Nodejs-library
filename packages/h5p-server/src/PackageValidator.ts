@@ -13,7 +13,7 @@ import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { IH5PConfig } from './types';
+import { IH5PConfig, ILibraryName } from './types';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 
@@ -219,6 +219,11 @@ export default class PackageValidator {
             .addRule(throwErrorsNowRule)
             .addRuleWhen(
                 this.librariesMustBeValid(skipInstalledLibraries),
+                checkLibraries
+            )
+            .addRule(throwErrorsNowRule)
+            .addRuleWhen(
+                this.libraryDependenciesMustBeSatisfied,
                 checkLibraries
             )
             .addRule(throwErrorsNowRule)
@@ -620,6 +625,93 @@ export default class PackageValidator {
             return { filenames, jsonData };
         };
     }
+
+    /**
+     * Checks if all dependencies declared by the libraries inside the package
+     * can be satisfied, either by another library in the package or by one
+     * that is already installed on the system.
+     *
+     * H5P resolves dependencies by exact major.minor version, so a package
+     * that ships an older version of a library than one of its other
+     * libraries requires would be installed without complaints, only to fail
+     * later when the editor assembles the dependency tree (resulting in a 404
+     * for the library data and an editor that doesn't render). Checking this
+     * here mirrors what the H5P PHP core does and uses the same error id, so
+     * clients that understand the H5P error codes (like the H5P hub client)
+     * can tell the user which libraries are missing.
+     * @param filenames The entries inside the h5p file
+     * @param pathPrefix the path of the extracted package
+     * @param error The error object to use
+     * @returns The unchanged zip entries
+     */
+    private libraryDependenciesMustBeSatisfied = async (
+        filenames: string[],
+        pathPrefix: string,
+        error: AggregateH5pError
+    ): Promise<string[]> => {
+        log.debug(`checking if all library dependencies can be satisfied`);
+        const topLevelDirectories = (
+            await PackageValidator.getTopLevelDirectories(pathPrefix)
+        ).filter((directory) => directory !== 'content');
+
+        const libraryMetadata = (
+            await Promise.all(
+                topLevelDirectories.map(async (directory) => {
+                    try {
+                        return JSON.parse(
+                            await readFile(
+                                path.join(
+                                    pathPrefix,
+                                    directory,
+                                    'library.json'
+                                ),
+                                'utf-8'
+                            )
+                        );
+                    } catch {
+                        // Libraries with missing or broken library.json files
+                        // are already reported by librariesMustBeValid, so we
+                        // simply ignore them here.
+                        return undefined;
+                    }
+                })
+            )
+        ).filter((metadata) => metadata !== undefined);
+
+        const librariesInPackage = new Set(
+            libraryMetadata.map((metadata) => LibraryName.toUberName(metadata))
+        );
+
+        const dependencies = new Map<string, ILibraryName>();
+        for (const metadata of libraryMetadata) {
+            for (const dependency of (metadata.preloadedDependencies ?? [])
+                .concat(metadata.editorDependencies ?? [])
+                .concat(metadata.dynamicDependencies ?? [])) {
+                const ubername = LibraryName.toUberName(dependency);
+                if (!librariesInPackage.has(ubername)) {
+                    dependencies.set(ubername, dependency);
+                }
+            }
+        }
+
+        const missingLibraries =
+            await this.libraryManager.getNotInstalledLibraries([
+                ...dependencies.values()
+            ]);
+        for (const missingLibrary of missingLibraries
+            .map((library) => LibraryName.toUberName(library))
+            .sort()) {
+            log.error(`missing required library ${missingLibrary}`);
+            error.addError(
+                new H5pError(
+                    'missing-required-library',
+                    { library: missingLibrary },
+                    400
+                )
+            );
+        }
+        return filenames;
+    };
 
     /**
      * Validates the libraries inside the package.
