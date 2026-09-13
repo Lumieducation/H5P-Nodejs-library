@@ -5,7 +5,9 @@ import yauzl from 'yauzl-promise';
 import { mkdir, readdir, readFile, rm } from 'fs/promises';
 import { createWriteStream } from 'fs';
 
+import AggregateH5pError from './helpers/AggregateH5pError';
 import ContentManager from './ContentManager';
+import { ContentMetadata } from './ContentMetadata';
 import ContentStorer from './ContentStorer';
 import H5pError from './helpers/H5pError';
 import LibraryManager from './LibraryManager';
@@ -326,15 +328,61 @@ export default class PackageImporter {
                         requiredLibraries
                     );
                 if (missingLibraries.length > 0) {
-                    throw new H5pError(
+                    // ContentMetadata.toUbername uses a whitespace separator
+                    // (e.g. "H5P.Example 1.0"), whereas the ubernames used in
+                    // the error messages below use a hyphen (e.g.
+                    // "H5P.Example-1.0", the LibraryName.toUberName default).
+                    // Compare using the whitespace format on both sides so
+                    // the check doesn't silently fail because of the
+                    // difference in separator.
+                    const mainLibraryUbername =
+                        ContentMetadata.toUbername(metadata);
+                    const missingLibrariesReplacement = {
+                        libraries: missingLibraries
+                            .map((l) => LibraryName.toUberName(l))
+                            .join(', ')
+                    };
+                    const error = new AggregateH5pError(
                         'install-missing-libraries',
-                        {
-                            libraries: missingLibraries
-                                .map((l) => LibraryName.toUberName(l))
-                                .join(', ')
-                        },
-                        400
+                        missingLibrariesReplacement,
+                        400,
+                        undefined
                     );
+                    // Keep 'install-missing-libraries' as one of the
+                    // aggregate's entries, so downstream code that matches
+                    // on this error code (e.g. by checking the details list
+                    // returned to the client) still finds it.
+                    error.addError(
+                        new H5pError(
+                            'install-missing-libraries',
+                            missingLibrariesReplacement,
+                            400
+                        )
+                    );
+                    for (const missingLibrary of [...missingLibraries].sort(
+                        (a, b) =>
+                            LibraryName.toUberName(a).localeCompare(
+                                LibraryName.toUberName(b)
+                            )
+                    )) {
+                        const missingLibraryUbername =
+                            LibraryName.toUberName(missingLibrary);
+                        const isMainLibrary =
+                            LibraryName.toUberName(missingLibrary, {
+                                useWhitespace: true,
+                                useHyphen: false
+                            }) === mainLibraryUbername;
+                        error.addError(
+                            new H5pError(
+                                isMainLibrary
+                                    ? 'missing-main-library'
+                                    : 'missing-required-library',
+                                { library: missingLibraryUbername },
+                                400
+                            )
+                        );
+                    }
+                    throw error;
                 }
             }
 
