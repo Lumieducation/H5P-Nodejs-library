@@ -303,12 +303,16 @@ export default class LibraryManager {
     public async getNotInstalledLibraries(
         libraries: ILibraryName[]
     ): Promise<ILibraryName[]> {
-        const allLibraries = await this.listInstalledLibraries();
+        const installedLibraryNames =
+            await this.libraryStorage.getInstalledLibraryNames();
         const missingLibraries = [];
         for (const lib of libraries) {
             if (
-                !allLibraries[lib.machineName]?.find(
-                    (l) => l.compareVersions(lib) === 0
+                !installedLibraryNames.some(
+                    (l) =>
+                        l.machineName === lib.machineName &&
+                        Number(l.majorVersion) === Number(lib.majorVersion) &&
+                        Number(l.minorVersion) === Number(lib.minorVersion)
                 )
             ) {
                 missingLibraries.push(lib);

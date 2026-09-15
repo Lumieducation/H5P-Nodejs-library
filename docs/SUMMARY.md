@@ -38,3 +38,5 @@
   - [Testing & code quality](development/testing-quality.md)
   - [Core updates](development/core-updates.md)
   - [Project Status](development/status.md)
+  - Decisions
+    - [Handling packages whose library dependencies can't be resolved](development/decisions/0001-library-dependency-validation.md)

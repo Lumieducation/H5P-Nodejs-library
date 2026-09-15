@@ -474,6 +474,75 @@ describe('listLanguages()', () => {
     });
 });
 
+describe('getNotInstalledLibraries()', () => {
+    it('considers a library with a different patch version installed', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        const libManager = new LibraryManager(storage);
+
+        // H5P.Example1-1.1 is installed with patchVersion 1; a dependency
+        // requesting a different patch version must still be considered
+        // installed, since only major.minor is compared.
+        const result = await libManager.getNotInstalledLibraries([
+            new InstalledLibrary('H5P.Example1', 1, 1, 99)
+        ]);
+
+        expect(result).toEqual([]);
+    });
+
+    it('considers a library with a different minor version not installed', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        const libManager = new LibraryManager(storage);
+
+        const missingLibrary = new InstalledLibrary('H5P.Example1', 1, 2, 0);
+        const result = await libManager.getNotInstalledLibraries([
+            missingLibrary
+        ]);
+
+        expect(result).toEqual([missingLibrary]);
+    });
+
+    it('considers a library installed when its version fields are strings (as parsed from h5p.json)', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        const libManager = new LibraryManager(storage);
+
+        // Dependency objects parsed straight out of a content h5p.json (via
+        // JSON.parse) carry majorVersion/minorVersion as strings, whereas
+        // getInstalledLibraryNames() parses them as numbers. The comparison
+        // must not use strict equality directly on these fields, or a
+        // library that actually is installed would be reported as missing.
+        const result = await libManager.getNotInstalledLibraries([
+            {
+                machineName: 'H5P.Example1',
+                majorVersion: '1' as unknown as number,
+                minorVersion: '1' as unknown as number
+            }
+        ]);
+
+        expect(result).toEqual([]);
+    });
+
+    it('does not read individual library.json files to determine installation status', async () => {
+        const storage = new FileLibraryStorage(
+            `${__dirname}/../../../test/data/libraries`
+        );
+        const getLibrarySpy = vi.spyOn(storage, 'getLibrary');
+        const libManager = new LibraryManager(storage);
+
+        await libManager.getNotInstalledLibraries([
+            new InstalledLibrary('H5P.Example1', 1, 1, 0),
+            new InstalledLibrary('H5P.Example2', 1, 0, 0)
+        ]);
+
+        expect(getLibrarySpy).not.toHaveBeenCalled();
+    });
+});
+
 describe('alterLibrarySemantics hook', () => {
     it('returns changed semantics when a hook is specified', async () => {
         const library = new InstalledLibrary('H5P.Example1', 1, 1, 0);

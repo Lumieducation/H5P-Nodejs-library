@@ -17,14 +17,17 @@ import { IIntegration } from '../../h5p-server/src/types';
 import { LaissezFairePermissionSystem } from '../../h5p-server';
 
 import User from './User';
+import {
+    hubContentDirectory,
+    packagesWithUnsatisfiableDependencies
+} from '../../../test/data/hub-content';
 
-const hubContentDirectory = path.resolve(
-    `${__dirname}/../../../test/data/hub-content/`
-);
 let h5pFiles: string[];
 try {
-    h5pFiles = readdirSync(hubContentDirectory).filter((f) =>
-        f.endsWith('.h5p')
+    h5pFiles = readdirSync(hubContentDirectory).filter(
+        (f) =>
+            f.endsWith('.h5p') &&
+            !packagesWithUnsatisfiableDependencies.includes(f)
     );
 } catch {
     throw new Error(
