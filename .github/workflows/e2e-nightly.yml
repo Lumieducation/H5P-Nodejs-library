@@ -28,22 +28,22 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
               with:
                   node-version: ${{ env.NODE_VERSION }}
                   cache: npm
-            - uses: actions/cache@v4
+            - uses: actions/cache@v6
               with:
                   path: packages/h5p-examples/h5p
                   key: h5p-core-cache1-${{ hashFiles('scripts/install.sh') }}
-            - uses: actions/cache@v4
+            - uses: actions/cache@v6
               with:
                   path: packages/h5p-rest-example-server/h5p
                   key: h5p-core-cache2-${{ hashFiles('scripts/install.sh') }}
             - run: npm ci
             - run: npm run setup
-            - uses: actions/cache@v4
+            - uses: actions/cache@v6
               with:
                   path: test/data/hub-content
                   key: h5p-examples-cache-${{ hashFiles('test/data/content-type-cache/real-content-types.json') }}
@@ -86,7 +86,7 @@ jobs:
                       packages/h5p-webcomponents/node_modules \
                       test/data/content-type-cache/real-content-types.json \
                       test/data/hub-content
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               with:
                   name: workspace
                   retention-days: 1
@@ -104,11 +104,11 @@ jobs:
                 project:
                     [chromium, firefox, webkit, mobile-safari, rest-example]
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
               with:
                   node-version: ${{ env.NODE_VERSION }}
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v8
               with:
                   name: workspace
             - name: Extract workspace
@@ -116,14 +116,14 @@ jobs:
             - name: Get installed Playwright version
               id: playwright-version
               run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-            - uses: actions/cache@v4
+            - uses: actions/cache@v6
               with:
                   path: ~/.cache/ms-playwright
                   key: playwright-browsers-${{ steps.playwright-version.outputs.version }}
             - name: Install Playwright browsers
               run: npx playwright install --with-deps
             - run: npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=${{ matrix.project }}
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               if: always()
               with:
                   name: playwright-report-${{ matrix.project }}
@@ -151,11 +151,11 @@ jobs:
                 ports:
                     - 27017:27017
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
               with:
                   node-version: ${{ env.NODE_VERSION }}
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v8
               with:
                   name: workspace
             - name: Extract workspace
@@ -183,7 +183,7 @@ jobs:
             - name: Get installed Playwright version
               id: playwright-version
               run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-            - uses: actions/cache@v4
+            - uses: actions/cache@v6
               with:
                   path: ~/.cache/ms-playwright
                   key: playwright-browsers-${{ steps.playwright-version.outputs.version }}
@@ -192,7 +192,7 @@ jobs:
             - run: npx playwright test --config packages/h5p-e2e/playwright.config.ts --project=chromium
               env:
                   E2E_STORAGE: ${{ matrix.permutation }}
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               if: always()
               with:
                   name: playwright-report-${{ matrix.permutation }}
