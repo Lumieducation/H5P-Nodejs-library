@@ -90,13 +90,13 @@
         }
     ],
     "devDependencies": {
-        "@commitlint/config-conventional": "21.2.2",
+        "@commitlint/config-conventional": "21.2.3",
         "@eslint/js": "^10.0.0",
         "@typescript-eslint/eslint-plugin": "8.70.0",
         "@typescript-eslint/parser": "8.70.0",
         "@vitest/coverage-v8": "^4.0.18",
         "axios": "1.20.0",
-        "commitlint": "21.2.2",
+        "commitlint": "21.2.3",
         "concurrently": "10.0.5",
         "eslint": "^10.0.0",
         "eslint-config-prettier": "^10.0.0",
