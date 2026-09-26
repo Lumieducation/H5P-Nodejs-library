@@ -16,6 +16,7 @@ import ContentStorer from '../../src/ContentStorer';
 import { LaissezFairePermissionSystem } from '../../src/implementation/LaissezFairePermissionSystem';
 
 import User from '../User';
+import { installPackagesInDependencyOrder } from '../helpers/installPackages';
 
 import { getContentDetails } from '../ContentScanner.test';
 
@@ -70,19 +71,16 @@ describe('ContentFileScanner (integration test with H5P Hub examples)', () => {
             new ContentStorer(contentManager, libraryManager, undefined)
         );
 
-        packageIdMap = new Map<string, ContentId>();
-
-        for (const file of h5pPackages.filter((f) => f.endsWith('.h5p'))) {
-            packageIdMap.set(
-                file,
+        packageIdMap = await installPackagesInDependencyOrder(
+            h5pPackages.filter((f) => f.endsWith('.h5p')),
+            async (file) =>
                 (
                     await packageImporter.addPackageLibrariesAndContent(
                         path.join(directory, file),
                         user
                     )
                 ).id
-            );
-        }
+        );
 
         contentScanner = new ContentFileScanner(libraryManager);
     }, 120000); // long timeout because we install a lot of packages

@@ -13,7 +13,7 @@ import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { IH5PConfig } from './types';
+import { IH5PConfig, ILibraryName } from './types';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 
@@ -158,6 +158,12 @@ export default class PackageValidator {
             f.substr(packagePathLength).replace(/\\/g, '/')
         );
 
+        // Populated by librariesMustBeValid (directory -> parsed & schema
+        // validated library.json content) and consumed by
+        // libraryDependenciesMustBeSatisfied, so library.json files are only
+        // read and parsed once per package validation run.
+        const libraryMetadataMap = new Map<string, any>();
+
         const result = await new ValidatorBuilder()
             .addRule(
                 this.filterOutEntries(
@@ -218,8 +224,16 @@ export default class PackageValidator {
             )
             .addRule(throwErrorsNowRule)
             .addRuleWhen(
-                this.librariesMustBeValid(skipInstalledLibraries),
+                this.librariesMustBeValid(
+                    skipInstalledLibraries,
+                    libraryMetadataMap
+                ),
                 checkLibraries
+            )
+            .addRule(throwErrorsNowRule)
+            .addRuleWhen(
+                this.libraryDependenciesMustBeSatisfied(libraryMetadataMap),
+                checkLibraries && this.config.validateLibraryDependencies
             )
             .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
@@ -622,19 +636,104 @@ export default class PackageValidator {
     }
 
     /**
+     * Checks if all dependencies declared by the libraries inside the package
+     * can be satisfied, either by another library in the package or by one
+     * that is already installed on the system.
+     *
+     * H5P resolves dependencies by exact major.minor version, so a package
+     * that ships an older version of a library than one of its other
+     * libraries requires would be installed without complaints, only to fail
+     * later when the editor assembles the dependency tree (resulting in a 404
+     * for the library data and an editor that doesn't render). Checking this
+     * here mirrors what the H5P PHP core does and uses the same error id, so
+     * clients that understand the H5P error codes (like the H5P hub client)
+     * can tell the user which libraries are missing.
+     *
+     * The library.json metadata used here was already parsed and schema
+     * validated by librariesMustBeValid (which must run before this rule);
+     * libraries whose library.json could not be parsed or did not conform to
+     * the schema are therefore simply absent from libraryMetadataMap and are
+     * not reported again here, as they were already reported by
+     * librariesMustBeValid.
+     * @param libraryMetadataMap Maps the directory name of every library in
+     * the package whose library.json was successfully parsed and schema
+     * validated to its parsed content.
+     * @returns the rule
+     */
+    private libraryDependenciesMustBeSatisfied(
+        libraryMetadataMap: Map<string, any>
+    ): (
+        filenames: string[],
+        pathPrefix: string,
+        error: AggregateH5pError
+    ) => Promise<string[]> {
+        return async (
+            filenames: string[],
+            pathPrefix: string,
+            error: AggregateH5pError
+        ): Promise<string[]> => {
+            log.debug(`checking if all library dependencies can be satisfied`);
+            const libraryMetadata = [...libraryMetadataMap.values()];
+
+            const librariesInPackage = new Set(
+                libraryMetadata.map((metadata) =>
+                    LibraryName.toUberName(metadata)
+                )
+            );
+
+            const dependencies = new Map<string, ILibraryName>();
+            for (const metadata of libraryMetadata) {
+                for (const dependency of (metadata.preloadedDependencies ?? [])
+                    .concat(metadata.editorDependencies ?? [])
+                    .concat(metadata.dynamicDependencies ?? [])) {
+                    const ubername = LibraryName.toUberName(dependency);
+                    if (!librariesInPackage.has(ubername)) {
+                        dependencies.set(ubername, dependency);
+                    }
+                }
+            }
+
+            const missingLibraries =
+                await this.libraryManager.getNotInstalledLibraries([
+                    ...dependencies.values()
+                ]);
+            for (const missingLibrary of missingLibraries
+                .map((library) => LibraryName.toUberName(library))
+                .sort()) {
+                log.error(`missing required library ${missingLibrary}`);
+                error.addError(
+                    new H5pError(
+                        'missing-required-library',
+                        { library: missingLibrary },
+                        400
+                    )
+                );
+            }
+            return filenames;
+        };
+    }
+
+    /**
      * Validates the libraries inside the package.
      * @param filenames The entries inside the h5p file
      * @param error The error object to use
+     * @param libraryMetadataMap Filled with the directory name and the
+     * parsed library.json content of every library whose library.json was
+     * successfully parsed and conformed to the schema, so that
+     * libraryDependenciesMustBeSatisfied does not have to read and parse
+     * every library.json a second time.
      * @returns The unchanged zip entries
      */
     private librariesMustBeValid =
-        (skipInstalledLibraries: boolean) =>
+        (
+            skipInstalledLibraries: boolean,
+            libraryMetadataMap: Map<string, any>
+        ) =>
         async (
             filenames: string[],
             pathPrefix: string,
             error: AggregateH5pError
         ): Promise<string[]> => {
-            // TODO: continue here
             log.debug(`validating libraries inside package`);
             const topLevelDirectories =
                 await PackageValidator.getTopLevelDirectories(pathPrefix);
@@ -647,7 +746,8 @@ export default class PackageValidator {
                             directory,
                             pathPrefix,
                             error,
-                            skipInstalledLibraries
+                            skipInstalledLibraries,
+                            libraryMetadataMap
                         )
                     )
             );
@@ -911,10 +1011,46 @@ export default class PackageValidator {
     }
 
     /**
+     * Factory for a rule that stores the already parsed and schema-validated
+     * library.json content of a library in a map, keyed by the library's
+     * ubername (directory name), so that it doesn't have to be read and
+     * parsed a second time later in the validation pipeline. Does not
+     * change the data passed through the rule.
+     * @param ubername The ubername (directory name) of the library
+     * @param libraryMetadataMap The map to store the metadata in; if
+     * undefined, the rule is a no-op
+     * @returns the rule
+     */
+    private collectLibraryMetadata(
+        ubername: string,
+        libraryMetadataMap?: Map<string, any>
+    ): (
+        { filenames, jsonData }: { jsonData: any; filenames: string[] },
+        pathPrefix: string,
+        error: AggregateH5pError
+    ) => Promise<{ jsonData: any; filenames: string[] }> {
+        return async ({
+            filenames,
+            jsonData
+        }: {
+            jsonData: any;
+            filenames: string[];
+        }) => {
+            libraryMetadataMap?.set(ubername, jsonData);
+            return { filenames, jsonData };
+        };
+    }
+
+    /**
      * Checks whether the library conforms to the standard and returns its data.
      * @param filenames All (relevant) zip entries of the package.
      * @param ubername The name of the library to check
      * @param error the error object
+     * @param skipInstalledLibraries
+     * @param libraryMetadataMap If given, the parsed and schema-validated
+     * content of the library's library.json is stored in this map (keyed by
+     * ubername) once it becomes available, so that callers don't have to
+     * read and parse the file again.
      * @returns the object from library.json with additional data from
      * semantics.json, the language files and the icon.
      */
@@ -923,7 +1059,8 @@ export default class PackageValidator {
         ubername: string,
         pathPrefix: string,
         error: AggregateH5pError,
-        skipInstalledLibraries: boolean
+        skipInstalledLibraries: boolean,
+        libraryMetadataMap?: Map<string, any>
     ): Promise<{ hasIcon: boolean; language: any; semantics: any } | boolean> {
         try {
             log.debug(`validating library ${ubername}`);
@@ -947,6 +1084,9 @@ export default class PackageValidator {
                         true,
                         { name: ubername }
                     )
+                )
+                .addRule(
+                    this.collectLibraryMetadata(ubername, libraryMetadataMap)
                 )
                 .addRule(this.skipInstalledLibraries(skipInstalledLibraries))
                 .addRule(this.mustBeCompatibleToCoreVersion)
