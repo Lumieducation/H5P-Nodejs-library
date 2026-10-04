@@ -195,7 +195,10 @@ function validateContentBytes(data: Buffer, ext: string, label: string): void {
     if (detectedExtensions.length > 0) {
         // The library detected a file type — check it matches
         // the claimed extension
-        if (extensionMatchesDetected(ext, detectedExtensions)) {
+        if (
+            extensionMatchesDetected(ext, detectedExtensions) ||
+            isSvgWithXmlProlog(data, ext, detectedExtensions)
+        ) {
             // Even when the extension matches, text-based detections
             // (e.g. a BOM causing magic-bytes to return "txt") still
             // need the dangerous-content check. A UTF-8 BOM followed
@@ -227,6 +230,69 @@ function validateContentBytes(data: Buffer, ext: string, label: string): void {
         );
         throw new H5pError('upload-validation-error', {}, 400);
     }
+}
+
+/**
+ * Returns true if the text looks like an XML document whose root element is
+ * <svg> (optionally namespace-prefixed): any number of processing
+ * instructions (incl. the XML prolog), comments and a doctype, followed by an
+ * <svg> start tag.
+ *
+ * This is a best-effort tokenizer, not an XML parser. Each skippable token is
+ * consumed exactly once and in order, because a single regular expression or
+ * separate stripping passes could backtrack into a different tokenization
+ * (e.g. a comment stretching to a later '-->') than a real parser sees. Quoted
+ * literals in the doctype are skipped, and a doctype with an internal subset
+ * ('[...]') is deliberately not recognized, which makes the file fail the
+ * check. Parsing the subset correctly is not worth it, and such SVGs (e.g.
+ * older Illustrator exports with <!ENTITY> declarations) would not survive the
+ * SvgSanitizer anyway, as it reparses them as HTML and leaves stray ']>'
+ * text behind. Whitespace is matched as in XML (space, tab, CR, LF), not with
+ * the wider '\s'. The namespace of the root element is not checked.
+ */
+function hasSvgRootElement(text: string): boolean {
+    const skippable =
+        /[ \t\r\n]*(?:<\?[\s\S]*?\?>|<!--[\s\S]*?-->|<!DOCTYPE(?:[^>[\]"']|"[^"]*"|'[^']*')*>)/y;
+    let position = 0;
+    for (;;) {
+        skippable.lastIndex = position;
+        if (!skippable.test(text)) {
+            break;
+        }
+        position = skippable.lastIndex;
+    }
+    const root = /[ \t\r\n]*<(?:[\w.-]+:)?svg[ \t\r\n>/]/y;
+    root.lastIndex = position;
+    return root.test(text);
+}
+
+/**
+ * magic-bytes.js detects an SVG that starts with an XML prolog as 'xml'
+ * instead of 'svg'. This is deliberately not a generic extension equivalence
+ * (see {@link magicByteEquivalents}): it only applies to a claimed '.svg'
+ * (the only extension for which the SvgSanitizer runs), and only if the file
+ * looks like an XML document with an <svg> root element (see
+ * {@link hasSvgRootElement}).
+ *
+ * This is a heuristic that keeps unrelated XML out, not a security boundary:
+ * the SvgSanitizer is what makes accepted SVGs safe. Note that it does not
+ * make a claimed '.xml' stricter: an SVG with a prolog uploaded as '.xml' is
+ * detected as 'xml' and thus matches directly, without being sanitized (only
+ * relevant if 'xml' is in the contentWhitelist).
+ *
+ * @param data the first bytes of the file; the caller caps this at 1024
+ * bytes, which also bounds the cost of the tokenizer
+ */
+function isSvgWithXmlProlog(
+    data: Buffer,
+    claimedExt: string,
+    detectedExtensions: string[]
+): boolean {
+    return (
+        claimedExt === 'svg' &&
+        detectedExtensions.includes('xml') &&
+        hasSvgRootElement(data.toString('utf8'))
+    );
 }
 
 /**

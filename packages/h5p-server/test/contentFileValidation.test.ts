@@ -358,6 +358,110 @@ describe('validateContent', () => {
         await rm(tmpDir, { recursive: true, force: true });
     });
 
+    it('accepts SVGs with and without an XML prolog', async () => {
+        const body =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>';
+        const files: H5PFile[] = [body, `<?xml version="1.0"?>\n${body}`].map(
+            (content) => {
+                const data = Buffer.from(content);
+                return {
+                    name: 'image.svg',
+                    data,
+                    mimetype: 'image/svg+xml',
+                    size: data.length
+                };
+            }
+        );
+        for (const file of files) {
+            // eslint-disable-next-line no-await-in-loop
+            await expect(validateContent(file)).resolves.toBeUndefined();
+        }
+    });
+
+    it('rejects real XML claiming to be .svg and prolog-less SVG claiming to be .xml', async () => {
+        const makeFile = (name: string, content: string): H5PFile => {
+            const data = Buffer.from(content);
+            return { name, data, mimetype: 'text/xml', size: data.length };
+        };
+        await expect(
+            validateContent(
+                makeFile('data.svg', '<?xml version="1.0"?><note><to/></note>')
+            )
+        ).rejects.toMatchObject({ errorId: 'upload-validation-error' });
+        await expect(
+            validateContent(
+                makeFile(
+                    'data.xml',
+                    '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+                )
+            )
+        ).rejects.toMatchObject({ errorId: 'upload-validation-error' });
+    });
+
+    it('documents that an SVG with a prolog named .xml is accepted as xml', async () => {
+        // Unchanged behaviour: detected as 'xml', so it matches the claimed
+        // .xml directly. Not sanitized, but only reachable if 'xml' is in
+        // the contentWhitelist.
+        const data = Buffer.from(
+            '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"/>'
+        );
+        await expect(
+            validateContent({
+                name: 'data.xml',
+                data,
+                mimetype: 'text/xml',
+                size: data.length
+            })
+        ).resolves.toBeUndefined();
+    });
+
+    it('only accepts prolog SVGs whose root element is <svg>', async () => {
+        const makeFile = (content: string): H5PFile => {
+            const data = Buffer.from(content);
+            return {
+                name: 'image.svg',
+                data,
+                mimetype: 'image/svg+xml',
+                size: data.length
+            };
+        };
+        const accepted = [
+            '<?xml version="1.0"?><svg/>',
+            '<?xml version="1.0"?><!-- c --><!DOCTYPE svg><svg width="1"/>',
+            '<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg/>',
+            '<?xml version="1.0"?><svg:svg xmlns:svg="http://www.w3.org/2000/svg"/>'
+        ];
+        const rejected = [
+            // <svg> only inside a comment / not the root
+            '<?xml version="1.0"?><html xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script><!-- <svg> --></html>',
+            '<?xml version="1.0"?><html><svg></svg></html>',
+            // comment/PI delimiters that confuse multi-pass stripping
+            '<?xml version="1.0"?><!--<?--><html xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script><!--?>--><svg/></html>',
+            // internal DTD subset is not supported
+            '<?xml version="1.0"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "x.dtd" [<!ENTITY a "b">]><svg/>',
+            // non-breaking space is not XML whitespace
+            '<?xml version="1.0"?>\u00a0<svg/>',
+            // XML is case-sensitive
+            '<?xml version="1.0"?><SVG/>',
+            // '>' / ']>' in doctype literals or subset must not end the doctype
+            '<?xml version="1.0"?><!DOCTYPE x SYSTEM "a><svg "><html xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script></html>',
+            '<?xml version="1.0"?><!DOCTYPE x [<!ENTITY e "]><svg ">]><html xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script></html>',
+            '<?xml version="1.0"?><!DOCTYPE x [<!-- ]><svg  -->]><html xmlns="http://www.w3.org/1999/xhtml"><script>alert(1)</script></html>'
+        ];
+        for (const content of accepted) {
+            // eslint-disable-next-line no-await-in-loop
+            await expect(
+                validateContent(makeFile(content))
+            ).resolves.toBeUndefined();
+        }
+        for (const content of rejected) {
+            // eslint-disable-next-line no-await-in-loop
+            await expect(
+                validateContent(makeFile(content))
+            ).rejects.toMatchObject({ errorId: 'upload-validation-error' });
+        }
+    });
+
     it('validates file.data when buffer is present', async () => {
         const pngHeader = Buffer.from([
             0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00,
@@ -590,6 +694,11 @@ describe('extensionMatchesDetected', () => {
     it('matches residual equivalents (png ↔ apng)', () => {
         expect(extensionMatchesDetected('png', ['apng'])).toBe(true);
         expect(extensionMatchesDetected('apng', ['png'])).toBe(true);
+    });
+
+    it('does not treat svg and xml as generic equivalents', () => {
+        expect(extensionMatchesDetected('svg', ['xml'])).toBe(false);
+        expect(extensionMatchesDetected('xml', ['svg'])).toBe(false);
     });
 
     it('rejects unrelated extensions', () => {
