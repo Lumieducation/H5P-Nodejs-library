@@ -278,6 +278,24 @@ jobs:
                   parallel: true
                   path-to-lcov: ./packages/h5p-html-exporter/coverage/lcov.info
 
+    consumer-smoke-test:
+        needs: install-build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            # Deliberately the exact minimum supported Node version (the
+            # `require(esm)` boundary): a newer Node would not reveal an
+            # ERR_REQUIRE_ESM regression in the published packages.
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22.12.0'
+            - uses: actions/download-artifact@v4
+              with:
+                  name: workspace
+            - name: Extract workspace
+              run: tar -xzf workspace.tar.gz
+            - run: EXPECT_NODE=22.12.0 scripts/consumer-smoke-test.sh
+
     db-tests:
         needs: install-build
         runs-on: ubuntu-latest
@@ -348,6 +366,7 @@ jobs:
             - integration-tests
             - db-tests
             - e2e-tests
+            - consumer-smoke-test
         if: github.ref == 'refs/heads/release'
         runs-on: ubuntu-latest
         permissions:
