@@ -263,6 +263,43 @@ describe('Express Ajax endpoint adapter', () => {
         );
     });
 
+    it('should send the MIME type as Content-Type for range requests', async () => {
+        const installResult =
+            await h5pEditor.packageImporter.addPackageLibrariesAndContent(
+                path.resolve('test/data/validator/valid2.h5p'),
+                user
+            );
+        const mockApp = supertest(app);
+
+        const full = await mockApp.get(
+            `/content/${installResult.id}/earth.jpg`
+        );
+        const partial = await mockApp
+            .get(`/content/${installResult.id}/earth.jpg`)
+            .set('Range', 'bytes=0-99');
+        expect(full.status).toBe(200);
+        expect(partial.status).toBe(206);
+        expect(partial.headers['content-type']).toBe(
+            full.headers['content-type']
+        );
+        expect(partial.headers['content-type']).toMatch(/^image\/jpeg/);
+
+        const upload = await mockApp
+            .post('/ajax?action=files')
+            .field('contentId', installResult.id)
+            .field('field', JSON.stringify({ name: 'image', type: 'image' }))
+            .attach(
+                'file',
+                path.resolve('test/data/sample-content/content/earth.jpg')
+            );
+        expect(upload.status).toBe(200);
+        const tempPartial = await mockApp
+            .get(`/temp-files/${JSON.parse(upload.text).path}`)
+            .set('Range', 'bytes=0-99');
+        expect(tempPartial.status).toBe(206);
+        expect(tempPartial.headers['content-type']).toMatch(/^image\/jpeg/);
+    });
+
     it('should allow uploads for existing content', async () => {
         const installResult =
             await h5pEditor.packageImporter.addPackageLibrariesAndContent(
