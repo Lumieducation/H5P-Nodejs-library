@@ -84,6 +84,13 @@ npm run format                # Prettier fix
 
 Build `h5p-server` first — everything else depends on it.
 
+**Fresh checkouts and git worktrees** have no `node_modules`, builds or
+downloaded test content. `scripts/worktree-setup.sh` (idempotent; run
+automatically by the Claude Code `SessionStart` hook in `.claude/settings.json`)
+does `npm ci`, `npm run setup` and `npm run download:content`. Run it by hand if
+tests fail with `unable-to-unzip`, missing modules or missing builds. Note that
+`npm run setup` does not download the Hub examples the integration tests need.
+
 **Running tests for a single file:** The root `vitest.config.ts` configures
 Vitest. Always run vitest from the **repo root**:
 
