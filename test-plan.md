@@ -123,11 +123,17 @@ Bugs found and filed:
 
 - [Lumieducation/H5P-Nodejs-library#4618](https://github.com/Lumieducation/H5P-Nodejs-library/issues/4618) -
   206 responses send the filename as `Content-Type` (pre-existing, not an
-  Express 5 regression). No test covers the 206 `Content-Type` header.
+  Express 5 regression). **Fixed in
+  [#4645](https://github.com/Lumieducation/H5P-Nodejs-library/pull/4645)**
+  with a regression test for both the content and temp-file routes.
 - [#4619](https://github.com/Lumieducation/H5P-Nodejs-library/issues/4619) -
   SVG uploads accepted or rejected depending on the presence of an XML
   prolog; `validateContent()` runs before the sanitizers, so prolog-bearing
-  SVGs never reach `SvgSanitizer`.
+  SVGs never reach `SvgSanitizer`. **Fixed in #4645** (a prolog SVG with an
+  `<svg>` root is accepted and sanitized). Follow-ups filed for what the fix
+  deliberately does not cover: #4644 (UTF-8 BOM before the prolog) and #4643
+  (validator misses dangerous content behind a leading comment,
+  pre-existing).
 - [#4620](https://github.com/Lumieducation/H5P-Nodejs-library/issues/4620) -
   Hub registration is sent as JSON while the content-types call is
   form-urlencoded.

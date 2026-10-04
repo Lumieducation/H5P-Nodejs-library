@@ -150,6 +150,13 @@ _(#4386)_
 - `h5p-svg-sanitizer`: SVGs uploaded as extensionless temp files were
   silently returned as `Ignored` — i.e. unsanitized — in exactly the setup
   the docs recommend for malware scanning. **Security-relevant.** (#4600)
+- `h5p-express`: range (206) responses for content and temporary files sent
+  the request path as `Content-Type` instead of the MIME type, which broke
+  seeking in audio/video (compounded by `nosniff`). Fixes #4618. (#4645)
+- `h5p-server`: SVG uploads that start with an XML prolog (`<?xml …?>`, what
+  most tools emit) were rejected as a content/extension mismatch and never
+  reached the `SvgSanitizer`; they are now accepted (if `svg` is whitelisted)
+  and sanitized like prolog-less SVGs. Fixes #4619. (#4645)
 
 ## Internal / maintenance
 
@@ -242,37 +249,25 @@ Also verified against the live Hub and a running server:
 
 ### Known issues (pre-existing, not regressions)
 
-**206 responses send the filename as `Content-Type`.** In
-`H5PAjaxExpressController`, `getContentFile` and `getTemporaryContentFile`
-pass the joined filename as the first argument of
-`pipeStreamToPartialResponse(mimetype, …)` instead of the `mimetype` they
-already destructured — so a range request yields
-`Content-Type: images/range-test.bin`. The non-range branch is correct. This
-affects seeking in audio/video, and is compounded by `nosniff`. Present
-since before v10.0.5 (the Express 5 commit only changed `req.params.file` to
-`.join('/')`), but it ships in this major release and the fix is one line
-per call site. No test covers the 206 `Content-Type` header.
-
-**Hub registration sends JSON, content-types sends form-urlencoded.**
+**Hub registration sends JSON, content-types sends form-urlencoded** (#4620).
 `compileRegistrationData()` is passed to axios as a plain object, so the POST
 to `hubRegistrationEndpoint` goes out as `application/json`, unlike the
 form-encoded content-types call and unlike the PHP reference implementation.
 hub-api.h5p.org accepts it today, but the asymmetry looks unintentional and
 is undocumented.
 
-### Known inconsistency (not a regression, worth noting)
+### Known limitations of SVG upload validation (not regressions)
 
-SVG uploads are accepted or rejected depending on whether the file begins
-with an XML prolog, because `magic-bytes.js` reports `svg` for content
-starting `<svg` but `xml` for content starting `<?xml`, and only the former
-matches the claimed `.svg` extension:
+Prolog-bearing SVGs (`<?xml …?><svg …>`) are accepted since #4645 (#4619):
+a claimed `.svg` that `magic-bytes.js` detects as `xml` is accepted if its
+root element is `<svg>`. This is a best-effort check; the `SvgSanitizer` is
+the security boundary. Not covered:
 
-| content starts with | detected as | result (with `svg` whitelisted)     |
-| ------------------- | ----------- | ----------------------------------- |
-| `<svg …>`           | `svg`       | accepted, then sanitized            |
-| `<?xml …?><svg …>`  | `xml`       | rejected, `upload-validation-error` |
-
-Since `validateContent()` runs _before_ the sanitizers, prolog-bearing SVGs
-are rejected rather than cleaned — and most tools emit the prolog form.
-Consider adding an `xml`/`svg` pair to `magicByteEquivalents` in
-`contentFileValidation.ts`.
+- An SVG with a UTF-8 BOM before the prolog is still rejected (#4644).
+- A doctype with an internal subset (`<!DOCTYPE svg [ <!ENTITY … > ]>`, as in
+  older Illustrator exports) is still rejected.
+- The validator does not catch dangerous XML/SVG hidden behind a leading
+  `<!-- … -->` comment (#4643, pre-existing).
+- An SVG with a prolog uploaded as `.xml` is accepted unsanitized
+  (pre-existing; only reachable if `xml` is added to `contentWhitelist`,
+  which is not in the default).
