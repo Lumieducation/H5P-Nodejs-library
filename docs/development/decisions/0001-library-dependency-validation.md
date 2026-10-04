@@ -257,6 +257,8 @@ rather than merely fail clearly, and it can be adopted later without undoing A.
   same silent failure this decision set out to fix, just on the other half of
   the import path. It now throws an `AggregateH5pError` with one
   `missing-main-library` or `missing-required-library` entry per missing
-  library (mirroring `h5p.classes.php:1074-1078`), alongside an
-  `install-missing-libraries` entry kept for backward compatibility with
-  downstream code that matches on that code.
+  library (mirroring `h5p.classes.php:1074-1078`). The aggregate itself keeps
+  the `install-missing-libraries` error ID, so downstream code that matches
+  on the top-level error ID still works, and carries the `VALIDATION_FAILED`
+  client error code like the validator path. This content-level check always
+  runs, independently of `validateLibraryDependencies`.

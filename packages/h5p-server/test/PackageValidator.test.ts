@@ -3,6 +3,7 @@ import { dir } from 'tmp-promise';
 import { readFile, rm, writeFile } from 'fs/promises';
 
 import H5PConfig from '../src/implementation/H5PConfig';
+import { IH5PConfig } from '../src/types';
 import PackageImporter from '../src/PackageImporter';
 import PackageValidator from '../src/PackageValidator';
 import { validatePackage } from './helpers/PackageValidatorHelper';
@@ -462,6 +463,68 @@ describe('validating H5P files', () => {
         } finally {
             await rm(tempDirPath, { recursive: true, force: true });
         }
+    });
+
+    async function validateWithAddedDependency(
+        config: IH5PConfig,
+        machineName: string
+    ): Promise<void> {
+        const { path: tempDirPath } = await dir();
+        try {
+            await PackageImporter.extractPackage(
+                path.resolve('test/data/validator/valid1.h5p'),
+                tempDirPath,
+                {
+                    includeContent: true,
+                    includeLibraries: true,
+                    includeMetadata: true
+                }
+            );
+            const libraryJsonPath = path.join(
+                tempDirPath,
+                'H5P.Blanks-1.11',
+                'library.json'
+            );
+            const libraryMetadata = JSON.parse(
+                await readFile(libraryJsonPath, 'utf-8')
+            );
+            libraryMetadata.preloadedDependencies.push({
+                machineName,
+                majorVersion: 1,
+                minorVersion: 0
+            });
+            await writeFile(
+                libraryJsonPath,
+                JSON.stringify(libraryMetadata),
+                'utf-8'
+            );
+            await new PackageValidator(config, {
+                isPatchedLibrary: () => Promise.resolve(undefined),
+                libraryExists: () => Promise.resolve(false),
+                getNotInstalledLibraries: (libraries) =>
+                    Promise.resolve(libraries)
+            } as any).validateExtractedPackage(tempDirPath);
+        } finally {
+            await rm(tempDirPath, { recursive: true, force: true });
+        }
+    }
+
+    it('reports dependencies with a hyphen in the machine name as missing instead of crashing', async () => {
+        await expect(
+            validateWithAddedDependency(new H5PConfig(null), 'H5P.Foo-Bar')
+        ).rejects.toThrow(
+            'package-validation-failed:missing-required-library (library: H5P.Foo-Bar-1.0)'
+        );
+    });
+
+    it('validates dependencies if validateLibraryDependencies is undefined', async () => {
+        const config = new H5PConfig(null);
+        config.validateLibraryDependencies = undefined;
+        await expect(
+            validateWithAddedDependency(config, 'H5P.Missing')
+        ).rejects.toThrow(
+            'package-validation-failed:missing-required-library (library: H5P.Missing-1.0)'
+        );
     });
 
     it('accepts packages with unsatisfiable dependencies if validateLibraryDependencies is turned off', async () => {

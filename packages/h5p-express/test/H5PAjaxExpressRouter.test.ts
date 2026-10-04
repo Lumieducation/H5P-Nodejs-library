@@ -414,6 +414,30 @@ describe('Express Ajax endpoint adapter', () => {
         ]);
     });
 
+    it('should return the missing libraries as details when uploading a package with unsatisfied library dependencies', async () => {
+        const uploadResult = await supertest(app)
+            .post(`/ajax?action=library-upload`)
+            .attach(
+                'h5p',
+                path.resolve(
+                    'test/data/validator/unsatisfied-library-dependency.h5p'
+                ),
+                {
+                    contentType: 'application/zip',
+                    filename: 'unsatisfied-library-dependency.h5p'
+                }
+            );
+        expect(uploadResult.status).toBe(400);
+        const body = JSON.parse(uploadResult.text);
+        expect(body.errorCode).toBe('VALIDATION_FAILED');
+        // The H5P hub client only displays the list if the details contain
+        // items with exactly this code.
+        expect(body.details).toContainEqual({
+            code: 'missing-required-library',
+            message: 'missing-required-library'
+        });
+    });
+
     it('should upload h5p packages successfully and make their temporary files accessible', async () => {
         const mockApp = supertest(app);
         const uploadResult = await mockApp

@@ -1882,7 +1882,7 @@ export interface IH5PConfig {
     uuid: string;
 
     /**
-     * If true (the default), packages are rejected at import time if a
+     * If true or undefined (the default), packages are rejected at import time if a
      * library inside the package declares a preloaded, editor or dynamic
      * dependency that is neither shipped inside the package nor already
      * installed on the system. Turning this off re-enables importing such
@@ -1892,7 +1892,7 @@ export interface IH5PConfig {
      * dependencies are satisfied, e.g. because you only import content to
      * view or export it. User-configurable.
      */
-    validateLibraryDependencies: boolean;
+    validateLibraryDependencies?: boolean;
 
     /**
      * Loads all changeable settings from storage. (Should be called when the

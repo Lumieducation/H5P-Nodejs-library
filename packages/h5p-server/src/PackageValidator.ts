@@ -233,7 +233,8 @@ export default class PackageValidator {
             .addRule(throwErrorsNowRule)
             .addRuleWhen(
                 this.libraryDependenciesMustBeSatisfied(libraryMetadataMap),
-                checkLibraries && this.config.validateLibraryDependencies
+                checkLibraries &&
+                    this.config.validateLibraryDependencies !== false
             )
             .addRule(throwErrorsNowRule)
             .addRule(this.returnTrue)
@@ -675,20 +676,24 @@ export default class PackageValidator {
             log.debug(`checking if all library dependencies can be satisfied`);
             const libraryMetadata = [...libraryMetadataMap.values()];
 
-            const librariesInPackage = new Set(
-                libraryMetadata.map((metadata) =>
-                    LibraryName.toUberName(metadata)
-                )
-            );
+            // LibraryName.toUberName throws for machine names that don't
+            // conform to the ubername format (e.g. ones containing a hyphen),
+            // although the library.json schema allows them in dependencies.
+            // Such a dependency can't be satisfied, so it must be reported as
+            // missing instead of crashing validation.
+            const toKey = (library: ILibraryName): string =>
+                `${library.machineName}-${library.majorVersion}.${library.minorVersion}`;
+
+            const librariesInPackage = new Set(libraryMetadata.map(toKey));
 
             const dependencies = new Map<string, ILibraryName>();
             for (const metadata of libraryMetadata) {
                 for (const dependency of (metadata.preloadedDependencies ?? [])
                     .concat(metadata.editorDependencies ?? [])
                     .concat(metadata.dynamicDependencies ?? [])) {
-                    const ubername = LibraryName.toUberName(dependency);
-                    if (!librariesInPackage.has(ubername)) {
-                        dependencies.set(ubername, dependency);
+                    const key = toKey(dependency);
+                    if (!librariesInPackage.has(key)) {
+                        dependencies.set(key, dependency);
                     }
                 }
             }
@@ -697,9 +702,7 @@ export default class PackageValidator {
                 await this.libraryManager.getNotInstalledLibraries([
                     ...dependencies.values()
                 ]);
-            for (const missingLibrary of missingLibraries
-                .map((library) => LibraryName.toUberName(library))
-                .sort()) {
+            for (const missingLibrary of missingLibraries.map(toKey).sort()) {
                 log.error(`missing required library ${missingLibrary}`);
                 error.addError(
                     new H5pError(

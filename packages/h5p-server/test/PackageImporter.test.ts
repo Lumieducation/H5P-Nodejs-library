@@ -238,7 +238,10 @@ describe('package importer', () => {
                 const errorIds = aggregateError
                     .getErrors()
                     .map((e) => e.errorId);
-                expect(errorIds).toContain('install-missing-libraries');
+                expect(errorIds).not.toContain('install-missing-libraries');
+                expect(aggregateError.clientErrorId).toEqual(
+                    'VALIDATION_FAILED'
+                );
                 expect(errorIds).toContain('missing-main-library');
                 expect(errorIds).not.toContain('missing-required-library');
                 const mainLibraryError = aggregateError
@@ -324,7 +327,10 @@ describe('package importer', () => {
                 const errorIds = aggregateError
                     .getErrors()
                     .map((e) => e.errorId);
-                expect(errorIds).toContain('install-missing-libraries');
+                expect(errorIds).not.toContain('install-missing-libraries');
+                expect(aggregateError.clientErrorId).toEqual(
+                    'VALIDATION_FAILED'
+                );
                 expect(errorIds).toContain('missing-required-library');
                 expect(errorIds).not.toContain('missing-main-library');
                 const requiredLibraryError = aggregateError

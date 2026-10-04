@@ -48,7 +48,7 @@ author didn't label it one:
 - **New required members on an interface** implementers provide (`IContentStorage`,
   `ILibraryStorage`, `ITemporaryFileStorage`, `IContentUserDataStorage`,
   `IPermissionSystem`, `ILockProvider`, `IFileSanitizer`, `IFileMalwareScanner`, …) —
-  every downstream implementation breaks. A new *optional* member does not.
+  every downstream implementation breaks. A new _optional_ member does not.
 - New required constructor parameters on `H5PEditor` / `H5PPlayer` / managers.
 - Changed config defaults in `H5PConfig`, renamed config keys, or changed env var names.
 - Changed HTTP routes, request/response shapes, or status codes in `h5p-express`.
@@ -83,7 +83,7 @@ For each one found: state what breaks, who it breaks for, and whether the PR han
 
 ### 3. Test coverage (hard requirement)
 
-Project rule: *every* piece of added functionality is covered by a test, *every* bug fix
+Project rule: _every_ piece of added functionality is covered by a test, _every_ bug fix
 ships a regression test, and all logical branches are covered.
 
 - Is there a test for each new behaviour, **and for each error/rejection branch**?
@@ -94,7 +94,7 @@ ships a regression test, and all logical branches are covered.
   tests under the integration config, E2E in `h5p-e2e`?
 - Do tests assert behaviour, or just that nothing threw? Snapshot-only changes that were
   regenerated without inspection are a finding.
-- Is new storage-interface behaviour tested against *all* implementations (filesystem
+- Is new storage-interface behaviour tested against _all_ implementations (filesystem
   **and** mongos3/S3), or only one?
 - Run the suite yourself when the change is non-trivial: `npx vitest run <name>` from the
   repo root, plus `npm run build` and `npm run lint`.
@@ -110,7 +110,11 @@ ships a regression test, and all logical branches are covered.
 - Code style: 4-space indent, single quotes, no param reassignment, `_`-prefixed unused
   params, `export default` for major classes, members ordered constructors → static →
   instance and public before private.
-- Scope: does the PR do one thing? Unrelated drive-by changes should be split out.
+- Scope: does the PR do one thing? Unrelated drive-by changes should be split out —
+  **except** tooling and agent configuration (`.claude/`, `.mcp.json`, scripts for
+  working on the repo). The maintainer deliberately lets these ride along in whatever PR
+  needs them, instead of requiring a separate `chore:` PR. Do not flag them as out of
+  scope.
 
 ### 5. Documentation
 
@@ -130,15 +134,19 @@ ships a regression test, and all logical branches are covered.
 **Test coverage:** Adequate | Gaps: <one line>
 
 ### Blocking
+
 1. `path/to/File.ts:123` — <what is wrong, why it matters, what would fix it>
 
 ### Non-blocking
+
 - `path/to/File.ts:45` — <suggestion>
 
 ### Questions
+
 - <thing you could not verify from the diff>
 
 ### Looks good
+
 - <what the PR does well — be specific, skip if nothing>
 ```
 
