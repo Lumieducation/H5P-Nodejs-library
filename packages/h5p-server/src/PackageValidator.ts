@@ -13,7 +13,7 @@ import {
     throwErrorsNowRule,
     ValidatorBuilder
 } from './helpers/ValidatorBuilder';
-import { IH5PConfig, ILibraryName } from './types';
+import { IH5PConfig, ILibraryMetadata, ILibraryName } from './types';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
 
@@ -162,7 +162,7 @@ export default class PackageValidator {
         // validated library.json content) and consumed by
         // libraryDependenciesMustBeSatisfied, so library.json files are only
         // read and parsed once per package validation run.
-        const libraryMetadataMap = new Map<string, any>();
+        const libraryMetadataMap = new Map<string, ILibraryMetadata>();
 
         const result = await new ValidatorBuilder()
             .addRule(
@@ -661,7 +661,7 @@ export default class PackageValidator {
      * @returns the rule
      */
     private libraryDependenciesMustBeSatisfied(
-        libraryMetadataMap: Map<string, any>
+        libraryMetadataMap: Map<string, ILibraryMetadata>
     ): (
         filenames: string[],
         pathPrefix: string,
@@ -727,7 +727,7 @@ export default class PackageValidator {
     private librariesMustBeValid =
         (
             skipInstalledLibraries: boolean,
-            libraryMetadataMap: Map<string, any>
+            libraryMetadataMap: Map<string, ILibraryMetadata>
         ) =>
         async (
             filenames: string[],
@@ -1023,7 +1023,7 @@ export default class PackageValidator {
      */
     private collectLibraryMetadata(
         ubername: string,
-        libraryMetadataMap?: Map<string, any>
+        libraryMetadataMap?: Map<string, ILibraryMetadata>
     ): (
         { filenames, jsonData }: { jsonData: any; filenames: string[] },
         pathPrefix: string,
@@ -1060,7 +1060,7 @@ export default class PackageValidator {
         pathPrefix: string,
         error: AggregateH5pError,
         skipInstalledLibraries: boolean,
-        libraryMetadataMap?: Map<string, any>
+        libraryMetadataMap?: Map<string, ILibraryMetadata>
     ): Promise<{ hasIcon: boolean; language: any; semantics: any } | boolean> {
         try {
             log.debug(`validating library ${ubername}`);

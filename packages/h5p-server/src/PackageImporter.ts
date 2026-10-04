@@ -334,7 +334,10 @@ export default class PackageImporter {
                     // "H5P.Example-1.0", the LibraryName.toUberName default).
                     // Compare using the whitespace format on both sides so
                     // the check doesn't silently fail because of the
-                    // difference in separator.
+                    // difference in separator. If mainLibrary isn't among the
+                    // content's preloadedDependencies, toUbername returns
+                    // undefined and every missing library is reported as
+                    // missing-required-library, which is acceptable.
                     const mainLibraryUbername =
                         ContentMetadata.toUbername(metadata);
                     const missingLibrariesReplacement = {
