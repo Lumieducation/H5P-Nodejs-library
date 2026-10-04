@@ -1,0 +1,15 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/worktree-setup.sh >&2",
+                        "timeout": 900
+                    }
+                ]
+            }
+        ]
+    }
+}
