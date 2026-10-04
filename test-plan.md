@@ -81,13 +81,14 @@ configuration, so these permutations need a human (or a future spec):
 
 ### Consumer-facing checks
 
-- [ ] **Upgrade smoke test on a fresh consumer project.** Our own CI only
-      ever validates the packages from inside this monorepo. Install the
-      built tarballs into a scratch project and check: a CJS `require()`
-      consumer on the _exact_ minimum Node version (currently 22.12.0, the
-      `require(esm)` boundary - a newer Node will not reveal an
-      `ERR_REQUIRE_ESM` regression), and a React app using `h5p-react` to
-      confirm the JSX typing in `declare module 'react'` resolves.
+- [x] **Upgrade smoke test on a fresh consumer project** - automated by
+      `scripts/consumer-smoke-test.sh`, run by the `consumer-smoke-test` CI
+      job on the exact minimum Node version (22.12.0, the `require(esm)`
+      boundary). It packs the publishable packages, installs the tarballs
+      into a scratch project, `require()`s every server package and
+      type-checks a React 19 consumer of `h5p-react` (including the
+      `declare module 'react'` JSX augmentation). Run it locally after
+      `npm run build` with `EXPECT_NODE=22.12.0 scripts/consumer-smoke-test.sh`.
 
 ## Status of the v11.0.0 pre-release pass
 
@@ -140,16 +141,23 @@ Bugs found and filed:
 
 Still open for this release:
 
-- [ ] S3/Mongo range requests and streaming. **The highest-priority gap**:
+- [x] S3/Mongo range requests and streaming. Storage-level range reads
+      (including `rangeStart=0`) and destroying a stream before it is fully
+      read are now covered in `S3TemporaryFileStorage.test.ts` and
+      `MongoS3ContentStorage.test.ts` (`db-tests`). Still only checked by
+      hand: a real player seeking in a long video and the
+      `ERR_HTTP_HEADERS_SENT` handler. Originally the highest-priority gap:
       all three fixes here (`rangeStart=0` in `MongoS3ContentStorage` /
       `S3TemporaryFileStorage`, the `ERR_HTTP_HEADERS_SENT` handler, and
       s3-stream destroy on close) live in code paths that the filesystem
       runs above never touched.
-- [ ] Consumer upgrade smoke test (Node 22.12 exactly / Express 5 / React 19).
+- [x] Consumer upgrade smoke test (Node 22.12 exactly / Express 5 / React 19) -
+      now the `consumer-smoke-test` CI job.
 - [x] HTML export after the `uglify-js` -> `esbuild` swap: export a
       JS-heavy content type (Course Presentation, Interactive Video) and
       watch for console errors from mis-minified core code.
-- [ ] Browser-level check that the editor _surfaces_ upload rejections
+- [x] Browser-level check that the editor _surfaces_ upload rejections - now
+      `test/specs/upload-rejection.spec.ts` (#4623). Original note: browser-level check that the editor _surfaces_ upload rejections
       instead of hanging on a spinner. The server side is verified (see
       above), but nothing drives a _failing_ upload through the UI. Note
       that a spec for this has to deal with the shared console-error
