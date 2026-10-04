@@ -24,7 +24,7 @@ services:
             ME_CONFIG_BASICAUTH: false
 
     minio:
-        image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+        image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
         volumes:
             - minio_data:/data
         ports:
