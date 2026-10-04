@@ -34,7 +34,7 @@
         "dotenv": "^17.0.0",
         "express": "5.2.1",
         "express-fileupload": "^1.4.0",
-        "fs-extra": "11.4.0",
+        "fs-extra": "11.4.1",
         "i18next": "26.4.2",
         "i18next-fs-backend": "2.6.8",
         "i18next-http-middleware": "3.9.9",
