@@ -54,7 +54,7 @@ export default class H5PAjaxExpressController {
             );
         if (range) {
             this.pipeStreamToPartialResponse(
-                (req.params.file as unknown as string[]).join('/'),
+                mimetype,
                 stream,
                 res,
                 stats.size,
@@ -132,7 +132,7 @@ export default class H5PAjaxExpressController {
             );
         if (range) {
             this.pipeStreamToPartialResponse(
-                (req.params.file as unknown as string[]).join('/'),
+                mimetype,
                 stream,
                 res,
                 stats.size,
