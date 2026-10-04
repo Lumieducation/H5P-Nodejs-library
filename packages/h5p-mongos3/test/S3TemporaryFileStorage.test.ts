@@ -8,7 +8,8 @@ import path from 'path';
 import { BufferWritableMock } from 'stream-mock';
 import promisepipe from 'promisepipe';
 import { createReadStream } from 'fs';
-import { stat } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
+import { buffer } from 'stream/consumers';
 
 import User from './User';
 import initS3 from '../src/initS3';
@@ -81,6 +82,66 @@ describe('S3TemporaryFileStorage', () => {
         mockWriteStream1.on('finish', onFinish1);
         await promisepipe(returnedStream, mockWriteStream1);
         expect(onFinish1).toHaveBeenCalled();
+    });
+
+    it('returns the requested byte ranges of a file', async () => {
+        const filename = 'testfile1.jpg';
+        await storage.saveFile(
+            filename,
+            createReadStream(stubImagePath),
+            stubUser,
+            new Date()
+        );
+        const original = await readFile(stubImagePath);
+
+        // a range starting at byte 0 must not be mistaken for "no range"
+        const first = await buffer(
+            await storage.getFileStream(filename, stubUser, 0, 9)
+        );
+        expect(first.equals(original.subarray(0, 10))).toBe(true);
+
+        const middle = await buffer(
+            await storage.getFileStream(filename, stubUser, 100, 199)
+        );
+        expect(middle.equals(original.subarray(100, 200))).toBe(true);
+
+        const last = await buffer(
+            await storage.getFileStream(
+                filename,
+                stubUser,
+                original.length - 10,
+                original.length - 1
+            )
+        );
+        expect(last.equals(original.subarray(original.length - 10))).toBe(true);
+
+        const whole = await buffer(
+            await storage.getFileStream(filename, stubUser)
+        );
+        expect(whole.equals(original)).toBe(true);
+    });
+
+    it('lets the caller destroy a stream before it was fully read', async () => {
+        const filename = 'testfile1.jpg';
+        await storage.saveFile(
+            filename,
+            createReadStream(stubImagePath),
+            stubUser,
+            new Date()
+        );
+        const stream = await storage.getFileStream(filename, stubUser, 0, 99);
+        const closed = new Promise<void>((resolve) => {
+            stream.on('close', () => resolve());
+        });
+        stream.destroy();
+        await closed;
+        expect(stream.destroyed).toBe(true);
+
+        // the storage must remain usable after an aborted read
+        const next = await buffer(
+            await storage.getFileStream(filename, stubUser, 0, 9)
+        );
+        expect(next.length).toBe(10);
     });
 
     // TODO: This test is a bit fragile (sometimes it fails, sometimes it doesn't)
