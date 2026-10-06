@@ -39,13 +39,15 @@
         }
     },
     "H5P_Column": {
-        "title": "Interaktive Seite (Column)",
-        "summary": "Ordne mehrere H5P-Inhalte auf einer Seite untereinander an",
-        "description": "Kombiniere verschiedene Inhaltstypen mit der Interaktiven Seite. Inhaltstypen, die zusammengehören haben, werden so untereinander auf der gleichen Seite angezeigt. Es lassen sich fast alle vorhandenen H5P-Inhaltstypen kombinieren.",
+        "title": "Interaktive Seite (Page)",
+        "summary": "Ordne H5P-Inhalte in einem Seitenlayout an",
+        "description": "Ordne deine Inhaltstypen mit der Interaktiven Seite in einem Seitenlayout mit Zeilen und Spalten an. Inhaltstypen, die ähnliche Themen behandeln oder ein gemeinsames Thema haben, lassen sich so zu einem zusammenhängenden Lernerlebnis gruppieren. Darüber hinaus können Autoren kreativ werden, indem sie fast alle vorhandenen H5P-Inhaltstypen miteinander kombinieren.",
         "keywords": {
             "column": "Seite",
             "layout": "Layout",
-            "compound": "Kombination"
+            "compound": "Kombination",
+            "page": "Seite",
+            "row": "Zeile"
         }
     },
     "H5P_CoursePresentation": {
@@ -79,7 +81,7 @@
         "summary": "Erstelle komplexe Drag & Drop-Aufgaben mit Bildern",
         "description": "Die Zuordnungsaufgabe ermöglicht es dem Lernenden, zwei oder mehr Text- oder Bildelemente zuzuordnen und logische Verbindungen auf visuelle Weise herzustellen. Es werden Eins-zu-Eins-, Eins-zu-Viele-, Viele-zu-Eins- und Viele-zu-Viele-Beziehungen zwischen ziehbaren Elementen und Ablagezonen unterstützt.\n\nWenn du nur Wörter in einen Text ziehen möchtest, ist der Inhaltstyp „Wörter einordnen“ besser geeignet. Um ausschließlich Bilder zuzuordnen führt „Bilderpaare finden“ schneller zum Ziel. ",
         "keywords": {
-            "drag_and drop": "Zuordnen"
+            "drag_and_drop": "Zuordnen"
         }
     },
     "H5P_DragText": {
@@ -266,7 +268,7 @@
     "H5P_SpeakTheWords": {
         "title": "Wörter sprechen (einmal) (Speak the Words)",
         "summary": "Die Lernenden sagen Antworten in ihr Mikrofon (nur für Chrome)",
-        "description": "Du stellst den Lernenden eine Frage, deren Antwort sie in ihr Mikrofon sprechen. Die Spracherkennung des Browsers überprüft dann automatisch, ob die Antwort richtig war. Dies wird nur in Browsern unterstützt, die die Web Speech API implementieren (Chrome-Browser, außer unter iOS). Es ist möglich mehrere richtige Antworten einzugeben. Der Lernende kann sehen, als was seine Wörter interpretiert wurden und wie nah es an den richtigen Antworten war.",
+        "description": "Du stellst den Lernenden eine Frage, deren Antwort sie in ihr Mikrofon sprechen. Die Spracherkennung des Browsers überprüft dann automatisch, ob die Antwort richtig war. Dies wird nur in Browsern unterstützt, die die Web Speech API implementieren (Chrome-Browser, außer unter iOS). Es ist möglich mehrere richtige Antworten einzugeben. Die Lernenden können sehen, als was ihre Wörter interpretiert wurden und wie nah sie an den richtigen Antworten waren.",
         "keywords": {
             "language": "Sprache",
             "translation": "Übersetzung",
@@ -278,7 +280,7 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Bildüberblendung (Agamotto / Image Blender)",
+        "title": "Agamotto",
         "summary": "Präsentiere eine Folge von Bildern und Erklärungen",
         "description": "Präsentiere eine Folge von Bildern, die nacheinander betrachtet werden sollen, z.B. Fotos von etwas, das sich im Laufe der Zeit ändert, Schaltpläne oder Karten, die in verschiedenen Ebenen organisiert sind, oder Bilder, die immer mehr Details enthüllen. Die Lernenden können mit einem Schieberegler vom einem Bild zum nächsten wechseln.",
         "keywords": {
@@ -309,7 +311,7 @@
     "H5P_SpeakTheWordsSet": {
         "title": "Wörter sprechen (mehrere) (Speak the Words Set)",
         "summary": "Erstellen eine Reihe von Fragen, die per Sprache beantwortet werden (nur für Chrome)",
-        "description": "Du stellst den Lernenden eine Reihe von Fragen, deren Antwort sie in ihr Mikrofon sprechen. Die Spracherkennung des Browsers überprüft dann automatisch, ob die Antworten richtig war. Dies wird nur in Browsern unterstützt, die die Web Speech API implementieren (Chrome-Browser, außer unter iOS). Es ist möglich mehrere richtige Antworten einzugeben. Der Lernende kann sehen, als was seine Wörter interpretiert wurden und wie nah es an den richtigen Antworten war.",
+        "description": "Du stellst den Lernenden eine Reihe von Fragen, deren Antwort sie in ihr Mikrofon sprechen. Die Spracherkennung des Browsers überprüft dann automatisch, ob die Antworten richtig war. Dies wird nur in Browsern unterstützt, die die Web Speech API implementieren (Chrome-Browser, außer unter iOS). Es ist möglich mehrere richtige Antworten einzugeben. Die Lernenden können sehen, als was ihre Wörter interpretiert wurden und wie nah sie an den richtigen Antworten waren.",
         "keywords": {
             "language": "Sprache",
             "translation": "Übersetzung",
@@ -341,11 +343,11 @@
         }
     },
     "H5P_ImagePair": {
-        "title": "Bildpaare zuordnen (Image Pairing)",
+        "title": "Bildpaare zuordnen (Image Pair)",
         "summary": "Lasse die Lernenden die passenden Bilder verbinden",
         "description": "In diesem Inhaltstyp können die Lernenden Bildpaare zueinander zuordnen. Da die beide Bilder in einem Paar nicht identisch sein müssen, kannst du auch das Verständnis einer Beziehung zwischen zwei verschiedenen Bildern testen. ",
         "keywords": {
-            "image_images matching pair": "Bild Bilder passendes Paar"
+            "image_images_matching_pair": "Bild Bilder passendes Paar"
         }
     },
     "H5P_Dictation": {
@@ -368,7 +370,7 @@
         "description": "360° und normale Bilder können mit Interaktionen wie Erklärungen, Videos, Sounds und interaktiven Fragen angereichert werden. Die Bilder bilden Szenen, die auch miteinander verknüpft werden können, um dem Benutzer den Eindruck zu vermitteln, sich zwischen Orten oder zwischen verschiedenen Blickwinkeln innerhalb desselben Ortes zu bewegen."
     },
     "H5P_FindTheWords": {
-        "title": "Buchstabensalat (Find the words)",
+        "title": "Buchstabensalat (Find The Words)",
         "summary": "Lasse die Lernenden Wörter in einem Raster finden",
         "description": "In diesem Inhaltstyp kannst du eine Liste von Wörtern eingeben, die in einem Raster zufällig angeordnet werden. Die Aufgabe der Lernenden besteht darin, die Wörter im Raster zu finden und auszuwählen."
     },
@@ -420,13 +422,43 @@
         }
     },
     "H5P_MultiMediaChoice": {
-        "title": "Bildauswahl (Image Choice)",
-        "summary": "Die Lernenden wählen aus einer Auswahl die richtigen Bilder aus",
-        "description": "Erstellen Multiple- oder Single-Choice-Fragen, bei denen Bilder als Auswahlmöglichkeit angeboten werden. Du kannst das Layout für die Auswahlmöglichkeiten anpassen und zwischen festen Seitenverhältnissen wählen oder einfach die Seitenverhältnisse verwenden, die die Bilder bereits haben.",
+        "title": "Multimediaauswahl (Multimedia Choice)",
+        "summary": "Erstelle eine Aufgabe, bei der die Auswahlmöglichkeiten Multimedia-Elemente sind",
+        "description": "Erstelle ansprechende Multiple- oder Single-Choice-Fragen, bei denen jede Auswahlmöglichkeit ein Bild, ein Video oder eine Audiodatei sein kann. Du kannst das Layout für die Auswahlmöglichkeiten anpassen und zwischen festen Seitenverhältnissen wählen oder einfach die Seitenverhältnisse verwenden, die die Multimedia-Elemente standardmäßig haben.",
         "keywords": {
             "sorting": "Sortierung",
             "games": "Spiel",
             "tasks": "Aufgaben"
+        }
+    },
+    "H5P_Cornell": {
+        "title": "Cornell-Notizen (Cornell Notes)",
+        "summary": "Mache dir Notizen nach dem Cornell-System",
+        "description": "Zeige den Lernenden ein Video, einen Text oder eine Audiodatei und ermutige sie, sich dazu mit dem Cornell-System Notizen zu machen."
+    },
+    "H5P_ARScavenger": {
+        "title": "AR-Schnitzeljagd (AR Scavenger) (beta)",
+        "summary": "Spaß mit Augmented Reality!",
+        "description": "Lasse die Lernenden die Realität erkunden, die mit 3D-Modellen oder H5P-Aufgaben erweitert wird. Du kannst Marker festlegen, die QR-Codes ähneln und die die Lernenden mit der Kamera ihres Geräts scannen können. Diese Marker können ein 3D-Modell deiner Wahl in das Kamerabild einblenden oder eine H5P-Interaktion anzeigen."
+    },
+    "H5P_StructureStrip": {
+        "title": "Strukturstreifen (Structure Strip)",
+        "summary": "Erstelle einen interaktiven Strukturstreifen",
+        "description": "Ein Strukturstreifen wird traditionell neben ein Blatt Papier gelegt (oder sogar daraufgeklebt). Er gibt den Lernenden ein Gerüst für einen Text und hilft ihnen, die Länge der einzelnen Textabschnitte im richtigen Verhältnis zueinander zu halten. Mit dem Strukturstreifen kannst du denselben Ansatz jetzt auch in H5P ohne Papier nutzen."
+    },
+    "H5P_InfoWall": {
+        "title": "Info-Wand (Information Wall)",
+        "summary": "Erstelle Informationspanels, die Benutzer nach relevanten Schlagwörtern filtern können",
+        "description": "Ermögliche es den Benutzern, alle Informationen bequem zu durchsuchen oder nach Schlagwörtern zu filtern, um gezielt nach bestimmten Informationen zu suchen. Als Autor kannst du eine Vorlage für die Panels festlegen, pro Panel ein Bild hinzufügen usw."
+    },
+    "H5P_GameMap": {
+        "title": "Spielkarte (Game Map)",
+        "summary": "Lasse die Lernenden ihre Aufgaben auf einer Spielkarte auswählen",
+        "description": "Eine Spielkarte besteht aus Stationen, die du auf einem Hintergrundbild anordnen kannst. Jede Station ist mit einer oder mehreren weiteren Stationen verbunden und kann einen H5P-Inhaltstyp enthalten, den die Benutzer ansehen oder bearbeiten. Du kannst Regeln festlegen, die bestimmen, zu welcher Station die Benutzer wechseln dürfen, sodass ein spielerisches Erlebnis entsteht.",
+        "keywords": {
+            "game": "Spiel",
+            "map": "Karte",
+            "gamification": "Gamification"
         }
     }
 }

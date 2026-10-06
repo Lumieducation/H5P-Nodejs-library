@@ -7,7 +7,9 @@
 set -e
 cd "$(dirname "$0")/.."
 
-if [ ! -d node_modules ]; then
+# Check for npm's install marker instead of the directory: tools like vitest
+# create node_modules/.vite in a fresh worktree, which would fake an install.
+if [ ! -f node_modules/.package-lock.json ]; then
     npm ci
 fi
 

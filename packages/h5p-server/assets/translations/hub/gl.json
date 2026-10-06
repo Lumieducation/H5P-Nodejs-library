@@ -11,7 +11,7 @@
     "H5P_ArithmeticQuiz": {
         "title": "Control de aritmética (Arithmetic Quiz)",
         "summary": "Cree controis aritméticos baseados en tempo",
-        "description": "Cree controis aritméticos consistentes en preguntas de escolla múltipla. Como autor, o único que ten que facer é decidir o tipo e duración do control. os usuarios poden seguir a puntuación e o tempo que levan ao responder ao control.",
+        "description": "Cree controis aritméticos consistentes en preguntas de escolla múltipla. Como autor, o único que ten que facer é decidir o tipo e duración do control. Os usuarios poden seguir a puntuación e o tempo que levan ao responder ao control.",
         "keywords": {
             "math": "matemáticas",
             "arithmetic_quiz": "control de aritmética",
@@ -32,20 +32,22 @@
     "H5P_Collage": {
         "title": "Colaxe (Collage)",
         "summary": "Cree unha colaxe de varias imaxes",
-        "description": "A ferramenta de colaxe permite organizar imaxes nunha composición calmante. ",
+        "description": "A ferramenta de colaxe permite organizar imaxes nunha composición calmante.",
         "keywords": {
             "collage": "colaxe",
             "image": "imaxe"
         }
     },
     "H5P_Column": {
-        "title": "Columna (Column)",
-        "summary": "Organice contido H5P disposto nunha columna",
-        "description": "Organice o seu tipo de contido nunha disposición de columna con H5P Column. Os tipos de contido que aborden material semellante ou compartan un tema común pódense agrupar agora para crear unha experiencia de aprendizaxe coherente. Alén disto, os autores son libres de combinar practicamente todos os tipos de contido H5P existentes.",
+        "title": "Páxina (Page)",
+        "summary": "Organice contido H5P nunha disposición de páxina",
+        "description": "Organice o seu contido nunha disposición de páxina con filas e columnas. Os tipos de contido que aborden material semellante ou compartan un tema común pódense agrupar agora para crear unha experiencia de aprendizaxe coherente. Ademais, os autores son libres de ser creativos combinando practicamente todos os tipos de contido H5P existentes.",
         "keywords": {
             "column": "columna",
             "layout": "disposición",
-            "compound": "composto"
+            "compound": "contido composto",
+            "page": "páxina",
+            "row": "fila"
         }
     },
     "H5P_CoursePresentation": {
@@ -77,15 +79,15 @@
     "H5P_DragQuestion": {
         "title": "Arrastrar e soltar (Drag and Drop)",
         "summary": "Cree tarefas de arrastrar e soltar con imaxes",
-        "description": "A pregunta de arrastrar e soltar permite que o alumnado asocie dous ou máis elementos e faga conexións lóxicas de forma visual. Cree preguntas de arrastrar e soltar empregando tanto texto como imaxes como alternativas que se poden arrastrar. As preguntas de arrrastrar e soltar en H5P permiten relacións un a un, un a moitos, moitos a un e moitos a moitos entre as preguntas e as respostas. ",
+        "description": "A pregunta de arrastrar e soltar permite que o alumnado asocie dous ou máis elementos e faga conexións lóxicas de forma visual. Cree preguntas de arrastrar e soltar empregando tanto texto como imaxes como alternativas que se poden arrastrar. As preguntas de arrastrar e soltar en H5P permiten relacións un a un, un a moitos, moitos a un e moitos a moitos entre as preguntas e as respostas.",
         "keywords": {
-            "drag_and drop": "arrastrar e soltar"
+            "drag_and_drop": "arrastrar e soltar"
         }
     },
     "H5P_DragText": {
         "title": "Arrastrar as palabras (Drag the Words)",
         "summary": "Cree tarefas de arrastrar e soltar baseadas en texto",
-        "description": "Arrastrar as palabras permite que os deseñadores de contido creen expresións textuais con fragmentos textuais ausentes. O usuario final arrastra un fragmento textual para o seu lugar axeitado para así formar unha expresión completa. Pódese empregar para comprobar se o usuario lembrar un texto que leu ou se entendeu algo. Axuda a que o usuario discorra sobre o texto. É moi doado crear unha tarefa de arrastrar as palabras. Só hai que escribir o texto e rodear as palabras que se poden arrastrar cun signo de asterisco como *palabraArrastrábel*.",
+        "description": "Arrastrar as palabras permite que os deseñadores de contido creen expresións textuais con fragmentos textuais ausentes. O usuario final arrastra un fragmento textual para o seu lugar axeitado para así formar unha expresión completa. Pódese empregar para comprobar se o usuario lembra un texto que leu ou se entendeu algo. Axuda a que o usuario discorra sobre o texto. É moi doado crear unha tarefa de arrastrar as palabras. Só hai que escribir o texto e rodear as palabras que se poden arrastrar cun signo de asterisco como *palabraArrastrábel*.",
         "keywords": {
             "drag": "arrastrar",
             "words": "palabras"
@@ -114,7 +116,7 @@
     "H5P_GuessTheAnswer": {
         "title": "Adiviñe a resposta (Guess the Answer)",
         "summary": "Cree unha imaxe cunha pregunta e unha resposta",
-        "description": "Este tipo de contente permite que os autores envíen unha imaxe e engadan unha descrición axeitada. Os usuarios finais poden adiviñar a pregunta e premer na barra de debaixo da imaxe para revelar a resposta correcta.",
+        "description": "Este tipo de contido permite que os autores envíen unha imaxe e engadan unha descrición axeitada. Os usuarios finais poden adiviñar a resposta e premer na barra de debaixo da imaxe para revelar a resposta correcta.",
         "keywords": {
             "guess": "adiviñar",
             "answer": "resposta"
@@ -122,7 +124,7 @@
     },
     "H5P_IFrameEmbed": {
         "title": "Embutidor de marcos (Iframe Embedder)",
-        "summary": "Embuta dede un URL ou conxunto de ficheiros",
+        "summary": "Embuta desde un URL ou conxunto de ficheiros",
         "description": "O embutidor de marcos facilita a creación dun H5P a partir de aplicacións en JavaScript xa existentes.",
         "keywords": {
             "embed": "embutir",
@@ -136,12 +138,12 @@
             "interactive": "interactivo",
             "video": "vídeo"
         },
-        "description": "Engada interactividade ao seu vídeo con explicacións, imaxes extra, táboas e preguntas de encher os ocos e escolla múltipla. As preguntas admiten adaptabilidade, o que significa que se pode saltar a outra parte do vídeo dependendo do que faga o usuario. Pódense engadir resumos interactivos ao final do vídeo. Os vídeos interactivos créanse e edítanse a ferramenta de creación de H5P nun navegador web normal."
+        "description": "Engada interactividade ao seu vídeo con explicacións, imaxes extra, táboas e preguntas de encher os ocos e escolla múltipla. As preguntas admiten adaptabilidade, o que significa que se pode saltar a outra parte do vídeo dependendo do que faga o usuario. Pódense engadir resumos interactivos ao final do vídeo. Os vídeos interactivos créanse e edítanse coa ferramenta de creación de H5P nun navegador web normal."
     },
     "H5P_MarkTheWords": {
         "title": "Marcar as palabras (Mark the Words)",
         "summary": "Cree unha tarefa na que os usuarios destacan palabras",
-        "description": "Marcar as palabras permite que os deseñadores de contidos creen expresións textuais cun conxunto definido de palabras correctas. O usuario final realza as palabras de acordo coa descrición da tarefa e recibe unha puntuación. Para o editor é moi doado crear un desafía de premer nas palabras. O editor escribe o texto e arrodea as palabras que o usuario debe premer, as respostas correctas, entre asteriscos, así: *palabraCorrecta*.",
+        "description": "Marcar as palabras permite que os deseñadores de contidos creen expresións textuais cun conxunto definido de palabras correctas. O usuario final realza as palabras de acordo coa descrición da tarefa e recibe unha puntuación. Para o editor é moi doado crear un desafío de premer nas palabras. O editor escribe o texto e arrodea as palabras que o usuario debe premer, as respostas correctas, entre asteriscos, así: *palabraCorrecta*.",
         "keywords": {
             "mark": "marcar",
             "words": "palabras"
@@ -182,10 +184,10 @@
         "keywords": {
             "questionnaire": "cuestionario"
         },
-        "description": "Reciba valoracións e faga preguntas abertas en vídeos interactivos e outro tipo de contido con Cuestionario. Cuestionario permite que o usuario responda mediante unha integración xAPI. Isto significa que os propietarios do sitio web poden almacenar as preguntas de varias maneiras. As respostas pódense almacenar nun LRS, o almacenamento personalizado do sitio ou un script pode obter o enderezo de correo electrónico e empregalo para enviarlle unha mensaxe ao usuario. En H5P.org as respostas allmacénanse en Google Analytics."
+        "description": "Reciba valoracións e faga preguntas abertas en vídeos interactivos e outro tipo de contido con Cuestionario. Cuestionario permite que o usuario responda mediante unha integración xAPI. Isto significa que os propietarios do sitio web poden almacenar as respostas de varias maneiras. As respostas pódense almacenar nun LRS, o almacenamento personalizado do sitio ou un script pode obter o enderezo de correo electrónico e empregalo para enviarlle unha mensaxe ao usuario. En H5P.org as respostas almacénanse en Google Analytics."
     },
     "H5P_QuestionSet": {
-        "title": "Control (Question Set) (Control (Question Set))",
+        "title": "Conxunto de preguntas (Question Set)",
         "summary": "Cree unha secuencia de tipos de preguntas variados",
         "keywords": {
             "question_set": "conxunto de preguntas",
@@ -222,7 +224,7 @@
         }
     },
     "H5P_AudioRecorder": {
-        "description": "Unha gravadora de son en HTML5. Grave a súa voz e reprodúzaa ou descargue un ficheiro .wav da gravación. Empregue o engadido para H5P para crear unha gravadora de son en H5P para o seu sitio en Drupal, Wordpress ou Moodle. ",
+        "description": "Unha gravadora de son en HTML5. Grave a súa voz e reprodúzaa ou descargue un ficheiro .wav da gravación. Empregue o engadido para H5P para crear unha gravadora de son en H5P para o seu sitio en Drupal, Wordpress ou Moodle.",
         "title": "Gravadora de son (Audio Recorder)",
         "summary": "Cree unha gravación de son",
         "keywords": {
@@ -242,11 +244,11 @@
     "H5P_ImageHotspots": {
         "keywords": {
             "image": "imaxe",
-            "hotspot": "Punto de acceso"
+            "hotspot": "punto quente"
         },
-        "title": "Zonas de acceso de imaxes (zonas de acceso de imaxes)",
-        "summary": "Crea unha imaxe con varios puntos de acceso a información",
-        "description": "Os puntos de acceso con imaxes permiten crear unha imaxe con puntos de acceso interactivos. Cando o usuario preme un punto de acceso, móstrase unha ventá emerxente que contén un encabezado e texto ou vídeo. Usando o editor H5P, podes engadir tantos puntos de acceso como queiras."
+        "title": "Puntos quentes en imaxes (Image Hotspots)",
+        "summary": "Cree unha imaxe con varios puntos quentes informativos",
+        "description": "Os puntos quentes en imaxes permiten crear unha imaxe con puntos quentes interactivos. Cando o usuario preme un punto quente, móstrase unha ventá emerxente que contén un encabezado e texto ou vídeo. Usando o editor H5P, pode engadir tantos puntos quentes como queira."
     },
     "H5P_ImageJuxtaposition": {
         "title": "Xustaposición de imaxes (Image Juxtaposition)",
@@ -273,7 +275,7 @@
         }
     },
     "H5P_ImageSequencing": {
-        "description": "Un tipo de contido libre de sucesión de imaxes baseado en HTML5 que permite que os autores engadan unha secuencia de imaxes propias (e unha descrición opcional das imaxes) ao xogo nunha orde determinada. A orde das imaxes faise aleatoria e os xogadores deberán reorganizalas a partir da descrición da tarefa. ",
+        "description": "Un tipo de contido libre de sucesión de imaxes baseado en HTML5 que permite que os autores engadan unha secuencia de imaxes propias (e unha descrición opcional das imaxes) ao xogo nunha orde determinada. A orde das imaxes faise aleatoria e os xogadores deberán reorganizalas a partir da descrición da tarefa.",
         "title": "Sucesión de imaxes (Image Sequencing)",
         "summary": "Coloque imaxes na orde correcta",
         "keywords": {
@@ -283,7 +285,7 @@
         }
     },
     "H5P_Flashcards": {
-        "description": "Este tipo de contido permite que os autores creen unha tarxeta ou conxunto de tarxetas na que cada tarxeta ten imaxes emparelladas con preguntas e respostas. O alumnado debe encher o campo de texto e comprobaren se a solución e correcta.",
+        "description": "Este tipo de contido permite que os autores creen unha tarxeta ou conxunto de tarxetas na que cada tarxeta ten imaxes emparelladas con preguntas e respostas. O alumnado debe encher o campo de texto e comprobaren se a solución é correcta.",
         "title": "Tarxetas (Flashcards)",
         "summary": "Cree tarxetas elegantes e modernas",
         "keywords": {
@@ -318,15 +320,15 @@
         }
     },
     "H5P_ImagePair": {
-        "description": "O emparellamento de imaxes é unha actividade sinxela e eficaz que require que o alumnado emparelle imaxes. Dado que as dúas imaxes dun par non teñen por que seren as mesmas, os autores poden tamén avaliar a comprensión dunha relación entre dúas imaxes diferentes. ",
-        "title": "Emparellamento de imaxes (Image Pairing)",
+        "description": "O emparellamento de imaxes é unha actividade sinxela e eficaz que require que o alumnado emparelle imaxes. Dado que as dúas imaxes dun par non teñen por que seren as mesmas, os autores poden tamén avaliar a comprensión dunha relación entre dúas imaxes diferentes.",
+        "title": "Emparellamento de imaxes (Image Pair)",
         "summary": "Xogo de correspondencia de arrastrar e soltar imaxes",
         "keywords": {
-            "image_images matching pair": "imaxe imaxes corresponder par"
+            "image_images_matching_pair": "imaxe imaxes corresponder par"
         }
     },
     "H5P_Dictation": {
-        "description": "Pode engadir gravacións de son que conteñan unha oración para ser ditada e que se introduza a transcrición correcta. O alumnado pode escoitar as gravacións e introducir o que ouviron nun campo de texto. As respostas avalíanse automaticamente. Contan con varias opcións que permiten controlar a dificultade do exercicio. Pode, opcionalmente, engadir unha segunda gravación dunha oración que se lea máis amodo. Tamén se pode definir un límite ao número de veces que se pode reproducir, indicar se a puntuación se conta para a puntuación e decidir se erros pequenos, como fallos ao teclear, se contan como erros completos, medios erros ou non erros.",
+        "description": "Pode engadir gravacións de son que conteñan unha oración para ser ditada e que se introduza a transcrición correcta. O alumnado pode escoitar as gravacións e introducir o que ouviron nun campo de texto. As respostas avalíanse automaticamente. Contan con varias opcións que permiten controlar a dificultade do exercicio. Pode, opcionalmente, engadir unha segunda gravación dunha oración que se lea máis amodo. Tamén se pode definir un límite ao número de veces que se pode reproducir, indicar se os signos de puntuación deben ser relevantes para a puntuación e decidir se erros pequenos, como fallos ao teclear, se contan como erros completos, medios erros ou non erros.",
         "summary": "Cree un ditado con comentarios instantáneos",
         "title": "Ditado (Dictation)",
         "keywords": {
@@ -335,7 +337,7 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Mesturador de imaxes) (Agamotto (Image Blender))",
+        "title": "Agamotto",
         "summary": "Presente unha secuencia de imaxes e explicacións",
         "description": "Presente unha secuencia de imaxes que haxa que mirar unha após a outra, por exemplo fotos dun obxecto que cambie co tempo, esquemas ou mapas organizados en capas diferentes ou imaxes que revelen máis e máis detalles.",
         "keywords": {
@@ -347,7 +349,7 @@
     "H5P_Essay": {
         "title": "Redacción (Essay)",
         "summary": "Cree unha redacción con comentarios instantáneos",
-        "description": "Neste tipo de contido, o autor define unha serie de palabras chave que representan aspectos cruciais dun tema. Estas palabras contrástanse cun texto redactado polo alumnado, que pode ser empregado para fornecer comentarios inmediatos — suxerindo a revisión de determinados detalles do tema se falta unha das palabras chave ou confirmando as ideas do alumnado se o texto contén unha palabra chave.\n",
+        "description": "Neste tipo de contido, o autor define unha serie de palabras chave que representan aspectos cruciais dun tema. Estas palabras contrástanse cun texto redactado polo alumnado, que pode ser empregado para fornecer comentarios inmediatos — suxerindo a revisión de determinados detalles do tema se falta unha das palabras chave ou confirmando as ideas do alumnado se o texto contén unha palabra chave.",
         "keywords": {
             "Essay": "Redacción"
         }
@@ -355,7 +357,7 @@
     "H5P_BranchingScenario": {
         "summary": "Cree dilemas e unha aprendizaxe autónoma",
         "title": "Escenario con ramificacións (Branching Scenario)",
-        "description": "O escenario con ramificacións permite que os autores lle presenten ao alumnado unha variedade de contido e escollas interactivas ricos. As escollas que o alumnado faga determina o seguinte contido que han ver. Pódese empregar para crear dilemas, xogos serios e aprendizaxe ao seu propio ritmo."
+        "description": "O escenario con ramificacións permite que os autores lle presenten ao alumnado unha variedade de contido e escollas interactivas ricos. As escollas que o alumnado faga determinan o seguinte contido que han ver. Pódese empregar para crear dilemas, xogos serios e aprendizaxe ao seu propio ritmo."
     },
     "H5P_ThreeImage": {
         "title": "Visita Virtual (360) (Virtual Tour (360))",
@@ -363,14 +365,14 @@
         "description": "As imaxes 360 (equirrectangulares) e normais poden ser enriquecidas con interacción tipo explicacións, vídeos, sons e preguntas interactivas. As imaxes crean escenas que tamén se poden unir para lle dar ao usuario a impresión de se mover entre ambientes ou entre puntos de vista diferentes dentro do mesmo ambiente."
     },
     "H5P_FindTheWords": {
-        "title": "Atopar as palabras (Find the words)",
+        "title": "Atopar as palabras (Find The Words)",
         "summary": "Xogo de buscar as palabras nunha grade",
         "description": "Unha actividade libre de busca de palabras baseada en HTML5 que permite que os autores creen unha lista de palabras que se dispoñen nunha grade. A tarefa do alumnado consiste en atopar e seleccionar as palabras na grade."
     },
     "H5P_InteractiveBook": {
         "title": "Libro interactivo (Interactive Book)",
-        "summary": "Cree cursos, libros e textos pequenos",
-        "description": "Cree cursos, libros ou textos pequenos. Libro interactivo permite que os autores combinen cantidades grandes de contido interactivo, como vídeos interactivos, preguntas, presentacións de curso e moito máis en varias páxinas. Hai un resumo ao final que resume a puntuación obtida polo alumnado ao longo do libro.",
+        "summary": "Cree pequenos cursos, libros e probas",
+        "description": "Cree pequenos cursos, libros ou probas. Libro interactivo permite que os autores combinen cantidades grandes de contido interactivo, como vídeos interactivos, preguntas, presentacións de curso e moito máis en varias páxinas. Hai un resumo ao final que resume a puntuación obtida polo alumnado ao longo do libro.",
         "keywords": {
             "book": "libro",
             "course": "curso"
@@ -387,7 +389,7 @@
     "H5P_AdventCalendar": {
         "title": "Calendario de advento (beta) (Advent Calendar (beta))",
         "summary": "Cree sorpresas que se revelen diariamente",
-        "description": "Constrúa e personalice un bonito calendario de advento. Pode engadir unha imaxe de fondo ao calendario enteiro, en cada portiña ou como fondo do contido dentro de cada portiña. Tamén pode engadir o efecto de folerpas e música. Dentro de cada portiña pode engadir un son, vídeo, texto, imaxe ou ligazón.\n\nTeña en conta que para usuarios expertos é doado revelar o contido de todas as portas inmediatamente. Se pretende revelar grandes segredos en días futuros, deberá agardar a ese día antes de engadir eses segredos ao calendario.",
+        "description": "Constrúa e personalice un bonito calendario de advento. Pode engadir unha imaxe de fondo ao calendario enteiro, en cada portiña ou como fondo do contido dentro de cada portiña. Tamén pode engadir o efecto de folerpas e música. Dentro de cada portiña pode engadir un son, vídeo, texto, imaxe ou ligazón.\n\nTeña en conta que para usuarios expertos é doado revelar o contido de todas as portiñas inmediatamente. Se pretende revelar grandes segredos en días futuros, deberá agardar a ese día antes de engadir eses segredos ao calendario.",
         "keywords": {
             "christmas": "Nadal",
             "advent": "advento",
@@ -396,11 +398,11 @@
         }
     },
     "H5P_Crossword": {
-        "title": "Encrucillado (Crossword)",
-        "summary": "Cree un encrucillado",
-        "description": "Constrúa e personalice un bonito encrucillado que atraia o seu público. O encrucillado pódese personalizar bastante e permite configurar todas as cores, enviar unha imaxe de fondo, decidir como funciona a puntuación e mesmo ser aleatorio, de xeito que o público vexa un encrucillado novo de cada vez.",
+        "title": "Crucigrama (Crossword)",
+        "summary": "Cree un crucigrama",
+        "description": "Constrúa e personalice un bonito crucigrama que atraia o seu público. O crucigrama pódese personalizar bastante e permite configurar todas as cores, enviar unha imaxe de fondo, decidir como funciona a puntuación e mesmo facer aleatorias as palabras, de xeito que o público vexa un crucigrama novo de cada vez.",
         "keywords": {
-            "crossword": "encrucillado",
+            "crossword": "crucigrama",
             "games": "xogos"
         }
     },
@@ -415,9 +417,9 @@
         }
     },
     "H5P_MultiMediaChoice": {
-        "title": "Escolla de imaxe (Image Choice)",
-        "summary": "Cree unha tarefa na que as alternativas son imaxes",
-        "description": "Constrúa bonitas preguntas de escolla múltipla ou única nas que as alternativas sexan imaxes. Pode personalizar a disposición das alternativas e escoller entre proporcións fixas ou simplemente empregar as proporcións das imaxes que xa ten.",
+        "title": "Escolla multimedia (Multimedia Choice)",
+        "summary": "Cree unha tarefa na que as alternativas son multimedia",
+        "description": "Constrúa bonitas preguntas de escolla múltipla ou única nas que cada alternativa pode ser unha imaxe, un vídeo ou un son. Pode personalizar a disposición das alternativas e escoller entre proporcións fixas ou simplemente empregar as proporcións que os elementos multimedia teñen por defecto.",
         "keywords": {
             "sorting": "ordenar",
             "games": "xogos",
@@ -425,8 +427,38 @@
         }
     },
     "H5P_ImageMultipleHotspotQuestion": {
-        "title": "Buscar varios puntos de acceso (Buscar varios puntos de acceso)",
-        "summary": "Crea moitos puntos de acceso para que os usuarios poidan atopalos",
-        "description": "Un tipo de pregunta libre baseado en HTML5 que permite aos creativos crear unha proba baseada en imaxes onde o alumno debe atopar os puntos correctos nunha imaxe. Use este tipo de contido co complemento H5P para WordPress, Moodle ou Drupal para desafiar aos teus usuarios."
+        "title": "Atopar varios puntos quentes (Find Multiple Hotspots)",
+        "summary": "Cree moitos puntos quentes para que os usuarios os atopen",
+        "description": "Un tipo de pregunta libre baseado en HTML5 que permite aos creativos crear unha proba baseada en imaxes onde o alumnado debe atopar os puntos correctos nunha imaxe. Use este tipo de contido co complemento H5P para WordPress, Moodle ou Drupal para desafiar os seus usuarios."
+    },
+    "H5P_Cornell": {
+        "title": "Notas Cornell (Cornell Notes)",
+        "summary": "Tome notas co sistema Cornell",
+        "description": "Presente ao alumnado un vídeo, un texto ou un son e anímeo a tomar notas co sistema de notas Cornell."
+    },
+    "H5P_ARScavenger": {
+        "title": "Busca do tesouro en RA (beta) (AR Scavenger (beta))",
+        "summary": "Diversión con realidade aumentada!",
+        "description": "Deixe que o alumnado explore a realidade aumentada con modelos 3D ou exercicios H5P. Pode definir marcadores semellantes aos códigos QR que o seu alumnado pode escanear coa cámara do seu dispositivo. Eses marcadores poden activar a mestura dun modelo 3D da súa escolla coa vista da cámara, ou poden amosar unha interacción H5P."
+    },
+    "H5P_StructureStrip": {
+        "title": "Tira de estrutura (Structure Strip)",
+        "summary": "Tira de estrutura interactiva",
+        "description": "Tradicionalmente, unha tira de estrutura colócase xunto a unha folla de papel (ou mesmo se pega nela). Ofrece ao alumnado un esqueleto para un texto e axúdalle a manter en boa proporción a lonxitude dos diferentes segmentos do texto. Con Tira de estrutura pode empregar agora o mesmo método en H5P sen papel."
+    },
+    "H5P_InfoWall": {
+        "title": "Muro de información (Information Wall)",
+        "summary": "Cree paneis de información que os usuarios poden filtrar por palabras chave relevantes.",
+        "description": "Permita que os usuarios exploren facilmente toda a información ou a filtren por palabras chave para buscar información concreta. Como autor, pode configurar un panel mestre e decidir engadir unha imaxe por panel, etc."
+    },
+    "H5P_GameMap": {
+        "title": "Mapa de xogo (Game Map)",
+        "summary": "Deixe que o alumnado escolla os seus exercicios nun mapa de xogo",
+        "description": "Un mapa de xogo consta de etapas que se poden dispor sobre unha imaxe de fondo. Cada etapa está conectada con outra ou con varias e pode conter un tipo de contido H5P para que o usuario o vexa ou o complete. Pode definir regras que determinen a que etapa pode ir o usuario, de xeito que consiga crear unha experiencia semellante a un xogo.",
+        "keywords": {
+            "game": "xogo",
+            "map": "mapa",
+            "gamification": "gamificación"
+        }
     }
 }

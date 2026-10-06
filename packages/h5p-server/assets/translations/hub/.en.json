@@ -32,20 +32,22 @@
     "H5P_Collage": {
         "title": "Collage (Collage)",
         "summary": "Create a collage of multiple images",
-        "description": "The Collage tool allows you to organize images into a soothing composition. ",
+        "description": "The Collage tool allows you to organize images into a soothing composition.",
         "keywords": {
             "collage": "collage",
             "image": "image"
         }
     },
     "H5P_Column": {
-        "title": "Column (Column)",
-        "summary": "Organize H5P content into a column layout",
-        "description": "Organize your content type into a column layout with H5P Column. Content types that address similar material or share a common theme can now be grouped together to create a coherent learning experience. In addition, authors are free to be creative by combining almost all of the existing H5P content types.",
+        "title": "Page (Page)",
+        "summary": "Organize H5P content into a page layout",
+        "description": "Organize your content type into a page layout with rows and columns. Content types that address similar material or share a common theme can now be grouped together to create a coherent learning experience. In addition, authors are free to be creative by combining almost all of the existing H5P content types.",
         "keywords": {
             "column": "column",
             "layout": "layout",
-            "compound": "compound"
+            "compound": "compound",
+            "page": "page",
+            "row": "row"
         }
     },
     "H5P_CoursePresentation": {
@@ -77,9 +79,9 @@
     "H5P_DragQuestion": {
         "title": "Drag and Drop (Drag and Drop)",
         "summary": "Create drag and drop tasks with images",
-        "description": "Drag and drop question enables the learner to associate two or more elements and to make logical connections in a visual way. Create Drag and drop questions using both text and images as draggable alternatives. H5P Drag and drop questions support one-to-one, one-to-many, many-to-one and many-to-many relations between questions and answers. ",
+        "description": "Drag and drop question enables the learner to associate two or more elements and to make logical connections in a visual way. Create Drag and drop questions using both text and images as draggable alternatives. H5P Drag and drop questions support one-to-one, one-to-many, many-to-one and many-to-many relations between questions and answers.",
         "keywords": {
-            "drag_and drop": "drag and drop"
+            "drag_and_drop": "drag and drop"
         }
     },
     "H5P_DragText": {
@@ -185,7 +187,7 @@
         }
     },
     "H5P_QuestionSet": {
-        "title": "Quiz (Question Set) (Quiz (Question Set))",
+        "title": "Question Set (Question Set)",
         "summary": "Create a sequence of various question types",
         "description": "Question Set is your typical quiz content type. It allows the learner to solve a sequence of various question types such as Multichoice, Drag and drop and Fill in the blanks in a Question set. As an author, there are many settings you can use to make it behave just the way you want it to. You may, for instance, customize the Question set with background images and define a pass percentage for the learner. The Question Set also allows you to add videos that are played at the end. One video for success, another if the learner fails the test. This might motivate learners to try again if they fail so that they get to see the success video.",
         "keywords": {
@@ -207,7 +209,7 @@
     "H5P_Summary": {
         "title": "Summary (Summary)",
         "summary": "Create tasks with a list of statements",
-        "description": "Summaries help the learner remember key information in a text, video or presentation, by actively buliding a summary about the topic at hand. When the learner has completed a summary, a complete list of key statements about the topic is shown.",
+        "description": "Summaries help the learner remember key information in a text, video or presentation, by actively building a summary about the topic at hand. When the learner has completed a summary, a complete list of key statements about the topic is shown.",
         "keywords": {
             "summary": "summary"
         }
@@ -257,7 +259,7 @@
     "H5P_AudioRecorder": {
         "title": "Audio Recorder (Audio Recorder)",
         "summary": "Create an audio recording",
-        "description": "An HTML5 audio recorder. Record your voice and play back or download a .wav file of your recording. Use the H5P plugin to create the H5P Audio Recorder to your Drupal, Wordpress or Moodle site. ",
+        "description": "An HTML5 audio recorder. Record your voice and play back or download a .wav file of your recording. Use the H5P plugin to create the H5P Audio Recorder to your Drupal, Wordpress or Moodle site.",
         "keywords": {
             "audio": "audio",
             "recorder": "recorder"
@@ -266,7 +268,7 @@
     "H5P_SpeakTheWords": {
         "title": "Speak the Words (Speak the Words)",
         "summary": "Answer a question using your voice (Chrome only)",
-        "description": "Speak the Words is only supported in browsers that implements the Web Speech API (Chrome browsers, except on iOS). You need a microphone to answer the question. Ask a question to users and make them answer using their voice. You can choose multiple correct answers. The user will be able to see what his words were interpreted as, and how close it was to the correct answers.",
+        "description": "Speak the Words is only supported in browsers that implements the Web Speech API (Chrome browsers, except on iOS). You need a microphone to answer the question. Ask a question to users and make them answer using their voice. You can choose multiple correct answers. The user will be able to see what their words were interpreted as, and how close it was to the correct answers.",
         "keywords": {
             "language": "language",
             "translation": "translation",
@@ -278,7 +280,7 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "title": "Agamotto (Agamotto)",
         "summary": "Present a sequence of images and explanations",
         "description": "Present a sequence of images that people are supposed to look at one after the other, e.g. photos of an item that changes over time, schematics or maps that are organized in different layers or images that reveal more and more details.",
         "keywords": {
@@ -290,7 +292,7 @@
     "H5P_ImageSequencing": {
         "title": "Image Sequencing (Image Sequencing)",
         "summary": "Place images in the correct order",
-        "description": "A free HTML5 based image sequencing content type that allows authors to add a sequence of their own images (and optional image description) to the game in a particular order. The order of the images will be randomized and players will have to reorder them based on the task description. ",
+        "description": "A free HTML5 based image sequencing content type that allows authors to add a sequence of their own images (and optional image description) to the game in a particular order. The order of the images will be randomized and players will have to reorder them based on the task description.",
         "keywords": {
             "image": "image",
             "sequence": "sequence",
@@ -309,7 +311,7 @@
     "H5P_SpeakTheWordsSet": {
         "title": "Speak the Words Set (Speak the Words Set)",
         "summary": "Create a series of questions answered by speech (Chrome only)",
-        "description": "Speak the Words Set is only supported in browsers that implement the Web Speech API (Chrome browsers, except on ios). You need a microphone to answer the question. Create a set of questions that learners can answer using their voice. you can choose multiple correct answers. The user will be able to see what his words were interpreted as, and how close it was to the correct answers.",
+        "description": "Speak the Words Set is only supported in browsers that implement the Web Speech API (Chrome browsers, except on ios). You need a microphone to answer the question. Create a set of questions that learners can answer using their voice. you can choose multiple correct answers. The user will be able to see what their words were interpreted as, and how close it was to the correct answers.",
         "keywords": {
             "language": "language",
             "translation": "translation",
@@ -335,17 +337,17 @@
     "H5P_Essay": {
         "title": "Essay (Essay)",
         "summary": "Create Essay with instant feedback",
-        "description": "In this content type, the author defines a set of keywords that represent crucial aspects of a topic. These keywords are matched against a text that students have composed and can be used to immediately provide feedback - either suggesting to revise certain topic details if a keyword is missing or, confirming the student's ideas if the text contains a keyword.\r\n",
+        "description": "In this content type, the author defines a set of keywords that represent crucial aspects of a topic. These keywords are matched against a text that students have composed and can be used to immediately provide feedback - either suggesting to revise certain topic details if a keyword is missing or, confirming the student's ideas if the text contains a keyword.",
         "keywords": {
             "Essay": "Essay"
         }
     },
     "H5P_ImagePair": {
-        "title": "Image Pairing (Image Pairing)",
+        "title": "Image Pair (Image Pair)",
         "summary": "Drag and drop image matching game",
-        "description": "Image pairing is a simple and effective activity that require learners to match pairs of images. Since it is not required for both images in a pair to be the same, authors are also able to test the understanding of a relation between two different images. ",
+        "description": "Image pairing is a simple and effective activity that require learners to match pairs of images. Since it is not required for both images in a pair to be the same, authors are also able to test the understanding of a relation between two different images.",
         "keywords": {
-            "image_images matching pair": "image images matching pair"
+            "image_images_matching_pair": "image images matching pair"
         }
     },
     "H5P_Dictation": {
@@ -368,7 +370,7 @@
         "description": "360 (equirectangular) and normal images may be enriched with interactivities like explanations, videos, sounds, and interactive questions. The images create scenes that also may be linked together to give the user an impression of moving between environments or between different viewpoints within the same environment."
     },
     "H5P_FindTheWords": {
-        "title": "Find the words (Find the words)",
+        "title": "Find The Words (Find The Words)",
         "summary": "Grid word search game",
         "description": "A free HTML5-based word search activity that allows authors to create a list of words that will be drawn in a grid. The learner's task is to find and select the words in the grid."
     },
@@ -410,7 +412,7 @@
         }
     },
     "H5P_SortParagraphs": {
-        "title": "Sort the Paragraphs <span class='notranslate'>(Sort the Paragraphs)",
+        "title": "Sort the Paragraphs (Sort the Paragraphs)",
         "summary": "Create a set of paragraphs to be sorted",
         "description": "Type or paste in a list of paragraphs that will be randomized. You may for instance let each paragraph be a part of a song, a block of code or steps in a recipe. Learners are to sort the paragraphs into the correct order. By default learners will get one point for each paragraph that follows the paragraph it is supposed to follow, but you may decide to award a point for each paragraph that is in the correct place instead.",
         "keywords": {
@@ -420,13 +422,43 @@
         }
     },
     "H5P_MultiMediaChoice": {
-        "title": "Image Choice (Image Choice)",
-        "summary": "Create a task where the alternatives are images",
-        "description": "Build beautiful multiple or single choice questions where the alternatives are images. You may customize the layout for the alternatives and choose between fixed aspect ratios or just use the aspect ratios the images already have.",
+        "title": "Multimedia Choice (Multimedia Choice)",
+        "summary": "Create a task where the alternatives are multimedia",
+        "description": "Build beautiful multiple or single choice questions where each alternative can be an image, video or audio. You may customize the layout for the alternatives and choose between fixed aspect ratios or just use the aspect ratios the multimedia elements have by default.",
         "keywords": {
             "sorting": "sorting",
             "games": "games",
             "tasks": "tasks"
+        }
+    },
+    "H5P_Cornell": {
+        "title": "Cornell Notes (Cornell Notes)",
+        "summary": "Take notes using the Cornell system",
+        "description": "Present learners with a video, text or audio and encourage them to make notes using the Cornell note taking system."
+    },
+    "H5P_ARScavenger": {
+        "title": "AR Scavenger (beta) (AR Scavenger (beta))",
+        "summary": "Augmented reality fun!",
+        "description": "Let learners explore reality augmented with 3D models or H5P exercises. You can define markers similar to QR codes that your students can scan with their device's camera. Those markers can trigger blending a 3D model of your choice with the camera view, or they can display an H5P interaction."
+    },
+    "H5P_StructureStrip": {
+        "title": "Structure Strip (Structure Strip)",
+        "summary": "Interactive structure strip",
+        "description": "A structure strip is traditionally put next to a sheet of paper (or even glued onto it). It provides students with a scaffold for a text and helps them to keep the lengths of different text segments in good proportions. With Structure Strip, you can now use the same approach in H5P without paper."
+    },
+    "H5P_InfoWall": {
+        "title": "Information Wall (Information Wall)",
+        "summary": "Create information panels that users can filter for relevant keywords.",
+        "description": "Allow users to easily browse all pieces of information or filter them by keywords in order to search for specific information. As author, you can configure a master panel and decide to add an image per panel, etc."
+    },
+    "H5P_GameMap": {
+        "title": "Game Map (Game Map)",
+        "summary": "Let your students choose their exercises on a game map",
+        "description": "A game map consists of stages that you can arrange on top of a background image. Each stage is connected to one or more stages and can hold an H5P content type for the user to view or complete. You can define rules that will determine what stage the user is allowed to move to, so you can create a game-like experience.",
+        "keywords": {
+            "game": "game",
+            "map": "map",
+            "gamification": "gamification"
         }
     }
 }
