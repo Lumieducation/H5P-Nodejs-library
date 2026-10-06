@@ -1,12 +1,12 @@
 {
     "content-not-found": "Sisu, millele proovite juurde pääseda, pole olemas.",
     "deleting-content-error": "Sisuobjekti kustutamisel ilmnes viga.",
-    "deleting-file-error": "{{filename}} sisuobjektist kustutamisel tekkis viga.",
+    "deleting-file-error": "Faili {{filename}} sisuobjektist kustutamisel tekkis viga.",
     "filename-too-long": "Failinimi on liiga pikk: {{filename}}",
     "illegal-filename": "Failinimi {{filename}} pole lubatud.",
     "listing-content-error": "Sisuobjektide loendi hankimisel ilmnes viga",
     "mongo-add-update-error": "Andmebaasi sisu lisamisel või värskendamisel tekkis viga.",
     "mongo-replace-error": "Andmebaasi sisu värskendamisel ilmnes viga.",
-    "s3-upload-error": "{{filename}} S3 üleslaadimisel ilmnes viga.",
+    "s3-upload-error": "Faili {{filename}} S3-sse üleslaadimisel ilmnes viga.",
     "install-library-already-installed": "Teek {{ubername}} on juba installitud ja seda ei saa uuesti installida."
 }

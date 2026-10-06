@@ -6,13 +6,13 @@
         "title": "Doorlopende tekst"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Gratis tekst vraag"
+        "title": "Vraag met vrije tekst"
     },
     "H5P_GoToScene": {
         "title": "Ga naar scène"
     },
     "H5P_GoToQuestion": {
-        "title": "kruispunt"
+        "title": "Kruispunt"
     },
     "H5P_GoalsPage": {
         "title": "Doelenpagina"
@@ -21,19 +21,19 @@
         "title": "Doelenbeoordelingspagina"
     },
     "H5P_StandardPage": {
-        "title": "Standaard pagina"
+        "title": "Standaardpagina"
     },
     "H5P_DocumentExportPage": {
-        "title": "Document Export Pagina"
+        "title": "Documentexportpagina"
     },
     "H5P_Link": {
-        "title": "Koppeling"
+        "title": "Link"
     },
     "H5P_Nil": {
         "title": "Label"
     },
     "H5P_IVHotspot": {
-        "title": "Navigatie hotspot"
+        "title": "Navigatiehotspot"
     },
     "H5P_OpenEndedQuestion": {
         "title": "Open vraag"
@@ -45,7 +45,7 @@
         "title": "Samenvatting"
     },
     "H5P_Table": {
-        "title": "Tafel"
+        "title": "Tabel"
     },
     "H5P_Text": {
         "title": "Tekst"
@@ -57,7 +57,7 @@
         "title": "Tekst"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Eenvoudige meerkeuze"
+        "title": "Eenvoudige meerkeuzevraag"
     },
     "H5P_BranchingQuestion": {
         "title": "Vertakkingsvraag"

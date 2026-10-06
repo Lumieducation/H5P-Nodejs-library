@@ -1,12 +1,12 @@
 {
     "H5P_Image": {
-        "title": "영상"
+        "title": "이미지"
     },
     "H5P_ContinuousText": {
         "title": "연속 텍스트"
     },
     "H5P_FreeTextQuestion": {
-        "title": "무료 텍스트 질문"
+        "title": "자유 서술형 질문"
     },
     "H5P_GoToScene": {
         "title": "장면으로 이동"
@@ -30,7 +30,7 @@
         "title": "링크"
     },
     "H5P_Nil": {
-        "title": "상표"
+        "title": "레이블"
     },
     "H5P_IVHotspot": {
         "title": "탐색 핫스팟"
@@ -39,7 +39,7 @@
         "title": "개방형 질문"
     },
     "H5P_Shape": {
-        "title": "모양"
+        "title": "도형"
     },
     "H5P_Summary": {
         "title": "요약"

@@ -1,0 +1,12 @@
+{
+    "content-not-found": "O conteúdo que você está tentando acessar não existe.",
+    "deleting-content-error": "Ocorreu um erro ao excluir o objeto de conteúdo.",
+    "deleting-file-error": "Ocorreu um erro ao excluir o arquivo {{filename}} do objeto de conteúdo.",
+    "filename-too-long": "O nome do arquivo é muito longo: {{filename}}",
+    "illegal-filename": "O nome de arquivo {{filename}} não é permitido.",
+    "listing-content-error": "Ocorreu um erro ao obter a lista de objetos de conteúdo",
+    "mongo-add-update-error": "Ocorreu um erro ao adicionar ou atualizar o conteúdo no banco de dados.",
+    "mongo-replace-error": "Ocorreu um erro ao atualizar o conteúdo do banco de dados.",
+    "s3-upload-error": "Ocorreu um erro ao enviar o arquivo {{filename}} para o S3.",
+    "install-library-already-installed": "A biblioteca {{ubername}} já está instalada e não pode ser instalada novamente."
+}

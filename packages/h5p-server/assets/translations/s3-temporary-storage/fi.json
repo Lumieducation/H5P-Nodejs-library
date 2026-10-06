@@ -1,5 +1,5 @@
 {
     "deleting-file-error": "Tiedoston poistamisessa tapahtui virhe.",
     "file-not-found": "Tiedostoa ei ole olemassa.",
-    "s3-upload-error": "Tilapäisen tiedoston lataamisessa S3: een tapahtui virhe."
+    "s3-upload-error": "Tilapäisen tiedoston lataamisessa S3:een tapahtui virhe."
 }

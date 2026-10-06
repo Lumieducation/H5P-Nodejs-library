@@ -6,10 +6,10 @@
         "title": "Texto Contínuo"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Questão de Texto Livre"
+        "title": "Pergunta de texto livre"
     },
     "H5P_GoToScene": {
-        "title": "Vá para a cena"
+        "title": "Ir para a cena"
     },
     "H5P_GoToQuestion": {
         "title": "Encruzilhada"
@@ -45,7 +45,7 @@
         "title": "Resumo"
     },
     "H5P_Table": {
-        "title": "Mesa"
+        "title": "Tabela"
     },
     "H5P_Text": {
         "title": "Texto"
@@ -57,9 +57,9 @@
         "title": "Texto"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Multi Escolha Simples"
+        "title": "Escolha múltipla simples"
     },
     "H5P_BranchingQuestion": {
-        "title": "Questão de ramificação"
+        "title": "Pergunta de ramificação"
     }
 }

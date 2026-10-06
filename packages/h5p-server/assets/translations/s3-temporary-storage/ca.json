@@ -1,5 +1,5 @@
 {
     "deleting-file-error": "S'ha produït un error en suprimir aquest fitxer.",
     "file-not-found": "El fitxer no existeix.",
-    "s3-upload-error": "S'ha produït un error en carregar el fitxer temporal a S3."
+    "s3-upload-error": "S'ha produït un error en penjar el fitxer temporal a S3."
 }

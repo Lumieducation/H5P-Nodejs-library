@@ -6,7 +6,7 @@
         "title": "Neprekinjeno besedilo"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Brezplačno besedilno vprašanje"
+        "title": "Vprašanje s prostim besedilom"
     },
     "H5P_GoToScene": {
         "title": "Pojdi na sceno"
@@ -57,9 +57,9 @@
         "title": "Besedilo"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Preprosta več izbira"
+        "title": "Preprosta izbira med več možnostmi"
     },
     "H5P_BranchingQuestion": {
-        "title": "Vprašanje veje"
+        "title": "Razvejano vprašanje"
     }
 }

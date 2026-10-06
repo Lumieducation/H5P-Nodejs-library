@@ -12,7 +12,7 @@
         "title": "Vai alla scena"
     },
     "H5P_GoToQuestion": {
-        "title": "Incrocio stradale"
+        "title": "Bivio"
     },
     "H5P_GoalsPage": {
         "title": "Pagina degli obiettivi"
@@ -36,7 +36,7 @@
         "title": "Hotspot di navigazione"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Domanda a risposta a perta"
+        "title": "Domanda a risposta aperta"
     },
     "H5P_Shape": {
         "title": "Forme"
@@ -45,13 +45,13 @@
         "title": "Riepilogo"
     },
     "H5P_Table": {
-        "title": "Tavolo"
+        "title": "Tabella"
     },
     "H5P_Text": {
         "title": "Testo"
     },
     "H5P_Video": {
-        "title": "video"
+        "title": "Video"
     },
     "H5P_AdvancedText": {
         "title": "Testo"

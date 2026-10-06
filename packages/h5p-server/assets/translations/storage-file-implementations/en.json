@@ -1,5 +1,5 @@
 {
-    "add-file-content-not-found": "Cannot add file {{filename}} to content with id {{id}}: Content with does not exist.",
+    "add-file-content-not-found": "Cannot add file {{filename}} to content with id {{id}}: The content does not exist.",
     "add-library-file-not-installed": "Can't add {{filename}} to library {{libraryName}} because the library has not been installed.",
     "clear-library-not-found": "Can't clear library {{libraryName}} because the library has not been installed.",
     "delete-content-file-not-found": "Cannot delete file {{filename}}: It does not exist.",

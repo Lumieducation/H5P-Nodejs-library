@@ -27,10 +27,10 @@
         "title": "Page d'exportation de documents"
     },
     "H5P_Link": {
-        "title": "Relier"
+        "title": "Lien"
     },
     "H5P_Nil": {
-        "title": "Étiqueter"
+        "title": "Étiquette"
     },
     "H5P_IVHotspot": {
         "title": "Point d'accès de navigation"
@@ -42,10 +42,10 @@
         "title": "Formes"
     },
     "H5P_Summary": {
-        "title": "Sommaire"
+        "title": "Résumé"
     },
     "H5P_Table": {
-        "title": "Table"
+        "title": "Tableau"
     },
     "H5P_Text": {
         "title": "Texte"

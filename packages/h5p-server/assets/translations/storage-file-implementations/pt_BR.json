@@ -3,7 +3,7 @@
     "add-library-file-not-installed": "Não é possível adicionar {{filename}} à biblioteca {{libraryName}} porque a biblioteca não foi instalada.",
     "clear-library-not-found": "Não é possível limpar a biblioteca {{libraryName}} porque a biblioteca não foi instalada.",
     "delete-content-file-not-found": "Não é possível excluir o arquivo {{filename}}: ele não existe.",
-    "delete-content-not-found": "Não é possível excluir o conteúdo: Não existe.",
+    "delete-content-not-found": "Não é possível excluir o conteúdo: ele não existe.",
     "error-creating-content": "Não foi possível criar conteúdo.",
     "error-generating-content-id": "Não foi possível gerar o ID para o novo conteúdo.",
     "error-generating-unique-temporary-filename": "Não é possível determinar um nome de arquivo exclusivo para {{name}}",

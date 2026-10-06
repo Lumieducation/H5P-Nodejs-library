@@ -27,7 +27,7 @@
         "title": "文档导出页面"
     },
     "H5P_Link": {
-        "title": "关联"
+        "title": "链接"
     },
     "H5P_Nil": {
         "title": "标签"
@@ -42,10 +42,10 @@
         "title": "形状"
     },
     "H5P_Summary": {
-        "title": "概括"
+        "title": "摘要"
     },
     "H5P_Table": {
-        "title": "桌子"
+        "title": "表格"
     },
     "H5P_Text": {
         "title": "文本"
@@ -57,7 +57,7 @@
         "title": "文本"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "简单的多选"
+        "title": "简单多选题"
     },
     "H5P_BranchingQuestion": {
         "title": "分支问题"

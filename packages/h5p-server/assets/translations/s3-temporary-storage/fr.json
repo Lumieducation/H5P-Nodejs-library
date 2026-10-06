@@ -1,5 +1,5 @@
 {
     "deleting-file-error": "Une erreur s'est produite lors de la suppression de ce fichier.",
     "file-not-found": "Le fichier n'existe pas.",
-    "s3-upload-error": "Une erreur s'est produite lors du téléchargement du fichier temporaire vers S3."
+    "s3-upload-error": "Une erreur s'est produite lors du téléversement du fichier temporaire vers S3."
 }

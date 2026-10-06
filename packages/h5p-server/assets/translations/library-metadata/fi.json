@@ -15,7 +15,7 @@
         "title": "Risteys"
     },
     "H5P_GoalsPage": {
-        "title": "Tavoitteet -sivu"
+        "title": "Tavoitesivu"
     },
     "H5P_GoalsAssessmentPage": {
         "title": "Tavoitteiden arviointisivu"
@@ -45,7 +45,7 @@
         "title": "Yhteenveto"
     },
     "H5P_Table": {
-        "title": "Pöytä"
+        "title": "Taulukko"
     },
     "H5P_Text": {
         "title": "Teksti"

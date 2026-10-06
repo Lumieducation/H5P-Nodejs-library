@@ -6,7 +6,7 @@
         "title": "連続テキスト"
     },
     "H5P_FreeTextQuestion": {
-        "title": "フリーテキストの質問"
+        "title": "自由記述式の質問"
     },
     "H5P_GoToScene": {
         "title": "シーンに移動"
@@ -36,13 +36,13 @@
         "title": "ナビゲーションホットスポット"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "自由形式の質問"
+        "title": "自由回答式の質問"
     },
     "H5P_Shape": {
-        "title": "形"
+        "title": "図形"
     },
     "H5P_Summary": {
-        "title": "概要"
+        "title": "要約"
     },
     "H5P_Table": {
         "title": "テーブル"
@@ -57,7 +57,7 @@
         "title": "文章"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "シンプルなマルチチョイス"
+        "title": "シンプルな多肢選択"
     },
     "H5P_BranchingQuestion": {
         "title": "分岐の質問"

@@ -1,12 +1,12 @@
 {
     "content-not-found": "Vsebina, do katere želite dostopati, ne obstaja.",
-    "deleting-content-error": "Pri brisanju predmeta vsebine je prišlo do napake.",
-    "deleting-file-error": "{{filename}} iz predmeta vsebine je prišlo do napake.",
+    "deleting-content-error": "Pri brisanju objekta vsebine je prišlo do napake.",
+    "deleting-file-error": "Pri brisanju datoteke {{filename}} iz objekta vsebine je prišlo do napake.",
     "filename-too-long": "Ime datoteke je predolgo: {{filename}}",
     "illegal-filename": "Ime datoteke {{filename}} ni dovoljeno.",
-    "listing-content-error": "Pri pridobivanju seznama predmetov vsebine je prišlo do napake",
+    "listing-content-error": "Pri pridobivanju seznama objektov vsebine je prišlo do napake",
     "mongo-add-update-error": "Pri dodajanju ali posodabljanju vsebine v zbirki podatkov je prišlo do napake.",
     "mongo-replace-error": "Pri posodabljanju vsebine v bazi je prišlo do napake.",
-    "s3-upload-error": "{{filename}} na S3 je prišlo do napake.",
+    "s3-upload-error": "Pri nalaganju datoteke {{filename}} v S3 je prišlo do napake.",
     "install-library-already-installed": "Knjižnica {{ubername}} je že nameščena in je ni mogoče znova namestiti."
 }

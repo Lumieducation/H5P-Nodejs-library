@@ -3,16 +3,16 @@
         "title": "Imagen"
     },
     "H5P_ContinuousText": {
-        "title": "Texto Continuo"
+        "title": "Texto continuo"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Pregunta de Texto Libre"
+        "title": "Pregunta de texto libre"
     },
     "H5P_GoToScene": {
-        "title": "Ir A Escena"
+        "title": "Ir a la escena"
     },
     "H5P_GoToQuestion": {
-        "title": "Cruce"
+        "title": "Encrucijada"
     },
     "H5P_GoalsPage": {
         "title": "Página de objetivos"
@@ -24,7 +24,7 @@
         "title": "Página estándar"
     },
     "H5P_DocumentExportPage": {
-        "title": "Página de Exportación de Documentos"
+        "title": "Página de exportación de documentos"
     },
     "H5P_Link": {
         "title": "Enlace"
@@ -36,7 +36,7 @@
         "title": "Punto de acceso de navegación"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Pregunta Abierta"
+        "title": "Pregunta abierta"
     },
     "H5P_Shape": {
         "title": "Formas"
@@ -45,7 +45,7 @@
         "title": "Resumen"
     },
     "H5P_Table": {
-        "title": "Mesa"
+        "title": "Tabla"
     },
     "H5P_Text": {
         "title": "Texto"
@@ -57,9 +57,9 @@
         "title": "Texto"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Opción Múltiple Simple"
+        "title": "Opción múltiple simple"
     },
     "H5P_BranchingQuestion": {
-        "title": "Pregunta de Ramificación"
+        "title": "Pregunta de ramificación"
     }
 }
