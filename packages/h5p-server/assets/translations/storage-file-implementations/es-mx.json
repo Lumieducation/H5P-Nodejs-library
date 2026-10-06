@@ -11,6 +11,7 @@
     "get-library-metadata-not-installed": "No se pueden obtener metadatos para la librería {{libraryName}} porque la librería no se ha instalado.",
     "illegal-absolute-filename": "No se permiten rutas absolutas en los nombres de archivo: {{filename}} es ilegal",
     "illegal-relative-filename": "No se permiten rutas absolutas en los nombres de archivo: {{filename}} es ilegal",
+    "illegal-character": "Hay un carácter no válido en el nombre del archivo: {{filename}}",
     "install-library-already-installed": "La librería {{libraryName}} ya se ha instalado.",
     "remove-library-library-missing": "La librería {{libraryName}} no está instalada en el sistema.",
     "temporary-file-not-found": "El archivo {{filename}} no es accesible para el usuario {{userId}} o no existe.",

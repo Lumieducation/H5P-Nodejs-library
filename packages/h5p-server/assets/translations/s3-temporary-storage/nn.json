@@ -1,1 +1,5 @@
-{}
+{
+    "deleting-file-error": "Det oppstod ein feil under sletting av denne fila.",
+    "file-not-found": "Fila finst ikkje.",
+    "s3-upload-error": "Det oppstod ein feil under opplasting av den mellombelse fila til S3."
+}

@@ -42,5 +42,6 @@
     "change-description": "Beskrivelse av endring",
     "change-description-placeholder": "Foto beskåret, tekst endret osv.",
     "author-comments": "Forfatterens kommentarer",
-    "author-comments-description": "Kommentarer til redaktøren av innholdet (This text will not be published as a part of copyright info)"
+    "author-comments-description": "Kommentarer til redaktøren av innholdet (This text will not be published as a part of copyright info)",
+    "a11y-title": "Etikett for hjelpemiddelteknologi"
 }
