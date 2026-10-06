@@ -75,11 +75,12 @@ two; give each the English diff, the locale file path and these rules):
 
 1. Read the locale file completely to learn its conventions.
 2. New content types: translate title, summary, description and keywords. Use
-   the English `description` for context to pick the right terms; the Hub's
-   `example` URL or the content type's name may help you understand an unfamiliar one.
+   the English `description` for context to pick the right terms; for unclear
+   names, research as described under Rules (web search, library UI translations).
    Append them in `.en.json` order.
 3. Changed text: update the translation so it matches the new English meaning —
-   including the English original in the title parenthetical.
+   including the English name in the title parenthetical (it must match the current
+   English title).
 4. Renamed keys: rename the key, keep the translated value.
 5. Removed keys: delete them.
 6. Also fill gaps the integrity check will report as warnings (missing/empty values).
