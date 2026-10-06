@@ -11,7 +11,8 @@
  * - Errors (exit code 1): the file is not valid JSON, has keys that don't exist
  *   in the source (e.g. because a key was renamed or removed), has a different
  *   type than the source at some position (object vs. string), or doesn't use
- *   the same {{placeholders}} as the source.
+ *   the same {{placeholders}} and `:tokens` (replaced by the H5P core JS, e.g.
+ *   `:num`) as the source.
  * - Warnings (exit code unaffected): keys that exist in the source but are
  *   missing or empty in the translation, i.e. translations still to do.
  *
@@ -71,6 +72,16 @@ const getPlaceholders = (text: string, ignoreCount: boolean): string =>
         .filter((p) => !(ignoreCount && p === '{{count}}'))
         .sort()
         .join(' ');
+
+/**
+ * Extracts the `:token`-style placeholders of a string, e.g. `:num` or
+ * `:title`. These are substituted by the H5P core JS in the browser and must
+ * stay untranslated.
+ * @param text the string to analyze
+ * @returns the sorted tokens joined by spaces
+ */
+const getColonTokens = (text: string): string =>
+    (text.match(/(?<![\w:/]):[a-zA-Z]\w*/g) ?? []).sort().join(' ');
 
 const describeType = (value: any): string =>
     isObject(value) ? 'object' : Array.isArray(value) ? 'array' : typeof value;
@@ -151,6 +162,13 @@ const compare = (
         if (expected !== actual) {
             errors.push(
                 `${keyPath}: placeholders differ from source (source: ${expected || 'none'}, translation: ${actual || 'none'})`
+            );
+        }
+        const expectedTokens = getColonTokens(source);
+        const actualTokens = getColonTokens(translation);
+        if (expectedTokens !== actualTokens) {
+            errors.push(
+                `${keyPath}: :tokens differ from source (source: ${expectedTokens || 'none'}, translation: ${actualTokens || 'none'})`
             );
         }
     }
