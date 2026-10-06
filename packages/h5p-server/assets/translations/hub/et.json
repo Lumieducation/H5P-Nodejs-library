@@ -2,7 +2,7 @@
     "H5P_Accordion": {
         "title": "Akordion (Accordion)",
         "summary": "Looge vertikaalselt laotud laiendatavad üksused",
-        "description": "Selle tundliku akordioni abil saate vähendada lugejatele esitatava teksti hulka. Lugejad otsustavad pealkirja laiendades, milliseid pealkirju lähemalt uurida. Suurepärane ülevaate andmiseks koos valikuliste põhjalike selgitustega.",
+        "description": "Selle kohanduva akordioni abil saate vähendada lugejatele esitatava teksti hulka. Lugejad otsustavad pealkirja laiendades, milliseid pealkirju lähemalt uurida. Suurepärane ülevaate andmiseks koos valikuliste põhjalike selgitustega.",
         "keywords": {
             "accordion": "akordion",
             "collapsible_text": "kokkupandav tekst"
@@ -15,7 +15,7 @@
         "keywords": {
             "math": "matemaatika",
             "arithmetic_quiz": "aritmeetiline viktoriin",
-            "countdown": "loendur"
+            "countdown": "tagasiloendus"
         }
     },
     "H5P_Chart": {
@@ -30,22 +30,24 @@
         }
     },
     "H5P_Collage": {
-        "title": "Liimimine (Collage)",
+        "title": "Kollaaž (Collage)",
         "summary": "Looge kollaaž mitmest pildist",
-        "description": "Collage'i tööriist võimaldab teil korraldada pilte rahustavaks kompositsiooniks.",
+        "description": "Kollaažitööriist võimaldab korraldada pilte rahustavaks kompositsiooniks.",
         "keywords": {
             "collage": "kollaaž",
             "image": "pilt"
         }
     },
     "H5P_Column": {
-        "title": "Veerg (Column)",
-        "summary": "Korrastage H5P sisu veergude paigutuseks",
-        "description": "Korrastage oma sisutüüp veeru paigutuseks H5P veeru abil. Sisu tüübid, mis käsitlevad sarnast materjali või jagavad ühist teemat, saab nüüd sidusa õppimiskogemuse loomiseks grupeerida. Lisaks võivad autorid vabalt olla loovad, ühendades peaaegu kõik olemasolevad H5P sisutüübid.",
+        "title": "Leht (Page)",
+        "summary": "Korrastage H5P sisu lehe paigutuseks",
+        "description": "Korrastage oma sisu ridade ja veergudega lehe paigutuseks. Sarnast materjali käsitlevaid või ühist teemat jagavaid sisutüüpe saab nüüd sidusa õppimiskogemuse loomiseks rühmitada. Lisaks võivad autorid vabalt loovad olla, kombineerides peaaegu kõiki olemasolevaid H5P sisutüüpe.",
         "keywords": {
             "column": "veerg",
             "layout": "paigutus",
-            "compound": "ühend"
+            "compound": "liitsisu",
+            "page": "leht",
+            "row": "rida"
         }
     },
     "H5P_CoursePresentation": {
@@ -69,61 +71,61 @@
     "H5P_DocumentationTool": {
         "title": "Dokumentatsioonivahend (Documentation Tool)",
         "summary": "Looge vormi viisard teksti eksportimisega",
-        "description": "Dokumenteerimisvahendi eesmärk on muuta eesmärkide juhitud tegevuste jaoks hindamisviisardite loomine lihtsaks. Seda saab kasutada ka vormiviisardina. Redigeerimise ajal saab autor lisada viisardile mitu sammu. Igas etapis saab autor määratleda, milline sisu selle sammu juurde läheb. Sisu võib olla lihttekst, sisendväljad, eesmärgi määratlus ja eesmärgi hindamine. Pärast avaldamist viiakse lõpptarbija läbi viisardi juhised. Viisardi viimasel etapil saab kasutaja genereerida kogu sisestatud dokumendi. Selle dokumendi saab alla laadida. Tööriist Dokumentatsioon on täielikult reageeriv ja töötab suurepäraselt nii väiksematel ekraanidel kui ka töölaual.",
+        "description": "Dokumenteerimisvahendi eesmärk on muuta eesmärgipõhiste tegevuste jaoks hindamisviisardite loomine lihtsaks. Seda saab kasutada ka vormiviisardina. Redigeerimise ajal saab autor lisada viisardile mitu sammu. Igas sammus saab autor määratleda, milline sisu selle sammu juurde läheb. Sisu võib olla lihttekst, sisendväljad, eesmärgi määratlus ja eesmärgi hindamine. Pärast avaldamist viiakse lõppkasutaja läbi viisardi sammud. Viisardi viimasel etapil saab kasutaja genereerida dokumendi kogu sisestatud sisuga. Selle dokumendi saab alla laadida. Dokumentatsioonivahend on täielikult kohanduv ja töötab suurepäraselt nii väiksematel ekraanidel kui ka töölaual.",
         "keywords": {
             "dialog_cards": "dialoogikaardid"
         }
     },
     "H5P_DragQuestion": {
-        "title": "Pukseerimine (Drag and Drop)",
+        "title": "Lohistamine (Drag and Drop)",
         "summary": "Looge piltidega lohistamisülesandeid",
-        "description": "Pukseerimise küsimus võimaldab õppijal seostada kahte või enamat elementi ja luua loogilisi seoseid visuaalselt. Looge lohistamise küsimused, kasutades lohistatavate alternatiividena nii teksti kui ka pilte. H5P Pukseerimisküsimused toetavad üks-ühele, üks-paljudele, paljud-ühele ja paljud-paljudele seoseid küsimuste ja vastuste vahel.",
+        "description": "Lohistamisküsimus võimaldab õppijal seostada kahte või enamat elementi ja luua loogilisi seoseid visuaalselt. Looge lohistamisküsimusi, kasutades lohistatavate alternatiividena nii teksti kui ka pilte. H5P lohistamisküsimused toetavad üks-ühele, üks-paljudele, paljud-ühele ja paljud-paljudele seoseid küsimuste ja vastuste vahel.",
         "keywords": {
-            "drag_and drop": "tõmba ja lase lahti"
+            "drag_and_drop": "lohistamine"
         }
     },
     "H5P_DragText": {
         "title": "Lohistage sõnu (Drag the Words)",
         "summary": "Looge tekstipõhised lohistamisülesanded",
-        "description": "Sõnade lohistamine võimaldab sisudisaineritel luua puuduvate tekstitükkidega tekstilauseid. Lõppkasutaja lohistab puuduva tekstitüki õigesse kohta, moodustades tervikliku avaldise. Võib kasutada selleks, et kontrollida, kas kasutaja mäletab oma loetud teksti või saab ta millestki aru. Aitab kasutajal teksti läbi mõelda. Sõnade lohistamise ülesande loomine on ülilihtne. Redaktor lihtsalt kirjutab teksti ja lisab lohistatavad sõnad tärnimärkidega nagu * draggableWord *.",
+        "description": "Sõnade lohistamine võimaldab sisudisaineritel luua puuduvate tekstitükkidega tekstilauseid. Lõppkasutaja lohistab puuduva tekstitüki õigesse kohta, moodustades tervikliku avaldise. Võib kasutada selleks, et kontrollida, kas kasutaja mäletab oma loetud teksti või saab ta millestki aru. Aitab kasutajal teksti läbi mõelda. Sõnade lohistamise ülesande loomine on ülilihtne. Redaktor lihtsalt kirjutab teksti ja lisab lohistatavad sõnad tärnimärkidega nagu *draggableWord*.",
         "keywords": {
-            "drag": "vedama",
-            "words": "sõnu"
+            "drag": "lohistama",
+            "words": "sõnad"
         }
     },
     "H5P_Blanks": {
         "title": "Täitke tühjad kohad (Fill in the Blanks)",
         "summary": "Looge ülesanne, kus tekstis puuduvad sõnad",
-        "description": "Õppijad täidavad puuduvad sõnad tekstis. Õppijale kuvatakse lahendus pärast kõigi puuduvate sõnade täitmist või sõltuvalt seadetest iga sõna järel. Autorid sisestavad teksti ja tähistavad sõnad, mis asendatakse tärniga. Lisaks emakeele ja teise keele õppimisele saab tühikute täitmisega proovida õppija võimet fakte taasesitada või matemaatilisi järeldusi teha.",
+        "description": "Õppijad täidavad puuduvad sõnad tekstis. Õppijale kuvatakse lahendus pärast kõigi puuduvate sõnade täitmist või sõltuvalt seadetest iga sõna järel. Autorid sisestavad teksti ja tähistavad sõnad, mis asendatakse tärniga. Lisaks emakeele ja teise keele õppimisele saab lünkade täitmisega proovida õppija võimet fakte taasesitada või matemaatilisi järeldusi teha.",
         "keywords": {
             "fill": "täitke",
-            "blanks": "toorikud",
+            "blanks": "lüngad",
             "text": "tekst"
         }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Leidke leviala (Find the Hotspot)",
-        "summary": "Looge kasutajate jaoks piltide leviala",
-        "description": "See sisutüüp võimaldab lõppkasutajatel pildil kuhugi vajutada ja saada tagasisidet selle kohta, kas see oli vastavalt ülesande kirjeldusele õige või vale. Autor laadib üles pildi ja määratleb pildi detailidele või lõikudele vastavad erinevad levialad. Kuumkohti võib määratleda kas õigete või valedena ning autor annab mõlemal juhul asjakohase tagasiside teksti. Autor saab tagasisidet määratleda ka siis, kui lõppkasutaja vajutab kuhugi, mida pole määratletud õige ega vale leviala.",
+        "title": "Leidke kuumkoht (Find the Hotspot)",
+        "summary": "Looge kasutajate leitavad piltide kuumkohad",
+        "description": "See sisutüüp võimaldab lõppkasutajatel pildil kuhugi vajutada ja saada tagasisidet selle kohta, kas see oli vastavalt ülesande kirjeldusele õige või vale. Autor laadib üles pildi ja määratleb pildi detailidele või osadele vastavad erinevad kuumkohad. Kuumkohti võib määratleda kas õigete või valedena ning autor annab mõlemal juhul asjakohase tagasiside teksti. Autor saab tagasisidet määratleda ka siis, kui lõppkasutaja vajutab kuhugi, mida pole määratletud õige ega vale kuumkohana.",
         "keywords": {
             "find": "leidma",
-            "hotspot": "leviala",
+            "hotspot": "kuumkoht",
             "image": "pilt"
         }
     },
     "H5P_GuessTheAnswer": {
         "title": "Arva ära vastus (Guess the Answer)",
-        "summary": "Looge küsimus ja vastus pilt",
+        "summary": "Looge pilt koos küsimuse ja vastusega",
         "description": "See sisutüüp võimaldab autoritel pilti üles laadida ja sobiva kirjelduse lisada. Lõppkasutajad saavad vastuse ära arvata ja õige vastuse paljastamiseks vajutada pildi all olevat riba.",
         "keywords": {
-            "guess": "arvan ära",
+            "guess": "arvama",
             "answer": "vastus"
         }
     },
     "H5P_IFrameEmbed": {
         "title": "Iframe'i sisestaja (Iframe Embedder)",
-        "summary": "Manusta URL-ist või failikomplektist",
-        "description": "Iframe'i embderi abil on lihtne juba olemasolevatest JavaScripti rakendustest H5P-d teha.",
+        "summary": "Manustage URL-ist või failikomplektist",
+        "description": "Iframe'i sisestaja abil on lihtne juba olemasolevatest JavaScripti rakendustest H5P-sisu teha.",
         "keywords": {
             "embed": "kinnistada",
             "iframe": "iframe"
@@ -132,19 +134,19 @@
     "H5P_InteractiveVideo": {
         "title": "Interaktiivne video (Interactive Video)",
         "summary": "Looge interaktsioonidega rikastatud videoid",
-        "description": "Lisage oma videole interaktiivsust koos selgituste, lisapiltide, tabelite, täitke tühi ja valikvastustega küsimustega. Viktoriiniküsimused toetavad kohanemisvõimet, see tähendab, et saate kasutaja sisendi põhjal hüpata video teise osa juurde. Interaktiivseid kokkuvõtteid saab lisada video lõppu. Interaktiivsed videod luuakse ja redigeeritakse H5P-i autoritööriista abil tavalises veebibrauseris.",
+        "description": "Lisage oma videole interaktiivsust selgituste, lisapiltide, tabelite, lünktekstide ja valikvastustega küsimustega. Viktoriiniküsimused toetavad kohanemisvõimet, see tähendab, et saate kasutaja sisendi põhjal hüpata video teise osa juurde. Interaktiivseid kokkuvõtteid saab lisada video lõppu. Interaktiivsed videod luuakse ja redigeeritakse H5P-i autoritööriista abil tavalises veebibrauseris.",
         "keywords": {
             "interactive": "interaktiivne",
             "video": "video"
         }
     },
     "H5P_MarkTheWords": {
-        "title": "Märgi sõnad (Mark the Words)",
+        "title": "Märkige sõnad (Mark the Words)",
         "summary": "Looge ülesanne, kus kasutajad tõstavad sõnu esile",
-        "description": "Sõnade märkimine võimaldab sisudisaineritel luua tekstiväljendeid määratletud õigete sõnade komplektiga. Lõppkasutaja tõstab sõnad ülesande kirjelduse järgi esile ja saab hinde. Redaktori jaoks on ülilihtne luua klõpsuga sõnu väljakutse. Redaktor kirjutab teksti ja lisab sõnad, millel kasutaja peaks klõpsama, õiged vastused tärniga nagu * correctWord *.",
+        "description": "Sõnade märkimine võimaldab sisudisaineritel luua tekstiväljendeid määratletud õigete sõnade komplektiga. Lõppkasutaja tõstab sõnad ülesande kirjelduse järgi esile ja saab punktid. Redaktori jaoks on ülilihtne luua sõnadel klõpsamise ülesande. Redaktor kirjutab teksti ja lisab sõnad, millel kasutaja peaks klõpsama, õiged vastused tärniga nagu *correctWord*.",
         "keywords": {
-            "mark": "märk",
-            "words": "sõnu"
+            "mark": "märkima",
+            "words": "sõnad"
         }
     },
     "H5P_MemoryGame": {
@@ -158,11 +160,11 @@
         }
     },
     "H5P_MultiChoice": {
-        "title": "Mitmekordne valik (Multiple Choice)",
+        "title": "Valikvastustega küsimus (Multiple Choice)",
         "summary": "Looge paindlikud valikvastustega küsimused",
-        "description": "Mitme valikuga küsimused võivad olla tõhusaks hindamisvahendiks. Õppijale antakse koheselt tagasisidet soorituse kohta. H5P valikvastustega küsimustel võib ühe küsimuse kohta olla üks või mitu õiget valikut.",
+        "description": "Valikvastustega küsimused võivad olla tõhusaks hindamisvahendiks. Õppijale antakse koheselt tagasisidet soorituse kohta. H5P valikvastustega küsimustel võib ühe küsimuse kohta olla üks või mitu õiget valikut.",
         "keywords": {
-            "multiple": "mitmekordne",
+            "multiple": "mitu",
             "choice": "valik",
             "quiz": "viktoriin"
         }
@@ -179,15 +181,15 @@
     "H5P_Questionnaire": {
         "title": "Küsimustik (Questionnaire)",
         "summary": "Tagasiside saamiseks koostage küsimustik",
-        "description": "Hankige tagasisidet ja esitage küsimustikuga interaktiivsete videote ja muude sisutüüpide kohta avatud küsimusi. Küsimustik muudab kasutaja vastused kättesaadavaks xAPI-integreerimise kaudu. See tähendab, et veebisaitide omanikud võivad vastuseid salvestada mitmel erineval viisil. Vastuseid võidakse salvestada LRS-i, saitidel on oma kohandatud salvestusruum või skript saab e-posti aadressi tuua ja kasutada seda kasutajale e-kirja saatmiseks. Veebisaidil H5P.org salvestatakse vastused Google Analyticsi.",
+        "description": "Hankige tagasisidet ja esitage küsimustiku abil interaktiivsetes videotes ja muudes sisutüüpides avatud küsimusi. Küsimustik muudab kasutaja vastused kättesaadavaks xAPI-integreerimise kaudu. See tähendab, et veebisaitide omanikud võivad vastuseid salvestada mitmel erineval viisil. Vastuseid võidakse salvestada LRS-i, saidi enda kohandatud salvestusruumi või skript saab e-posti aadressi hankida ja kasutada seda kasutajale e-kirja saatmiseks. Veebisaidil H5P.org salvestatakse vastused Google Analyticsi.",
         "keywords": {
             "questionnaire": "küsimustik"
         }
     },
     "H5P_QuestionSet": {
-        "title": "Viktoriin (Question Set) (Quiz (Question Set))",
+        "title": "Küsimuste komplekt (Question Set)",
         "summary": "Looge jada erinevat tüüpi küsimustest",
-        "description": "Küsimuste komplekt on teie tüüpiline viktoriini sisutüüp. See võimaldab õppijal lahendada mitmesuguste küsimuste tüüpide järjestuse, näiteks Multichoice, Drag and drop ja Fill in the küsimustekomplekti tühjad kohad. Autorina on palju seadeid, mida saate kasutada selleks, et see käituks just nii, nagu soovite. Võite näiteks kohandada küsimuste komplekti taustapiltidega ja määratleda õppijale läbimise protsendi. Küsimuste komplekt võimaldab teil lisada ka videoid, mida esitatakse lõpus. Üks video õnnestumiseks, teine, kui õppija testil ebaõnnestub. See võib motiveerida õppijaid ebaõnnestumise korral uuesti proovima, et nad saaksid näha edukusvideot.",
+        "description": "Küsimuste komplekt on teie tüüpiline viktoriini sisutüüp. See võimaldab õppijal lahendada mitmesuguste küsimustetüüpide jada, näiteks valikvastustega küsimused, lohistamine ja lünktekst. Autorina on palju seadeid, mida saate kasutada selleks, et see käituks just nii, nagu soovite. Võite näiteks kohandada küsimuste komplekti taustapiltidega ja määratleda õppijale läbimise protsendimäära. Küsimuste komplekt võimaldab teil lisada ka videoid, mida esitatakse lõpus. Üks video õnnestumiseks, teine, kui õppija testil ebaõnnestub. See võib motiveerida õppijaid ebaõnnestumise korral uuesti proovima, et nad saaksid näha õnnestumisvideot.",
         "keywords": {
             "question_set": "küsimuste komplekt",
             "collection": "kollektsioon",
@@ -206,8 +208,8 @@
     },
     "H5P_Summary": {
         "title": "Kokkuvõte (Summary)",
-        "summary": "Looge ülesannete loendi loend",
-        "description": "Kokkuvõtted aitavad õppijal meeles pidada põhiteavet tekstis, videos või esitluses, lisades aktiivselt käsitletava teema kokkuvõtte. Kui õppija on kokkuvõtte koostanud, kuvatakse täielik loetelu peamistest väidetest selle teema kohta.",
+        "summary": "Looge väidete loendiga ülesandeid",
+        "description": "Kokkuvõtted aitavad õppijal meeles pidada põhiteavet tekstis, videos või esitluses, koostades aktiivselt käsitletava teema kokkuvõtte. Kui õppija on kokkuvõtte koostanud, kuvatakse täielik loetelu peamistest väidetest selle teema kohta.",
         "keywords": {
             "summary": "kokkuvõte"
         }
@@ -215,37 +217,37 @@
     "H5P_Timeline": {
         "title": "Ajaskaala (Timeline)",
         "summary": "Looge multimeediumiga sündmuste ajaskaala",
-        "description": "See on Knight Labi välja töötatud Timeline.js, mis on pakendatud H5P sisutüübiks, et muuta ajagraafikud hõlpsasti muudetavaks, jagatavaks ja korduvkasutatavaks. Ajaskaala sisutüüp võimaldab paigutada sündmuste jada kronoloogilises järjekorras. Iga sündmuse jaoks võite lisada pilte ja tekste. Võite lisada ka varasid Twitterist, YouTube'ist, Flickrist, Vimeost, Google Mapsist ja SoundCloudist.",
+        "description": "See on Knight Labi välja töötatud Timeline.js, mis on pakendatud H5P sisutüübiks, et muuta ajaskaalad hõlpsasti muudetavaks, jagatavaks ja korduvkasutatavaks. Ajaskaala sisutüüp võimaldab paigutada sündmuste jada kronoloogilises järjekorras. Iga sündmuse jaoks võite lisada pilte ja tekste. Võite lisada ka sisu Twitterist, YouTube'ist, Flickrist, Vimeost, Google Mapsist ja SoundCloudist.",
         "keywords": {
             "timeline": "ajaskaala",
             "slider": "liugur"
         }
     },
     "H5P_TrueFalse": {
-        "title": "Õige / vale küsimus (True/False Question)",
-        "summary": "Loo tõeseid / valesid küsimusi",
-        "description": "Õige / vale küsimus on lihtne ja arusaadav sisutüüp, mis võib töötada iseenesest või lisada muudesse sisutüüpidesse, näiteks Kursuse esitlus. Keerulisema küsimuse saab luua pildi või video lisamisega.",
+        "title": "Õige/vale küsimus (True/False Question)",
+        "summary": "Looge õige/vale küsimusi",
+        "description": "Õige/vale küsimus on lihtne ja arusaadav sisutüüp, mis võib töötada iseenesest või lisatav muudesse sisutüüpidesse, näiteks Kursuse esitlus. Keerulisema küsimuse saab luua pildi või video lisamisega.",
         "keywords": {
-            "true": "tõsi",
+            "true": "õige",
             "false": "vale"
         }
     },
     "H5P_ImageHotspots": {
-        "title": "Kujutise leviala (Image Hotspots)",
+        "title": "Pildi kuumkohad (Image Hotspots)",
         "summary": "Looge mitme infopunktiga pilt",
-        "description": "Kujutiste levialad võimaldavad interaktiivsete levialadega pilti luua. Kui kasutaja vajutab leviala, kuvatakse hüpikut, mis sisaldab päist ja teksti või videot. H5P-redaktori abil võite lisada nii palju leviala kui soovite.",
+        "description": "Pildi kuumkohad võimaldavad luua interaktiivsete kuumkohtadega pilti. Kui kasutaja vajutab kuumkohta, kuvatakse hüpikaken, mis sisaldab päist ja teksti või videot. H5P-redaktori abil võite lisada nii palju kuumkohti kui soovite.",
         "keywords": {
             "image": "pilt",
-            "hotspot": "leviala"
+            "hotspot": "kuumkoht"
         }
     },
     "H5P_ImageMultipleHotspotQuestion": {
-        "title": "Leidke mitu leviala (Find Multiple Hotspots)",
-        "summary": "Looge kasutajate jaoks palju leviala",
-        "description": "Tasuta HTML5-põhine küsimuse tüüp, mis võimaldab loovusel luua pildipõhine test, kus õppija peab leidma pildil õiged kohad. Kasutajate väljakutsumiseks kasutage seda sisutüüpi koos WordPressi, Moodle'i või Drupali jaoks mõeldud H5P pistikprogrammiga."
+        "title": "Leidke mitu kuumkohta (Find Multiple Hotspots)",
+        "summary": "Looge kasutajate leitavad kuumkohad",
+        "description": "Tasuta HTML5-põhine küsimuse tüüp, mis võimaldab loovisikutel luua pildipõhine test, kus õppija peab leidma pildil õiged kohad. Kasutajate proovile panemiseks kasutage seda sisutüüpi koos WordPressi, Moodle'i või Drupali jaoks mõeldud H5P pistikprogrammiga."
     },
     "H5P_ImageJuxtaposition": {
-        "title": "Kujutise kõrvutamine (Image Juxtaposition)",
+        "title": "Piltide kõrvutamine (Image Juxtaposition)",
         "summary": "Looge interaktiivseid pilte",
         "description": "Tasuta HTML5-põhine pildisisu tüüp, mis võimaldab kasutajatel interaktiivselt kahte pilti võrrelda. Rääkige oma pildilugusid H5P ja Image Juxtaposition abil WordPressis, Moodle'is või Drupalis."
     },
@@ -260,71 +262,71 @@
         "description": "HTML5 helisalvesti. Salvestage oma hääl ja taasesitage või laadige oma salvestusest alla .wav-fail. Kasutage H5P pistikprogrammi, et luua oma Drupali, Wordpressi või Moodle'i saidile H5P helisalvesti.",
         "keywords": {
             "audio": "heli",
-            "recorder": "makk"
+            "recorder": "salvestaja"
         }
     },
     "H5P_SpeakTheWords": {
-        "title": "Räägi sõnu (Speak the Words)",
-        "summary": "Küsimusele vastamine häälega (Chrome only)",
+        "title": "Rääkige sõnu (Speak the Words)",
+        "summary": "Küsimusele vastamine häälega (ainult Chrome)",
         "description": "Sõnade rääkimine on toetatud ainult brauserites, mis rakendavad Web Speech API-d (Chrome'i brauserid, välja arvatud iOS-is). Küsimusele vastamiseks vajate mikrofoni. Esitage kasutajatele küsimus ja laske neil oma häälega vastata. Saate valida mitu õiget vastust. Kasutajal on võimalik näha, millisena tema sõnu tõlgendati ja kui lähedased olid õiged vastused.",
         "keywords": {
             "language": "keel",
             "translation": "tõlge",
             "voice": "hääl",
-            "recognition": "tunnustamine",
+            "recognition": "tuvastus",
             "speech": "kõne",
-            "mic": "vähe",
+            "mic": "mikker",
             "microphone": "mikrofon"
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "title": "Agamotto",
         "summary": "Esitage piltide ja selgituste jada",
         "description": "Esitage piltide jada, mida inimesed peaksid üksteise järel vaatama, nt. fotod esemest, mis aja jooksul muutub, skeemid või kaardid, mis on paigutatud erinevatesse kihtidesse, või pildid, mis paljastavad üha rohkem üksikasju.",
         "keywords": {
             "image": "pilt",
-            "images": "pilte",
+            "images": "pildid",
             "transition": "üleminek"
         }
     },
     "H5P_ImageSequencing": {
         "title": "Piltide järjestamine (Image Sequencing)",
         "summary": "Asetage pildid õiges järjekorras",
-        "description": "Tasuta HTML5-põhine piltide järjestamise sisutüüp, mis võimaldab autoritel lisada mängule omaenda piltide järjestuse (ja valikulise pildikirjelduse) kindlas järjekorras. Piltide järjestus randomiseeritakse ja mängijad peavad need ülesande kirjelduse põhjal järjestama.",
+        "description": "Tasuta HTML5-põhine piltide järjestamise sisutüüp, mis võimaldab autoritel lisada mängule omaenda piltide järjestuse (ja valikulise pildikirjelduse) kindlas järjekorras. Piltide järjestus segatakse juhuslikult ja mängijad peavad need ülesande kirjelduse põhjal järjestama.",
         "keywords": {
             "image": "pilt",
             "sequence": "järjestus",
-            "order": "tellimus"
+            "order": "järjekord"
         }
     },
     "H5P_Flashcards": {
-        "title": "Sähvikud (Flashcards)",
+        "title": "Mälukaardid (Flashcards)",
         "summary": "Looge stiilsed ja kaasaegsed mälukaardid",
-        "description": "See sisutüüp võimaldab autoritel luua ühe välkmälukaardi või välkmälukaartide komplekti, kus igal kaardil on pildid, mis on seotud küsimuste ja vastustega. Õppijad peavad täitma tekstivälja ja seejärel kontrollima oma lahenduse õigsust.",
+        "description": "See sisutüüp võimaldab autoritel luua ühe mälukaardi või mälukaartide komplekti, kus igal kaardil on pildid, mis on seotud küsimuste ja vastustega. Õppijad peavad täitma tekstivälja ja seejärel kontrollima oma lahenduse õigsust.",
         "keywords": {
             "cards": "kaardid",
             "animation": "animatsioon"
         }
     },
     "H5P_SpeakTheWordsSet": {
-        "title": "Rääkige sõnade komplekti (Speak the Words Set)",
-        "summary": "Looge rida küsimusi, millele vastatakse kõnes (Chrome only)",
-        "description": "Sõnade komplekti rääkimine on toetatud ainult brauserites, mis rakendavad veebikõne API-d (Chrome'i brauserid, välja arvatud ios). Küsimusele vastamiseks vajate mikrofoni. Looge komplekt küsimusi, millele õppijad saavad oma häält kasutades vastata. saate valida mitu õiget vastust. Kasutajal on võimalik näha, millisena tema sõnu tõlgendati ja kui lähedased olid õiged vastused.",
+        "title": "Sõnade rääkimise komplekt (Speak the Words Set)",
+        "summary": "Looge rida küsimusi, millele vastatakse kõnega (ainult Chrome)",
+        "description": "Sõnade rääkimise komplekt on toetatud ainult brauserites, mis rakendavad Web Speech API-d (Chrome'i brauserid, välja arvatud iOS-is). Küsimusele vastamiseks vajate mikrofoni. Looge komplekt küsimusi, millele õppijad saavad oma häält kasutades vastata. Saate valida mitu õiget vastust. Kasutajal on võimalik näha, millisena tema sõnu tõlgendati ja kui lähedased olid õiged vastused.",
         "keywords": {
             "language": "keel",
             "translation": "tõlge",
             "voice": "hääl",
             "quiz": "viktoriin",
-            "set": "seatud",
-            "recognition": "tunnustamine",
-            "mic": "vähe",
+            "set": "komplekt",
+            "recognition": "tuvastus",
+            "mic": "mikker",
             "microphone": "mikrofon"
         }
     },
     "H5P_ImageSlider": {
         "title": "Pildi liugur (Image Slider)",
         "summary": "Looge hõlpsalt pildi liugur",
-        "description": "Esitage oma pilte hõlpsasti atraktiivsel viisil. Autorid peavad lihtsalt üles laadima pilte ja pakkuma piltide jaoks alternatiivseid tekste.\r\n\r\nJärgmised kaks pilti on alati eellaaditud, nii et piltide vahetamine on tavaliselt järgmise pildi laadimiseks viivitamatu.\r\n\r\nPilte võib kogeda lehe osana või täisekraanrežiimis. Lehe osana kasutamisel valib süsteem fikseeritud kuvasuhte sõltuvalt kasutatavatest piltidest. Autorid võivad otsustada kuvasuhteid erinevalt käsitseda.",
+        "description": "Esitage oma pilte hõlpsasti atraktiivsel viisil. Autorid peavad lihtsalt üles laadima pilte ja pakkuma piltide jaoks alternatiivseid tekste.\r\n\r\nJärgmised kaks pilti on alati eellaaditud, nii et piltide vahetamine on tavaliselt kiire, ilma järgmise pildi laadimise viivituseta.\r\n\r\nPilte võib kogeda lehe osana või täisekraanrežiimis. Lehe osana kasutamisel valib süsteem fikseeritud kuvasuhte sõltuvalt kasutatavatest piltidest. Autorid võivad otsustada kuvasuhteid erinevalt käsitseda.",
         "keywords": {
             "image": "pilt",
             "images": "pilte",
@@ -335,41 +337,41 @@
     "H5P_Essay": {
         "title": "Essee (Essay)",
         "summary": "Looge kohese tagasisidega essee",
-        "description": "Selles sisutüübis määratleb autor märksõnade komplekti, mis esindavad teema olulisi aspekte. Need märksõnad sobitatakse õpilaste koostatud tekstiga ja nende abil saab kohe tagasisidet anda - soovitades märksõna puudumisel teatud teema üksikasju üle vaadata, või kinnitades õpilase ideid, kui tekst sisaldab märksõna.\r\n",
+        "description": "Selles sisutüübis määratleb autor märksõnade komplekti, mis esindavad teema olulisi aspekte. Need märksõnad sobitatakse õpilaste koostatud tekstiga ja nende abil saab kohe tagasisidet anda - soovitades märksõna puudumisel teatud teema üksikasju üle vaadata, või kinnitades õpilase ideid, kui tekst sisaldab märksõna.",
         "keywords": {
             "Essay": "Essee"
         }
     },
     "H5P_ImagePair": {
-        "title": "Piltide sidumine (Image Pairing)",
-        "summary": "Lohistage pildi sobitamise mäng",
+        "title": "Piltide sidumine (Image Pair)",
+        "summary": "Piltide sobitamise lohistamismäng",
         "description": "Piltide sidumine on lihtne ja tõhus tegevus, mis nõuab õppijatelt pildipaaride sobitamist. Kuna mõlema paaris oleva pildi ühtsus pole nõutav, saavad autorid testida ka kahe erineva pildi vahelise seose mõistmist.",
         "keywords": {
-            "image_images matching pair": "paariga sobivad pildipildid"
+            "image_images_matching_pair": "pilt pildid sobivad paarid"
         }
     },
     "H5P_Dictation": {
         "title": "Dikteerimine (Dictation)",
         "summary": "Looge kohese tagasisidega dikteerimine",
-        "description": "Saate lisada dikteerimiseks mõeldud lause sisaldavaid helinäiteid ja sisestada õige transkriptsiooni. Teie õpilased saavad näidiseid kuulata ja sisestada kuuldu tekstiväljale. Nende vastuseid hinnatakse automaatselt. Mitmed võimalused võimaldavad teil kontrollida harjutuse raskusi. Soovi korral saate lisada teise helinäidise lausele, mis mahutab aeglaselt räägitud versiooni. Samuti saate seada piiri valimi esitamise sagedusele, määratleda, kas kirjavahemärgid peaksid hindamise jaoks asjakohased olema, ja otsustada, kas väikesi vigu, nagu tippimisvead, ei loeta veaks, täielikuks veaks või lihtsalt pooleks veaks.",
+        "description": "Saate lisada dikteerimiseks mõeldud lause sisaldavaid helinäiteid ja sisestada õige transkriptsiooni. Teie õpilased saavad näidiseid kuulata ja sisestada kuuldu tekstiväljale. Nende vastuseid hinnatakse automaatselt. Mitmed võimalused võimaldavad teil kontrollida harjutuse raskusastet. Soovi korral saate lisada teise helinäidise lausele, mis sisaldab aeglaselt räägitud versiooni. Samuti saate seada piiri näidise esitamise sagedusele, määratleda, kas kirjavahemärgid peaksid hindamise jaoks asjakohased olema, ja otsustada, kas väikesi vigu, nagu tippimisvead, ei loeta veaks, täielikuks veaks või lihtsalt pooleks veaks.",
         "keywords": {
             "language": "keel",
             "audio": "heli"
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Hargnemise stsenaarium (beta) (Branching Scenario (beta))",
-        "summary": "Looge dilemmasid ja õppimist ise",
-        "description": "Hargnemise stsenaarium võimaldab autoritel tutvustada õppuritele mitmesugust rikkalikku interaktiivset sisu ja valikuid. Õppijate tehtud valikud määravad järgmise sisu, mida nad näevad. Võib kasutada dilemmade, tõsiste mängude ja isetempoga õppimise loomiseks."
+        "title": "Hargnev stsenaarium (Branching Scenario)",
+        "summary": "Looge dilemmasid ja iseseisvat õppimist",
+        "description": "Hargnemise stsenaarium võimaldab autoritel tutvustada õppijatele mitmesugust rikkalikku interaktiivset sisu ja valikuid. Õppijate tehtud valikud määravad järgmise sisu, mida nad näevad. Võib kasutada dilemmade, tõsiste mängude ja oma tempos õppimise loomiseks."
     },
     "H5P_ThreeImage": {
         "title": "Virtuaaltuur (360) (Virtual Tour (360))",
-        "summary": "Looge interaktsioonidega 360 keskkonda",
-        "description": "360 (ristkülikukujulised) ja tavalised pildid võivad olla rikastatud interaktiivsusega, nagu selgitused, videod, helid ja interaktiivsed küsimused. Kujutised loovad stseene, mida võib ka omavahel linkida, et anda kasutajale mulje liikumisest keskkondade vahel või sama keskkonna erinevate vaatepunktide vahel."
+        "summary": "Looge interaktsioonidega 360 keskkondi",
+        "description": "360 (ekvirektangulaarsed) ja tavalised pildid võivad olla rikastatud interaktiivsusega, nagu selgitused, videod, helid ja interaktiivsed küsimused. Pildid loovad stseene, mida võib ka omavahel linkida, et anda kasutajale mulje liikumisest keskkondade vahel või sama keskkonna erinevate vaatepunktide vahel."
     },
     "H5P_FindTheWords": {
-        "title": "Leidke sõnad (Find the words)",
-        "summary": "Võrgusõnaotsingumäng",
+        "title": "Leidke sõnad (Find The Words)",
+        "summary": "Sõnaotsingumäng ruudustikus",
         "description": "Tasuta HTML5-põhine sõnaotsing, mis võimaldab autoritel luua loendi sõnadest, mis joonistatakse ruudustikku. Õppija ülesandeks on leida ja valida ruudustikust sõnad."
     },
     "H5P_InteractiveBook": {
@@ -378,7 +380,7 @@
         "description": "Looge väikesi kursusi, raamatuid või teste. Interaktiivne raamat võimaldab autoritel mitmel lehel kombineerida suures koguses interaktiivset sisu, nagu interaktiivsed videod, küsimused, kursuste esitlused ja muu. Lõpus on kokkuvõte, mis võtab kokku õppija kogu raamatu jooksul saadud hinded.",
         "keywords": {
             "book": "raamat",
-            "course": "muidugi"
+            "course": "kursus"
         }
     },
     "H5P_KewArCode": {
@@ -392,17 +394,17 @@
     "H5P_AdventCalendar": {
         "title": "Advendikalender (beta) (Advent Calendar (beta))",
         "summary": "Looge iga päev avalikustatud üllatusi",
-        "description": "Ehitage ja kohandage ilusat advendikalendrit. Võite lisada taustpildi kogu kalendrisse, igale uksele ja taustaks iga ukse sisule. Võite lisada ka lumeefekti ja muusikat. Iga ukse sisse saate lisada heli, video, teksti, pildi või lingi.\r\n\r\nPange tähele, et arvutitarkudel kasutajatel on lihtne kõigi uste sisu kohe avaldada. Kui kavatsete tulevastel päevadel paljastada suuri saladusi, peaksite enne oma suurte saladuste kalendrisse lisamist ootama seda päeva.",
+        "description": "Ehitage ja kohandage ilusat advendikalendrit. Võite lisada taustpildi kogu kalendrisse, igale uksele ja taustaks iga ukse sisule. Võite lisada ka lumeefekti ja muusikat. Iga ukse sisse saate lisada heli, video, teksti, pildi või lingi.\r\n\r\nPange tähele, et arvutitundlikel kasutajatel on lihtne kõigi uste sisu kohe avaldada. Kui kavatsete tulevastel päevadel paljastada suuri saladusi, peaksite enne oma suurte saladuste kalendrisse lisamist ootama seda päeva.",
         "keywords": {
             "christmas": "jõulud",
-            "advent": "tulek",
+            "advent": "advent",
             "holidays": "pühad",
             "calendar": "kalender"
         }
     },
     "H5P_Crossword": {
         "title": "Ristsõna (Crossword)",
-        "summary": "Loo ristsõna",
+        "summary": "Looge ristsõna",
         "description": "Koostage ja kohandage oma vaatajaskonna kaasamiseks kaunist ristsõna. Ristsõna on väga kohandatav, võimaldades teil konfigureerida kõiki värve, laadida üles taustapildi, otsustada, kuidas hindamine peaks toimima ja isegi selles olevaid sõnu juhuslikult järjestada, et teie publik saaks soovi korral iga kord uue ristsõna.",
         "keywords": {
             "crossword": "ristsõna",
@@ -410,23 +412,53 @@
         }
     },
     "H5P_SortParagraphs": {
-        "title": "Sorteeri lõigud (Sort the Paragraphs)",
+        "title": "Sorteerige lõigud (Sort the Paragraphs)",
         "summary": "Looge sorteeritavate lõikude komplekt",
-        "description": "Tippige või kleepige juhuslikult muudetavate lõikude loend. Näiteks võite lasta igal lõigul olla osa laulust, koodiplokist või retsepti sammudest. Õppijad peavad lõigud õigesse järjekorda sorteerima. Vaikimisi saavad õppijad ühe punkti iga lõigu eest, mis järgneb sellele lõigule, mida see peaks järgima, kuid võite otsustada anda punkti iga õiges kohas oleva lõigu eest.",
+        "description": "Tippige või kleepige juhuslikus järjekorras kuvatavate lõikude loend. Näiteks võite lasta igal lõigul olla osa laulust, koodiplokist või retsepti sammudest. Õppijad peavad lõigud õigesse järjekorda sorteerima. Vaikimisi saavad õppijad ühe punkti iga lõigu eest, mis järgneb sellele lõigule, mida see peaks järgima, kuid võite otsustada anda punkti iga õiges kohas oleva lõigu eest.",
         "keywords": {
             "sorting": "sorteerimine",
             "games": "mängud",
-            "tasks": "ülesandeid"
+            "tasks": "ülesanded"
         }
     },
     "H5P_MultiMediaChoice": {
-        "title": "Pildi valik (Image Choice)",
-        "summary": "Loo ülesanne, kus alternatiiviks on pildid",
-        "description": "Ehitage ilusaid valik- või ühe valikuga küsimusi, kui alternatiivid on pildid. Saate kohandada alternatiivide paigutust ja valida fikseeritud kuvasuhte vahel või lihtsalt kasutada piltidel juba olemasolevaid kuvasuhteid.",
+        "title": "Multimeediavalik (Multimedia Choice)",
+        "summary": "Looge ülesanne, kus alternatiivid on multimeedia",
+        "description": "Ehitage ilusaid valik- või ühe valikuga küsimusi, kus iga alternatiiv võib olla pilt, video või heli. Saate kohandada alternatiivide paigutust ja valida fikseeritud kuvasuhte vahel või lihtsalt kasutada multimeediaelementidel juba olemasolevaid kuvasuhteid.",
         "keywords": {
             "sorting": "sorteerimine",
             "games": "mängud",
-            "tasks": "ülesandeid"
+            "tasks": "ülesanded"
+        }
+    },
+    "H5P_Cornell": {
+        "title": "Cornelli märkmed (Cornell Notes)",
+        "summary": "Tehke märkmeid Cornelli süsteemi abil",
+        "description": "Esitage õppijatele video, tekst või heli ning julgustage neid tegema märkmeid Cornelli märkmesüsteemi abil."
+    },
+    "H5P_ARScavenger": {
+        "title": "AR aardejaht (beta) (AR Scavenger (beta))",
+        "summary": "Liitreaalsuse lõbu!",
+        "description": "Laske õppijatel uurida 3D-mudelite või H5P harjutustega täiendatud tegelikkust. Saate määrata QR-koodidega sarnaseid markereid, mida teie õpilased saavad oma seadme kaameraga skannida. Need markerid võivad käivitada valitud 3D-mudeli sulandamist kaamerapildiga või kuvada H5P interaktsiooni."
+    },
+    "H5P_StructureStrip": {
+        "title": "Struktuuririba (Structure Strip)",
+        "summary": "Interaktiivne struktuuririba",
+        "description": "Struktuuririba asetatakse traditsiooniliselt paberilehe kõrvale (või isegi kleebitakse sellele). See annab õpilastele teksti kandva raamistiku ning aitab neil hoida eri tekstiosade pikkused heas vahekorras. Struktuuriribaga saate nüüd sama lähenemist kasutada H5P-s ilma paberita."
+    },
+    "H5P_InfoWall": {
+        "title": "Infosein (Information Wall)",
+        "summary": "Looge infopaneelid, mida kasutajad saavad oluliste märksõnade järgi filtreerida.",
+        "description": "Võimaldage kasutajatel hõlpsasti sirvida kogu teavet või filtreerida seda märksõnade järgi, et otsida konkreetset teavet. Autorina saate seadistada põhipaneeli ning otsustada lisada näiteks igale paneelile ühe pildi."
+    },
+    "H5P_GameMap": {
+        "title": "Mängukaart (Game Map)",
+        "summary": "Laske oma õpilastel valida harjutusi mängukaardilt",
+        "description": "Mängukaart koosneb etappidest, mida saate taustapildile paigutada. Iga etapp on seotud ühe või mitme etapiga ja võib sisaldada H5P sisutüüpi, mida kasutaja vaatab või täidab. Saate määrata reeglid, mis kindlaks teevad, millisesse etappi kasutaja liikuda tohib, nii et saate luua mängulaadse kogemuse.",
+        "keywords": {
+            "game": "mäng",
+            "map": "kaart",
+            "gamification": "mängustamine"
         }
     }
 }

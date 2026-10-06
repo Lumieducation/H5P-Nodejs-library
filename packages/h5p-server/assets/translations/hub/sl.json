@@ -20,48 +20,50 @@
     },
     "H5P_Chart": {
         "title": "Grafikon (Chart)",
-        "summary": "Hitro ustvarite stolpčne in tortne diagrame",
+        "summary": "Hitro ustvarite stolpčne in krožne diagrame",
         "description": "Ali morate preproste statistične podatke predstaviti grafično, ne da bi umetniško delo ustvarili ročno? Grafikon je vaš odgovor.",
         "keywords": {
             "chart": "grafikon",
-            "bar_chart": "Stolpični diagram",
+            "bar_chart": "stolpčni diagram",
             "pie_chart": "krožni diagram",
             "graph": "graf"
         }
     },
     "H5P_Collage": {
-        "title": "Lepljenje (Collage)",
+        "title": "Kolaž (Collage)",
         "summary": "Ustvarite kolaž iz več slik",
         "description": "Orodje Collage omogoča razvrščanje slik v pomirjujočo kompozicijo.",
         "keywords": {
             "collage": "kolaž",
-            "image": "slike"
+            "image": "slika"
         }
     },
     "H5P_Column": {
-        "title": "Stolpec (Column)",
-        "summary": "Vsebino H5P organizirajte v postavitev stolpca",
-        "description": "Svojo vrsto vsebine uredite v postavitev stolpca s stolpcem H5P. Vrste vsebin, ki obravnavajo podobno gradivo ali imajo skupno temo, lahko zdaj združimo v skupine, da ustvarimo skladno učno izkušnjo. Poleg tega lahko avtorji ustvarjajo s kombiniranjem skoraj vseh obstoječih vrst vsebin H5P.",
+        "title": "Stran (Page)",
+        "summary": "Vsebino H5P organizirajte v postavitev strani",
+        "description": "Vrsto vsebine uredite v postavitev strani z vrsticami in stolpci. Vrste vsebin, ki obravnavajo podobno gradivo ali imajo skupno temo, lahko zdaj združite, da ustvarite skladno učno izkušnjo. Poleg tega lahko avtorji ustvarjajo po svoji domišljiji, saj lahko kombinirajo skoraj vse obstoječe vrste vsebin H5P.",
         "keywords": {
             "column": "stolpec",
             "layout": "postavitev",
-            "compound": "spojina"
+            "compound": "sestavljena vsebina",
+            "page": "stran",
+            "row": "vrstica"
         }
     },
     "H5P_CoursePresentation": {
         "title": "Predstavitev tečaja (Course Presentation)",
         "summary": "Ustvarite predstavitev z interaktivnimi diapozitivi",
-        "description": "Predstavitve tečajev so sestavljene iz diapozitivov z večpredstavnostnimi vsebinami, besedilom in številnimi različnimi vrstami interakcij, kot so interaktivni povzetki, vprašanja z več izbirami in interaktivni videoposnetki. Učenci lahko izkusijo novo interaktivno učno snov in preizkusijo svoje znanje in spomin v predstavitvah tečaja. Kot vedno pri H5P, je tudi v spletnih brskalnikih mogoče urejati vsebino, vrsta dejavnosti Predstavitev tečaja pa vključuje orodje za avtorstvo na podlagi povleci in spusti WYSIWYG. Tipična uporaba dejavnosti Predstavitev tečaja je uporaba nekaj diapozitivov za predstavitev predmeta in sledenje z nekaj več diapozitivi, na katerih se preverja uporabnikovo znanje. Predstavitve tečaja se lahko uporabljajo na različne načine, med drugim kot predstavitveno orodje za uporabo v učilnici ali kot igra, pri kateri je običajna navigacija nadomeščena z navigacijskimi gumbi na vrhu diapozitivov, da lahko uporabnik izbira in vidi posledice. njihove izbire.",
+        "description": "Predstavitve tečajev so sestavljene iz diapozitivov z večpredstavnostnimi vsebinami, besedilom in številnimi različnimi vrstami interakcij, kot so interaktivni povzetki, vprašanja z več izbirami in interaktivni videoposnetki. Učenci lahko izkusijo novo interaktivno učno snov in preizkusijo svoje znanje in spomin v predstavitvah tečaja. Kot vedno pri H5P, je tudi v spletnih brskalnikih mogoče urejati vsebino, vrsta dejavnosti Predstavitev tečaja pa vključuje orodje za avtorstvo na podlagi povleci in spusti WYSIWYG. Tipična uporaba dejavnosti Predstavitev tečaja je uporaba nekaj diapozitivov za predstavitev predmeta in sledenje z nekaj več diapozitivi, na katerih se preverja uporabnikovo znanje. Predstavitve tečaja se lahko uporabljajo na različne načine, med drugim kot predstavitveno orodje za uporabo v učilnici ali kot igra, pri kateri je običajna navigacija nadomeščena z navigacijskimi gumbi na vrhu diapozitivov, da lahko uporabnik izbira in vidi posledice svojih izbir.",
         "keywords": {
             "course_presentation": "predstavitev tečaja",
             "slides": "diapozitivi",
-            "powerpoint": "Power Point"
+            "powerpoint": "PowerPoint"
         }
     },
     "H5P_Dialogcards": {
-        "title": "Kartice za (Dialog Cards)",
+        "title": "Pogovorne kartice (Dialog Cards)",
         "summary": "Ustvarite obračalne karte, ki temeljijo na besedilu",
-        "description": "Kartice za pogovorno okno se lahko uporabljajo kot vaja za pomoč učencem pri pomnjenju besed, izrazov ali stavkov. Na sprednji strani kartice je namig za besedo ali izraz. Z obračanjem karte učenec razkrije ustrezno besedo ali izraz. Kartice dialoga se lahko uporabljajo pri učenju jezikov, za predstavitev matematičnih problemov ali za pomoč učencem, da si zapomnijo dejstva, kot so zgodovinski dogodki, formule ali imena.",
+        "description": "Pogovorne kartice se lahko uporabljajo kot vaja za pomoč učencem pri pomnjenju besed, izrazov ali stavkov. Na sprednji strani kartice je namig za besedo ali izraz. Z obračanjem karte učenec razkrije ustrezno besedo ali izraz. Pogovorne kartice se lahko uporabljajo pri učenju jezikov, za predstavitev matematičnih problemov ali za pomoč učencem, da si zapomnijo dejstva, kot so zgodovinski dogodki, formule ali imena.",
         "keywords": {
             "dialog_cards": "pogovorne kartice"
         }
@@ -69,7 +71,7 @@
     "H5P_DocumentationTool": {
         "title": "Orodje za dokumentacijo (Documentation Tool)",
         "summary": "Ustvarite čarovnika za obrazce z izvozom besedila",
-        "description": "Orodje za dokumentacijo si olajša ustvarjanje čarovnikov za ocenjevanje za ciljno usmerjene dejavnosti. Uporablja se lahko tudi kot čarovnik za obrazce. Med urejanjem lahko avtor čarovniku doda več korakov. V vsakem koraku lahko avtor določi, katera vsebina gre v ta korak. Vsebina je lahko navadno besedilo, vnosna polja, opredelitev cilja in ocena cilja. Ko je končni uporabnik objavljen, ga bodo vodili koraki čarovnika. V zadnjem koraku čarovnika lahko uporabnik ustvari dokument z vsemi vloženimi vnosi. Ta dokument je mogoče prenesti. Orodje za dokumentacijo je popolnoma odzivno in se odlično obnese tako na manjših zaslonih kot na namizju.",
+        "description": "Orodje za dokumentacijo želi olajšati ustvarjanje čarovnikov za ocenjevanje za ciljno usmerjene dejavnosti. Uporablja se lahko tudi kot čarovnik za obrazce. Med urejanjem lahko avtor čarovniku doda več korakov. V vsakem koraku lahko avtor določi, katera vsebina gre v ta korak. Vsebina je lahko navadno besedilo, vnosna polja, opredelitev cilja in ocena cilja. Ko je vsebina objavljena, končnega uporabnika vodijo koraki čarovnika. V zadnjem koraku čarovnika lahko uporabnik ustvari dokument z vsemi oddanimi vnosi. Ta dokument je mogoče prenesti. Orodje za dokumentacijo je popolnoma odzivno in se odlično obnese tako na manjših zaslonih kot na namizju.",
         "keywords": {
             "dialog_cards": "pogovorne kartice"
         }
@@ -79,7 +81,7 @@
         "summary": "Ustvarite naloge povleci in spusti s slikami",
         "description": "Vlečenje in spuščanje omogoča učencu, da poveže dva ali več elementov in na vizualni način vzpostavi logične povezave. Ustvarite vprašanja povleci in spusti z uporabo besedila in slik kot alternative, ki jih je mogoče povleči. Vprašanja »povleci in spusti« H5P podpirajo razmerja med vprašanji in odgovori »ena na ena«, ena na več, več na enega in več na veliko.",
         "keywords": {
-            "drag_and drop": "povleci in spusti"
+            "drag_and_drop": "povleci in spusti"
         }
     },
     "H5P_DragText": {
@@ -94,21 +96,21 @@
     "H5P_Blanks": {
         "title": "Izpolnite prazna mesta (Fill in the Blanks)",
         "summary": "Ustvarite nalogo z manjkajočimi besedami v besedilu",
-        "description": "Učenci v besedilo vpišejo manjkajoče besede. Učenec se pokaže rešitev po izpolnitvi vseh manjkajočih besed ali po vsaki besedi, odvisno od nastavitev. Avtorji vnesejo besedilo in besede, ki jih je treba zamenjati z zvezdico. Poleg učenja maternega jezika in drugega jezika lahko prazna polja uporabite za preizkušanje sposobnosti učenca za reprodukcijo dejstev ali matematičnih sklepov.",
+        "description": "Učenci v besedilo vpišejo manjkajoče besede. Učencu se pokaže rešitev po izpolnitvi vseh manjkajočih besed ali po vsaki besedi, odvisno od nastavitev. Avtorji vnesejo besedilo in besede, ki jih je treba zamenjati z zvezdico. Poleg učenja maternega jezika in drugega jezika lahko prazna polja uporabite za preizkušanje sposobnosti učenca za reprodukcijo dejstev ali matematičnih sklepov.",
         "keywords": {
-            "fill": "napolnite",
-            "blanks": "prazne",
+            "fill": "izpolni",
+            "blanks": "prazna mesta",
             "text": "besedilo"
         }
     },
     "H5P_ImageHotspotQuestion": {
-        "title": "Poiščite dostopno točko (Find the Hotspot)",
-        "summary": "Ustvarite slikovne dostopne točke, ki jih bodo uporabniki našli",
-        "description": "Ta vrsta vsebine omogoča končnim uporabnikom, da pritisnejo nekje na sliko in dobijo povratne informacije o tem, ali je bilo to pravilno ali napačno v skladu z opisom naloge. Avtor naloži sliko in določi različne vroče točke, ki ustrezajo podrobnostim ali odsekom slike. Vroče točke lahko definiramo kot pravilne ali napačne, avtor pa v obeh primerih navede ustrezno besedilo povratnih informacij. Avtor lahko opredeli tudi povratno informacijo, če končni uporabnik pritisne nekje, kar ni opredeljeno niti kot pravilno niti napačno dostopno točko.",
+        "title": "Poiščite vročo točko (Find the Hotspot)",
+        "summary": "Ustvarite slikovne vroče točke, ki jih bodo uporabniki našli",
+        "description": "Ta vrsta vsebine omogoča končnim uporabnikom, da pritisnejo nekje na sliko in dobijo povratne informacije o tem, ali je bilo to pravilno ali napačno v skladu z opisom naloge. Avtor naloži sliko in določi različne vroče točke, ki ustrezajo podrobnostim ali odsekom slike. Vroče točke lahko definiramo kot pravilne ali napačne, avtor pa v obeh primerih navede ustrezno besedilo povratnih informacij. Avtor lahko opredeli tudi povratno informacijo, če končni uporabnik pritisne nekje, kar ni opredeljeno niti kot pravilno niti napačno vročo točko.",
         "keywords": {
             "find": "najti",
             "hotspot": "vroča točka",
-            "image": "slike"
+            "image": "slika"
         }
     },
     "H5P_GuessTheAnswer": {
@@ -121,8 +123,8 @@
         }
     },
     "H5P_IFrameEmbed": {
-        "title": "Iframe Embedder",
-        "summary": "Vdelaj iz URL-ja ali nabora datotek",
+        "title": "Vdelovalnik Iframe (Iframe Embedder)",
+        "summary": "Vdelajte iz URL-ja ali nabora datotek",
         "description": "Vdelava Iframe omogoča enostavno izdelavo H5P že obstoječih aplikacij JavaScript.",
         "keywords": {
             "embed": "vdelati",
@@ -132,7 +134,7 @@
     "H5P_InteractiveVideo": {
         "title": "Interaktivni video (Interactive Video)",
         "summary": "Ustvarite videoposnetke, obogatene z interakcijami",
-        "description": "Videoposnetku dodajte interaktivnost z razlagami, dodatnimi slikami, tabelami, izpolnite prazno in vprašanji z več izbirami. Vprašanja v kvizu podpirajo prilagodljivost, kar pomeni, da lahko na podlagi uporabnikovega prispevka skočite na drug del videoposnetka. Na koncu videoposnetka lahko dodate interaktivne povzetke. Interaktivni videoposnetki so ustvarjeni in urejeni z orodjem za avtoring H5P v običajnem spletnem brskalniku.",
+        "description": "Videoposnetku dodajte interaktivnost z razlagami, dodatnimi slikami, tabelami, nalogami z izpolnjevanjem praznih mest in vprašanji z več izbirami. Vprašanja v kvizu podpirajo prilagodljivost, kar pomeni, da lahko na podlagi uporabnikovega prispevka skočite na drug del videoposnetka. Na koncu videoposnetka lahko dodate interaktivne povzetke. Interaktivni videoposnetki so ustvarjeni in urejeni z orodjem za avtoring H5P v običajnem spletnem brskalniku.",
         "keywords": {
             "interactive": "interaktivni",
             "video": "video"
@@ -141,15 +143,15 @@
     "H5P_MarkTheWords": {
         "title": "Označi besede (Mark the Words)",
         "summary": "Ustvarite nalogo, kjer uporabniki poudarijo besede",
-        "description": "Označi besede omogoča oblikovalcem vsebin, da ustvarijo besedilne izraze z določenim nizom pravilnih besed. Končni uporabnik poudari besede v skladu z opisom naloge in dobi oceno. Za urejevalnik je zelo enostavno ustvariti izziv s klikom besed. Urejevalnik vnese besedilo in besede, ki naj bi jih uporabnik kliknil, prikaže z desnimi besedami, kot je * pravilno beseda *.",
+        "description": "Označi besede omogoča oblikovalcem vsebin, da ustvarijo besedilne izraze z določenim nizom pravilnih besed. Končni uporabnik poudari besede v skladu z opisom naloge in dobi oceno. Avtorju je zelo enostavno ustvariti izziv s klikom besed. Avtor vnese besedilo in besede, ki naj bi jih uporabnik kliknil, torej pravilne odgovore, obdaja z zvezdicami, na primer *pravilnaBeseda*.",
         "keywords": {
-            "mark": "oznaka",
+            "mark": "označi",
             "words": "besede"
         }
     },
     "H5P_MemoryGame": {
         "title": "Igra spomina (Memory Game)",
-        "summary": "Ustvarite klasično igro za seznanjanje slik",
+        "summary": "Ustvarite klasično igro iskanja parov slik",
         "description": "Ustvarite lastne spominske igre in preizkusite spomin uporabnikov spletnega mesta s to preprosto, a čudovito igro HTML5.",
         "keywords": {
             "memory": "spomin",
@@ -185,21 +187,21 @@
         }
     },
     "H5P_QuestionSet": {
-        "title": "Kviz (Question Set) (Quiz (Question Set))",
+        "title": "Nabor vprašanj (Question Set)",
         "summary": "Ustvarite zaporedje različnih vrst vprašanj",
-        "description": "Nabor vprašanj je vaša tipična vrsta vsebine kviza. Učenec omogoča reševanje zaporedja različnih vrst vprašanj, kot so Več izbira, Povleci in spusti in Izpolni prazna mesta v naboru vprašanj. Kot avtor lahko s številnimi nastavitvami poskrbite, da se bo obnašal tako, kot želite. Lahko na primer prilagodite nabor vprašanj s slikami v ozadju in določite odstotek prenosa za učenca. Nabor vprašanj omogoča tudi dodajanje videoposnetkov, ki se predvajajo na koncu. En video za uspeh, drugi, če učenec ne opravi testa. To lahko motivira učence, da poskusijo znova, če jim ne uspe, tako da bodo lahko videli video o uspehu.",
+        "description": "Nabor vprašanj je vaša tipična vrsta vsebine kviza. Učencu omogoča reševanje zaporedja različnih vrst vprašanj, kot so Več izbira, Povleci in spusti in Izpolni prazna mesta v naboru vprašanj. Kot avtor lahko s številnimi nastavitvami poskrbite, da se bo obnašal tako, kot želite. Lahko na primer prilagodite nabor vprašanj s slikami v ozadju in določite odstotek za uspešno opravljen test za učenca. Nabor vprašanj omogoča tudi dodajanje videoposnetkov, ki se predvajajo na koncu. En video za uspeh, drugi, če učenec ne opravi testa. To lahko motivira učence, da poskusijo znova, če jim ne uspe, tako da bodo lahko videli video o uspehu.",
         "keywords": {
             "question_set": "nabor vprašanj",
-            "collection": "zbiranje",
+            "collection": "zbirka",
             "quiz": "kviz"
         }
     },
     "H5P_SingleChoiceSet": {
-        "title": "Set za eno izbiro (Single Choice Set)",
+        "title": "Nabor z eno izbiro (Single Choice Set)",
         "summary": "Ustvarite vprašanja z enim pravilnim odgovorom",
         "description": "Nabor z eno izbiro omogoča oblikovalcem vsebin, da ustvarijo sklope vprašanj z enim pravilnim odgovorom na vprašanje. Končni uporabnik prejme takojšnje povratne informacije po oddaji vsakega odgovora.",
         "keywords": {
-            "collection": "zbiranje",
+            "collection": "zbirka",
             "quiz": "kviz",
             "choice": "izbira"
         }
@@ -214,38 +216,38 @@
     },
     "H5P_Timeline": {
         "title": "Časovnica (Timeline)",
-        "summary": "Ustvarite časovni načrt dogodkov z večpredstavnostjo",
-        "description": "To je Timeline.js, ki ga je razvil Knight Lab in je zapakiran kot vrsta vsebine H5P, da je časovne roke enostavno urejati, deliti in ponovno uporabiti. Vrsta vsebine časovne osi vam omogoča, da zaporedje dogodkov postavite v kronološki vrstni red. Za vsak dogodek lahko dodate slike in besedila. Vključite lahko tudi sredstva s strani Twitter, YouTube, Flickr, Vimeo, Google Maps in SoundCloud.",
+        "summary": "Ustvarite časovnico dogodkov z večpredstavnostjo",
+        "description": "To je Timeline.js, ki ga je razvil Knight Lab in je zapakiran kot vrsta vsebine H5P, da je časovnice enostavno urejati, deliti in ponovno uporabiti. Vrsta vsebine Časovnica vam omogoča, da zaporedje dogodkov postavite v kronološki vrstni red. Za vsak dogodek lahko dodate slike in besedila. Vključite lahko tudi sredstva s strani Twitter, YouTube, Flickr, Vimeo, Google Maps in SoundCloud.",
         "keywords": {
             "timeline": "časovna premica",
             "slider": "drsnik"
         }
     },
     "H5P_TrueFalse": {
-        "title": "Resnično / napačno vprašanje (True/False Question)",
-        "summary": "Ustvarite resnična / napačna vprašanja",
-        "description": "Vprašanje True / False je preprosta in enostavna vrsta vsebine, ki lahko deluje samostojno ali se vstavi v druge vrste vsebine, kot je predstavitev tečaja. Bolj zapleteno vprašanje lahko ustvarite tako, da dodate sliko ali video.",
+        "title": "Vprašanje pravilno/napačno (True/False Question)",
+        "summary": "Ustvarite vprašanja pravilno/napačno",
+        "description": "Vprašanje pravilno/napačno je preprosta in enostavna vrsta vsebine, ki lahko deluje samostojno ali se vstavi v druge vrste vsebine, kot je predstavitev tečaja. Bolj zapleteno vprašanje lahko ustvarite tako, da dodate sliko ali video.",
         "keywords": {
-            "true": "prav",
+            "true": "pravilno",
             "false": "napačno"
         }
     },
     "H5P_ImageHotspots": {
         "title": "Slikovne vroče točke (Image Hotspots)",
         "summary": "Ustvarite sliko z več vročimi točkami",
-        "description": "Slikovne dostopne točke omogočajo ustvarjanje slike z interaktivnimi dostopnimi točkami. Ko uporabnik pritisne dostopno točko, se prikaže pojavno okno, ki vsebuje glavo in besedilo ali video. Z urejevalnikom H5P lahko dodate poljubno število točk.",
+        "description": "Slikovne vroče točke omogočajo ustvarjanje slike z interaktivnimi vročimi točkami. Ko uporabnik pritisne vročo točko, se prikaže pojavno okno, ki vsebuje glavo in besedilo ali video. Z urejevalnikom H5P lahko dodate poljubno število točk.",
         "keywords": {
-            "image": "slike",
+            "image": "slika",
             "hotspot": "vroča točka"
         }
     },
     "H5P_ImageMultipleHotspotQuestion": {
-        "title": "Poiščite več dostopnih točk (Find Multiple Hotspots)",
-        "summary": "Ustvarite veliko dostopnih točk, ki jih bodo uporabniki našli",
+        "title": "Poiščite več vročih točk (Find Multiple Hotspots)",
+        "summary": "Ustvarite veliko vročih točk, ki jih bodo uporabniki našli",
         "description": "Brezplačna vrsta vprašanj, ki temelji na HTML5 in omogoča kreativcem, da ustvarijo preskus, ki temelji na sliki, v katerem mora učenec najti prave točke na sliki. To vrsto vsebine uporabite z vtičnikom H5P za WordPress, Moodle ali Drupal, da izzivate svoje uporabnike."
     },
     "H5P_ImageJuxtaposition": {
-        "title": "Juxtaposition slike (Image Juxtaposition)",
+        "title": "Primerjava slik (Image Juxtaposition)",
         "summary": "Ustvarite interaktivne slike",
         "description": "Brezplačna vrsta slikovne vsebine na osnovi HTML5, ki uporabnikom omogoča interaktivno primerjavo dveh slik. Povejte svoje slikovne zgodbe s H5P in Image Juxtaposition na WordPress, Moodle ali Drupal."
     },
@@ -264,25 +266,25 @@
         }
     },
     "H5P_SpeakTheWords": {
-        "title": "Govori besede (Speak the Words)",
-        "summary": "Odgovorite na vprašanje s svojim glasom (Chrome only)",
-        "description": "Govorite besede je podprto samo v brskalnikih, ki izvajajo API za spletni govor (brskalniki Chrome, razen v iOS-u). Za odgovor potrebujete mikrofon. Vprašajte uporabnike in jih odgovorite s svojim glasom. Izberete lahko več pravilnih odgovorov. Uporabnik bo lahko videl, kako so bile razložene njegove besede in kako blizu so bili pravilni odgovori.",
+        "title": "Izgovorite besede (Speak the Words)",
+        "summary": "Odgovorite na vprašanje s svojim glasom (samo Chrome)",
+        "description": "Vrsta vsebine Izgovorite besede je podprta samo v brskalnikih, ki izvajajo API za spletni govor (brskalniki Chrome, razen v iOS-u). Za odgovor potrebujete mikrofon. Uporabnikom postavite vprašanje, na katerega odgovorijo s svojim glasom. Določite lahko več pravilnih odgovorov. Uporabnik bo lahko videl, kako so bile razumljene njegove besede in kako blizu so bili pravilni odgovori.",
         "keywords": {
             "language": "jezik",
             "translation": "prevod",
             "voice": "glas",
-            "recognition": "priznanje",
+            "recognition": "prepoznavanje",
             "speech": "govor",
-            "mic": "malo",
+            "mic": "mikr.",
             "microphone": "mikrofon"
         }
     },
     "H5P_Agamotto": {
-        "title": "Agamotto (Image Blender) (Agamotto (Image Blender))",
+        "title": "Agamotto",
         "summary": "Predstavite zaporedje slik in razlag",
         "description": "Predstavite zaporedje slik, ki naj bi jih ljudje gledali eno za drugo, npr. fotografije predmeta, ki se sčasoma spreminjajo, sheme ali zemljevidi, ki so razporejeni v različne plasti, ali slike, ki razkrivajo vedno več podrobnosti.",
         "keywords": {
-            "image": "slike",
+            "image": "slika",
             "images": "slike",
             "transition": "prehod"
         }
@@ -292,14 +294,14 @@
         "summary": "Postavite slike v pravilnem vrstnem redu",
         "description": "Brezplačna vrsta vsebine z zaporedjem slik, ki temelji na HTML5, ki avtorjem omogoča, da v igro v določenem vrstnem redu dodajo zaporedje svojih slik (in neobvezen opis slik). Vrstni red slik bo naključen in igralci jih bodo morali preurediti glede na opis naloge.",
         "keywords": {
-            "image": "slike",
+            "image": "slika",
             "sequence": "zaporedje",
-            "order": "naročilo"
+            "order": "vrstni red"
         }
     },
     "H5P_Flashcards": {
-        "title": "Flashcards",
-        "summary": "Ustvarite moderne in moderne kartice",
+        "title": "Bliskovne kartice (Flashcards)",
+        "summary": "Ustvarite elegantne in sodobne kartice",
         "description": "Ta vrsta vsebine omogoča avtorjem, da ustvarijo eno bliskovno kartico ali komplet bliskovnih kartic, kjer so na vsaki kartici slike, povezane z vprašanji in odgovori. Učenci morajo izpolniti besedilno polje in nato preveriti pravilnost svoje rešitve.",
         "keywords": {
             "cards": "kartice",
@@ -308,16 +310,16 @@
     },
     "H5P_SpeakTheWordsSet": {
         "title": "Izgovorite nabor besed (Speak the Words Set)",
-        "summary": "Ustvarite vrsto vprašanj, na katere boste odgovorili z govorom (Chrome only)",
-        "description": "Govorite nabor besed je podprt samo v brskalnikih, ki izvajajo API spletnega govora (brskalniki Chrome, razen na ios). Za odgovor potrebujete mikrofon. Ustvarite nabor vprašanj, na katera bodo učenci lahko odgovorili s svojim glasom. lahko izberete več pravilnih odgovorov. Uporabnik bo lahko videl, kako so bile razložene njegove besede in kako blizu so bili pravilni odgovori.",
+        "summary": "Ustvarite vrsto vprašanj, na katera se odgovarja z govorom (samo Chrome)",
+        "description": "Vrsta vsebine Izgovorite nabor besed je podprta samo v brskalnikih, ki izvajajo API spletnega govora (brskalniki Chrome, razen na iOS). Za odgovor potrebujete mikrofon. Ustvarite nabor vprašanj, na katera bodo učenci lahko odgovorili s svojim glasom. Določite lahko več pravilnih odgovorov. Uporabnik bo lahko videl, kako so bile razumljene njegove besede in kako blizu so bili pravilni odgovori.",
         "keywords": {
             "language": "jezik",
             "translation": "prevod",
             "voice": "glas",
             "quiz": "kviz",
-            "set": "nastavite",
-            "recognition": "priznanje",
-            "mic": "malo",
+            "set": "nabor",
+            "recognition": "prepoznavanje",
+            "mic": "mikr.",
             "microphone": "mikrofon"
         }
     },
@@ -326,7 +328,7 @@
         "summary": "Preprosto ustvarite slikovni drsnik",
         "description": "Z lahkoto predstavite svoje slike na privlačen način. Avtorji morajo samo naložiti slike in jim zagotoviti nadomestna besedila.\r\n\r\nNaslednji dve sliki sta vedno prednaloženi, zato je preklapljanje med slikami običajno hitro in brez zamude pri nalaganju naslednje slike.\r\n\r\nSlike so morda del strani ali v celozaslonskem načinu. Ko se sistem uporablja kot del strani, bo izbral določeno razmerje stranic, odvisno od uporabljenih slik. Avtorji se lahko odločijo, da bodo razmerja stranic obravnavali drugače.",
         "keywords": {
-            "image": "slike",
+            "image": "slika",
             "images": "slike",
             "slider": "drsnik",
             "carousel": "vrtiljak"
@@ -335,17 +337,17 @@
     "H5P_Essay": {
         "title": "Esej (Essay)",
         "summary": "Ustvarite esej s takojšnjo povratno informacijo",
-        "description": "V tej vrsti vsebine avtor opredeli nabor ključnih besed, ki predstavljajo ključne vidike teme. Te ključne besede se ujemajo z besedilom, ki so ga sestavili študentje, in jih je mogoče uporabiti za takojšnjo pošiljanje povratnih informacij - bodisi predlaga, da se določene podrobnosti teme popravijo, če ključna beseda manjka, bodisi potrdijo študentove ideje, če besedilo vsebuje ključno besedo.\r\n",
+        "description": "V tej vrsti vsebine avtor opredeli nabor ključnih besed, ki predstavljajo ključne vidike teme. Te ključne besede se ujemajo z besedilom, ki so ga sestavili študentje, in jih je mogoče uporabiti za takojšnjo pošiljanje povratnih informacij - bodisi predlaga, da se določene podrobnosti teme popravijo, če ključna beseda manjka, bodisi potrdijo študentove ideje, če besedilo vsebuje ključno besedo.",
         "keywords": {
             "Essay": "Esej"
         }
     },
     "H5P_ImagePair": {
-        "title": "Seznanjanje slik (Image Pairing)",
-        "summary": "Povlecite in spustite igro ujemanja slik",
+        "title": "Par slik (Image Pair)",
+        "summary": "Igra ujemanja slik s povleci in spusti",
         "description": "Seznanjavanje slik je preprosta in učinkovita dejavnost, ki od učencev zahteva, da se ujemajo s pari slik. Ker ni nujno, da sta obe sliki v paru enaki, lahko avtorji preizkusijo tudi razumevanje odnosa med dvema različnima slikama.",
         "keywords": {
-            "image_images matching pair": "slikovne slike, ki se ujemajo"
+            "image_images_matching_pair": "slika slike ujemanje par"
         }
     },
     "H5P_Dictation": {
@@ -358,17 +360,17 @@
         }
     },
     "H5P_BranchingScenario": {
-        "title": "Scenarij razvejanja (beta) (Branching Scenario (beta))",
+        "title": "Scenarij razvejanja (Branching Scenario)",
         "summary": "Ustvarite dileme in samostojno učenje",
         "description": "Scenarij razvejanja avtorjem omogoča, da učence predstavijo različnim bogatim interaktivnim vsebinam in izbiram. Izbira učencev bo določila naslednjo vsebino, ki jo vidi. Lahko se uporablja za ustvarjanje dilem, resnih iger in samostojnega učenja."
     },
     "H5P_ThreeImage": {
-        "title": "Virtual Tour (360) (Virtual Tour (360))",
+        "title": "Virtualna tura (360) (Virtual Tour (360))",
         "summary": "Ustvarite 360 okolij z interakcijami",
-        "description": "360 (enakovredne) in običajne slike so lahko obogatene z interaktivnostmi, kot so razlage, video posnetki, zvoki in interaktivna vprašanja. Slike ustvarjajo prizore, ki so lahko med seboj tudi povezani, da uporabnik dobi vtis premikanja med okolji ali med različnimi stališči v istem okolju."
+        "description": "360° (ekvirektangularne) in običajne slike so lahko obogatene z interaktivnostmi, kot so razlage, video posnetki, zvoki in interaktivna vprašanja. Slike ustvarjajo prizore, ki so lahko med seboj tudi povezani, da uporabnik dobi vtis premikanja med okolji ali med različnimi stališči v istem okolju."
     },
     "H5P_FindTheWords": {
-        "title": "Poiščite besede (Find the words)",
+        "title": "Poiščite besede (Find The Words)",
         "summary": "Mrežna igra za iskanje besed",
         "description": "Brezplačna dejavnost iskanja besed na osnovi HTML5, ki avtorjem omogoča, da ustvarijo seznam besed, ki bodo narisane v mreži. Naloga učenca je najti in izbrati besede v mreži."
     },
@@ -377,8 +379,8 @@
         "summary": "Ustvarite majhne tečaje, knjige in teste",
         "description": "Ustvarite majhne tečaje, knjige ali teste. Interaktivna knjiga omogoča avtorjem, da na več straneh kombinirajo velike količine interaktivne vsebine, kot so interaktivni videoposnetki, vprašanja, predstavitve tečajev in drugo. Na koncu je povzetek, v katerem so povzeti rezultati, ki jih je učenec dosegel v celotni knjigi.",
         "keywords": {
-            "book": "knjigo",
-            "course": "seveda"
+            "book": "knjiga",
+            "course": "tečaj"
         }
     },
     "H5P_KewArCode": {
@@ -401,11 +403,11 @@
         }
     },
     "H5P_Crossword": {
-        "title": "križanka (Crossword)",
-        "summary": "Ustvari križanko",
+        "title": "Križanka (Crossword)",
+        "summary": "Ustvarite križanko",
         "description": "Zgradite in prilagodite čudovito križanko, da pritegnete svoje občinstvo. Križanka je zelo prilagodljiva, kar vam omogoča, da konfigurirate vse barve, naložite sliko ozadja, se odločite, kako naj deluje točkovanje, in celo naključno razporedite besede v njej, tako da vaše občinstvo vsakič, če želite, dobi novo križanko.",
         "keywords": {
-            "crossword": "Križanka",
+            "crossword": "križanka",
             "games": "igre"
         }
     },
@@ -420,13 +422,43 @@
         }
     },
     "H5P_MultiMediaChoice": {
-        "title": "Izbira slike (Image Choice)",
-        "summary": "Ustvarite nalogo, kjer so alternative slike",
-        "description": "Sestavite čudovita vprašanja z več ali enojno izbiro, če so alternative slike. Lahko prilagodite postavitev za alternative in izbirate med fiksnimi razmerji stranic ali preprosto uporabite razmerja stranic, ki jih slike že imajo.",
+        "title": "Večpredstavnostna izbira (Multimedia Choice)",
+        "summary": "Ustvarite nalogo, kjer so alternative večpredstavnostne vsebine",
+        "description": "Sestavite čudovita vprašanja z več ali enojno izbiro, kjer je lahko vsaka alternativa slika, videoposnetek ali zvok. Lahko prilagodite postavitev za alternative in izbirate med fiksnimi razmerji stranic ali preprosto uporabite razmerja stranic, ki jih večpredstavnostni elementi že imajo.",
         "keywords": {
             "sorting": "razvrščanje",
             "games": "igre",
             "tasks": "naloge"
+        }
+    },
+    "H5P_Cornell": {
+        "title": "Cornellovi zapiski (Cornell Notes)",
+        "summary": "Zapisujte zapiske po Cornellovem sistemu",
+        "description": "Učencem predstavite videoposnetek, besedilo ali zvok in jih spodbudite, da si zapisujejo zapiske po Cornellovem sistemu zapisovanja."
+    },
+    "H5P_ARScavenger": {
+        "title": "AR lov (beta) (AR Scavenger (beta))",
+        "summary": "Zabava z razširjeno resničnostjo!",
+        "description": "Učencem omogočite raziskovanje resničnosti, razširjene s 3D-modeli ali vajami H5P. Določite lahko markerje, podobne kodam QR, ki jih učenci skenirajo s kamero svoje naprave. Ti markerji lahko sprožijo vstavljanje izbranega 3D-modela v sliko kamere ali pa prikažejo interakcijo H5P."
+    },
+    "H5P_StructureStrip": {
+        "title": "Strukturni trak (Structure Strip)",
+        "summary": "Interaktivni strukturni trak",
+        "description": "Strukturni trak se tradicionalno položi ob list papirja (ali celo prilepi nanj). Učencem nudi oporo pri pisanju besedila in jim pomaga ohranjati ustrezno razmerje med dolžinami različnih delov besedila. S Strukturnim trakom lahko zdaj enak pristop uporabite v H5P brez papirja."
+    },
+    "H5P_InfoWall": {
+        "title": "Informacijska tabla (Information Wall)",
+        "summary": "Ustvarite informacijske plošče, ki jih uporabniki lahko filtrirajo po ustreznih ključnih besedah.",
+        "description": "Uporabnikom omogočite preprosto brskanje po vseh informacijah ali njihovo filtriranje po ključnih besedah, da poiščejo določene informacije. Kot avtor lahko nastavite glavno ploščo in se odločite za dodajanje slike na vsako ploščo itd."
+    },
+    "H5P_GameMap": {
+        "title": "Igralni zemljevid (Game Map)",
+        "summary": "Učencem omogočite, da izbirajo vaje na igralnem zemljevidu",
+        "description": "Igralni zemljevid sestavljajo stopnje, ki jih lahko razporedite na sliko ozadja. Vsaka stopnja je povezana z eno ali več drugimi stopnjami in lahko vsebuje vrsto vsebine H5P, ki si jo uporabnik ogleda ali reši. Določite lahko pravila, ki bodo določala, na katero stopnjo se sme uporabnik premakniti, tako da ustvarite izkušnjo, podobno igri.",
+        "keywords": {
+            "game": "igra",
+            "map": "zemljevid",
+            "gamification": "igrifikacija"
         }
     }
 }

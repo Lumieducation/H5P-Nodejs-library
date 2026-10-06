@@ -280,7 +280,7 @@
         }
     },
     "H5P_Agamotto": {
-        "title": "Bildüberblendung (Agamotto / Image Blender)",
+        "title": "Agamotto",
         "summary": "Präsentiere eine Folge von Bildern und Erklärungen",
         "description": "Präsentiere eine Folge von Bildern, die nacheinander betrachtet werden sollen, z.B. Fotos von etwas, das sich im Laufe der Zeit ändert, Schaltpläne oder Karten, die in verschiedenen Ebenen organisiert sind, oder Bilder, die immer mehr Details enthüllen. Die Lernenden können mit einem Schieberegler vom einem Bild zum nächsten wechseln.",
         "keywords": {
