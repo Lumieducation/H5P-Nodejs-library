@@ -12,7 +12,7 @@
         "title": "Ir a la escena"
     },
     "H5P_GoToQuestion": {
-        "title": "Cruce"
+        "title": "Encrucijada"
     },
     "H5P_GoalsPage": {
         "title": "Página de objetivos"
@@ -45,7 +45,7 @@
         "title": "Resumen"
     },
     "H5P_Table": {
-        "title": "Mesa"
+        "title": "Tabla"
     },
     "H5P_Text": {
         "title": "Texto"
@@ -57,7 +57,7 @@
         "title": "Texto"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Elección múltiple simple"
+        "title": "Opción múltiple simple"
     },
     "H5P_BranchingQuestion": {
         "title": "Pregunta de ramificación"

@@ -1,6 +1,6 @@
 {
     "H5P_Image": {
-        "title": "obraz"
+        "title": "Obrázek"
     },
     "H5P_ContinuousText": {
         "title": "Souvislý text"
@@ -30,22 +30,22 @@
         "title": "Odkaz"
     },
     "H5P_Nil": {
-        "title": "Označení"
+        "title": "Popisek"
     },
     "H5P_IVHotspot": {
         "title": "Navigační hotspot"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Otevřená ukončená otázka"
+        "title": "Otevřená otázka"
     },
     "H5P_Shape": {
         "title": "Tvary"
     },
     "H5P_Summary": {
-        "title": "souhrn"
+        "title": "Shrnutí"
     },
     "H5P_Table": {
-        "title": "Stůl"
+        "title": "Tabulka"
     },
     "H5P_Text": {
         "title": "Text"
@@ -57,7 +57,7 @@
         "title": "Text"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Jednoduchá více možností"
+        "title": "Jednoduchý výběr z více možností"
     },
     "H5P_BranchingQuestion": {
         "title": "Větvící otázka"

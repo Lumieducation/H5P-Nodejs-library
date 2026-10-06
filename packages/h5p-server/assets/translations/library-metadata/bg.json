@@ -1,18 +1,18 @@
 {
     "H5P_Image": {
-        "title": "Образ"
+        "title": "Изображение"
     },
     "H5P_ContinuousText": {
         "title": "Непрекъснат текст"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Въпрос за безплатен текст"
+        "title": "Въпрос със свободен текст"
     },
     "H5P_GoToScene": {
         "title": "Отидете на сцена"
     },
     "H5P_GoToQuestion": {
-        "title": "Кръстовища"
+        "title": "Кръстопът"
     },
     "H5P_GoalsPage": {
         "title": "Страница с цели"
@@ -36,7 +36,7 @@
         "title": "Точка за навигация"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Отворен завършен въпрос"
+        "title": "Въпрос с отворен отговор"
     },
     "H5P_Shape": {
         "title": "Форми"
@@ -57,9 +57,9 @@
         "title": "Текст"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Прост мулти избор"
+        "title": "Прост избор от няколко отговора"
     },
     "H5P_BranchingQuestion": {
-        "title": "Разклонителен въпрос"
+        "title": "Въпрос с разклонение"
     }
 }

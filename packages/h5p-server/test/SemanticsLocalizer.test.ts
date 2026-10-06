@@ -501,7 +501,7 @@ describe('SemanticsLocalizer', () => {
                     { value: 'PD', label: 'Public Domain' },
                     {
                         value: 'ODC PDDL',
-                        label: 'Public Domain Dedication and Licence'
+                        label: 'Public Domain Dedication and License'
                     },
                     { value: 'C', label: 'Copyright' }
                 ]

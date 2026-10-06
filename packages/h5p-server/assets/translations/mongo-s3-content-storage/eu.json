@@ -1,8 +1,8 @@
 {
     "content-not-found": "Atzitzen saiatzen ari zaren edukia ez da existitzen.",
-    "deleting-content-error": "Errorea gertatu da edukia objektua ezabatzean.",
+    "deleting-content-error": "Errorea gertatu da eduki-objektua ezabatzean.",
     "deleting-file-error": "Errorea gertatu da {{filename}} fitxategia edukiaren objektutik ezabatzean.",
-    "filename-too-long": "Fitxategi izena luzeegia da: {{filename}}",
+    "filename-too-long": "Fitxategi-izena luzeegia da: {{filename}}",
     "illegal-filename": "{{filename}} fitxategi-izena ez da onartzen.",
     "listing-content-error": "Akats bat izan da eduki objektuen zerrenda eskuratzean",
     "mongo-add-update-error": "Errore bat gertatu da datu basean edukia gehitzean edo eguneratzean.",

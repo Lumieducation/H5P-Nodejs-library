@@ -1,1 +1,12 @@
-{}
+{
+    "content-not-found": "Innholdet du prøver å åpne, finnes ikke.",
+    "deleting-content-error": "Det oppstod en feil under sletting av innholdsobjektet.",
+    "deleting-file-error": "Det oppstod en feil under sletting av filen {{filename}} fra innholdsobjektet.",
+    "filename-too-long": "Filnavnet er for langt: {{filename}}",
+    "illegal-filename": "Filnavnet {{filename}} er ikke tillatt.",
+    "listing-content-error": "Det oppstod en feil under henting av listen over innholdsobjekter",
+    "mongo-add-update-error": "Det oppstod en feil under tillegging eller oppdatering av innhold i databasen.",
+    "mongo-replace-error": "Det oppstod en feil under oppdatering av innhold i databasen.",
+    "s3-upload-error": "Det oppstod en feil under opplasting av filen {{filename}} til S3.",
+    "install-library-already-installed": "Biblioteket {{ubername}} er allerede installert og kan ikke installeres på nytt."
+}

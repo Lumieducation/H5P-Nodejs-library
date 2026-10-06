@@ -11,8 +11,9 @@ Update the translations of the Hub content type metadata in
 If no locales were given, update every `*.json` in that directory (not `.en.json`).
 `es-mx.json` and `es_MX.json` are the same locale — keep their content identical.
 
-Translate **yourself, in context**. Do not use json-autotranslate / `localize.sh`:
-it translates string by string without knowing what an H5P content type is.
+Translate **yourself, in context**: a string-by-string translation service doesn't
+know what an H5P content type is. For all other namespaces use
+`/update-translations`.
 
 ## Rules
 

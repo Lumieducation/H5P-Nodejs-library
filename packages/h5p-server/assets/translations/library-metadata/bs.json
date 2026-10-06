@@ -1,12 +1,12 @@
 {
     "H5P_Image": {
-        "title": "Image"
+        "title": "Slika"
     },
     "H5P_ContinuousText": {
         "title": "Kontinuirani tekst"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Pitanje o besplatnom tekstu"
+        "title": "Pitanje sa slobodnim unosom teksta"
     },
     "H5P_GoToScene": {
         "title": "Idite na scenu"
@@ -30,13 +30,13 @@
         "title": "Veza"
     },
     "H5P_Nil": {
-        "title": "Label"
+        "title": "Oznaka"
     },
     "H5P_IVHotspot": {
-        "title": "Pristupna tačka za navigaciju"
+        "title": "Navigaciona žarišna tačka"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Otvoreno završeno pitanje"
+        "title": "Pitanje otvorenog tipa"
     },
     "H5P_Shape": {
         "title": "Oblici"
@@ -45,16 +45,16 @@
         "title": "Sažetak"
     },
     "H5P_Table": {
-        "title": "Tablica"
+        "title": "Tabela"
     },
     "H5P_Text": {
-        "title": "Text"
+        "title": "Tekst"
     },
     "H5P_Video": {
         "title": "Video"
     },
     "H5P_AdvancedText": {
-        "title": "Text"
+        "title": "Tekst"
     },
     "H5P_SimpleMultiChoice": {
         "title": "Jednostavan višestruki izbor"

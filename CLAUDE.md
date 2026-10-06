@@ -79,6 +79,7 @@ npm run test:h5p-mongos3      # Needs Docker: npm run start:dbs first
 npm run test:integration      # Integration tests
 npm run lint                  # ESLint + remark
 npm run format:check          # Prettier check
+npm run check:translations   # Translation integrity (optional: namespaces, --locale=de,fr)
 npm run format                # Prettier fix
 ```
 
@@ -149,6 +150,9 @@ Where to look for common tasks (all paths relative to `packages/`):
 - Default filesystem storage: `h5p-server/src/implementation/fs/`
 - Configuration: `h5p-server/src/implementation/H5PConfig.ts`
 - Translations: `h5p-server/assets/translations/`
+- Translation commands: `/update-translations` (all namespaces except `hub`) and
+  `/update-hub-translations` (`.claude/commands/`); integrity check in
+  `scripts/check-translations.ts`
 
 **h5p-express (HTTP layer):**
 

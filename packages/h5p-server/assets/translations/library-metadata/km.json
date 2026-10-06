@@ -6,7 +6,7 @@
         "title": "អត្ថបទបន្ត"
     },
     "H5P_FreeTextQuestion": {
-        "title": "សំណួរអត្ថបទឥតគិតថ្លៃ"
+        "title": "សំណួរអត្ថបទសេរី"
     },
     "H5P_GoToScene": {
         "title": "ទៅឈុតឆាក"
@@ -27,7 +27,7 @@
         "title": "ទំព័រនាំចេញឯកសារ"
     },
     "H5P_Link": {
-        "title": "ភ្ជាប់"
+        "title": "តំណ"
     },
     "H5P_Nil": {
         "title": "ស្លាក​សញ្ញា"
@@ -36,7 +36,7 @@
         "title": "ចំណុចរុករក"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "សំណួរបញ្ចប់បើកចំហ"
+        "title": "សំណួរបើកចំហ"
     },
     "H5P_Shape": {
         "title": "រាង"
@@ -57,7 +57,7 @@
         "title": "អត្ថបទ"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "ជម្រើសពហុជម្រើសសាមញ្ញ"
+        "title": "ពហុជម្រើសសាមញ្ញ"
     },
     "H5P_BranchingQuestion": {
         "title": "សំណួរសាខា"

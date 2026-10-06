@@ -6,7 +6,7 @@
         "title": "Συνεχές κείμενο"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Ερώτηση δωρεάν κειμένου"
+        "title": "Ερώτηση ελεύθερου κειμένου"
     },
     "H5P_GoToScene": {
         "title": "Μετάβαση στη σκηνή"
@@ -30,13 +30,13 @@
         "title": "Σύνδεσμος"
     },
     "H5P_Nil": {
-        "title": "Επιγραφή"
+        "title": "Ετικέτα"
     },
     "H5P_IVHotspot": {
         "title": "Hotspot πλοήγησης"
     },
     "H5P_OpenEndedQuestion": {
-        "title": "Ανοιχτή Ερώτηση"
+        "title": "Ανοιχτή ερώτηση"
     },
     "H5P_Shape": {
         "title": "Σχήματα"
@@ -45,13 +45,13 @@
         "title": "Περίληψη"
     },
     "H5P_Table": {
-        "title": "Τραπέζι"
+        "title": "Πίνακας"
     },
     "H5P_Text": {
         "title": "Κείμενο"
     },
     "H5P_Video": {
-        "title": "βίντεο"
+        "title": "Βίντεο"
     },
     "H5P_AdvancedText": {
         "title": "Κείμενο"

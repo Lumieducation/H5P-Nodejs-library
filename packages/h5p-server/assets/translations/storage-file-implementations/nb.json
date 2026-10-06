@@ -1,1 +1,19 @@
-{}
+{
+    "add-file-content-not-found": "Kan ikke legge til filen {{filename}} i innhold med ID {{id}}: Innholdet finnes ikke.",
+    "add-library-file-not-installed": "Kan ikke legge til {{filename}} i biblioteket {{libraryName}} fordi biblioteket ikke er installert.",
+    "clear-library-not-found": "Kan ikke tømme biblioteket {{libraryName}} fordi biblioteket ikke er installert.",
+    "delete-content-file-not-found": "Kan ikke slette filen {{filename}}: Den finnes ikke.",
+    "delete-content-not-found": "Kan ikke slette innhold: Det finnes ikke.",
+    "error-creating-content": "Kunne ikke opprette innhold.",
+    "error-generating-content-id": "Kunne ikke generere ID for nytt innhold.",
+    "error-generating-unique-temporary-filename": "Kan ikke fastslå et unikt filnavn for {{name}}",
+    "error-updating-metadata": "Tilleggsmetadataene for biblioteket {{library}} kan ikke oppdateres. Feil: {{error}}",
+    "get-library-metadata-not-installed": "Kan ikke hente metadata for biblioteket {{libraryName}} fordi biblioteket ikke er installert.",
+    "illegal-absolute-filename": "Absolutte stier i filnavn er ikke tillatt: {{filename}} er ugyldig",
+    "illegal-relative-filename": "Relative stier i filnavn er ikke tillatt: {{filename}} er ugyldig",
+    "illegal-character": "Filnavnet inneholder et ugyldig tegn: {{filename}}",
+    "install-library-already-installed": "Biblioteket {{libraryName}} er allerede installert.",
+    "remove-library-library-missing": "Biblioteket {{libraryName}} er ikke installert på systemet.",
+    "temporary-file-not-found": "Filen {{filename}} er ikke tilgjengelig for brukeren {{userId}}, eller den finnes ikke.",
+    "update-library-library-missing": "Biblioteket {{libraryName}} kan ikke oppdateres fordi det ennå ikke er installert."
+}

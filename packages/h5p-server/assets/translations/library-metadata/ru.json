@@ -6,7 +6,7 @@
         "title": "Непрерывный текст"
     },
     "H5P_FreeTextQuestion": {
-        "title": "Бесплатный текстовый вопрос"
+        "title": "Вопрос со свободным ответом"
     },
     "H5P_GoToScene": {
         "title": "Перейти к сцене"
@@ -30,7 +30,7 @@
         "title": "Ссылка"
     },
     "H5P_Nil": {
-        "title": "Этикетка"
+        "title": "Метка"
     },
     "H5P_IVHotspot": {
         "title": "Точка навигации"
@@ -45,19 +45,19 @@
         "title": "Резюме"
     },
     "H5P_Table": {
-        "title": "Стол"
+        "title": "Таблица"
     },
     "H5P_Text": {
         "title": "Текст"
     },
     "H5P_Video": {
-        "title": "видео"
+        "title": "Видео"
     },
     "H5P_AdvancedText": {
         "title": "Текст"
     },
     "H5P_SimpleMultiChoice": {
-        "title": "Простой выбор нескольких вариантов"
+        "title": "Простой множественный выбор"
     },
     "H5P_BranchingQuestion": {
         "title": "Ветвящийся вопрос"

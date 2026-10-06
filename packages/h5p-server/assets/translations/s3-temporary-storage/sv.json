@@ -1,5 +1,5 @@
 {
-    "deleting-file-error": "Det uppstod ett fel när filen skulle raderas.",
+    "deleting-file-error": "Det uppstod ett fel när filen skulle tas bort.",
     "file-not-found": "Filen finns inte.",
     "s3-upload-error": "Det gick inte att ladda upp den tillfälliga filen till S3."
 }

@@ -1,5 +1,5 @@
 {
     "deleting-file-error": "Selle faili kustutamisel ilmnes viga.",
     "file-not-found": "Faili pole olemas.",
-    "s3-upload-error": "Ajutise faili S3 üleslaadimisel ilmnes viga."
+    "s3-upload-error": "Ajutise faili S3-sse üleslaadimisel ilmnes viga."
 }

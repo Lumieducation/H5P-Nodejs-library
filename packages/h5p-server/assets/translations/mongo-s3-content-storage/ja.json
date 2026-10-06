@@ -1,12 +1,12 @@
 {
     "content-not-found": "アクセスしようとしているコンテンツは存在しません。",
     "deleting-content-error": "コンテンツオブジェクトの削除中にエラーが発生しました。",
-    "deleting-file-error": "コンテンツオブジェクトから{{filename}}を削除中にエラーが発生しました。",
+    "deleting-file-error": "コンテンツオブジェクトからファイル{{filename}}を削除中にエラーが発生しました。",
     "filename-too-long": "ファイル名が長すぎます： {{filename}}",
     "illegal-filename": "ファイル名{{filename}}は許可されていません。",
     "listing-content-error": "コンテンツオブジェクトのリストの取得中にエラーが発生しました",
     "mongo-add-update-error": "データベースのコンテンツの追加または更新中にエラーが発生しました。",
     "mongo-replace-error": "データベースのコンテンツの更新中にエラーが発生しました。",
-    "s3-upload-error": "{{filename}}をS3にアップロード中にエラーが発生しました。",
+    "s3-upload-error": "ファイル{{filename}}をS3にアップロード中にエラーが発生しました。",
     "install-library-already-installed": "ライブラリ{{ubername}}はすでにインストールされており、再度インストールすることはできません。"
 }
