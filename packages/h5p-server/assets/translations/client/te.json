@@ -56,7 +56,7 @@
     "requiredInfo": "అవసరమైన సమాచారం",
     "reviewAndShare": "రివ్యూ & షేర్",
     "shared": "షేర్ అయ్యింది",
-    "currentStep": "Step :step of :total",
+    "currentStep": "దశ :step / :total",
     "licenseDescription": "మీ కంటెంట్ కోసం లైసెన్స్‌ను ఎంచుకోండి",
     "licenseVersion": "లైసెన్స్ వెర్షన్",
     "disciplineLabel": "విభాగాలు",
