@@ -4,7 +4,8 @@
  * from the content type cache downloaded by update-real-content-type-cache.ts
  * (run `npm run download:content-type-cache` first to get current data).
  *
- * The file is used as the source for json-autotranslate (see localize.sh).
+ * The file is the source for the hub translations (see
+ * .claude/commands/update-hub-translations.md).
  * Titles are written as "Title (Title)" so that translated titles end up as
  * "Translated title (Original title)". Keyword keys are the keywords with
  * spaces replaced by underscores. The order of existing entries is kept and new

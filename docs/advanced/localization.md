@@ -97,10 +97,16 @@ localize strings itself.
 The language strings used by @lumieducation/h5p-server can be found in
 `/packages/h5p-server/assets/translations/`. In there, each namespace (group of
 language strings) has it own directory, which in turn contains the language
-files, which are named like this `en.json`, `de.json` etc.
+files, which are named like this `en.json`, `de.json` etc. (the English source
+of the `hub` and `library-metadata` namespaces is called `.en.json`).
 
 If you want to change the text for your language or add another language, you
 must do the changes in these directories. You can also add new namespaces if you
 want to contribute to the development of @lumieducation/h5p-server and develop a
 module which is self-contained (like the optional storage implementations). All
 general language strings should be put into the namespace `server`.
+
+`npm run check:translations` verifies that all translations have the same keys
+and placeholders as the English source and lists missing translations. The
+Claude commands `/update-translations` and `/update-hub-translations` (see
+`.claude/commands`) translate new and changed strings.
