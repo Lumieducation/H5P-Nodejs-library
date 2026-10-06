@@ -30,7 +30,7 @@
     "invalid-patch-request": "Het verzoek om een bibliotheek te wijzigen is onjuist opgemaakt.",
     "invalid-schema-library-json-file": "Het library.json-bestand van bibliotheek {{name}} is ongeldig ( {{reason}} )",
     "invalid-semantics-json-file": "Ongeldig semantics.json-bestand is opgenomen in bibliotheek {{name}}",
-    "invalid-ubername-pattern": "​Je moet dit patroon volgen: {{example}} '",
+    "invalid-ubername-pattern": "'{{name}}' is geen geldige H5P-bibliotheeknaam (\"ubername\"). Je moet dit patroon volgen: {{example}}'",
     "library-consistency-check-file-missing": "Ontbrekende bestanden in bibliotheek {{name}} : {{files}}",
     "library-consistency-check-library-json-unreadable": "Fout in bibliotheek {{name}} : library.json niet leesbaar: {{message}}",
     "library-consistency-check-not-installed": "Kan bibliotheekconsistentie voor {{name}} niet controleren omdat de bibliotheek niet is geïnstalleerd.",
