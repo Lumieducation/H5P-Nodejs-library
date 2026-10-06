@@ -6,7 +6,11 @@ import { validatePackage } from '../helpers/PackageValidatorHelper';
 
 const libraryManagerMock = {
     isPatchedLibrary: () => Promise.resolve(undefined),
-    libraryExists: () => Promise.resolve(false)
+    libraryExists: () => Promise.resolve(false),
+    // This test only checks the structure of the packages, so we pretend all
+    // the libraries they depend on are already installed. (Not all packages
+    // on the Hub include every library they depend on.)
+    getNotInstalledLibraries: () => Promise.resolve([])
 } as any;
 
 describe('validate all H5P files from the Hub', () => {

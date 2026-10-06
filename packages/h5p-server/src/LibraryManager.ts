@@ -296,25 +296,28 @@ export default class LibraryManager {
     }
 
     /**
-     * Checks which libraries in the list are not installed.
+     * Checks which libraries in the list are not installed. Libraries are
+     * matched by machineName plus exact major.minor version; a patch version
+     * on the passed objects is ignored (dependency declarations in h5p.json
+     * and library.json never carry one).
      * @param libraries the list of libraries to check
      * @returns the list of not installed libraries
      */
     public async getNotInstalledLibraries(
         libraries: ILibraryName[]
     ): Promise<ILibraryName[]> {
-        const allLibraries = await this.listInstalledLibraries();
-        const missingLibraries = [];
-        for (const lib of libraries) {
-            if (
-                !allLibraries[lib.machineName]?.find(
-                    (l) => l.compareVersions(lib) === 0
+        const installed = new Set(
+            (await this.libraryStorage.getInstalledLibraryNames()).map(
+                (l) =>
+                    `${l.machineName}-${Number(l.majorVersion)}.${Number(l.minorVersion)}`
+            )
+        );
+        return libraries.filter(
+            (lib) =>
+                !installed.has(
+                    `${lib.machineName}-${Number(lib.majorVersion)}.${Number(lib.minorVersion)}`
                 )
-            ) {
-                missingLibraries.push(lib);
-            }
-        }
-        return missingLibraries;
+        );
     }
 
     /**
