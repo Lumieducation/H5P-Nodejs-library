@@ -21,7 +21,7 @@
         "@lumieducation/h5p-mongos3": "^10.0.4",
         "@lumieducation/h5p-server": "^10.0.4",
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
-        "body-parser": "2.3.0",
+        "body-parser": "2.4.0",
         "cache-manager": "7.2.9",
         "cacheable": "^2.5.0",
         "cors": "2.8.6",

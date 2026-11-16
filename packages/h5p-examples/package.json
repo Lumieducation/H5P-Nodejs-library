@@ -26,7 +26,7 @@
         "@lumieducation/h5p-server": "^10.0.4",
         "@lumieducation/h5p-svg-sanitizer": "^10.0.4",
         "@keyv/redis": "^5.1.6",
-        "body-parser": "2.3.0",
+        "body-parser": "2.4.0",
         "bootstrap": "^5.2.3",
         "cache-manager": "7.2.9",
         "cacheable": "^2.5.0",
