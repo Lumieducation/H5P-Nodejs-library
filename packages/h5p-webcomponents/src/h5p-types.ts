@@ -8,6 +8,12 @@ export interface IH5PInstance {
     };
     params: any;
     trigger: (event: string, eventData?: any, extras?: any) => void;
+    /**
+     * Implemented by content types that support saving the user state. h5p.js
+     * calls it periodically and when the page is unloaded, and doesn't save
+     * anything when it returns undefined.
+     */
+    getCurrentState?: () => unknown;
 }
 
 export interface IH5PDialog {
