@@ -1,6 +1,10 @@
 import type { IPlayerModel } from '@lumieducation/h5p-server';
 
-import { mergeH5PIntegration, removeUnusedContent } from './h5p-utils';
+import {
+    mergeH5PIntegration,
+    removeUnusedContent,
+    retireInstance
+} from './h5p-utils';
 import { addScripts, addStylesheets } from './dom-utils';
 import { IH5P, IH5PInstance } from './h5p-types';
 
@@ -264,6 +268,7 @@ export class H5PPlayerComponent extends HTMLElement {
      * Called when the component is removed from the DOM.
      */
     disconnectedCallback(): void {
+        this.retireCurrentInstance();
         if (this.contentId) {
             removeUnusedContent(this.contentId);
         }
@@ -432,6 +437,15 @@ export class H5PPlayerComponent extends HTMLElement {
     };
 
     /**
+     * Stops the content currently displayed from saving its user state, as its
+     * DOM is about to go away. See retireInstance for why that is needed.
+     */
+    private retireCurrentInstance(): void {
+        retireInstance(this.h5pObject, this.h5pInstance);
+        this.h5pInstance = undefined;
+    }
+
+    /**
      * Displays content.
      * @param {string} contentId
      */
@@ -454,9 +468,14 @@ export class H5PPlayerComponent extends HTMLElement {
                 readOnlyState === 'true'
             );
         } catch (error) {
+            this.retireCurrentInstance();
             this.root.innerHTML = `<p>Error loading H5P content from server: ${error.message}</p>`;
             return;
         }
+
+        // The content we're about to replace keeps saving its state unless we
+        // stop it, see retireInstance.
+        this.retireCurrentInstance();
 
         // Reset the component's DOM
         this.root.innerHTML = '';
