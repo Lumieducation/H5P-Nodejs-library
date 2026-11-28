@@ -1,3 +1,4 @@
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
@@ -194,6 +195,13 @@ export class ContentScanner {
                 }
                 break;
             case 'list': {
+                if (!Array.isArray(elementParams)) {
+                    throw new H5pError(
+                        'invalid-content-list',
+                        { path: currentJsonPath },
+                        400
+                    );
+                }
                 // lists contain one semantic entry, but several content
                 // elements
                 let counter = 0;
