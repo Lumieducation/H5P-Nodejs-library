@@ -1,3 +1,4 @@
+import H5pError from './helpers/H5pError';
 import Logger from './helpers/Logger';
 import LibraryManager from './LibraryManager';
 import LibraryName from './LibraryName';
@@ -170,10 +171,18 @@ export class ContentScanner {
                 );
                 const subSemantics =
                     await this.libraryManager.getSemantics(subLibraryName);
+                const paramsPath = `${currentJsonPath}.params`;
+                if (subSemantics.length > 0 && elementParams.params == null) {
+                    throw new H5pError(
+                        'missing-library-params',
+                        { path: paramsPath },
+                        400
+                    );
+                }
                 await this.walkSemanticsRecursive(
                     subSemantics,
                     elementParams.params,
-                    `${currentJsonPath}.params`,
+                    paramsPath,
                     callback,
                     { doNotAddNameToJsonPath: false }
                 );
