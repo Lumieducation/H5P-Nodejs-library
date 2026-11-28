@@ -85,7 +85,7 @@ export default class SemanticsEnforcer {
     ): { deleteMe: boolean } {
         log.debug('Enforcing structure of a library element.');
         let deleteMe: boolean;
-        if (!params.library) {
+        if (!params?.library) {
             log.debug(
                 `Found a library entry without a library property (${jsonPath}). Marking it for deletion.`
             );

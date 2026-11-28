@@ -158,7 +158,7 @@ export class ContentScanner {
             case 'library': {
                 // If an element contains another library, we have to retrieve
                 // the exact name, and the nested content parameters.
-                if (elementParams.library === undefined) {
+                if (elementParams?.library === undefined) {
                     // Skip if the element is empty. (= unused)
                     return;
                 }
